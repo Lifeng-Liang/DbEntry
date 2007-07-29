@@ -1,0 +1,124 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{48E4289C-FABF-46F6-AC45-AAA4224F84D3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>org.hanzify.llf.UnitTest</RootNamespace>
+    <AssemblyName>org.hanzify.llf.UnitTest</AssemblyName>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\AutoCreateTableTest.cs" />
+    <Compile Include="Data\CommonUsageTest.cs" />
+    <Compile Include="Data\ComplexDynamicObjectTest.cs" />
+    <Compile Include="Data\CreateTable\SQLiteTest.cs" />
+    <Compile Include="Data\HasManyAndBelongsToAssociateTest.cs" />
+    <Compile Include="Data\HasManyAssociateTest.cs" />
+    <Compile Include="Data\HasOneAssociateTest.cs" />
+    <Compile Include="Data\Inner\CommonTest.cs" />
+    <Compile Include="Data\LogicalOperatorTest.cs" />
+    <Compile Include="Data\Objects\AbstractClasses.cs" />
+    <Compile Include="Data\DynamicObjectAbstractClassTest.cs" />
+    <Compile Include="Data\Objects\AssociateClasses.cs" />
+    <Compile Include="Data\Objects\ModelObject.cs" />
+    <Compile Include="Data\Objects\PropertyClasses.cs" />
+    <Compile Include="Data\PagedSelectorTest.cs" />
+    <Compile Include="Data\PropertyClassTest.cs" />
+    <Compile Include="Data\SerializationTest.cs" />
+    <Compile Include="Data\SmartUpdateTest.cs" />
+    <Compile Include="Data\ValidateHandlerTest.cs" />
+    <Compile Include="Data\VBHelperTest.cs" />
+    <Compile Include="InitHelper.cs" />
+    <Compile Include="Data\Inner\DataTester.cs" />
+    <Compile Include="Data\Inner\DateParamterTest.cs" />
+    <Compile Include="Data\Inner\TesterHelper.cs" />
+    <Compile Include="Data\Inner\WhereConditionTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="util\timingTask\DayTimingTest.cs" />
+    <Compile Include="util\timingTask\MockNowTimeProvider.cs" />
+    <Compile Include="util\timingTask\MockTask.cs" />
+    <Compile Include="util\timingTask\MockTimer.cs" />
+    <Compile Include="util\timingTask\MonthTimingTest.cs" />
+    <Compile Include="util\timingTask\TimeSpanTimingTest.cs" />
+    <Compile Include="util\timingTask\TimingTaskControllerTest.cs" />
+    <Compile Include="util\timingTask\TimingTaskTest.cs" />
+    <Compile Include="util\timingTask\WeekTimingTest.cs" />
+    <Compile Include="util\ClassHelperTest.cs" />
+    <Compile Include="util\ConfigTest.cs" />
+    <Compile Include="util\EnumTester.cs" />
+    <Compile Include="DotNetFramework\GenericTest.cs" />
+    <Compile Include="util\HexStringCodingTest.cs" />
+    <Compile Include="util\MockConfigReader.cs" />
+    <Compile Include="util\NameValueHandlerTest.cs" />
+    <Compile Include="util\StringHelperTester.cs" />
+    <Compile Include="util\SystemHelperTest.cs" />
+    <Compile Include="util\TestEnum.cs" />
+    <Compile Include="util\ThreadingQueueTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UnitTest.config.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MockSql\MockSql.csproj">
+      <Project>{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}</Project>
+      <Name>MockSql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.hanzify.llf.Data\org.hanzify.llf.Data.csproj">
+      <Project>{25AFD300-493A-4553-B4DC-129D3A9022A8}</Project>
+      <Name>org.hanzify.llf.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.hanzify.llf.util\org.hanzify.llf.util.csproj">
+      <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
+      <Name>org.hanzify.llf.util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestTable.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UnitTest.db" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

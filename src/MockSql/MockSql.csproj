@@ -1,0 +1,82 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>org.hanzify.llf.MockSql</RootNamespace>
+    <AssemblyName>org.hanzify.llf.MockSql</AssemblyName>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MockDbException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecorderCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RecorderCommandBuilder.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RecorderConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RecorderDataAdapter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RecorderDbTransaction.cs" />
+    <Compile Include="RecorderFactory.cs" />
+    <Compile Include="RecorderParameter.cs" />
+    <Compile Include="RecorderParameterCollection.cs" />
+    <Compile Include="RecorderReader.cs" />
+    <Compile Include="Recorder\ConsoleRecorder.cs" />
+    <Compile Include="Recorder\FileRecorder.cs" />
+    <Compile Include="Recorder\IRecorder.cs" />
+    <Compile Include="Recorder\StaticRecorder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\org.hanzify.llf.util\org.hanzify.llf.util.csproj">
+      <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
+      <Name>org.hanzify.llf.util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

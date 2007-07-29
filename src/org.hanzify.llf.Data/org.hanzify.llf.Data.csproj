@@ -1,0 +1,347 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{25AFD300-493A-4553-B4DC-129D3A9022A8}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AssemblyName>org.hanzify.llf.Data</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>org.hanzify.llf.Data</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
+goto End
+
+:Release
+copy *.dll ..\..\..\..\bin\
+
+:End</PostBuildEvent>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFrameworkVersion>v1.1</TargetFrameworkVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>DbEntry.snk</AssemblyOriginatorKeyFile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>Full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Builder\Clause\ConstCondition.cs" />
+    <Compile Include="Common\DbStructInterface.cs" />
+    <Compile Include="Common\DynamicObjectReference.cs" />
+    <Compile Include="Common\GroupByObject.cs" />
+    <Compile Include="Common\MemberAdapater.cs" />
+    <Compile Include="Common\MemoryAssembly.cs" />
+    <Compile Include="Common\MemoryTypeBuilder.cs" />
+    <Compile Include="Common\StaticPagedSelector.cs" />
+    <Compile Include="Common\VBHelper.cs" />
+    <Compile Include="DbContext.cs" />
+    <Compile Include="Definition\BelongsToAttribute.cs" />
+    <Compile Include="Definition\DbObjectBase.cs" />
+    <Compile Include="Definition\DbObjectModel.cs" />
+    <Compile Include="Definition\DbObjectSmartUpdate.cs" />
+    <Compile Include="Definition\HasManyAndBelongsTo.cs" />
+    <Compile Include="Definition\HasManyAndBelongsToAttribute.cs" />
+    <Compile Include="Definition\HasManyAttribute.cs" />
+    <Compile Include="Definition\HasOne.cs" />
+    <Compile Include="Definition\HasOneAttribute.cs" />
+    <Compile Include="Definition\IBelongsTo.cs" />
+    <Compile Include="Definition\ILazyLoading.cs" />
+    <Compile Include="Common\EmptyCondition.cs" />
+    <Compile Include="Builder\CreateTableStatementBuilder.cs" />
+    <Compile Include="Builder\DbIndex.cs" />
+    <Compile Include="Definition\IRenew.cs" />
+    <Compile Include="Definition\LazyLoadListBase.cs" />
+    <Compile Include="Definition\OrderByAttribute.cs" />
+    <Compile Include="Driver\DbFactory.cs" />
+    <Compile Include="Driver\SmartDbFactory.cs" />
+    <Compile Include="DynamicObject.cs" />
+    <Compile Include="QuerySyntax\QueryInterfaces.cs" />
+    <Compile Include="SqlEntry\ColumnInfo.cs" />
+    <Compile Include="Logging\DatabaseLogRecorder.cs" />
+    <Compile Include="Definition\AllowNullAttribute.cs" />
+    <Compile Include="Definition\IndexAttribute.cs" />
+    <Compile Include="Definition\MaxLengthAttribute.cs" />
+    <Compile Include="Definition\StringColumnAttribute.cs" />
+    <Compile Include="Definition\BelongsTo.cs" />
+    <Compile Include="Definition\HasMany.cs" />
+    <Compile Include="SqlEntry\ConnectionContext.cs" />
+    <Compile Include="SqlEntry\IHasConnection.cs" />
+    <Compile Include="Common\LimitedListInserter.cs" />
+    <Compile Include="Definition\NamedDbObject.cs" />
+    <Compile Include="QuerySyntax\QueryContent.cs" />
+    <Compile Include="ValidateHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\DeleteStatementBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\IClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\InsertStatementBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\ISqlStatementBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\ISqlValues.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\ISqlWhere.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\JoinClause.cs" />
+    <Compile Include="Definition\JoinMode.cs" />
+    <Compile Include="ASC.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DESC.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\FromClause.cs" />
+    <Compile Include="OrderBy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\SetClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\Range.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\ValuesClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\SelectStatementBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\UpdateStatementBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\AndClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CK.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Definition\CompareOpration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\ConditionClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WhereCondition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\KeyKeyClause.cs" />
+    <Compile Include="Builder\Clause\KeyValueClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\NotClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\OrClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\Clause\WhereClause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DbEntryException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\DataParamter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\DataParamterCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\DataSetting.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\DataType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\DataTypeParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialect\Access.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialect\DbDialect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialect\Excel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialect\MySql.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialect\SQLite.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialect\SqlServer2000.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialect\SqlServer2005.cs" />
+    <Compile Include="Driver\CommonDbDriver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Driver\DbDriver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\EntryConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Driver\OdbcDriver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Driver\OleDbDriver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Driver\SqlServerDriver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\DataProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Definition\DbKeyAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Definition\DbTableAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Definition\ExcludeAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Definition\DisableSqlLogAttribute.cs" />
+    <Compile Include="Definition\DbColumnAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Definition\JoinOnAttribute.cs" />
+    <Compile Include="IPagedSelector.cs" />
+    <Compile Include="PagedCollection.cs" />
+    <Compile Include="Definition\DbObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\DbObjectList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\DbObjectHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DbEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\DbEnum.cs" />
+    <Compile Include="Common\EnumTable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\MemberHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\IProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ObjectInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ListInserter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\NullableHelper.cs" />
+    <Compile Include="Common\PagedSelector.cs" />
+    <Compile Include="SqlEntry\KeyValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\KeyValueCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logging\Log2db.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logging\LogItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\SqlStatement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlEntry\TimeConsumingSqlStatement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\org.hanzify.llf.util\org.hanzify.llf.util.csproj">
+      <Name>org.hanzify.llf.util</Name>
+      <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DbEntry.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
+goto End
+
+:Release
+copy *.dll ..\..\..\..\bin\
+
+:End
+</PostBuildEvent>
+  </PropertyGroup>
+</Project>

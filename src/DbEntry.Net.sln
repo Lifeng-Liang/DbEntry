@@ -1,0 +1,78 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.hanzify.llf.Data", "org.hanzify.llf.Data\org.hanzify.llf.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.hanzify.llf.util", "org.hanzify.llf.util\org.hanzify.llf.util.csproj", "{F53E89FC-F364-4C7D-A20A-CACFBF11C196}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{48E4289C-FABF-46F6-AC45-AAA4224F84D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockSql", "MockSql\MockSql.csproj", "{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlRecorder", "SqlRecorder\SqlRecorder.csproj", "{92805D19-5BFD-4EC4-B485-BEF6598CD14A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E42B44C-3848-4A14-B2E7-69A309C59B91}"
+	ProjectSection(SolutionItems) = preProject
+		nunit.framework.dll = nunit.framework.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debug", "Debug\Debug.csproj", "{EE0F0B59-1970-4929-A73D-1A89862F9B83}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs01.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Debug\\Debug.csproj
+		SccProjectName1 = Debug
+		SccLocalPath1 = Debug
+		SccProjectUniqueName2 = MockSql\\MockSql.csproj
+		SccProjectName2 = MockSql
+		SccLocalPath2 = MockSql
+		SccProjectUniqueName3 = org.hanzify.llf.Data\\org.hanzify.llf.Data.csproj
+		SccProjectName3 = org.hanzify.llf.Data
+		SccLocalPath3 = org.hanzify.llf.Data
+		SccProjectUniqueName4 = org.hanzify.llf.util\\org.hanzify.llf.util.csproj
+		SccProjectName4 = org.hanzify.llf.util
+		SccLocalPath4 = org.hanzify.llf.util
+		SccProjectUniqueName5 = SqlRecorder\\SqlRecorder.csproj
+		SccProjectName5 = SqlRecorder
+		SccLocalPath5 = SqlRecorder
+		SccProjectUniqueName6 = UnitTest\\UnitTest.csproj
+		SccProjectName6 = UnitTest
+		SccLocalPath6 = UnitTest
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25AFD300-493A-4553-B4DC-129D3A9022A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25AFD300-493A-4553-B4DC-129D3A9022A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25AFD300-493A-4553-B4DC-129D3A9022A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25AFD300-493A-4553-B4DC-129D3A9022A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F53E89FC-F364-4C7D-A20A-CACFBF11C196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F53E89FC-F364-4C7D-A20A-CACFBF11C196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F53E89FC-F364-4C7D-A20A-CACFBF11C196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F53E89FC-F364-4C7D-A20A-CACFBF11C196}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48E4289C-FABF-46F6-AC45-AAA4224F84D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48E4289C-FABF-46F6-AC45-AAA4224F84D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48E4289C-FABF-46F6-AC45-AAA4224F84D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48E4289C-FABF-46F6-AC45-AAA4224F84D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92805D19-5BFD-4EC4-B485-BEF6598CD14A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92805D19-5BFD-4EC4-B485-BEF6598CD14A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92805D19-5BFD-4EC4-B485-BEF6598CD14A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92805D19-5BFD-4EC4-B485-BEF6598CD14A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE0F0B59-1970-4929-A73D-1A89862F9B83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE0F0B59-1970-4929-A73D-1A89862F9B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE0F0B59-1970-4929-A73D-1A89862F9B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE0F0B59-1970-4929-A73D-1A89862F9B83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

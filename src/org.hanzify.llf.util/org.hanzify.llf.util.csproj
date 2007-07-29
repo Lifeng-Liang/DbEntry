@@ -1,0 +1,231 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AssemblyName>org.hanzify.llf.util</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>org.hanzify.llf.util</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFrameworkVersion>v1.1</TargetFrameworkVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>util.snk</AssemblyOriginatorKeyFile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>Full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Runtime.Remoting">
+      <Name>System.Runtime.Remoting</Name>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommonHelper.cs" />
+    <Compile Include="Logging\DebugLogRecorder.cs" />
+    <Compile Include="Logging\ILogDirect.cs" />
+    <Compile Include="Logging\LogType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scope.cs" />
+    <Compile Include="Setting\ConfigReader.cs" />
+    <Compile Include="Setting\ConfigReaderProxy.cs" />
+    <Compile Include="Setting\ResourceConfigReader.cs" />
+    <Compile Include="Text\StringSerializer.cs" />
+    <Compile Include="Text\XmlSerializer.cs" />
+    <Compile Include="ClassHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Coding\Base64Coding.cs" />
+    <Compile Include="Coding\HexStringCoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Coding\ICoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Coding\IStringCoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Coding\SerializationCoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Coding\StringCoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CountViewer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EncodingEx.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logging\ConsoleLogRecorder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logging\DtsFileLogRecorder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logging\ILogRecorder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logging\Logger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logging\TextFileLogRecorder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NullEncoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RemotingHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ResourceHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SettingException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Setting\ConfigHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Setting\ConfigHelperBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Setting\NameValueSectionHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SystemHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\ShowStringAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\StringHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ThreadingQueue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimeSpanCounter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\ITask.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\ITimer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\ITiming.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\SystemTimerAdapter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\TaskCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\ThreadingTimerAdapter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\Timings\DayOfRangeTimingBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\Timings\DayTiming.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\Timings\INowTimeProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\Timings\MonthTiming.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\Timings\SystemNowTimeProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\Timings\TimeOfDayStruct.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\Timings\TimeSpanTiming.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\Timings\WeekTiming.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\TimingTask.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\TimingTaskCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimingTask\TimingTaskController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UrlBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="util.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
