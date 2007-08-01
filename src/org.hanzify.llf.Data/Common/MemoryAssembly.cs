@@ -4,6 +4,7 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using org.hanzify.llf.util;
 
 #endregion
 
@@ -24,8 +25,11 @@ namespace org.hanzify.llf.Data.Common
         public MemoryAssembly(string AssemblyName)
         {
             this.AssemblyName = AssemblyName;
+            AssemblyName an = new AssemblyName(AssemblyName);
+            byte[] bs = ResourceHelper.ReadAll(this.GetType(), "dynamic.snk");
+            an.KeyPair = new StrongNameKeyPair(bs);
             InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                new AssemblyName(AssemblyName), AssemblyBuilderAccess.Run);
+                an, AssemblyBuilderAccess.Run);
             ResetModule();
         }
 

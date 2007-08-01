@@ -22,12 +22,12 @@ namespace org.hanzify.llf.Data
 
         #region UsingTransaction
 
-        public static void RequiredTransaction(CallbackVoidHandler callback)
+        public static void UsingExistedTransaction(CallbackVoidHandler callback)
         {
             _Instance.UsingExistedTransaction(callback);
         }
 
-        public static void RequiredTransaction(IsolationLevel il, CallbackVoidHandler callback)
+        public static void UsingExistedTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
             _Instance.UsingExistedTransaction(il, callback);
         }

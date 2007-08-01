@@ -25,6 +25,8 @@ namespace org.hanzify.llf.Data
         // for remoting only
         public DbContext() : this(EntryConfig.Default) { }
 
+        public DbContext(string Prefix) : this(EntryConfig.GetDriver(Prefix)) { }
+
         public DbContext(DbDriver driver) : base(driver) { }
 
         private void TryCreateTable(Type DbObjectType)

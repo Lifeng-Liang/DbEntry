@@ -332,6 +332,7 @@ copy *.dll ..\..\..\..\bin\
   </ItemGroup>
   <ItemGroup>
     <None Include="DbEntry.snk" />
+    <EmbeddedResource Include="dynamic.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
