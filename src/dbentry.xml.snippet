@@ -1,0 +1,25 @@
+﻿<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>
+        DbEntry
+      </Title>
+      <Shortcut>dbentry</Shortcut>
+      <Author>Lifeng Liang</Author>
+      <Description>It will help us to create basic structure of DbEntry to app.config/web.config</Description>
+      <HelpUrl>http://www.codeplex.com/dbentry</HelpUrl>
+    </Header>
+    <Snippet>
+      <Code Language="XML">
+        <![CDATA[	<configSections>
+		<section name="org.hanzify.llf.Settings" type="org.hanzify.llf.util.Setting.NameValueSectionHandler, org.hanzify.llf.util" />
+	</configSections>
+
+	<org.hanzify.llf.Settings>
+		<add key="DataBase" value="@Access : @~test.mdb" />
+	</org.hanzify.llf.Settings>]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

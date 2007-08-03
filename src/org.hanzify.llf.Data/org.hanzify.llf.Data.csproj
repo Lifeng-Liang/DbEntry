@@ -118,11 +118,14 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\StringColumnAttribute.cs" />
     <Compile Include="Definition\BelongsTo.cs" />
     <Compile Include="Definition\HasMany.cs" />
+    <Compile Include="SqlEntry\CommonBulkCopy.cs" />
     <Compile Include="SqlEntry\ConnectionContext.cs" />
+    <Compile Include="SqlEntry\IDbBulkCopy.cs" />
     <Compile Include="SqlEntry\IHasConnection.cs" />
     <Compile Include="Common\LimitedListInserter.cs" />
     <Compile Include="Definition\NamedDbObject.cs" />
     <Compile Include="QuerySyntax\QueryContent.cs" />
+    <Compile Include="SqlEntry\SqlServerBulkCopy.cs" />
     <Compile Include="ValidateHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

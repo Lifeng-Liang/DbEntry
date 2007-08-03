@@ -225,6 +225,12 @@ namespace org.hanzify.llf.UnitTest.Data
             StaticRecorder.ClearMessages();
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            InitHelper.Clear();
+        }
+
         #endregion
 
         [Test]

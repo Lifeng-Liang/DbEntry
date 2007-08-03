@@ -1,0 +1,31 @@
+﻿<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>
+        Create abstract property
+      </Title>
+      <Shortcut>absprop</Shortcut>
+      <Author>Lifeng Liang</Author>
+      <Description>It will help us to create abstract property</Description>
+      <HelpUrl>http://www.codeplex.com/dbentry</HelpUrl>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>PropertyType</ID>
+          <ToolTip>Peoperty Type</ToolTip>
+          <Default>string</Default>
+        </Literal>
+        <Literal>
+          <ID>PropertyName</ID>
+          <ToolTip>Property Name</ToolTip>
+          <Default>Name</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="VB">
+        <![CDATA[Public MustOverride Property $PropertyName$() As $PropertyType$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

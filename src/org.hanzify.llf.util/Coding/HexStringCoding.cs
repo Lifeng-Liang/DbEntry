@@ -33,11 +33,12 @@ namespace org.hanzify.llf.util.Coding
 				unsafe
 				{
 					fixed ( char* p = Src )
-					{
+                    fixed (byte* r = ReverseHexChar)
+                    {
 						for( int i=0, j=0; i<m; i++ )
 						{
-							byte b1 = (byte)(ReverseHexChar[ p[j++] ] << 4 );
-							byte b2 = (byte)(ReverseHexChar[ p[j++] ]);
+							byte b1 = (byte)(r[ p[j++] ] << 4 );
+							byte b2 = (byte)(r[ p[j++] ]);
 							ret[i] = (byte)(b1 | b2);
 						}
 					}
@@ -56,12 +57,12 @@ namespace org.hanzify.llf.util.Coding
 			string ret = new string((char)0, n + n);
 			unsafe
 			{
-				fixed( char* p = ret )
+                fixed (char* p = ret, h = HexChar)
 				{
 					for( int i=0, j=0; i<n; i++ )
 					{
-						p[j+1]	= HexChar[ Src[i] & 15 ];
-						p[j]	= HexChar[ Src[i] >> 4 ];
+						p[j+1]	= h[ Src[i] & 15 ];
+						p[j]	= h[ Src[i] >> 4 ];
 						j += 2;
 					}
 				}

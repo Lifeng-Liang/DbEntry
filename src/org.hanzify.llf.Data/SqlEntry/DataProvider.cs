@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.SqlClient;
 using org.hanzify.llf.util;
 using org.hanzify.llf.util.Text;
 using org.hanzify.llf.Data.Dialect;
@@ -40,6 +41,25 @@ namespace org.hanzify.llf.Data.SqlEntry
             }
         }
 
+		protected DataProvider() {}
+
+        public DataProvider(DbDriver driver)
+		{
+            m_Driver = driver;
+		}
+
+		public DbDialect Dialect
+		{
+			get { return m_Driver.Dialect; }
+		}
+
+        public DbDriver Driver
+        {
+            get { return m_Driver; }
+        }
+
+        #region utils
+
         public List<string> GetTableNames()
         {
             List<string> ret = new List<string>();
@@ -60,22 +80,24 @@ namespace org.hanzify.llf.Data.SqlEntry
             return ret;
         }
 
-		protected DataProvider() {}
-
-        public DataProvider(DbDriver driver)
-		{
-            m_Driver = driver;
-		}
-
-		public DbDialect Dialect
-		{
-			get { return m_Driver.Dialect; }
-		}
-
-        public DbDriver Driver
+        public IDbBulkCopy GetDbBulkCopy()
         {
-            get { return m_Driver; }
+            if (Driver is SqlServerDriver)
+            {
+                if (Scope<ConnectionContext>.Current != null)
+                {
+                    SqlConnection c = (SqlConnection)Scope<ConnectionContext>.Current.Connection;
+                    return new SqlServerBulkCopy(c);
+                }
+                throw new DbEntryException("It must have current connection.");
+            }
+            else
+            {
+                return new CommonBulkCopy(this);
+            }
         }
+        
+        #endregion
 
         #region Execute Sql
 
