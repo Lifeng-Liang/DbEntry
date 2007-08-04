@@ -5,7 +5,7 @@
       <Title>
         Create abstract property
       </Title>
-      <Shortcut>absprop</Shortcut>
+      <Shortcut>aprop</Shortcut>
       <Author>Lifeng Liang</Author>
       <Description>It will help us to create abstract property</Description>
       <HelpUrl>http://www.codeplex.com/dbentry</HelpUrl>
@@ -23,8 +23,8 @@
           <Default>Name</Default>
         </Literal>
       </Declarations>
-      <Code Language="VB">
-        <![CDATA[Public MustOverride Property $PropertyName$() As $PropertyType$]]>
+      <Code Language="CSharp">
+        <![CDATA[public abstract $PropertyType$ $PropertyName$ { get; set; }$end$]]>
       </Code>
     </Snippet>
   </CodeSnippet>

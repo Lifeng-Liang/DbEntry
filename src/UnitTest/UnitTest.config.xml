@@ -11,6 +11,12 @@
 
     <add key="1.DataBase" value="@Access : @~test.mdb" />
 
+    <add key="SqlServer.DataBase" value="@SqlServer2005 : data source=LEPHONE\SQLEXPRESS;initial catalog=testdb;user id=sa;password=123" />
+
+    <add key="SqlServerMock.DataBase" value="@SqlServer2005 : org.hanzify.llf.MockSql.Recorder.StaticRecorder, org.hanzify.llf.MockSql" />
+    <add key="SqlServerMock.DbDriver" value="org.hanzify.llf.Data.Driver.SqlServerDriver, org.hanzify.llf.Data" />
+    <add key="SqlServerMock.DbProviderFactory" value="org.hanzify.llf.MockSql.RecorderFactory, org.hanzify.llf.MockSql" />
+
     <add key="TestInt" value="10" />
     <add key="TheString" value="OK" />
     <add key="TestBool" value="true" />

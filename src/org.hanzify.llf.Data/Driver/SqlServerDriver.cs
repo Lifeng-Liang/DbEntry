@@ -13,7 +13,7 @@ namespace org.hanzify.llf.Data.Driver
 	internal class SqlServerDriver : DbDriver
 	{
         public SqlServerDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
-            : base(DialectClass, ConnectionString, "") { }
+            : base(DialectClass, ConnectionString, DbProviderFactoryName) { }
 
         protected override DbProviderFactory GetDefaultProviderFactory()
         {

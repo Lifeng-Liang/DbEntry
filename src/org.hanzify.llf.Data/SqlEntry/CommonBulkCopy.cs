@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using org.hanzify.llf.Data.Builder;
+using org.hanzify.llf.util;
 
 namespace org.hanzify.llf.Data.SqlEntry
 {
@@ -67,56 +68,32 @@ namespace org.hanzify.llf.Data.SqlEntry
 
         public void Close()
         {
+            Provider.ConProvider.Close();
         }
 
         public void WriteToServer(DataRow[] rows)
         {
-            foreach (DataRow dr in rows)
+            Provider.UsingTransaction(delegate()
             {
-                InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
-                DataColumnCollection dcc = dr.Table.Columns;
-                for (int i = 0; i < dcc.Count; i++)
+                foreach (DataRow dr in rows)
                 {
-                    object o = GetValue(dr[i]);
-                    sb.Values.Add(new KeyValue(dcc[i].ColumnName, o));
+                    InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
+                    DataColumnCollection dcc = dr.Table.Columns;
+                    for (int i = 0; i < dcc.Count; i++)
+                    {
+                        object o = GetValue(dr[i]);
+                        sb.Values.Add(new KeyValue(dcc[i].ColumnName, o));
+                    }
+                    if (!WriteSingleToServer(sb)) { break; }
                 }
-                WriteSingleToServer(sb);
-            }
+            });
         }
 
         public void WriteToServer(DataTable table)
         {
-            foreach (DataRow dr in table.Rows)
+            Provider.UsingTransaction(delegate()
             {
-                InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
-                for (int i = 0; i < table.Columns.Count; i++)
-                {
-                    object o = GetValue(dr[i]);
-                    sb.Values.Add(new KeyValue(table.Columns[i].ColumnName, o));
-                }
-                WriteSingleToServer(sb);
-            }
-        }
-
-        public void WriteToServer(IDataReader reader)
-        {
-            while (reader.Read())
-            {
-                InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
-                for (int i = 0; i < reader.FieldCount; i++)
-                {
-                    object o = GetValue(reader[i]);
-                    sb.Values.Add(new KeyValue(reader.GetName(i), o));
-                }
-                WriteSingleToServer(sb);
-            }
-        }
-
-        public void WriteToServer(DataTable table, DataRowState rowState)
-        {
-            foreach (DataRow dr in table.Rows)
-            {
-                if (dr.RowState == rowState)
+                foreach (DataRow dr in table.Rows)
                 {
                     InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
                     for (int i = 0; i < table.Columns.Count; i++)
@@ -124,9 +101,46 @@ namespace org.hanzify.llf.Data.SqlEntry
                         object o = GetValue(dr[i]);
                         sb.Values.Add(new KeyValue(table.Columns[i].ColumnName, o));
                     }
-                    WriteSingleToServer(sb);
+                    if (!WriteSingleToServer(sb)) { break; }
                 }
-            }
+            });
+        }
+
+        public void WriteToServer(IDataReader reader)
+        {
+            Provider.UsingTransaction(delegate()
+            {
+                while (reader.Read())
+                {
+                    InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        object o = GetValue(reader[i]);
+                        sb.Values.Add(new KeyValue(reader.GetName(i), o));
+                    }
+                    if (!WriteSingleToServer(sb)) { break; }
+                }
+            });
+        }
+
+        public void WriteToServer(DataTable table, DataRowState rowState)
+        {
+            Provider.UsingTransaction(delegate()
+            {
+                foreach (DataRow dr in table.Rows)
+                {
+                    if (dr.RowState == rowState)
+                    {
+                        InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
+                        for (int i = 0; i < table.Columns.Count; i++)
+                        {
+                            object o = GetValue(dr[i]);
+                            sb.Values.Add(new KeyValue(table.Columns[i].ColumnName, o));
+                        }
+                        if (!WriteSingleToServer(sb)) { break; }
+                    }
+                }
+            });
         }
 
         private object GetValue(object o)
@@ -134,18 +148,27 @@ namespace org.hanzify.llf.Data.SqlEntry
             return (o == DBNull.Value) ? null : o;
         }
 
-        private int Count = 0;
+        private long Count = 0;
 
-        private void WriteSingleToServer(InsertStatementBuilder sb)
+        private bool WriteSingleToServer(InsertStatementBuilder sb)
         {
             SqlStatement Sql = sb.ToSqlStatement(Provider.Dialect);
             Sql.SqlTimeOut = _BulkCopyTimeout;
             Provider.ExecuteNonQuery(Sql);
             Count++;
+            if (_BatchSize > 0 && (Count % _BatchSize) == 0)
+            {
+                ConnectionContext cc = Scope<ConnectionContext>.Current;
+                cc.Commit();
+                cc.BeginTransaction();
+            }
             if (SqlRowsCopied != null && _NotifyAfter > 0 && ((Count % _NotifyAfter) == 0))
             {
-                SqlRowsCopied(this, new SqlRowsCopiedEventArgs(Count));
+                SqlRowsCopiedEventArgs e = new SqlRowsCopiedEventArgs(Count);
+                SqlRowsCopied(this, e);
+                if (e.Abort) { return false; }
             }
+            return true;
         }
     }
 }

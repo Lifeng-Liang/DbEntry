@@ -32,6 +32,7 @@ namespace org.hanzify.llf.Data.SqlEntry
         public void BeginTransaction()
         {
             Transaction = Connection.BeginTransaction();
+            IsProcessed = false;
         }
 
         public void BeginTransaction(IsolationLevel il)

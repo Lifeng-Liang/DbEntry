@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\AutoCreateTableTest.cs" />
+    <Compile Include="Data\BulkCopyTest.cs" />
     <Compile Include="Data\CommonUsageTest.cs" />
     <Compile Include="Data\ComplexDynamicObjectTest.cs" />
     <Compile Include="Data\CreateTable\SQLiteTest.cs" />
