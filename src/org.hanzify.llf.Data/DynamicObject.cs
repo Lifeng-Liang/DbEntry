@@ -24,13 +24,36 @@ namespace org.hanzify.llf.Data
         private const MethodAttributes ImplFlag = MethodAttributes.Public | MethodAttributes.HideBySig |
             MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final;
 
+        private static readonly Type objType = typeof(object);
+        private static readonly Type[] emptyTypes = new Type[] { };
+
         private static Hashtable types = Hashtable.Synchronized(new Hashtable());
-        private static int index = 0;
 
         public static T NewObject<T>(params object[] os)
         {
             Type ImplType = GetImplType(typeof(T));
             return (T)ClassHelper.CreateInstance(ImplType, os);
+        }
+
+        public static IDbObjectHandler CreateDbObjectHandler(Type srcType)
+        {
+            Type t = GetDbObjectHandler(srcType);
+            object o = ClassHelper.CreateInstance(t);
+            return (IDbObjectHandler)o;
+        }
+
+        public static Type GetDbObjectHandler(Type srcType)
+        {
+            ConstructorInfo ci = srcType.GetConstructor(emptyTypes);
+            MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
+                DynamicObjectTypeAttr, typeof(object), new Type[] { typeof(IDbObjectHandler) });
+            tb.DefineDefaultConstructor(MethodAttributes.Public);
+            tb.DefineMethodDirect(ImplFlag, "CreateInstance", objType, emptyTypes, delegate(ILGenerator il)
+            {
+                il.Emit(OpCodes.Newobj, ci);
+            });
+            Type t = tb.CreateType();
+            return t;
         }
 
         public static Type GetImplType(Type SourceType)
@@ -41,9 +64,6 @@ namespace org.hanzify.llf.Data
             }
             else
             {
-                string TypeName = "T" + index.ToString();
-                index++;
-
                 TypeAttributes ta = DynamicObjectTypeAttr;
                 Type[] interfaces = null;
                 if ( SourceType.IsSerializable )
@@ -53,7 +73,7 @@ namespace org.hanzify.llf.Data
                 }
 
                 MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
-                    TypeName, ta, SourceType, interfaces, GetCustomAttributes(SourceType));
+                    ta, SourceType, interfaces, GetCustomAttributes(SourceType));
 
                 MethodInfo minit = SourceType.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag);
                 MethodInfo mupdate = SourceType.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag);

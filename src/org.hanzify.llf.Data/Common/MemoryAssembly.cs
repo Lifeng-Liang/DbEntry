@@ -12,8 +12,9 @@ namespace org.hanzify.llf.Data.Common
 {
     public class MemoryAssembly
     {
-        public const string DefaultAssemblyName = "MemoryAssembly";
+        public const string DefaultAssemblyName = "DbEntry_MemoryAssembly";
         public static readonly MemoryAssembly Instance = new MemoryAssembly();
+        private static int index = 0;
 
         private AssemblyBuilder InnerAssembly;
         private ModuleBuilder InnerModule;
@@ -31,6 +32,18 @@ namespace org.hanzify.llf.Data.Common
             InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
                 an, AssemblyBuilderAccess.Run);
             ResetModule();
+        }
+
+        public MemoryTypeBuilder DefineType(TypeAttributes attr, Type InheritsFrom, Type[] Interfaces)
+        {
+            return DefineType(attr, InheritsFrom, Interfaces, new CustomAttributeBuilder[] { });
+        }
+
+        public MemoryTypeBuilder DefineType(TypeAttributes attr, Type InheritsFrom, Type[] Interfaces, CustomAttributeBuilder[] attributes)
+        {
+            string TypeName = "T" + index.ToString();
+            index++;
+            return DefineType(TypeName, attr, InheritsFrom, Interfaces, attributes);
         }
 
         public MemoryTypeBuilder DefineType(string TypeName, TypeAttributes attr, Type InheritsFrom, Type[] Interfaces, CustomAttributeBuilder[] attributes)

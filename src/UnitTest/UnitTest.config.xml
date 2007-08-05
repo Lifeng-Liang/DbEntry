@@ -3,6 +3,8 @@
   <org.hanzify.llf.Settings>
     <add key="SqlLogRecorder" value="org.hanzify.llf.util.Logging.ConsoleLogRecorder, org.hanzify.llf.util" />
 
+    <add key="DBOHandlerType" value="Both" />
+
     <add key="AutoCreateTable" value="true" />
     <add key="DefaultContext" value="Development" />
  

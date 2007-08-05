@@ -90,6 +90,7 @@
     <Compile Include="util\SystemHelperTest.cs" />
     <Compile Include="util\TestEnum.cs" />
     <Compile Include="util\ThreadingQueueTest.cs" />
+    <Compile Include="util\UrlBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UnitTest.config.xml" />

@@ -11,8 +11,7 @@ namespace org.hanzify.llf.Data.Common
 {
 	internal class ObjectInfo
 	{
-        public ConstructorInfo Constructor;
-        private object[] os = new object[] { };
+        public IDbObjectHandler handler;
 
 		public FromClause From;
         public bool HasSystemKey;
@@ -68,7 +67,7 @@ namespace org.hanzify.llf.Data.Common
 
         public object NewObject()
         {
-            return Constructor.Invoke(os);
+            return handler.CreateInstance();
         }
     }
 }

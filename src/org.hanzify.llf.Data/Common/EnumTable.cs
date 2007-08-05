@@ -17,7 +17,7 @@ namespace org.hanzify.llf.Data.Common
         public string Name;
 
         [DbColumn("Value")]
-        protected int? m_Value;
+        protected internal int? m_Value;
 
         [Exclude]
         public int? Value

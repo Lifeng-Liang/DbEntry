@@ -442,7 +442,18 @@ namespace org.hanzify.llf.Data.Common
                 MemberHandler[] keys = (MemberHandler[])kfs.ToArray(typeof(MemberHandler));
                 ObjectInfo ii = new ObjectInfo(GetObjectFromClause(t), keys, fhs, DisableSqlLog(t));
                 SetManyToManyMediFrom(ii, t, ii.From.GetMainTableName(), fhs);
-                ii.Constructor = t.GetConstructor(new Type[] { });
+
+                // binding DbObjectHandler
+                if (DataSetting.DBOHandlerType == HandlerType.Emit
+                    || (DataSetting.DBOHandlerType == HandlerType.Both && t.IsPublic))
+                {
+                    ii.handler = DynamicObject.CreateDbObjectHandler(t);
+                }
+                else
+                {
+                    ii.handler = new ReflectionDbObjectHandler(t);
+                }
+
                 lock (ObjectInfos.SyncRoot)
                 {
                     ObjectInfos[t] = ii;

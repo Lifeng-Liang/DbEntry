@@ -10,8 +10,17 @@ using org.hanzify.llf.util.Setting;
 
 namespace org.hanzify.llf.Data.SqlEntry
 {
+    public enum HandlerType
+    {
+        Emit,
+        Reflection,
+        Both,
+    }
+
 	public static class DataSetting
 	{
+        public static readonly HandlerType DBOHandlerType   = HandlerType.Emit;
+
         public static readonly bool AutoCreateTable         = false;
 
         public static readonly string DefaultContext        = "";

@@ -146,7 +146,7 @@ namespace org.hanzify.llf.Data.Common
                 default:
                     throw new DbEntryException("Impossible");
             }
-            FieldBuilder fb = InnerType.DefineField(Name, t, FieldAttributes.Family);
+            FieldBuilder fb = InnerType.DefineField(Name, t, FieldAttributes.FamORAssem);
             DbColumnAttribute[] bs = (DbColumnAttribute[])pi.GetCustomAttributes(typeof(DbColumnAttribute), true);
             if (bs != null && bs.Length > 0)
             {
@@ -214,9 +214,17 @@ namespace org.hanzify.llf.Data.Common
 
         public MethodBuilder DefineMethod(MethodAttributes flag, string MethodName, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
+            return DefineMethodDirect(flag, MethodName, returnType, paramTypes, delegate(ILGenerator il)
+            {
+                il.Emit(OpCodes.Ldarg_0);
+                emitCode(il);
+            });
+        }
+
+        public MethodBuilder DefineMethodDirect(MethodAttributes flag, string MethodName, Type returnType, Type[] paramTypes, EmitCode emitCode)
+        {
             MethodBuilder mb = InnerType.DefineMethod(MethodName, flag, returnType, paramTypes);
             ILGenerator il = mb.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
             emitCode(il);
             il.Emit(OpCodes.Ret);
             return mb;
