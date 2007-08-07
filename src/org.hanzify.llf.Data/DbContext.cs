@@ -302,17 +302,14 @@ namespace org.hanzify.llf.Data
                     if (ParentFirst) { e1(this); }
                     using (new Scope<object>(ii.KeyFields[0].GetValue(obj)))
                     {
-                        foreach (MemberHandler f in ii.Fields)
+                        foreach (MemberHandler f in ii.RelationFields)
                         {
-                            if (f.IsLazyLoad)
+                            ILazyLoading ho = (ILazyLoading)f.GetValue(obj);
+                            ho.IsLoaded = true;
+                            if (f.IsHasOne || f.IsHasMany || (f.IsHasManyAndBelongsTo && ParentFirst))
                             {
-                                ILazyLoading ho = (ILazyLoading)f.GetValue(obj);
-                                ho.IsLoaded = true;
-                                if (f.IsHasOne || f.IsHasMany || (f.IsHasManyAndBelongsTo && ParentFirst))
-                                {
-                                    object llo = ho.Read();
-                                    CommonHelper.TryEnumerate(llo, e2);
-                                }
+                                object llo = ho.Read();
+                                CommonHelper.TryEnumerate(llo, e2);
                             }
                         }
                         if (!ParentFirst) { e1(this); }

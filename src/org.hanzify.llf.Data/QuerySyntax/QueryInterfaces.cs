@@ -16,6 +16,7 @@ namespace org.hanzify.llf.Data.QuerySyntax
     public interface IGetPagedSelector
     {
         IPagedSelector GetPagedSelector();
+        IPagedSelector GetStaticPagedSelector();
     }
 
     public interface IGroupByable

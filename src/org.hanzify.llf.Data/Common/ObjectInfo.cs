@@ -20,6 +20,8 @@ namespace org.hanzify.llf.Data.Common
         public MemberHandler BelongsToField;
 		public MemberHandler[] KeyFields;
 		public MemberHandler[] Fields;
+        public MemberHandler[] SimpleFields;
+        public MemberHandler[] RelationFields;
         public bool DisableSqlLog = false;
         public bool HasOnePremarykey;
         public FromClause ManyToManyMediFrom = null;

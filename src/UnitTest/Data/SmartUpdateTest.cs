@@ -309,8 +309,8 @@ namespace org.hanzify.llf.UnitTest.Data
             u.Articles.Add(a);
             de.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Insert Into [rArticle] ([Reader_Id],[Name],[thePrice]) Values (@Reader_Id_0,@Name_1,@thePrice_2);\nSELECT last_insert_rowid();\n", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Update [rArticle] Set [Reader_Id]=@Reader_Id_0,[thePrice]=@thePrice_1  Where [Id] = @Id_2;\n", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Insert Into [rArticle] ([Name],[thePrice],[Reader_Id]) Values (@Name_0,@thePrice_1,@Reader_Id_2);\nSELECT last_insert_rowid();\n", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Update [rArticle] Set [thePrice]=@thePrice_0,[Reader_Id]=@Reader_Id_1  Where [Id] = @Id_2;\n", StaticRecorder.Messages[1]);
         }
 
         [Test]

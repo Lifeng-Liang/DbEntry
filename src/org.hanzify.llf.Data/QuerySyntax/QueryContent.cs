@@ -85,6 +85,11 @@ namespace org.hanzify.llf.Data.QuerySyntax
             return new PagedSelector<T>(m_where, m_order, m_pagesize, m_entry);
         }
 
+        public IPagedSelector GetStaticPagedSelector()
+        {
+            return new StaticPagedSelector<T>(m_where, m_order, m_pagesize, m_entry);
+        }
+
         public long GetCount()
         {
             return m_entry.GetResultCount(typeof(T), m_where);

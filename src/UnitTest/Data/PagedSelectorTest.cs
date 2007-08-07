@@ -74,7 +74,7 @@ namespace org.hanzify.llf.UnitTest.Data
         [Test]
         public void TestStaticPagedSelecor2()
         {
-            StaticPagedSelector<SinglePerson> ps = new StaticPagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 3, DbEntry.Context);
+            IPagedSelector ps = DbEntry.From<SinglePerson>().Where(null).OrderBy((DESC)"Id").PageSize(3).GetStaticPagedSelector();
             Assert.AreEqual(3, ps.GetResultCount());
             List<SinglePerson> ls = (List<SinglePerson>)ps.GetCurrentPage(0);
             Assert.AreEqual(3, ls.Count);

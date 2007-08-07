@@ -57,7 +57,11 @@ namespace org.hanzify.llf.Data.Common
                 ILazyLoading bt = (ILazyLoading)ii.BelongsToField.GetValue(di);
                 bt.Init(driver, ii.BelongsToField.Name);
             }
-            foreach (MemberHandler f in ii.Fields)
+            foreach (MemberHandler f in ii.SimpleFields)
+            {
+                f.SetValue(di, callback(f));
+            }
+            foreach (MemberHandler f in ii.RelationFields)
             {
                 if (f.IsHasOne || f.IsHasMany || f.IsHasManyAndBelongsTo)
                 {
@@ -78,10 +82,6 @@ namespace org.hanzify.llf.Data.Common
                 {
                     IBelongsTo ho = (IBelongsTo)f.GetValue(di);
                     ho.ForeignKey = callback(f);
-                }
-                else
-                {
-                    f.SetValue(di, callback(f));
                 }
             }
             if (sudi != null)
@@ -371,7 +371,7 @@ namespace org.hanzify.llf.Data.Common
             return fh;
         }
 
-        private static void ProcessMember(MemberAdapter m, ArrayList ret, ArrayList kfs)
+        private static void ProcessMember(MemberAdapter m, List<MemberHandler> ret, List<MemberHandler> kfs)
         {
             if (!HasAtributes(m, typeof(ExcludeAttribute), typeof(HasOneAttribute),
                 typeof(HasManyAttribute), typeof(HasManyAndBelongsToAttribute), typeof(BelongsToAttribute)))
@@ -410,8 +410,8 @@ namespace org.hanzify.llf.Data.Common
             }
             else
             {
-                ArrayList ret = new ArrayList();
-                ArrayList kfs = new ArrayList();
+                List<MemberHandler> ret = new List<MemberHandler>();
+                List<MemberHandler> kfs = new List<MemberHandler>();
                 foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
                 {
                     if (!fi.IsPrivate)
@@ -438,10 +438,30 @@ namespace org.hanzify.llf.Data.Common
                         }
                     }
                 }
-                MemberHandler[] fhs = (MemberHandler[])ret.ToArray(typeof(MemberHandler));
-                MemberHandler[] keys = (MemberHandler[])kfs.ToArray(typeof(MemberHandler));
-                ObjectInfo ii = new ObjectInfo(GetObjectFromClause(t), keys, fhs, DisableSqlLog(t));
-                SetManyToManyMediFrom(ii, t, ii.From.GetMainTableName(), fhs);
+
+                // fill simple and relation fields.
+                List<MemberHandler> rlfs = new List<MemberHandler>();
+                List<MemberHandler> sifs = new List<MemberHandler>();
+                foreach (MemberHandler mh in ret)
+                {
+                    if (mh.IsHasOne || mh.IsHasMany || mh.IsHasManyAndBelongsTo || mh.IsBelongsTo)
+                    {
+                        rlfs.Add(mh);
+                    }
+                    else
+                    {
+                        sifs.Add(mh);
+                    }
+                }
+                List<MemberHandler> fields = new List<MemberHandler>(sifs);
+                fields.AddRange(rlfs);
+                MemberHandler[] keys = kfs.ToArray();
+
+                ObjectInfo ii = new ObjectInfo(GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
+                SetManyToManyMediFrom(ii, t, ii.From.GetMainTableName(), ii.Fields);
+
+                ii.RelationFields = rlfs.ToArray();
+                ii.SimpleFields = sifs.ToArray();
 
                 // binding DbObjectHandler
                 if (DataSetting.DBOHandlerType == HandlerType.Emit
