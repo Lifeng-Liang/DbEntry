@@ -14,9 +14,12 @@ using org.hanzify.llf.Data.Driver;
 
 namespace org.hanzify.llf.Data.Definition
 {
-    public class HasManyAndBelongsTo<T> : LazyLoadListBase<T>
+    public class HasManyAndBelongsTo<T> : LazyLoadListBase<T>, ISavedNewRelations
     {
         private OrderBy Order;
+
+        private List<long> _SavedNewRelations = new List<long>();
+        List<long> ISavedNewRelations.SavedNewRelations { get { return _SavedNewRelations; } }
 
         public HasManyAndBelongsTo()
         {
@@ -35,6 +38,14 @@ namespace org.hanzify.llf.Data.Definition
 
         protected override void InnerWrite(object item)
         {
+            if (_IsLoaded)
+            {
+                DbObject o = item as DbObject;
+                if (o.Id != 0)
+                {
+                    _SavedNewRelations.Add(o.Id);
+                }
+            }
             /*
             ObjectInfo ti = DbObjectHelper.GetObjectInfo(typeof(T));
             if (ti.BelongsToField != null)

@@ -139,7 +139,7 @@ namespace org.hanzify.llf.UnitTest.Data
             Assert.IsNotNull(a);
             Assert.AreEqual(2, a.Readers.Count);
             Assert.AreEqual("tom", a.Readers[0].Name);
-            Assert.AreEqual("jerry", a.Readers[0].Name);
+            Assert.AreEqual("jerry", a.Readers[1].Name);
         }
 
         [Test]
@@ -155,7 +155,7 @@ namespace org.hanzify.llf.UnitTest.Data
             Assert.IsNotNull(a);
             Assert.AreEqual(2, a.Readers.Count);
             Assert.AreEqual("tom", a.Readers[0].Name);
-            Assert.AreEqual("jerry", a.Readers[0].Name);
+            Assert.AreEqual("jerry", a.Readers[1].Name);
         }
     }
 }

@@ -300,7 +300,8 @@ namespace org.hanzify.llf.Data
                 UsingExistedTransaction(delegate()
                 {
                     if (ParentFirst) { e1(this); }
-                    using (new Scope<object>(ii.KeyFields[0].GetValue(obj)))
+                    object mkey = ii.KeyFields[0].GetValue(obj);
+                    using (new Scope<object>(mkey))
                     {
                         foreach (MemberHandler f in ii.RelationFields)
                         {
@@ -310,6 +311,14 @@ namespace org.hanzify.llf.Data
                             {
                                 object llo = ho.Read();
                                 CommonHelper.TryEnumerate(llo, e2);
+                            }
+                            if (f.IsHasManyAndBelongsTo)
+                            {
+                                ISavedNewRelations so = ho as ISavedNewRelations;
+                                foreach (long n in so.SavedNewRelations)
+                                {
+                                    SetManyToManyAssociate(ii, (obj as DbObject).Id, n);
+                                }
                             }
                         }
                         if (!ParentFirst) { e1(this); }
@@ -384,7 +393,7 @@ namespace org.hanzify.llf.Data
                 {
                     object Key = dp.ExecuteScalar(Sql);
                     DbObjectHelper.SetKey(obj, Key);
-                    SetManyToManyAssociate(ii, Key);
+                    SetManyToManyAssociate(ii, Key, Scope<object>.Current);
                 }, delegate(object o)
                 {
                     SetBelongsToForeignKey(o, ii.KeyFields[0].GetValue(obj));
@@ -397,13 +406,13 @@ namespace org.hanzify.llf.Data
             }
         }
 
-        private void SetManyToManyAssociate(ObjectInfo ii, object Key)
+        private void SetManyToManyAssociate(ObjectInfo ii, object Key1, object Key2)
         {
-            if (ii.ManyToManyMediTableName != null && Scope<object>.Current != null)
+            if (ii.ManyToManyMediTableName != null && Key1 != null && Key2 != null)
             {
                 InsertStatementBuilder sb = new InsertStatementBuilder(ii.ManyToManyMediTableName, false);
-                sb.Values.Add(new KeyValue(ii.ManyToManyMediColumeName1, Key));
-                sb.Values.Add(new KeyValue(ii.ManyToManyMediColumeName2, Scope<object>.Current));
+                sb.Values.Add(new KeyValue(ii.ManyToManyMediColumeName1, Key1));
+                sb.Values.Add(new KeyValue(ii.ManyToManyMediColumeName2, Key2));
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
                 if (!ii.DisableSqlLog)
                 {

@@ -108,6 +108,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\CreateTableStatementBuilder.cs" />
     <Compile Include="Builder\DbIndex.cs" />
     <Compile Include="Definition\IRenew.cs" />
+    <Compile Include="Definition\ISavedNewRelations.cs" />
     <Compile Include="Definition\LazyLoadListBase.cs" />
     <Compile Include="Definition\OrderByAttribute.cs" />
     <Compile Include="Driver\DbFactory.cs" />

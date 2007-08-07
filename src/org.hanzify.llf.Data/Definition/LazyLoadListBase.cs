@@ -19,7 +19,7 @@ namespace org.hanzify.llf.Data.Definition
         protected string ForeignKeyName;
         protected object owner;
         protected DbDriver driver;
-        private bool _IsLoaded;
+        protected bool _IsLoaded;
         protected IList<T> InnerList = new DbObjectList<T>();
 
         public LazyLoadListBase()
@@ -55,8 +55,8 @@ namespace org.hanzify.llf.Data.Definition
 
         protected void WriteAndSet(object item)
         {
-            InnerWrite(item);
             _IsLoaded = true;
+            InnerWrite(item);
             driver = null;
         }
 
