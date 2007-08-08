@@ -85,6 +85,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DynamicObjectReference.cs" />
     <Compile Include="Common\GroupByObject.cs" />
     <Compile Include="Common\IDbObjectHandler.cs" />
+    <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="Common\MemberAdapater.cs" />
     <Compile Include="Common\MemoryAssembly.cs" />
     <Compile Include="Common\MemoryTypeBuilder.cs" />

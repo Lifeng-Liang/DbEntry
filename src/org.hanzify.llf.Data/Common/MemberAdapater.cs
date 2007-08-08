@@ -48,6 +48,11 @@ namespace org.hanzify.llf.Data.Common
             {
                 get { return fi.Name; }
             }
+
+            public override bool IsProperty
+            {
+                get { return false; }
+            }
         }
 
         internal class PropertyAdapter : MemberAdapter
@@ -86,10 +91,16 @@ namespace org.hanzify.llf.Data.Common
             {
                 get { return pi.Name; }
             }
+
+            public override bool IsProperty
+            {
+                get { return true; }
+            }
         }
 
         #endregion
 
+        public abstract bool IsProperty { get; }
         public abstract string Name { get; }
         public abstract object[] GetCustomAttributes(Type t, bool inherit);
         public abstract Type MemberType { get; }

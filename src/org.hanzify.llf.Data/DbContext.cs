@@ -435,7 +435,7 @@ namespace org.hanzify.llf.Data
             }
         }
 
-        public void Delete(object obj)
+        public int Delete(object obj)
         {
             Type t = obj.GetType();
             TryCreateTable(t);
@@ -447,10 +447,11 @@ namespace org.hanzify.llf.Data
             {
                 Logger.SQL.Trace(Sql.ToString());
             }
+            int ret = 0;
             ProcessAssociate(ii, false, obj, delegate(DataProvider dp)
             {
-                dp.ExecuteNonQuery(Sql);
-                DeleteAssociate(ii, obj);
+                ret += dp.ExecuteNonQuery(Sql);
+                ret += DeleteAssociate(ii, obj);
             }, delegate(object o)
             {
                 Delete(o);
@@ -459,9 +460,10 @@ namespace org.hanzify.llf.Data
             {
                 ii.KeyFields[0].SetValue(obj, ii.KeyFields[0].UnsavedValue);
             }
+            return ret;
         }
 
-        private void DeleteAssociate(ObjectInfo ii, object obj)
+        private int DeleteAssociate(ObjectInfo ii, object obj)
         {
             if (ii.ManyToManyMediTableName != null)
             {
@@ -473,11 +475,12 @@ namespace org.hanzify.llf.Data
                 {
                     Logger.SQL.Trace(Sql.ToString());
                 }
-                ExecuteNonQuery(Sql);
+                return ExecuteNonQuery(Sql);
             }
+            return 0;
         }
 
-        public void Delete<T>(WhereCondition iwc)
+        public int Delete<T>(WhereCondition iwc)
         {
             Type t = typeof(T);
             TryCreateTable(t);
@@ -489,7 +492,7 @@ namespace org.hanzify.llf.Data
             {
                 Logger.SQL.Trace(Sql.ToString());
             }
-            this.ExecuteNonQuery(Sql);
+            return this.ExecuteNonQuery(Sql);
         }
 
         public void DropTable(Type DbObjectType)

@@ -38,7 +38,7 @@ namespace org.hanzify.llf.Data.Definition
 
         protected override void InnerWrite(object item)
         {
-            if (_IsLoaded)
+            if (m_IsLoaded)
             {
                 DbObject o = item as DbObject;
                 if (o.Id != 0)
