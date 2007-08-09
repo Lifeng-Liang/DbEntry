@@ -11,6 +11,6 @@
         <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
         <AlternatingRowStyle BackColor="Gainsboro" />
     </asp:GridView>
-    <cc1:UserDataSource ID="UserDataSource1" runat="server" DefaultOrderBy="Age, ID DESC">
+    <cc1:UserDataSource ID="UserDataSource1" runat="server" DefaultOrderBy="Age, ID DESC" IsStatic="True">
     </cc1:UserDataSource>
 </asp:Content>

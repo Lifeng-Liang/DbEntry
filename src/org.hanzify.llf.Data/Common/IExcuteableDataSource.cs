@@ -7,9 +7,9 @@ namespace org.hanzify.llf.Data.Common
 {
     public interface IExcuteableDataSource
     {
-        IEnumerable ExecuteSelect(DataSourceSelectArguments arguments);
-        int ExecuteDelete(IDictionary keys, IDictionary values);
-        int ExecuteInsert(IDictionary values);
-        int ExecuteUpdate(IDictionary keys, IDictionary values, IDictionary oldValues);
+        IEnumerable Select(DataSourceSelectArguments arguments);
+        int Delete(IDictionary keys, IDictionary values);
+        int Insert(IDictionary values);
+        int Update(IDictionary keys, IDictionary values, IDictionary oldValues);
     }
 }

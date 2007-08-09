@@ -11,6 +11,7 @@ using System.Security.Permissions;
 using org.hanzify.llf.Data.Common;
 using org.hanzify.llf.Data.Builder;
 using org.hanzify.llf.Data.SqlEntry;
+using org.hanzify.llf.Data.QuerySyntax;
 
 namespace org.hanzify.llf.Data
 {
@@ -58,6 +59,15 @@ namespace org.hanzify.llf.Data
             }
         }
 
+        private bool _IsStatic = false;
+
+        [Browsable(true), EditorBrowsable]
+        public bool IsStatic
+        {
+            get { return _IsStatic; }
+            set { _IsStatic = value; }
+        }
+
         private WhereCondition _Condition;
 
         public WhereCondition Condition
@@ -66,41 +76,67 @@ namespace org.hanzify.llf.Data
             set { _Condition = value; }
         }
 
-        public virtual IEnumerable ExecuteSelect(DataSourceSelectArguments arguments)
+        public DbEntryDataSource()
+        {
+            DefaultOrderBy = "";
+        }
+
+        IEnumerable IExcuteableDataSource.Select(DataSourceSelectArguments arguments)
         {
             arguments.AddSupportedCapabilities(DataSourceCapabilities.Sort);
             arguments.AddSupportedCapabilities(DataSourceCapabilities.Page);
             arguments.AddSupportedCapabilities(DataSourceCapabilities.RetrieveTotalRowCount);
+            return ExecuteSelect(arguments);
+        }
+
+        public virtual List<T> ExecuteSelect(DataSourceSelectArguments arguments)
+        {
             string se = arguments.SortExpression;
             if (!string.IsNullOrEmpty(se))
             {
                 DefaultOrderBy = se;
             }
-            IPagedSelector ps = DbEntry
+            IGetPagedSelector igp = DbEntry
                 .From<T>()
                 .Where(_Condition)
                 .OrderBy(m_OrderBy)
-                .PageSize(arguments.MaximumRows)
-                .GetPagedSelector();
+                .PageSize(arguments.MaximumRows);
+            IPagedSelector ps = _IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
             arguments.TotalRowCount = (int)ps.GetResultCount();
-            return ps.GetCurrentPage((int)Math.Truncate((double)(arguments.StartRowIndex / arguments.MaximumRows)));
+            int PageIndex = (int)(arguments.StartRowIndex / arguments.MaximumRows);
+            return (List<T>)ps.GetCurrentPage(PageIndex);
         }
 
-        public virtual int ExecuteDelete(IDictionary keys, IDictionary values)
+        int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
         {
-            return DbEntry.Context.Delete<T>(CK.K[KeyName] == values[KeyName]);
+            return ExecuteDelete(values[KeyName]);
         }
 
-        public virtual int ExecuteInsert(IDictionary values)
+        public virtual int ExecuteDelete(object Key)
         {
-            T o = CreateObject(values);
-            DbEntry.Save(o);
+            return DbEntry.Context.Delete<T>(CK.K[KeyName] == Key);
+        }
+
+        int IExcuteableDataSource.Insert(IDictionary values)
+        {
+            T obj = CreateObject(values);
+            return ExecuteInsert(obj);
+        }
+
+        public virtual int ExecuteInsert(object obj)
+        {
+            DbEntry.Save(obj);
             return 1;
         }
 
-        public virtual int ExecuteUpdate(IDictionary keys, IDictionary values, IDictionary oldValues)
+        int IExcuteableDataSource.Update(IDictionary keys, IDictionary values, IDictionary oldValues)
         {
             T obj = CreateObject(values);
+            return ExecuteUpdate(obj);
+        }
+
+        public virtual int ExecuteUpdate(object obj)
+        {
             DbEntry.Save(obj);
             return 1;
         }
@@ -125,7 +161,7 @@ namespace org.hanzify.llf.Data
                 {
                     if (values.Contains(name))
                     {
-                        string ms = (string)values[name];
+                        string ms = values[name].ToString();
                         object mo = Convert.ChangeType(ms, mh.FieldType);
                         if (!(mh.GetValue(obj).Equals(mo)))
                         {
@@ -153,28 +189,28 @@ namespace org.hanzify.llf.Data
 
             protected override IEnumerable ExecuteSelect(DataSourceSelectArguments arguments)
             {
-                return owner.ExecuteSelect(arguments);
+                return owner.Select(arguments);
             }
 
             public override bool CanDelete { get { return true; } }
 
             protected override int ExecuteDelete(IDictionary keys, IDictionary values)
             {
-                return owner.ExecuteDelete(keys, values);
+                return owner.Delete(keys, values);
             }
 
             public override bool CanInsert { get { return true; } }
 
             protected override int ExecuteInsert(IDictionary values)
             {
-                return owner.ExecuteInsert(values);
+                return owner.Insert(values);
             }
 
             public override bool CanUpdate { get { return false; } }
 
             protected override int ExecuteUpdate(IDictionary keys, IDictionary values, IDictionary oldValues)
             {
-                return owner.ExecuteUpdate(keys, values, oldValues);
+                return owner.Update(keys, values, oldValues);
             }
         }
     }
