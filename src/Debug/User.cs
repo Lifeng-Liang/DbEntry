@@ -14,7 +14,8 @@ namespace test
     {
         [MaxLength(20)]
         public abstract string Name { get; set; }
-        public abstract int Age { get; set; }
+        [DbColumn("Age")]
+        public abstract int theAge { get; set; }
         public abstract DateTime Birthday { get; set; }
         public abstract bool IsMale { get; set; }
 
@@ -23,7 +24,7 @@ namespace test
         public User(string Name, int Age, DateTime Birthday, bool IsMale)
         {
             this.Name = Name;
-            this.Age = Age;
+            this.theAge = Age;
             this.Birthday = Birthday;
             this.IsMale = IsMale;
         }

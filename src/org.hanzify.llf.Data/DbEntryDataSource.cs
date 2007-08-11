@@ -18,7 +18,8 @@ namespace org.hanzify.llf.Data
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
     public class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource
     {
-        protected static readonly string KeyName = DbObjectHelper.GetObjectInfo(typeof(T)).KeyFields[0].Name;
+        private static readonly ObjectInfo ObjInfo = DbObjectHelper.GetObjectInfo(typeof(T));
+        protected static readonly string KeyName = ObjInfo.KeyFields[0].Name;
         public event EventHandler DataSourceChanged;
 
         protected void RaiseDataSourceChanged()
@@ -95,6 +96,7 @@ namespace org.hanzify.llf.Data
             if (!string.IsNullOrEmpty(se))
             {
                 DefaultOrderBy = se;
+                ResetOrderBy();
             }
             IGetPagedSelector igp = DbEntry
                 .From<T>()
@@ -105,6 +107,29 @@ namespace org.hanzify.llf.Data
             arguments.TotalRowCount = (int)ps.GetResultCount();
             int PageIndex = (int)(arguments.StartRowIndex / arguments.MaximumRows);
             return (List<T>)ps.GetCurrentPage(PageIndex);
+        }
+
+        protected void ResetOrderBy()
+        {
+            Dictionary<string, string> odic = new Dictionary<string, string>();
+            foreach (MemberHandler m in ObjInfo.SimpleFields)
+            {
+                if (m.MemberInfo.IsProperty)
+                {
+                    odic[m.MemberInfo.Name] = m.Name;
+                }
+                else
+                {
+                    odic[m.Name] = m.Name;
+                }
+            }
+            List<ASC> las = new List<ASC>();
+            foreach (ASC a in m_OrderBy.OrderItems)
+            {
+                string s = odic[a.Key];
+                las.Add((a is DESC) ? new DESC(s) : new ASC(s));
+            }
+            m_OrderBy = new OrderBy(las.ToArray());
         }
 
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
