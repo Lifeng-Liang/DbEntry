@@ -87,25 +87,28 @@ namespace org.hanzify.llf.Data
             arguments.AddSupportedCapabilities(DataSourceCapabilities.Sort);
             arguments.AddSupportedCapabilities(DataSourceCapabilities.Page);
             arguments.AddSupportedCapabilities(DataSourceCapabilities.RetrieveTotalRowCount);
-            return ExecuteSelect(arguments);
-        }
-
-        public virtual List<T> ExecuteSelect(DataSourceSelectArguments arguments)
-        {
             string se = arguments.SortExpression;
             if (!string.IsNullOrEmpty(se))
             {
                 DefaultOrderBy = se;
                 ResetOrderBy();
             }
+            int PageIndex = (int)(arguments.StartRowIndex / arguments.MaximumRows);
+            int TotalRowCount = arguments.TotalRowCount;
+            List<T> ret = ExecuteSelect(_Condition, m_OrderBy, arguments.MaximumRows, PageIndex, ref TotalRowCount);
+            arguments.TotalRowCount = TotalRowCount;
+            return ret;
+        }
+
+        public virtual List<T> ExecuteSelect(WhereCondition condition, OrderBy order, int MaximumRows, int PageIndex, ref int TotalRowCount)
+        {
             IGetPagedSelector igp = DbEntry
                 .From<T>()
-                .Where(_Condition)
-                .OrderBy(m_OrderBy)
-                .PageSize(arguments.MaximumRows);
+                .Where(condition)
+                .OrderBy(order)
+                .PageSize(MaximumRows);
             IPagedSelector ps = _IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
-            arguments.TotalRowCount = (int)ps.GetResultCount();
-            int PageIndex = (int)(arguments.StartRowIndex / arguments.MaximumRows);
+            TotalRowCount = (int)ps.GetResultCount();
             return (List<T>)ps.GetCurrentPage(PageIndex);
         }
 

@@ -135,6 +135,16 @@ namespace org.hanzify.llf.Data
 
         #region KeyKey
 
+        public static KeyKeyClause operator >(CK Key, CK Key2)
+        {
+            return Key.Gt(Key2);
+        }
+
+        public static KeyKeyClause operator <(CK Key, CK Key2)
+        {
+            return Key.Lt(Key2);
+        }
+
         public KeyKeyClause Gt(CK Key2)
         {
             return new KeyKeyClause(this._ColumnName, Key2._ColumnName, CompareOpration.GreatThan);
@@ -145,6 +155,16 @@ namespace org.hanzify.llf.Data
             return new KeyKeyClause(this._ColumnName, Key2._ColumnName, CompareOpration.LessThan);
         }
 
+        public static KeyKeyClause operator >=(CK Key, CK Key2)
+        {
+            return Key.Ge(Key2);
+        }
+
+        public static KeyKeyClause operator <=(CK Key, CK Key2)
+        {
+            return Key.Le(Key2);
+        }
+
         public KeyKeyClause Ge(CK Key2)
         {
             return new KeyKeyClause(this._ColumnName, Key2._ColumnName, CompareOpration.GreatOrEqual);
@@ -153,6 +173,16 @@ namespace org.hanzify.llf.Data
         public KeyKeyClause Le(CK Key2)
         {
             return new KeyKeyClause(this._ColumnName, Key2._ColumnName, CompareOpration.LessOrEqual);
+        }
+
+        public static KeyKeyClause operator ==(CK Key, CK Key2)
+        {
+            return Key.Eq(Key2);
+        }
+
+        public static KeyKeyClause operator !=(CK Key, CK Key2)
+        {
+            return Key.Ne(Key2);
         }
 
         public KeyKeyClause Eq(CK Key2)

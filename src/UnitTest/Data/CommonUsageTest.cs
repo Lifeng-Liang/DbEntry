@@ -12,6 +12,7 @@ using org.hanzify.llf.Data;
 using org.hanzify.llf.Data.Common;
 using org.hanzify.llf.Data.Definition;
 using org.hanzify.llf.Data.SqlEntry;
+using org.hanzify.llf.MockSql.Recorder;
 
 using org.hanzify.llf.UnitTest.Data.Objects;
 
@@ -38,6 +39,7 @@ namespace org.hanzify.llf.UnitTest.Data
         public void SetUp()
         {
             InitHelper.Init();
+            StaticRecorder.ClearMessages();
         }
 
         [TearDown]
@@ -232,6 +234,37 @@ namespace org.hanzify.llf.UnitTest.Data
             ImpPCs c = new ImpPCs();
             c.Name = "HP";
             Assert.AreEqual("{ Id = 0, Name = HP, Person_Id = <NULL> }", c.ToString());
+        }
+
+        [Test]
+        public void TestColumnCompColumn()
+        {
+            //WhereCondition c = CK.K["Age"] > CK.K["Count"];
+            WhereCondition c = CK.K["Age"].Gt(CK.K["Count"]);
+            DataParamterCollection dpc = new DataParamterCollection();
+            string s = c.ToSqlText(ref dpc, DbEntry.Context.Dialect);
+            Assert.AreEqual(0, dpc.Count);
+            Assert.AreEqual("[Age] > [Count]", s);
+        }
+
+        [Test]
+        public void TestColumnCompColumn2()
+        {
+            WhereCondition c = CK.K["Age"] > CK.K["Count"];
+            DataParamterCollection dpc = new DataParamterCollection();
+            string s = c.ToSqlText(ref dpc, DbEntry.Context.Dialect);
+            Assert.AreEqual(0, dpc.Count);
+            Assert.AreEqual("[Age] > [Count]", s);
+        }
+
+        [Test]
+        public void TestColumnCompColumn3()
+        {
+            WhereCondition c = CK.K["Age"] > CK.K["Count"] && CK.K["Name"] == CK.K["theName"] || CK.K["Age"] <= CK.K["Num"];
+            DataParamterCollection dpc = new DataParamterCollection();
+            string s = c.ToSqlText(ref dpc, DbEntry.Context.Dialect);
+            Assert.AreEqual(0, dpc.Count);
+            Assert.AreEqual("(([Age] > [Count]) And ([Name] = [theName])) Or ([Age] <= [Num])", s);
         }
     }
 }
