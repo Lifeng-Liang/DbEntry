@@ -44,3 +44,28 @@ INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (1, 1);
 INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (2, 2);
 INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (2, 3);
 INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (3, 1);
+
+--------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE [File] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, BelongsTo_Id INT NOT NULL);
+
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (1, 'Root', 0);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (2, 'Windows', 1);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (3, 'Program Files', 1);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (4, 'Tools', 1);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (5, 'Config.sys', 1);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (6, 'Command.com', 1);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (7, 'regedit.exe', 2);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (8, 'notepad.exe', 2);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (9, 'System32', 2);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (10, 'regsvr32.exe', 9);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (11, 'Office', 3);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (12, 'Word.exe', 11);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (13, 'Outlook.exe', 11);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (14, 'Excel.exe', 11);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (15, 'LocPlus', 4);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (16, 'cConv', 4);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (17, 'LocPlus.exe', 15);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (18, 'LocPlus.ini', 15);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (19, 'cConv.exe', 16);
+INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (20, 'cConv.ini', 16);
