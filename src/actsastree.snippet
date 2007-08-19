@@ -1,0 +1,33 @@
+﻿<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>
+        Create ActsAsTree
+      </Title>
+      <Shortcut>actsastree</Shortcut>
+      <Author>Lifeng Liang</Author>
+      <Description>It will help us to create ActsAsTree properties</Description>
+      <HelpUrl>http://www.codeplex.com/dbentry</HelpUrl>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ObjectModel</ID>
+          <ToolTip>Object Model</ToolTip>
+          <Default>User</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[public abstract class $ObjectModel$ : DbObjectModel<$ObjectModel$>
+{
+    [HasMany, OrderBy("Id")]
+    public abstract IList<$ObjectModel$> Children { get; set; }
+
+    [BelongsTo, DbColumn("BelongsTo_Id")]
+    public abstract $ObjectModel$ Parent { get; set; }$end$
+}]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
