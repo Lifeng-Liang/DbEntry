@@ -5,7 +5,7 @@ using System.Text;
 
 namespace org.hanzify.llf.Data.Definition
 {
-    public abstract class ActsAsTree<T> : DbObjectModel<T>
+    public abstract class DbObjectModelAsTree<T> : DbObjectModel<T>
     {
         [HasMany, OrderBy("Id")]
         public abstract IList<T> Children { get; set; }

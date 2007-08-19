@@ -21,7 +21,7 @@ namespace org.hanzify.llf.UnitTest.Data
     }
 
     [DbTable("File")]
-    public abstract class TheFile : ActsAsTree<TheFile>
+    public abstract class TheFile : DbObjectModelAsTree<TheFile>
     {
         public abstract string Name { get; set; }
     }

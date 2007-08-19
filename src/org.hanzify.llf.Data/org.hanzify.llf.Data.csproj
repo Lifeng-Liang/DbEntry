@@ -94,7 +94,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\VBHelper.cs" />
     <Compile Include="DbContext.cs" />
     <Compile Include="DbEntryDataSource.cs" />
-    <Compile Include="Definition\ActsAsTree.cs" />
+    <Compile Include="Definition\DbObjectModelAsTree.cs" />
     <Compile Include="Definition\BelongsToAttribute.cs" />
     <Compile Include="Definition\DbObjectBase.cs" />
     <Compile Include="Definition\DbObjectModel.cs" />
