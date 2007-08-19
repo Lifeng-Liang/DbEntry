@@ -224,7 +224,7 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
     {
         public abstract string Name { get; set; }
 
-        [HasManyAndBelongsTo, OrderBy("Id")]
+        [HasAndBelongsToMany, OrderBy("Id")]
         public abstract IList<DReader> readers { get; set; }
     }
 
@@ -233,7 +233,7 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
     {
         public abstract string Name { get; set; }
 
-        [HasManyAndBelongsTo, OrderBy("Id")]
+        [HasAndBelongsToMany, OrderBy("Id")]
         public abstract IList<DArticle> arts { get; set; }
     }
 

@@ -50,7 +50,7 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Reader_Id")]
-        public HasManyAndBelongsTo<Reader> Readers = new HasManyAndBelongsTo<Reader>(new OrderBy("Id"));
+        public HasAndBelongsToMany<Reader> Readers = new HasAndBelongsToMany<Reader>(new OrderBy("Id"));
 
         public Article() { }
         public Article(string Name) { this.Name = Name; }
@@ -61,7 +61,7 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Article_Id")]
-        public HasManyAndBelongsTo<Article> Articles = new HasManyAndBelongsTo<Article>(new OrderBy("Id"));
+        public HasAndBelongsToMany<Article> Articles = new HasAndBelongsToMany<Article>(new OrderBy("Id"));
 
         public Reader() { }
         public Reader(string Name) { this.Name = Name; }

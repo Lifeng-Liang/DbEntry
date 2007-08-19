@@ -14,24 +14,24 @@ using org.hanzify.llf.Data.Driver;
 
 namespace org.hanzify.llf.Data.Definition
 {
-    public class HasManyAndBelongsTo<T> : LazyLoadListBase<T>, ISavedNewRelations
+    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, ISavedNewRelations
     {
         private OrderBy Order;
 
         private List<long> _SavedNewRelations = new List<long>();
         List<long> ISavedNewRelations.SavedNewRelations { get { return _SavedNewRelations; } }
 
-        public HasManyAndBelongsTo()
+        public HasAndBelongsToMany()
         {
             this.Order = new OrderBy();
         }
 
-        public HasManyAndBelongsTo(OrderBy Order)
+        public HasAndBelongsToMany(OrderBy Order)
         {
             this.Order = Order;
         }
 
-        public HasManyAndBelongsTo(string OrderByString)
+        public HasAndBelongsToMany(string OrderByString)
         {
             this.Order = OrderBy.Parse(OrderByString);
         }

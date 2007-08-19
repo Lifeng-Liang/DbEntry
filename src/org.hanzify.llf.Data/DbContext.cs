@@ -54,7 +54,7 @@ namespace org.hanzify.llf.Data
         {
             foreach (MemberHandler m in ii.Fields)
             {
-                if (m.IsHasManyAndBelongsTo)
+                if (m.IsHasAndBelongsToMany)
                 {
                     return m.FieldType.GetGenericArguments()[0];
                 }
@@ -307,12 +307,12 @@ namespace org.hanzify.llf.Data
                         {
                             ILazyLoading ho = (ILazyLoading)f.GetValue(obj);
                             ho.IsLoaded = true;
-                            if (f.IsHasOne || f.IsHasMany || (f.IsHasManyAndBelongsTo && ParentFirst))
+                            if (f.IsHasOne || f.IsHasMany || (f.IsHasAndBelongsToMany && ParentFirst))
                             {
                                 object llo = ho.Read();
                                 CommonHelper.TryEnumerate(llo, e2);
                             }
-                            if (f.IsHasManyAndBelongsTo)
+                            if (f.IsHasAndBelongsToMany)
                             {
                                 ISavedNewRelations so = ho as ISavedNewRelations;
                                 foreach (long n in so.SavedNewRelations)
@@ -541,7 +541,7 @@ namespace org.hanzify.llf.Data
             CreateTableStatementBuilder cts = new CreateTableStatementBuilder(tname);
             foreach (MemberHandler fh in ii.Fields)
             {
-                if (!fh.IsHasMany && !fh.IsHasOne && !fh.IsHasManyAndBelongsTo)
+                if (!fh.IsHasMany && !fh.IsHasOne && !fh.IsHasAndBelongsToMany)
                 {
                     ColumnInfo ci = new ColumnInfo(fh);
                     cts.Columns.Add(ci);

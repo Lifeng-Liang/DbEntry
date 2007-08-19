@@ -144,7 +144,7 @@ namespace org.hanzify.llf.UnitTest.Data
         }
 
         [Test]
-        public void TestHasManyAndBelongsTo()
+        public void TestHasAndBelongsToMany()
         {
             DArticle a = DArticle.FindById(1);
             Assert.AreEqual("The lovely bones", a.Name);

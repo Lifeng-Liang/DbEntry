@@ -85,7 +85,7 @@ namespace org.hanzify.llf.Data.Common
         public bool IsHasOne;
         public bool IsBelongsTo;
         public bool IsHasMany;
-        public bool IsHasManyAndBelongsTo;
+        public bool IsHasAndBelongsToMany;
         public bool IsLazyLoad;
         public string OrderByString = null;
 

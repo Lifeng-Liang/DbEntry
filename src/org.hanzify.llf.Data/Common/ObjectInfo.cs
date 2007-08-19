@@ -45,12 +45,12 @@ namespace org.hanzify.llf.Data.Common
 
             foreach (MemberHandler f in Fields)
             {
-                if (f.IsHasOne || f.IsHasMany || f.IsHasManyAndBelongsTo)
+                if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany)
                 {
                     HasAssociate = true;
                     IsAssociateObject = true;
                 }
-                if (f.IsBelongsTo || f.IsHasManyAndBelongsTo) // TODO: no problem ?
+                if (f.IsBelongsTo || f.IsHasAndBelongsToMany) // TODO: no problem ?
                 {
                     IsAssociateObject = true;
                     if (BelongsToField != null)

@@ -20,7 +20,7 @@ namespace org.hanzify.llf.Data.Definition
             {
                 foreach (MemberHandler f in oi.Fields)
                 {
-                    if (f.IsHasOne || f.IsBelongsTo || f.IsHasMany || f.IsHasManyAndBelongsTo)
+                    if (f.IsHasOne || f.IsBelongsTo || f.IsHasMany || f.IsHasAndBelongsToMany)
                     {
                         object obj = f.GetValue(this);
                         if (obj == null)
@@ -81,7 +81,7 @@ namespace org.hanzify.llf.Data.Definition
             StringBuilder sb = new StringBuilder("{ ");
             foreach (MemberHandler m in oi.Fields)
             {
-                if (!(m.IsHasMany || m.IsHasManyAndBelongsTo || m.IsHasOne))
+                if (!(m.IsHasMany || m.IsHasAndBelongsToMany || m.IsHasOne))
                 {
                     sb.Append(m.Name).Append(" = ");
                     object o = m.GetValue(this);

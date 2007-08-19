@@ -63,7 +63,7 @@ namespace org.hanzify.llf.Data.Common
             }
             foreach (MemberHandler f in ii.RelationFields)
             {
-                if (f.IsHasOne || f.IsHasMany || f.IsHasManyAndBelongsTo)
+                if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany)
                 {
                     ILazyLoading ho = (ILazyLoading)f.GetValue(di);
                     ObjectInfo oi = m_GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
@@ -78,7 +78,7 @@ namespace org.hanzify.llf.Data.Common
                         // ho.Init(driver, "__");
                     }
                 }
-                else if (f.IsBelongsTo) // TODO: IsHasManyAndBelongsTo
+                else if (f.IsBelongsTo) // TODO: IsHasAndBelongsToMany
                 {
                     IBelongsTo ho = (IBelongsTo)f.GetValue(di);
                     ho.ForeignKey = callback(f);
@@ -174,7 +174,7 @@ namespace org.hanzify.llf.Data.Common
             {
                 foreach (MemberHandler fi in ii.Fields)
                 {
-                    if ((!fi.IsSystemGeneration || IncludeKey) && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasManyAndBelongsTo)
+                    if ((!fi.IsSystemGeneration || IncludeKey) && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany)
                     {
                         AddKeyValue(isv, fi, obj);
                     }
@@ -310,10 +310,10 @@ namespace org.hanzify.llf.Data.Common
                         fh.Name = n + "_Id";
                     }
                 }
-                Type t2 = typeof(HasManyAndBelongsTo<object>).GetGenericTypeDefinition();
+                Type t2 = typeof(HasAndBelongsToMany<object>).GetGenericTypeDefinition();
                 if (fi.MemberType.GetGenericTypeDefinition() == t2)
                 {
-                    fh.IsHasManyAndBelongsTo = true;
+                    fh.IsHasAndBelongsToMany = true;
                     if (fn == null)
                     {
                         Type ot1 = fi.MemberType.GetGenericArguments()[0];
@@ -321,7 +321,7 @@ namespace org.hanzify.llf.Data.Common
                         fh.Name = n1 + "_Id";
                     }
                 }
-                if (fh.IsBelongsTo || fh.IsHasMany || fh.IsHasOne || fh.IsHasManyAndBelongsTo)
+                if (fh.IsBelongsTo || fh.IsHasMany || fh.IsHasOne || fh.IsHasAndBelongsToMany)
                 {
                     fh.IsLazyLoad = true;
                 }
@@ -359,13 +359,13 @@ namespace org.hanzify.llf.Data.Common
             OrderByAttribute os = GetAttribute<OrderByAttribute>(fi);
             if (os != null)
             {
-                if (fh.IsHasMany || fh.IsHasOne || fh.IsHasManyAndBelongsTo)
+                if (fh.IsHasMany || fh.IsHasOne || fh.IsHasAndBelongsToMany)
                 {
                     fh.OrderByString = os.OrderBy;
                 }
                 else
                 {
-                    throw new DbEntryException("Only HasMany HasOne HasManyAndBelongsTo allows OrderBy attribute!");
+                    throw new DbEntryException("Only HasMany HasOne HasAndBelongsToMany allows OrderBy attribute!");
                 }
             }
             return fh;
@@ -374,7 +374,7 @@ namespace org.hanzify.llf.Data.Common
         private static void ProcessMember(MemberAdapter m, List<MemberHandler> ret, List<MemberHandler> kfs)
         {
             if (!HasAtributes(m, typeof(ExcludeAttribute), typeof(HasOneAttribute),
-                typeof(HasManyAttribute), typeof(HasManyAndBelongsToAttribute), typeof(BelongsToAttribute)))
+                typeof(HasManyAttribute), typeof(HasAndBelongsToManyAttribute), typeof(BelongsToAttribute)))
             {
                 MemberHandler fh = GetMemberHandler(m);
                 if (fh.IsKey)
@@ -444,7 +444,7 @@ namespace org.hanzify.llf.Data.Common
                 List<MemberHandler> sifs = new List<MemberHandler>();
                 foreach (MemberHandler mh in ret)
                 {
-                    if (mh.IsHasOne || mh.IsHasMany || mh.IsHasManyAndBelongsTo || mh.IsBelongsTo)
+                    if (mh.IsHasOne || mh.IsHasMany || mh.IsHasAndBelongsToMany || mh.IsBelongsTo)
                     {
                         rlfs.Add(mh);
                     }
@@ -486,7 +486,7 @@ namespace org.hanzify.llf.Data.Common
         {
             foreach (MemberHandler f in Fields)
             {
-                if (f.IsHasManyAndBelongsTo)
+                if (f.IsHasAndBelongsToMany)
                 {
                     Type ft = f.FieldType.GetGenericArguments()[0];
                     string SlaveTableName = GetObjectFromClause(ft).GetMainTableName();

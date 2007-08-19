@@ -17,7 +17,7 @@ using org.hanzify.llf.UnitTest.Data.Objects;
 namespace org.hanzify.llf.UnitTest.Data
 {
     [TestFixture]
-    public class HasManyAndBelongsToAssociateTest
+    public class HasAndBelongsToManyAssociateTest
     {
         #region Init
 

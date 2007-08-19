@@ -76,7 +76,7 @@ namespace org.hanzify.llf.Data.Common
             HasOne,
             HasMany,
             BelongsTo,
-            HasManyAndBelongsTo
+            HasAndBelongsToMany
         }
 
         public FieldType GetFieldType(PropertyInfo pi)
@@ -95,9 +95,9 @@ namespace org.hanzify.llf.Data.Common
                 {
                     return FieldType.HasMany;
                 }
-                if (a is HasManyAndBelongsToAttribute)
+                if (a is HasAndBelongsToManyAttribute)
                 {
-                    return FieldType.HasManyAndBelongsTo;
+                    return FieldType.HasAndBelongsToMany;
                 }
 
             }
@@ -139,8 +139,8 @@ namespace org.hanzify.llf.Data.Common
                     t = typeof(BelongsTo<>);
                     t = t.MakeGenericType(PropertyType);
                     break;
-                case FieldType.HasManyAndBelongsTo:
-                    t = typeof(HasManyAndBelongsTo<>);
+                case FieldType.HasAndBelongsToMany:
+                    t = typeof(HasAndBelongsToMany<>);
                     t = t.MakeGenericType(PropertyType.GetGenericArguments()[0]);
                     break;
                 default:

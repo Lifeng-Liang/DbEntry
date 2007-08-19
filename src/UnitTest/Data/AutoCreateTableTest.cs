@@ -58,7 +58,7 @@ namespace org.hanzify.llf.UnitTest.Data
     {
         public string Name;
         [DbColumn("cmmArticle_id")]
-        public HasManyAndBelongsTo<cmmArticle> arts = new HasManyAndBelongsTo<cmmArticle>(new OrderBy("Id"));
+        public HasAndBelongsToMany<cmmArticle> arts = new HasAndBelongsToMany<cmmArticle>(new OrderBy("Id"));
         public cmmReader() { }
         public cmmReader(string Name) { this.Name = Name; }
     }
@@ -67,7 +67,7 @@ namespace org.hanzify.llf.UnitTest.Data
     {
         public string Title;
         [DbColumn("cmmReader_id")]
-        public HasManyAndBelongsTo<cmmReader> rads = new HasManyAndBelongsTo<cmmReader>(new OrderBy("Id"));
+        public HasAndBelongsToMany<cmmReader> rads = new HasAndBelongsToMany<cmmReader>(new OrderBy("Id"));
         public cmmArticle() { }
         public cmmArticle(string Title) { this.Title = Title; }
     }
@@ -98,14 +98,15 @@ namespace org.hanzify.llf.UnitTest.Data
         {
             List<string> li = DbEntry.Context.GetTableNames();
             li.Sort();
-            Assert.AreEqual(7, li.Count);
+            Assert.AreEqual(8, li.Count);
             Assert.AreEqual("Article", li[0]);
             Assert.AreEqual("Article_Reader", li[1]);
             Assert.AreEqual("Books", li[2]);
             Assert.AreEqual("Categories", li[3]);
-            Assert.AreEqual("PCs", li[4]);
-            Assert.AreEqual("People", li[5]);
-            Assert.AreEqual("Reader", li[6]);
+            Assert.AreEqual("File", li[4]);
+            Assert.AreEqual("PCs", li[5]);
+            Assert.AreEqual("People", li[6]);
+            Assert.AreEqual("Reader", li[7]);
         }
 
         [Test]
@@ -154,7 +155,7 @@ namespace org.hanzify.llf.UnitTest.Data
         }
 
         [Test]
-        public void TestHasManyAndBelongsTo()
+        public void TestHasAndBelongsToMany()
         {
             cmmReader u = new cmmReader("Tom");
             u.arts.Add(new cmmArticle("do"));

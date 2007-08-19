@@ -94,12 +94,13 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\VBHelper.cs" />
     <Compile Include="DbContext.cs" />
     <Compile Include="DbEntryDataSource.cs" />
+    <Compile Include="Definition\ActsAsTree.cs" />
     <Compile Include="Definition\BelongsToAttribute.cs" />
     <Compile Include="Definition\DbObjectBase.cs" />
     <Compile Include="Definition\DbObjectModel.cs" />
     <Compile Include="Definition\DbObjectSmartUpdate.cs" />
-    <Compile Include="Definition\HasManyAndBelongsTo.cs" />
-    <Compile Include="Definition\HasManyAndBelongsToAttribute.cs" />
+    <Compile Include="Definition\HasAndBelongsToMany.cs" />
+    <Compile Include="Definition\HasAndBelongsToManyAttribute.cs" />
     <Compile Include="Definition\HasManyAttribute.cs" />
     <Compile Include="Definition\HasOne.cs" />
     <Compile Include="Definition\HasOneAttribute.cs" />

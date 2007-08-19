@@ -49,7 +49,7 @@
     <Compile Include="Data\CommonUsageTest.cs" />
     <Compile Include="Data\ComplexDynamicObjectTest.cs" />
     <Compile Include="Data\CreateTable\SQLiteTest.cs" />
-    <Compile Include="Data\HasManyAndBelongsToAssociateTest.cs" />
+    <Compile Include="Data\HasAndBelongsToManyAssociateTest.cs" />
     <Compile Include="Data\HasManyAssociateTest.cs" />
     <Compile Include="Data\HasOneAssociateTest.cs" />
     <Compile Include="Data\Inner\CommonTest.cs" />
