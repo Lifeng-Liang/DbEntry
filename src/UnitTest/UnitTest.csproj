@@ -65,6 +65,7 @@
     <Compile Include="Data\SmartUpdateTest.cs" />
     <Compile Include="Data\ValidateHandlerTest.cs" />
     <Compile Include="Data\VBHelperTest.cs" />
+    <Compile Include="DotNetFramework\TextTest.cs" />
     <Compile Include="InitHelper.cs" />
     <Compile Include="Data\Inner\DataTester.cs" />
     <Compile Include="Data\Inner\DateParamterTest.cs" />

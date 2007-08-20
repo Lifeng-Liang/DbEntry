@@ -2,6 +2,8 @@
 #region usings
 
 using System;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Data;
 using System.Collections;
 using System.Collections.Generic;
@@ -102,9 +104,43 @@ namespace org.hanzify.llf.Data
             return list;
         }
 
+        private static readonly Regex reg = new Regex("'.*'|\\?");
+
+        public SqlStatement GetSqlStatement(string SqlStr, params object[] os)
+        {
+            DataParamterCollection dpc = new DataParamterCollection();
+            int start = 0, n = 0;
+            StringBuilder sql = new StringBuilder();
+            string pp = Dialect.ParamterPrefix + "p";
+            foreach (Match m in reg.Matches(SqlStr))
+            {
+                if (m.Length == 1)
+                {
+                    string pn = pp + n;
+                    sql.Append(SqlStr.Substring(start, m.Index - start));
+                    sql.Append(pn);
+                    start = m.Index + 1;
+                    DataParamter dp = new DataParamter(pn, os[n]);
+                    dpc.Add(dp);
+                    n++;
+                }
+            }
+            if (start < SqlStr.Length)
+            {
+                sql.Append(SqlStr.Substring(start));
+            }
+            SqlStatement ret = new SqlStatement(sql.ToString(), dpc);
+            return ret;
+        }
+
         public DbObjectList<T> ExecuteList<T>(string SqlStr)
         {
             return ExecuteList<T>(new SqlStatement(SqlStr));
+        }
+
+        public DbObjectList<T> ExecuteList<T>(string SqlStr, params object[] os)
+        {
+            return ExecuteList<T>(GetSqlStatement(SqlStr, os));
         }
 
         public DbObjectList<T> ExecuteList<T>(SqlStatement Sql)

@@ -266,5 +266,37 @@ namespace org.hanzify.llf.UnitTest.Data
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("(([Age] > [Count]) And ([Name] = [theName])) Or ([Age] <= [Num])", s);
         }
+
+        [Test]
+        public void TestGetSqlStetement()
+        {
+            SqlStatement sql = DbEntry.Context.GetSqlStatement("select * from User where Age > ? And Age < ?", 18, 23);
+            Assert.AreEqual("select * from User where Age > @p0 And Age < @p1", sql.SqlCommandText);
+            Assert.AreEqual("@p0", sql.Paramters[0].Key);
+            Assert.AreEqual(18, sql.Paramters[0].Value);
+            Assert.AreEqual("@p1", sql.Paramters[1].Key);
+            Assert.AreEqual(23, sql.Paramters[1].Value);
+        }
+
+        [Test]
+        public void TestGetSqlStetement2()
+        {
+            SqlStatement sql = DbEntry.Context.GetSqlStatement("Select * from User where Id = ? Name Like '%?%' Age > ? And Age < ? ", 1, 18, 23);
+            Assert.AreEqual("Select * from User where Id = @p0 Name Like '%?%' Age > @p1 And Age < @p2 ", sql.SqlCommandText);
+            Assert.AreEqual("@p0", sql.Paramters[0].Key);
+            Assert.AreEqual(1, sql.Paramters[0].Value);
+            Assert.AreEqual("@p1", sql.Paramters[1].Key);
+            Assert.AreEqual(18, sql.Paramters[1].Value);
+            Assert.AreEqual("@p2", sql.Paramters[2].Key);
+            Assert.AreEqual(23, sql.Paramters[2].Value);
+        }
+
+        [Test]
+        public void TestGetSqlStetementByExecuteList()
+        {
+            List<Person> ls = DbEntry.Context.ExecuteList<Person>("select * from [People] where Id > ? And Id < ?", 1, 3);
+            Assert.AreEqual(1, ls.Count);
+            Assert.AreEqual("Jerry", ls[0].Name);
+        }
     }
 }
