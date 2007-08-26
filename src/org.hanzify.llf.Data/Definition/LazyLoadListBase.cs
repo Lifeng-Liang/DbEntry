@@ -18,12 +18,13 @@ namespace org.hanzify.llf.Data.Definition
     {
         protected string ForeignKeyName;
         protected object owner;
-        protected DbDriver driver;
+        protected DbContext context;
         protected bool m_IsLoaded;
         protected IList<T> InnerList = new DbObjectList<T>();
 
-        public LazyLoadListBase()
+        public LazyLoadListBase(object owner)
         {
+            this.owner = owner;
         }
 
         #region ILazyLoad members
@@ -40,7 +41,7 @@ namespace org.hanzify.llf.Data.Definition
             {
                 ((ILazyLoading)this).Load();
                 m_IsLoaded = true;
-                driver = null;
+                context = null;
             }
             return InnerList;
         }
@@ -57,17 +58,12 @@ namespace org.hanzify.llf.Data.Definition
         {
             m_IsLoaded = true;
             InnerWrite(item);
-            driver = null;
+            context = null;
         }
 
-        void ILazyLoading.SetOwner(object owner, string ColumnName)
+        void ILazyLoading.Init(DbContext context, string ForeignKeyName)
         {
-            this.owner = owner;
-        }
-
-        void ILazyLoading.Init(DbDriver driver, string ForeignKeyName)
-        {
-            this.driver = driver;
+            this.context = context;
             this.ForeignKeyName = ForeignKeyName;
         }
 

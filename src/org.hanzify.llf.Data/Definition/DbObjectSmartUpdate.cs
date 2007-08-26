@@ -24,17 +24,12 @@ namespace org.hanzify.llf.Data.Definition
             m_UpdateColumns = new Dictionary<string, object>();
         }
 
-        protected void m_ColumnUpdated(string ColumnName)
+        protected internal void m_ColumnUpdated(string ColumnName)
         {
             if (m_UpdateColumns != null && !m_InternalInit)
             {
                 m_UpdateColumns[ColumnName] = 1;
             }
-        }
-
-        protected override void m_ValueChanged(string s)
-        {
-            m_ColumnUpdated(s);
         }
     }
 }

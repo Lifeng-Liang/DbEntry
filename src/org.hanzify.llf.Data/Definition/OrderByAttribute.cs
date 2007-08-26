@@ -9,18 +9,8 @@ using System.Text;
 
 namespace org.hanzify.llf.Data.Definition
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
-    public class OrderByAttribute : Attribute
+    public abstract class OrderByAttribute : Attribute
     {
-        public string OrderBy = "";
-
-        public OrderByAttribute()
-        {
-        }
-
-        public OrderByAttribute(string OrderByString)
-        {
-            this.OrderBy = OrderByString;
-        }
+        public string OrderBy;
     }
 }

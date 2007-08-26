@@ -69,3 +69,12 @@ INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (17, 'LocPlus.exe', 15);
 INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (18, 'LocPlus.ini', 15);
 INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (19, 'cConv.exe', 16);
 INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (20, 'cConv.ini', 16);
+
+--------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE [NullTest] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NULL, [MyInt] INT NULL, [MyBool] BOOL NULL);
+
+INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (1, 'tom', null, 1);
+INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (2, null, 1, 0);
+INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (3, null, null, null);
+INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (4, 'tom', 1, 1);

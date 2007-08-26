@@ -1,39 +1,64 @@
 
-#region usings
-
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data.Common;
-
-#endregion
+using org.hanzify.llf.MockSql.Recorder;
 
 namespace org.hanzify.llf.MockSql
 {
     public class RecorderReader : DbDataReader
     {
+        public List<string> CurRowNames
+        {
+            get { return StaticRecorder.CurRowNames; }
+            set { StaticRecorder.CurRowNames = value; }
+        }
+
+        public List<object> CurRow
+        {
+            get { return StaticRecorder.CurRow; }
+            set { StaticRecorder.CurRow = value; }
+        }
+
+        public List<Type> CurRowTypes
+        {
+            get { return StaticRecorder.CurRowTypes; }
+            set { StaticRecorder.CurRowTypes = value; }
+        }
+
+        private bool IsClose;
+
         public override void Close()
         {
+            CurRow = null;
+            CurRowNames = null;
+            CurRowTypes = null;
+            IsClose = true;
         }
 
         public override int Depth
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return 1; }
         }
 
         public override int FieldCount
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get
+            {
+                if (CurRow != null) return CurRow.Count;
+                throw new MockDbException("CurRow is null.");
+            }
         }
 
         public override bool GetBoolean(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (bool)GetValue(ordinal);
         }
 
         public override byte GetByte(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (byte)GetValue(ordinal);
         }
 
         public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
@@ -43,7 +68,7 @@ namespace org.hanzify.llf.MockSql
 
         public override char GetChar(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (char)GetValue(ordinal);
         }
 
         public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
@@ -58,17 +83,17 @@ namespace org.hanzify.llf.MockSql
 
         public override DateTime GetDateTime(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (DateTime)GetValue(ordinal);
         }
 
         public override decimal GetDecimal(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (decimal)GetValue(ordinal);
         }
 
         public override double GetDouble(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (double)GetValue(ordinal);
         }
 
         public override System.Collections.IEnumerator GetEnumerator()
@@ -78,42 +103,49 @@ namespace org.hanzify.llf.MockSql
 
         public override Type GetFieldType(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            if (CurRowTypes != null) return CurRowTypes[ordinal];
+            throw new MockDbException("CurRowTypes is null.");
         }
 
         public override float GetFloat(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (float)GetValue(ordinal);
         }
 
         public override Guid GetGuid(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (Guid)GetValue(ordinal);
         }
 
         public override short GetInt16(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (short)GetValue(ordinal);
         }
 
         public override int GetInt32(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (int)GetValue(ordinal);
         }
 
         public override long GetInt64(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (long)GetValue(ordinal);
         }
 
         public override string GetName(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            if (CurRowNames != null) return CurRowNames[ordinal];
+            throw new MockDbException("CurRowNames is null.");
         }
 
         public override int GetOrdinal(string name)
         {
-            throw new Exception("The method or operation is not implemented.");
+            if (CurRowNames != null)
+                return CurRowNames.FindIndex(delegate(string s)
+                {
+                    return (name == s);
+                });
+            throw new MockDbException("CurRowNames is null.");
         }
 
         public override System.Data.DataTable GetSchemaTable()
@@ -123,12 +155,24 @@ namespace org.hanzify.llf.MockSql
 
         public override string GetString(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (string)GetValue(ordinal);
         }
 
         public override object GetValue(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            if (CurRow != null)
+            {
+                object o = CurRow[ordinal];
+                if (o == null)
+                {
+                    return DBNull.Value;
+                }
+                else
+                {
+                    return o;
+                }
+            }
+            throw new MockDbException("type error.");
         }
 
         public override int GetValues(object[] values)
@@ -138,17 +182,17 @@ namespace org.hanzify.llf.MockSql
 
         public override bool HasRows
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return (CurRow != null); }
         }
 
         public override bool IsClosed
         {
-            get { return true; }
+            get { return IsClose; }
         }
 
         public override bool IsDBNull(int ordinal)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (GetValue(ordinal) == null);
         }
 
         public override bool NextResult()
@@ -156,24 +200,36 @@ namespace org.hanzify.llf.MockSql
             throw new Exception("The method or operation is not implemented.");
         }
 
+        private int index = 0;
+
         public override bool Read()
         {
-            return false;
+            if (index++ == 0)
+            {
+                return (CurRow != null);
+            }
+            else
+            {
+                CurRow = null;
+                CurRowNames = null;
+                CurRowTypes = null;
+                return false;
+            }
         }
 
         public override int RecordsAffected
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return 1; }
         }
 
         public override object this[string name]
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return GetValue(GetOrdinal(name)); }
         }
 
         public override object this[int ordinal]
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return GetValue(ordinal); }
         }
     }
 }

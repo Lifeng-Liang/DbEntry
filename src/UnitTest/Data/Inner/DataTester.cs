@@ -29,7 +29,7 @@ namespace org.hanzify.llf.UnitTest.Data.Inner
             ssb.SetCountColumn("abc");
             s = "Select Count([abc]) As __count__ From [UserTable];\n";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
-            ssb.Values.Add(new KeyValue("zzz", 1));
+            ssb.Keys.Add("zzz");
             s = "Select [zzz],Count([abc]) As __count__ From [UserTable];\n";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
         }
@@ -45,7 +45,7 @@ namespace org.hanzify.llf.UnitTest.Data.Inner
         public void TestSelectSentenceBuilder1a()
         {
             SelectStatementBuilder ssb = new SelectStatementBuilder("UserTable", null, new Range(1, 10));
-            ssb.Values.Add(new KeyValue("a", 0));
+            ssb.Keys.Add("a");
             string s = "Select Top 10 [a] From [UserTable];\n<Text><60>()";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).ToString());
         }
@@ -54,7 +54,7 @@ namespace org.hanzify.llf.UnitTest.Data.Inner
 		public void TestSelectSentenceBuilder2()
 		{
             SelectStatementBuilder ssb = new SelectStatementBuilder("UserTable", null, new Range(1, 10));
-            ssb.Values.Add(new KeyValue("a", 0));
+            ssb.Keys.Add("a");
             ssb.Where.Conditions = new OrClause("ID", 5, 3, 2);
 			string s = "Select Top 10 [a] From [UserTable] Where ([ID] = @ID_0) Or ([ID] = @ID_1) Or ([ID] = @ID_2);\n<Text><60>(@ID_0=5:Int32,@ID_1=3:Int32,@ID_2=2:Int32)";
 			TesterHelper.AssertSqlSentenceEqual(s, ssb.ToSqlStatement(dd).ToString());
@@ -64,7 +64,7 @@ namespace org.hanzify.llf.UnitTest.Data.Inner
 		public void TestSelectSentenceBuilder3()
 		{
             SelectStatementBuilder ssb = new SelectStatementBuilder("UserTable", null, new Range(1, 10));
-            ssb.Values.Add(new KeyValue("a", 0));
+            ssb.Keys.Add("a");
             ssb.Where.Conditions = new OrClause("ID", 5, 3, 2);
 			ssb.Where.Conditions = new AndClause(ssb.Where.Conditions, new KeyValueClause("UserName", "l'lf"));
 			string s = "Select Top 10 [a] From [UserTable] Where (([ID] = @ID_0) Or ([ID] = @ID_1) Or ([ID] = @ID_2)) And ([UserName] = @UserName_3);\n<Text><60>(@ID_0=5:Int32,@ID_1=3:Int32,@ID_2=2:Int32,@UserName_3=l'lf:String)";

@@ -13,4 +13,4 @@ using System.Runtime.CompilerServices;
 [assembly: CLSCompliant(true)]
 
 
-[assembly: AssemblyVersion("0.31.*")]
+[assembly: AssemblyVersion("0.32.*")]

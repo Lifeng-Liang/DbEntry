@@ -30,8 +30,8 @@ namespace org.hanzify.llf.Data.Dialect
             TypeNames[DataType.Date]    = "datetime";
             TypeNames[DataType.Boolean] = "bool";
 
-            TypeNames[DataType.Byte]    = "byte";
-            TypeNames[DataType.SByte]   = "sbyte";
+            TypeNames[DataType.Byte]    = "tinyint";
+            TypeNames[DataType.SByte]   = "";
             TypeNames[DataType.Decimal] = "decimal";
             TypeNames[DataType.Double]  = "float";
             TypeNames[DataType.Single]  = "real";
@@ -40,7 +40,7 @@ namespace org.hanzify.llf.Data.Dialect
             TypeNames[DataType.UInt32]  = "";
             TypeNames[DataType.Int64]   = "bigint";
             TypeNames[DataType.UInt64]  = "";
-            TypeNames[DataType.Int16]   = "short";
+            TypeNames[DataType.Int16]   = "smallint";
             TypeNames[DataType.UInt16]  = "";
 
             TypeNames[DataType.Guid]    = "uniqueidentifier";
@@ -134,7 +134,7 @@ namespace org.hanzify.llf.Data.Dialect
                 ssb.From.ToSqlText(ref dpc, this),
                 ssb.Where.ToSqlText(ref dpc, this),
                 ssb.IsGroupBy ? " Group By " + this.QuoteForColumnName(ssb.CountCol) : "",
-                (ssb.Order == null || ssb.Values.Count == 0) ? "" : ssb.Order.ToSqlText(ref dpc, this)
+                (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(ref dpc, this)
                 );
             return new TimeConsumingSqlStatement(SqlString, dpc);
         }

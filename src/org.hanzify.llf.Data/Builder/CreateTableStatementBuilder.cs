@@ -2,6 +2,7 @@
 #region usings
 
 using System;
+using System.Data;
 using System.Text;
 using System.Collections.Generic;
 using org.hanzify.llf.Data.Dialect;
@@ -37,7 +38,7 @@ namespace org.hanzify.llf.Data.Builder
                 sql.Append("\n\t");
                 sql.Append(dd.QuoteForColumnName(ci.Key));
                 sql.Append(" ");
-                if (ci.IsSystemGen && dd.IdentityTypeString != null)
+                if (ci.IsDbGenerate && dd.IdentityTypeString != null)
                 {
                     sql.Append(dd.IdentityTypeString);
                 }
@@ -45,7 +46,7 @@ namespace org.hanzify.llf.Data.Builder
                 {
                     sql.Append(dd.GetTypeName(DataTypeParser.Parse(ci.ValueType), ci.IsUnicode, ci.Length));
                 }
-                if (ci.IsSystemGen)
+                if (ci.IsDbGenerate)
                 {
                     sql.Append(" ");
                     if (ci.ValueType == typeof(Guid))
@@ -92,7 +93,7 @@ namespace org.hanzify.llf.Data.Builder
             sql.Append("\n);\n");
             // Create Index
             AddCreateIndexStatement(sql, dd);
-            return new SqlStatement(sql.ToString());
+            return new SqlStatement(CommandType.Text, sql.ToString());
         }
 
         private bool IsMutiKey()

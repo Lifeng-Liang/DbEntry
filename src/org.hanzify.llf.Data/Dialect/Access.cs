@@ -5,6 +5,7 @@ using System;
 using org.hanzify.llf.Data.Driver;
 using org.hanzify.llf.Data.Common;
 using org.hanzify.llf.Data.SqlEntry;
+using org.hanzify.llf.util;
 
 #endregion
 
@@ -15,6 +16,8 @@ namespace org.hanzify.llf.Data.Dialect
         public Access()
         {
             TypeNames[DataType.Int64] = "Decimal";
+            DataSetting.ObjectHandlerType.ToString();
+            ClassHelper.SetValue(typeof(DataSetting), "ObjectHandlerType", HandlerType.Reflection);
         }
 
         public override DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName)

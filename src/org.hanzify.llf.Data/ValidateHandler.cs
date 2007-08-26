@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using org.hanzify.llf.util;
 using org.hanzify.llf.util.Text;
 using org.hanzify.llf.Data.Common;
+using org.hanzify.llf.Data.Definition;
 
 #endregion
 
@@ -66,9 +67,9 @@ namespace org.hanzify.llf.Data
             Type StringType = typeof(string);
             foreach (MemberHandler fh in ii.Fields)
             {
-                if (fh.FieldType == StringType)
+                if (fh.FieldType == StringType || (fh.IsLazyLoad && fh.FieldType.GetGenericArguments()[0] == StringType))
                 {
-                    string Field = (string)fh.GetValue(obj);
+                    string Field = fh.IsLazyLoad ? ((LazyLoadField<string>)fh.GetValue(obj)).Value : (string)fh.GetValue(obj);
                     bool isValid = ValidateField(Field, fh);
                     if (!isValid)
                     {

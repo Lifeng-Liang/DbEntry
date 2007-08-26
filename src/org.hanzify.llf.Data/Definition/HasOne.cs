@@ -13,76 +13,40 @@ using org.hanzify.llf.Data.Driver;
 namespace org.hanzify.llf.Data.Definition
 {
     [Serializable]
-    public class HasOne<T> : ILazyLoading, IRenew
+    public class HasOne<T> : LazyLoadOneBase<T>, IRenew
     {
         private OrderBy Order;
-        private object owner;
-        private string ForeignKeyName;
-        private DbDriver driver;
-        private bool _IsLoaded;
-        private T _Value;
 
-        bool ILazyLoading.IsLoaded
+        internal HasOne(object owner) : base(owner) { }
+
+        public HasOne(object owner, OrderBy Order)
+            : base(owner)
         {
-            get { return _IsLoaded; }
-            set { _IsLoaded = value; }
+            this.Order = Order;
         }
 
-        object ILazyLoading.Read()
+        public HasOne(object owner, string OrderByString)
+            : base(owner)
         {
-            if (!_IsLoaded)
-            {
-                ((ILazyLoading)this).Load();
-                _IsLoaded = true;
-                driver = null;
-            }
-            return _Value;
+            this.Order = OrderBy.Parse(OrderByString);
         }
 
-        void ILazyLoading.Write(object item, bool IsLoad)
+        protected override void DoWrite(bool IsLoad)
         {
-            _Value = (T)item;
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
             if (oi.BelongsToField != null)
             {
                 Type t = oi.BelongsToField.FieldType.GetGenericArguments()[0];
                 if (t == owner.GetType())
                 {
-                    ILazyLoading ll = (ILazyLoading)oi.BelongsToField.GetValue(_Value);
+                    ILazyLoading ll = (ILazyLoading)oi.BelongsToField.GetValue(m_Value);
                     ll.Write(owner, false);
                 }
             }
-            _IsLoaded = true;
-            driver = null;
         }
 
-        public T Value
+        protected override void DoSetOwner()
         {
-            get
-            {
-                return (T)((ILazyLoading)this).Read();
-            }
-            set
-            {
-                ((ILazyLoading)this).Write(value, false);
-            }
-        }
-
-        public HasOne() { }
-
-        public HasOne(OrderBy Order)
-        {
-            this.Order = Order;
-        }
-
-        public HasOne(string OrderByString)
-        {
-            this.Order = OrderBy.Parse(OrderByString);
-        }
-
-        void ILazyLoading.SetOwner(object owner, string ColumnName)
-        {
-            this.owner = owner;
             if (Order == null)
             {
                 ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
@@ -93,25 +57,19 @@ namespace org.hanzify.llf.Data.Definition
             }
         }
 
-        void ILazyLoading.Init(DbDriver driver, string ForeignKeyName)
+        protected override void DoLoad()
         {
-            this.driver = driver;
-            this.ForeignKeyName = ForeignKeyName;
-        }
-
-        void ILazyLoading.Load()
-        {
-            if (ForeignKeyName == null) { return; }
+            if (RelationName == null) { return; }
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
-            _Value = (new DbContext(driver)).GetObject<T>(CK.K[ForeignKeyName] == key, Order);
+            m_Value = context.GetObject<T>(CK.K[RelationName] == key, Order);
 
-            if (_Value != null)
+            if (m_Value != null)
             {
                 ObjectInfo ti = DbObjectHelper.GetObjectInfo(typeof(T));
                 if (ti.BelongsToField != null)
                 {
-                    ILazyLoading ll = (ILazyLoading)ti.BelongsToField.GetValue(_Value);
+                    ILazyLoading ll = (ILazyLoading)ti.BelongsToField.GetValue(m_Value);
                     ll.Write(owner, true);
                 }
             }
@@ -119,10 +77,10 @@ namespace org.hanzify.llf.Data.Definition
 
         void IRenew.SetAsNew()
         {
-            if (_Value != null)
+            if (m_Value != null)
             {
                 MemberHandler f = DbObjectHelper.GetObjectInfo(typeof(T)).KeyFields[0];
-                f.SetValue(_Value, f.UnsavedValue);
+                f.SetValue(m_Value, f.UnsavedValue);
             }
         }
     }

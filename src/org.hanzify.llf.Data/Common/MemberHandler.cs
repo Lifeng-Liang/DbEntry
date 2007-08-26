@@ -1,13 +1,10 @@
 
-#region usings
-
 using System;
 using System.Reflection;
+using System.Reflection.Emit;
 
 using org.hanzify.llf.util;
 using org.hanzify.llf.Data.Common;
-
-#endregion
 
 namespace org.hanzify.llf.Data.Common
 {
@@ -76,7 +73,7 @@ namespace org.hanzify.llf.Data.Common
 
         public string Name;
         public bool IsKey;
-        public bool IsSystemGeneration;
+        public bool IsDbGenerate;
         public object UnsavedValue;
         public bool AllowNull;
         public int MaxLength;
@@ -104,13 +101,13 @@ namespace org.hanzify.llf.Data.Common
         {
         }
 
-        private MemberHandler(MemberAdapter fi, string Name, bool IsKey, bool IsSystemGen,
+        private MemberHandler(MemberAdapter fi, string Name, bool IsKey, bool IsDbGenerate,
             object UnsavedValue, bool AllowNull, int MaxLength, bool IsUnicode, string Regular)
 		{
 			this.fi = fi;
             this.Name = Name;
             this.IsKey = IsKey;
-            this.IsSystemGeneration = IsSystemGen;
+            this.IsDbGenerate = IsDbGenerate;
             this.UnsavedValue = UnsavedValue;
             this.AllowNull = AllowNull;
             this.MaxLength = MaxLength;

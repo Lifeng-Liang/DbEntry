@@ -15,40 +15,6 @@ namespace org.hanzify.llf.Data.Definition
     {
         public DbObjectBase()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(this.GetType());
-            if (oi.IsAssociateObject)
-            {
-                foreach (MemberHandler f in oi.Fields)
-                {
-                    if (f.IsHasOne || f.IsBelongsTo || f.IsHasMany || f.IsHasAndBelongsToMany)
-                    {
-                        object obj = f.GetValue(this);
-                        if (obj == null)
-                        {
-                            ILazyLoading ll;
-                            if (f.OrderByString == null)
-                            {
-                                ll = (ILazyLoading)ClassHelper.CreateInstance(f.FieldType);
-                            }
-                            else
-                            {
-                                ll = (ILazyLoading)ClassHelper.CreateInstance(f.FieldType, f.OrderByString);
-                            }
-                            f.SetValue(this, ll);
-                            obj = ll;
-                        }
-                        ((ILazyLoading)obj).SetOwner(this, f.Name);
-                        if (f.IsBelongsTo)
-                        {
-                            ((IBelongsTo)obj).ValueChanged += new CallbackObjectHandler<String>(m_ValueChanged);
-                        }
-                    }
-                }
-            }
-        }
-
-        protected virtual void m_ValueChanged(string s)
-        {
         }
 
         void IRenew.SetAsNew()
@@ -60,7 +26,7 @@ namespace org.hanzify.llf.Data.Definition
             }
             if (oi.IsAssociateObject)
             {
-                foreach (MemberHandler f in oi.Fields)
+                foreach (MemberHandler f in oi.RelationFields)
                 {
                     if (f.IsHasOne || f.IsHasMany)
                     {

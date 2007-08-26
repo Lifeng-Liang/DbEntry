@@ -1,0 +1,45 @@
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using org.hanzify.llf.Data;
+using NUnit.Framework;
+
+namespace org.hanzify.llf.UnitTest.DotNetFramework
+{
+    class test
+    {
+        public int? n;
+    }
+
+    public abstract class test2
+    {
+        public abstract int? n { get; set; }
+    }
+
+    [TestFixture]
+    public class NullabelTest
+    {
+        [Test]
+        public void Test1()
+        {
+            test o = new test();
+            Assert.IsFalse(o.n.HasValue);
+        }
+
+        [Test]
+        public void Test2()
+        {
+            test2 o = DynamicObject.NewObject<test2>();
+            Assert.IsFalse(o.n.HasValue);
+        }
+
+        [Test]
+        public void Test3()
+        {
+            bool? n = false;
+            Assert.IsTrue(false == n);
+            Assert.IsTrue(null != n);
+        }
+    }
+}

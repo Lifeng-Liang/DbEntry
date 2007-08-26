@@ -10,7 +10,7 @@ using System.Data.Odbc;
 
 namespace org.hanzify.llf.Data.Driver
 {
-	internal class OdbcDriver : DbDriver
+    internal class OdbcDriver : DbDriver
 	{
         public OdbcDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
             : base(DialectClass, ConnectionString, DbProviderFactoryName) { }

@@ -34,7 +34,7 @@ namespace org.hanzify.llf.UnitTest.util
                 XmlDocument xd = new XmlDocument();
                 xd.Load(ms);
                 NameValueCollection l = (NameValueCollection)h.Create(null, null, xd["configuration"].ChildNodes[0]);
-                Assert.AreEqual("org.hanzify.llf.util.Logging.ConsoleLogRecorder, org.hanzify.llf.util", l["SqlLogRecorder"]);
+                Assert.AreEqual("org.hanzify.llf.util.Logging.ConsoleMessageRecorder, org.hanzify.llf.util", l["SqlLogRecorder"]);
                 Assert.AreEqual("@Access : @~test.mdb", l["1.DataBase"]);
             }
         }

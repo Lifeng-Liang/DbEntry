@@ -132,13 +132,16 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         private string _Name;
         public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
 
-        [OrderBy("Id")]
-        protected HasOne<ImpPCs> _pc;
+        protected internal HasOne<ImpPCs> _pc;
 
-        [HasOne, OrderBy("Id")]
+        [HasOne(OrderBy = "Id")]
         public ImpPCs pc { get { return _pc.Value; } set { _pc.Value = value; } }
 
-        public ImpPeople() { m_InitUpdateColumns(); }
+        public ImpPeople()
+        {
+            _pc = new HasOne<ImpPCs>(this, "Id");
+            m_InitUpdateColumns();
+        }
     }
 
     [DbTable("PCs")]
@@ -148,12 +151,16 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
 
         [DbColumn("Person_Id")]
-        protected BelongsTo<ImpPeople> _owner;
+        protected internal BelongsTo<ImpPeople> _owner;
 
         [BelongsTo, DbColumn("Person_Id")]
         public ImpPeople owner { get { return _owner.Value; } set { _owner.Value = value; } }
 
-        public ImpPCs() { m_InitUpdateColumns(); }
+        public ImpPCs()
+        {
+            _owner = new BelongsTo<ImpPeople>(this);
+            m_InitUpdateColumns();
+        }
     }
 
     [DbTable("People")]
@@ -162,12 +169,16 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         private string _Name;
         public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
 
-        protected HasMany<ImpPCs1> _pcs = new HasMany<ImpPCs1>("Id DESC");
+        protected internal HasMany<ImpPCs1> _pcs;
 
-        [HasMany, OrderBy("Id DESC")]
+        [HasMany(OrderBy = "Id DESC")]
         public IList<ImpPCs1> pcs { get { return _pcs; } set { } }
 
-        public ImpPeople1() { m_InitUpdateColumns(); }
+        public ImpPeople1()
+        {
+            _pcs = new HasMany<ImpPCs1>(this, "Id DESC");
+            m_InitUpdateColumns();
+        }
     }
 
     [DbTable("PCs")]
@@ -177,19 +188,23 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
 
         [DbColumn("Person_Id")]
-        protected BelongsTo<ImpPeople1> _owner;
+        protected internal BelongsTo<ImpPeople1> _owner;
 
         [BelongsTo, DbColumn("Person_Id")]
         public ImpPeople1 owner { get { return _owner.Value; } set { _owner.Value = value; } }
 
-        public ImpPCs1() { m_InitUpdateColumns(); }
+        public ImpPCs1()
+        {
+            _owner = new BelongsTo<ImpPeople1>(this);
+            m_InitUpdateColumns();
+        }
     }
 
     public abstract class People : DbObjectModel<People>
     {
         public abstract string Name { get; set; }
 
-        [HasOne, OrderBy("Id")]
+        [HasOne(OrderBy = "Id")]
         public abstract PCs pc { get; set; }
     }
 
@@ -206,7 +221,7 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
     {
         public abstract string Name { get; set; }
 
-        [HasMany, OrderBy("Id DESC")]
+        [HasMany(OrderBy = "Id DESC")]
         public abstract IList<PCs1> pcs { get; set; }
     }
 
@@ -224,7 +239,7 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
     {
         public abstract string Name { get; set; }
 
-        [HasAndBelongsToMany, OrderBy("Id")]
+        [HasAndBelongsToMany(OrderBy = "Id")]
         public abstract IList<DReader> readers { get; set; }
     }
 
@@ -233,7 +248,7 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
     {
         public abstract string Name { get; set; }
 
-        [HasAndBelongsToMany, OrderBy("Id")]
+        [HasAndBelongsToMany(OrderBy = "Id")]
         public abstract IList<DArticle> arts { get; set; }
     }
 
@@ -242,8 +257,12 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
     {
         public string Name;
 
-        [OrderBy("Id")]
         public HasOne<PCsImp1> pc;
+
+        public PeopleImp1()
+        {
+            pc = new HasOne<PCsImp1>(this, "Id");
+        }
     }
 
     [DbTable("PCs")]
@@ -253,6 +272,11 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
 
         [DbColumn("Person_Id")]
         public BelongsTo<PeopleImp1> owner;
+
+        public PCsImp1()
+        {
+            owner = new BelongsTo<PeopleImp1>(this);
+        }
     }
 
     [DbTable("People")]
@@ -260,8 +284,12 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
     {
         public string Name;
 
-        [OrderBy("Id DESC")]
         public HasOne<PCsImp2> pc;
+
+        public PeopleImp2()
+        {
+            pc = new HasOne<PCsImp2>(this, "Id DESC");
+        }
     }
 
     [DbTable("PCs")]
@@ -271,6 +299,11 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
 
         [DbColumn("Person_Id")]
         public BelongsTo<PeopleImp2> owner;
+
+        public PCsImp2()
+        {
+            owner = new BelongsTo<PeopleImp2>(this);
+        }
     }
 
     [DbTable("People")]

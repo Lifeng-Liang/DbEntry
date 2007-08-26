@@ -16,6 +16,11 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
     {
         public string Name = null;
         public HasOne<PersonalComputer> PC;
+
+        public Person()
+        {
+            PC = new HasOne<PersonalComputer>(this, "");
+        }
     }
 
     [DbTable("PCs")]
@@ -24,7 +29,12 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Person_Id")]
-        public BelongsTo<Person> Owner = null;
+        public BelongsTo<Person> Owner;
+
+        public PersonalComputer()
+        {
+            Owner = new BelongsTo<Person>(this);
+        }
     }
 
     // HasMany
@@ -35,14 +45,24 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Category_Id")]
-        public BelongsTo<Category> CurCategory = null;
+        public BelongsTo<Category> CurCategory;
+
+        public Book()
+        {
+            CurCategory = new BelongsTo<Category>(this);
+        }
     }
 
     [DbTable("Categories")]
     public class Category : DbObject
     {
         public string Name = null;
-        public HasMany<Book> Books = new HasMany<Book>(new OrderBy("Id"));
+        public HasMany<Book> Books;
+
+        public Category()
+        {
+            Books = new HasMany<Book>(this, "Id");
+        }
     }
 
     public class Article : DbObject
@@ -50,10 +70,13 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Reader_Id")]
-        public HasAndBelongsToMany<Reader> Readers = new HasAndBelongsToMany<Reader>(new OrderBy("Id"));
+        public HasAndBelongsToMany<Reader> Readers;
 
-        public Article() { }
-        public Article(string Name) { this.Name = Name; }
+        public Article()
+        {
+            Readers = new HasAndBelongsToMany<Reader>(this, new OrderBy("Id"));
+        }
+        public Article(string Name) : this() { this.Name = Name; }
     }
 
     public class Reader : DbObject
@@ -61,10 +84,13 @@ namespace org.hanzify.llf.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Article_Id")]
-        public HasAndBelongsToMany<Article> Articles = new HasAndBelongsToMany<Article>(new OrderBy("Id"));
+        public HasAndBelongsToMany<Article> Articles;
 
-        public Reader() { }
-        public Reader(string Name) { this.Name = Name; }
+        public Reader()
+        {
+            Articles = new HasAndBelongsToMany<Article>(this, new OrderBy("Id"));
+        }
+        public Reader(string Name) : this() { this.Name = Name; }
     }
 
     public class Article_Reader

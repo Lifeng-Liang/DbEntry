@@ -17,7 +17,7 @@ namespace org.hanzify.llf.DemoObject
         [Index("LinkedIndex", ASC = false)]
         public int Age;
 
-        [Index("LinkedIndex")]
+        [Index("LinkedIndex", ASC = false)]
         public bool? Male;
 
         public int DepartmentId;

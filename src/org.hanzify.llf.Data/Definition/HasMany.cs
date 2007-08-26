@@ -19,17 +19,20 @@ namespace org.hanzify.llf.Data.Definition
     {
         private OrderBy Order;
 
-        public HasMany()
+        internal HasMany(object owner)
+            : base(owner)
         {
             this.Order = new OrderBy();
         }
 
-        public HasMany(OrderBy Order)
+        public HasMany(object owner, OrderBy Order)
+            : base(owner)
         {
             this.Order = Order;
         }
 
-        public HasMany(string OrderByString)
+        public HasMany(object owner, string OrderByString)
+            : base(owner)
         {
             this.Order = OrderBy.Parse(OrderByString);
         }
@@ -52,7 +55,7 @@ namespace org.hanzify.llf.Data.Definition
         {
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
-            IList<T> l = (new DbContext(driver))
+            IList<T> l = context
                 .From<T>()
                 .Where(CK.K[ForeignKeyName] == key)
                 .OrderBy(Order)

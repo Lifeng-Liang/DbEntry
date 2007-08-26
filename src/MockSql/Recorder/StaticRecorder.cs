@@ -10,6 +10,10 @@ namespace org.hanzify.llf.MockSql.Recorder
 {
     public class StaticRecorder : IRecorder
     {
+        public static List<string> CurRowNames;
+        public static List<Type> CurRowTypes;
+        public static List<object> CurRow;
+
         private static string _LastMessage = "";
 
         public static string LastMessage

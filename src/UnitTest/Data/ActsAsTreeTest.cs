@@ -13,7 +13,7 @@ namespace org.hanzify.llf.UnitTest.Data
     {
         public abstract string Name { get; set; }
 
-        [HasMany, OrderBy("Id")]
+        [HasMany(OrderBy = "Id")]
         public abstract IList<File> Children { get; set; }
 
         [BelongsTo, DbColumn("BelongsTo_Id")]

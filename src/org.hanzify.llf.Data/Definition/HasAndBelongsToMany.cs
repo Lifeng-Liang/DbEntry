@@ -21,17 +21,20 @@ namespace org.hanzify.llf.Data.Definition
         private List<long> _SavedNewRelations = new List<long>();
         List<long> ISavedNewRelations.SavedNewRelations { get { return _SavedNewRelations; } }
 
-        public HasAndBelongsToMany()
+        internal HasAndBelongsToMany(object owner)
+            : base(owner)
         {
             this.Order = new OrderBy();
         }
 
-        public HasAndBelongsToMany(OrderBy Order)
+        public HasAndBelongsToMany(object owner, OrderBy Order)
+            : base(owner)
         {
             this.Order = Order;
         }
 
-        public HasAndBelongsToMany(string OrderByString)
+        public HasAndBelongsToMany(object owner, string OrderByString)
+            : base(owner)
         {
             this.Order = OrderBy.Parse(OrderByString);
         }
@@ -65,7 +68,7 @@ namespace org.hanzify.llf.Data.Definition
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
             DbObjectList<T> il = new DbObjectList<T>();
-            (new DbContext(driver)).FillCollection(il, typeof(T), oi.ManyToManyMediFrom,
+            context.FillCollection(il, typeof(T), oi.ManyToManyMediFrom,
                 CK.K[ForeignKeyName] == key, Order, null);
             return il;
         }

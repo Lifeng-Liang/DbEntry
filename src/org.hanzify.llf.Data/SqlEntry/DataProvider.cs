@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Data;
 using System.Reflection;
 using System.Collections;
@@ -282,19 +283,53 @@ namespace org.hanzify.llf.Data.SqlEntry
 
         #region Shortcut
 
+        private static readonly Regex reg = new Regex("'.*'|\\?", RegexOptions.Compiled);
+
+        public SqlStatement GetSqlStatement(string SqlStr, params object[] os)
+        {
+            CommandType ct = SqlStatement.GetCommandType(SqlStr);
+            if (ct == CommandType.StoredProcedure)
+            {
+                return new SqlStatement(ct, SqlStr, os);
+            }
+            DataParamterCollection dpc = new DataParamterCollection();
+            int start = 0, n = 0;
+            StringBuilder sql = new StringBuilder();
+            string pp = Dialect.ParamterPrefix + "p";
+            foreach (Match m in reg.Matches(SqlStr))
+            {
+                if (m.Length == 1)
+                {
+                    string pn = pp + n;
+                    sql.Append(SqlStr.Substring(start, m.Index - start));
+                    sql.Append(pn);
+                    start = m.Index + 1;
+                    DataParamter dp = new DataParamter(pn, os[n]);
+                    dpc.Add(dp);
+                    n++;
+                }
+            }
+            if (start < SqlStr.Length)
+            {
+                sql.Append(SqlStr.Substring(start));
+            }
+            SqlStatement ret = new SqlStatement(ct, sql.ToString(), dpc);
+            return ret;
+        }
+
         public DataSet ExecuteDataset(string SqlCommandText, params object[] os)
         {
-            return ExecuteDataset(new SqlStatement(SqlCommandText, os));
+            return ExecuteDataset(GetSqlStatement(SqlCommandText, os));
         }
 
         public object ExecuteScalar(string SqlCommandText, params object[] os)
         {
-            return ExecuteScalar(new SqlStatement(SqlCommandText, os));
+            return ExecuteScalar(GetSqlStatement(SqlCommandText, os));
         }
 
         public int ExecuteNonQuery(string SqlCommandText, params object[] os)
         {
-            return ExecuteNonQuery(new SqlStatement(SqlCommandText, os));
+            return ExecuteNonQuery(GetSqlStatement(SqlCommandText, os));
         }
 
         #endregion

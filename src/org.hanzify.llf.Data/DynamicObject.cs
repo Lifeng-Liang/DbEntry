@@ -2,13 +2,17 @@
 #region usings
 
 using System;
+using System.Data;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 
 using org.hanzify.llf.Data.Common;
 using org.hanzify.llf.Data.Definition;
+using org.hanzify.llf.Data.Driver;
+using org.hanzify.llf.Data.SqlEntry;
 
 using org.hanzify.llf.util;
 
@@ -16,6 +20,57 @@ using org.hanzify.llf.util;
 
 namespace org.hanzify.llf.Data
 {
+    internal class DataReaderEmitHelper
+    {
+        Dictionary<Type, string> dic;
+
+        public DataReaderEmitHelper()
+        {
+            // process chars etc.
+            dic = new Dictionary<Type, string>();
+            dic.Add(typeof(long), "GetInt64");
+            dic.Add(typeof(int), "GetInt32");
+            dic.Add(typeof(short), "GetInt16");
+            dic.Add(typeof(byte), "GetByte");
+            dic.Add(typeof(bool), "GetBoolean");
+            dic.Add(typeof(DateTime), "GetDateTime");
+            dic.Add(typeof(string), "GetString");
+            dic.Add(typeof(decimal), "GetDecimal");
+            dic.Add(typeof(float), "GetFloat");
+            dic.Add(typeof(double), "GetDouble");
+            dic.Add(typeof(Guid), "GetGuid");
+        }
+
+        public MethodInfo GetMethodInfo(Type t)
+        {
+            Type drt = typeof(IDataRecord);
+            if (dic.ContainsKey(t))
+            {
+                string n = dic[t];
+                MethodInfo mi = drt.GetMethod(n);
+                return mi;
+            }
+            return null;
+        }
+
+        public MethodInfo GetMethodInfo()
+        {
+            return GetMethodInfo(false);
+        }
+
+        public MethodInfo GetMethodInfo(bool IsInt)
+        {
+            if (IsInt)
+            {
+                return typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
+            }
+            else
+            {
+                return typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(string) });
+            }
+        }
+    }
+
     public static class DynamicObject
     {
         private const TypeAttributes DynamicObjectTypeAttr = 
@@ -23,6 +78,12 @@ namespace org.hanzify.llf.Data
 
         private const MethodAttributes ImplFlag = MethodAttributes.Public | MethodAttributes.HideBySig |
             MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final;
+
+        private const MethodAttributes OverridePublicFlag = MethodAttributes.Public | MethodAttributes.HideBySig |
+            MethodAttributes.Virtual;
+
+        private const MethodAttributes OverrideFlag = MethodAttributes.Family | MethodAttributes.HideBySig |
+            MethodAttributes.Virtual;
 
         private static readonly Type objType = typeof(object);
         private static readonly Type[] emptyTypes = new Type[] { };
@@ -32,28 +93,429 @@ namespace org.hanzify.llf.Data
         public static T NewObject<T>(params object[] os)
         {
             Type ImplType = GetImplType(typeof(T));
-            return (T)ClassHelper.CreateInstance(ImplType, os);
+            if (os.Length > 0)
+            {
+                return (T)ClassHelper.CreateInstance(ImplType, os);
+            }
+            else
+            {
+                return (T)DbObjectHelper.GetObjectInfo(ImplType).NewObject();
+            }
         }
 
-        public static IDbObjectHandler CreateDbObjectHandler(Type srcType)
+        private static readonly Type vhBaseType = typeof(EmitObjectHandlerBase);
+        private static DataReaderEmitHelper helper = new DataReaderEmitHelper();
+
+        internal static IDbObjectHandler CreateDbObjectHandler(Type srcType, ObjectInfo oi)
         {
-            Type t = GetDbObjectHandler(srcType);
-            object o = ClassHelper.CreateInstance(t);
-            return (IDbObjectHandler)o;
+            Type t = GetDbObjectHandler(srcType, oi);
+            EmitObjectHandlerBase o = (EmitObjectHandlerBase)ClassHelper.CreateInstance(t);
+            o.Init(oi);
+            return o;
         }
 
-        public static Type GetDbObjectHandler(Type srcType)
+        internal static Type GetDbObjectHandler(Type srcType, ObjectInfo oi)
         {
-            ConstructorInfo ci = srcType.GetConstructor(emptyTypes);
+            // TODO: process null value, nullable
+            ConstructorInfo ci = GetConstructor(srcType);
             MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
-                DynamicObjectTypeAttr, typeof(object), new Type[] { typeof(IDbObjectHandler) });
+                DynamicObjectTypeAttr, vhBaseType, new Type[] { typeof(IDbObjectHandler) });
             tb.DefineDefaultConstructor(MethodAttributes.Public);
-            tb.DefineMethodDirect(ImplFlag, "CreateInstance", objType, emptyTypes, delegate(ILGenerator il)
+            // implements CreateInstance
+            tb.OverrideMethodDirect(OverridePublicFlag, "CreateInstance", vhBaseType,
+                objType, emptyTypes, delegate(ILGenerator il)
             {
                 il.Emit(OpCodes.Newobj, ci);
             });
+            // implements others
+            OverrideLoadSimpleValuesByIndex(tb, srcType, oi.SimpleFields);
+            OverrideLoadSimpleValuesByName(tb, srcType, oi.SimpleFields);
+            OverrideLoadRelationValues(tb, srcType, oi.RelationFields, oi.SimpleFields.Length, true);
+            OverrideLoadRelationValues(tb, srcType, oi.RelationFields, oi.SimpleFields.Length, false);
+            OverrideGetKeyValues(tb, srcType, oi.KeyFields);
+            OverrideGetKeyValue(tb, srcType, oi.KeyFields);
+            OverrideSetValuesForSelect(tb, srcType, oi.Fields);
+            OverrideSetValuesForInsert(tb, srcType, oi.Fields);
+            OverrideSetValuesForUpdate(tb, srcType, oi.Fields);
             Type t = tb.CreateType();
             return t;
+        }
+
+        private static void OverrideLoadSimpleValuesByIndex(MemoryTypeBuilder tb, Type srcType, MemberHandler[] SimpleFields)
+        {
+            MethodInfo mi = helper.GetMethodInfo(true);
+            MethodInfo miGetNullable = vhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
+            tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByIndex", vhBaseType, null,
+                new Type[] { typeof(object), typeof(IDataReader) }, delegate(ILGenerator il)
+            {
+                // User u = (User)o;
+                il.DeclareLocal(srcType);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Castclass, srcType);
+                il.Emit(OpCodes.Stloc_0);
+                // set values
+                int n = 0;
+                foreach (MemberHandler f in SimpleFields)
+                {
+                    il.Emit(OpCodes.Ldloc_0);
+                    if (f.AllowNull) { il.Emit(OpCodes.Ldarg_0); }
+                    il.Emit(OpCodes.Ldarg_2);
+                    EmitldcI4(il, n);
+                    MethodInfo mi1 = helper.GetMethodInfo(f.FieldType);
+                    if(f.AllowNull || mi1 == null)
+                    {
+                        il.Emit(OpCodes.Callvirt, mi);
+                        if (f.AllowNull)
+                        {
+                            il.Emit(OpCodes.Call, miGetNullable);
+                        }
+                        // cast or unbox
+                        if (f.FieldType.IsValueType)
+                        {
+                            il.Emit(OpCodes.Unbox_Any, f.FieldType);
+                        }
+                        else
+                        {
+                            il.Emit(OpCodes.Castclass, f.FieldType);
+                        }
+                    }
+                    else
+                    {
+                        il.Emit(OpCodes.Callvirt, mi1);
+                    }
+                    f.MemberInfo.EmitSet(il);
+                    n++;
+                }
+            });
+        }
+
+        private static void OverrideLoadSimpleValuesByName(MemoryTypeBuilder tb, Type srcType, MemberHandler[] SimpleFields)
+        {
+            MethodInfo mi = helper.GetMethodInfo();
+            MethodInfo miGetNullable = vhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
+            tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByName", vhBaseType, null,
+                new Type[] { typeof(object), typeof(IDataReader) }, delegate(ILGenerator il)
+            {
+                // User u = (User)o;
+                il.DeclareLocal(srcType);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Castclass, srcType);
+                il.Emit(OpCodes.Stloc_0);
+                // set values
+                foreach (MemberHandler f in SimpleFields)
+                {
+                    // get value
+                    il.Emit(OpCodes.Ldloc_0);
+                    if (f.AllowNull) { il.Emit(OpCodes.Ldarg_0); }
+                    il.Emit(OpCodes.Ldarg_2);
+                    il.Emit(OpCodes.Ldstr, f.Name);
+                    il.Emit(OpCodes.Callvirt, mi);
+                    if (f.AllowNull)
+                    {
+                        il.Emit(OpCodes.Call, miGetNullable);
+                    }
+                    // cast or unbox
+                    if (f.FieldType.IsValueType)
+                    {
+                        il.Emit(OpCodes.Unbox_Any, f.FieldType);
+                    }
+                    else
+                    {
+                        il.Emit(OpCodes.Castclass, f.FieldType);
+                    }
+                    // set field
+                    f.MemberInfo.EmitSet(il);
+                }
+            });
+        }
+
+        private static void OverrideLoadRelationValues(MemoryTypeBuilder tb, Type srcType,
+            MemberHandler[] RelationFields, int Index, bool UseIndex)
+        {
+            string MethodName = UseIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
+            tb.OverrideMethodDirect(OverrideFlag, MethodName, vhBaseType, null,
+                new Type[] { typeof(DbContext), typeof(object), typeof(IDataReader) }, delegate(ILGenerator il)
+            {
+                // User u = (User)o;
+                il.DeclareLocal(srcType);
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Castclass, srcType);
+                il.Emit(OpCodes.Stloc_0);
+                // set values
+                MethodInfo mi = typeof(ILazyLoading).GetMethod("Init");
+                foreach (MemberHandler f in RelationFields)
+                {
+                    il.Emit(OpCodes.Ldloc_0);
+                    f.MemberInfo.EmitGet(il);
+                    if (f.IsLazyLoad)
+                    {
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldstr, f.Name);
+                        il.Emit(OpCodes.Callvirt, mi);
+                    }
+                    else if (f.IsHasAndBelongsToMany || f.IsHasOne || f.IsHasMany)
+                    {
+                        MemberHandler mh = DbObjectHelper.GetBelongsTo(f.FieldType.GetGenericArguments()[0]);
+                        if (mh == null)
+                        {
+                            throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
+                        }
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldstr, mh.Name);
+                        il.Emit(OpCodes.Callvirt, mi);
+                    }
+                    else if (f.IsBelongsTo)
+                    {
+                        il.Emit(OpCodes.Ldarg_3);
+                        if (UseIndex)
+                        {
+                            EmitldcI4(il, Index);
+                            il.Emit(OpCodes.Callvirt, helper.GetMethodInfo(true));
+                        }
+                        else
+                        {
+                            il.Emit(OpCodes.Ldstr, f.Name);
+                            il.Emit(OpCodes.Callvirt, helper.GetMethodInfo());
+                        }
+                        il.Emit(OpCodes.Callvirt, typeof(IBelongsTo).GetMethod("set_ForeignKey"));
+                    }
+                }
+            });
+        }
+
+        private static void OverrideGetKeyValues(MemoryTypeBuilder tb, Type srcType, MemberHandler[] KeyFields)
+        {
+            Type t = typeof(Dictionary<string, object>);
+            MethodInfo mi = t.GetMethod("Add", new Type[] { typeof(string), typeof(object) });
+            tb.OverrideMethodDirect(OverrideFlag, "GetKeyValuesDirect", vhBaseType, null,
+                new Type[] { t, typeof(object) }, delegate(ILGenerator il)
+            {
+                // User u = (User)o;
+                il.DeclareLocal(srcType);
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Castclass, srcType);
+                il.Emit(OpCodes.Stloc_0);
+                // set values
+                foreach (MemberHandler f in KeyFields)
+                {
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Ldstr, f.Name);
+                    il.Emit(OpCodes.Ldloc_0);
+                    f.MemberInfo.EmitGet(il);
+                    if (f.FieldType.IsValueType)
+                    {
+                        il.Emit(OpCodes.Box, f.FieldType);
+                    }
+                    il.Emit(OpCodes.Callvirt, mi);
+                }
+            });
+        }
+
+        private static void OverrideGetKeyValue(MemoryTypeBuilder tb, Type srcType, MemberHandler[] KeyFields)
+        {
+            tb.OverrideMethodDirect(OverrideFlag, "GetKeyValueDirect", vhBaseType, typeof(object),
+                new Type[] { typeof(object) }, delegate(ILGenerator il)
+            {
+                if (KeyFields.Length == 1)
+                {
+                    MemberHandler h = KeyFields[0];
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Castclass, srcType);
+                    h.MemberInfo.EmitGet(il);
+                    if (h.FieldType.IsValueType)
+                    {
+                        il.Emit(OpCodes.Box, h.FieldType);
+                    }
+                }
+                else
+                {
+                    il.Emit(OpCodes.Ldnull);
+                }
+            });
+        }
+
+        private static void OverrideSetValuesForSelect(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        {
+            Type t = typeof(List<string>);
+            MethodInfo mi = t.GetMethod("Add", new Type[] { typeof(string) });
+            tb.OverrideMethodDirect(OverrideFlag, "SetValuesForSelectDirect", vhBaseType, null,
+                new Type[] { t }, delegate(ILGenerator il)
+            {
+                foreach (MemberHandler f in Fields)
+                {
+                    if (!f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany && !f.IsLazyLoad)
+                    {
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldstr, f.Name);
+                        il.Emit(OpCodes.Callvirt, mi);
+                    }
+                }
+            });
+        }
+
+        private static void OverrideSetValuesForInsert(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        {
+            Type t = typeof(KeyValueCollection);
+            MethodInfo addmi = t.GetMethod("Add", new Type[] { typeof(KeyValue) });
+            MethodInfo nkvmi = vhBaseType.GetMethod("NewKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            tb.OverrideMethodDirect(OverrideFlag, "SetValuesForInsertDirect", vhBaseType, null,
+                new Type[] { t, typeof(object) }, delegate(ILGenerator il)
+            {
+                // User u = (User)o;
+                il.DeclareLocal(srcType);
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Castclass, srcType);
+                il.Emit(OpCodes.Stloc_0);
+                // set values
+                int n = 0;
+                foreach (MemberHandler f in Fields)
+                {
+                    if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
+                    {
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldarg_0);
+                        EmitldcI4(il, n);
+                        il.Emit(OpCodes.Ldloc_0);
+                        f.MemberInfo.EmitGet(il);
+                        if (f.IsBelongsTo)
+                        {
+                            il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_ForeignKey"));
+                        }
+                        else if (f.IsLazyLoad)
+                        {
+                            il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_Value"));
+                            Type it = f.FieldType.GetGenericArguments()[0];
+                            if (it.IsValueType)
+                            {
+                                il.Emit(OpCodes.Box, it);
+                            }
+                        }
+                        else
+                        {
+                            if (f.FieldType.IsValueType)
+                            {
+                                il.Emit(OpCodes.Box, f.FieldType);
+                            }
+                        }
+                        il.Emit(OpCodes.Call, nkvmi);
+                        il.Emit(OpCodes.Callvirt, addmi);
+                        n++;
+                    }
+                }
+            });
+        }
+
+        private static void OverrideSetValuesForUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        {
+            if (srcType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
+            {
+                OverrideSetValuesForPartialUpdate(tb, srcType, Fields);
+            }
+            else
+            {
+                Type t = typeof(KeyValueCollection);
+                MethodInfo mi = vhBaseType.GetMethod("SetValuesForInsertDirect", BindingFlags.NonPublic | BindingFlags.Instance);
+                tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", vhBaseType, null,
+                    new Type[] { t, typeof(object) }, delegate(ILGenerator il)
+                {
+                    il.Emit(OpCodes.Ldarg_0);
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Ldarg_2);
+                    il.Emit(OpCodes.Callvirt, mi);
+                });
+            }
+
+        }
+
+        private static void OverrideSetValuesForPartialUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        {
+            Type t = typeof(KeyValueCollection);
+            MethodInfo akvmi = vhBaseType.GetMethod("AddKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", vhBaseType, null,
+                new Type[] { t, typeof(object) }, delegate(ILGenerator il)
+            {
+                // User u = (User)o;
+                il.DeclareLocal(srcType);
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Castclass, srcType);
+                il.Emit(OpCodes.Stloc_0);
+                // set values
+                int n = 0;
+                foreach (MemberHandler f in Fields)
+                {
+                    if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
+                    {
+                        il.Emit(OpCodes.Ldarg_0);
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldloc_0);
+                        il.Emit(OpCodes.Ldstr, f.IsBelongsTo ? "$" : f.Name);
+                        EmitldcI4(il, n);
+                        il.Emit(OpCodes.Ldloc_0);
+                        f.MemberInfo.EmitGet(il);
+                        if (f.IsBelongsTo)
+                        {
+                            il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_ForeignKey"));
+                        }
+                        else if (f.IsLazyLoad)
+                        {
+                            il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_Value"));
+                            Type it = f.FieldType.GetGenericArguments()[0];
+                            if (it.IsValueType)
+                            {
+                                il.Emit(OpCodes.Box, it);
+                            }
+                        }
+                        else
+                        {
+                            if (f.FieldType.IsValueType)
+                            {
+                                il.Emit(OpCodes.Box, f.FieldType);
+                            }
+                        }
+                        il.Emit(OpCodes.Call, akvmi);
+                        n++;
+                    }
+                }
+            });
+        }
+
+        private static void EmitldcI4(ILGenerator il, int n)
+        {
+            switch (n)
+            {
+                case 0:
+                    il.Emit(OpCodes.Ldc_I4_0);
+                    break;
+                case 1:
+                    il.Emit(OpCodes.Ldc_I4_1);
+                    break;
+                case 2:
+                    il.Emit(OpCodes.Ldc_I4_2);
+                    break;
+                case 3:
+                    il.Emit(OpCodes.Ldc_I4_3);
+                    break;
+                case 4:
+                    il.Emit(OpCodes.Ldc_I4_4);
+                    break;
+                case 5:
+                    il.Emit(OpCodes.Ldc_I4_5);
+                    break;
+                case 6:
+                    il.Emit(OpCodes.Ldc_I4_6);
+                    break;
+                case 7:
+                    il.Emit(OpCodes.Ldc_I4_7);
+                    break;
+                case 8:
+                    il.Emit(OpCodes.Ldc_I4_8);
+                    break;
+                default:
+                    il.Emit(OpCodes.Ldc_I4, n);
+                    break;
+            }
         }
 
         public static Type GetImplType(Type SourceType)
@@ -79,13 +541,18 @@ namespace org.hanzify.llf.Data
                 MethodInfo mupdate = SourceType.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag);
 
                 PropertyInfo[] pis = SourceType.GetProperties();
+                List<MemberHandler> impRelations = new List<MemberHandler>();
                 foreach (PropertyInfo pi in pis)
                 {
                     if (pi.CanRead && pi.CanWrite)
                     {
                         if (pi.GetGetMethod().IsAbstract)
                         {
-                            tb.ImplProperty(pi.Name, pi.PropertyType, SourceType, mupdate, pi);
+                            MemberHandler h = tb.ImplProperty(pi.Name, pi.PropertyType, SourceType, mupdate, pi);
+                            if (h != null)
+                            {
+                                impRelations.Add(h);
+                            }
                         }
                     }
                 }
@@ -106,13 +573,24 @@ namespace org.hanzify.llf.Data
                 ConstructorInfo[] cis = GetConstructorInfos(SourceType);
                 foreach (ConstructorInfo ci in cis)
                 {
-                    tb.DefineConstructor(MethodAttributes.Public, ci, minit);
+                    tb.DefineConstructor(MethodAttributes.Public, ci, minit, impRelations);
                 }
 
                 Type t = tb.CreateType();
                 types.Add(SourceType, t);
                 return t;
             }
+        }
+
+        private static ConstructorInfo GetConstructor(Type SourceType)
+        {
+            Type t = SourceType;
+            ConstructorInfo ret;
+            while ((ret = t.GetConstructor(emptyTypes)) == null)
+            {
+                t = t.BaseType;
+            }
+            return ret;
         }
 
         private static ConstructorInfo[] GetConstructorInfos(Type SourceType)

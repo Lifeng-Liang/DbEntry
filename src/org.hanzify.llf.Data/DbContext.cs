@@ -2,8 +2,6 @@
 #region usings
 
 using System;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Data;
 using System.Collections;
 using System.Collections.Generic;
@@ -94,7 +92,7 @@ namespace org.hanzify.llf.Data
         {
             SelectStatementBuilder sb = new SelectStatementBuilder(DbObjectHelper.GetFromClause(DbObjectType), order, null);
             sb.Where.Conditions = iwc;
-            sb.Values.Add(new KeyValue(ColumnName, 1));
+            sb.Keys.Add(ColumnName);
             sb.SetAsGroupBy(ColumnName);
             SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
             Logger.SQL.Trace(Sql.ToString());
@@ -102,35 +100,6 @@ namespace org.hanzify.llf.Data
             IProcessor ip = GetListProcessor(list);
             DataLoadDirect(ip, typeof(GroupByObject<T1>), Sql, true);
             return list;
-        }
-
-        private static readonly Regex reg = new Regex("'.*'|\\?");
-
-        public SqlStatement GetSqlStatement(string SqlStr, params object[] os)
-        {
-            DataParamterCollection dpc = new DataParamterCollection();
-            int start = 0, n = 0;
-            StringBuilder sql = new StringBuilder();
-            string pp = Dialect.ParamterPrefix + "p";
-            foreach (Match m in reg.Matches(SqlStr))
-            {
-                if (m.Length == 1)
-                {
-                    string pn = pp + n;
-                    sql.Append(SqlStr.Substring(start, m.Index - start));
-                    sql.Append(pn);
-                    start = m.Index + 1;
-                    DataParamter dp = new DataParamter(pn, os[n]);
-                    dpc.Add(dp);
-                    n++;
-                }
-            }
-            if (start < SqlStr.Length)
-            {
-                sql.Append(SqlStr.Substring(start));
-            }
-            SqlStatement ret = new SqlStatement(sql.ToString(), dpc);
-            return ret;
         }
 
         public DbObjectList<T> ExecuteList<T>(string SqlStr)
@@ -195,8 +164,7 @@ namespace org.hanzify.llf.Data
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
             SelectStatementBuilder sb = new SelectStatementBuilder(from != null ? from : ii.From, oc, lc);
             sb.Where.Conditions = iwc;
-            object obj = ii.NewObject();
-            DbObjectHelper.SetValues(sb, obj, true, false);
+            ii.Handler.SetValuesForSelect(sb);
             // DataBase Process
             SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
             if (!ii.DisableSqlLog)
@@ -229,7 +197,7 @@ namespace org.hanzify.llf.Data
                     Count++;
                     if (Count >= StartIndex)
                     {
-                        object di = DbObjectHelper.CreateObject(this.Driver, DbObjectType, dr, UseIndex);
+                        object di = DbObjectHelper.CreateObject(this, DbObjectType, dr, UseIndex);
                         if (!ip.Process(di))
                         {
                             break;
@@ -302,7 +270,7 @@ namespace org.hanzify.llf.Data
                 throw new DbEntryException("To call this function, the table must have one primary key.");
             }
             MemberHandler k = ii.KeyFields[0];
-            if (k.IsSystemGeneration)
+            if (k.IsDbGenerate)
             {
                 if (k.UnsavedValue == null)
                 {
@@ -401,7 +369,7 @@ namespace org.hanzify.llf.Data
         private void InnerUpdate(object obj, WhereCondition iwc, ObjectInfo ii, DataProvider dp)
         {
             UpdateStatementBuilder sb = new UpdateStatementBuilder(ii.From.GetMainTableName());
-            DbObjectHelper.SetValues(sb, obj, false, true);
+            ii.Handler.SetValuesForUpdate(sb, obj);
             sb.Where.Conditions = iwc;
             SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
             if (!ii.DisableSqlLog)
@@ -417,7 +385,7 @@ namespace org.hanzify.llf.Data
             TryCreateTable(t);
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
             InsertStatementBuilder sb = new InsertStatementBuilder(ii.From.GetMainTableName(), ii.HasSystemKey);
-            DbObjectHelper.SetValues(sb, obj, false, false);
+            ii.Handler.SetValuesForInsert(sb, obj);
             SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
             if (!ii.DisableSqlLog)
             {
@@ -432,7 +400,7 @@ namespace org.hanzify.llf.Data
                     SetManyToManyAssociate(ii, Key, Scope<object>.Current);
                 }, delegate(object o)
                 {
-                    SetBelongsToForeignKey(o, ii.KeyFields[0].GetValue(obj));
+                    SetBelongsToForeignKey(o, ii.Handler.GetKeyValue(obj));
                     Save(o);
                 });
             }

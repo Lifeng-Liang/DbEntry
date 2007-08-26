@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 
 namespace org.hanzify.llf.Data.Driver
 {
-	internal class SqlServerDriver : DbDriver
+    internal class SqlServerDriver : DbDriver
 	{
         public SqlServerDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
             : base(DialectClass, ConnectionString, DbProviderFactoryName) { }

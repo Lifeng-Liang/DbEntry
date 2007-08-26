@@ -11,7 +11,7 @@ namespace org.hanzify.llf.Data.Definition
     [Serializable]
     public abstract class NamedDbObject
     {
-        [DbKey(IsSystemGeneration=false), MaxLength(255)]
+        [DbKey(IsDbGenerate=false), MaxLength(255)]
         public string Name = "";
     }
 }

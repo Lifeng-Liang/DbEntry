@@ -54,10 +54,10 @@ namespace org.hanzify.llf.UnitTest.Data.CreateTable
     [DbTable("MyTest")]
     class MyTest8
     {
-        [DbKey(IsSystemGeneration=false)]
+        [DbKey(IsDbGenerate=false)]
         public long Id = 0;
 
-        [DbKey(IsSystemGeneration=false), MaxLength(50)]
+        [DbKey(IsDbGenerate=false), MaxLength(50)]
         public string Name = null;
 
         public int Age = 0;

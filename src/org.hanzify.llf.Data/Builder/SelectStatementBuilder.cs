@@ -1,25 +1,22 @@
 ﻿
-#region usings
-
 using System;
+using System.Collections.Generic;
 using System.Text;
 using org.hanzify.llf.Data.Dialect;
 using org.hanzify.llf.Data.Builder.Clause;
 using org.hanzify.llf.Data.SqlEntry;
 using org.hanzify.llf.Data.Common;
 
-#endregion
-
 namespace org.hanzify.llf.Data.Builder
 {
-	public class SelectStatementBuilder : ISqlStatementBuilder, ISqlValues, ISqlWhere
+	public class SelectStatementBuilder : ISqlStatementBuilder, ISqlKeys, ISqlWhere
 	{
         private OrderBy _Order;
         private Range _Limit;
         private FromClause _From;
         private WhereClause _WhereOptions = new WhereClause();
 
-        private KeyValueCollection kvc = new KeyValueCollection();
+        private List<string> keys = new List<string>();
 
         internal string CountCol = null;
 
@@ -54,7 +51,7 @@ namespace org.hanzify.llf.Data.Builder
         
         public SqlStatement ToSqlStatement(DbDialect dd)
 		{
-            if (Values.Count == 0 && _Limit != null)
+            if (Keys.Count == 0 && _Limit != null)
             {
                 throw new DbEntryException("When Values is empty, It means Get Count, Limit must be null.");
             }
@@ -70,9 +67,9 @@ namespace org.hanzify.llf.Data.Builder
         internal string GetColumns(DbDialect dd)
 		{
 			StringBuilder Columns = new StringBuilder();
-			foreach ( KeyValue kv in kvc )
+			foreach ( string k in keys )
 			{
-				Columns.Append(dd.QuoteForColumnName(kv.Key));
+				Columns.Append(dd.QuoteForColumnName(k));
                 Columns.Append(",");
 			}
             if (CountCol != null)
@@ -110,9 +107,9 @@ namespace org.hanzify.llf.Data.Builder
             get { return _From; }
         }
 
-        public KeyValueCollection Values
+        public List<string> Keys
 		{
-			get { return kvc; }
+			get { return keys; }
 		}
 
 		public WhereClause Where

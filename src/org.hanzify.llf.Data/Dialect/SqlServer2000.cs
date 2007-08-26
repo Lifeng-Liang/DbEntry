@@ -50,7 +50,7 @@ namespace org.hanzify.llf.Data.Dialect
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(ref dpc, this),
                 ssb.Where.ToSqlText(ref dpc, this),
-                (ssb.Order == null || ssb.Values.Count == 0) ? "" : ssb.Order.ToSqlText(ref dpc, this),
+                (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(ref dpc, this),
                 ssb.Range.EndIndex
                 );
             return new TimeConsumingSqlStatement(SqlString, dpc);

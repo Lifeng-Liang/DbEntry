@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Collections;
 
@@ -13,7 +14,7 @@ using org.hanzify.llf.Data.Definition;
 
 namespace org.hanzify.llf.Data.Common
 {
-    public class MemoryTypeBuilder
+    internal class MemoryTypeBuilder
     {
         public delegate void EmitCode(ILGenerator il);
 
@@ -34,7 +35,7 @@ namespace org.hanzify.llf.Data.Common
             InnerType.DefineDefaultConstructor(attr);
         }
 
-        public void DefineConstructor(MethodAttributes attr, ConstructorInfo ci, MethodInfo minit)
+        public void DefineConstructor(MethodAttributes attr, ConstructorInfo ci, MethodInfo minit, List<MemberHandler> impRelations)
         {
             ParameterInfo[] pis = ci.GetParameters();
 
@@ -55,6 +56,31 @@ namespace org.hanzify.llf.Data.Common
                 il.Emit(OpCodes.Ldarg_S, i);
             }
             il.Emit(OpCodes.Call, ci);
+            // create relation fields.
+            foreach (MemberHandler h in impRelations)
+            {
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldarg_0);
+                ConstructorInfo ci1;
+                if (h.IsHasOne || h.IsHasMany || h.IsHasAndBelongsToMany)
+                {
+                    ci1 = h.FieldType.GetConstructor(new Type[] { typeof(object), typeof(string) });
+                    if (string.IsNullOrEmpty(h.OrderByString))
+                    {
+                        il.Emit(OpCodes.Ldnull);
+                    }
+                    else
+                    {
+                        il.Emit(OpCodes.Ldstr, h.OrderByString);
+                    }
+                }
+                else
+                {
+                    ci1 = h.FieldType.GetConstructor(new Type[] { typeof(object) });
+                }
+                il.Emit(OpCodes.Newobj, ci1);
+                h.MemberInfo.EmitSet(il);
+            }
             // call m_InitUpdateColumns
             if (minit != null)
             {
@@ -76,7 +102,8 @@ namespace org.hanzify.llf.Data.Common
             HasOne,
             HasMany,
             BelongsTo,
-            HasAndBelongsToMany
+            HasAndBelongsToMany,
+            LazyLoad
         }
 
         public FieldType GetFieldType(PropertyInfo pi)
@@ -99,7 +126,10 @@ namespace org.hanzify.llf.Data.Common
                 {
                     return FieldType.HasAndBelongsToMany;
                 }
-
+                if (a is LazyLoadAttribute)
+                {
+                    return FieldType.LazyLoad;
+                }
             }
             return FieldType.Normal;
         }
@@ -107,26 +137,84 @@ namespace org.hanzify.llf.Data.Common
         private static readonly ConstructorInfo DbColumnAttributeConstructor
             = typeof(DbColumnAttribute).GetConstructor(new Type[] { typeof(string) });
 
-        private static readonly ConstructorInfo OrderByAttributeConstructor
-            = typeof(OrderByAttribute).GetConstructor(new Type[] { typeof(string) });
+        private static readonly ConstructorInfo AllowNullAttributeConstructor
+            = typeof(AllowNullAttribute).GetConstructor(new Type[] { });
+
+        private static readonly ConstructorInfo MaxLengthAttributeConstructor
+            = typeof(MaxLengthAttribute).GetConstructor(new Type[] { typeof(int) });
 
         private CustomAttributeBuilder GetDbColumnBuilder(string Name)
         {
             return new CustomAttributeBuilder(DbColumnAttributeConstructor, new object[] { Name });
         }
 
-        private CustomAttributeBuilder GetOrderByBuilder(string Name)
+        private CustomAttributeBuilder GetAllowNullBuilder()
         {
-            return new CustomAttributeBuilder(OrderByAttributeConstructor, new object[] { Name });
+            return new CustomAttributeBuilder(AllowNullAttributeConstructor, new object[] { });
+        }
+
+        private CustomAttributeBuilder GetMaxLengthBuilder(int Value)
+        {
+            return new CustomAttributeBuilder(MaxLengthAttributeConstructor, new object[] { Value });
+        }
+
+        private CustomAttributeBuilder GetStringColumnBuilder(StringColumnAttribute o)
+        {
+            Type t = typeof(StringColumnAttribute);
+            return new CustomAttributeBuilder(t.GetConstructor(new Type[] { }), new object[] { },
+                new FieldInfo[] { t.GetField("IsUnicode"), t.GetField("Regular") },
+                new object[] { o.IsUnicode, o.Regular });
+        }
+
+        private CustomAttributeBuilder GetIndexBuilder(IndexAttribute o)
+        {
+            Type t = typeof(IndexAttribute);
+            return new CustomAttributeBuilder(t.GetConstructor(new Type[] { }), new object[] { },
+                new FieldInfo[] { t.GetField("ASC"), t.GetField("IndexName"), t.GetField("UNIQUE") },
+                new object[] { o.ASC, o.IndexName, o.UNIQUE });
         }
 
         private FieldInfo DefineField(string Name, Type PropertyType, FieldType ft, PropertyInfo pi)
         {
+            if (ft == FieldType.Normal)
+            {
+                return InnerType.DefineField(Name, PropertyType, FieldAttributes.Private);
+            }
+            Type t = GetRealType(PropertyType, ft);
+            FieldBuilder fb = InnerType.DefineField(Name, t, FieldAttributes.FamORAssem);
+            DbColumnAttribute[] bs = (DbColumnAttribute[])pi.GetCustomAttributes(typeof(DbColumnAttribute), true);
+            if (bs != null && bs.Length > 0)
+            {
+                fb.SetCustomAttribute(GetDbColumnBuilder(bs[0].Name));
+            }
+            else if (ft == FieldType.LazyLoad)
+            {
+                fb.SetCustomAttribute(GetDbColumnBuilder(pi.Name));
+            }
+            ProcessCustomAttribute<AllowNullAttribute>(pi, true, delegate(AllowNullAttribute o)
+            {
+                fb.SetCustomAttribute(GetAllowNullBuilder());
+            });
+            ProcessCustomAttribute<MaxLengthAttribute>(pi, true, delegate(MaxLengthAttribute o)
+            {
+                fb.SetCustomAttribute(GetMaxLengthBuilder(o.Value));
+            });
+            ProcessCustomAttribute<StringColumnAttribute>(pi, true, delegate(StringColumnAttribute o)
+            {
+                fb.SetCustomAttribute(GetStringColumnBuilder(o));
+            });
+            ProcessCustomAttribute<IndexAttribute>(pi, true, delegate(IndexAttribute o)
+            {
+                fb.SetCustomAttribute(GetIndexBuilder(o));
+            });
+            return fb;
+        }
+
+        private Type GetRealType(Type PropertyType, FieldType ft)
+        {
             Type t = null;
             switch (ft)
             {
-                case FieldType.Normal:
-                    return InnerType.DefineField(Name, PropertyType, FieldAttributes.Private);
                 case FieldType.HasOne:
                     t = typeof(HasOne<>);
                     t = t.MakeGenericType(PropertyType);
@@ -143,24 +231,26 @@ namespace org.hanzify.llf.Data.Common
                     t = typeof(HasAndBelongsToMany<>);
                     t = t.MakeGenericType(PropertyType.GetGenericArguments()[0]);
                     break;
+                case FieldType.LazyLoad:
+                    t = typeof(LazyLoadField<>);
+                    t = t.MakeGenericType(PropertyType);
+                    break;
                 default:
                     throw new DbEntryException("Impossible");
             }
-            FieldBuilder fb = InnerType.DefineField(Name, t, FieldAttributes.FamORAssem);
-            DbColumnAttribute[] bs = (DbColumnAttribute[])pi.GetCustomAttributes(typeof(DbColumnAttribute), true);
-            if (bs != null && bs.Length > 0)
-            {
-                fb.SetCustomAttribute(GetDbColumnBuilder(bs[0].Name));
-            }
-            OrderByAttribute[] os = (OrderByAttribute[])pi.GetCustomAttributes(typeof(OrderByAttribute), true);
-            if (os != null && os.Length > 0)
-            {
-                fb.SetCustomAttribute(GetOrderByBuilder(os[0].OrderBy));
-            }
-            return fb;
+            return t;
         }
 
-        public void ImplProperty(string PropertyName, Type PropertyType, Type OriginType, MethodInfo mupdate, PropertyInfo pi)
+        private void ProcessCustomAttribute<T>(PropertyInfo pi, bool inhrit, CallbackObjectHandler<T> callback)
+        {
+            object[] bs = pi.GetCustomAttributes(typeof(T), true);
+            if (bs != null && bs.Length > 0)
+            {
+                callback((T)bs[0]);
+            }
+        }
+
+        public MemberHandler ImplProperty(string PropertyName, Type PropertyType, Type OriginType, MethodInfo mupdate, PropertyInfo pi)
         {
             string GetPropertyName = "get_" + PropertyName;
             string SetPropertyName = "set_" + PropertyName;
@@ -171,7 +261,7 @@ namespace org.hanzify.llf.Data.Common
             OverrideMethod(OverrideFlag, GetPropertyName, OriginType, PropertyType, null, delegate(ILGenerator il)
             {
                 il.Emit(OpCodes.Ldfld, fi);
-                if (ft == FieldType.BelongsTo || ft == FieldType.HasOne)
+                if (ft == FieldType.BelongsTo || ft == FieldType.HasOne || ft == FieldType.LazyLoad)
                 {
                     MethodInfo getValue = fi.FieldType.GetMethod("get_Value", ClassHelper.InstancePublic);
                     il.Emit(OpCodes.Callvirt, getValue);
@@ -180,35 +270,64 @@ namespace org.hanzify.llf.Data.Common
 
             OverrideMethod(OverrideFlag, SetPropertyName, OriginType, null, new Type[] { PropertyType }, delegate(ILGenerator il)
             {
-                if (ft == FieldType.HasOne || ft == FieldType.BelongsTo)
+                if (ft == FieldType.HasOne || ft == FieldType.BelongsTo || ft == FieldType.LazyLoad)
                 {
                     il.Emit(OpCodes.Ldfld, fi);
                     il.Emit(OpCodes.Ldarg_1);
                     MethodInfo setValue = fi.FieldType.GetMethod("set_Value", ClassHelper.InstancePublic);
                     il.Emit(OpCodes.Callvirt, setValue);
                 }
-                else
+                else if (ft == FieldType.Normal)
                 {
-                    if (ft == FieldType.Normal)
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Stfld, fi);
+                }
+                if (ft == FieldType.LazyLoad || ft == FieldType.Normal)
+                {
+                    if (mupdate != null)
                     {
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Stfld, fi);
-                        if (mupdate != null)
-                        {
-                            string cn = DbObjectHelper.GetColumuName(new MemberAdapter.PropertyAdapter(pi));
-                            il.Emit(OpCodes.Ldarg_0);
-                            il.Emit(OpCodes.Ldstr, cn);
-                            il.Emit(OpCodes.Call, mupdate);
-                        }
+                        string cn = DbObjectHelper.GetColumuName(new MemberAdapter.PropertyAdapter(pi));
+                        il.Emit(OpCodes.Ldarg_0);
+                        il.Emit(OpCodes.Ldstr, cn);
+                        il.Emit(OpCodes.Call, mupdate);
                     }
                 }
             });
+            if (ft != FieldType.Normal)
+            {
+                return GetMemberHandler(ft, fi, pi);
+            }
+            return null;
+        }
+
+        private MemberHandler GetMemberHandler(FieldType ft, FieldInfo fi, PropertyInfo pi)
+        {
+            MemberAdapter ma = MemberAdapter.NewObject(fi);
+            MemberHandler h = MemberHandler.NewObject(ma, "");
+            if (ft == FieldType.HasOne) h.IsHasOne = true;
+            if (ft == FieldType.HasMany) h.IsHasMany = true;
+            if (ft == FieldType.HasAndBelongsToMany) h.IsHasAndBelongsToMany = true;
+            if (ft == FieldType.BelongsTo) h.IsBelongsTo = true;
+            if (ft == FieldType.LazyLoad) h.IsLazyLoad = true;
+            OrderByAttribute[] obs = (OrderByAttribute[])pi.GetCustomAttributes(typeof(OrderByAttribute), true);
+            if (obs != null && obs.Length > 0)
+            {
+                h.OrderByString = obs[0].OrderBy;
+            }
+            return h;
         }
 
         public void OverrideMethod(MethodAttributes flag, string MethodName, Type OriginType, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
             MethodBuilder mb = DefineMethod(flag, MethodName, returnType, paramTypes, emitCode);
             MethodInfo mi = OriginType.GetMethod(MethodName);
+            InnerType.DefineMethodOverride(mb, mi);
+        }
+
+        public void OverrideMethodDirect(MethodAttributes flag, string MethodName, Type OriginType, Type returnType, Type[] paramTypes, EmitCode emitCode)
+        {
+            MethodBuilder mb = DefineMethodDirect(flag, MethodName, returnType, paramTypes, emitCode);
+            MethodInfo mi = OriginType.GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             InnerType.DefineMethodOverride(mb, mi);
         }
 

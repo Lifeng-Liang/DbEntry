@@ -23,72 +23,27 @@ namespace org.hanzify.llf.Data.Common
     {
         private static HybridDictionary ObjectInfos = new HybridDictionary();
 
-        public static object CreateObject(DbDriver driver, Type DbObjectType, IDataReader dr, bool UseIndex)
-        {
-            if (UseIndex)
-            {
-                int i = 0;
-                return InnerCreateObject(driver, DbObjectType, delegate(object o)
-                {
-                    return dr[i++];
-                });
-            }
-            else
-            {
-                return InnerCreateObject(driver, DbObjectType, delegate(object o)
-                {
-                    return dr[((MemberHandler)o).Name];
-                });
-            }
-        }
-
-        private static object InnerCreateObject(DbDriver driver, Type DbObjectType,
-            CallbackHandler<object,object> callback)
+        public static object CreateObject(DbContext context, Type DbObjectType, IDataReader dr, bool UseIndex)
         {
             ObjectInfo ii = m_GetObjectInfo(DbObjectType);
-            object di = ii.NewObject();
-            DbObjectSmartUpdate sudi = di as DbObjectSmartUpdate;
+            object obj = ii.NewObject();
+            DbObjectSmartUpdate sudi = obj as DbObjectSmartUpdate;
             if (sudi != null)
             {
                 sudi.m_InternalInit = true;
             }
             if (ii.BelongsToField != null)
             {
-                ILazyLoading bt = (ILazyLoading)ii.BelongsToField.GetValue(di);
-                bt.Init(driver, ii.BelongsToField.Name);
+                ILazyLoading bt = (ILazyLoading)ii.BelongsToField.GetValue(obj);
+                bt.Init(context, ii.BelongsToField.Name);
             }
-            foreach (MemberHandler f in ii.SimpleFields)
-            {
-                f.SetValue(di, callback(f));
-            }
-            foreach (MemberHandler f in ii.RelationFields)
-            {
-                if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany)
-                {
-                    ILazyLoading ho = (ILazyLoading)f.GetValue(di);
-                    ObjectInfo oi = m_GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
-                    if (oi.BelongsToField != null)
-                    {
-                        ho.Init(driver, oi.BelongsToField.Name);
-                    }
-                    else
-                    {
-                        // TODO: should throw exception or not ?
-                        throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
-                        // ho.Init(driver, "__");
-                    }
-                }
-                else if (f.IsBelongsTo) // TODO: IsHasAndBelongsToMany
-                {
-                    IBelongsTo ho = (IBelongsTo)f.GetValue(di);
-                    ho.ForeignKey = callback(f);
-                }
-            }
+            ii.Handler.LoadSimpleValues(obj, UseIndex, dr);
+            ii.Handler.LoadRelationValues(context, obj, UseIndex, dr);
             if (sudi != null)
             {
                 sudi.m_InternalInit = false;
             }
-            return di;
+            return obj;
         }
 
         private static void CheckIndexAttributes(IndexAttribute[] ias)
@@ -155,49 +110,6 @@ namespace org.hanzify.llf.Data.Common
             return ii.From;
         }
 
-        public static void SetValues(ISqlValues isv, object obj, bool IncludeKey, bool SmartUpdate)
-        {
-            Type t = obj.GetType();
-            ObjectInfo ii = m_GetObjectInfo(t);
-            DbObjectSmartUpdate to = obj as DbObjectSmartUpdate;
-            if (SmartUpdate && to != null && to.m_UpdateColumns != null)
-            {
-                foreach (MemberHandler fi in ii.Fields)
-                {
-                    if (to.m_UpdateColumns.ContainsKey(fi.Name))
-                    {
-                        AddKeyValue(isv, fi, obj);
-                    }
-                }
-            }
-            else
-            {
-                foreach (MemberHandler fi in ii.Fields)
-                {
-                    if ((!fi.IsSystemGeneration || IncludeKey) && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany)
-                    {
-                        AddKeyValue(isv, fi, obj);
-                    }
-                }
-            }
-        }
-
-        private static void AddKeyValue(ISqlValues isv, MemberHandler fi, object obj)
-        {
-            if (fi.IsBelongsTo)
-            {
-                IBelongsTo ll = (IBelongsTo)fi.GetValue(obj);
-                Type fkt = (ll.ForeignKey != null) ? ll.ForeignKey.GetType() : typeof(int);
-                KeyValue kv = new KeyValue(fi.Name, ll.ForeignKey, fkt);
-                isv.Values.Add(kv);
-            }
-            else
-            {
-                KeyValue kv = new KeyValue(fi.Name, fi.GetValue(obj), fi.FieldType);
-                isv.Values.Add(kv);
-            }
-        }
-
         public static WhereCondition GetKeyWhereClause(object obj)
         {
             Type t = obj.GetType();
@@ -207,9 +119,10 @@ namespace org.hanzify.llf.Data.Common
                 throw new DbEntryException("dbobject not define key field : " + t.ToString());
             }
             WhereCondition ret = null;
-            foreach (MemberHandler fh in ii.KeyFields)
+            Dictionary<string,object> dic = ii.Handler.GetKeyValues(obj);
+            foreach (string s in dic.Keys)
             {
-                ret &= (CK.K[fh.Name] == fh.GetValue(obj));
+                ret &= (CK.K[s] == dic[s]);
             }
             return ret;
         }
@@ -265,7 +178,7 @@ namespace org.hanzify.llf.Data.Common
             return (fn == null) ? fi.Name : fn.Name;
         }
 
-        private static MemberHandler GetMemberHandler(MemberAdapter fi)
+        internal static MemberHandler GetMemberHandler(MemberAdapter fi)
         {
             DbColumnAttribute fn = GetAttribute<DbColumnAttribute>(fi);
             string Name = (fn == null) ? fi.Name : fn.Name;
@@ -276,30 +189,30 @@ namespace org.hanzify.llf.Data.Common
             if (dk != null)
             {
                 fh.IsKey = true;
-                if (dk.IsSystemGeneration)
+                if (dk.IsDbGenerate)
                 {
-                    fh.IsSystemGeneration = true;
+                    fh.IsDbGenerate = true;
                 }
-                if (dk.UnsavedValue != null && (!dk.IsSystemGeneration))
+                if (dk.UnsavedValue != null && (!dk.IsDbGenerate))
                 {
-                    throw new DbEntryException("Not SystemGeneration Key can not have a UnsavedValue!");
+                    throw new DbEntryException("UnsavedValue must set to Database Generation Key!");
                 }
                 fh.UnsavedValue = dk.UnsavedValue;
             }
 
             if (fi.MemberType.IsGenericType)
             {
-                Type t = typeof(HasOne<object>).GetGenericTypeDefinition();
+                Type t = typeof(HasOne<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t)
                 {
                     fh.IsHasOne = true;
                 }
-                Type t0 = typeof(HasMany<object>).GetGenericTypeDefinition();
+                Type t0 = typeof(HasMany<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t0)
                 {
                     fh.IsHasMany = true;
                 }
-                Type t1 = typeof(BelongsTo<object>).GetGenericTypeDefinition();
+                Type t1 = typeof(BelongsTo<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t1)
                 {
                     fh.IsBelongsTo = true;
@@ -310,7 +223,7 @@ namespace org.hanzify.llf.Data.Common
                         fh.Name = n + "_Id";
                     }
                 }
-                Type t2 = typeof(HasAndBelongsToMany<object>).GetGenericTypeDefinition();
+                Type t2 = typeof(HasAndBelongsToMany<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t2)
                 {
                     fh.IsHasAndBelongsToMany = true;
@@ -321,7 +234,8 @@ namespace org.hanzify.llf.Data.Common
                         fh.Name = n1 + "_Id";
                     }
                 }
-                if (fh.IsBelongsTo || fh.IsHasMany || fh.IsHasOne || fh.IsHasAndBelongsToMany)
+                Type t3 = typeof(LazyLoadField<>);
+                if (fi.MemberType.GetGenericTypeDefinition() == t3)
                 {
                     fh.IsLazyLoad = true;
                 }
@@ -342,14 +256,15 @@ namespace org.hanzify.llf.Data.Common
                 fh.MaxLength = ml.Value;
             }
 
-            if (fi.MemberType == typeof(string))
+            if (fi.MemberType == typeof(string) || 
+                (fh.IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string)))
             {
                 fh.IsUnicode = true;
             }
             StringColumnAttribute sf = GetAttribute<StringColumnAttribute>(fi);
             if (sf != null)
             {
-                if (fi.MemberType != typeof(string))
+                if (!(fi.MemberType == typeof(string) || (fh.IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string))))
                 {
                     throw new DbEntryException("StringFieldAttribute must set for String Type Field!");
                 }
@@ -359,22 +274,15 @@ namespace org.hanzify.llf.Data.Common
             OrderByAttribute os = GetAttribute<OrderByAttribute>(fi);
             if (os != null)
             {
-                if (fh.IsHasMany || fh.IsHasOne || fh.IsHasAndBelongsToMany)
-                {
-                    fh.OrderByString = os.OrderBy;
-                }
-                else
-                {
-                    throw new DbEntryException("Only HasMany HasOne HasAndBelongsToMany allows OrderBy attribute!");
-                }
+                fh.OrderByString = os.OrderBy;
             }
             return fh;
         }
 
         private static void ProcessMember(MemberAdapter m, List<MemberHandler> ret, List<MemberHandler> kfs)
         {
-            if (!HasAtributes(m, typeof(ExcludeAttribute), typeof(HasOneAttribute),
-                typeof(HasManyAttribute), typeof(HasAndBelongsToManyAttribute), typeof(BelongsToAttribute)))
+            if (!HasAtributes(m, typeof(ExcludeAttribute), typeof(HasOneAttribute), typeof(HasManyAttribute),
+                typeof(HasAndBelongsToManyAttribute), typeof(BelongsToAttribute), typeof(LazyLoadAttribute)))
             {
                 MemberHandler fh = GetMemberHandler(m);
                 if (fh.IsKey)
@@ -410,68 +318,16 @@ namespace org.hanzify.llf.Data.Common
             }
             else
             {
-                List<MemberHandler> ret = new List<MemberHandler>();
-                List<MemberHandler> kfs = new List<MemberHandler>();
-                foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
-                {
-                    if (!fi.IsPrivate)
-                    {
-                        MemberAdapter m = MemberAdapter.NewObject(fi);
-                        ProcessMember(m, ret, kfs);
-                    }
-                }
-                foreach (PropertyInfo pi in t.GetProperties(ClassHelper.InstancePublic))
-                {
-                    if (pi.CanRead && pi.CanWrite)
-                    {
-                        MemberAdapter m = MemberAdapter.NewObject(pi);
-                        ProcessMember(m, ret, kfs);
-                    }
-                }
-                if (kfs.Count > 1)
-                {
-                    foreach (MemberHandler k in kfs)
-                    {
-                        if (k.IsSystemGeneration)
-                        {
-                            throw new DbEntryException("Multi key did not allow SystemGeneration!");
-                        }
-                    }
-                }
-
-                // fill simple and relation fields.
-                List<MemberHandler> rlfs = new List<MemberHandler>();
-                List<MemberHandler> sifs = new List<MemberHandler>();
-                foreach (MemberHandler mh in ret)
-                {
-                    if (mh.IsHasOne || mh.IsHasMany || mh.IsHasAndBelongsToMany || mh.IsBelongsTo)
-                    {
-                        rlfs.Add(mh);
-                    }
-                    else
-                    {
-                        sifs.Add(mh);
-                    }
-                }
-                List<MemberHandler> fields = new List<MemberHandler>(sifs);
-                fields.AddRange(rlfs);
-                MemberHandler[] keys = kfs.ToArray();
-
-                ObjectInfo ii = new ObjectInfo(GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
-                SetManyToManyMediFrom(ii, t, ii.From.GetMainTableName(), ii.Fields);
-
-                ii.RelationFields = rlfs.ToArray();
-                ii.SimpleFields = sifs.ToArray();
-
+                ObjectInfo ii = m_GetSimpleObjectInfo(t);
                 // binding DbObjectHandler
-                if (DataSetting.DBOHandlerType == HandlerType.Emit
-                    || (DataSetting.DBOHandlerType == HandlerType.Both && t.IsPublic))
+                if (DataSetting.ObjectHandlerType == HandlerType.Emit
+                    || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
                 {
-                    ii.handler = DynamicObject.CreateDbObjectHandler(t);
+                    ii.Handler = DynamicObject.CreateDbObjectHandler(t, ii);
                 }
                 else
                 {
-                    ii.handler = new ReflectionDbObjectHandler(t);
+                    ii.Handler = new ReflectionDbObjectHandler(t, ii);
                 }
 
                 lock (ObjectInfos.SyncRoot)
@@ -479,6 +335,123 @@ namespace org.hanzify.llf.Data.Common
                     ObjectInfos[t] = ii;
                 }
                 return ii;
+            }
+        }
+
+        private static ObjectInfo m_GetSimpleObjectInfo(Type t)
+        {
+            List<MemberHandler> ret = new List<MemberHandler>();
+            List<MemberHandler> kfs = new List<MemberHandler>();
+            foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
+            {
+                if (!fi.IsPrivate)
+                {
+                    MemberAdapter m = MemberAdapter.NewObject(fi);
+                    ProcessMember(m, ret, kfs);
+                }
+            }
+            foreach (PropertyInfo pi in t.GetProperties(ClassHelper.InstancePublic))
+            {
+                if (pi.CanRead && pi.CanWrite)
+                {
+                    MemberAdapter m = MemberAdapter.NewObject(pi);
+                    ProcessMember(m, ret, kfs);
+                }
+            }
+            if (kfs.Count > 1)
+            {
+                foreach (MemberHandler k in kfs)
+                {
+                    if (k.IsDbGenerate)
+                    {
+                        throw new DbEntryException("Multi key did not allow SystemGeneration!");
+                    }
+                }
+            }
+
+            // fill simple and relation fields.
+            List<MemberHandler> rlfs = new List<MemberHandler>();
+            List<MemberHandler> sifs = new List<MemberHandler>();
+            foreach (MemberHandler mh in ret)
+            {
+                if (mh.IsHasOne || mh.IsHasMany || mh.IsHasAndBelongsToMany || mh.IsBelongsTo || mh.IsLazyLoad)
+                {
+                    rlfs.Add(mh);
+                }
+                else
+                {
+                    sifs.Add(mh);
+                }
+            }
+            List<MemberHandler> fields = new List<MemberHandler>(sifs);
+            fields.AddRange(rlfs);
+            MemberHandler[] keys = kfs.ToArray();
+
+            ObjectInfo ii = new ObjectInfo(GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
+            SetManyToManyMediFrom(ii, t, ii.From.GetMainTableName(), ii.Fields);
+
+            ii.RelationFields = rlfs.ToArray();
+            ii.SimpleFields = sifs.ToArray();
+
+            return ii;
+        }
+
+        internal static MemberHandler GetBelongsTo(Type tt)
+        {
+            Type t = (tt.IsAbstract) ? DynamicObject.GetImplType(tt) : tt;
+            if (ObjectInfos.Contains(t))
+            {
+                return ((ObjectInfo)ObjectInfos[t]).BelongsToField;
+            }
+            else
+            {
+                foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
+                {
+                    if (!fi.IsPrivate)
+                    {
+                        if (fi.FieldType.IsGenericType)
+                        {
+                            MemberAdapter m = MemberAdapter.NewObject(fi);
+                            if (!HasAtributes(m, typeof(ExcludeAttribute)))
+                            {
+                                MemberHandler mh = GetMemberHandler(m);
+                                if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
+                                {
+                                    return mh;
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+        internal static MemberHandler GetKeyField(Type tt)
+        {
+            Type t = (tt.IsAbstract) ? DynamicObject.GetImplType(tt) : tt;
+            if (ObjectInfos.Contains(t))
+            {
+                return ((ObjectInfo)ObjectInfos[t]).KeyFields[0];
+            }
+            else
+            {
+                foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
+                {
+                    if (!fi.IsPrivate)
+                    {
+                        if (!fi.FieldType.IsGenericType)
+                        {
+                            MemberAdapter m = MemberAdapter.NewObject(fi);
+                            if (HasAtributes(m, typeof(DbKeyAttribute)))
+                            {
+                                MemberHandler mh = GetMemberHandler(m);
+                                return mh;
+                            }
+                        }
+                    }
+                }
+                return null;
             }
         }
 

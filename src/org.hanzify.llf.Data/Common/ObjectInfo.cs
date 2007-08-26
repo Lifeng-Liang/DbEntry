@@ -11,7 +11,7 @@ namespace org.hanzify.llf.Data.Common
 {
 	internal class ObjectInfo
 	{
-        public IDbObjectHandler handler;
+        public IDbObjectHandler Handler;
 
 		public FromClause From;
         public bool HasSystemKey;
@@ -41,7 +41,7 @@ namespace org.hanzify.llf.Data.Common
             this.Fields = Fields;
             this.DisableSqlLog = DisableSqlLog;
 
-            this.HasSystemKey = ((KeyFields.Length == 1) && KeyFields[0].IsSystemGeneration);
+            this.HasSystemKey = ((KeyFields.Length == 1) && KeyFields[0].IsDbGenerate);
 
             foreach (MemberHandler f in Fields)
             {
@@ -50,12 +50,16 @@ namespace org.hanzify.llf.Data.Common
                     HasAssociate = true;
                     IsAssociateObject = true;
                 }
+                if (f.IsLazyLoad)
+                {
+                    IsAssociateObject = true;
+                }
                 if (f.IsBelongsTo || f.IsHasAndBelongsToMany) // TODO: no problem ?
                 {
                     IsAssociateObject = true;
                     if (BelongsToField != null)
                     {
-                        throw new DbEntryException("An class only alow one BelongsTo field.");
+                        throw new DbEntryException("An class only allow one BelongsTo field.");
                     }
                     else
                     {
@@ -69,7 +73,7 @@ namespace org.hanzify.llf.Data.Common
 
         public object NewObject()
         {
-            return handler.CreateInstance();
+            return Handler.CreateInstance();
         }
     }
 }

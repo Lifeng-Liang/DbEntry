@@ -20,7 +20,7 @@ namespace org.hanzify.llf.Data.SqlEntry
         internal int StartIndex = 0;
         internal int EndIndex = 0;
 
-		protected static CommandType GetCommandType(string SqlCommandText)
+		internal protected static CommandType GetCommandType(string SqlCommandText)
 		{
 			if ( StringHelper.IsIndentityName(SqlCommandText) )
 			{

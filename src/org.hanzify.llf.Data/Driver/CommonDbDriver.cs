@@ -11,7 +11,7 @@ using org.hanzify.llf.util;
 
 namespace org.hanzify.llf.Data.Driver
 {
-	internal class CommonDbDriver : DbDriver
+    internal class CommonDbDriver : DbDriver
 	{
         public CommonDbDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
             : base(DialectClass, ConnectionString, DbProviderFactoryName)

@@ -13,7 +13,7 @@ using org.hanzify.llf.Data.SqlEntry;
 
 namespace org.hanzify.llf.Data.Driver
 {
-	internal class OleDbDriver : DbDriver
+    internal class OleDbDriver : DbDriver
 	{
         public OleDbDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
             : base(DialectClass, ConnectionString, DbProviderFactoryName)

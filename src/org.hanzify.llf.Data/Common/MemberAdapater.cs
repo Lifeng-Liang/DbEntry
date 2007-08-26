@@ -1,10 +1,7 @@
 
-#region usings
-
 using System;
 using System.Reflection;
-
-#endregion
+using System.Reflection.Emit;
 
 namespace org.hanzify.llf.Data.Common
 {
@@ -53,6 +50,21 @@ namespace org.hanzify.llf.Data.Common
             {
                 get { return false; }
             }
+
+            public override MemberInfo GetMemberInfo()
+            {
+                return fi;
+            }
+
+            public override void EmitSet(ILGenerator il)
+            {
+                il.Emit(OpCodes.Stfld, fi);
+            }
+
+            public override void EmitGet(ILGenerator il)
+            {
+                il.Emit(OpCodes.Ldfld, fi);
+            }
         }
 
         internal class PropertyAdapter : MemberAdapter
@@ -96,6 +108,21 @@ namespace org.hanzify.llf.Data.Common
             {
                 get { return true; }
             }
+
+            public override MemberInfo GetMemberInfo()
+            {
+                return pi;
+            }
+
+            public override void EmitSet(ILGenerator il)
+            {
+                il.Emit(OpCodes.Callvirt, pi.GetSetMethod());
+            }
+
+            public override void EmitGet(ILGenerator il)
+            {
+                il.Emit(OpCodes.Callvirt, pi.GetGetMethod());
+            }
         }
 
         #endregion
@@ -106,6 +133,9 @@ namespace org.hanzify.llf.Data.Common
         public abstract Type MemberType { get; }
         public abstract void SetValue(object obj, object value);
         public abstract object GetValue(object obj);
+        public abstract MemberInfo GetMemberInfo();
+        public abstract void EmitSet(ILGenerator il);
+        public abstract void EmitGet(ILGenerator il);
 
         public static MemberAdapter NewObject(FieldInfo fi)
         {

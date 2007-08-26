@@ -19,7 +19,7 @@ namespace org.hanzify.llf.Data.SqlEntry
 
 	public static class DataSetting
 	{
-        public static readonly HandlerType DBOHandlerType   = HandlerType.Emit;
+        public static readonly HandlerType ObjectHandlerType= HandlerType.Emit;
 
         public static readonly bool AutoCreateTable         = false;
 

@@ -10,7 +10,7 @@ using System.Text;
 namespace org.hanzify.llf.Data.Definition
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
-    public class HasOneAttribute : Attribute
+    public class HasOneAttribute : OrderByAttribute
     {
     }
 }

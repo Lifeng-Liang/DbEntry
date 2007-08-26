@@ -49,11 +49,14 @@
     <Compile Include="Data\CommonUsageTest.cs" />
     <Compile Include="Data\ComplexDynamicObjectTest.cs" />
     <Compile Include="Data\CreateTable\SQLiteTest.cs" />
+    <Compile Include="Data\FullTypesTest.cs" />
     <Compile Include="Data\HasAndBelongsToManyAssociateTest.cs" />
     <Compile Include="Data\HasManyAssociateTest.cs" />
     <Compile Include="Data\HasOneAssociateTest.cs" />
     <Compile Include="Data\Inner\CommonTest.cs" />
+    <Compile Include="Data\LazyLoadFieldTest.cs" />
     <Compile Include="Data\LogicalOperatorTest.cs" />
+    <Compile Include="Data\NullTest.cs" />
     <Compile Include="Data\Objects\AbstractClasses.cs" />
     <Compile Include="Data\DynamicObjectAbstractClassTest.cs" />
     <Compile Include="Data\Objects\AssociateClasses.cs" />
@@ -65,6 +68,7 @@
     <Compile Include="Data\SmartUpdateTest.cs" />
     <Compile Include="Data\ValidateHandlerTest.cs" />
     <Compile Include="Data\VBHelperTest.cs" />
+    <Compile Include="DotNetFramework\NullabelTest.cs" />
     <Compile Include="DotNetFramework\TextTest.cs" />
     <Compile Include="InitHelper.cs" />
     <Compile Include="Data\Inner\DataTester.cs" />

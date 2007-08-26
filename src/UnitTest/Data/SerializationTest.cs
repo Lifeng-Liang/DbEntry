@@ -24,7 +24,8 @@ namespace org.hanzify.llf.UnitTest.Data
         [SetUp]
         public void Setup()
         {
-            ClassHelper.SetValue<MemoryTypeBuilder>("FieldPrifix", "_");
+            Type t = typeof(DbEntry).Assembly.GetType("org.hanzify.llf.Data.Common.MemoryTypeBuilder");
+            ClassHelper.SetValue(t, "FieldPrifix", "_");
         }
 
         [Test]

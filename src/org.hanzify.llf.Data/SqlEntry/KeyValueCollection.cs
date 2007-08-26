@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion
 
@@ -33,6 +34,5 @@ namespace org.hanzify.llf.Data.SqlEntry
 			get { return (KeyValue)List[index]; }
 			set { List[index] = value; }
 		}
-
 	}
 }

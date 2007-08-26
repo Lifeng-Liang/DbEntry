@@ -10,7 +10,7 @@ using org.hanzify.llf.util;
 
 namespace org.hanzify.llf.Data.Common
 {
-    public class MemoryAssembly
+    internal class MemoryAssembly
     {
         public const string DefaultAssemblyName = "DbEntry_MemoryAssembly";
         public static readonly MemoryAssembly Instance = new MemoryAssembly();
@@ -29,6 +29,8 @@ namespace org.hanzify.llf.Data.Common
             AssemblyName an = new AssemblyName(AssemblyName);
             byte[] bs = ResourceHelper.ReadAll(this.GetType(), "dynamic.snk");
             an.KeyPair = new StrongNameKeyPair(bs);
+            //InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
+            //    an, AssemblyBuilderAccess.RunAndSave, @"c:\x.dll");
             InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
                 an, AssemblyBuilderAccess.Run);
             ResetModule();
@@ -62,6 +64,11 @@ namespace org.hanzify.llf.Data.Common
         public void ResetModule()
         {
             InnerModule = InnerAssembly.DefineDynamicModule(this.AssemblyName);
+        }
+
+        public void Save()
+        {
+            InnerAssembly.Save(@"c:\x.dll");
         }
     }
 }

@@ -18,7 +18,7 @@ namespace org.hanzify.llf.Data.Dialect
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            if (ssb.Order == null || ssb.Values.Count == 0)
+            if (ssb.Order == null || ssb.Keys.Count == 0)
             {
                 throw new DbEntryException("Paged select must have Order And Values not Empty.");
             }

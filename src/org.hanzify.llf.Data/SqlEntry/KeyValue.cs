@@ -29,14 +29,6 @@ namespace org.hanzify.llf.Data.SqlEntry
 			this.Key = Key;
 			this.Value = Value;
 			this.ValueType = ValueType;
-            if (ValueType.IsGenericType)
-            {
-                Common.ObjectInfo oi = Common.DbObjectHelper.GetObjectInfo(ValueType.GetGenericArguments()[0]);
-                if (oi.KeyFields != null && oi.KeyFields.Length == 1)
-                {
-                    this.ValueType = oi.KeyFields[0].FieldType;
-                }
-            }
 		}
 	}
 }

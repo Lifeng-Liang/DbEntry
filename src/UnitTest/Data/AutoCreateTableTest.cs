@@ -26,6 +26,11 @@ namespace org.hanzify.llf.UnitTest.Data
     {
         public string Name;
         public HasOne<ctInfo> info;
+
+        public ctUser()
+        {
+            info = new HasOne<ctInfo>(this, "");
+        }
     }
 
     public class ctInfo : DbObject
@@ -33,12 +38,22 @@ namespace org.hanzify.llf.UnitTest.Data
         public string iMsg;
         [DbColumn("user_id")]
         public BelongsTo<ctUser> user;
+
+        public ctInfo()
+        {
+            user = new BelongsTo<ctUser>(this);
+        }
     }
 
     public class ctmUser : DbObject
     {
         public string Name;
-        public HasMany<ctmInfo> infos = new HasMany<ctmInfo>(new OrderBy("Id"));
+        public HasMany<ctmInfo> infos;
+
+        public ctmUser()
+        {
+            infos = new HasMany<ctmInfo>(this, new OrderBy("Id"));
+        }
     }
 
     public class ctmInfo : DbObject
@@ -47,8 +62,11 @@ namespace org.hanzify.llf.UnitTest.Data
         [DbColumn("user_id")]
         public BelongsTo<ctmUser> user;
 
-        public ctmInfo() { }
-        public ctmInfo(string msg)
+        public ctmInfo()
+        {
+            user = new BelongsTo<ctmUser>(this);
+        }
+        public ctmInfo(string msg) : this()
         {
             iMsg = msg;
         }
@@ -58,19 +76,72 @@ namespace org.hanzify.llf.UnitTest.Data
     {
         public string Name;
         [DbColumn("cmmArticle_id")]
-        public HasAndBelongsToMany<cmmArticle> arts = new HasAndBelongsToMany<cmmArticle>(new OrderBy("Id"));
-        public cmmReader() { }
-        public cmmReader(string Name) { this.Name = Name; }
+        public HasAndBelongsToMany<cmmArticle> arts;
+        public cmmReader()
+        {
+            arts = new HasAndBelongsToMany<cmmArticle>(this, new OrderBy("Id"));
+        }
+        public cmmReader(string Name) : this() { this.Name = Name; }
     }
 
     public class cmmArticle : DbObject
     {
         public string Title;
         [DbColumn("cmmReader_id")]
-        public HasAndBelongsToMany<cmmReader> rads = new HasAndBelongsToMany<cmmReader>(new OrderBy("Id"));
-        public cmmArticle() { }
-        public cmmArticle(string Title) { this.Title = Title; }
+        public HasAndBelongsToMany<cmmReader> rads;
+        public cmmArticle()
+        {
+            rads = new HasAndBelongsToMany<cmmReader>(this, new OrderBy("Id"));
+        }
+        public cmmArticle(string Title) : this() { this.Title = Title; }
     }
+
+    public enum MyEnum
+    {
+        Worker,
+        Manager,
+        Costomer,
+    }
+
+    public abstract class EnumTest : DbObjectModel<EnumTest>
+    {
+        [MaxLength(50)]
+        public abstract string Name { get; set; }
+        public abstract MyEnum MyType { get; set; }
+        public abstract DateTime MyDate { get; set; }
+    }
+
+    public enum UserRole
+    {
+        Manager,
+        Worker,
+        Client
+    }
+
+    public abstract class SampleData : DbObjectModel<SampleData>
+    {
+        [MaxLength(50)]
+        public abstract string Name { get; set; }
+
+        public abstract UserRole Role { get; set; }
+
+        public abstract DateTime JoinDate { get; set; }
+
+        public abstract bool Enabled { get; set; }
+
+        public abstract int? NullInt { get; set; }
+
+        public SampleData Init(string Name, UserRole Role, DateTime JoinDate, bool Enabled, int? NullInt)
+        {
+            this.Name = Name;
+            this.Role = Role;
+            this.JoinDate = JoinDate;
+            this.Enabled = Enabled;
+            this.NullInt = NullInt;
+            return this;
+        }
+    }
+
 
     #endregion
 
@@ -98,15 +169,16 @@ namespace org.hanzify.llf.UnitTest.Data
         {
             List<string> li = DbEntry.Context.GetTableNames();
             li.Sort();
-            Assert.AreEqual(8, li.Count);
+            Assert.AreEqual(9, li.Count);
             Assert.AreEqual("Article", li[0]);
             Assert.AreEqual("Article_Reader", li[1]);
             Assert.AreEqual("Books", li[2]);
             Assert.AreEqual("Categories", li[3]);
             Assert.AreEqual("File", li[4]);
-            Assert.AreEqual("PCs", li[5]);
-            Assert.AreEqual("People", li[6]);
-            Assert.AreEqual("Reader", li[7]);
+            Assert.AreEqual("NullTest", li[5]);
+            Assert.AreEqual("PCs", li[6]);
+            Assert.AreEqual("People", li[7]);
+            Assert.AreEqual("Reader", li[8]);
         }
 
         [Test]
@@ -193,6 +265,35 @@ namespace org.hanzify.llf.UnitTest.Data
             u1.Save();
             asUser u2 = asUser.FindById(u.Id);
             Assert.AreEqual("Jerry", u2.Name);
+        }
+
+        [Test]
+        public void TestEnum()
+        {
+            EnumTest u = EnumTest.New();
+            u.Name = "test";
+            u.MyType = MyEnum.Manager;
+            u.MyDate = new DateTime(2000, 1, 1);
+            u.Save();
+
+            EnumTest u1 = EnumTest.FindById(u.Id);
+            Assert.AreEqual("test", u1.Name);
+            Assert.AreEqual(MyEnum.Manager, u1.MyType);
+            Assert.AreEqual(new DateTime(2000, 1, 1), u.MyDate);
+
+            List<EnumTest> ls = EnumTest.Find(CK.K["Id"] > 0, new OrderBy("Id"));
+            Assert.AreEqual(1, ls.Count);
+            Assert.AreEqual("test", ls[0].Name);
+        }
+
+        [Test]
+        public void TestSampleData()
+        {
+            SampleData.New().Init("angel", UserRole.Worker, new DateTime(2004, 2, 27, 15, 10, 23), true, null).Save();
+            SampleData.New().Init("tom", UserRole.Manager, new DateTime(2001, 3, 17, 7, 12, 4), false, null).Save();
+            SampleData.New().Init("jerry", UserRole.Client, new DateTime(1999, 1, 31, 21, 22, 55), true, 10).Save();
+            List<SampleData> ls1 = SampleData.Find(CK.K["Id"] > 1, new OrderBy("Id"));
+            Assert.AreEqual(2, ls1.Count);
         }
     }
 }

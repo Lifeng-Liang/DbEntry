@@ -7,7 +7,7 @@ namespace org.hanzify.llf.Data.Definition
 {
     public abstract class DbObjectModelAsTree<T> : DbObjectModel<T>
     {
-        [HasMany, OrderBy("Id")]
+        [HasMany(OrderBy = "Id")]
         public abstract IList<T> Children { get; set; }
 
         [BelongsTo, DbColumn("BelongsTo_Id")]

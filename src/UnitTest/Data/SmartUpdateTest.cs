@@ -109,11 +109,13 @@ namespace org.hanzify.llf.UnitTest.Data
 
         public rUser()
         {
+            Articles = new HasMany<rArticle>(this, "");
             m_InitUpdateColumns();
         }
 
         public rUser(string Name, int Age)
         {
+            Articles = new HasMany<rArticle>(this, "");
             this.Name = Name;
             this.Age = Age;
             m_InitUpdateColumns();
@@ -154,7 +156,7 @@ namespace org.hanzify.llf.UnitTest.Data
         }
 
         [DbColumn("Reader_Id")]
-        public BelongsTo<rUser> _Reader = null;
+        public BelongsTo<rUser> _Reader;
 
         public void SetID(long Id)
         {
@@ -163,11 +165,13 @@ namespace org.hanzify.llf.UnitTest.Data
 
         public rArticle()
         {
+            _Reader = new BelongsTo<rUser>(this);
             m_InitUpdateColumns();
         }
 
         public rArticle(string Name, int Age)
         {
+            _Reader = new BelongsTo<rUser>(this);
             this.Name = Name;
             this.Price = Age;
             m_InitUpdateColumns();

@@ -91,19 +91,19 @@ namespace org.hanzify.llf.util.Logging
         public void Debug(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Debug, SystemHelper.CallerFunctionName, Name, message.ToString());
+                ((ILogDirect)this).Log(LogType.Debug, "", Name, message.ToString());
         }
 
         public void Trace(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Trace, SystemHelper.CallerFunctionName, Name, message.ToString());
+                ((ILogDirect)this).Log(LogType.Trace, "", Name, message.ToString());
         }
 
         public void Info(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Info, SystemHelper.CallerFunctionName, Name, message.ToString());
+                ((ILogDirect)this).Log(LogType.Info, "", Name, message.ToString());
         }
 
         public void Warn(object message)

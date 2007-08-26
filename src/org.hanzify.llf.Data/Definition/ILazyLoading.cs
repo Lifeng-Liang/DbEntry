@@ -15,8 +15,7 @@ namespace org.hanzify.llf.Data.Definition
     {
         object Read();
         void Write(object item, bool IsLoad);
-        void SetOwner(object owner, string ColumnName);
-        void Init(DbDriver driver, string ForeignKeyName);
+        void Init(DbContext context, string ForeignKeyName);
         void Load();
         bool IsLoaded { get; set; }
     }

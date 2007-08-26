@@ -17,16 +17,24 @@ namespace org.hanzify.llf.Data.Definition
     public class BelongsTo<T> : IBelongsTo
     {
         private object owner;
-        private string ColumnName;
         private string ForeignKeyName;
         private object _ForeignKey;
 
-        private bool LazyLoad;
-        private DbDriver driver;
+        private DbContext context;
         private bool _IsLoaded;
         private T _Value;
 
         public event CallbackObjectHandler<string> ValueChanged;
+
+        public BelongsTo(object owner)
+        {
+            this.owner = owner;
+            DbObjectSmartUpdate o = owner as DbObjectSmartUpdate;
+            if (o != null)
+            {
+                ValueChanged += new CallbackObjectHandler<string>(o.m_ColumnUpdated);
+            }
+        }
 
         public object ForeignKey
         {
@@ -46,7 +54,7 @@ namespace org.hanzify.llf.Data.Definition
             {
                 ((ILazyLoading)this).Load();
                 _IsLoaded = true;
-                driver = null;
+                context = null;
             }
             return _Value;
         }
@@ -59,10 +67,10 @@ namespace org.hanzify.llf.Data.Definition
                 _Value = (T)item;
                 _ForeignKey = oi.KeyFields[0].GetValue(item);
                 _IsLoaded = true;
-                driver = null;
+                context = null;
                 if (ValueChanged != null && !IsLoad)
                 {
-                    ValueChanged(ColumnName);
+                    ValueChanged("$");
                 }
             }
             else
@@ -83,21 +91,15 @@ namespace org.hanzify.llf.Data.Definition
             }
         }
 
-        void ILazyLoading.SetOwner(object owner, string ColumnName)
+        void ILazyLoading.Init(DbContext driver, string ForeignKeyName)
         {
-            this.owner = owner;
-            this.ColumnName = ColumnName;
-        }
-
-        void ILazyLoading.Init(DbDriver driver, string ForeignKeyName)
-        {
-            this.driver = driver;
+            this.context = driver;
             this.ForeignKeyName = ForeignKeyName;
         }
 
         void ILazyLoading.Load()
         {
-            _Value = (new DbContext(driver)).GetObject<T>(_ForeignKey);
+            _Value = context.GetObject<T>(_ForeignKey);
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
             foreach (MemberHandler f in oi.Fields)
             {
@@ -111,16 +113,6 @@ namespace org.hanzify.llf.Data.Definition
                     }
                 }
             }
-        }
-
-        public BelongsTo()
-            : this(true)
-        {
-        }
-
-        private BelongsTo(bool LazyLoad)
-        {
-            this.LazyLoad = LazyLoad;
         }
 
         private string GetKeyName()

@@ -2,6 +2,7 @@
 #region usings
 
 using System;
+using System.Data;
 using org.hanzify.llf.Data.Dialect;
 using org.hanzify.llf.Data.Builder.Clause;
 using org.hanzify.llf.Data.SqlEntry;
@@ -36,7 +37,7 @@ namespace org.hanzify.llf.Data.Builder
             {
                 SqlString = dd.AddIdentitySelectToInsert(SqlString);
             }
-			SqlStatement Sql = new SqlStatement(SqlString, dpc);
+			SqlStatement Sql = new SqlStatement(CommandType.Text, SqlString, dpc);
 			return Sql;
 		}
 
