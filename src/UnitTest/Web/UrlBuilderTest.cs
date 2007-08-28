@@ -3,9 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using org.hanzify.llf.Web;
 using org.hanzify.llf.util;
 
-namespace org.hanzify.llf.UnitTest.util
+namespace org.hanzify.llf.UnitTest.Web
 {
     [TestFixture]
     public class UrlBuilderTest

@@ -8,7 +8,7 @@ using org.hanzify.llf.Data.Common;
 
 namespace org.hanzify.llf.Data.Common
 {
-	internal class MemberHandler
+	public class MemberHandler
     {
         #region MemberHandler Impl
 

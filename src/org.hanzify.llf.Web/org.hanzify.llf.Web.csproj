@@ -4,17 +4,17 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{EE0F0B59-1970-4929-A73D-1A89862F9B83}</ProjectGuid>
+    <ProjectGuid>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Debug</RootNamespace>
-    <AssemblyName>Debug</AssemblyName>
+    <RootNamespace>org.hanzify.llf.Web</RootNamespace>
+    <AssemblyName>org.hanzify.llf.Web</AssemblyName>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <StartupObject>
-    </StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Web.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,10 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="DbEntryDataSource.cs" />
+    <Compile Include="IExcuteableDataSource.cs" />
+    <Compile Include="UrlBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="UserDataSource.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\org.hanzify.llf.Data\org.hanzify.llf.Data.csproj">
@@ -54,13 +57,6 @@
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
       <Name>org.hanzify.llf.util</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.hanzify.llf.Web\org.hanzify.llf.Web.csproj">
-      <Project>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</Project>
-      <Name>org.hanzify.llf.Web</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -70,4 +66,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
+goto End
+
+:Release
+copy *.dll ..\..\..\..\bin\
+
+:End
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

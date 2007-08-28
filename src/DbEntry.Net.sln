@@ -78,9 +78,15 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebDebug\", "WebDebu
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.hanzify.llf.Web", "org.hanzify.llf.Web\org.hanzify.llf.Web.csproj", "{A73147C3-73C4-4590-9EC4-250AC83F4EF5}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 8
+		SccNumberOfProjects = 9
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs01.codeplex.com/
 		SccLocalPath0 = .
@@ -107,6 +113,9 @@ Global
 		SccLocalPath7 = .
 		SccProjectFilePathRelativizedFromConnection7 = WebDebug\\
 		SccProjectEnlistmentChoice7 = 2
+		SccProjectUniqueName8 = org.hanzify.llf.Web\\org.hanzify.llf.Web.csproj
+		SccProjectName8 = org.hanzify.llf.Web
+		SccLocalPath8 = org.hanzify.llf.Web
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -187,6 +196,16 @@ Global
 		{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A}.Release|Any CPU.ActiveCfg = Debug|.NET
 		{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
 		{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A}.Release|Mixed Platforms.Build.0 = Debug|.NET
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Release|.NET.ActiveCfg = Release|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

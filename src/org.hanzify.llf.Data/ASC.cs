@@ -5,7 +5,7 @@ namespace org.hanzify.llf.Data
 {
 	public class ASC
 	{
-		internal string Key;
+		public string Key;
 
 		public ASC(string Key)
 		{

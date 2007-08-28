@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Web.UI;
 
-namespace org.hanzify.llf.Data.Common
+namespace org.hanzify.llf.Web
 {
     public interface IExcuteableDataSource
     {

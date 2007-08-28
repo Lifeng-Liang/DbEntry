@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 
 namespace org.hanzify.llf.Data.Common
 {
-    internal abstract class MemberAdapter
+    public abstract class MemberAdapter
     {
         #region MemberAdapter Impl
 

@@ -9,9 +9,9 @@ using org.hanzify.llf.Data.Builder.Clause;
 
 namespace org.hanzify.llf.Data.Common
 {
-	internal class ObjectInfo
+	public class ObjectInfo
 	{
-        public IDbObjectHandler Handler;
+        internal IDbObjectHandler Handler;
 
 		public FromClause From;
         public bool HasSystemKey;

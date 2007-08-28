@@ -14,7 +14,7 @@ namespace org.hanzify.llf.Data
 	[Serializable]
 	public class OrderBy : IClause
 	{
-		internal protected ASC[] OrderItems;
+		public ASC[] OrderItems;
 
         public OrderBy(string OrderName)
             : this(new ASC(OrderName))

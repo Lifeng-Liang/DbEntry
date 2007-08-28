@@ -74,7 +74,6 @@ copy *.dll ..\..\..\..\bin\
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
@@ -87,7 +86,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\EmitObjectHandlerBase.cs" />
     <Compile Include="Common\GroupByObject.cs" />
     <Compile Include="Common\IDbObjectHandler.cs" />
-    <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="Common\MemberAdapater.cs" />
     <Compile Include="Common\MemoryAssembly.cs" />
     <Compile Include="Common\MemoryTypeBuilder.cs" />
@@ -95,7 +93,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\StaticPagedSelector.cs" />
     <Compile Include="Common\VBHelper.cs" />
     <Compile Include="DbContext.cs" />
-    <Compile Include="DbEntryDataSource.cs" />
     <Compile Include="Definition\DbObjectModelAsTree.cs" />
     <Compile Include="Definition\BelongsToAttribute.cs" />
     <Compile Include="Definition\DbObjectBase.cs" />

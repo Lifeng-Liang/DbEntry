@@ -1,14 +1,10 @@
 
-#region usings
-
 using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Web;
 
-#endregion
-
-namespace org.hanzify.llf.util
+namespace org.hanzify.llf.Web
 {
     public class UrlBuilder
     {

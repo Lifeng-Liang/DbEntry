@@ -19,7 +19,7 @@ using org.hanzify.llf.Data.Definition;
 
 namespace org.hanzify.llf.Data.Common
 {
-    internal static class DbObjectHelper
+    public static class DbObjectHelper
     {
         private static HybridDictionary ObjectInfos = new HybridDictionary();
 

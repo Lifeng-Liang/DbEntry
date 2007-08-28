@@ -1,11 +1,8 @@
 
-#region usings
-
 using System;
+using System.Data;
 using org.hanzify.llf.Data.Builder;
 using org.hanzify.llf.Data.SqlEntry;
-
-#endregion
 
 namespace org.hanzify.llf.Data.Dialect
 {
@@ -35,7 +32,7 @@ namespace org.hanzify.llf.Data.Dialect
                 ssb.Range.EndIndex,
                 PosName
                 );
-            return new TimeConsumingSqlStatement(SqlString, dpc);
+            return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
         }
     }
 }

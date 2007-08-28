@@ -1,6 +1,4 @@
 
-#region usings
-
 using System;
 using System.Text;
 using System.Collections;
@@ -10,8 +8,6 @@ using org.hanzify.llf.Data.SqlEntry;
 using org.hanzify.llf.Data.Driver;
 using org.hanzify.llf.Data.Builder;
 using org.hanzify.llf.util;
-
-#endregion
 
 namespace org.hanzify.llf.Data.Dialect
 {
@@ -136,7 +132,7 @@ namespace org.hanzify.llf.Data.Dialect
                 ssb.IsGroupBy ? " Group By " + this.QuoteForColumnName(ssb.CountCol) : "",
                 (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(ref dpc, this)
                 );
-            return new TimeConsumingSqlStatement(SqlString, dpc);
+            return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
         }
 
         protected virtual SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
