@@ -78,3 +78,12 @@ INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (1, 'tom', null, 1)
 INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (2, null, 1, 0);
 INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (3, null, null, null);
 INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (4, 'tom', 1, 1);
+
+--------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE [BelongsMore] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, Article_Id INTEGER NOT NULL, Reader_Id INTEGER NOT NULL);
+
+INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (1, 'f1', 1, 2);
+INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (2, 'f2', 2, 3);
+INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (3, 'f3', 3, 1);
+INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (4, 'f4', 3, 3);

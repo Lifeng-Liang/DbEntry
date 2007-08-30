@@ -361,7 +361,7 @@ namespace org.hanzify.llf.Data
                 }
             }, delegate(object o)
             {
-                SetBelongsToForeignKey(o, ii.KeyFields[0].GetValue(obj));
+                SetBelongsToForeignKey(obj, o, ii.KeyFields[0].GetValue(obj));
                 Save(o);
             });
         }
@@ -400,7 +400,7 @@ namespace org.hanzify.llf.Data
                     SetManyToManyAssociate(ii, Key, Scope<object>.Current);
                 }, delegate(object o)
                 {
-                    SetBelongsToForeignKey(o, ii.Handler.GetKeyValue(obj));
+                    SetBelongsToForeignKey(obj, o, ii.Handler.GetKeyValue(obj));
                     Save(o);
                 });
             }
@@ -426,12 +426,13 @@ namespace org.hanzify.llf.Data
             }
         }
 
-        private void SetBelongsToForeignKey(object subobj, object ForeignKey)
+        private void SetBelongsToForeignKey(object obj, object subobj, object ForeignKey)
         {
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(subobj.GetType());
-            if (oi.BelongsToField != null)
+            MemberHandler mh = oi.GetBelongsTo(obj.GetType());
+            if (mh != null)
             {
-                Definition.IBelongsTo ho = oi.BelongsToField.GetValue(subobj) as Definition.IBelongsTo;
+                Definition.IBelongsTo ho = mh.GetValue(subobj) as Definition.IBelongsTo;
                 if (ho != null)
                 {
                     ho.ForeignKey = ForeignKey;

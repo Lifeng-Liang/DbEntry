@@ -29,6 +29,9 @@ namespace org.hanzify.llf.Data.Definition
         public BelongsTo(object owner)
         {
             this.owner = owner;
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+            MemberHandler mh = oi.GetBelongsTo(typeof(T));
+            ForeignKeyName = mh.Name;
             DbObjectSmartUpdate o = owner as DbObjectSmartUpdate;
             if (o != null)
             {
@@ -70,7 +73,7 @@ namespace org.hanzify.llf.Data.Definition
                 context = null;
                 if (ValueChanged != null && !IsLoad)
                 {
-                    ValueChanged("$");
+                    ValueChanged(ForeignKeyName);
                 }
             }
             else

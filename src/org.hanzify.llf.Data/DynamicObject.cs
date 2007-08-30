@@ -253,9 +253,22 @@ namespace org.hanzify.llf.Data
                         il.Emit(OpCodes.Ldstr, f.Name);
                         il.Emit(OpCodes.Callvirt, mi);
                     }
-                    else if (f.IsHasAndBelongsToMany || f.IsHasOne || f.IsHasMany)
+                    else if (f.IsHasOne || f.IsHasMany)
                     {
-                        MemberHandler mh = DbObjectHelper.GetBelongsTo(f.FieldType.GetGenericArguments()[0]);
+                        ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
+                        MemberHandler mh = oi1.GetBelongsTo(srcType);
+                        if (mh == null)
+                        {
+                            throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
+                        }
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldstr, mh.Name);
+                        il.Emit(OpCodes.Callvirt, mi);
+                    }
+                    else if (f.IsHasAndBelongsToMany)
+                    {
+                        ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
+                        MemberHandler mh = oi1.GetHasAndBelongsToMany(srcType);
                         if (mh == null)
                         {
                             throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
@@ -269,7 +282,7 @@ namespace org.hanzify.llf.Data
                         il.Emit(OpCodes.Ldarg_3);
                         if (UseIndex)
                         {
-                            EmitldcI4(il, Index);
+                            EmitldcI4(il, Index++);
                             il.Emit(OpCodes.Callvirt, helper.GetMethodInfo(true));
                         }
                         else
@@ -450,7 +463,8 @@ namespace org.hanzify.llf.Data
                         il.Emit(OpCodes.Ldarg_0);
                         il.Emit(OpCodes.Ldarg_1);
                         il.Emit(OpCodes.Ldloc_0);
-                        il.Emit(OpCodes.Ldstr, f.IsBelongsTo ? "$" : f.Name);
+                        //il.Emit(OpCodes.Ldstr, f.IsBelongsTo ? "$" : f.Name);
+                        il.Emit(OpCodes.Ldstr, f.Name);
                         EmitldcI4(il, n);
                         il.Emit(OpCodes.Ldloc_0);
                         f.MemberInfo.EmitGet(il);

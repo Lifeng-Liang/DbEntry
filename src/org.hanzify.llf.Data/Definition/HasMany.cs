@@ -40,14 +40,11 @@ namespace org.hanzify.llf.Data.Definition
         protected override void InnerWrite(object item)
         {
             ObjectInfo ti = DbObjectHelper.GetObjectInfo(typeof(T));
-            if (ti.BelongsToField != null)
+            MemberHandler mh = ti.GetBelongsTo(owner.GetType());
+            if (mh != null)
             {
-                Type t = ti.BelongsToField.FieldType.GetGenericArguments()[0];
-                if (t == owner.GetType())
-                {
-                    ILazyLoading ll = (ILazyLoading)ti.BelongsToField.GetValue(item);
-                    ll.Write(owner, false);
-                }
+                ILazyLoading ll = (ILazyLoading)mh.GetValue(item);
+                ll.Write(owner, false);
             }
         }
 

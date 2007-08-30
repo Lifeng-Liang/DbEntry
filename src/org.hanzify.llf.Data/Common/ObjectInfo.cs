@@ -13,11 +13,11 @@ namespace org.hanzify.llf.Data.Common
 	{
         internal IDbObjectHandler Handler;
 
+        public Type HandleType;
 		public FromClause From;
         public bool HasSystemKey;
         public bool HasAssociate;
         public bool IsAssociateObject;
-        public MemberHandler BelongsToField;
 		public MemberHandler[] KeyFields;
 		public MemberHandler[] Fields;
         public MemberHandler[] SimpleFields;
@@ -29,13 +29,14 @@ namespace org.hanzify.llf.Data.Common
         public string ManyToManyMediColumeName1 = null;
         public string ManyToManyMediColumeName2 = null;
 
-        public ObjectInfo(string TableName, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
-            : this(new FromClause(TableName), KeyFields, Fields, DisableSqlLog)
+        public ObjectInfo(Type HandleType, string TableName, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
+            : this(HandleType, new FromClause(TableName), KeyFields, Fields, DisableSqlLog)
 		{
 		}
 
-        public ObjectInfo(FromClause From, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
+        public ObjectInfo(Type HandleType, FromClause From, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
         {
+            this.HandleType = HandleType;
             this.From = From;
             this.KeyFields = KeyFields;
             this.Fields = Fields;
@@ -57,14 +58,6 @@ namespace org.hanzify.llf.Data.Common
                 if (f.IsBelongsTo || f.IsHasAndBelongsToMany) // TODO: no problem ?
                 {
                     IsAssociateObject = true;
-                    if (BelongsToField != null)
-                    {
-                        throw new DbEntryException("An class only allow one BelongsTo field.");
-                    }
-                    else
-                    {
-                        BelongsToField = f;
-                    }
                 }
             }
 
@@ -74,6 +67,50 @@ namespace org.hanzify.llf.Data.Common
         public object NewObject()
         {
             return Handler.CreateInstance();
+        }
+
+        internal MemberHandler GetBelongsTo(Type t)
+        {
+            Type mt = t.IsAbstract ? DynamicObject.GetImplType(t) : t;
+            foreach (MemberHandler mh in RelationFields)
+            {
+                if (mh.IsBelongsTo)
+                {
+                    Type st = mh.FieldType.GetGenericArguments()[0];
+                    if (st.IsAbstract)
+                    {
+                        st = DynamicObject.GetImplType(st);
+                    }
+                    if (st == mt)
+                    {
+                        return mh;
+                    }
+                }
+            }
+            return null;
+            //throw new DbEntryException("Can't find belongs to field of type {0}", t);
+        }
+
+        internal MemberHandler GetHasAndBelongsToMany(Type t)
+        {
+            Type mt = t.IsAbstract ? DynamicObject.GetImplType(t) : t;
+            foreach (MemberHandler mh in RelationFields)
+            {
+                if (mh.IsHasAndBelongsToMany)
+                {
+                    Type st = mh.FieldType.GetGenericArguments()[0];
+                    if (st.IsAbstract)
+                    {
+                        st = DynamicObject.GetImplType(st);
+                    }
+                    if (st == mt)
+                    {
+                        return mh;
+                    }
+                }
+            }
+            return null;
+            //throw new DbEntryException("Can't find belongs to field of type {0}", t);
         }
     }
 }

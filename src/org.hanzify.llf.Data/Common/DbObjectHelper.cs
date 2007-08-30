@@ -32,10 +32,13 @@ namespace org.hanzify.llf.Data.Common
             {
                 sudi.m_InternalInit = true;
             }
-            if (ii.BelongsToField != null)
+            foreach (MemberHandler mh in ii.RelationFields)
             {
-                ILazyLoading bt = (ILazyLoading)ii.BelongsToField.GetValue(obj);
-                bt.Init(context, ii.BelongsToField.Name);
+                if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
+                {
+                    ILazyLoading bt = (ILazyLoading)mh.GetValue(obj);
+                    bt.Init(context, mh.Name);
+                }
             }
             ii.Handler.LoadSimpleValues(obj, UseIndex, dr);
             ii.Handler.LoadRelationValues(context, obj, UseIndex, dr);
@@ -387,44 +390,13 @@ namespace org.hanzify.llf.Data.Common
             fields.AddRange(rlfs);
             MemberHandler[] keys = kfs.ToArray();
 
-            ObjectInfo ii = new ObjectInfo(GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
+            ObjectInfo ii = new ObjectInfo(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
             SetManyToManyMediFrom(ii, t, ii.From.GetMainTableName(), ii.Fields);
 
             ii.RelationFields = rlfs.ToArray();
             ii.SimpleFields = sifs.ToArray();
 
             return ii;
-        }
-
-        internal static MemberHandler GetBelongsTo(Type tt)
-        {
-            Type t = (tt.IsAbstract) ? DynamicObject.GetImplType(tt) : tt;
-            if (ObjectInfos.Contains(t))
-            {
-                return ((ObjectInfo)ObjectInfos[t]).BelongsToField;
-            }
-            else
-            {
-                foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
-                {
-                    if (!fi.IsPrivate)
-                    {
-                        if (fi.FieldType.IsGenericType)
-                        {
-                            MemberAdapter m = MemberAdapter.NewObject(fi);
-                            if (!HasAtributes(m, typeof(ExcludeAttribute)))
-                            {
-                                MemberHandler mh = GetMemberHandler(m);
-                                if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
-                                {
-                                    return mh;
-                                }
-                            }
-                        }
-                    }
-                }
-                return null;
-            }
         }
 
         internal static MemberHandler GetKeyField(Type tt)

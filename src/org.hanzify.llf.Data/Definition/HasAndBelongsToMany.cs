@@ -25,18 +25,28 @@ namespace org.hanzify.llf.Data.Definition
             : base(owner)
         {
             this.Order = new OrderBy();
+            InitForeignKeyName();
         }
 
         public HasAndBelongsToMany(object owner, OrderBy Order)
             : base(owner)
         {
             this.Order = Order;
+            InitForeignKeyName();
         }
 
         public HasAndBelongsToMany(object owner, string OrderByString)
             : base(owner)
         {
             this.Order = OrderBy.Parse(OrderByString);
+            InitForeignKeyName();
+        }
+
+        private void InitForeignKeyName()
+        {
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+            MemberHandler mh = oi.GetHasAndBelongsToMany(typeof(T));
+            ForeignKeyName = mh.Name;
         }
 
         protected override void InnerWrite(object item)

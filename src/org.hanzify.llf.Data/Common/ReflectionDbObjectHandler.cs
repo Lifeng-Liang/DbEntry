@@ -50,6 +50,7 @@ namespace org.hanzify.llf.Data.Common
 
         public void LoadRelationValues(DbContext driver, object o, bool UseIndex, IDataReader dr)
         {
+            int n = oi.SimpleFields.Length;
             foreach (MemberHandler f in oi.RelationFields)
             {
                 ILazyLoading ho = (ILazyLoading)f.GetValue(o);
@@ -57,9 +58,25 @@ namespace org.hanzify.llf.Data.Common
                 {
                     ho.Init(driver, f.Name);
                 }
-                else if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany)
+                else if (f.IsHasOne || f.IsHasMany)
                 {
-                    MemberHandler h1 = DbObjectHelper.GetBelongsTo(f.FieldType.GetGenericArguments()[0]);
+                    ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
+                    MemberHandler h1 = oi1.GetBelongsTo(oi.HandleType);
+                    if (h1 != null)
+                    {
+                        ho.Init(driver, h1.Name);
+                    }
+                    else
+                    {
+                        // TODO: should throw exception or not ?
+                        throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
+                        // ho.Init(driver, "__");
+                    }
+                }
+                else if (f.IsHasAndBelongsToMany)
+                {
+                    ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
+                    MemberHandler h1 = oi1.GetHasAndBelongsToMany(oi.HandleType);
                     if (h1 != null)
                     {
                         ho.Init(driver, h1.Name);
@@ -76,7 +93,7 @@ namespace org.hanzify.llf.Data.Common
                     IBelongsTo hbo = (IBelongsTo)ho;
                     if (UseIndex)
                     {
-                        hbo.ForeignKey = dr[oi.SimpleFields.Length];
+                        hbo.ForeignKey = dr[n++];
                     }
                     else
                     {
@@ -162,7 +179,8 @@ namespace org.hanzify.llf.Data.Common
             {
                 foreach (MemberHandler fi in oi.Fields)
                 {
-                    if (to.m_UpdateColumns.ContainsKey(fi.IsBelongsTo ? "$" : fi.Name))
+                    //if (to.m_UpdateColumns.ContainsKey(fi.IsBelongsTo ? "$" : fi.Name))
+                    if (to.m_UpdateColumns.ContainsKey(fi.Name))
                     {
                         AddKeyValue(isv, fi, obj);
                     }

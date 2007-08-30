@@ -34,14 +34,11 @@ namespace org.hanzify.llf.Data.Definition
         protected override void DoWrite(bool IsLoad)
         {
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
-            if (oi.BelongsToField != null)
+            MemberHandler mh = oi.GetBelongsTo(owner.GetType());
+            if (mh != null)
             {
-                Type t = oi.BelongsToField.FieldType.GetGenericArguments()[0];
-                if (t == owner.GetType())
-                {
-                    ILazyLoading ll = (ILazyLoading)oi.BelongsToField.GetValue(m_Value);
-                    ll.Write(owner, false);
-                }
+                ILazyLoading ll = (ILazyLoading)mh.GetValue(m_Value);
+                ll.Write(owner, false);
             }
         }
 
@@ -67,9 +64,10 @@ namespace org.hanzify.llf.Data.Definition
             if (m_Value != null)
             {
                 ObjectInfo ti = DbObjectHelper.GetObjectInfo(typeof(T));
-                if (ti.BelongsToField != null)
+                MemberHandler mh = ti.GetBelongsTo(owner.GetType());
+                if (mh != null)
                 {
-                    ILazyLoading ll = (ILazyLoading)ti.BelongsToField.GetValue(m_Value);
+                    ILazyLoading ll = (ILazyLoading)mh.GetValue(m_Value);
                     ll.Write(owner, true);
                 }
             }
