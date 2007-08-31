@@ -341,6 +341,19 @@ namespace org.hanzify.llf.Data.Common
             }
         }
 
+        internal static ObjectInfo GetObjectInfoOnly(Type tt)
+        {
+            Type t = (tt.IsAbstract) ? DynamicObject.GetImplType(tt) : tt;
+            if (ObjectInfos.Contains(t))
+            {
+                return (ObjectInfo)ObjectInfos[t];
+            }
+            else
+            {
+                return m_GetSimpleObjectInfo(t);
+            }
+        }
+
         private static ObjectInfo m_GetSimpleObjectInfo(Type t)
         {
             List<MemberHandler> ret = new List<MemberHandler>();

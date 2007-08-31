@@ -255,7 +255,7 @@ namespace org.hanzify.llf.Data
                     }
                     else if (f.IsHasOne || f.IsHasMany)
                     {
-                        ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
+                        ObjectInfo oi1 = DbObjectHelper.GetObjectInfoOnly(f.FieldType.GetGenericArguments()[0]);
                         MemberHandler mh = oi1.GetBelongsTo(srcType);
                         if (mh == null)
                         {
@@ -267,7 +267,7 @@ namespace org.hanzify.llf.Data
                     }
                     else if (f.IsHasAndBelongsToMany)
                     {
-                        ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
+                        ObjectInfo oi1 = DbObjectHelper.GetObjectInfoOnly(f.FieldType.GetGenericArguments()[0]);
                         MemberHandler mh = oi1.GetHasAndBelongsToMany(srcType);
                         if (mh == null)
                         {

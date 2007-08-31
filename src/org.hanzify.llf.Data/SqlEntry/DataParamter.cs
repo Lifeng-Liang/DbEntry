@@ -79,7 +79,7 @@ namespace org.hanzify.llf.Data.SqlEntry
 
 		public override string ToString()
 		{
-			return string.Format("{0}={1}:{2}", Key, Value, Type);
+            return string.Format("{0}={1}:{2}", Key, Value == DBNull.Value ? "<NULL>" : Value, Type);
 		}
 	}
 }

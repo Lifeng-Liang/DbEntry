@@ -37,14 +37,14 @@ namespace org.hanzify.llf.Data.Definition
             this.Order = OrderBy.Parse(OrderByString);
         }
 
-        protected override void InnerWrite(object item)
+        protected override void InnerWrite(object item, bool IsLoad)
         {
             ObjectInfo ti = DbObjectHelper.GetObjectInfo(typeof(T));
             MemberHandler mh = ti.GetBelongsTo(owner.GetType());
             if (mh != null)
             {
                 ILazyLoading ll = (ILazyLoading)mh.GetValue(item);
-                ll.Write(owner, false);
+                ll.Write(owner, IsLoad);
             }
         }
 

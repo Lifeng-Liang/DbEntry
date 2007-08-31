@@ -112,5 +112,22 @@ namespace org.hanzify.llf.Data.Common
             return null;
             //throw new DbEntryException("Can't find belongs to field of type {0}", t);
         }
+
+        public object GetPrimaryKeyDefaultValue()
+        {
+            if (KeyFields.Length > 1)
+            {
+                throw new DbEntryException("GetPrimaryKeyDefaultValue don't support multi key.");
+            }
+            Type fkType = KeyFields[0].FieldType;
+            if (fkType == typeof(int))
+                return 0;
+            else if (fkType == typeof(long))
+                return 0L;
+            else if (fkType == typeof(Guid))
+                return Guid.Empty;
+            else
+                throw new NotSupportedException("only supported int long guid as primary key.");
+        }
     }
 }

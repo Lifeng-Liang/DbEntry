@@ -48,16 +48,16 @@ namespace org.hanzify.llf.Data.Definition
 
         void ILazyLoading.Write(object item, bool IsLoad)
         {
-            InnerWrite(item);
+            InnerWrite(item, IsLoad);
             InnerList.Add((T)item);
         }
 
-        protected abstract void InnerWrite(object item);
+        protected abstract void InnerWrite(object item, bool IsLoad);
 
         protected void WriteAndSet(object item)
         {
             m_IsLoaded = true;
-            InnerWrite(item);
+            InnerWrite(item, false);
             context = null;
         }
 
@@ -88,7 +88,7 @@ namespace org.hanzify.llf.Data.Definition
             int Index = 0;
             foreach (T o in l)
             {
-                InnerWrite(o);
+                InnerWrite(o, true);
                 if (af.GetValue(o).Equals(tkey))
                 {
                     Found = true;

@@ -49,7 +49,7 @@ namespace org.hanzify.llf.Data.Definition
             ForeignKeyName = mh.Name;
         }
 
-        protected override void InnerWrite(object item)
+        protected override void InnerWrite(object item, bool IsLoad)
         {
             if (m_IsLoaded)
             {

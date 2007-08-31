@@ -233,7 +233,7 @@ namespace org.hanzify.llf.UnitTest.Data
 
             ImpPCs c = new ImpPCs();
             c.Name = "HP";
-            Assert.AreEqual("{ Id = 0, Name = HP, Person_Id = <NULL> }", c.ToString());
+            Assert.AreEqual("{ Id = 0, Name = HP, Person_Id = 0 }", c.ToString());
         }
 
         [Test]

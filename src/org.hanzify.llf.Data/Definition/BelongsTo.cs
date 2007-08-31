@@ -32,6 +32,9 @@ namespace org.hanzify.llf.Data.Definition
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
             MemberHandler mh = oi.GetBelongsTo(typeof(T));
             ForeignKeyName = mh.Name;
+            ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(typeof(T));
+            _ForeignKey = oi1.GetPrimaryKeyDefaultValue();
+            //_ForeignKey = oi.GetPrimaryKeyDefaultValue();
             DbObjectSmartUpdate o = owner as DbObjectSmartUpdate;
             if (o != null)
             {
