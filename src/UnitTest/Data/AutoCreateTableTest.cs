@@ -167,19 +167,11 @@ namespace org.hanzify.llf.UnitTest.Data
         [Test]
         public void TestGetTableNames()
         {
+            string[] ts = new string[] { "Article", "Article_Reader", "BelongsMore", "Books",
+                "Categories", "File", "NullTest", "PCs", "People", "Reader", "SoftDelete" };
             List<string> li = DbEntry.Context.GetTableNames();
             li.Sort();
-            Assert.AreEqual(10, li.Count);
-            Assert.AreEqual("Article", li[0]);
-            Assert.AreEqual("Article_Reader", li[1]);
-            Assert.AreEqual("BelongsMore", li[2]);
-            Assert.AreEqual("Books", li[3]);
-            Assert.AreEqual("Categories", li[4]);
-            Assert.AreEqual("File", li[5]);
-            Assert.AreEqual("NullTest", li[6]);
-            Assert.AreEqual("PCs", li[7]);
-            Assert.AreEqual("People", li[8]);
-            Assert.AreEqual("Reader", li[9]);
+            Assert.AreEqual(ts, li.ToArray());
         }
 
         [Test]

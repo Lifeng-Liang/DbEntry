@@ -86,10 +86,12 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\EmitObjectHandlerBase.cs" />
     <Compile Include="Common\GroupByObject.cs" />
     <Compile Include="Common\IDbObjectHandler.cs" />
+    <Compile Include="Common\QueryComposer.cs" />
     <Compile Include="Common\MemberAdapater.cs" />
     <Compile Include="Common\MemoryAssembly.cs" />
     <Compile Include="Common\MemoryTypeBuilder.cs" />
     <Compile Include="Common\ReflectionDbObjectHandler.cs" />
+    <Compile Include="Common\SoftDeleteQueryComposer.cs" />
     <Compile Include="Common\StaticPagedSelector.cs" />
     <Compile Include="Common\VBHelper.cs" />
     <Compile Include="DbContext.cs" />
@@ -115,6 +117,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\LazyLoadListBase.cs" />
     <Compile Include="Definition\LazyLoadOneBase.cs" />
     <Compile Include="Definition\OrderByAttribute.cs" />
+    <Compile Include="Definition\SoftDeleteAttribute.cs" />
     <Compile Include="Driver\DbFactory.cs" />
     <Compile Include="Driver\SmartDbFactory.cs" />
     <Compile Include="DynamicObject.cs" />

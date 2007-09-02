@@ -87,3 +87,12 @@ INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (1, 'f1'
 INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (2, 'f2', 2, 3);
 INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (3, 'f3', 3, 1);
 INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (4, 'f4', 3, 3);
+
+--------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE [SoftDelete] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, IsDeleted BOOL NOT NULL);
+
+INSERT INTO [SoftDelete] ([Id],[Name],[IsDeleted]) VALUES (1, 'tom', 0);
+INSERT INTO [SoftDelete] ([Id],[Name],[IsDeleted]) VALUES (2, 'jerry', 0);
+INSERT INTO [SoftDelete] ([Id],[Name],[IsDeleted]) VALUES (3, 'mike', 0);
+INSERT INTO [SoftDelete] ([Id],[Name],[IsDeleted]) VALUES (4, 'nothing', 1);

@@ -12,6 +12,9 @@ namespace org.hanzify.llf.Data.Common
 	public class ObjectInfo
 	{
         internal IDbObjectHandler Handler;
+        internal QueryComposer Composer;
+
+        public string SoftDeleteColumnName;
 
         public Type HandleType;
 		public FromClause From;

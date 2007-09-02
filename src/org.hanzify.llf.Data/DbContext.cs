@@ -79,10 +79,8 @@ namespace org.hanzify.llf.Data
         public long GetResultCount(Type DbObjectType, WhereCondition iwc)
         {
             TryCreateTable(DbObjectType);
-            SelectStatementBuilder sb = new SelectStatementBuilder(DbObjectHelper.GetFromClause(DbObjectType), null, null);
-            sb.Where.Conditions = iwc;
-            sb.SetCountColumn("*");
-            SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            SqlStatement Sql = oi.Composer.GetResultCountStatement(this.Dialect, iwc);
             Logger.SQL.Trace(Sql.ToString());
             object ro = this.ExecuteScalar(Sql);
             return Convert.ToInt64(ro);
@@ -90,15 +88,12 @@ namespace org.hanzify.llf.Data
 
         public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type DbObjectType, WhereCondition iwc, OrderBy order, string ColumnName)
         {
-            SelectStatementBuilder sb = new SelectStatementBuilder(DbObjectHelper.GetFromClause(DbObjectType), order, null);
-            sb.Where.Conditions = iwc;
-            sb.Keys.Add(ColumnName);
-            sb.SetAsGroupBy(ColumnName);
-            SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            SqlStatement Sql = oi.Composer.GetGroupByStatement(this.Dialect, iwc, order, ColumnName);
             Logger.SQL.Trace(Sql.ToString());
             DbObjectList<GroupByObject<T1>> list = new DbObjectList<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list);
-            DataLoadDirect(ip, typeof(GroupByObject<T1>), Sql, true);
+            DataLoadDirect(ip, typeof(GroupByObject<T1>), DbObjectType, Sql, true);
             return list;
         }
 
@@ -162,11 +157,7 @@ namespace org.hanzify.llf.Data
         public void DataLoad(IProcessor ip, Type DbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
         {
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            SelectStatementBuilder sb = new SelectStatementBuilder(from != null ? from : ii.From, oc, lc);
-            sb.Where.Conditions = iwc;
-            ii.Handler.SetValuesForSelect(sb);
-            // DataBase Process
-            SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+            SqlStatement Sql = ii.Composer.GetSelectStatement(this.Dialect, from, iwc, oc, lc);
             if (!ii.DisableSqlLog)
             {
                 Logger.SQL.Trace(Sql.ToString());
@@ -180,6 +171,11 @@ namespace org.hanzify.llf.Data
         }
 
         private void DataLoadDirect(IProcessor ip, Type DbObjectType, SqlStatement Sql, bool UseIndex)
+        {
+            DataLoadDirect(ip, DbObjectType, DbObjectType, Sql, UseIndex);
+        }
+
+        private void DataLoadDirect(IProcessor ip, Type ReturnType, Type DbObjectType, SqlStatement Sql, bool UseIndex)
         {
             TryCreateTable(DbObjectType);
             int StartIndex = Sql.StartIndex;
@@ -197,7 +193,7 @@ namespace org.hanzify.llf.Data
                     Count++;
                     if (Count >= StartIndex)
                     {
-                        object di = DbObjectHelper.CreateObject(this, DbObjectType, dr, UseIndex);
+                        object di = DbObjectHelper.CreateObject(this, ReturnType, dr, UseIndex);
                         if (!ip.Process(di))
                         {
                             break;
@@ -368,10 +364,7 @@ namespace org.hanzify.llf.Data
 
         private void InnerUpdate(object obj, WhereCondition iwc, ObjectInfo ii, DataProvider dp)
         {
-            UpdateStatementBuilder sb = new UpdateStatementBuilder(ii.From.GetMainTableName());
-            ii.Handler.SetValuesForUpdate(sb, obj);
-            sb.Where.Conditions = iwc;
-            SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+            SqlStatement Sql = ii.Composer.GetUpdateStatement(this.Dialect, obj, iwc);
             if (!ii.DisableSqlLog)
             {
                 Logger.SQL.Trace(Sql.ToString());
@@ -384,9 +377,7 @@ namespace org.hanzify.llf.Data
             Type t = obj.GetType();
             TryCreateTable(t);
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            InsertStatementBuilder sb = new InsertStatementBuilder(ii.From.GetMainTableName(), ii.HasSystemKey);
-            ii.Handler.SetValuesForInsert(sb, obj);
-            SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+            SqlStatement Sql = ii.Composer.GetInsertStatement(this.Dialect, obj);
             if (!ii.DisableSqlLog)
             {
                 Logger.SQL.Trace(Sql.ToString());
@@ -445,9 +436,7 @@ namespace org.hanzify.llf.Data
             Type t = obj.GetType();
             TryCreateTable(t);
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            DeleteStatementBuilder sb = new DeleteStatementBuilder(ii.From.GetMainTableName());
-            sb.Where.Conditions = DbObjectHelper.GetKeyWhereClause(obj);
-            SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+            SqlStatement Sql = ii.Composer.GetDeleteStatement(this.Dialect, obj);
             if (!ii.DisableSqlLog)
             {
                 Logger.SQL.Trace(Sql.ToString());
@@ -490,9 +479,7 @@ namespace org.hanzify.llf.Data
             Type t = typeof(T);
             TryCreateTable(t);
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            DeleteStatementBuilder sb = new DeleteStatementBuilder(ii.From.GetMainTableName());
-            sb.Where.Conditions = iwc;
-            SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+            SqlStatement Sql = ii.Composer.GetDeleteStatement(this.Dialect, iwc);
             if (!ii.DisableSqlLog)
             {
                 Logger.SQL.Trace(Sql.ToString());
@@ -542,18 +529,7 @@ namespace org.hanzify.llf.Data
         public void Create(Type DbObjectType)
         {
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            string tname = ii.From.GetMainTableName();
-            CreateTableStatementBuilder cts = new CreateTableStatementBuilder(tname);
-            foreach (MemberHandler fh in ii.Fields)
-            {
-                if (!fh.IsHasMany && !fh.IsHasOne && !fh.IsHasAndBelongsToMany)
-                {
-                    ColumnInfo ci = new ColumnInfo(fh);
-                    cts.Columns.Add(ci);
-                }
-            }
-            DbObjectHelper.FillIndexes(cts, DbObjectType);
-            SqlStatement Sql = cts.ToSqlStatement(this.Dialect);
+            SqlStatement Sql = ii.Composer.GetCreateStatement(this.Dialect);
             if (!ii.DisableSqlLog)
             {
                 Logger.SQL.Trace(Sql.ToString());
@@ -561,7 +537,7 @@ namespace org.hanzify.llf.Data
             this.ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
             {
-                TableNames.Add(tname.ToLower(), 1);
+                TableNames.Add(ii.From.GetMainTableName().ToLower(), 1);
             }
         }
 

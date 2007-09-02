@@ -322,6 +322,10 @@ namespace org.hanzify.llf.Data.Common
             else
             {
                 ObjectInfo ii = m_GetSimpleObjectInfo(t);
+                // binding QueryComposer
+                ii.Composer = string.IsNullOrEmpty(ii.SoftDeleteColumnName) ?
+                    new QueryComposer(ii) :
+                    new SoftDeleteQueryComposer(ii, ii.SoftDeleteColumnName);
                 // binding DbObjectHandler
                 if (DataSetting.ObjectHandlerType == HandlerType.Emit
                     || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
@@ -408,6 +412,12 @@ namespace org.hanzify.llf.Data.Common
 
             ii.RelationFields = rlfs.ToArray();
             ii.SimpleFields = sifs.ToArray();
+
+            SoftDeleteAttribute[] sdas = (SoftDeleteAttribute[])t.GetCustomAttributes(typeof(SoftDeleteAttribute), true);
+            if (sdas != null && sdas.Length > 0)
+            {
+                ii.SoftDeleteColumnName = sdas[0].ColumnName;
+            }
 
             return ii;
         }
