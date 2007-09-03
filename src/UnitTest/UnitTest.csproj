@@ -68,6 +68,7 @@
     <Compile Include="Data\SerializationTest.cs" />
     <Compile Include="Data\SmartUpdateTest.cs" />
     <Compile Include="Data\SoftDeleteTest.cs" />
+    <Compile Include="Data\TableSchemaTest.cs" />
     <Compile Include="Data\ValidateHandlerTest.cs" />
     <Compile Include="Data\VBHelperTest.cs" />
     <Compile Include="DotNetFramework\NullabelTest.cs" />

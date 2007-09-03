@@ -61,6 +61,22 @@ namespace org.hanzify.llf.Data.SqlEntry
 
         #region utils
 
+        public List<DbColumnInfo> GetDbColumnInfos(string TableName)
+        {
+            string SqlStr = "select * from " + this.Dialect.QuoteForTableName(TableName) + " where 1<>1";
+            SqlStatement sql = new SqlStatement(CommandType.Text, SqlStr);
+            List<DbColumnInfo> ret = new List<DbColumnInfo>();
+            ExecuteDataReader(sql, CommandBehavior.KeyInfo | CommandBehavior.SchemaOnly, delegate(IDataReader dr)
+            {
+                DataTable dt = dr.GetSchemaTable();
+                foreach (DataRow row in dt.Rows)
+                {
+                    ret.Add(new DbColumnInfo(row));
+                }
+            });
+            return ret;
+        }
+
         public List<string> GetTableNames()
         {
             List<string> ret = new List<string>();
