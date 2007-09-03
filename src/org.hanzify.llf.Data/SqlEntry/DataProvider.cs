@@ -61,7 +61,7 @@ namespace org.hanzify.llf.Data.SqlEntry
 
         #region utils
 
-        public List<DbColumnInfo> GetDbColumnInfos(string TableName)
+        public List<DbColumnInfo> GetDbColumnInfoList(string TableName)
         {
             string SqlStr = "select * from " + this.Dialect.QuoteForTableName(TableName) + " where 1<>1";
             SqlStatement sql = new SqlStatement(CommandType.Text, SqlStr);
