@@ -50,9 +50,9 @@ namespace org.hanzify.llf.Data.Common
             return sb.ToSqlStatement(Dialect);
         }
 
-        protected virtual InsertStatementBuilder GetInsertStatementBuilder(object obj)
+        public virtual InsertStatementBuilder GetInsertStatementBuilder(object obj)
         {
-            InsertStatementBuilder sb = new InsertStatementBuilder(oi.From.GetMainTableName(), oi.HasSystemKey);
+            InsertStatementBuilder sb = new InsertStatementBuilder(oi.From.GetMainTableName());
             oi.Handler.SetValuesForInsert(sb, obj);
             return sb;
         }

@@ -120,7 +120,7 @@ namespace org.hanzify.llf.UnitTest.Data
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
             StaticRecorder.Messages.ForEach(delegate(string s)
             {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\nSELECT last_insert_rowid();\n", s);
+                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
             });
         }
 
@@ -149,7 +149,7 @@ namespace org.hanzify.llf.UnitTest.Data
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
             StaticRecorder.Messages.ForEach(delegate(string s)
             {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\nSELECT last_insert_rowid();\n", s);
+                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
             });
         }
 
@@ -179,7 +179,7 @@ namespace org.hanzify.llf.UnitTest.Data
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
             StaticRecorder.Messages.ForEach(delegate(string s)
             {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\nSELECT last_insert_rowid();\n", s);
+                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
             });
         }
 
@@ -206,7 +206,7 @@ namespace org.hanzify.llf.UnitTest.Data
             Assert.AreEqual(3, StaticRecorder.Messages.Count);
             StaticRecorder.Messages.ForEach(delegate(string s)
             {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\nSELECT last_insert_rowid();\n", s);
+                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
             });
         }
     }

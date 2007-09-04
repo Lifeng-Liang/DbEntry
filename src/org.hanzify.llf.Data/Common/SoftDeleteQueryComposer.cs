@@ -46,7 +46,7 @@ namespace org.hanzify.llf.Data.Common
             return base.GetGroupByStatement(Dialect, iwc && colExp, order, ColumnName);
         }
 
-        protected override InsertStatementBuilder GetInsertStatementBuilder(object obj)
+        public override InsertStatementBuilder GetInsertStatementBuilder(object obj)
         {
             InsertStatementBuilder sb = base.GetInsertStatementBuilder(obj);
             sb.Values.Add(new KeyValue(ColumnName, false));

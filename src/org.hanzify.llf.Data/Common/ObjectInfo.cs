@@ -25,7 +25,7 @@ namespace org.hanzify.llf.Data.Common
 		public MemberHandler[] Fields;
         public MemberHandler[] SimpleFields;
         public MemberHandler[] RelationFields;
-        public bool DisableSqlLog = false;
+        public bool AllowSqlLog = true;
         public bool HasOnePremarykey;
         public FromClause ManyToManyMediFrom = null;
         public string ManyToManyMediTableName = null;
@@ -43,7 +43,7 @@ namespace org.hanzify.llf.Data.Common
             this.From = From;
             this.KeyFields = KeyFields;
             this.Fields = Fields;
-            this.DisableSqlLog = DisableSqlLog;
+            this.AllowSqlLog = !DisableSqlLog;
 
             this.HasSystemKey = ((KeyFields.Length == 1) && KeyFields[0].IsDbGenerate);
 

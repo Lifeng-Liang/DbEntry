@@ -26,9 +26,9 @@ namespace org.hanzify.llf.Data.Definition
             sb.Where.Conditions = CK.K[kn] == key;
             sb.Keys.Add(RelationName);
             SqlStatement sql = sb.ToSqlStatement(context.Dialect);
-            if (!oi.DisableSqlLog)
+            if (oi.AllowSqlLog)
             {
-                Logger.SQL.Trace(sql.ToString());
+                Logger.SQL.Trace(sql);
             }
             object o = context.ExecuteScalar(sql);
             if (o == DBNull.Value)

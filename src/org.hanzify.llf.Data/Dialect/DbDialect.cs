@@ -8,6 +8,7 @@ using org.hanzify.llf.Data.SqlEntry;
 using org.hanzify.llf.Data.Driver;
 using org.hanzify.llf.Data.Builder;
 using org.hanzify.llf.util;
+using org.hanzify.llf.util.Logging;
 
 namespace org.hanzify.llf.Data.Dialect
 {
@@ -48,6 +49,17 @@ namespace org.hanzify.llf.Data.Dialect
         public virtual bool NeedBracketForJoin
         {
             get { return true; }
+        }
+
+        public virtual object ExecuteInsert(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
+        {
+            SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
+            sql.SqlCommandText = AddIdentitySelectToInsert(sql.SqlCommandText);
+            if (oi.AllowSqlLog)
+            {
+                Logger.SQL.Trace(sql);
+            }
+            return dp.ExecuteScalar(sql);
         }
 
         public virtual DbStructInterface GetDbStructInterface()

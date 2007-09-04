@@ -118,6 +118,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\LazyLoadOneBase.cs" />
     <Compile Include="Definition\OrderByAttribute.cs" />
     <Compile Include="Definition\SoftDeleteAttribute.cs" />
+    <Compile Include="Dialect\SequencedDialect.cs" />
     <Compile Include="Driver\DbFactory.cs" />
     <Compile Include="Driver\SmartDbFactory.cs" />
     <Compile Include="DynamicObject.cs" />

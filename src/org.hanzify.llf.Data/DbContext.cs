@@ -81,7 +81,7 @@ namespace org.hanzify.llf.Data
             TryCreateTable(DbObjectType);
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
             SqlStatement Sql = oi.Composer.GetResultCountStatement(this.Dialect, iwc);
-            Logger.SQL.Trace(Sql.ToString());
+            Logger.SQL.Trace(Sql);
             object ro = this.ExecuteScalar(Sql);
             return Convert.ToInt64(ro);
         }
@@ -90,7 +90,7 @@ namespace org.hanzify.llf.Data
         {
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
             SqlStatement Sql = oi.Composer.GetGroupByStatement(this.Dialect, iwc, order, ColumnName);
-            Logger.SQL.Trace(Sql.ToString());
+            Logger.SQL.Trace(Sql);
             DbObjectList<GroupByObject<T1>> list = new DbObjectList<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list);
             DataLoadDirect(ip, typeof(GroupByObject<T1>), DbObjectType, Sql, true);
@@ -147,9 +147,9 @@ namespace org.hanzify.llf.Data
         public void DataLoad(IProcessor ip, Type DbObjectType, SqlStatement Sql)
         {
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            if (!ii.DisableSqlLog)
+            if (ii.AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql.ToString());
+                Logger.SQL.Trace(Sql);
             }
             DataLoadDirect(ip, DbObjectType, Sql, false);
         }
@@ -158,9 +158,9 @@ namespace org.hanzify.llf.Data
         {
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
             SqlStatement Sql = ii.Composer.GetSelectStatement(this.Dialect, from, iwc, oc, lc);
-            if (!ii.DisableSqlLog)
+            if (ii.AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql.ToString());
+                Logger.SQL.Trace(Sql);
             }
             DataLoadDirect(ip, DbObjectType, Sql);
         }
@@ -365,9 +365,9 @@ namespace org.hanzify.llf.Data
         private void InnerUpdate(object obj, WhereCondition iwc, ObjectInfo ii, DataProvider dp)
         {
             SqlStatement Sql = ii.Composer.GetUpdateStatement(this.Dialect, obj, iwc);
-            if (!ii.DisableSqlLog)
+            if (ii.AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql.ToString());
+                Logger.SQL.Trace(Sql);
             }
             dp.ExecuteNonQuery(Sql);
         }
@@ -377,16 +377,12 @@ namespace org.hanzify.llf.Data
             Type t = obj.GetType();
             TryCreateTable(t);
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            SqlStatement Sql = ii.Composer.GetInsertStatement(this.Dialect, obj);
-            if (!ii.DisableSqlLog)
-            {
-                Logger.SQL.Trace(Sql.ToString());
-            }
+            InsertStatementBuilder sb = ii.Composer.GetInsertStatementBuilder(obj);
             if (ii.HasSystemKey)
             {
                 ProcessAssociate(ii, true, obj, delegate(DataProvider dp)
                 {
-                    object Key = dp.ExecuteScalar(Sql);
+                    object Key = dp.Dialect.ExecuteInsert(dp, sb, ii);
                     DbObjectHelper.SetKey(obj, Key);
                     SetManyToManyAssociate(ii, Key, Scope<object>.Current);
                 }, delegate(object o)
@@ -397,6 +393,11 @@ namespace org.hanzify.llf.Data
             }
             else
             {
+                SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+                if (ii.AllowSqlLog)
+                {
+                    Logger.SQL.Trace(Sql);
+                }
                 this.ExecuteNonQuery(Sql);
             }
         }
@@ -405,13 +406,13 @@ namespace org.hanzify.llf.Data
         {
             if (ii.ManyToManyMediTableName != null && Key1 != null && Key2 != null)
             {
-                InsertStatementBuilder sb = new InsertStatementBuilder(ii.ManyToManyMediTableName, false);
+                InsertStatementBuilder sb = new InsertStatementBuilder(ii.ManyToManyMediTableName);
                 sb.Values.Add(new KeyValue(ii.ManyToManyMediColumeName1, Key1));
                 sb.Values.Add(new KeyValue(ii.ManyToManyMediColumeName2, Key2));
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
-                if (!ii.DisableSqlLog)
+                if (ii.AllowSqlLog)
                 {
-                    Logger.SQL.Trace(Sql.ToString());
+                    Logger.SQL.Trace(Sql);
                 }
                 ExecuteNonQuery(Sql);
             }
@@ -437,9 +438,9 @@ namespace org.hanzify.llf.Data
             TryCreateTable(t);
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
             SqlStatement Sql = ii.Composer.GetDeleteStatement(this.Dialect, obj);
-            if (!ii.DisableSqlLog)
+            if (ii.AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql.ToString());
+                Logger.SQL.Trace(Sql);
             }
             int ret = 0;
             ProcessAssociate(ii, false, obj, delegate(DataProvider dp)
@@ -465,9 +466,9 @@ namespace org.hanzify.llf.Data
                 DeleteStatementBuilder sb = new DeleteStatementBuilder(ii.ManyToManyMediTableName);
                 sb.Where.Conditions = CK.K[ii.ManyToManyMediColumeName1] == Id;
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
-                if (!ii.DisableSqlLog)
+                if (ii.AllowSqlLog)
                 {
-                    Logger.SQL.Trace(Sql.ToString());
+                    Logger.SQL.Trace(Sql);
                 }
                 return ExecuteNonQuery(Sql);
             }
@@ -480,9 +481,9 @@ namespace org.hanzify.llf.Data
             TryCreateTable(t);
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
             SqlStatement Sql = ii.Composer.GetDeleteStatement(this.Dialect, iwc);
-            if (!ii.DisableSqlLog)
+            if (ii.AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql.ToString());
+                Logger.SQL.Trace(Sql);
             }
             return this.ExecuteNonQuery(Sql);
         }
@@ -495,20 +496,20 @@ namespace org.hanzify.llf.Data
         public void DropTable(Type DbObjectType, bool CatchException)
         {
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            DropTable(ii.From.GetMainTableName(), CatchException, ii.DisableSqlLog);
+            DropTable(ii.From.GetMainTableName(), CatchException, ii.AllowSqlLog);
             if (ii.ManyToManyMediTableName != null)
             {
-                DropTable(ii.ManyToManyMediTableName, CatchException, ii.DisableSqlLog);
+                DropTable(ii.ManyToManyMediTableName, CatchException, ii.AllowSqlLog);
             }
         }
 
-        private void DropTable(string TableName, bool CatchException, bool DisableSqlLog)
+        private void DropTable(string TableName, bool CatchException, bool AllowSqlLog)
         {
             string s = "Drop Table " + this.Dialect.QuoteForTableName(TableName);
             SqlStatement Sql = new SqlStatement(s);
-            if (!DisableSqlLog)
+            if (AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql.ToString());
+                Logger.SQL.Trace(Sql);
             }
             CommonHelper.IfCatchException(CatchException, delegate()
             {
@@ -530,9 +531,9 @@ namespace org.hanzify.llf.Data
         {
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
             SqlStatement Sql = ii.Composer.GetCreateStatement(this.Dialect);
-            if (!ii.DisableSqlLog)
+            if (ii.AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql.ToString());
+                Logger.SQL.Trace(Sql);
             }
             this.ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
@@ -561,9 +562,9 @@ namespace org.hanzify.llf.Data
             cts.Indexes.Add(new DbIndex(null, false, (ASC)oi1.ManyToManyMediColumeName2));
             // execute
             SqlStatement Sql = cts.ToSqlStatement(this.Dialect);
-            if (!oi1.DisableSqlLog)
+            if (oi1.AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql.ToString());
+                Logger.SQL.Trace(Sql);
             }
             this.ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
