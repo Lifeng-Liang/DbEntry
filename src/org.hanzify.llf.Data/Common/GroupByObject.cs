@@ -14,7 +14,7 @@ namespace org.hanzify.llf.Data.Common
     public class GroupByObject<T>
     {
         // set to key make it as the first column
-        [DbKey]
+        [DbKey(IsDbGenerate = false)]
         public T Column;
 
         public long Count;

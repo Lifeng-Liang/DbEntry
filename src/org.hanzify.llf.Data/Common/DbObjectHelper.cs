@@ -196,11 +196,29 @@ namespace org.hanzify.llf.Data.Common
                 {
                     fh.IsDbGenerate = true;
                 }
-                if (dk.UnsavedValue != null && (!dk.IsDbGenerate))
+                if (dk.UnsavedValue == null && dk.IsDbGenerate)
                 {
-                    throw new DbEntryException("UnsavedValue must set to Database Generation Key!");
+                    if(fi.MemberType == typeof(long))
+                    {
+                        fh.UnsavedValue = 0L;
+                    }
+                    else if(fi.MemberType == typeof(int))
+                    {
+                        fh.UnsavedValue = 0;
+                    }
+                    else if(fi.MemberType == typeof(Guid))
+                    {
+                        fh.UnsavedValue = Guid.Empty;
+                    }
+                    else
+                    {
+                        throw new DbEntryException("Unknown type of db key must set UnsavedValue");
+                    }
                 }
-                fh.UnsavedValue = dk.UnsavedValue;
+                else
+                {
+                    fh.UnsavedValue = dk.UnsavedValue;
+                }
             }
 
             if (fi.MemberType.IsGenericType)

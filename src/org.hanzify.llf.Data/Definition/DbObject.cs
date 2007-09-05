@@ -11,7 +11,7 @@ namespace org.hanzify.llf.Data.Definition
     [Serializable]
     public abstract class DbObject : DbObjectBase
 	{
-		[DbKey(UnsavedValue=0L), DbColumn("Id")]
+		[DbKey, DbColumn("Id")]
 		protected internal long m_Id = 0;
 
 		[Exclude]

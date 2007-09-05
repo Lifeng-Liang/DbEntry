@@ -11,8 +11,17 @@ using org.hanzify.llf.Data.QuerySyntax;
 namespace org.hanzify.llf.Data.Definition
 {
     [Serializable]
-    public class DbObjectModel<T> : DbObjectSmartUpdate
+    public class DbObjectModel<T, TKey> : DbObjectSmartUpdate
     {
+        [DbKey, DbColumn("Id")]
+        protected internal TKey m_Id;
+
+        [Exclude]
+        public TKey Id
+        {
+            get { return m_Id; }
+        }
+
         protected static CK Col
         {
             get { return CK.Column; }
@@ -40,7 +49,7 @@ namespace org.hanzify.llf.Data.Definition
             return Validate().IsValid;
         }
 
-        public static T FindById(long Id)
+        public static T FindById(TKey Id)
         {
             return DbEntry.GetObject<T>(Id);
         }
@@ -114,5 +123,10 @@ namespace org.hanzify.llf.Data.Definition
         {
             DbEntry.Delete<T>(con);
         }
+    }
+
+    [Serializable]
+    public class DbObjectModel<T> : DbObjectModel<T, long>
+    {
     }
 }

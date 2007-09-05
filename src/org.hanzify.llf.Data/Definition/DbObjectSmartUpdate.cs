@@ -11,7 +11,7 @@ using org.hanzify.llf.Data.QuerySyntax;
 namespace org.hanzify.llf.Data.Definition
 {
     [Serializable]
-    public class DbObjectSmartUpdate : DbObject
+    public class DbObjectSmartUpdate : DbObjectBase
     {
         [Exclude]
         internal protected Dictionary<string, object> m_UpdateColumns = null;
