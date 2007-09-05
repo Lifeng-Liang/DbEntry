@@ -95,6 +95,11 @@ namespace org.hanzify.llf.Data.Definition
             return DbEntry.From<T>().Where(con).GetCount();
         }
 
+        public static T New()
+        {
+            return DynamicObject.NewObject<T>();
+        }
+
         public static T New(params object[] os)
         {
             return DynamicObject.NewObject<T>(os);
