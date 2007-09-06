@@ -35,6 +35,7 @@ namespace org.hanzify.llf.Data.Builder
             sql.Append(" (");
             foreach (ColumnInfo ci in _Columns)
             {
+                string NullDefine = ci.AllowNull ? dd.NullString : dd.NotNullString;
                 sql.Append("\n\t");
                 sql.Append(dd.QuoteForColumnName(ci.Key));
                 sql.Append(" ");
@@ -64,7 +65,7 @@ namespace org.hanzify.llf.Data.Builder
                 {
                     if (isMutiKey)
                     {
-                        sql.Append(ci.AllowNull ? " NULL " : " NOT NULL ");
+                        sql.Append(NullDefine);
                         keys += dd.QuoteForColumnName(ci.Key) + ", ";
                     }
                     else
@@ -75,7 +76,7 @@ namespace org.hanzify.llf.Data.Builder
                 }
                 else
                 {
-                    sql.Append(ci.AllowNull ? " NULL " : " NOT NULL ");
+                    sql.Append(NullDefine);
                 }
                 sql.Append(",");
             }
@@ -91,6 +92,7 @@ namespace org.hanzify.llf.Data.Builder
                 }
             }
             sql.Append("\n);\n");
+            sql.Append(dd.GetCreateSequenceString(TableName));
             // Create Index
             AddCreateIndexStatement(sql, dd);
             return new SqlStatement(CommandType.Text, sql.ToString());

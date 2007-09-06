@@ -18,7 +18,7 @@ namespace org.hanzify.llf.Data
 {
     public static class DbEntry
     {
-        public const string CountColumn = "__count__";
+        public const string CountColumn = "it__count__";
 
         #region UsingTransaction
 

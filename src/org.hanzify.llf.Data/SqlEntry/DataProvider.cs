@@ -264,7 +264,7 @@ namespace org.hanzify.llf.Data.SqlEntry
             List<string> ret = new List<string>();
             using (StreamReader sr = new StreamReader(new MemoryStream(Encoding.Unicode.GetBytes(cText)), Encoding.Unicode))
             {
-                string statement = "";
+                StringBuilder statement = new StringBuilder();
                 string s;
                 while ((s = sr.ReadLine()) != null)
                 {
@@ -274,22 +274,22 @@ namespace org.hanzify.llf.Data.SqlEntry
                         if (s.Length > 1 && s.Substring(0, 2) == "--") { continue; }
                         if (s[s.Length - 1] == ';')
                         {
-                            statement += s.Substring(0, s.Length);
-                            if (statement != "")
+                            statement.Append(s.Substring(0, s.Length));
+                            if (statement.Length != 0)
                             {
-                                ret.Add(statement);
+                                ret.Add(statement.ToString());
                             }
-                            statement = "";
+                            statement = new StringBuilder();
                         }
                         else
                         {
-                            statement += s;
+                            statement.Append(s);
                         }
                     }
                 }
-                if (statement != "")
+                if (statement.Length != 0)
                 {
-                    ret.Add(statement);
+                    ret.Add(statement.ToString());
                 }
             }
             return ret;

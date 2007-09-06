@@ -496,7 +496,12 @@ namespace org.hanzify.llf.Data
         public void DropTable(Type DbObjectType, bool CatchException)
         {
             ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            DropTable(ii.From.GetMainTableName(), CatchException, ii.AllowSqlLog);
+            string tn = ii.From.GetMainTableName();
+            DropTable(tn, CatchException, ii.AllowSqlLog);
+            CommonHelper.IfCatchException(true, delegate()
+            {
+                Dialect.ExecuteDropSequence(this, tn);
+            });
             if (ii.ManyToManyMediTableName != null)
             {
                 DropTable(ii.ManyToManyMediTableName, CatchException, ii.AllowSqlLog);

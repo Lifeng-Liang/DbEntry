@@ -62,6 +62,10 @@ namespace org.hanzify.llf.Data.Dialect
             return dp.ExecuteScalar(sql);
         }
 
+        public virtual void ExecuteDropSequence(DataProvider dp, string TableName)
+        {
+        }
+
         public virtual DbStructInterface GetDbStructInterface()
         {
             return new DbStructInterface(null, null, null, null, null);
@@ -195,6 +199,21 @@ namespace org.hanzify.llf.Data.Dialect
         public virtual string PrimaryKeyString
         {
             get { throw DoesNotSupportNativeKey; }
+        }
+
+        public virtual string GetCreateSequenceString(string TableName)
+        {
+            return "";
+        }
+
+        public virtual string NullString
+        {
+            get { return " NULL "; }
+        }
+
+        public virtual string NotNullString
+        {
+            get { return " NOT NULL "; }
         }
 
 		public virtual string IdentityInsertString

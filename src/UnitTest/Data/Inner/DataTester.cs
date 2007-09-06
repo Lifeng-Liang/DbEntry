@@ -24,13 +24,13 @@ namespace org.hanzify.llf.UnitTest.Data.Inner
 		{
 			SelectStatementBuilder ssb = new SelectStatementBuilder( "UserTable" );
             ssb.SetCountColumn("*");
-			string s = "Select Count(*) As __count__ From [UserTable];\n";
+			string s = "Select Count(*) As it__count__ From [UserTable];\n";
 			Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
             ssb.SetCountColumn("abc");
-            s = "Select Count([abc]) As __count__ From [UserTable];\n";
+            s = "Select Count([abc]) As it__count__ From [UserTable];\n";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
             ssb.Keys.Add("zzz");
-            s = "Select [zzz],Count([abc]) As __count__ From [UserTable];\n";
+            s = "Select [zzz],Count([abc]) As it__count__ From [UserTable];\n";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
         }
 

@@ -59,7 +59,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebDebug\", "WebDebu
 		SccAuxPath = "SAK"
 		SccLocalPath = "SAK"
 		SccProvider = "SAK"
-		ProjectReferences = "{25AFD300-493A-4553-B4DC-129D3A9022A8}|org.hanzify.llf.Data.dll;{EE0F0B59-1970-4929-A73D-1A89862F9B83}|Debug.dll;"
+		ProjectReferences = "{25AFD300-493A-4553-B4DC-129D3A9022A8}|org.hanzify.llf.Data.dll;{9293C04C-D2E7-449F-833E-6E6624DCD6F4}|WebDebugLib.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/WebDebug"
 		Debug.AspNetCompiler.PhysicalPath = "WebDebug\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\WebDebug\"
@@ -84,9 +84,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.hanzify.llf.Web", "org.
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDebugLib", "WebDebugLib\WebDebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 9
+		SccNumberOfProjects = 10
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs01.codeplex.com/
 		SccLocalPath0 = .
@@ -116,6 +122,9 @@ Global
 		SccProjectUniqueName8 = org.hanzify.llf.Web\\org.hanzify.llf.Web.csproj
 		SccProjectName8 = org.hanzify.llf.Web
 		SccLocalPath8 = org.hanzify.llf.Web
+		SccProjectUniqueName9 = WebDebugLib\\WebDebugLib.csproj
+		SccProjectName9 = WebDebugLib
+		SccLocalPath9 = WebDebugLib
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -206,6 +215,16 @@ Global
 		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A73147C3-73C4-4590-9EC4-250AC83F4EF5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|.NET.ActiveCfg = Release|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
