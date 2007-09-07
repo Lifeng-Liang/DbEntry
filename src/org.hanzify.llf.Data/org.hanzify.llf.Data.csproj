@@ -99,6 +99,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\BelongsToAttribute.cs" />
     <Compile Include="Definition\DbObjectBase.cs" />
     <Compile Include="Definition\DbObjectModel.cs" />
+    <Compile Include="Definition\DbObjectModelBase.cs" />
     <Compile Include="Definition\DbObjectSmartUpdate.cs" />
     <Compile Include="Definition\HasAndBelongsToMany.cs" />
     <Compile Include="Definition\HasAndBelongsToManyAttribute.cs" />
