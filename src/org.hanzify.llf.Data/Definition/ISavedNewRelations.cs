@@ -6,7 +6,6 @@ namespace org.hanzify.llf.Data.Definition
 {
     public interface ISavedNewRelations
     {
-        // TODO: Should use object or long ?
-        List<long> SavedNewRelations { get;}
+        List<object> SavedNewRelations { get;}
     }
 }

@@ -33,6 +33,7 @@ namespace org.hanzify.llf.Data.Builder
             sql.Append("CREATE TABLE ");
             sql.Append(dd.QuoteForLimitTableName(TableName));
             sql.Append(" (");
+
             foreach (ColumnInfo ci in _Columns)
             {
                 string NullDefine = ci.AllowNull ? dd.NullString : dd.NotNullString;
@@ -92,7 +93,10 @@ namespace org.hanzify.llf.Data.Builder
                 }
             }
             sql.Append("\n);\n");
-            sql.Append(dd.GetCreateSequenceString(TableName));
+            if (HasOneDbGenKey())
+            {
+                sql.Append(dd.GetCreateSequenceString(TableName));
+            }
             // Create Index
             AddCreateIndexStatement(sql, dd);
             return new SqlStatement(CommandType.Text, sql.ToString());
@@ -108,6 +112,15 @@ namespace org.hanzify.llf.Data.Builder
             return n > 1;
         }
 
+        private bool HasOneDbGenKey()
+        {
+            foreach (ColumnInfo ci in _Columns)
+            {
+                if (ci.IsKey && ci.IsDbGenerate) { return true; }
+            }
+            return false;
+        }
+
         private void AddCreateIndexStatement(StringBuilder sb, DbDialect dd)
         {
             string prefix = "IX_" + TableName.Replace('.', '_') + "_";
@@ -117,19 +130,34 @@ namespace org.hanzify.llf.Data.Builder
                 n += (i.IndexName != null) ? i.IndexName : i.Columns[0].Key;
                 if (i.UNIQUE)
                 {
-                    sb.Append("CREATE UNIQUE INDEX ");
+                    sb.Append("CREATE UNIQUE ");
                 }
                 else
                 {
-                    sb.Append("CREATE INDEX ");
+                    sb.Append("CREATE ");
                 }
+                if (!dd.SupportDirctionOfEachColumnInIndex)
+                {
+                    if (i.Columns[0] is DESC)
+                    {
+                        sb.Append("DESC ");
+                    }
+                }
+                sb.Append("INDEX ");
                 sb.Append(dd.QuoteForColumnName(n));
                 sb.Append(" ON ");
                 sb.Append(dd.QuoteForLimitTableName(TableName));
                 sb.Append(" (");
                 foreach (ASC c in i.Columns)
                 {
-                    sb.Append(c.ToString(dd));
+                    if (dd.SupportDirctionOfEachColumnInIndex)
+                    {
+                        sb.Append(c.ToString(dd));
+                    }
+                    else
+                    {
+                        sb.Append(dd.QuoteForColumnName(c.Key));
+                    }
                     sb.Append(", ");
                 }
                 if (i.Columns.Length > 0)

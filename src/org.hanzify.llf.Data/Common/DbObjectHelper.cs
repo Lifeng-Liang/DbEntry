@@ -25,14 +25,14 @@ namespace org.hanzify.llf.Data.Common
 
         public static object CreateObject(DbContext context, Type DbObjectType, IDataReader dr, bool UseIndex)
         {
-            ObjectInfo ii = m_GetObjectInfo(DbObjectType);
-            object obj = ii.NewObject();
+            ObjectInfo oi = m_GetObjectInfo(DbObjectType);
+            object obj = oi.NewObject();
             DbObjectSmartUpdate sudi = obj as DbObjectSmartUpdate;
             if (sudi != null)
             {
                 sudi.m_InternalInit = true;
             }
-            foreach (MemberHandler mh in ii.RelationFields)
+            foreach (MemberHandler mh in oi.RelationFields)
             {
                 if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
                 {
@@ -40,8 +40,8 @@ namespace org.hanzify.llf.Data.Common
                     bt.Init(context, mh.Name);
                 }
             }
-            ii.Handler.LoadSimpleValues(obj, UseIndex, dr);
-            ii.Handler.LoadRelationValues(context, obj, UseIndex, dr);
+            oi.Handler.LoadSimpleValues(obj, UseIndex, dr);
+            oi.Handler.LoadRelationValues(context, obj, UseIndex, dr);
             if (sudi != null)
             {
                 sudi.m_InternalInit = false;
@@ -67,10 +67,10 @@ namespace org.hanzify.llf.Data.Common
 
         public static void FillIndexes(CreateTableStatementBuilder ct, Type t)
         {
-            ObjectInfo ii = m_GetObjectInfo(t);
+            ObjectInfo oi = m_GetObjectInfo(t);
             Dictionary<string, List<ASC>> dict = new Dictionary<string,List<ASC>>();
             Dictionary<string, bool> UniIndex = new Dictionary<string, bool>();
-            foreach( MemberHandler fh in ii.Fields)
+            foreach( MemberHandler fh in oi.Fields)
             {
                 IndexAttribute[] ias = (IndexAttribute[])fh.MemberInfo.GetCustomAttributes(typeof(IndexAttribute), false);
                 CheckIndexAttributes(ias);
@@ -109,20 +109,20 @@ namespace org.hanzify.llf.Data.Common
 
         public static FromClause GetFromClause(Type DbObjectType)
         {
-            ObjectInfo ii = m_GetObjectInfo(DbObjectType);
-            return ii.From;
+            ObjectInfo oi = m_GetObjectInfo(DbObjectType);
+            return oi.From;
         }
 
         public static WhereCondition GetKeyWhereClause(object obj)
         {
             Type t = obj.GetType();
-            ObjectInfo ii = m_GetObjectInfo(t);
-            if (ii.KeyFields == null)
+            ObjectInfo oi = m_GetObjectInfo(t);
+            if (oi.KeyFields == null)
             {
                 throw new DbEntryException("dbobject not define key field : " + t.ToString());
             }
             WhereCondition ret = null;
-            Dictionary<string,object> dic = ii.Handler.GetKeyValues(obj);
+            Dictionary<string,object> dic = oi.Handler.GetKeyValues(obj);
             foreach (string s in dic.Keys)
             {
                 ret &= (CK.K[s] == dic[s]);
@@ -133,12 +133,12 @@ namespace org.hanzify.llf.Data.Common
         public static void SetKey(object obj, object key)
         {
             Type t = obj.GetType();
-            ObjectInfo ii = m_GetObjectInfo(t);
-            if (!ii.HasSystemKey)
+            ObjectInfo oi = m_GetObjectInfo(t);
+            if (!oi.HasSystemKey)
             {
                 throw new DbEntryException("dbobject not define SystemGeneration key field : " + t.ToString());
             }
-            MemberHandler fh = ii.KeyFields[0];
+            MemberHandler fh = oi.KeyFields[0];
             object sKey;
             if (fh.FieldType == typeof(long))
             {
@@ -339,27 +339,27 @@ namespace org.hanzify.llf.Data.Common
             }
             else
             {
-                ObjectInfo ii = m_GetSimpleObjectInfo(t);
+                ObjectInfo oi = m_GetSimpleObjectInfo(t);
                 // binding QueryComposer
-                ii.Composer = string.IsNullOrEmpty(ii.SoftDeleteColumnName) ?
-                    new QueryComposer(ii) :
-                    new SoftDeleteQueryComposer(ii, ii.SoftDeleteColumnName);
+                oi.Composer = string.IsNullOrEmpty(oi.SoftDeleteColumnName) ?
+                    new QueryComposer(oi) :
+                    new SoftDeleteQueryComposer(oi, oi.SoftDeleteColumnName);
                 // binding DbObjectHandler
                 if (DataSetting.ObjectHandlerType == HandlerType.Emit
                     || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
                 {
-                    ii.Handler = DynamicObject.CreateDbObjectHandler(t, ii);
+                    oi.Handler = DynamicObject.CreateDbObjectHandler(t, oi);
                 }
                 else
                 {
-                    ii.Handler = new ReflectionDbObjectHandler(t, ii);
+                    oi.Handler = new ReflectionDbObjectHandler(t, oi);
                 }
 
                 lock (ObjectInfos.SyncRoot)
                 {
-                    ObjectInfos[t] = ii;
+                    ObjectInfos[t] = oi;
                 }
-                return ii;
+                return oi;
             }
         }
 
@@ -425,19 +425,19 @@ namespace org.hanzify.llf.Data.Common
             fields.AddRange(rlfs);
             MemberHandler[] keys = kfs.ToArray();
 
-            ObjectInfo ii = new ObjectInfo(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
-            SetManyToManyMediFrom(ii, t, ii.From.GetMainTableName(), ii.Fields);
+            ObjectInfo oi = new ObjectInfo(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
+            SetManyToManyMediFrom(oi, t, oi.From.GetMainTableName(), oi.Fields);
 
-            ii.RelationFields = rlfs.ToArray();
-            ii.SimpleFields = sifs.ToArray();
+            oi.RelationFields = rlfs.ToArray();
+            oi.SimpleFields = sifs.ToArray();
 
             SoftDeleteAttribute[] sdas = (SoftDeleteAttribute[])t.GetCustomAttributes(typeof(SoftDeleteAttribute), true);
             if (sdas != null && sdas.Length > 0)
             {
-                ii.SoftDeleteColumnName = sdas[0].ColumnName;
+                oi.SoftDeleteColumnName = sdas[0].ColumnName;
             }
 
-            return ii;
+            return oi;
         }
 
         internal static MemberHandler GetKeyField(Type tt)

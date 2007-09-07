@@ -18,8 +18,8 @@ namespace org.hanzify.llf.Data.Definition
     {
         private OrderBy Order;
 
-        private List<long> _SavedNewRelations = new List<long>();
-        List<long> ISavedNewRelations.SavedNewRelations { get { return _SavedNewRelations; } }
+        private List<object> _SavedNewRelations = new List<object>();
+        List<object> ISavedNewRelations.SavedNewRelations { get { return _SavedNewRelations; } }
 
         internal HasAndBelongsToMany(object owner)
             : base(owner)
@@ -53,10 +53,18 @@ namespace org.hanzify.llf.Data.Definition
         {
             if (m_IsLoaded)
             {
-                DbObject o = item as DbObject;
-                if (o.Id != 0)
+                ObjectInfo oi = DbObjectHelper.GetObjectInfo(item.GetType());
+                if (oi.HasOnePremarykey)
                 {
-                    _SavedNewRelations.Add(o.Id);
+                    object key = oi.Handler.GetKeyValue(item);
+                    if (!key.Equals(oi.KeyFields[0].UnsavedValue))
+                    {
+                        _SavedNewRelations.Add(key);
+                    }
+                }
+                else
+                {
+                    throw new DbEntryException("HasAndBelongsToMany relation need the class has one primary key.");
                 }
             }
             /*

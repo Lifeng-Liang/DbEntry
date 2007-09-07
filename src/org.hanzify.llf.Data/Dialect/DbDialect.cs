@@ -51,14 +51,21 @@ namespace org.hanzify.llf.Data.Dialect
             get { return true; }
         }
 
+        public virtual bool NeedCommitCreateFirst
+        {
+            get { return false; }
+        }
+
+        public virtual bool SupportDirctionOfEachColumnInIndex
+        {
+            get { return true; }
+        }
+
         public virtual object ExecuteInsert(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
         {
             SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
             sql.SqlCommandText = AddIdentitySelectToInsert(sql.SqlCommandText);
-            if (oi.AllowSqlLog)
-            {
-                Logger.SQL.Trace(sql);
-            }
+            oi.LogSql(sql);
             return dp.ExecuteScalar(sql);
         }
 

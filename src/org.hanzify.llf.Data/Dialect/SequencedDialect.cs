@@ -16,17 +16,11 @@ namespace org.hanzify.llf.Data.Dialect
         {
             string seqStr = GetSelectSequenceSql(oi.From.GetMainTableName());
             SqlStatement seq = new SqlStatement(CommandType.Text, seqStr);
-            if (oi.AllowSqlLog)
-            {
-                Logger.SQL.Trace(seq);
-            }
+            oi.LogSql(seq);
             object key = dp.ExecuteScalar(seq);
             sb.Values.Add(new KeyValue(oi.KeyFields[0].Name, key));
             SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
-            if (oi.AllowSqlLog)
-            {
-                Logger.SQL.Trace(sql);
-            }
+            oi.LogSql(sql);
             dp.ExecuteNonQuery(sql);
             return key;
         }

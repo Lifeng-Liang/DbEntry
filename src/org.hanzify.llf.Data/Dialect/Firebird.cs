@@ -12,11 +12,23 @@ namespace org.hanzify.llf.Data.Dialect
         {
             TypeNames[DataType.Boolean] = "smallint";
             TypeNames[DataType.Date] = "timestamp";
+            TypeNames[DataType.String] = "BLOB SUB_TYPE 1";
+            TypeNames[DataType.Binary] = "BLOB SUB_TYPE 0";
         }
 
         protected override string GetSelectSequenceSql(string TableName)
         {
             return string.Format("select gen_id(GEN_{0}_ID, 1) from RDB$DATABASE", TableName.ToUpper());
+        }
+
+        public override bool NeedCommitCreateFirst
+        {
+            get { return true; }
+        }
+
+        public override bool SupportDirctionOfEachColumnInIndex
+        {
+            get { return false; }
         }
 
         public override string UnicodeTypePrefix

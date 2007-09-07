@@ -37,22 +37,37 @@ namespace org.hanzify.llf.Data
                 {
                     InitTableNames();
                 }
-                ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-                string Name = ii.From.GetMainTableName();
+                ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+                string Name = oi.From.GetMainTableName();
                 if (!TableNames.ContainsKey(Name.ToLower()))
                 {
-                    Create(DbObjectType);
-                    if (ii.ManyToManyMediTableName != null && !TableNames.ContainsKey(ii.ManyToManyMediTableName.ToLower()))
+                    IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate()
                     {
-                        CreateManyToManyMediTable(DbObjectType, GetManyToManyRelationType(ii));
-                    }
+                        Create(DbObjectType);
+                        if (oi.ManyToManyMediTableName != null && !TableNames.ContainsKey(oi.ManyToManyMediTableName.ToLower()))
+                        {
+                            CreateManyToManyMediTable(DbObjectType, GetManyToManyRelationType(oi));
+                        }
+                    });
                 }
             }
         }
 
-        private Type GetManyToManyRelationType(ObjectInfo ii)
+        private void IfUsingTransaction(bool IsUsing, CallbackVoidHandler callback)
         {
-            foreach (MemberHandler m in ii.Fields)
+            if (IsUsing)
+            {
+                UsingTransaction(callback);
+            }
+            else
+            {
+                callback();
+            }
+        }
+
+        private Type GetManyToManyRelationType(ObjectInfo oi)
+        {
+            foreach (MemberHandler m in oi.Fields)
             {
                 if (m.IsHasAndBelongsToMany)
                 {
@@ -81,7 +96,7 @@ namespace org.hanzify.llf.Data
             TryCreateTable(DbObjectType);
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
             SqlStatement Sql = oi.Composer.GetResultCountStatement(this.Dialect, iwc);
-            Logger.SQL.Trace(Sql);
+            oi.LogSql(Sql);
             object ro = this.ExecuteScalar(Sql);
             return Convert.ToInt64(ro);
         }
@@ -90,7 +105,7 @@ namespace org.hanzify.llf.Data
         {
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
             SqlStatement Sql = oi.Composer.GetGroupByStatement(this.Dialect, iwc, order, ColumnName);
-            Logger.SQL.Trace(Sql);
+            oi.LogSql(Sql);
             DbObjectList<GroupByObject<T1>> list = new DbObjectList<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list);
             DataLoadDirect(ip, typeof(GroupByObject<T1>), DbObjectType, Sql, true);
@@ -146,22 +161,16 @@ namespace org.hanzify.llf.Data
 
         public void DataLoad(IProcessor ip, Type DbObjectType, SqlStatement Sql)
         {
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            if (ii.AllowSqlLog)
-            {
-                Logger.SQL.Trace(Sql);
-            }
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            oi.LogSql(Sql);
             DataLoadDirect(ip, DbObjectType, Sql, false);
         }
 
         public void DataLoad(IProcessor ip, Type DbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
         {
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            SqlStatement Sql = ii.Composer.GetSelectStatement(this.Dialect, from, iwc, oc, lc);
-            if (ii.AllowSqlLog)
-            {
-                Logger.SQL.Trace(Sql);
-            }
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            SqlStatement Sql = oi.Composer.GetSelectStatement(this.Dialect, from, iwc, oc, lc);
+            oi.LogSql(Sql);
             DataLoadDirect(ip, DbObjectType, Sql);
         }
 
@@ -260,12 +269,12 @@ namespace org.hanzify.llf.Data
         private void InnerSave(object obj)
         {
             Type t = obj.GetType();
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            if (!ii.HasOnePremarykey)
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            if (!oi.HasOnePremarykey)
             {
                 throw new DbEntryException("To call this function, the table must have one primary key.");
             }
-            MemberHandler k = ii.KeyFields[0];
+            MemberHandler k = oi.KeyFields[0];
             if (k.IsDbGenerate)
             {
                 if (k.UnsavedValue == null)
@@ -292,18 +301,18 @@ namespace org.hanzify.llf.Data
             }
         }
 
-        private void ProcessAssociate(ObjectInfo ii, bool ParentFirst, object obj,
+        private void ProcessAssociate(ObjectInfo oi, bool ParentFirst, object obj,
             CallbackObjectHandler<DataProvider> e1, CallbackObjectHandler<object> e2)
         {
-            if (ii.HasAssociate)
+            if (oi.HasAssociate)
             {
                 UsingExistedTransaction(delegate()
                 {
                     if (ParentFirst) { e1(this); }
-                    object mkey = ii.KeyFields[0].GetValue(obj);
+                    object mkey = oi.KeyFields[0].GetValue(obj);
                     using (new Scope<object>(mkey))
                     {
-                        foreach (MemberHandler f in ii.RelationFields)
+                        foreach (MemberHandler f in oi.RelationFields)
                         {
                             ILazyLoading ho = (ILazyLoading)f.GetValue(obj);
                             ho.IsLoaded = true;
@@ -315,9 +324,9 @@ namespace org.hanzify.llf.Data
                             if (f.IsHasAndBelongsToMany)
                             {
                                 ISavedNewRelations so = ho as ISavedNewRelations;
-                                foreach (long n in so.SavedNewRelations)
+                                foreach (object n in so.SavedNewRelations)
                                 {
-                                    SetManyToManyAssociate(ii, (obj as DbObject).Id, n);
+                                    SetManyToManyAssociate(oi, oi.Handler.GetKeyValue(obj), n);
                                 }
                             }
                         }
@@ -340,35 +349,32 @@ namespace org.hanzify.llf.Data
         {
             Type t = obj.GetType();
             TryCreateTable(t);
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            ProcessAssociate(ii, true, obj, delegate(DataProvider dp)
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ProcessAssociate(oi, true, obj, delegate(DataProvider dp)
             {
                 DbObjectSmartUpdate to = obj as DbObjectSmartUpdate;
                 if (to != null && to.m_UpdateColumns != null)
                 {
                     if (to.m_UpdateColumns.Count > 0)
                     {
-                        InnerUpdate(obj, iwc, ii, dp);
+                        InnerUpdate(obj, iwc, oi, dp);
                     }
                 }
                 else
                 {
-                    InnerUpdate(obj, iwc, ii, dp);
+                    InnerUpdate(obj, iwc, oi, dp);
                 }
             }, delegate(object o)
             {
-                SetBelongsToForeignKey(obj, o, ii.KeyFields[0].GetValue(obj));
+                SetBelongsToForeignKey(obj, o, oi.KeyFields[0].GetValue(obj));
                 Save(o);
             });
         }
 
-        private void InnerUpdate(object obj, WhereCondition iwc, ObjectInfo ii, DataProvider dp)
+        private void InnerUpdate(object obj, WhereCondition iwc, ObjectInfo oi, DataProvider dp)
         {
-            SqlStatement Sql = ii.Composer.GetUpdateStatement(this.Dialect, obj, iwc);
-            if (ii.AllowSqlLog)
-            {
-                Logger.SQL.Trace(Sql);
-            }
+            SqlStatement Sql = oi.Composer.GetUpdateStatement(this.Dialect, obj, iwc);
+            oi.LogSql(Sql);
             dp.ExecuteNonQuery(Sql);
         }
 
@@ -376,44 +382,38 @@ namespace org.hanzify.llf.Data
         {
             Type t = obj.GetType();
             TryCreateTable(t);
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            InsertStatementBuilder sb = ii.Composer.GetInsertStatementBuilder(obj);
-            if (ii.HasSystemKey)
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            InsertStatementBuilder sb = oi.Composer.GetInsertStatementBuilder(obj);
+            if (oi.HasSystemKey)
             {
-                ProcessAssociate(ii, true, obj, delegate(DataProvider dp)
+                ProcessAssociate(oi, true, obj, delegate(DataProvider dp)
                 {
-                    object Key = dp.Dialect.ExecuteInsert(dp, sb, ii);
+                    object Key = dp.Dialect.ExecuteInsert(dp, sb, oi);
                     DbObjectHelper.SetKey(obj, Key);
-                    SetManyToManyAssociate(ii, Key, Scope<object>.Current);
+                    SetManyToManyAssociate(oi, Key, Scope<object>.Current);
                 }, delegate(object o)
                 {
-                    SetBelongsToForeignKey(obj, o, ii.Handler.GetKeyValue(obj));
+                    SetBelongsToForeignKey(obj, o, oi.Handler.GetKeyValue(obj));
                     Save(o);
                 });
             }
             else
             {
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
-                if (ii.AllowSqlLog)
-                {
-                    Logger.SQL.Trace(Sql);
-                }
+                oi.LogSql(Sql);
                 this.ExecuteNonQuery(Sql);
             }
         }
 
-        private void SetManyToManyAssociate(ObjectInfo ii, object Key1, object Key2)
+        private void SetManyToManyAssociate(ObjectInfo oi, object Key1, object Key2)
         {
-            if (ii.ManyToManyMediTableName != null && Key1 != null && Key2 != null)
+            if (oi.ManyToManyMediTableName != null && Key1 != null && Key2 != null)
             {
-                InsertStatementBuilder sb = new InsertStatementBuilder(ii.ManyToManyMediTableName);
-                sb.Values.Add(new KeyValue(ii.ManyToManyMediColumeName1, Key1));
-                sb.Values.Add(new KeyValue(ii.ManyToManyMediColumeName2, Key2));
+                InsertStatementBuilder sb = new InsertStatementBuilder(oi.ManyToManyMediTableName);
+                sb.Values.Add(new KeyValue(oi.ManyToManyMediColumeName1, Key1));
+                sb.Values.Add(new KeyValue(oi.ManyToManyMediColumeName2, Key2));
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
-                if (ii.AllowSqlLog)
-                {
-                    Logger.SQL.Trace(Sql);
-                }
+                oi.LogSql(Sql);
                 ExecuteNonQuery(Sql);
             }
         }
@@ -436,40 +436,34 @@ namespace org.hanzify.llf.Data
         {
             Type t = obj.GetType();
             TryCreateTable(t);
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            SqlStatement Sql = ii.Composer.GetDeleteStatement(this.Dialect, obj);
-            if (ii.AllowSqlLog)
-            {
-                Logger.SQL.Trace(Sql);
-            }
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            SqlStatement Sql = oi.Composer.GetDeleteStatement(this.Dialect, obj);
+            oi.LogSql(Sql);
             int ret = 0;
-            ProcessAssociate(ii, false, obj, delegate(DataProvider dp)
+            ProcessAssociate(oi, false, obj, delegate(DataProvider dp)
             {
                 ret += dp.ExecuteNonQuery(Sql);
-                ret += DeleteAssociate(ii, obj);
+                ret += DeleteAssociate(oi, obj);
             }, delegate(object o)
             {
                 Delete(o);
             });
-            if (ii.KeyFields[0].UnsavedValue != null)
+            if (oi.KeyFields[0].UnsavedValue != null)
             {
-                ii.KeyFields[0].SetValue(obj, ii.KeyFields[0].UnsavedValue);
+                oi.KeyFields[0].SetValue(obj, oi.KeyFields[0].UnsavedValue);
             }
             return ret;
         }
 
-        private int DeleteAssociate(ObjectInfo ii, object obj)
+        private int DeleteAssociate(ObjectInfo oi, object obj)
         {
-            if (ii.ManyToManyMediTableName != null)
+            if (oi.ManyToManyMediTableName != null)
             {
                 long Id = ((DbObject)obj).Id;
-                DeleteStatementBuilder sb = new DeleteStatementBuilder(ii.ManyToManyMediTableName);
-                sb.Where.Conditions = CK.K[ii.ManyToManyMediColumeName1] == Id;
+                DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.ManyToManyMediTableName);
+                sb.Where.Conditions = CK.K[oi.ManyToManyMediColumeName1] == Id;
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
-                if (ii.AllowSqlLog)
-                {
-                    Logger.SQL.Trace(Sql);
-                }
+                oi.LogSql(Sql);
                 return ExecuteNonQuery(Sql);
             }
             return 0;
@@ -479,12 +473,9 @@ namespace org.hanzify.llf.Data
         {
             Type t = typeof(T);
             TryCreateTable(t);
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
-            SqlStatement Sql = ii.Composer.GetDeleteStatement(this.Dialect, iwc);
-            if (ii.AllowSqlLog)
-            {
-                Logger.SQL.Trace(Sql);
-            }
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            SqlStatement Sql = oi.Composer.GetDeleteStatement(this.Dialect, iwc);
+            oi.LogSql(Sql);
             return this.ExecuteNonQuery(Sql);
         }
 
@@ -495,27 +486,27 @@ namespace org.hanzify.llf.Data
 
         public void DropTable(Type DbObjectType, bool CatchException)
         {
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            string tn = ii.From.GetMainTableName();
-            DropTable(tn, CatchException, ii.AllowSqlLog);
-            CommonHelper.IfCatchException(true, delegate()
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            string tn = oi.From.GetMainTableName();
+            DropTable(tn, CatchException, oi);
+            if (oi.HasSystemKey)
             {
-                Dialect.ExecuteDropSequence(this, tn);
-            });
-            if (ii.ManyToManyMediTableName != null)
+                CommonHelper.IfCatchException(true, delegate()
+                {
+                    Dialect.ExecuteDropSequence(this, tn);
+                });
+            }
+            if (oi.ManyToManyMediTableName != null)
             {
-                DropTable(ii.ManyToManyMediTableName, CatchException, ii.AllowSqlLog);
+                DropTable(oi.ManyToManyMediTableName, CatchException, oi);
             }
         }
 
-        private void DropTable(string TableName, bool CatchException, bool AllowSqlLog)
+        private void DropTable(string TableName, bool CatchException, ObjectInfo oi)
         {
             string s = "Drop Table " + this.Dialect.QuoteForTableName(TableName);
             SqlStatement Sql = new SqlStatement(s);
-            if (AllowSqlLog)
-            {
-                Logger.SQL.Trace(Sql);
-            }
+            oi.LogSql(Sql);
             CommonHelper.IfCatchException(CatchException, delegate()
             {
                 this.ExecuteNonQuery(Sql);
@@ -534,16 +525,13 @@ namespace org.hanzify.llf.Data
 
         public void Create(Type DbObjectType)
         {
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(DbObjectType);
-            SqlStatement Sql = ii.Composer.GetCreateStatement(this.Dialect);
-            if (ii.AllowSqlLog)
-            {
-                Logger.SQL.Trace(Sql);
-            }
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            SqlStatement Sql = oi.Composer.GetCreateStatement(this.Dialect);
+            oi.LogSql(Sql);
             this.ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
             {
-                TableNames.Add(ii.From.GetMainTableName().ToLower(), 1);
+                TableNames.Add(oi.From.GetMainTableName().ToLower(), 1);
             }
         }
 
@@ -567,10 +555,7 @@ namespace org.hanzify.llf.Data
             cts.Indexes.Add(new DbIndex(null, false, (ASC)oi1.ManyToManyMediColumeName2));
             // execute
             SqlStatement Sql = cts.ToSqlStatement(this.Dialect);
-            if (oi1.AllowSqlLog)
-            {
-                Logger.SQL.Trace(Sql);
-            }
+            oi1.LogSql(Sql);
             this.ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
             {

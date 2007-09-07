@@ -3,7 +3,9 @@
 
 using System;
 using System.Reflection;
+using org.hanzify.llf.Data.SqlEntry;
 using org.hanzify.llf.Data.Builder.Clause;
+using org.hanzify.llf.util.Logging;
 
 #endregion
 
@@ -131,6 +133,14 @@ namespace org.hanzify.llf.Data.Common
                 return Guid.Empty;
             else
                 throw new NotSupportedException("only supported int long guid as primary key.");
+        }
+
+        public void LogSql(SqlStatement Sql)
+        {
+            if (AllowSqlLog)
+            {
+                Logger.SQL.Trace(Sql);
+            }
         }
     }
 }

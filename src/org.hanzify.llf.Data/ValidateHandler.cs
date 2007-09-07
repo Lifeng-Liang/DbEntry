@@ -62,10 +62,10 @@ namespace org.hanzify.llf.Data
             this._ErrorMessages.Clear();
 
             Type t = obj.GetType();
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
             
             Type StringType = typeof(string);
-            foreach (MemberHandler fh in ii.Fields)
+            foreach (MemberHandler fh in oi.Fields)
             {
                 if (fh.FieldType == StringType || (fh.IsLazyLoad && fh.FieldType.GetGenericArguments()[0] == StringType))
                 {

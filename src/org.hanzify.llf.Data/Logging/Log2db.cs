@@ -18,7 +18,7 @@ namespace org.hanzify.llf.Data.Logging
         static Log2db()
 		{
             DatabaseLogRecorder r = new DatabaseLogRecorder();
-            // Logger.SQL.LogEvent += new LogEventHandler(r.ProcessLog);
+            Logger.SQL.LogEvent += new LogEventHandler(r.ProcessLog);
             Logger.Default.LogEvent += new LogEventHandler(r.ProcessLog);
         }
     }
