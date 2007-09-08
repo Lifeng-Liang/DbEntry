@@ -7,12 +7,12 @@ using System.Collections.Specialized;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.util.Text;
-using org.hanzify.llf.util.Setting;
+using Lephone.Util.Text;
+using Lephone.Util.Setting;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util
+namespace Lephone.UnitTest.util
 {
     [TestFixture]
 	public class ConfigTest1
@@ -30,7 +30,7 @@ namespace org.hanzify.llf.UnitTest.util
         [SetUp]
         public void SetUp()
         {
-            ConfigHelper ch = new ConfigHelper("org.hanzify.llf.Settings");
+            ConfigHelper ch = new ConfigHelper("Lephone.Settings");
             ch.InitClass(ct);
         }
 

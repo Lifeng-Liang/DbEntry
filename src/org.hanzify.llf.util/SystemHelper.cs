@@ -9,11 +9,11 @@ using System.Reflection;
 using System.Collections.Specialized;
 using System.Security;
 
-using org.hanzify.llf.util.Text;
+using Lephone.Util.Text;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
 	public static class SystemHelper
 	{

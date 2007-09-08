@@ -9,7 +9,7 @@ using System.Xml;
 
 #endregion
 
-namespace org.hanzify.llf.util.Setting
+namespace Lephone.Util.Setting
 {
     public class NameValueSectionHandler : System.Configuration.NameValueSectionHandler
 	{

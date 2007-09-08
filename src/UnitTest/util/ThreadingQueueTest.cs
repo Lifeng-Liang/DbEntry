@@ -6,12 +6,12 @@ using System.Collections;
 using System.Threading;
 using NUnit.Framework;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.TimingTask;
+using Lephone.Util;
+using Lephone.Util.TimingTask;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util
+namespace Lephone.UnitTest.util
 {
 	[TestFixture]
 	public class ThreadingQueueTest

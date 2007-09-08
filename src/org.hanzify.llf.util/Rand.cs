@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
 	public static class Rand
 	{

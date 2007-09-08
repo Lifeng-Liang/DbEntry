@@ -4,12 +4,12 @@
 using System;
 using System.Text;
 using System.Collections.Specialized;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Builder.Clause
+namespace Lephone.Data.Builder.Clause
 {
     public class FromClause : IClause
     {
@@ -46,7 +46,7 @@ namespace org.hanzify.llf.Data.Builder.Clause
             return TableNameMain;
         }
 
-        public string ToSqlText(ref DataParamterCollection dpc, org.hanzify.llf.Data.Dialect.DbDialect dd)
+        public string ToSqlText(ref DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
         {
             if (TableNameMain != null)
             {

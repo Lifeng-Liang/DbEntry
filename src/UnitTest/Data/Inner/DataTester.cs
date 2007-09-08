@@ -3,16 +3,16 @@
 
 using System;
 using NUnit.Framework;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.Builder.Clause;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data;
+using Lephone.Data.Dialect;
+using Lephone.Data.Builder;
+using Lephone.Data.Builder.Clause;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data.Inner
+namespace Lephone.UnitTest.Data.Inner
 {
 	[TestFixture]
 	public class DataTester

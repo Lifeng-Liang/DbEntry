@@ -7,16 +7,16 @@ using System.Text;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.util.Coding;
-using org.hanzify.llf.util;
+using Lephone.Data;
+using Lephone.Data.Common;
+using Lephone.Util.Coding;
+using Lephone.Util;
 
-using org.hanzify.llf.UnitTest.Data.Objects;
+using Lephone.UnitTest.Data.Objects;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     [TestFixture]
     public class SerializationTest
@@ -24,7 +24,7 @@ namespace org.hanzify.llf.UnitTest.Data
         [SetUp]
         public void Setup()
         {
-            Type t = typeof(DbEntry).Assembly.GetType("org.hanzify.llf.Data.Common.MemoryTypeBuilder");
+            Type t = typeof(DbEntry).Assembly.GetType("Lephone.Data.Common.MemoryTypeBuilder");
             ClassHelper.SetValue(t, "FieldPrifix", "_");
         }
 

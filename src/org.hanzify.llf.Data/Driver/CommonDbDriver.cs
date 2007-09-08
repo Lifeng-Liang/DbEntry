@@ -5,11 +5,11 @@ using System;
 using System.Data;
 using System.Data.Common;
 
-using org.hanzify.llf.util;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Driver
+namespace Lephone.Data.Driver
 {
     internal class CommonDbDriver : DbDriver
 	{

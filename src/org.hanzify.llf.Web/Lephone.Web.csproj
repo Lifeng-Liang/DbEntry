@@ -4,15 +4,17 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9293C04C-D2E7-449F-833E-6E6624DCD6F4}</ProjectGuid>
+    <ProjectGuid>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebDebugLib</RootNamespace>
-    <AssemblyName>WebDebugLib</AssemblyName>
+    <RootNamespace>Lephone.Web</RootNamespace>
+    <AssemblyName>Lephone.Web</AssemblyName>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Web.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,22 +40,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbEntryDataSource.cs" />
+    <Compile Include="IExcuteableDataSource.cs" />
+    <Compile Include="UrlBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="UserDataSource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.hanzify.llf.Data\org.hanzify.llf.Data.csproj">
+    <None Include="Web.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\org.hanzify.llf.Data\Lephone.Data.csproj">
       <Project>{25AFD300-493A-4553-B4DC-129D3A9022A8}</Project>
-      <Name>org.hanzify.llf.Data</Name>
+      <Name>Lephone.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.hanzify.llf.util\org.hanzify.llf.util.csproj">
+    <ProjectReference Include="..\org.hanzify.llf.util\Lephone.Util.csproj">
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
-      <Name>org.hanzify.llf.util</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\org.hanzify.llf.Web\org.hanzify.llf.Web.csproj">
-      <Project>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</Project>
-      <Name>org.hanzify.llf.Web</Name>
+      <Name>Lephone.Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -64,4 +66,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
+goto End
+
+:Release
+copy *.dll ..\..\..\..\bin\
+
+:End
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

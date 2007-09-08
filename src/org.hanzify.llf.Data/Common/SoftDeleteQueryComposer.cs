@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.Builder.Clause;
+using Lephone.Data.Builder;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Dialect;
+using Lephone.Data.Builder.Clause;
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     internal class SoftDeleteQueryComposer : QueryComposer
     {

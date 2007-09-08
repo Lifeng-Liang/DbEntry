@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Common;
 
 [assembly: AssemblyTitle("UnitTest")]
 [assembly: AssemblyDescription("")]

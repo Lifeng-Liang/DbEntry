@@ -3,12 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.QuerySyntax;
+using Lephone.Data.Common;
+using Lephone.Data.QuerySyntax;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     [Serializable]
     public class DbObjectSmartUpdate : DbObjectBase

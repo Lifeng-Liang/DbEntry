@@ -3,12 +3,12 @@
 
 using System;
 using System.Collections;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Builder.Clause;
+using Lephone.Data.Common;
+using Lephone.Data.Builder.Clause;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public class StaticPagedSelector<T> : PagedSelector<T>
     {

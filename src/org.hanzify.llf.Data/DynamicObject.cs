@@ -9,16 +9,16 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data.Common;
+using Lephone.Data.Definition;
+using Lephone.Data.Driver;
+using Lephone.Data.SqlEntry;
 
-using org.hanzify.llf.util;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
     internal class DataReaderEmitHelper
     {

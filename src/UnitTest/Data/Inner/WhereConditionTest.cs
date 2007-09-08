@@ -7,15 +7,15 @@ using System.Text;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Builder.Clause;
+using Lephone.Data;
+using Lephone.Data.Dialect;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Common;
+using Lephone.Data.Builder.Clause;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data.Inner
+namespace Lephone.UnitTest.Data.Inner
 {
     [TestFixture]
     public class WhereConditionTest

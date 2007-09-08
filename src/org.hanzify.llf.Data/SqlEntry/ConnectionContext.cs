@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
-using org.hanzify.llf.Data.Driver;
+using Lephone.Data.Driver;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
     public class ConnectionContext : IDisposable
     {

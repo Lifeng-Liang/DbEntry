@@ -4,11 +4,11 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using org.hanzify.llf.util;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     internal class MemoryAssembly
     {

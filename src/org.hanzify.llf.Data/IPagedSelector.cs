@@ -6,7 +6,7 @@ using System.Collections;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
     public interface IPagedSelector
     {

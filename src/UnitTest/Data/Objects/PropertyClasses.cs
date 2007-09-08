@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data.Objects
+namespace Lephone.UnitTest.Data.Objects
 {
     [DbTable("People")]
     public abstract class PropertyClassBase : DbObject

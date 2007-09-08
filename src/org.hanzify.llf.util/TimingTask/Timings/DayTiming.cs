@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.util.TimingTask.Timings
+namespace Lephone.Util.TimingTask.Timings
 {
 	public class DayTiming : DayOfRangeTimingBase
 	{

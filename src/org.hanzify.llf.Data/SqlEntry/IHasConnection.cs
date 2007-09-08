@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
     public interface IHasConnection
     {

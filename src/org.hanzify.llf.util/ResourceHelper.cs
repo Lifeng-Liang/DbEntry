@@ -7,7 +7,7 @@ using System.IO;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
 	public static class ResourceHelper
 	{

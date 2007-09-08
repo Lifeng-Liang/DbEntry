@@ -8,7 +8,7 @@ using System.Text;
 
 #endregion
 
-namespace org.hanzify.llf.util.Setting
+namespace Lephone.Util.Setting
 {
     public class ConfigReaderProxy : ConfigReader
     {

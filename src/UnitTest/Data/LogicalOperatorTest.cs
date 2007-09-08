@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using org.hanzify.llf.util;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Util;
+using Lephone.Data;
+using Lephone.Data.Dialect;
+using Lephone.Data.SqlEntry;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     [TestFixture]
     public class LogicalOperatorTest

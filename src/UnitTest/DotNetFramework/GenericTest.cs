@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Framework
+namespace Lephone.UnitTest.Framework
 {
     [TestFixture]
     public class GenericTest

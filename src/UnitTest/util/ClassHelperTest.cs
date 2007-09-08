@@ -3,11 +3,11 @@
 
 using System;
 using NUnit.Framework;
-using org.hanzify.llf.util;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util
+namespace Lephone.UnitTest.util
 {
     [TestFixture]
     public class ClassHelperTest

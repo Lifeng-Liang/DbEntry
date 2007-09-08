@@ -2,13 +2,13 @@
 #region usings
 
 using System;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Text;
-using org.hanzify.llf.util.Setting;
+using Lephone.Util;
+using Lephone.Util.Text;
+using Lephone.Util.Setting;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
     public enum HandlerType
     {

@@ -2,13 +2,13 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Builder.Clause;
+using Lephone.Data.Builder;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Builder.Clause;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
     [Serializable]
 	public abstract class WhereCondition : IClause
@@ -91,6 +91,6 @@ namespace org.hanzify.llf.Data
             return (Condition == null || (Condition is Common.EmptyCondition));
         }
 
-        public abstract string ToSqlText(ref DataParamterCollection dpc, org.hanzify.llf.Data.Dialect.DbDialect dd);
+        public abstract string ToSqlText(ref DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd);
 	}
 }

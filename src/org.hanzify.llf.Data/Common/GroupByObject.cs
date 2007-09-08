@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public class GroupByObject<T>
     {

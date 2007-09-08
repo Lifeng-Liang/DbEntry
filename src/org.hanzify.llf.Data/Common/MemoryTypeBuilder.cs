@@ -7,12 +7,12 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Collections;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Util;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     internal class MemoryTypeBuilder
     {

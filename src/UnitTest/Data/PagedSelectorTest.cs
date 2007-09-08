@@ -4,13 +4,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data;
+using Lephone.Data.Common;
 using NUnit.Framework;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     [TestFixture]
     public class PagedSelectorTest

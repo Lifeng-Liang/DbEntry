@@ -3,11 +3,11 @@
 
 using System;
 using NUnit.Framework;
-using org.hanzify.llf.util;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util
+namespace Lephone.UnitTest.util
 {
 	[TestFixture]
 	public class SystemHelperTest
@@ -26,7 +26,7 @@ namespace org.hanzify.llf.UnitTest.util
 		public void TestCallerFunctionName()
 		{
             string s = GetCallerFunctionName();
-			Assert.AreEqual("org.hanzify.llf.util.UnitTest.SystemHelperTest.TestCallerFunctionName()", s);
+			Assert.AreEqual("Lephone.Util.UnitTest.SystemHelperTest.TestCallerFunctionName()", s);
 		}
         */
 

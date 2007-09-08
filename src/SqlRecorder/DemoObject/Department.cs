@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.DemoObject
+namespace Lephone.DemoObject
 {
     [DbTable("Departments")]
     public class Department : DbObject

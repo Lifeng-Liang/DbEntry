@@ -6,14 +6,14 @@ using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Collections;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Text;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Util;
+using Lephone.Util.Text;
+using Lephone.Data.Dialect;
+using Lephone.Data.SqlEntry;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Driver
+namespace Lephone.Data.Driver
 {
 	public abstract class DbDriver
 	{
@@ -51,7 +51,7 @@ namespace org.hanzify.llf.Data.Driver
                 string addon = ss[1].Trim();
                 if (fn[0] == '@')
                 {
-                    fn = string.Format("org.hanzify.llf.Data.Driver.{0}, org.hanzify.llf.Data", fn.Substring(1));
+                    fn = string.Format("Lephone.Data.Driver.{0}, Lephone.Data", fn.Substring(1));
                 }
                 object f = ClassHelper.CreateInstance(fn);
                 if (f is SmartDbFactory)

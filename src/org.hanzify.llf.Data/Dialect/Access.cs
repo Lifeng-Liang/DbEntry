@@ -2,14 +2,14 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.util;
+using Lephone.Data.Driver;
+using Lephone.Data.Common;
+using Lephone.Data.SqlEntry;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Dialect
+namespace Lephone.Data.Dialect
 {
 	public class Access : SqlServer2000
 	{

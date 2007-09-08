@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.util;
+using Lephone.Data.SqlEntry;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public static class VBHelper
     {

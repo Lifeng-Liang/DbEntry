@@ -3,11 +3,11 @@
 
 using System;
 using System.Collections;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data.SqlEntry;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public class LimitedListInserter : IProcessor
     {

@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public abstract class MemberAdapter
     {

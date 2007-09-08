@@ -7,7 +7,7 @@ using System.Collections;
 
 #endregion
 
-namespace org.hanzify.llf.util.TimingTask
+namespace Lephone.Util.TimingTask
 {
 	public class TaskCollection : CollectionBase
 	{

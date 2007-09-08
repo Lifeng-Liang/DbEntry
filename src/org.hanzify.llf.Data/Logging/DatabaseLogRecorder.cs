@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.util.Logging;
+using Lephone.Util.Logging;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Logging
+namespace Lephone.Data.Logging
 {
     public class DatabaseLogRecorder : ILogRecorder
     {

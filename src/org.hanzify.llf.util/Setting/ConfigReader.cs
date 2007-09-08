@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 
 #endregion
 
-namespace org.hanzify.llf.util.Setting
+namespace Lephone.Util.Setting
 {
     public class ConfigReader
     {

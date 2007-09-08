@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data.Common;
-using org.hanzify.llf.MockSql.Recorder;
+using Lephone.MockSql.Recorder;
 
-namespace org.hanzify.llf.MockSql
+namespace Lephone.MockSql
 {
     public class RecorderReader : DbDataReader
     {

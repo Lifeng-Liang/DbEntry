@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     [Serializable]
     public abstract class DbObject : DbObjectBase

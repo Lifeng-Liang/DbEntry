@@ -2,12 +2,12 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Builder.Clause;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data.Builder.Clause;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
 	[Serializable]
 	public class CK

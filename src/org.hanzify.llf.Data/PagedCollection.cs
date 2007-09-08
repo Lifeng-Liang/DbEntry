@@ -3,11 +3,11 @@
 
 using System;
 using System.Collections;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
     public class PagedCollection : ICollection
     {

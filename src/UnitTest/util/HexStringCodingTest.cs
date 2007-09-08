@@ -2,12 +2,12 @@
 #region usings
 
 using System;
-using org.hanzify.llf.util.Coding;
+using Lephone.Util.Coding;
 using NUnit.Framework;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util
+namespace Lephone.UnitTest.util
 {
 	[TestFixture]
 	public class CodingHexStringTest

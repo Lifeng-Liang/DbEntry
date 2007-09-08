@@ -7,7 +7,7 @@ using System.Threading;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
 	public delegate void OutputEventHandler(object o);
 

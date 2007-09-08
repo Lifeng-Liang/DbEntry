@@ -4,17 +4,17 @@
 using System;
 using System.Data;
 using System.Collections;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Logging;
-using org.hanzify.llf.Data.QuerySyntax;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Builder;
+using Lephone.Util;
+using Lephone.Util.Logging;
+using Lephone.Data.QuerySyntax;
+using Lephone.Data.Common;
+using Lephone.Data.Driver;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Builder;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
     public static class DbEntry
     {

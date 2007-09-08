@@ -7,7 +7,7 @@ using System.Text;
 
 #endregion
 
-namespace org.hanzify.llf.util.Logging
+namespace Lephone.Util.Logging
 {
     public class DtsFileLogRecorder : TextFileLogRecorder
     {

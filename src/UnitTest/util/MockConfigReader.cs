@@ -4,11 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using org.hanzify.llf.util.Setting;
+using Lephone.Util.Setting;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util
+namespace Lephone.UnitTest.util
 {
     public class MockConfigReader : ConfigReader
     {

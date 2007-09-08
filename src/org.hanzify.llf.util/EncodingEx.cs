@@ -6,7 +6,7 @@ using System.Text;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
 	public class EncodingEx
 	{

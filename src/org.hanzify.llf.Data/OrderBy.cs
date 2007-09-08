@@ -4,12 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data.Builder;
+using Lephone.Data.SqlEntry;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
 	[Serializable]
 	public class OrderBy : IClause

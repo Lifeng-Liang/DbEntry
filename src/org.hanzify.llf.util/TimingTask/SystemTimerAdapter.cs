@@ -6,7 +6,7 @@ using System.Timers;
 
 #endregion
 
-namespace org.hanzify.llf.util.TimingTask
+namespace Lephone.Util.TimingTask
 {
 	internal class SystemTimerAdapter : ITimer
 	{

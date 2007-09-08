@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
 	public class DbEntryException : DbException
 	{

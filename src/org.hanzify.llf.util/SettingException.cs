@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
 	public class SettingException : Exception
 	{

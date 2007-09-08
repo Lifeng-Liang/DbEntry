@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.util.Logging
+namespace Lephone.Util.Logging
 {
 	public interface ILogRecorder
 	{

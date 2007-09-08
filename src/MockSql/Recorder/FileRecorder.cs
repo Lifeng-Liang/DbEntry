@@ -4,12 +4,12 @@
 using System;
 using System.IO;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Setting;
+using Lephone.Util;
+using Lephone.Util.Setting;
 
 #endregion
 
-namespace org.hanzify.llf.MockSql.Recorder
+namespace Lephone.MockSql.Recorder
 {
     public class FileRecorder : IRecorder
     {

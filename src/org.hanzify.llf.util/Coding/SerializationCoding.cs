@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 #endregion
 
-namespace org.hanzify.llf.util.Coding
+namespace Lephone.Util.Coding
 {
 	public class SerializationCoding : ICoding
 	{

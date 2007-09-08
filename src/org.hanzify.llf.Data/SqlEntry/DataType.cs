@@ -6,7 +6,7 @@ using System.Data;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
 	[Serializable]
 	public enum DataType

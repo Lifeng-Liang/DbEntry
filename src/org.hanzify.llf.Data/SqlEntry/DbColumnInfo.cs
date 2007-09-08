@@ -5,7 +5,7 @@ using System.Text;
 using System.Data;
 using System.Reflection;
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
     public class DbColumnInfo
     {

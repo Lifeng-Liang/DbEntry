@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.util.Text;
+using Lephone.Util.Text;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util
+namespace Lephone.UnitTest.util
 {
 	internal enum TestEnum
 	{

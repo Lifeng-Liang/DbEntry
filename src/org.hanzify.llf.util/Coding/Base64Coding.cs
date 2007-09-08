@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.util.Coding
+namespace Lephone.Util.Coding
 {
     public class Base64Coding : StringCoding
     {

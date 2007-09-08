@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace org.hanzify.llf.util.Text
+namespace Lephone.Util.Text
 {
     public abstract class StringSerializer<T>
     {

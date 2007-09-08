@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace org.hanzify.llf.MockSql.Recorder
+namespace Lephone.MockSql.Recorder
 {
     public class ConsoleRecorder : IRecorder
     {

@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.Data.Builder.Clause
+namespace Lephone.Data.Builder.Clause
 {
 	[Serializable]
 	public class OrClause : ConditionClause

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Common;
 
 [assembly: AssemblyTitle("DbEntry.Net")]
 [assembly: AssemblyDescription("DbEntry.Net")]

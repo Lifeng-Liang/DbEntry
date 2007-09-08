@@ -7,7 +7,7 @@ using System.Text;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public class HasOneAttribute : OrderByAttribute

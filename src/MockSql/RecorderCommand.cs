@@ -3,13 +3,13 @@
 
 using System;
 using System.Data.Common;
-using org.hanzify.llf.util;
+using Lephone.Util;
 
-using org.hanzify.llf.MockSql.Recorder;
+using Lephone.MockSql.Recorder;
 
 #endregion
 
-namespace org.hanzify.llf.MockSql
+namespace Lephone.MockSql
 {
     public class RecorderCommand : DbCommand
     {

@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 #endregion
 
-namespace org.hanzify.llf.util.Text
+namespace Lephone.Util.Text
 {
     public class XmlSerializer<T> : StringSerializer<T>
     {

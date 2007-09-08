@@ -1,6 +1,6 @@
 ﻿
 using System;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data.Definition;
 
 namespace test
 {

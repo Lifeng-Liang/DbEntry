@@ -3,12 +3,12 @@
 
 using System;
 using System.Data;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Text;
+using Lephone.Util;
+using Lephone.Util.Text;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
 	[Serializable]
 	public class SqlStatement

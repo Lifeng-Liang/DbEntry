@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.Data.Dialect
+namespace Lephone.Data.Dialect
 {
 	public class Excel : Access
 	{

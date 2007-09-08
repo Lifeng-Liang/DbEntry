@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
     public class ColumnInfo : KeyValue
     {

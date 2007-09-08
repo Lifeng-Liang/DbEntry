@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 
 using NUnit.Framework;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data;
+using Lephone.Data.Definition;
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     public abstract class File : DbObjectModel<File>
     {

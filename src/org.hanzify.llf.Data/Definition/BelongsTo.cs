@@ -5,13 +5,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.util;
+using Lephone.Data.Driver;
+using Lephone.Data.Common;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     [Serializable]
     public class BelongsTo<T> : IBelongsTo

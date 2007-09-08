@@ -4,12 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Driver;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     public interface ILazyLoading
     {

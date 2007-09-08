@@ -6,14 +6,14 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Text;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Util;
+using Lephone.Util.Text;
+using Lephone.Data.Common;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
     public class ValidateHandler
     {

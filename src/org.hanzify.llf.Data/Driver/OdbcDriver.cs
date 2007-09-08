@@ -8,7 +8,7 @@ using System.Data.Odbc;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Driver
+namespace Lephone.Data.Driver
 {
     internal class OdbcDriver : DbDriver
 	{

@@ -5,12 +5,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using org.hanzify.llf.Data.Builder.Clause;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Builder.Clause;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     [Serializable]
 	public class DbObjectList<T> : List<T>

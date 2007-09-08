@@ -3,13 +3,13 @@
 
 using System;
 using System.Data;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.Builder.Clause;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data.Dialect;
+using Lephone.Data.Builder.Clause;
+using Lephone.Data.SqlEntry;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Builder
+namespace Lephone.Data.Builder
 {
 	public class UpdateStatementBuilder : ISqlStatementBuilder, ISqlValues, ISqlWhere
 	{

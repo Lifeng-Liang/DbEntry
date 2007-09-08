@@ -7,17 +7,17 @@ using System.Text;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.MockSql;
-using org.hanzify.llf.MockSql.Recorder;
+using Lephone.Data;
+using Lephone.Data.Common;
+using Lephone.Data.Definition;
+using Lephone.MockSql;
+using Lephone.MockSql.Recorder;
 
-using org.hanzify.llf.UnitTest.Data.Objects;
+using Lephone.UnitTest.Data.Objects;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data.CreateTable
+namespace Lephone.UnitTest.Data.CreateTable
 {
     #region objects
 

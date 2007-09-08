@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Driver
+namespace Lephone.Data.Driver
 {
     internal class SqlServerDriver : DbDriver
 	{

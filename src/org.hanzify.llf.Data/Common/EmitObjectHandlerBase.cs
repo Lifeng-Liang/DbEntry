@@ -2,13 +2,13 @@
 using System;
 using System.Data;
 using System.Collections.Generic;
-using org.hanzify.llf.util;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Util;
+using Lephone.Data.Driver;
+using Lephone.Data.Definition;
+using Lephone.Data.Builder;
+using Lephone.Data.SqlEntry;
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     internal abstract class EmitObjectHandlerBase : IDbObjectHandler
     {

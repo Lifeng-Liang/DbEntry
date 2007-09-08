@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public class DbStructInterface
     {

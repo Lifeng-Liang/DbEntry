@@ -6,7 +6,7 @@ using System.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.MockSql
+namespace Lephone.MockSql
 {
     public class RecorderFactory : DbProviderFactory
     {

@@ -3,14 +3,14 @@ using System;
 using System.Text;
 using System.Collections;
 using System.Data;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Logging;
+using Lephone.Data.Common;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Driver;
+using Lephone.Data.Builder;
+using Lephone.Util;
+using Lephone.Util.Logging;
 
-namespace org.hanzify.llf.Data.Dialect
+namespace Lephone.Data.Dialect
 {
 	public class DbDialect
 	{

@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.MockSql.Recorder;
-using org.hanzify.llf.util;
+using Lephone.Data;
+using Lephone.Data.Definition;
+using Lephone.Data.Common;
+using Lephone.MockSql.Recorder;
+using Lephone.Util;
 using NUnit.Framework;
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     public abstract class FullType : DbObjectModel<FullType>
     {

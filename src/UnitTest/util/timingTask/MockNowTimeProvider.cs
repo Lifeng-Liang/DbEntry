@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.util.TimingTask.Timings;
+using Lephone.Util.TimingTask.Timings;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util.timingTask
+namespace Lephone.UnitTest.util.timingTask
 {
 	public class MockNowTimeProvider : INowTimeProvider
 	{

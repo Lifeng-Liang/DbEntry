@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 
-namespace org.hanzify.llf.UnitTest.DotNetFramework
+namespace Lephone.UnitTest.DotNetFramework
 {
     [TestFixture]
     public class TextTest

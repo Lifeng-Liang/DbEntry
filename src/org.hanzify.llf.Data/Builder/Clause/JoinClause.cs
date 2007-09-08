@@ -2,13 +2,13 @@
 #region usings
 
 using System;
-using org.hanzify.llf.util.Text;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Util.Text;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Builder.Clause
+namespace Lephone.Data.Builder.Clause
 {
     public class JoinClause : IClause
     {
@@ -25,7 +25,7 @@ namespace org.hanzify.llf.Data.Builder.Clause
             this.mode = mode;
         }
 
-        public string ToSqlText(ref DataParamterCollection dpc, org.hanzify.llf.Data.Dialect.DbDialect dd)
+        public string ToSqlText(ref DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
         {
             return string.Format("{0} {2} {1}",
                 dd.QuoteForColumnName(Key1),

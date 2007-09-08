@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data.SqlEntry;
 
-namespace org.hanzify.llf.Data.Dialect
+namespace Lephone.Data.Dialect
 {
     public class Firebird : SequencedDialect
     {
@@ -72,7 +72,7 @@ namespace org.hanzify.llf.Data.Dialect
             dp.ExecuteNonQuery(sql);
         }
 
-        protected override SqlStatement GetPagedSelectSqlStatement(org.hanzify.llf.Data.Builder.SelectStatementBuilder ssb)
+        protected override SqlStatement GetPagedSelectSqlStatement(Lephone.Data.Builder.SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
             Sql.SqlCommandText = string.Format("{0} Rows {1} to {2}",

@@ -8,14 +8,14 @@ using System.Reflection;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.UnitTest.Data.Objects;
+using Lephone.Util;
+using Lephone.Data;
+using Lephone.Data.Definition;
+using Lephone.UnitTest.Data.Objects;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     [TestFixture]
     public class DynamicObjectAbstractClassTest

@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Builder.Clause;
+using Lephone.Data.Builder.Clause;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public class JoinOnAttribute : Attribute

@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data.Inner
+namespace Lephone.UnitTest.Data.Inner
 {
 	internal class TesterHelper
 	{

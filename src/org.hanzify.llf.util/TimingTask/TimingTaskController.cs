@@ -3,11 +3,11 @@
 
 using System;
 using System.Timers;
-using org.hanzify.llf.util.Logging;
+using Lephone.Util.Logging;
 
 #endregion
 
-namespace org.hanzify.llf.util.TimingTask
+namespace Lephone.Util.TimingTask
 {
 	public class TimingTaskController : IDisposable
 	{

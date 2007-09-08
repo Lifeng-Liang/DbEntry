@@ -3,12 +3,12 @@
 
 using System;
 using System.Text;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.util;
+using Lephone.Data.Common;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     [Serializable]
     public class DbObjectBase : IRenew

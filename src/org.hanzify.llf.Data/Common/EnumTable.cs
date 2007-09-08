@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     [DisableSqlLog]
 	public class EnumTable : DbObject

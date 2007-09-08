@@ -11,15 +11,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Text;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.Common;
+using Lephone.Util;
+using Lephone.Util.Text;
+using Lephone.Data.Dialect;
+using Lephone.Data.Driver;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
 	public class DataProvider : IHasConnection
 	{

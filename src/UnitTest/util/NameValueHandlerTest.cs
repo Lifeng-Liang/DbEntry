@@ -10,12 +10,12 @@ using System.Collections.Specialized;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Setting;
+using Lephone.Util;
+using Lephone.Util.Setting;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util
+namespace Lephone.UnitTest.util
 {
     [TestFixture]
     public class NameValueHandlerTest
@@ -34,7 +34,7 @@ namespace org.hanzify.llf.UnitTest.util
                 XmlDocument xd = new XmlDocument();
                 xd.Load(ms);
                 NameValueCollection l = (NameValueCollection)h.Create(null, null, xd["configuration"].ChildNodes[0]);
-                Assert.AreEqual("org.hanzify.llf.util.Logging.ConsoleMessageRecorder, org.hanzify.llf.util", l["SqlLogRecorder"]);
+                Assert.AreEqual("Lephone.Util.Logging.ConsoleMessageRecorder, Lephone.Util", l["SqlLogRecorder"]);
                 Assert.AreEqual("@Access : @~test.mdb", l["1.DataBase"]);
             }
         }

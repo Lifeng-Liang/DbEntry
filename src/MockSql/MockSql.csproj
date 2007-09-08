@@ -7,8 +7,8 @@
     <ProjectGuid>{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.hanzify.llf.MockSql</RootNamespace>
-    <AssemblyName>org.hanzify.llf.MockSql</AssemblyName>
+    <RootNamespace>Lephone.MockSql</RootNamespace>
+    <AssemblyName>Lephone.MockSql</AssemblyName>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -62,9 +62,9 @@
     <Compile Include="Recorder\StaticRecorder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.hanzify.llf.util\org.hanzify.llf.util.csproj">
+    <ProjectReference Include="..\org.hanzify.llf.util\Lephone.Util.csproj">
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
-      <Name>org.hanzify.llf.util</Name>
+      <Name>Lephone.Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

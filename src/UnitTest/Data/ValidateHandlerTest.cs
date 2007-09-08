@@ -7,12 +7,12 @@ using System.Text;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data;
+using Lephone.Data.Definition;
+using Lephone.Data;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     class vtest
     {

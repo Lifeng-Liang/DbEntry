@@ -2,10 +2,10 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.util;
+using Lephone.Data.Builder;
+using Lephone.Util;
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
     public class CommonBulkCopy : IDbBulkCopy
     {

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-  <org.hanzify.llf.Settings>
-    <add key="SqlLogRecorder" value="org.hanzify.llf.util.Logging.ConsoleMessageRecorder, org.hanzify.llf.util" />
+  <Lephone.Settings>
+    <add key="SqlLogRecorder" value="Lephone.Util.Logging.ConsoleMessageRecorder, Lephone.Util" />
 
     <add key="ObjectHandlerType" value="Emit" />
 
@@ -15,22 +15,22 @@
 
     <add key="SqlServer.DataBase" value="@SqlServer2005 : data source=LEPHONE\SQLEXPRESS;initial catalog=testdb;user id=sa;password=123" />
 
-    <add key="SqlServerMock.DataBase" value="@SqlServer2005 : org.hanzify.llf.MockSql.Recorder.StaticRecorder, org.hanzify.llf.MockSql" />
-    <add key="SqlServerMock.DbDriver" value="org.hanzify.llf.Data.Driver.SqlServerDriver, org.hanzify.llf.Data" />
-    <add key="SqlServerMock.DbProviderFactory" value="org.hanzify.llf.MockSql.RecorderFactory, org.hanzify.llf.MockSql" />
+    <add key="SqlServerMock.DataBase" value="@SqlServer2005 : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
+    <add key="SqlServerMock.DbDriver" value="Lephone.Data.Driver.SqlServerDriver, Lephone.Data" />
+    <add key="SqlServerMock.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />
 
     <add key="TestInt" value="10" />
     <add key="TheString" value="OK" />
     <add key="TestBool" value="true" />
 
-    <add key="SQLite.DataBase" value="@SQLite : org.hanzify.llf.MockSql.Recorder.StaticRecorder, org.hanzify.llf.MockSql" />
-    <add key="SQLite.DbDriver" value="org.hanzify.llf.Data.Driver.CommonDbDriver, org.hanzify.llf.Data" />
-    <add key="SQLite.DbProviderFactory" value="org.hanzify.llf.MockSql.RecorderFactory, org.hanzify.llf.MockSql" />
+    <add key="SQLite.DataBase" value="@SQLite : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
+    <add key="SQLite.DbDriver" value="Lephone.Data.Driver.CommonDbDriver, Lephone.Data" />
+    <add key="SQLite.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />
 
-    <add key="Firebird.DataBase" value="@Firebird : org.hanzify.llf.MockSql.Recorder.StaticRecorder, org.hanzify.llf.MockSql" />
-    <add key="Firebird.DbDriver" value="org.hanzify.llf.Data.Driver.CommonDbDriver, org.hanzify.llf.Data" />
-    <add key="Firebird.DbProviderFactory" value="org.hanzify.llf.MockSql.RecorderFactory, org.hanzify.llf.MockSql" />
-  </org.hanzify.llf.Settings>
+    <add key="Firebird.DataBase" value="@Firebird : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
+    <add key="Firebird.DbDriver" value="Lephone.Data.Driver.CommonDbDriver, Lephone.Data" />
+    <add key="Firebird.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />
+  </Lephone.Settings>
 
   <MySetting>
     <add key="TestInt" value="23" />

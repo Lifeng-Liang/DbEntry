@@ -8,13 +8,13 @@ using System.Web;
 using System.Web.UI;
 using System.ComponentModel;
 using System.Security.Permissions;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.QuerySyntax;
+using Lephone.Data;
+using Lephone.Data.Common;
+using Lephone.Data.Builder;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.QuerySyntax;
 
-namespace org.hanzify.llf.Web
+namespace Lephone.Web
 {
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
     public class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource

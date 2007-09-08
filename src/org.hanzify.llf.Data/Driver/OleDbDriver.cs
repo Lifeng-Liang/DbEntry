@@ -6,12 +6,12 @@ using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Util;
+using Lephone.Data.SqlEntry;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Driver
+namespace Lephone.Data.Driver
 {
     internal class OleDbDriver : DbDriver
 	{

@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using org.hanzify.llf.Data;
+using Lephone.Data;
 using NUnit.Framework;
 
-namespace org.hanzify.llf.UnitTest.DotNetFramework
+namespace Lephone.UnitTest.DotNetFramework
 {
     class test
     {

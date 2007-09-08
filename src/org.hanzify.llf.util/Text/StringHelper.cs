@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace org.hanzify.llf.util.Text
+namespace Lephone.Util.Text
 {
 	public static class StringHelper
 	{

@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.util.TimingTask
+namespace Lephone.Util.TimingTask
 {
 	public interface ITiming
 	{

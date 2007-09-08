@@ -7,17 +7,17 @@ using System.Data;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Collections.Generic;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Setting;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.Builder.Clause;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Util;
+using Lephone.Util.Setting;
+using Lephone.Data.Builder;
+using Lephone.Data.Builder.Clause;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Driver;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public static class DbObjectHelper
     {

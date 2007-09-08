@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Reflection;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data.Builder;
+using Lephone.Data.Definition;
+using Lephone.Data.SqlEntry;
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     internal class ReflectionDbObjectHandler : IDbObjectHandler
     {

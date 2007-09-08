@@ -7,7 +7,7 @@
     <ProjectGuid>{92805D19-5BFD-4EC4-B485-BEF6598CD14A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.hanzify.llf</RootNamespace>
+    <RootNamespace>Lephone</RootNamespace>
     <AssemblyName>SqlRecorder</AssemblyName>
     <ApplicationIcon>App.ico</ApplicationIcon>
     <SccProjectName>SAK</SccProjectName>
@@ -51,13 +51,13 @@
       <Project>{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}</Project>
       <Name>MockSql</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.hanzify.llf.Data\org.hanzify.llf.Data.csproj">
+    <ProjectReference Include="..\org.hanzify.llf.Data\Lephone.Data.csproj">
       <Project>{25AFD300-493A-4553-B4DC-129D3A9022A8}</Project>
-      <Name>org.hanzify.llf.Data</Name>
+      <Name>Lephone.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.hanzify.llf.util\org.hanzify.llf.util.csproj">
+    <ProjectReference Include="..\org.hanzify.llf.util\Lephone.Util.csproj">
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
-      <Name>org.hanzify.llf.util</Name>
+      <Name>Lephone.Util</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

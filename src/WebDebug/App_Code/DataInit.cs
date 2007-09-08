@@ -1,8 +1,8 @@
 ﻿
 using System;
 using System.IO;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.util;
+using Lephone.Data;
+using Lephone.Util;
 using test;
 
 public static class DataInit

@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
 	public class ASC
 	{

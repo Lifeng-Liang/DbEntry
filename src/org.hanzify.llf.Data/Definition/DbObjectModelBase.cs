@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Common;
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     [Serializable]
     public class DbObjectModelBase<T, TKey> : DbObjectSmartUpdate
@@ -14,24 +14,24 @@ namespace org.hanzify.llf.Data.Definition
             get { return CK.Column; }
         }
 
-        public void Save()
+        public virtual void Save()
         {
             DbEntry.Save(this);
         }
 
-        public void Delete()
+        public virtual void Delete()
         {
             DbEntry.Delete(this);
         }
 
-        public ValidateHandler Validate()
+        public virtual ValidateHandler Validate()
         {
             ValidateHandler v = new ValidateHandler();
             v.ValidateObject(this);
             return v;
         }
 
-        public bool IsValid()
+        public virtual bool IsValid()
         {
             return Validate().IsValid;
         }

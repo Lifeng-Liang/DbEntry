@@ -5,19 +5,19 @@ using System;
 using System.Data;
 using System.Collections;
 using System.Collections.Generic;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Logging;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data.QuerySyntax;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.Builder.Clause;
+using Lephone.Util;
+using Lephone.Util.Logging;
+using Lephone.Data.Definition;
+using Lephone.Data.QuerySyntax;
+using Lephone.Data.Common;
+using Lephone.Data.Driver;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Builder;
+using Lephone.Data.Builder.Clause;
 
 #endregion
 
-namespace org.hanzify.llf.Data
+namespace Lephone.Data
 {
     public class DbContext : DataProvider
     {

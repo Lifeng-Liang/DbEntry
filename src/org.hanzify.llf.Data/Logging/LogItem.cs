@@ -2,12 +2,12 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.util.Logging;
+using Lephone.Data.Definition;
+using Lephone.Util.Logging;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Logging
+namespace Lephone.Data.Logging
 {
 	[DbTable("Log"), DisableSqlLog]
 	public class LogItem : DbObject

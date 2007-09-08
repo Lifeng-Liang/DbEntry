@@ -6,14 +6,14 @@
     <ProjectGuid>{25AFD300-493A-4553-B4DC-129D3A9022A8}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <AssemblyName>org.hanzify.llf.Data</AssemblyName>
+    <AssemblyName>Lephone.Data</AssemblyName>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.hanzify.llf.Data</RootNamespace>
+    <RootNamespace>Lephone.Data</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
 goto End
@@ -343,8 +343,8 @@ copy *.dll ..\..\..\..\bin\
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.hanzify.llf.util\org.hanzify.llf.util.csproj">
-      <Name>org.hanzify.llf.util</Name>
+    <ProjectReference Include="..\org.hanzify.llf.util\Lephone.Util.csproj">
+      <Name>Lephone.Util</Name>
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>

@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using org.hanzify.llf.Data.Builder;
+using Lephone.Data.Builder;
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public interface IDbObjectHandler
     {

@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.util.Logging;
+using Lephone.Util.Logging;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
 	public class CountViewer
 	{

@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data.SqlEntry;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Builder
+namespace Lephone.Data.Builder
 {
 	public interface ISqlValues
 	{

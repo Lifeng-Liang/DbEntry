@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace org.hanzify.llf.util.Logging
+namespace Lephone.Util.Logging
 {
     public class DebugLogRecorder : ILogRecorder
     {

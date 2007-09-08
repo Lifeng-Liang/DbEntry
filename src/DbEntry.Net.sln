@@ -1,12 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.hanzify.llf.Data", "org.hanzify.llf.Data\org.hanzify.llf.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Data", "org.hanzify.llf.Data\Lephone.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.hanzify.llf.util", "org.hanzify.llf.util\org.hanzify.llf.util.csproj", "{F53E89FC-F364-4C7D-A20A-CACFBF11C196}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Util", "org.hanzify.llf.util\Lephone.Util.csproj", "{F53E89FC-F364-4C7D-A20A-CACFBF11C196}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -78,13 +78,13 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebDebug\", "WebDebu
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.hanzify.llf.Web", "org.hanzify.llf.Web\org.hanzify.llf.Web.csproj", "{A73147C3-73C4-4590-9EC4-250AC83F4EF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Web", "org.hanzify.llf.Web\Lephone.Web.csproj", "{A73147C3-73C4-4590-9EC4-250AC83F4EF5}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDebugLib", "WebDebugLib\WebDebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\DebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -102,27 +102,27 @@ Global
 		SccProjectUniqueName2 = MockSql\\MockSql.csproj
 		SccProjectName2 = MockSql
 		SccLocalPath2 = MockSql
-		SccProjectUniqueName3 = org.hanzify.llf.Data\\org.hanzify.llf.Data.csproj
-		SccProjectName3 = org.hanzify.llf.Data
-		SccLocalPath3 = org.hanzify.llf.Data
-		SccProjectUniqueName4 = org.hanzify.llf.util\\org.hanzify.llf.util.csproj
-		SccProjectName4 = org.hanzify.llf.util
-		SccLocalPath4 = org.hanzify.llf.util
-		SccProjectUniqueName5 = SqlRecorder\\SqlRecorder.csproj
-		SccProjectName5 = SqlRecorder
-		SccLocalPath5 = SqlRecorder
-		SccProjectUniqueName6 = UnitTest\\UnitTest.csproj
-		SccProjectName6 = UnitTest
-		SccLocalPath6 = UnitTest
-		SccWebProject7 = true
-		SccProjectUniqueName7 = WebDebug
-		SccLocalPath7 = .
-		SccProjectFilePathRelativizedFromConnection7 = WebDebug\\
-		SccProjectEnlistmentChoice7 = 2
-		SccProjectUniqueName8 = org.hanzify.llf.Web\\org.hanzify.llf.Web.csproj
+		SccProjectUniqueName3 = SqlRecorder\\SqlRecorder.csproj
+		SccProjectName3 = SqlRecorder
+		SccLocalPath3 = SqlRecorder
+		SccProjectUniqueName4 = UnitTest\\UnitTest.csproj
+		SccProjectName4 = UnitTest
+		SccLocalPath4 = UnitTest
+		SccWebProject5 = true
+		SccProjectUniqueName5 = WebDebug
+		SccLocalPath5 = .
+		SccProjectFilePathRelativizedFromConnection5 = WebDebug\\
+		SccProjectEnlistmentChoice5 = 2
+		SccProjectUniqueName6 = org.hanzify.llf.Data\\Lephone.Data.csproj
+		SccProjectName6 = org.hanzify.llf.Data
+		SccLocalPath6 = org.hanzify.llf.Data
+		SccProjectUniqueName7 = org.hanzify.llf.util\\Lephone.util.csproj
+		SccProjectName7 = org.hanzify.llf.util
+		SccLocalPath7 = org.hanzify.llf.util
+		SccProjectUniqueName8 = org.hanzify.llf.Web\\Lephone.Web.csproj
 		SccProjectName8 = org.hanzify.llf.Web
 		SccLocalPath8 = org.hanzify.llf.Web
-		SccProjectUniqueName9 = WebDebugLib\\WebDebugLib.csproj
+		SccProjectUniqueName9 = WebDebugLib\\DebugLib.csproj
 		SccProjectName9 = WebDebugLib
 		SccLocalPath9 = WebDebugLib
 	EndGlobalSection

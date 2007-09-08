@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-using org.hanzify.llf.util;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest
+namespace Lephone.UnitTest
 {
     public static class InitHelper
     {
@@ -21,7 +21,7 @@ namespace org.hanzify.llf.UnitTest
 
         public static void Init()
         {
-            // org.hanzify.llf.Data.SqlEntry.DataBase.ExecuteNonQuery(TestTableSql);
+            // Lephone.Data.SqlEntry.DataBase.ExecuteNonQuery(TestTableSql);
             Clear();
             using (Stream s = new FileStream(TestFilePath, FileMode.Create))
             {

@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
 	public interface IService
 	{

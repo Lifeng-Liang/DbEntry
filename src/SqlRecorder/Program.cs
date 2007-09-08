@@ -2,13 +2,13 @@
 #region usings
 
 using System;
-using org.hanzify.llf.DemoObject;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Common;
+using Lephone.DemoObject;
+using Lephone.Data;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf
+namespace Lephone
 {
     public class Program
     {

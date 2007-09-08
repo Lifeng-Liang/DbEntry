@@ -5,11 +5,11 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 
-using org.hanzify.llf.util.Text;
+using Lephone.Util.Text;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     // order by [Id]
     public class DbEnum

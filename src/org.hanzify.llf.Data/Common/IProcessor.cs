@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
 	public interface IProcessor
 	{

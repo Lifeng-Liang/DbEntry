@@ -5,11 +5,11 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
 	internal static class DataTypeParser
 	{

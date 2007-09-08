@@ -4,11 +4,11 @@
 using System;
 using System.Reflection;
 
-using org.hanzify.llf.util.Text;
+using Lephone.Util.Text;
 
 #endregion
 
-namespace org.hanzify.llf.util.Setting
+namespace Lephone.Util.Setting
 {
 	public abstract class ConfigHelperBase
 	{

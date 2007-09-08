@@ -4,11 +4,11 @@
 using System;
 using System.Text;
 using System.IO;
-using org.hanzify.llf.util.Setting;
+using Lephone.Util.Setting;
 
 #endregion
 
-namespace org.hanzify.llf.util.Logging
+namespace Lephone.Util.Logging
 {
 	public class TextFileLogRecorder : ILogRecorder
 	{

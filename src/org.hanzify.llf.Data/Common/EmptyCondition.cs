@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     public class EmptyCondition : WhereCondition
     {
@@ -14,7 +14,7 @@ namespace org.hanzify.llf.Data.Common
             get { return false; }
         }
 
-        public override string ToSqlText(ref org.hanzify.llf.Data.SqlEntry.DataParamterCollection dpc, org.hanzify.llf.Data.Dialect.DbDialect dd)
+        public override string ToSqlText(ref Lephone.Data.SqlEntry.DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
         {
             return null;
         }

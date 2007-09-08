@@ -7,7 +7,7 @@ using System.Text;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     public abstract class OrderByAttribute : Attribute
     {

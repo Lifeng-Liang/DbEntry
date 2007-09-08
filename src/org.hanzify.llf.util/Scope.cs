@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
     // this class copied from MSDN :
     // http://www.microsoft.com/china/MSDN/library/netFramework/netframework/NETMattersSep.mspx?mfr=true

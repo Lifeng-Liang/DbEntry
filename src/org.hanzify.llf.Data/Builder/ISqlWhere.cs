@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Builder.Clause;
+using Lephone.Data.Builder.Clause;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Builder
+namespace Lephone.Data.Builder
 {
 	public interface ISqlWhere
 	{

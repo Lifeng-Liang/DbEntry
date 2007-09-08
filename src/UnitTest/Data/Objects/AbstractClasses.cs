@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
 
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Definition;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data.Objects
+namespace Lephone.UnitTest.Data.Objects
 {
     public abstract class AbstractClass
     {

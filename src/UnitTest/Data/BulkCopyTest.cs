@@ -7,12 +7,12 @@ using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using NUnit.Framework;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.MockSql;
-using org.hanzify.llf.MockSql.Recorder;
+using Lephone.Data;
+using Lephone.Data.SqlEntry;
+using Lephone.MockSql;
+using Lephone.MockSql.Recorder;
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     [TestFixture]
     public class BulkCopyTest

@@ -5,12 +5,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Driver;
+using Lephone.Data.Common;
+using Lephone.Data.Driver;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     [Serializable]
     public class HasOne<T> : LazyLoadOneBase<T>, IRenew

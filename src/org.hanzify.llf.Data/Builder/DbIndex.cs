@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Builder
+namespace Lephone.Data.Builder
 {
     public class DbIndex
     {

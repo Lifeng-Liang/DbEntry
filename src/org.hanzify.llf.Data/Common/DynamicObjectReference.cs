@@ -5,11 +5,11 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-using org.hanzify.llf.util;
+using Lephone.Util;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
     [Serializable]
     public class DynamicObjectReference : IObjectReference, ISerializable

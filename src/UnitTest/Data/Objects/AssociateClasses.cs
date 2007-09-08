@@ -2,12 +2,12 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data.Objects
+namespace Lephone.UnitTest.Data.Objects
 {
     // HasOne
 

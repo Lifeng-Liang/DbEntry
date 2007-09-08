@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace org.hanzify.llf.Data.Builder
+namespace Lephone.Data.Builder
 {
     public interface ISqlKeys
     {

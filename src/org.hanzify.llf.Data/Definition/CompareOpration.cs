@@ -2,11 +2,11 @@
 #region usings
 
 using System;
-using org.hanzify.llf.util.Text;
+using Lephone.Util.Text;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
 	[Serializable]
 	public enum CompareOpration

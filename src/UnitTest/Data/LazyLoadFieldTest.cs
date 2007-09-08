@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.MockSql;
-using org.hanzify.llf.MockSql.Recorder;
-using org.hanzify.llf.util;
+using Lephone.Data;
+using Lephone.Data.Definition;
+using Lephone.MockSql;
+using Lephone.MockSql.Recorder;
+using Lephone.Util;
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     public class lzUser1 : DbObject
     {

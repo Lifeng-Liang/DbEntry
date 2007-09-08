@@ -2,12 +2,12 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data.Dialect;
+using Lephone.Data.SqlEntry;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Builder.Clause
+namespace Lephone.Data.Builder.Clause
 {
 	[Serializable]
 	public class NotClause : WhereCondition

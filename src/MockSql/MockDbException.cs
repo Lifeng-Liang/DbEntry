@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace org.hanzify.llf.MockSql
+namespace Lephone.MockSql
 {
     public class MockDbException : DbException
     {

@@ -6,12 +6,12 @@ using System.Data;
 using System.Data.Common;
 using System.Reflection;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Setting;
+using Lephone.Util;
+using Lephone.Util.Setting;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Driver
+namespace Lephone.Data.Driver
 {
     public class DbFactory
     {

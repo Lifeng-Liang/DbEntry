@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
 	[Serializable]
 	public class KeyValueCollection : CollectionBase

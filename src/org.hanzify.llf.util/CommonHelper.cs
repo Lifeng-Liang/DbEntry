@@ -6,7 +6,7 @@ using System.Collections;
 
 #endregion
 
-namespace org.hanzify.llf.util
+namespace Lephone.Util
 {
     public delegate void CallbackVoidHandler();
     public delegate void CallbackObjectHandler<T>(T o);

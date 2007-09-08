@@ -6,13 +6,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Driver;
+using Lephone.Data;
+using Lephone.Data.Common;
+using Lephone.Data.Driver;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     public abstract class LazyLoadListBase<T> : IList<T>, ILazyLoading, IRenew
     {

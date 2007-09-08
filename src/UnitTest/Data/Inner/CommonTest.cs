@@ -8,13 +8,13 @@ using System.Text.RegularExpressions;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Definition;
+using Lephone.Data;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Definition;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data.Inner
+namespace Lephone.UnitTest.Data.Inner
 {
     [TestFixture]
     public class CommonTest

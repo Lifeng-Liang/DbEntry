@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Builder.Clause
+namespace Lephone.Data.Builder.Clause
 {
     public class ConstCondition : WhereCondition
     {
@@ -21,7 +21,7 @@ namespace org.hanzify.llf.Data.Builder.Clause
             get { return true; }
         }
 
-        public override string ToSqlText(ref org.hanzify.llf.Data.SqlEntry.DataParamterCollection dpc, org.hanzify.llf.Data.Dialect.DbDialect dd)
+        public override string ToSqlText(ref Lephone.Data.SqlEntry.DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
         {
             return Condition;
         }

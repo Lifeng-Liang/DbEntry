@@ -1,12 +1,12 @@
 
 using System;
 using System.Data;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Builder;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Driver;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Builder;
+using Lephone.Data.Common;
 
-namespace org.hanzify.llf.Data.Dialect
+namespace Lephone.Data.Dialect
 {
 	public class SqlServer2000 : DbDialect
 	{

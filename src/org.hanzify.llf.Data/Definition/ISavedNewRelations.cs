@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace org.hanzify.llf.Data.Definition
+namespace Lephone.Data.Definition
 {
     public interface ISavedNewRelations
     {

@@ -3,12 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using org.hanzify.llf.Data.Builder.Clause;
-using org.hanzify.llf.Data.Common;
+using Lephone.Data.Builder.Clause;
+using Lephone.Data.Common;
 
 #endregion
 
-namespace org.hanzify.llf.Data.QuerySyntax
+namespace Lephone.Data.QuerySyntax
 {
     [Serializable]
     public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, ISelectable<T>, IGetPagedSelector

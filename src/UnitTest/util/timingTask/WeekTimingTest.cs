@@ -3,12 +3,12 @@
 
 using System;
 using NUnit.Framework;
-using org.hanzify.llf.util.TimingTask;
-using org.hanzify.llf.util.TimingTask.Timings;
+using Lephone.Util.TimingTask;
+using Lephone.Util.TimingTask.Timings;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.util.timingTask
+namespace Lephone.UnitTest.util.timingTask
 {
 	[TestFixture]
 	public class WeekTimingTest

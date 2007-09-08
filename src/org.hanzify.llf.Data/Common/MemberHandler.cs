@@ -3,10 +3,10 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-using org.hanzify.llf.util;
-using org.hanzify.llf.Data.Common;
+using Lephone.Util;
+using Lephone.Data.Common;
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
 	public class MemberHandler
     {

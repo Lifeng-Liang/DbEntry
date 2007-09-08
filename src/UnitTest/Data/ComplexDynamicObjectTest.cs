@@ -8,18 +8,18 @@ using System.Text;
 
 using NUnit.Framework;
 
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data.SqlEntry;
+using Lephone.Data;
+using Lephone.Data.Common;
+using Lephone.Data.Definition;
+using Lephone.Data.SqlEntry;
 
-using org.hanzify.llf.UnitTest.Data.Objects;
+using Lephone.UnitTest.Data.Objects;
 
-using org.hanzify.llf.MockSql.Recorder;
+using Lephone.MockSql.Recorder;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     [TestFixture]
     public class ComplexDynamicObjectTest

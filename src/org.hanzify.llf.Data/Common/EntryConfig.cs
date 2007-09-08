@@ -2,16 +2,16 @@
 #region usings
 
 using System;
-using org.hanzify.llf.Data.Dialect;
-using org.hanzify.llf.Data.Driver;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.util;
-using org.hanzify.llf.util.Text;
-using org.hanzify.llf.util.Setting;
+using Lephone.Data.Dialect;
+using Lephone.Data.Driver;
+using Lephone.Data.SqlEntry;
+using Lephone.Util;
+using Lephone.Util.Text;
+using Lephone.Util.Setting;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
 	public static class EntryConfig
 	{
@@ -35,7 +35,7 @@ namespace org.hanzify.llf.Data.Common
             ds = ss[0].Trim();
             if (ds[0] == '@')
             {
-                ds = "org.hanzify.llf.Data.Dialect." + ds.Substring(1) + ", org.hanzify.llf.Data";
+                ds = "Lephone.Data.Dialect." + ds.Substring(1) + ", Lephone.Data";
             }
             DbDialect d = (DbDialect)ClassHelper.CreateInstance(ds);
             string cs = d.GetConnectionString(ss[1].Trim());

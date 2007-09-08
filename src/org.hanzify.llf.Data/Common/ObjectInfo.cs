@@ -3,13 +3,13 @@
 
 using System;
 using System.Reflection;
-using org.hanzify.llf.Data.SqlEntry;
-using org.hanzify.llf.Data.Builder.Clause;
-using org.hanzify.llf.util.Logging;
+using Lephone.Data.SqlEntry;
+using Lephone.Data.Builder.Clause;
+using Lephone.Util.Logging;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
 	public class ObjectInfo
 	{

@@ -6,7 +6,7 @@ using System.Collections;
 
 #endregion
 
-namespace org.hanzify.llf.Data.Common
+namespace Lephone.Data.Common
 {
 	public class ListInserter : IProcessor
 	{

@@ -6,15 +6,15 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 
-using org.hanzify.llf.Data;
-using org.hanzify.llf.Data.Definition;
-using org.hanzify.llf.Data.Common;
-using org.hanzify.llf.MockSql;
-using org.hanzify.llf.MockSql.Recorder;
+using Lephone.Data;
+using Lephone.Data.Definition;
+using Lephone.Data.Common;
+using Lephone.MockSql;
+using Lephone.MockSql.Recorder;
 
 #endregion
 
-namespace org.hanzify.llf.UnitTest.Data
+namespace Lephone.UnitTest.Data
 {
     #region objects
 
@@ -240,7 +240,7 @@ namespace org.hanzify.llf.UnitTest.Data
         [Test]
         public void TestDropManyToManyMedi()
         {
-            de.DropTable(typeof(org.hanzify.llf.UnitTest.Data.Objects.DArticle));
+            de.DropTable(typeof(Lephone.UnitTest.Data.Objects.DArticle));
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
             Assert.AreEqual("Drop Table [Article]", StaticRecorder.Messages[0]);
             Assert.AreEqual("Drop Table [Article_Reader]", StaticRecorder.Messages[1]);

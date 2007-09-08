@@ -1,7 +1,7 @@
 
 using System;
 
-namespace org.hanzify.llf.Data.SqlEntry
+namespace Lephone.Data.SqlEntry
 {
 	[Serializable]
 	public class KeyValue
