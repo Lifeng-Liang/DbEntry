@@ -14,12 +14,15 @@ using Lephone.Data.Driver;
 
 namespace Lephone.Data.Definition
 {
-    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, ISavedNewRelations
+    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, IHasAndBelongsToManyRelations
     {
         private OrderBy Order;
 
         private List<object> _SavedNewRelations = new List<object>();
-        List<object> ISavedNewRelations.SavedNewRelations { get { return _SavedNewRelations; } }
+        List<object> IHasAndBelongsToManyRelations.SavedNewRelations { get { return _SavedNewRelations; } }
+
+        private List<object> _RemovedRelations = new List<object>();
+        List<object> IHasAndBelongsToManyRelations.RemovedRelations { get { return _RemovedRelations; } }
 
         internal HasAndBelongsToMany(object owner)
             : base(owner)
@@ -67,18 +70,6 @@ namespace Lephone.Data.Definition
                     throw new DbEntryException("HasAndBelongsToMany relation need the class has one primary key.");
                 }
             }
-            /*
-            ObjectInfo ti = DbObjectHelper.GetObjectInfo(typeof(T));
-            if (ti.BelongsToField != null)
-            {
-                Type t = ti.BelongsToField.FieldType.GetGenericArguments()[0];
-                if (t == owner.GetType())
-                {
-                    ILazyLoading ll = (ILazyLoading)ti.BelongsToField.GetValue(item);
-                    ll.Write(owner);
-                }
-            }
-            */
         }
 
         protected override IList<T> InnerLoad()
@@ -89,6 +80,20 @@ namespace Lephone.Data.Definition
             context.FillCollection(il, typeof(T), oi.ManyToManyMediFrom,
                 CK.K[ForeignKeyName] == key, Order, null);
             return il;
+        }
+
+        protected override void OnRemoveItem(T item)
+        {
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(item.GetType());
+            object key = oi.Handler.GetKeyValue(item);
+            if (key == oi.KeyFields[0].UnsavedValue)
+            {
+                _SavedNewRelations.Remove(key);
+            }
+            else
+            {
+                _RemovedRelations.Add(key);
+            }
         }
     }
 }

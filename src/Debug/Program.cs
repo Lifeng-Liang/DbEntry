@@ -15,63 +15,53 @@ using Lephone.Data.Definition;
 
 namespace Orm9
 {
-    public abstract class Article : DbObjectModel<Article>
+    public enum UserRole
     {
-        public abstract string Name { get; set; }
-
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public abstract IList<Reader> Readers { get; set; }
-
-        public Article() { }
-        public Article(string Name) { this.Name = Name; }
+        Manager,
+        Worker,
+        Client
     }
 
-    public abstract class Reader : DbObjectModel<Reader>
+    public abstract class SampleData : DbObjectModel<SampleData>
     {
+        [MaxLength(50)]
         public abstract string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public abstract IList<Article> Articles { get; set; }
+        public abstract UserRole Role { get; set; }
 
-        public Reader() { }
-        public Reader(string Name) { this.Name = Name; }
+        public abstract DateTime JoinDate { get; set; }
+
+        public abstract bool Enabled { get; set; }
+
+        public abstract int? NullInt { get; set; }
+
+        public SampleData() { }
+
+        public SampleData(string Name, UserRole Role, DateTime JoinDate, bool Enabled)
+            : this(Name, Role, JoinDate, Enabled, null)
+        {
+        }
+
+        public SampleData(string Name, UserRole Role, DateTime JoinDate, bool Enabled, int? NullInt)
+        {
+            this.Name = Name;
+            this.Role = Role;
+            this.JoinDate = JoinDate;
+            this.Enabled = Enabled;
+            this.NullInt = NullInt;
+        }
     }
 
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("====Has And Belongs To Many====");
-            //DbEntry.Context.DropAndCreate(typeof(Article));
-            //DbEntry.Context.DropAndCreate(typeof(Reader));
-            //DbEntry.Context.CreateManyToManyMediTable(typeof(Article), typeof(Reader));
-
-            Article a = Article.New("fly away");
-            a.Readers.Add(Reader.New("Kingkong"));
-            a.Readers.Add(Reader.New("Spiderman"));
-            a.Save();
-            Article a1 = Article.FindById(a.Id);
-            ShowHasManyAndBelongsTo(a1);
-
-            Console.WriteLine("Done! Press Enter to exit.");
-            Console.ReadLine();
-        }
-
-        private static void ShowHasManyAndBelongsTo(Article c)
-        {
-            if (c == null)
+            SampleData.Find(CK.K["Id"] >= 5, new OrderBy("Id"))
+            .ForEach(delegate(SampleData d)
             {
-                Console.WriteLine("(NULL Article)");
-            }
-            else
-            {
-                Console.Write(c.Name);
-                Console.WriteLine("=>");
-                foreach (Reader b in c.Readers)
-                {
-                    Console.WriteLine("\t{0}", b.Name);
-                }
-            }
+                Console.WriteLine(d);
+            });
+            Console.WriteLine();
         }
     }
 }

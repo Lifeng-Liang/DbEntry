@@ -210,6 +210,10 @@ namespace Lephone.Data.SqlEntry
             UsingExistedConnection(delegate()
             {
                 IDbCommand e = GetDbCommand(Sql);
+                if (Dialect.ExecuteEachLine)
+                {
+                    ExecuteBeforeLines(e);
+                }
                 IDataReader r = e.ExecuteReader(behavior);
                 PopulateOutParams(Sql, e);
                 callback(r);
@@ -275,6 +279,7 @@ namespace Lephone.Data.SqlEntry
                         if (s[s.Length - 1] == ';')
                         {
                             statement.Append(s.Substring(0, s.Length));
+                            statement.Length--;
                             if (statement.Length != 0)
                             {
                                 ret.Add(statement.ToString());

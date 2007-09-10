@@ -2,6 +2,7 @@
 #region usings
 
 using System;
+using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Definition;
 
@@ -65,32 +66,24 @@ namespace Lephone.UnitTest.Data.Objects
         }
     }
 
-    public class Article : DbObject
+    public abstract class Article : DbObjectModel<Article>
     {
-        public string Name = null;
+        public abstract string Name { get; set; }
 
-        [DbColumn("Reader_Id")]
-        public HasAndBelongsToMany<Reader> Readers;
+        [HasAndBelongsToMany(OrderBy = "Id")]
+        public abstract IList<Reader> Readers { get; set; }
 
-        public Article()
-        {
-            Readers = new HasAndBelongsToMany<Reader>(this, new OrderBy("Id"));
-        }
-        public Article(string Name) : this() { this.Name = Name; }
+        public Article Init(string Name) { this.Name = Name; return this; }
     }
 
-    public class Reader : DbObject
+    public abstract class Reader : DbObjectModel<Reader>
     {
-        public string Name = null;
+        public abstract string Name { get; set; }
 
-        [DbColumn("Article_Id")]
-        public HasAndBelongsToMany<Article> Articles;
+        [HasAndBelongsToMany(OrderBy = "Id")]
+        public abstract IList<Article> Articles { get; set; }
 
-        public Reader()
-        {
-            Articles = new HasAndBelongsToMany<Article>(this, new OrderBy("Id"));
-        }
-        public Reader(string Name) : this() { this.Name = Name; }
+        public Reader Init(string Name) { this.Name = Name; return this; }
     }
 
     public class Article_Reader

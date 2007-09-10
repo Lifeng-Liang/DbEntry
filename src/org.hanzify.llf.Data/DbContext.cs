@@ -301,7 +301,7 @@ namespace Lephone.Data
             }
         }
 
-        private void ProcessAssociate(ObjectInfo oi, bool ParentFirst, object obj,
+        private void ProcessRelation(ObjectInfo oi, bool ParentFirst, object obj,
             CallbackObjectHandler<DataProvider> e1, CallbackObjectHandler<object> e2)
         {
             if (oi.HasAssociate)
@@ -323,10 +323,14 @@ namespace Lephone.Data
                             }
                             if (f.IsHasAndBelongsToMany)
                             {
-                                ISavedNewRelations so = ho as ISavedNewRelations;
+                                IHasAndBelongsToManyRelations so = ho as IHasAndBelongsToManyRelations;
                                 foreach (object n in so.SavedNewRelations)
                                 {
-                                    SetManyToManyAssociate(oi, oi.Handler.GetKeyValue(obj), n);
+                                    SetManyToManyRelation(oi, oi.Handler.GetKeyValue(obj), n);
+                                }
+                                foreach (object n in so.RemovedRelations)
+                                {
+                                    RemoveManyToManyRelation(oi, oi.Handler.GetKeyValue(obj), n);
                                 }
                             }
                         }
@@ -350,7 +354,7 @@ namespace Lephone.Data
             Type t = obj.GetType();
             TryCreateTable(t);
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
-            ProcessAssociate(oi, true, obj, delegate(DataProvider dp)
+            ProcessRelation(oi, true, obj, delegate(DataProvider dp)
             {
                 DbObjectSmartUpdate to = obj as DbObjectSmartUpdate;
                 if (to != null && to.m_UpdateColumns != null)
@@ -386,11 +390,11 @@ namespace Lephone.Data
             InsertStatementBuilder sb = oi.Composer.GetInsertStatementBuilder(obj);
             if (oi.HasSystemKey)
             {
-                ProcessAssociate(oi, true, obj, delegate(DataProvider dp)
+                ProcessRelation(oi, true, obj, delegate(DataProvider dp)
                 {
                     object Key = dp.Dialect.ExecuteInsert(dp, sb, oi);
                     DbObjectHelper.SetKey(obj, Key);
-                    SetManyToManyAssociate(oi, Key, Scope<object>.Current);
+                    SetManyToManyRelation(oi, Key, Scope<object>.Current);
                 }, delegate(object o)
                 {
                     SetBelongsToForeignKey(obj, o, oi.Handler.GetKeyValue(obj));
@@ -405,13 +409,27 @@ namespace Lephone.Data
             }
         }
 
-        private void SetManyToManyAssociate(ObjectInfo oi, object Key1, object Key2)
+        private void SetManyToManyRelation(ObjectInfo oi, object Key1, object Key2)
         {
             if (oi.ManyToManyMediTableName != null && Key1 != null && Key2 != null)
             {
                 InsertStatementBuilder sb = new InsertStatementBuilder(oi.ManyToManyMediTableName);
                 sb.Values.Add(new KeyValue(oi.ManyToManyMediColumeName1, Key1));
                 sb.Values.Add(new KeyValue(oi.ManyToManyMediColumeName2, Key2));
+                SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+                oi.LogSql(Sql);
+                ExecuteNonQuery(Sql);
+            }
+        }
+
+        private void RemoveManyToManyRelation(ObjectInfo oi, object Key1, object Key2)
+        {
+            if (oi.ManyToManyMediTableName != null && Key1 != null && Key2 != null)
+            {
+                DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.ManyToManyMediTableName);
+                WhereCondition c = CK.K[oi.ManyToManyMediColumeName1] == Key1;
+                c &= CK.K[oi.ManyToManyMediColumeName2] == Key2;
+                sb.Where.Conditions = c;
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
                 oi.LogSql(Sql);
                 ExecuteNonQuery(Sql);
@@ -440,10 +458,10 @@ namespace Lephone.Data
             SqlStatement Sql = oi.Composer.GetDeleteStatement(this.Dialect, obj);
             oi.LogSql(Sql);
             int ret = 0;
-            ProcessAssociate(oi, false, obj, delegate(DataProvider dp)
+            ProcessRelation(oi, false, obj, delegate(DataProvider dp)
             {
                 ret += dp.ExecuteNonQuery(Sql);
-                ret += DeleteAssociate(oi, obj);
+                ret += DeleteRelation(oi, obj);
             }, delegate(object o)
             {
                 Delete(o);
@@ -455,13 +473,12 @@ namespace Lephone.Data
             return ret;
         }
 
-        private int DeleteAssociate(ObjectInfo oi, object obj)
+        private int DeleteRelation(ObjectInfo oi, object obj)
         {
             if (oi.ManyToManyMediTableName != null)
             {
-                long Id = ((DbObject)obj).Id;
                 DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.ManyToManyMediTableName);
-                sb.Where.Conditions = CK.K[oi.ManyToManyMediColumeName1] == Id;
+                sb.Where.Conditions = CK.K[oi.ManyToManyMediColumeName1] == oi.Handler.GetKeyValue(obj);
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
                 oi.LogSql(Sql);
                 return ExecuteNonQuery(Sql);
@@ -548,8 +565,8 @@ namespace Lephone.Data
             ls.Add(oi1.ManyToManyMediColumeName1);
             ls.Add(oi1.ManyToManyMediColumeName2);
             ls.Sort();
-            cts.Columns.Add(new ColumnInfo(ls[0], typeof(long), false, false, false, false, 0));
-            cts.Columns.Add(new ColumnInfo(ls[1], typeof(long), false, false, false, false, 0));
+            cts.Columns.Add(new ColumnInfo(ls[0], oi1.KeyFields[0].FieldType, false, false, false, false, 0));
+            cts.Columns.Add(new ColumnInfo(ls[1], oi2.KeyFields[0].FieldType, false, false, false, false, 0));
             // add index
             cts.Indexes.Add(new DbIndex(null, false, (ASC)oi1.ManyToManyMediColumeName1));
             cts.Indexes.Add(new DbIndex(null, false, (ASC)oi1.ManyToManyMediColumeName2));

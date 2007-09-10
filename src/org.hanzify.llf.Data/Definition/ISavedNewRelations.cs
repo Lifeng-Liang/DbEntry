@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Lephone.Data.Definition
 {
-    public interface ISavedNewRelations
+    public interface IHasAndBelongsToManyRelations
     {
         List<object> SavedNewRelations { get;}
+        List<object> RemovedRelations { get;}
     }
 }

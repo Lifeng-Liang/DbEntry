@@ -107,6 +107,8 @@ namespace Lephone.Data.Definition
             }
         }
 
+        protected virtual void OnRemoveItem(T item) { }
+
         #endregion
 
         #region IList<T> members
@@ -126,7 +128,9 @@ namespace Lephone.Data.Definition
         public void RemoveAt(int index)
         {
             ((ILazyLoading)this).Read();
+            T item = InnerList[index];
             InnerList.RemoveAt(index);
+            OnRemoveItem(item);
         }
 
         public T this[int index]
@@ -190,7 +194,13 @@ namespace Lephone.Data.Definition
 
         public bool Remove(T item)
         {
-            return InnerList.Remove(item);
+            ((ILazyLoading)this).Read();
+            bool ret = InnerList.Remove(item);
+            if (ret)
+            {
+                OnRemoveItem(item);
+            }
+            return ret;
         }
 
         #endregion
