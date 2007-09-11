@@ -46,6 +46,21 @@ namespace Lephone.Data.Dialect
             TypeNames[typeof(string)]   = "varchar";
         }
 
+        public virtual string GetUserId(string ConnectionString)
+        {
+            return null;
+        }
+
+        public virtual bool NeedStupidDataReader
+        {
+            get { return false; }
+        }
+
+        public virtual bool NotSupportPostFix
+        {
+            get { return false; }
+        }
+
         public virtual bool NeedBracketForJoin
         {
             get { return true; }

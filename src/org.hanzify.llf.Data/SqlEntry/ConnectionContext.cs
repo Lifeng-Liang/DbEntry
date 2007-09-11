@@ -13,38 +13,49 @@ namespace Lephone.Data.SqlEntry
 {
     public class ConnectionContext : IDisposable
     {
-        internal IDbConnection Connection = null;
-        internal IDbTransaction Transaction = null;
+        private IDbConnection _Connection = null;
+
+        public IDbConnection Connection
+        {
+            get { return _Connection; }
+        }
+
+        private IDbTransaction _Transaction = null;
+
+        public IDbTransaction Transaction
+        {
+            get { return _Transaction; }
+        }
 
         private bool IsProcessed = false;
 
         internal IsolationLevel IsolationLevel
         {
-            get { return Transaction.IsolationLevel; }
+            get { return _Transaction.IsolationLevel; }
         }
 
         public ConnectionContext(DbDriver dd)
         {
-            Connection = dd.GetDbConnection();
-            Connection.Open();
+            _Connection = dd.GetDbConnection();
+            _Connection.Open();
         }
 
         public void BeginTransaction()
         {
-            Transaction = Connection.BeginTransaction();
+            _Transaction = _Connection.BeginTransaction();
             IsProcessed = false;
         }
 
         public void BeginTransaction(IsolationLevel il)
         {
-            Transaction = Connection.BeginTransaction(il);
+            _Transaction = _Connection.BeginTransaction(il);
         }
 
         public void Commit()
         {
             if (!IsProcessed)
             {
-                Transaction.Commit();
+                _Transaction.Commit();
                 IsProcessed = true;
             }
         }
@@ -53,33 +64,33 @@ namespace Lephone.Data.SqlEntry
         {
             if (!IsProcessed)
             {
-                Transaction.Rollback();
+                _Transaction.Rollback();
                 IsProcessed = true;
             }
         }
 
         public void Close()
         {
-            Connection.Close();
+            _Connection.Close();
         }
 
         public void Dispose()
         {
-            if (Transaction != null)
+            if (_Transaction != null)
             {
                 if (!IsProcessed)
                 {
                     try
                     {
-                        Transaction.Rollback();
+                        _Transaction.Rollback();
                     }
                     catch { }
                 }
-                Transaction.Dispose();
+                _Transaction.Dispose();
             }
-            if (Connection != null)
+            if (_Connection != null)
             {
-                Connection.Dispose();
+                _Connection.Dispose();
             }
         }
     }

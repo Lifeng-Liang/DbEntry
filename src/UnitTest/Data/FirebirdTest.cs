@@ -39,7 +39,7 @@ namespace Lephone.UnitTest.Data
         public void TestSelect()
         {
             de.From<PeopleModel>().Where(CK.K["Name"] == "tom" && CK.K["Age"] > 18).Select();
-            Assert.AreEqual("Select \"ID\",\"NAME\" From \"PEOPLE\" Where (\"NAME\" = @Name_0) And (\"AGE\" > @Age_1);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Select \"ID\",\"NAME\" From \"PEOPLE\" Where (\"NAME\" = @Name_0) And (\"AGE\" > @Age_1);", StaticRecorder.LastMessage);
         }
 
         [Test]

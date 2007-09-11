@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Lephone.Data.SqlEntry;
 using Lephone.Util.Logging;
+using Lephone.Data.Common;
 
 namespace Lephone.Data.Dialect
 {
@@ -15,6 +16,11 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Date] = "timestamp";
             TypeNames[DataType.String] = "BLOB SUB_TYPE 1";
             TypeNames[DataType.Binary] = "BLOB SUB_TYPE 0";
+        }
+
+        public override DbStructInterface GetDbStructInterface()
+        {
+            return new DbStructInterface(null, new string[] { null, null, null, "TABLE" }, null, null, null);
         }
 
         protected override string GetSelectSequenceSql(string TableName)

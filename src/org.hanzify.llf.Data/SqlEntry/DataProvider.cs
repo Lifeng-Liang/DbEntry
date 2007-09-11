@@ -81,6 +81,7 @@ namespace Lephone.Data.SqlEntry
         {
             List<string> ret = new List<string>();
             DbStructInterface si = Dialect.GetDbStructInterface();
+            string UserId = Dialect.GetUserId(Driver.ConnectionString);
             UsingConnection(delegate()
             {
                 DbConnection c = (DbConnection)ConProvider.Connection;
@@ -89,6 +90,10 @@ namespace Lephone.Data.SqlEntry
                     if (si.FiltrateDatabaseName)
                     {
                         if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
+                    }
+                    if (UserId != null)
+                    {
+                        if (!dr["OWNER"].Equals(UserId)) { continue; }
                     }
                     string s = dr[si.TableNameString].ToString();
                     ret.Add(s);
@@ -220,6 +225,30 @@ namespace Lephone.Data.SqlEntry
             });
         }
 
+        // It's only for stupid oracle
+        internal void ExecuteDataReader(SqlStatement Sql, Type ReturnType, CallbackObjectHandler<IDataReader> callback)
+        {
+            UsingExistedConnection(delegate()
+            {
+                IDbCommand e = GetDbCommand(Sql);
+                if (Dialect.ExecuteEachLine)
+                {
+                    ExecuteBeforeLines(e);
+                }
+                IDataReader r = e.ExecuteReader(CommandBehavior.Default);
+                PopulateOutParams(Sql, e);
+                if (Dialect.NeedStupidDataReader)
+                {
+                    DbDataReader dr = new StupidDataReader(r, ReturnType);
+                    callback(dr);
+                }
+                else
+                {
+                    callback(r);
+                }
+            });
+        }
+
         protected IDbCommand GetDbCommand(SqlStatement Sql)
         {
             ConnectionContext et = ConProvider;
@@ -263,7 +292,7 @@ namespace Lephone.Data.SqlEntry
             return ret;
         }
 
-        public static List<string> split(string cText)
+        private List<string> split(string cText)
         {
             List<string> ret = new List<string>();
             using (StreamReader sr = new StreamReader(new MemoryStream(Encoding.Unicode.GetBytes(cText)), Encoding.Unicode))
@@ -279,7 +308,7 @@ namespace Lephone.Data.SqlEntry
                         if (s[s.Length - 1] == ';')
                         {
                             statement.Append(s.Substring(0, s.Length));
-                            statement.Length--;
+                            if (this.Dialect.NotSupportPostFix) { statement.Length--; }
                             if (statement.Length != 0)
                             {
                                 ret.Add(statement.ToString());

@@ -16,22 +16,46 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Date] = "TIMESTAMP";
             TypeNames[DataType.Boolean] = "NUMBER(1,0)";
 
-            TypeNames[DataType.Byte] = "NUMBER(*,0)";
+            TypeNames[DataType.Byte] = "NUMBER(3,0)";
             TypeNames[DataType.SByte] = "";
             TypeNames[DataType.Decimal] = "NUMBER(19,5)";
             TypeNames[DataType.Double] = "DOUBLE PRECISION";
             TypeNames[DataType.Single] = "FLOAT(24)";
 
-            TypeNames[DataType.Int32] = "NUMBER(*,0)";
+            TypeNames[DataType.Int32] = "NUMBER(10,0)";
             TypeNames[DataType.UInt32] = "";
-            TypeNames[DataType.Int64] = "NUMBER(*,0)";
+            TypeNames[DataType.Int64] = "NUMBER(20,0)";
             TypeNames[DataType.UInt64] = "";
-            TypeNames[DataType.Int16] = "NUMBER(*,0)";
+            TypeNames[DataType.Int16] = "NUMBER(5,0)";
             TypeNames[DataType.UInt16] = "";
 
             TypeNames[DataType.Binary] = "BLOB";
 
             TypeNames[typeof(string)] = "VARCHAR2";
+        }
+
+        public override string GetUserId(string ConnectionString)
+        {
+            string [] ss = ConnectionString.Split(';');
+            foreach (string s in ss)
+            {
+                string[] ms = s.Split('=');
+                if (ms[0].Trim().ToLower() == "user id")
+                {
+                    return ms[1].Trim().ToUpper();
+                }
+            }
+            return null;
+        }
+
+        public override bool NeedStupidDataReader
+        {
+            get { return true; }
+        }
+
+        public override bool NotSupportPostFix
+        {
+            get { return true; }
         }
 
         protected override string GetSelectSequenceSql(string TableName)
@@ -94,8 +118,8 @@ namespace Lephone.Data.Dialect
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("select * from ( select row_.*, rownum rownum_ from ( {0} ) row_ where rownum >= {1} ) where rownum_ <= {2}",
-                Sql.SqlCommandText, ssb.Range.StartIndex, ssb.Range.EndIndex);
+            Sql.SqlCommandText = string.Format("select * from ( select row_.*, rownum rownum_ from ( {0} ) row_ where rownum <= {1} ) where rownum_ >= {2}",
+                Sql.SqlCommandText, ssb.Range.EndIndex, ssb.Range.StartIndex);
             return Sql;
         }
 

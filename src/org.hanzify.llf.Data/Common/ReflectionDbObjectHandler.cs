@@ -36,6 +36,7 @@ namespace Lephone.Data.Common
                 int i = 0;
                 foreach (MemberHandler f in oi.SimpleFields)
                 {
+                    //SetValue(f, o, dr[i++]);
                     f.SetValue(o, dr[i++]);
                 }
             }
@@ -43,8 +44,42 @@ namespace Lephone.Data.Common
             {
                 foreach (MemberHandler f in oi.SimpleFields)
                 {
+                    //SetValue(f, o, dr[f.Name]);
                     f.SetValue(o, dr[f.Name]);
                 }
+            }
+        }
+
+        private void SetValue(MemberHandler f, object o, object v)
+        {
+            if (v.GetType() == typeof(decimal))
+            {
+                if (f.FieldType == typeof(decimal))
+                {
+                    f.SetValue(o, v);
+                }
+                else
+                {
+                    if (f.FieldType.IsEnum)
+                    {
+                        f.SetValue(o, Convert.ChangeType(v, typeof(int)));
+                    }
+                    else
+                    {
+                        if (f.FieldType.IsGenericType)
+                        {
+                            f.SetValue(o, Convert.ChangeType(v, f.FieldType.GetGenericArguments()[0]));
+                        }
+                        else
+                        {
+                            f.SetValue(o, Convert.ChangeType(v, f.FieldType));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                f.SetValue(o, v);
             }
         }
 

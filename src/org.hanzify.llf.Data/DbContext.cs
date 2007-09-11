@@ -194,7 +194,7 @@ namespace Lephone.Data
                 EndIndex = EndIndex - StartIndex + 1;
                 StartIndex = 1;
             }
-            ExecuteDataReader(Sql, delegate(IDataReader dr)
+            ExecuteDataReader(Sql, ReturnType, delegate(IDataReader dr)
             {
                 int Count = 0;
                 while (dr.Read())

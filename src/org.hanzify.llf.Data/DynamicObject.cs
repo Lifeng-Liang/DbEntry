@@ -50,6 +50,10 @@ namespace Lephone.Data
                 MethodInfo mi = drt.GetMethod(n);
                 return mi;
             }
+            if (t.IsEnum)
+            {
+                return drt.GetMethod("GetInt32");
+            }
             return null;
         }
 
