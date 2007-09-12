@@ -91,6 +91,6 @@ namespace Lephone.Data
             return (Condition == null || (Condition is Common.EmptyCondition));
         }
 
-        public abstract string ToSqlText(ref DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd);
+        public abstract string ToSqlText(DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd);
 	}
 }

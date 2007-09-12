@@ -33,7 +33,7 @@ namespace Lephone.Data.Builder.Clause
             get { return true; }
         }
 
-        public override string ToSqlText(ref DataParamterCollection dpc, DbDialect dd)
+        public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
             return string.Format("{0} {2} {1}", dd.QuoteForColumnName(KV.Key), dd.QuoteForColumnName((string)KV.Value), Comp);
 		}

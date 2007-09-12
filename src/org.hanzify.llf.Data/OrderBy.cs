@@ -26,7 +26,7 @@ namespace Lephone.Data
 			this.OrderItems = OrderItems;
 		}
 
-		public string ToSqlText(ref DataParamterCollection dpc, Dialect.DbDialect dd)
+		public string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd)
 		{
             if (OrderItems != null && OrderItems.Length > 0)
             {

@@ -46,6 +46,11 @@ namespace Lephone.Data.Dialect
             TypeNames[typeof(string)]   = "varchar";
         }
 
+        public virtual string DbNowString
+        {
+            get { return "now()"; }
+        }
+
         public virtual string GetUserId(string ConnectionString)
         {
             return null;
@@ -165,10 +170,10 @@ namespace Lephone.Data.Dialect
             DataParamterCollection dpc = new DataParamterCollection();
             string SqlString = string.Format("Select {0} From {1}{2}{3}{4}",
                 ssb.GetColumns(this),
-                ssb.From.ToSqlText(ref dpc, this),
-                ssb.Where.ToSqlText(ref dpc, this),
+                ssb.From.ToSqlText(dpc, this),
+                ssb.Where.ToSqlText(dpc, this),
                 ssb.IsGroupBy ? " Group By " + this.QuoteForColumnName(ssb.CountCol) : "",
-                (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(ref dpc, this)
+                (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this)
                 );
             return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
         }

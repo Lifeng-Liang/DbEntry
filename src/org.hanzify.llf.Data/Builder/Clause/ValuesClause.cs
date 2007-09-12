@@ -18,22 +18,29 @@ namespace Lephone.Data.Builder.Clause
 
 		public ValuesClause() {}
 
-		public string ToSqlText(ref DataParamterCollection dpc, DbDialect dd)
+		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
 			StringBuilder sb1 = new StringBuilder();
 			StringBuilder sb2 = new StringBuilder();
 			foreach ( KeyValue kv in this )
 			{
 				string dpStr;
-                if (DataSetting.UsingParamter)
+                if (kv.ValueType == typeof(DbNow))
                 {
-                    dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", kv.Key, dpc.Count);
-                    DataParamter dp = new DataParamter(dpStr, kv.NullableValue, kv.ValueType);
-                    dpc.Add(dp);
+                    dpStr = dd.DbNowString;
                 }
                 else
                 {
-                    dpStr = DataTypeParser.ParseToString(kv.Value, dd);
+                    if (DataSetting.UsingParamter)
+                    {
+                        dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", kv.Key, dpc.Count);
+                        DataParamter dp = new DataParamter(dpStr, kv.NullableValue, kv.ValueType);
+                        dpc.Add(dp);
+                    }
+                    else
+                    {
+                        dpStr = DataTypeParser.ParseToString(kv.Value, dd);
+                    }
                 }
 
 				sb1.Append( dd.QuoteForColumnName(kv.Key) );

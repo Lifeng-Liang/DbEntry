@@ -2,6 +2,7 @@
 #region usings
 
 using System;
+using System.Xml.Serialization;
 using System.Text;
 using Lephone.Data.Common;
 using Lephone.Util;
@@ -11,7 +12,7 @@ using Lephone.Util;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class DbObjectBase : IRenew
+    public class DbObjectBase : IRenew, IXmlSerializable
     {
         public DbObjectBase()
         {
@@ -65,6 +66,29 @@ namespace Lephone.Data.Definition
             }
             sb.Append(" }");
             return sb.ToString();
+        }
+
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(System.Xml.XmlReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteXml(System.Xml.XmlWriter writer)
+        {
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(this.GetType());
+            foreach (MemberHandler mh in oi.SimpleFields)
+            {
+                object o = mh.GetValue(this);
+                if (o != null)
+                {
+                    writer.WriteElementString(mh.MemberInfo.Name, o.ToString());
+                }
+            }
         }
     }
 }

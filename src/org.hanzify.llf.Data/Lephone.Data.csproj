@@ -138,6 +138,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="SqlEntry\CommonBulkCopy.cs" />
     <Compile Include="SqlEntry\ConnectionContext.cs" />
     <Compile Include="SqlEntry\DbColumnInfo.cs" />
+    <Compile Include="SqlEntry\DbNow.cs" />
     <Compile Include="SqlEntry\IDbBulkCopy.cs" />
     <Compile Include="SqlEntry\IHasConnection.cs" />
     <Compile Include="Common\LimitedListInserter.cs" />

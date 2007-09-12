@@ -34,6 +34,11 @@ namespace Lephone.Data.Dialect
             TypeNames[typeof(string)] = "VARCHAR2";
         }
 
+        public override string DbNowString
+        {
+            get { return "sysdate"; }
+        }
+
         public override string GetUserId(string ConnectionString)
         {
             string [] ss = ConnectionString.Split(';');

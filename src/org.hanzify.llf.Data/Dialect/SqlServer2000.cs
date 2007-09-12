@@ -15,6 +15,11 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Boolean] = "bit";
         }
 
+        public override string DbNowString
+        {
+            get { return "getdate()"; }
+        }
+
         public override DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName)
         {
             return new SqlServerDriver(this, ConnectionString, DbProviderFactoryName);
@@ -45,9 +50,9 @@ namespace Lephone.Data.Dialect
             DataParamterCollection dpc = new DataParamterCollection();
             string SqlString = string.Format("Select Top {4} {0} From {1}{2}{3}",
                 ssb.GetColumns(this),
-                ssb.From.ToSqlText(ref dpc, this),
-                ssb.Where.ToSqlText(ref dpc, this),
-                (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(ref dpc, this),
+                ssb.From.ToSqlText(dpc, this),
+                ssb.Where.ToSqlText(dpc, this),
+                (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this),
                 ssb.Range.EndIndex
                 );
             return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);

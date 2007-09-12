@@ -11,6 +11,6 @@ namespace Lephone.Data.Builder
 {
 	public interface IClause
 	{
-		string ToSqlText(ref DataParamterCollection dpc, DbDialect dd);
+		string ToSqlText(DataParamterCollection dpc, DbDialect dd);
 	}
 }

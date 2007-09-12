@@ -46,7 +46,7 @@ namespace Lephone.Data.Builder.Clause
             return TableNameMain;
         }
 
-        public string ToSqlText(ref DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
+        public string ToSqlText(DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
         {
             if (TableNameMain != null)
             {
@@ -74,7 +74,7 @@ namespace Lephone.Data.Builder.Clause
                     ret = string.Format("{0} {3} Join {1} On {2}",
                         ret,
                         tn,
-                        jcs[i].ToSqlText(ref dpc, dd),
+                        jcs[i].ToSqlText(dpc, dd),
                         jcs[i].mode);
                 }
                 lock (FromStrings.SyncRoot)

@@ -30,11 +30,11 @@ namespace Lephone.Data.Builder.Clause
 			get { return _ic; }
 		}
 
-		public string ToSqlText(ref DataParamterCollection dpc, DbDialect dd)
+		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
 			if ( _ic != null )
 			{
-				string s = _ic.ToSqlText(ref dpc, dd);
+				string s = _ic.ToSqlText(dpc, dd);
                 if (s != null)
                 {
                     return (s.Length > 0) ? " Where " + s : "";

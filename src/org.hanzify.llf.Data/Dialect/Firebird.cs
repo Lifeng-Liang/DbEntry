@@ -18,6 +18,11 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Binary] = "BLOB SUB_TYPE 0";
         }
 
+        public override string DbNowString
+        {
+            get { return "CURRENT_TIMESTAMP"; }
+        }
+
         public override DbStructInterface GetDbStructInterface()
         {
             return new DbStructInterface(null, new string[] { null, null, null, "TABLE" }, null, null, null);

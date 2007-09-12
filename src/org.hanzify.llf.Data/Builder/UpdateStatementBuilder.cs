@@ -27,8 +27,8 @@ namespace Lephone.Data.Builder
 		{
 			DataParamterCollection dpc = new DataParamterCollection();
 			string SqlString = string.Format(StatementTemplate, dd.QuoteForTableName(TableName),
-				_SetOptions.ToSqlText(ref dpc, dd),
-				Where.ToSqlText(ref dpc, dd));
+				_SetOptions.ToSqlText(dpc, dd),
+				Where.ToSqlText(dpc, dd));
 			SqlStatement Sql = new SqlStatement(CommandType.Text, SqlString, dpc);
 			return Sql;
 		}

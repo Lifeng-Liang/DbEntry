@@ -25,7 +25,7 @@ namespace Lephone.Data.Builder.Clause
             this.mode = mode;
         }
 
-        public string ToSqlText(ref DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
+        public string ToSqlText(DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
         {
             return string.Format("{0} {2} {1}",
                 dd.QuoteForColumnName(Key1),

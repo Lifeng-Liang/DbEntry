@@ -41,8 +41,8 @@ namespace Lephone.UnitTest.Data.Inner
             OrderBy Exp = new OrderBy((DESC)"Id", (ASC)"Name");
             OrderBy Dst = OrderBy.Parse(s);
             DataParamterCollection ds = new DataParamterCollection();
-            string ExpStr = Exp.ToSqlText(ref ds, DbEntry.Context.Dialect);
-            string DstStr = Dst.ToSqlText(ref ds, DbEntry.Context.Dialect);
+            string ExpStr = Exp.ToSqlText(ds, DbEntry.Context.Dialect);
+            string DstStr = Dst.ToSqlText(ds, DbEntry.Context.Dialect);
             Assert.AreEqual(ExpStr, DstStr);
         }
     }

@@ -14,6 +14,11 @@ namespace Lephone.Data.Dialect
 	{
 		public SQLite() {}
 
+        public override string DbNowString
+        {
+            get { return "CURRENT_TIMESTAMP"; }
+        }
+
         public override string GetConnectionString(string ConnectionString)
         {
             string s = base.ProcessConnectionnString(ConnectionString);

@@ -14,7 +14,7 @@ namespace Lephone.Data.Common
             get { return false; }
         }
 
-        public override string ToSqlText(ref Lephone.Data.SqlEntry.DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
+        public override string ToSqlText(Lephone.Data.SqlEntry.DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
         {
             return null;
         }

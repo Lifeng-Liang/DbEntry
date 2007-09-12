@@ -242,7 +242,7 @@ namespace Lephone.UnitTest.Data
             //WhereCondition c = CK.K["Age"] > CK.K["Count"];
             WhereCondition c = CK.K["Age"].Gt(CK.K["Count"]);
             DataParamterCollection dpc = new DataParamterCollection();
-            string s = c.ToSqlText(ref dpc, DbEntry.Context.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
         }
@@ -252,7 +252,7 @@ namespace Lephone.UnitTest.Data
         {
             WhereCondition c = CK.K["Age"] > CK.K["Count"];
             DataParamterCollection dpc = new DataParamterCollection();
-            string s = c.ToSqlText(ref dpc, DbEntry.Context.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
         }
@@ -262,7 +262,7 @@ namespace Lephone.UnitTest.Data
         {
             WhereCondition c = CK.K["Age"] > CK.K["Count"] && CK.K["Name"] == CK.K["theName"] || CK.K["Age"] <= CK.K["Num"];
             DataParamterCollection dpc = new DataParamterCollection();
-            string s = c.ToSqlText(ref dpc, DbEntry.Context.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("(([Age] > [Count]) And ([Name] = [theName])) Or ([Age] <= [Num])", s);
         }

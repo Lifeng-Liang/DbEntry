@@ -31,11 +31,11 @@ namespace Lephone.Data.Builder.Clause
             }
         }
 
-        public override string ToSqlText(ref DataParamterCollection dpc, DbDialect dd)
+        public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
             if (_ic.SubClauseNotEmpty)
             {
-                return string.Format("( Not ({0}) )", _ic.ToSqlText(ref dpc, dd));
+                return string.Format("( Not ({0}) )", _ic.ToSqlText(dpc, dd));
             }
             return "";
 		}

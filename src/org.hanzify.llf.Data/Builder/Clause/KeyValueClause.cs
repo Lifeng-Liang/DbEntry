@@ -43,7 +43,7 @@ namespace Lephone.Data.Builder.Clause
             get { return true; }
         }
         
-        public override string ToSqlText(ref DataParamterCollection dpc, DbDialect dd)
+        public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
             string dpStr;
             if (DataSetting.UsingParamter)

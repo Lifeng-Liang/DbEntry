@@ -21,7 +21,7 @@ namespace Lephone.Data.Builder.Clause
             get { return true; }
         }
 
-        public override string ToSqlText(ref Lephone.Data.SqlEntry.DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
+        public override string ToSqlText(Lephone.Data.SqlEntry.DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
         {
             return Condition;
         }

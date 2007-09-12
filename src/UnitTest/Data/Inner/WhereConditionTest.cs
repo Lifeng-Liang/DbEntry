@@ -35,7 +35,7 @@ namespace Lephone.UnitTest.Data.Inner
             c = ((c & null) | null);
             WhereClause cc = new WhereClause(c);
             DataParamterCollection dpc = new DataParamterCollection();
-            Assert.AreEqual("", cc.ToSqlText(ref dpc, new Access()));
+            Assert.AreEqual("", cc.ToSqlText(dpc, new Access()));
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace Lephone.UnitTest.Data.Inner
             c = ((c & null) | null);
             WhereClause cc = new WhereClause(c);
             DataParamterCollection dpc = new DataParamterCollection();
-            Assert.AreEqual("", cc.ToSqlText(ref dpc, new Access()));
+            Assert.AreEqual("", cc.ToSqlText(dpc, new Access()));
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Lephone.UnitTest.Data.Inner
             WhereClause cc = new WhereClause(c);
             DataParamterCollection dpc = new DataParamterCollection();
             Assert.IsFalse(c is EmptyCondition);
-            Assert.AreEqual(" Where ([Id] = @Id_0) Or ([Age] > @Age_1)", cc.ToSqlText(ref dpc, new Access()));
+            Assert.AreEqual(" Where ([Id] = @Id_0) Or ([Age] > @Age_1)", cc.ToSqlText(dpc, new Access()));
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Lephone.UnitTest.Data.Inner
             c = c.And(CK.K["Id"].Eq(1)).Or(CK.K["Age"].Gt(18));
             WhereClause cc = new WhereClause(c);
             DataParamterCollection dpc = new DataParamterCollection();
-            Assert.AreEqual(" Where ([Id] = @Id_0) Or ([Age] > @Age_1)", cc.ToSqlText(ref dpc, new Access()));
+            Assert.AreEqual(" Where ([Id] = @Id_0) Or ([Age] > @Age_1)", cc.ToSqlText(dpc, new Access()));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace Lephone.UnitTest.Data.Inner
             c &= CK.K["Gender"] == true;
             WhereClause cc = new WhereClause(c);
             DataParamterCollection dpc = new DataParamterCollection();
-            Assert.AreEqual(" Where (([Id] = @Id_0) Or ([Age] > @Age_1)) And ([Gender] = @Gender_2)", cc.ToSqlText(ref dpc, new Access()));
+            Assert.AreEqual(" Where (([Id] = @Id_0) Or ([Age] > @Age_1)) And ([Gender] = @Gender_2)", cc.ToSqlText(dpc, new Access()));
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Lephone.UnitTest.Data.Inner
             c = c.And(CK.K["Gender"].Eq(true));
             WhereClause cc = new WhereClause(c);
             DataParamterCollection dpc = new DataParamterCollection();
-            Assert.AreEqual(" Where (([Id] = @Id_0) Or ([Age] > @Age_1)) And ([Gender] = @Gender_2)", cc.ToSqlText(ref dpc, new Access()));
+            Assert.AreEqual(" Where (([Id] = @Id_0) Or ([Age] > @Age_1)) And ([Gender] = @Gender_2)", cc.ToSqlText(dpc, new Access()));
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace Lephone.UnitTest.Data.Inner
             c = c.And(CK.K["Gender"].Eq(true));
             WhereClause cc = new WhereClause(c);
             DataParamterCollection dpc = new DataParamterCollection();
-            Assert.AreEqual(" Where (([Id] = @Id_0) Or ([Age] > @Age_1)) And ([Gender] = @Gender_2)", cc.ToSqlText(ref dpc, new Access()));
+            Assert.AreEqual(" Where (([Id] = @Id_0) Or ([Age] > @Age_1)) And ([Gender] = @Gender_2)", cc.ToSqlText(dpc, new Access()));
         }
     }
 }

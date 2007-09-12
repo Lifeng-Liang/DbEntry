@@ -59,7 +59,7 @@ namespace Lephone.Data.Builder.Clause
 			set { List[index] = value; }
 		}
 
-		public override string ToSqlText(ref DataParamterCollection dpc, DbDialect dd)
+		public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
 			StringBuilder sb = new StringBuilder();
 			foreach ( WhereCondition ic in List )
@@ -67,7 +67,7 @@ namespace Lephone.Data.Builder.Clause
                 if (ic.SubClauseNotEmpty)
                 {
                     sb.Append("(");
-                    sb.Append(ic.ToSqlText(ref dpc, dd));
+                    sb.Append(ic.ToSqlText(dpc, dd));
                     sb.Append(") ");
                     sb.Append(Condition);
                     sb.Append(" ");
