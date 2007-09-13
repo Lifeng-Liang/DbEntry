@@ -13,13 +13,13 @@ namespace Lephone.Data.Definition
     [Serializable]
     public class DbObjectModel<T, TKey> : DbObjectModelBase<T, TKey>
     {
-        [DbKey, DbColumn("Id")]
-        protected internal TKey m_Id;
+        private TKey m_Id;
 
-        [Exclude]
+        [DbKey]
         public TKey Id
         {
             get { return m_Id; }
+            set { m_Id = value; }
         }
     }
 

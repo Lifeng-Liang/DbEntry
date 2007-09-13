@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
-using Lephone.Web;
+using Lephone.Web.Common;
 
 namespace test
 {

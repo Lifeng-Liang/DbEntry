@@ -6,16 +6,47 @@ using NUnit.Framework;
 using Lephone.Data;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
+using Lephone.Data.Definition;
+using Lephone.MockSql.Recorder;
 
 namespace Lephone.UnitTest.Data
 {
+    public abstract class DateTable : DbObjectModel<DateTable>
+    {
+        [SpecialName]
+        public abstract DateTime CreatedOn { get; set; }
+
+        [SpecialName]
+        public abstract DateTime? UpdatedOn { get; set; }
+
+        public abstract string Name { get; set; }
+    }
+
+    [DbTable("DateTable")]
+    public class DateTable2 : DbObject
+    {
+        [SpecialName]
+        public DateTime CreatedOn;
+
+        [SpecialName]
+        public DateTime? UpdatedOn;
+
+        public string Name;
+    }
+
     [TestFixture]
     public class DbNowTest
     {
         private DbContext de = new DbContext("SQLite");
 
+        [SetUp]
+        public void SetUp()
+        {
+            StaticRecorder.ClearMessages();
+        }
+
         [Test]
-        public void Test1()
+        public void TestCreatedOn()
         {
             InsertStatementBuilder sb = new InsertStatementBuilder("user");
             sb.Values.Add(new KeyValue("CreatedOn", DbNow.Value));
@@ -24,12 +55,41 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void Test2()
+        public void TestUpdatedOn()
         {
             UpdateStatementBuilder sb = new UpdateStatementBuilder("user");
             sb.Values.Add(new KeyValue("UpdatedOn", DbNow.Value));
             SqlStatement sql = sb.ToSqlStatement(de.Dialect);
             Assert.AreEqual("Update [user] Set [UpdatedOn]=CURRENT_TIMESTAMP ;\n", sql.SqlCommandText);
+        }
+
+        [Test]
+        public void TestCreatedOnWithTable()
+        {
+            DateTable o = DateTable.New();
+            o.Name = "tom";
+            de.Insert(o);
+            Assert.AreEqual("Insert Into [DateTable] ([CreatedOn],[Name]) Values (CURRENT_TIMESTAMP,@Name_0);\nSELECT last_insert_rowid();\n", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestUpdatedOnWithTable()
+        {
+            DateTable o = DateTable.New();
+            o.Name = "tom";
+            o.Id = 1;
+            de.Update(o);
+            Assert.AreEqual("Update [DateTable] Set [UpdatedOn]=CURRENT_TIMESTAMP,[Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestUpdatedOnWithoutPartialUpdate()
+        {
+            DateTable2 o = new DateTable2();
+            o.Name = "tom";
+            o.Id = 1;
+            de.Update(o);
+            Assert.AreEqual("Update [DateTable] Set [UpdatedOn]=CURRENT_TIMESTAMP,[Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
         }
     }
 }

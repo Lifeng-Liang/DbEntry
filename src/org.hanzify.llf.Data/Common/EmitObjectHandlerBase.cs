@@ -24,6 +24,12 @@ namespace Lephone.Data.Common
             return new KeyValue(kv.Key, v, kv.ValueType);
         }
 
+        protected KeyValue NewKeyValueDirect(int n, object v)
+        {
+            KeyValue kv = kvc[n];
+            return new KeyValue(kv.Key, v, v.GetType());
+        }
+
         protected void AddKeyValue(KeyValueCollection Values, DbObjectSmartUpdate o, string Key, int n, object v)
         {
             Dictionary<string, object> kd = o.m_UpdateColumns;
@@ -154,6 +160,7 @@ namespace Lephone.Data.Common
             return o;
         }
     }
+
     /*
     internal enum GenderType
     {
@@ -187,7 +194,7 @@ namespace Lephone.Data.Common
         protected override void LoadSimpleValuesByIndex(object o, IDataReader dr)
         {
             User u = (User)o;
-            u.m_Id = dr.GetInt64(0);
+            u.Id = dr.GetInt64(0);
             u.Name = dr.GetString(1);
             u.Age = dr.GetInt32(2);
             u.Time = dr.GetDateTime(3);
@@ -200,7 +207,7 @@ namespace Lephone.Data.Common
         protected override void LoadSimpleValuesByName(object o, IDataReader dr)
         {
             User u = (User)o;
-            u.m_Id = (long)dr["Id"];
+            u.Id = (long)dr["Id"];
             u.Name = (string)dr["Name"];
             u.Age = (int)dr["Age"];
             u.Time = (DateTime)dr["Time"];
@@ -229,13 +236,13 @@ namespace Lephone.Data.Common
         protected override void GetKeyValuesDirect(Dictionary<string, object> dic, object o)
         {
             User u = (User)o;
-            dic.Add("Id", u.m_Id);
+            dic.Add("Id", u.Id);
             dic.Add("Key", u.Key);
         }
 
         protected override object GetKeyValueDirect(object o)
         {
-            return ((User)o).m_Id;
+            return ((User)o).Id;
         }
 
         public override object CreateInstance()
@@ -260,6 +267,7 @@ namespace Lephone.Data.Common
             Values.Add(NewKeyValue(1, u.Age));
             Values.Add(NewKeyValue(2, u.Parent.ForeignKey));
             Values.Add(NewKeyValue(3, u.Profile.Value));
+            Values.Add(NewKeyValueDirect(4, DbNow.Value));
         }
 
         protected override void SetValuesForUpdateDirect(KeyValueCollection Values, object obj)
@@ -269,7 +277,8 @@ namespace Lephone.Data.Common
             AddKeyValue(Values, u, "Age", 1, u.Age);
             AddKeyValue(Values, u, "$", 2, u.Parent.ForeignKey);
             AddKeyValue(Values, u, "Profile", 3, u.Profile.Value);
+            Values.Add(NewKeyValueDirect(4, DbNow.Value));
         }
     }
-     */
+    */
 }

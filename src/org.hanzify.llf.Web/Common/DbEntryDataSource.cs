@@ -14,7 +14,7 @@ using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.QuerySyntax;
 
-namespace Lephone.Web
+namespace Lephone.Web.Common
 {
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
     public class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource

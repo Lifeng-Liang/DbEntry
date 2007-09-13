@@ -48,11 +48,59 @@ namespace Lephone.Data.Common
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
             foreach (object or in this)
             {
-                DbObjectBase o = or as DbObjectBase;
+                IXmlSerializable o = or as IXmlSerializable;
                 writer.WriteStartElement(oi.From.GetMainTableName());
                 o.WriteXml(writer);
                 writer.WriteEndElement();
             }
+        }
+
+        public DataTable ToDataTable()
+        {
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            DataTable dt = new DataTable(oi.From.GetMainTableName());
+            foreach (MemberHandler m in oi.SimpleFields)
+            {
+                DataColumn dc;
+                if (m.FieldType.IsGenericType)
+                {
+                    dc = new DataColumn(m.Name, m.FieldType.GetGenericArguments()[0]);
+                }
+                else
+                {
+                    dc = new DataColumn(m.Name, m.FieldType);
+                }
+                if (m.AllowNull)
+                {
+                    dc.AllowDBNull = true;
+                }
+                dt.Columns.Add(dc);
+            }
+            foreach (object o in this)
+            {
+                DataRow dr = dt.NewRow();
+                foreach (MemberHandler m in oi.SimpleFields)
+                {
+                    object ov = m.GetValue(o);
+                    if (ov == null)
+                    {
+                        dr[m.Name] = DBNull.Value;
+                    }
+                    else
+                    {
+                        if (m.FieldType.IsGenericType)
+                        {
+                            dr[m.Name] = m.FieldType.GetMethod("get_Value").Invoke(ov, null);
+                        }
+                        else
+                        {
+                            dr[m.Name] = ov;
+                        }
+                    }
+                }
+                dt.Rows.Add(dr);
+            }
+            return dt;
         }
     }
 }

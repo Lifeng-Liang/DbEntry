@@ -2,6 +2,8 @@
 #region usings
 
 using System;
+using System.Xml.Serialization;
+using System.Xml.Schema;
 using System.Collections.Generic;
 using Lephone.Data.Common;
 using Lephone.Data.QuerySyntax;
@@ -11,7 +13,8 @@ using Lephone.Data.QuerySyntax;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class DbObjectSmartUpdate : DbObjectBase
+    [XmlRoot("DbObject")]
+    public class DbObjectSmartUpdate : DbObjectBase, IXmlSerializable
     {
         [Exclude]
         internal protected Dictionary<string, object> m_UpdateColumns = null;
@@ -29,6 +32,43 @@ namespace Lephone.Data.Definition
             if (m_UpdateColumns != null && !m_InternalInit)
             {
                 m_UpdateColumns[ColumnName] = 1;
+            }
+        }
+
+        public XmlSchema GetSchema()
+        {
+            //ObjectInfo oi = DbObjectHelper.GetObjectInfo(this.GetType());
+            //XmlSchema xs = new XmlSchema();
+            //XmlSchemaComplexType xct = new XmlSchemaComplexType();
+            //xct.Name = "DbObject";
+            //XmlSchemaSequence xss = new XmlSchemaSequence();
+            //foreach (MemberHandler mh in oi.SimpleFields)
+            //{
+            //    XmlSchemaElement xe = new XmlSchemaElement();
+            //    xe.Name = mh.MemberInfo.Name;
+            //    xe.ElementSchemaType = XmlSchemaType.GetBuiltInSimpleType(XmlTypeCode.Int);
+            //    xss.Items.Add(xe);
+            //}
+            //xct.ContentModel = xss;
+            //xs.Items.Add(xct);
+            return null;
+        }
+
+        public void ReadXml(System.Xml.XmlReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteXml(System.Xml.XmlWriter writer)
+        {
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(this.GetType());
+            foreach (MemberHandler mh in oi.SimpleFields)
+            {
+                object o = mh.GetValue(this);
+                if (o != null)
+                {
+                    writer.WriteElementString(mh.MemberInfo.Name, o.ToString());
+                }
             }
         }
     }

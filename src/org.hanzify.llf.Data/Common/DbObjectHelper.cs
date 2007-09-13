@@ -267,6 +267,36 @@ namespace Lephone.Data.Common
                 fh.AllowNull = true;
             }
 
+            if (GetAttribute<SpecialNameAttribute>(fi) != null)
+            {
+                if (fi.Name == "CreatedOn")
+                {
+                    if (fi.MemberType == typeof(DateTime))
+                    {
+                        fh.IsCreatedOn = true;
+                    }
+                    else
+                    {
+                        throw new DbEntryException("CreatedOn must be datetime type.");
+                    }
+                }
+                else if (fi.Name == "UpdatedOn")
+                {
+                    if (fi.MemberType == typeof(DateTime?))
+                    {
+                        fh.IsUpdatedOn = true;
+                    }
+                    else
+                    {
+                        throw new DbEntryException("UpdatedOn must be nullable datetime type.");
+                    }
+                }
+                else
+                {
+                    throw new DbEntryException("Only CreatedOn and UpdatedOn are supported as special name.");
+                }
+            }
+
             MaxLengthAttribute ml = GetAttribute<MaxLengthAttribute>(fi);
             if (ml != null)
             {

@@ -50,11 +50,6 @@ namespace Lephone.UnitTest.Data
             }
         }
 
-        public void SetID(long Id)
-        {
-            m_Id = Id;
-        }
-
         public sUser()
         {
             m_InitUpdateColumns();
@@ -101,11 +96,6 @@ namespace Lephone.UnitTest.Data
         }
 
         public HasMany<rArticle> Articles;
-
-        public void SetID(long Id)
-        {
-            m_Id = Id;
-        }
 
         public rUser()
         {
@@ -158,11 +148,6 @@ namespace Lephone.UnitTest.Data
         [DbColumn("Reader_Id")]
         public BelongsTo<rUser> _Reader;
 
-        public void SetID(long Id)
-        {
-            m_Id = Id;
-        }
-
         public rArticle()
         {
             _Reader = new BelongsTo<rUser>(this);
@@ -183,11 +168,6 @@ namespace Lephone.UnitTest.Data
         [DbColumn("theName")]
         public abstract string Name { get; set; }
         public abstract int Age { get; set; }
-
-        public void SetID(long Id)
-        {
-            m_Id = Id;
-        }
 
         public Dictionary<string, object> GetUpdateColumns()
         {
@@ -250,7 +230,7 @@ namespace Lephone.UnitTest.Data
         public void TestDontUpdateIfNotSetValue()
         {
             sUser u = new sUser("Tom", 18);
-            u.SetID(1); // Make it looks like read from database
+            u.Id = 1; // Make it looks like read from database
             de.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
@@ -260,7 +240,7 @@ namespace Lephone.UnitTest.Data
         public void TestPartialUpdateThatSetedValue()
         {
             sUser u = new sUser("Tom", 18);
-            u.SetID(1); // Make it looks like read from database
+            u.Id = 1; // Make it looks like read from database
             u.Name = "Tom";
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
@@ -273,7 +253,7 @@ namespace Lephone.UnitTest.Data
             de.UsingTransaction(delegate()
             {
                 sUser u = new sUser("Tom", 18);
-                u.SetID(1); // Make it looks like read from database
+                u.Id = 1; // Make it looks like read from database
                 u.Name = "Tom";
                 de.Save(u);
             });
@@ -289,7 +269,7 @@ namespace Lephone.UnitTest.Data
                 de.UsingTransaction(delegate()
                 {
                     sUser u = new sUser("Tom", 18);
-                    u.SetID(1); // Make it looks like read from database
+                    u.Id = 1; // Make it looks like read from database
                     u.Name = "Tom";
                     de.Save(u);
                     throw new Exception(); // emulate exception
@@ -305,10 +285,10 @@ namespace Lephone.UnitTest.Data
         {
             // relationship objects, one not update, one insert, one partial update.
             rUser u = new rUser("tom", 18);
-            u.SetID(1);
+            u.Id = 1; // Make it looks like read from database
             u.Articles.Add(new rArticle("sos", 199));
             rArticle a = new rArticle("haha", 299);
-            a.SetID(1);
+            a.Id = 1;
             a.Price = 180;
             u.Articles.Add(a);
             de.Save(u);
@@ -321,7 +301,7 @@ namespace Lephone.UnitTest.Data
         public void TestSmartUpdateForDynamicObject()
         {
             asUser u = asUser.New("Tom", 18);
-            u.SetID(1); // Make it looks like read from database
+            u.Id = 1; // Make it looks like read from database
             de.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
@@ -331,7 +311,7 @@ namespace Lephone.UnitTest.Data
         public void TestSmartUpdateForDynamicObject2()
         {
             asUser u = asUser.New("Tom", 18);
-            u.SetID(1); // Make it looks like read from database
+            u.Id = 1; // Make it looks like read from database
             u.Name = "Tom";
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
@@ -342,7 +322,7 @@ namespace Lephone.UnitTest.Data
         public void TestSmartUpdateForDynamicObject3()
         {
             asUser u = asUser.New("Tom", 18);
-            u.SetID(1); // Make it looks like read from database
+            u.Id = 1; // Make it looks like read from database
             u.Name = "Jerry";
             u.Age = 25;
             de.Save(u);
@@ -358,7 +338,7 @@ namespace Lephone.UnitTest.Data
                 de.UsingTransaction(delegate()
                 {
                     asUser u = asUser.New("Tom", 18);
-                    u.SetID(1); // Make it looks like read from database
+                    u.Id = 1; // Make it looks like read from database
                     u.Name = "Tom";
                     de.Save(u);
                 });

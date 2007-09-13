@@ -84,6 +84,8 @@ namespace Lephone.Data.Common
         public bool IsHasMany;
         public bool IsHasAndBelongsToMany;
         public bool IsLazyLoad;
+        public bool IsCreatedOn;
+        public bool IsUpdatedOn;
         public string OrderByString = null;
 
         public MemberAdapter MemberInfo

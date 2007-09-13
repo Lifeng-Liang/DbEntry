@@ -370,13 +370,16 @@ namespace Lephone.Data
             });
         }
 
-        private static void OverrideSetValuesForInsert(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        private static void OverrideSetValuesDirect(string Name, MemoryTypeBuilder tb, Type srcType,
+            MemberHandler[] Fields, CallbackHandler<MemberHandler, bool> cb1, CallbackHandler<MemberHandler, bool> cb2)
         {
             Type t = typeof(KeyValueCollection);
             MethodInfo addmi = t.GetMethod("Add", new Type[] { typeof(KeyValue) });
             MethodInfo nkvmi = vhBaseType.GetMethod("NewKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo dbnowmi = typeof(DbNow).GetField("Value", ClassHelper.AllFlag);
 
-            tb.OverrideMethodDirect(OverrideFlag, "SetValuesForInsertDirect", vhBaseType, null,
+            tb.OverrideMethodDirect(OverrideFlag, Name, vhBaseType, null,
                 new Type[] { t, typeof(object) }, delegate(ILGenerator il)
             {
                 // User u = (User)o;
@@ -390,37 +393,55 @@ namespace Lephone.Data
                 {
                     if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                     {
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Ldarg_0);
-                        EmitldcI4(il, n);
-                        il.Emit(OpCodes.Ldloc_0);
-                        f.MemberInfo.EmitGet(il);
-                        if (f.IsBelongsTo)
+                        if (!cb1(f))
                         {
-                            il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_ForeignKey"));
-                        }
-                        else if (f.IsLazyLoad)
-                        {
-                            il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_Value"));
-                            Type it = f.FieldType.GetGenericArguments()[0];
-                            if (it.IsValueType)
+                            il.Emit(OpCodes.Ldarg_1);
+                            il.Emit(OpCodes.Ldarg_0);
+                            EmitldcI4(il, n);
+                            if (cb2(f))
                             {
-                                il.Emit(OpCodes.Box, it);
+                                il.Emit(OpCodes.Ldsfld, dbnowmi);
+                                il.Emit(OpCodes.Call, nkvdmi);
                             }
-                        }
-                        else
-                        {
-                            if (f.FieldType.IsValueType)
+                            else
                             {
-                                il.Emit(OpCodes.Box, f.FieldType);
+                                il.Emit(OpCodes.Ldloc_0);
+                                f.MemberInfo.EmitGet(il);
+                                if (f.IsBelongsTo)
+                                {
+                                    il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_ForeignKey"));
+                                }
+                                else if (f.IsLazyLoad)
+                                {
+                                    il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_Value"));
+                                    Type it = f.FieldType.GetGenericArguments()[0];
+                                    if (it.IsValueType)
+                                    {
+                                        il.Emit(OpCodes.Box, it);
+                                    }
+                                }
+                                else
+                                {
+                                    if (f.FieldType.IsValueType)
+                                    {
+                                        il.Emit(OpCodes.Box, f.FieldType);
+                                    }
+                                }
+                                il.Emit(OpCodes.Call, nkvmi);
                             }
+                            il.Emit(OpCodes.Callvirt, addmi);
                         }
-                        il.Emit(OpCodes.Call, nkvmi);
-                        il.Emit(OpCodes.Callvirt, addmi);
                         n++;
                     }
                 }
             });
+        }
+
+        private static void OverrideSetValuesForInsert(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        {
+            OverrideSetValuesDirect("SetValuesForInsertDirect", tb, srcType, Fields,
+                delegate(MemberHandler m) { return m.IsUpdatedOn; },
+                delegate(MemberHandler m) { return m.IsCreatedOn; });
         }
 
         private static void OverrideSetValuesForUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
@@ -431,16 +452,9 @@ namespace Lephone.Data
             }
             else
             {
-                Type t = typeof(KeyValueCollection);
-                MethodInfo mi = vhBaseType.GetMethod("SetValuesForInsertDirect", BindingFlags.NonPublic | BindingFlags.Instance);
-                tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", vhBaseType, null,
-                    new Type[] { t, typeof(object) }, delegate(ILGenerator il)
-                {
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldarg_1);
-                    il.Emit(OpCodes.Ldarg_2);
-                    il.Emit(OpCodes.Callvirt, mi);
-                });
+                OverrideSetValuesDirect("SetValuesForUpdateDirect", tb, srcType, Fields,
+                    delegate(MemberHandler m) { return m.IsCreatedOn; },
+                    delegate(MemberHandler m) { return m.IsUpdatedOn; });
             }
 
         }
@@ -449,6 +463,9 @@ namespace Lephone.Data
         {
             Type t = typeof(KeyValueCollection);
             MethodInfo akvmi = vhBaseType.GetMethod("AddKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo addmi = t.GetMethod("Add", new Type[] { typeof(KeyValue) });
+            MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo dbnowmi = typeof(DbNow).GetField("Value", ClassHelper.AllFlag);
 
             tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", vhBaseType, null,
                 new Type[] { t, typeof(object) }, delegate(ILGenerator il)
@@ -464,35 +481,50 @@ namespace Lephone.Data
                 {
                     if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                     {
-                        il.Emit(OpCodes.Ldarg_0);
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Ldloc_0);
-                        //il.Emit(OpCodes.Ldstr, f.IsBelongsTo ? "$" : f.Name);
-                        il.Emit(OpCodes.Ldstr, f.Name);
-                        EmitldcI4(il, n);
-                        il.Emit(OpCodes.Ldloc_0);
-                        f.MemberInfo.EmitGet(il);
-                        if (f.IsBelongsTo)
+                        if (f.IsUpdatedOn || !f.IsCreatedOn)
                         {
-                            il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_ForeignKey"));
-                        }
-                        else if (f.IsLazyLoad)
-                        {
-                            il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_Value"));
-                            Type it = f.FieldType.GetGenericArguments()[0];
-                            if (it.IsValueType)
+                            if (f.IsUpdatedOn)
                             {
-                                il.Emit(OpCodes.Box, it);
+                                il.Emit(OpCodes.Ldarg_1);
+                                il.Emit(OpCodes.Ldarg_0);
+                                EmitldcI4(il, n);
+                                il.Emit(OpCodes.Ldsfld, dbnowmi);
+                                il.Emit(OpCodes.Call, nkvdmi);
+                                il.Emit(OpCodes.Callvirt, addmi);
+                            }
+                            else
+                            {
+                                il.Emit(OpCodes.Ldarg_0);
+                                il.Emit(OpCodes.Ldarg_1);
+                                il.Emit(OpCodes.Ldloc_0);
+                                //il.Emit(OpCodes.Ldstr, f.IsBelongsTo ? "$" : f.Name);
+                                il.Emit(OpCodes.Ldstr, f.Name);
+                                EmitldcI4(il, n);
+                                il.Emit(OpCodes.Ldloc_0);
+                                f.MemberInfo.EmitGet(il);
+                                if (f.IsBelongsTo)
+                                {
+                                    il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_ForeignKey"));
+                                }
+                                else if (f.IsLazyLoad)
+                                {
+                                    il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_Value"));
+                                    Type it = f.FieldType.GetGenericArguments()[0];
+                                    if (it.IsValueType)
+                                    {
+                                        il.Emit(OpCodes.Box, it);
+                                    }
+                                }
+                                else
+                                {
+                                    if (f.FieldType.IsValueType)
+                                    {
+                                        il.Emit(OpCodes.Box, f.FieldType);
+                                    }
+                                }
+                                il.Emit(OpCodes.Call, akvmi);
                             }
                         }
-                        else
-                        {
-                            if (f.FieldType.IsValueType)
-                            {
-                                il.Emit(OpCodes.Box, f.FieldType);
-                            }
-                        }
-                        il.Emit(OpCodes.Call, akvmi);
                         n++;
                     }
                 }

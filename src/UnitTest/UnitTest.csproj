@@ -51,6 +51,7 @@
     <Compile Include="Data\ComplexDynamicObjectTest.cs" />
     <Compile Include="Data\CreateTable\SQLiteTest.cs" />
     <Compile Include="Data\DbNowTest.cs" />
+    <Compile Include="Data\DbObjectListTest.cs" />
     <Compile Include="Data\FirebirdTest.cs" />
     <Compile Include="Data\FullTypesTest.cs" />
     <Compile Include="Data\HasAndBelongsToManyAssociateTest.cs" />

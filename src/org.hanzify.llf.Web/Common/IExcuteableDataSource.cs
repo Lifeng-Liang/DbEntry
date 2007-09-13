@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Web.UI;
 
-namespace Lephone.Web
+namespace Lephone.Web.Common
 {
     public interface IExcuteableDataSource
     {

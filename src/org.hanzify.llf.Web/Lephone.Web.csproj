@@ -40,9 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbEntryDataSource.cs" />
-    <Compile Include="IExcuteableDataSource.cs" />
-    <Compile Include="UrlBuilder.cs" />
+    <Compile Include="ClearHttpHandler.cs" />
+    <Compile Include="Common\DbEntryDataSource.cs" />
+    <Compile Include="Common\IExcuteableDataSource.cs" />
+    <Compile Include="Common\UrlBuilder.cs" />
+    <Compile Include="ControllerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
