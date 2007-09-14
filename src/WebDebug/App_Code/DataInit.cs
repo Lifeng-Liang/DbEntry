@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using Lephone.Data;
 using Lephone.Util;
-using test;
+using DebugLib.Models;
 
 public static class DataInit
 {
@@ -15,20 +15,20 @@ public static class DataInit
 
         DbEntry.UsingTransaction(delegate()
         {
-            User.New("tom", 19, DateTime.Now, true).Save();
-            User.New("jerry", 26, DateTime.Now, true).Save();
-            User.New("mike", 21, DateTime.Now, true).Save();
-            User.New("rose", 17, DateTime.Now, false).Save();
-            User.New("alice", 16, DateTime.Now, false).Save();
+            User.New().Init("tom", 19, DateTime.Now, true).Save();
+            User.New().Init("jerry", 26, DateTime.Now, true).Save();
+            User.New().Init("mike", 21, DateTime.Now, true).Save();
+            User.New().Init("rose", 17, DateTime.Now, false).Save();
+            User.New().Init("alice", 16, DateTime.Now, false).Save();
 
-            User.New("peter", 41, DateTime.Now, true).Save();
-            User.New("vito", 28, DateTime.Now, true).Save();
-            User.New("jeff", 23, DateTime.Now, true).Save();
-            User.New("kate", 22, DateTime.Now, false).Save();
-            User.New("july", 25, DateTime.Now, false).Save();
+            User.New().Init("peter", 41, DateTime.Now, true).Save();
+            User.New().Init("vito", 28, DateTime.Now, true).Save();
+            User.New().Init("jeff", 23, DateTime.Now, true).Save();
+            User.New().Init("kate", 22, DateTime.Now, false).Save();
+            User.New().Init("july", 25, DateTime.Now, false).Save();
 
-            User.New("lephone", 31, DateTime.Now, true).Save();
-            User.New("juan", 25, DateTime.Now, false).Save();
+            User.New().Init("lephone", 31, DateTime.Now, true).Save();
+            User.New().Init("juan", 25, DateTime.Now, false).Save();
         });
     }
 }

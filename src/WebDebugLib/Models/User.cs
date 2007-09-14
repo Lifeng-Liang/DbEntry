@@ -2,7 +2,7 @@
 using System;
 using Lephone.Data.Definition;
 
-namespace test
+namespace DebugLib.Models
 {
     public enum Gender
     {
@@ -14,19 +14,17 @@ namespace test
     {
         [MaxLength(20)]
         public abstract string Name { get; set; }
-        [DbColumn("Age")]
-        public abstract int theAge { get; set; }
+        public abstract int Age { get; set; }
         public abstract DateTime Birthday { get; set; }
         public abstract bool IsMale { get; set; }
 
-        public User() { }
-
-        public User(string Name, int Age, DateTime Birthday, bool IsMale)
+        public User Init(string Name, int Age, DateTime Birthday, bool IsMale)
         {
             this.Name = Name;
-            this.theAge = Age;
+            this.Age = Age;
             this.Birthday = Birthday;
             this.IsMale = IsMale;
+            return this;
         }
     }
 }

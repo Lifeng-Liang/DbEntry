@@ -45,6 +45,10 @@
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="Common\UrlBuilder.cs" />
     <Compile Include="ControllerBase.cs" />
+    <Compile Include="DefaultController.cs" />
+    <Compile Include="PageBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +63,9 @@
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
       <Name>Lephone.Util</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Default.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

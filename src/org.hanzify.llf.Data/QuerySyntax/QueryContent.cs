@@ -43,7 +43,7 @@ namespace Lephone.Data.QuerySyntax
 
         public IRangeable<T> OrderBy(string key)
         {
-            return OrderBy((ASC)key);
+            return OrderBy(new OrderBy(key));
         }
 
         public IRangeable<T> OrderBy(params ASC[] os)

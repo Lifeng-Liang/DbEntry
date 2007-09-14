@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using Lephone.Web;
+using Lephone.Web.Common;
 using Lephone.Util;
 
 namespace Lephone.UnitTest.Web

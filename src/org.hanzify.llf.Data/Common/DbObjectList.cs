@@ -45,11 +45,12 @@ namespace Lephone.Data.Common
 
         public void WriteXml(System.Xml.XmlWriter writer)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            Type t = typeof(T);
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
             foreach (object or in this)
             {
                 IXmlSerializable o = or as IXmlSerializable;
-                writer.WriteStartElement(oi.From.GetMainTableName());
+                writer.WriteStartElement(t.Name);
                 o.WriteXml(writer);
                 writer.WriteEndElement();
             }

@@ -17,8 +17,8 @@ namespace Lephone.Data
 		public ASC[] OrderItems;
 
         public OrderBy(string OrderName)
-            : this(new ASC(OrderName))
         {
+            OrderItems = ParseClause(OrderName);
         }
 
 		public OrderBy(params ASC[] OrderItems)
@@ -48,6 +48,11 @@ namespace Lephone.Data
             {
                 return null;
             }
+            return new OrderBy(ParseClause(OrderByString));
+        }
+
+        private static ASC[] ParseClause(string OrderByString)
+        {
             string[] ss = OrderByString.Split(',');
             List<ASC> ret = new List<ASC>();
             foreach (string s in ss)
@@ -61,7 +66,7 @@ namespace Lephone.Data
                     ret.Add(new ASC(s.Trim()));
                 }
             }
-            return new OrderBy(ret.ToArray());
+            return ret.ToArray();
         }
 	}
 }
