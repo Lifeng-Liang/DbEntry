@@ -95,14 +95,14 @@ namespace Lephone.UnitTest.Data
         public void TestCreate()
         {
             de.Create(typeof(lzUser));
-            Assert.AreEqual("CREATE TABLE [lzUser] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT  ,\n\t[Name] ntext NOT NULL ,\n\t[Profile] ntext NOT NULL \n);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [lzUser] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[Profile] ntext NOT NULL \n);\n", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestCreate1()
         {
             de.Create(typeof(lzpUser1));
-            Assert.AreEqual("CREATE TABLE [User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT  ,\n\t[Name] ntext NOT NULL ,\n\t[MyTest] varchar (10) NULL \n);\nCREATE UNIQUE INDEX [IX_User_test] ON [User] ([MyTest] ASC);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[MyTest] varchar (10) NULL \n);\nCREATE UNIQUE INDEX [IX_User_test] ON [User] ([MyTest] ASC);\n", StaticRecorder.LastMessage);
         }
 
         [Test]

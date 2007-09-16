@@ -208,6 +208,7 @@ namespace Lephone.Data.Common
                     }
                     else if(fi.MemberType == typeof(Guid))
                     {
+                        fh.IsDbGenerate = false;
                         fh.UnsavedValue = Guid.Empty;
                     }
                     else
@@ -479,6 +480,18 @@ namespace Lephone.Data.Common
             }
             else
             {
+                foreach (PropertyInfo pi in t.GetProperties(ClassHelper.InstancePublic))
+                {
+                    if (!pi.PropertyType.IsGenericType)
+                    {
+                        MemberAdapter m = MemberAdapter.NewObject(pi);
+                        if (HasAtributes(m, typeof(DbKeyAttribute)))
+                        {
+                            MemberHandler mh = GetMemberHandler(m);
+                            return mh;
+                        }
+                    }
+                }
                 foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
                 {
                     if (!fi.IsPrivate)

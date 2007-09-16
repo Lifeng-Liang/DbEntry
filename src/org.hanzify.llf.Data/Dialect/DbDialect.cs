@@ -83,6 +83,23 @@ namespace Lephone.Data.Dialect
 
         public virtual object ExecuteInsert(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
         {
+            if (oi.HasOnePremarykey && oi.KeyFields[0].FieldType == typeof(Guid))
+            {
+                Guid key = Guid.NewGuid();
+                sb.Values[0].Value = key;
+                SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
+                oi.LogSql(sql);
+                dp.ExecuteNonQuery(sql);
+                return key;
+            }
+            else
+            {
+                return ExecuteInsertIntKey(dp, sb, oi);
+            }
+        }
+
+        protected virtual object ExecuteInsertIntKey(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
+        {
             SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
             sql.SqlCommandText = AddIdentitySelectToInsert(sql.SqlCommandText);
             oi.LogSql(sql);
@@ -217,6 +234,11 @@ namespace Lephone.Data.Dialect
 		{
 			get { throw DoesNotSupportNativeKey; }
 		}
+
+        public virtual bool IdentityIncludePKString
+        {
+            get { return false; }
+        }
 
         public virtual string IdentityTypeString
         {

@@ -47,7 +47,7 @@ namespace Lephone.Data.Common
             this.Fields = Fields;
             this.AllowSqlLog = !DisableSqlLog;
 
-            this.HasSystemKey = ((KeyFields.Length == 1) && KeyFields[0].IsDbGenerate);
+            this.HasSystemKey = ((KeyFields.Length == 1) && (KeyFields[0].IsDbGenerate || KeyFields[0].FieldType == typeof(Guid)));
 
             foreach (MemberHandler f in Fields)
             {

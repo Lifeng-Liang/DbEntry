@@ -59,12 +59,17 @@ namespace Lephone.Data.Dialect
 
         public override string PrimaryKeyString
         {
-            get { return ""; }
+            get { return "PRIMARY KEY"; }
         }
 
         public override string IdentityTypeString
         {
             get { return "INTEGER PRIMARY KEY AUTOINCREMENT"; }
+        }
+
+        public override bool IdentityIncludePKString
+        {
+            get { return true; }
         }
 
         public override char CloseQuote

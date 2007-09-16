@@ -3,7 +3,7 @@
   <Lephone.Settings>
     <add key="SqlLogRecorder" value="Lephone.Util.Logging.ConsoleMessageRecorder, Lephone.Util" />
 
-    <add key="ObjectHandlerType" value="Emit" />
+    <add key="ObjectHandlerType" value="Reflection" />
 
     <add key="AutoCreateTable" value="true" />
     <add key="DefaultContext" value="Development" />

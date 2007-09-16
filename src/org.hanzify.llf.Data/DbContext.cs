@@ -275,7 +275,7 @@ namespace Lephone.Data
                 throw new DbEntryException("To call this function, the table must have one primary key.");
             }
             MemberHandler k = oi.KeyFields[0];
-            if (k.IsDbGenerate)
+            if (oi.HasSystemKey)
             {
                 if (k.UnsavedValue == null)
                 {

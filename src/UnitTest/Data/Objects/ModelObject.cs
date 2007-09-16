@@ -26,4 +26,9 @@ namespace Lephone.UnitTest.Data.Objects
             return GetCount(Col["Name"] == Name);
         }
     }
+
+    public abstract class GuidKey : DbObjectModel<GuidKey, Guid>
+    {
+        public abstract string Name { get; set; }
+    }
 }

@@ -50,29 +50,25 @@ namespace Lephone.Data.Builder
                 }
                 if (ci.IsDbGenerate)
                 {
-                    sql.Append(" ");
-                    if (ci.ValueType == typeof(Guid))
-                    {
-                        sql.Append("DEFAULT ");
-                        sql.Append(dd.NewGuidString());
-                        // TODO: Default value.
-                    }
-                    else // Auto Increment
-                    {
-                        sql.Append(dd.IdentityColumnString);
-                    }
+                    sql.Append(" ").Append(dd.IdentityColumnString);
                 }
                 if (ci.IsKey)
                 {
-                    if (isMutiKey)
+                    if (ci.ValueType == typeof(Guid))
+                    {
+                        sql.Append(" PRIMARY KEY");
+                    }
+                    else if (isMutiKey)
                     {
                         sql.Append(NullDefine);
                         keys += dd.QuoteForColumnName(ci.Key) + ", ";
                     }
                     else
                     {
-                        sql.Append(" ");
-                        sql.Append(dd.PrimaryKeyString);
+                        if (!dd.IdentityIncludePKString)
+                        {
+                            sql.Append(" PRIMARY KEY");
+                        }
                     }
                 }
                 else

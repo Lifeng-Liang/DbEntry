@@ -12,7 +12,7 @@ namespace Lephone.Data.Dialect
 {
     public abstract class SequencedDialect : DbDialect
     {
-        public override object ExecuteInsert(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
+        protected override object ExecuteInsertIntKey(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
         {
             string seqStr = GetSelectSequenceSql(oi.From.GetMainTableName());
             SqlStatement seq = new SqlStatement(CommandType.Text, seqStr);

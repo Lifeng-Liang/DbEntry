@@ -298,5 +298,30 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("Jerry", ls[0].Name);
         }
+
+        [Test]
+        public void TestGuidKey()
+        {
+            GuidKey o = GuidKey.New();
+            Assert.IsTrue(Guid.Empty == o.Id);
+
+            o.Name = "guid";
+            o.Save();
+
+            Assert.IsFalse(Guid.Empty == o.Id);
+
+            GuidKey o1 = GuidKey.FindById(o.Id);
+            Assert.AreEqual("guid", o1.Name);
+
+            o.Name = "test";
+            o.Save();
+
+            GuidKey o2 = GuidKey.FindById(o.Id);
+            Assert.AreEqual("test", o2.Name);
+
+            o2.Delete();
+            GuidKey o3 = GuidKey.FindById(o.Id);
+            Assert.IsNull(o3);
+        }
     }
 }
