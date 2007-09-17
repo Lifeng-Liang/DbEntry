@@ -165,6 +165,16 @@ namespace Lephone.Data.Common
             return null;
         }
 
+        public static T GetAttribute<T>(Type t) where T : Attribute
+        {
+            T[] ts = (T[])t.GetCustomAttributes(typeof(T), true);
+            if (ts.Length == 1)
+            {
+                return ts[0];
+            }
+            return null;
+        }
+
         public static Attribute GetAttribute(Type type, MemberAdapter fi)
         {
             Attribute[] ts = (Attribute[])fi.GetCustomAttributes(type, false);
@@ -372,9 +382,18 @@ namespace Lephone.Data.Common
             {
                 ObjectInfo oi = m_GetSimpleObjectInfo(t);
                 // binding QueryComposer
-                oi.Composer = string.IsNullOrEmpty(oi.SoftDeleteColumnName) ?
-                    new QueryComposer(oi) :
-                    new SoftDeleteQueryComposer(oi, oi.SoftDeleteColumnName);
+                if (!string.IsNullOrEmpty(oi.SoftDeleteColumnName))
+                {
+                    oi.Composer = new SoftDeleteQueryComposer(oi, oi.SoftDeleteColumnName);
+                }
+                else if(!string.IsNullOrEmpty(oi.DeleteToTableName))
+                {
+                    oi.Composer = new DeleteToQueryComposer(oi);
+                }
+                else
+                {
+                    oi.Composer = new QueryComposer(oi);
+                }
                 // binding DbObjectHandler
                 if (DataSetting.ObjectHandlerType == HandlerType.Emit
                     || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
@@ -462,10 +481,15 @@ namespace Lephone.Data.Common
             oi.RelationFields = rlfs.ToArray();
             oi.SimpleFields = sifs.ToArray();
 
-            SoftDeleteAttribute[] sdas = (SoftDeleteAttribute[])t.GetCustomAttributes(typeof(SoftDeleteAttribute), true);
-            if (sdas != null && sdas.Length > 0)
+            SoftDeleteAttribute sd = GetAttribute<SoftDeleteAttribute>(t);
+            if (sd != null)
             {
-                oi.SoftDeleteColumnName = sdas[0].ColumnName;
+                oi.SoftDeleteColumnName = sd.ColumnName;
+            }
+            DeleteToAttribute dta = GetAttribute<DeleteToAttribute>(t);
+            if(dta != null)
+            {
+                oi.DeleteToTableName = dta.TableName;
             }
 
             return oi;

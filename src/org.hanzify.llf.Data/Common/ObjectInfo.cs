@@ -20,6 +20,7 @@ namespace Lephone.Data.Common
 
         public Type HandleType;
 		public FromClause From;
+        public string DeleteToTableName;
         public bool HasSystemKey;
         public bool HasAssociate;
         public bool IsAssociateObject;

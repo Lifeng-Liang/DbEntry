@@ -14,7 +14,7 @@ namespace Lephone.Data.Builder
 	public class InsertStatementBuilder : ISqlStatementBuilder, ISqlValues
 	{
 		private const string StatementTemplate = "Insert Into {0} {1};\n";
-		private string TableName;
+		internal string TableName;
 		private ValuesClause _ValuesOptions = new ValuesClause();
 
         public InsertStatementBuilder(string TableName)

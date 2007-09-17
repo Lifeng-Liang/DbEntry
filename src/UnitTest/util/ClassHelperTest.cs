@@ -42,6 +42,7 @@ namespace Lephone.UnitTest.util
             str = s;
         }
 
+        [Test]
         public void TestIt()
         {
             ClassHelperTest o = new ClassHelperTest();
