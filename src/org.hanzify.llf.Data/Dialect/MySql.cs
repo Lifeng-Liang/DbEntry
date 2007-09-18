@@ -14,11 +14,6 @@ namespace Lephone.Data.Dialect
 	{
 		public MySql() : base() {}
 
-        public override bool SupportsRange
-        {
-            get { return true; }
-        }
-
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
@@ -37,16 +32,6 @@ namespace Lephone.Data.Dialect
             return new DbStructInterface(true, null, new string[] { null, null, null, "BASE TABLE" }, null, null, null);
         }
 
-        public override bool SupportsIdentityColumns
-		{
-			get { return true; }
-		}
-
-        public override bool SupportsIdentitySelectInInsert
-        {
-            get { return true; }
-        }
-
         public override string IdentitySelectString
 		{
             get { return "SELECT LAST_INSERT_ID();\n"; }
@@ -56,11 +41,6 @@ namespace Lephone.Data.Dialect
 		{
 			get { return "AUTO_INCREMENT NOT NULL"; }
 		}
-
-        public override string PrimaryKeyString
-        {
-            get { return "PRIMARY KEY"; }
-        }
 
         public override char CloseQuote
 		{
@@ -76,10 +56,5 @@ namespace Lephone.Data.Dialect
         {
             get { return '?'; }
         }
-
-		protected override bool SupportsIfExistsBeforeTableName
-		{
-			get { return true; }
-		}
 	}
 }

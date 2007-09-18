@@ -25,9 +25,6 @@ namespace Lephone.UnitTest.Data
         public abstract double c9 { get; set; }
         public abstract Guid c10 { get; set; }
         public abstract sbyte c11 { get; set; }
-        public abstract uint c12 { get; set; }
-        public abstract ulong c13 { get; set; }
-        public abstract ushort c14 { get; set; }
         public abstract byte[] c15 { get; set; }
     }
 
@@ -57,9 +54,6 @@ namespace Lephone.UnitTest.Data
             ft.c9 = 9.1;
             ft.c10 = guid;
             ft.c11 = 11;
-            ft.c12 = 12;
-            ft.c13 = 13;
-            ft.c14 = 14;
             ft.c15 = new byte[] { 1, 2, 3, 4, 5 };
             // get infos.
             PropertyInfo[] pis = typeof(FullType).GetProperties();
@@ -100,9 +94,6 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(9.1, o.c9);
             Assert.AreEqual(guid, o.c10);
             Assert.AreEqual(11, o.c11);
-            Assert.AreEqual(12, o.c12);
-            Assert.AreEqual(13, o.c13);
-            Assert.AreEqual(14, o.c14);
             Assert.AreEqual(new byte[] { 1, 2, 3, 4, 5 }, o.c15);
         }
     }

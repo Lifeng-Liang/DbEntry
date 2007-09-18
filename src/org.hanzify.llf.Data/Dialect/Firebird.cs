@@ -53,11 +53,6 @@ namespace Lephone.Data.Dialect
             get { return "NOT NULL"; }
         }
 
-        public override string PrimaryKeyString
-        {
-            get { return "PRIMARY KEY"; }
-        }
-
         public override string GetCreateSequenceString(string TableName)
         {
             return string.Format("CREATE GENERATOR GEN_{0}_ID;\n", TableName.ToUpper());
@@ -91,11 +86,6 @@ namespace Lephone.Data.Dialect
             Sql.SqlCommandText = string.Format("{0} Rows {1} to {2}",
                 Sql.SqlCommandText, ssb.Range.StartIndex, ssb.Range.EndIndex);
             return Sql;
-        }
-
-        public override bool SupportsRangeStartIndex
-        {
-            get { return true; }
         }
     }
 }

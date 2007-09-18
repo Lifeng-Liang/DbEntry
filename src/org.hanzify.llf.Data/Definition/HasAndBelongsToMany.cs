@@ -77,7 +77,7 @@ namespace Lephone.Data.Definition
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
             DbObjectList<T> il = new DbObjectList<T>();
-            context.FillCollection(il, typeof(T), oi.ManyToManyMediFrom,
+            context.FillCollection(il, typeof(T), oi.ManyToManys[typeof(T)].From,
                 CK.K[ForeignKeyName] == key, Order, null);
             return il;
         }

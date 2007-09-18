@@ -30,19 +30,9 @@ namespace Lephone.Data.Dialect
             return new DbStructInterface(null, new string[] { null, null, null, "BASE TABLE" }, null, null, null);
         }
 
-        public override bool SupportsRange
-        {
-            get { return true; }
-        }
-
         public override bool SupportsRangeStartIndex
         {
             get { return false; }
-        }
-
-        public override string NewGuidString()
-        {
-            return "Guid()";
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
@@ -58,27 +48,6 @@ namespace Lephone.Data.Dialect
             return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
         }
         
-        public override string NullColumnString
-		{
-			get { return " null"; }
-		}
-
-		public override string GetDropTableString(string tableName)
-		{
-			string st = "if exists (select * from dbo.sysobjects where id = object_id(N'{0}') and OBJECTPROPERTY(id, N'IsUserTable') = 1) drop table {0}";
-			return String.Format( st, tableName );
-		}
-
-		public override bool SupportsIdentitySelectInInsert
-		{
-			get { return true; }
-		}
-
-		public override bool SupportsIdentityColumns
-		{
-			get { return true; }
-		}
-
 		public override string IdentitySelectString
 		{
 			get { return "select SCOPE_IDENTITY();\n"; }
@@ -87,36 +56,6 @@ namespace Lephone.Data.Dialect
 		public override string IdentityColumnString
 		{
             get { return "IDENTITY NOT FOR REPLICATION NOT NULL"; }
-		}
-
-        public override string PrimaryKeyString
-        {
-            get { return "PRIMARY KEY"; }
-        }
-
-		public override int MaxAnsiStringSize
-		{
-			get { return 8000; }
-		}
-
-		public override int MaxBinaryBlobSize
-		{
-			get { return 2147483647; }
-		}
-
-		public override int MaxBinarySize
-		{
-			get { return 8000; }
-		}
-
-		public override int MaxStringClobSize
-		{
-			get { return 1073741823; }
-		}
-
-		public override int MaxStringSize
-		{
-			get { return 4000; }
 		}
 
 		public override char CloseQuote

@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -42,8 +43,13 @@
   <ItemGroup>
     <Compile Include="ClearHttpHandler.cs" />
     <Compile Include="Common\DbEntryDataSource.cs" />
+    <Compile Include="Common\DbEntryMembershipProvider.cs" />
+    <Compile Include="Common\DbEntryRole.cs" />
+    <Compile Include="Common\DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
+    <Compile Include="Common\DbEntryMembershipUser.cs" />
     <Compile Include="Common\UrlBuilder.cs" />
+    <Compile Include="Common\WebSettings.cs" />
     <Compile Include="ControllerBase.cs" />
     <Compile Include="DefaultController.cs" />
     <Compile Include="PageBase.cs">

@@ -87,6 +87,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\EmitObjectHandlerBase.cs" />
     <Compile Include="Common\GroupByObject.cs" />
     <Compile Include="Common\IDbObjectHandler.cs" />
+    <Compile Include="Common\ManyToManyMediTable.cs" />
     <Compile Include="Common\QueryComposer.cs" />
     <Compile Include="Common\MemberAdapater.cs" />
     <Compile Include="Common\MemoryAssembly.cs" />

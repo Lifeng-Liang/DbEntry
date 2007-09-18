@@ -35,7 +35,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [DbKey]
         public long Id = 0;
 
-        [Index(UNIQUE=true)]
+        [Index(UNIQUE = true)]
         public string Name = null;
     }
 
@@ -54,13 +54,19 @@ namespace Lephone.UnitTest.Data.CreateTable
     [DbTable("MyTest")]
     class MyTest8
     {
-        [DbKey(IsDbGenerate=false)]
+        [DbKey(IsDbGenerate = false)]
         public long Id = 0;
 
-        [DbKey(IsDbGenerate=false), MaxLength(50)]
+        [DbKey(IsDbGenerate = false), MaxLength(50)]
         public string Name = null;
 
         public int Age = 0;
+    }
+
+    public class UnsignedTestTable
+    {
+        public string Name;
+        public uint Age;
     }
 
     #endregion
@@ -165,6 +171,23 @@ namespace Lephone.UnitTest.Data.CreateTable
             de.Create(typeof(GuidKey));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("CREATE TABLE [GuidKey] (\n\t[Id] uniqueidentifier PRIMARY KEY,\n\t[Name] ntext NOT NULL \n);\n", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestManyMore()
+        {
+            de.CreateManyToManyMediTable(typeof(ManyMore), typeof(ManyMore1));
+            Assert.AreEqual("CREATE TABLE [ManyMore_ManyMore1] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore1_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_ManyMore_ManyMore1_ManyMore_Id] ON [ManyMore_ManyMore1] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_ManyMore_ManyMore1_ManyMore1_Id] ON [ManyMore_ManyMore1] ([ManyMore1_Id] ASC);\n", StaticRecorder.LastMessage);
+
+            de.CreateManyToManyMediTable(typeof(ManyMore), typeof(ManyMore2));
+            Assert.AreEqual("CREATE TABLE [ManyMore_ManyMore2] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore2_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_ManyMore_ManyMore2_ManyMore_Id] ON [ManyMore_ManyMore2] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_ManyMore_ManyMore2_ManyMore2_Id] ON [ManyMore_ManyMore2] ([ManyMore2_Id] ASC);\n", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestUnsigned()
+        {
+            de.Create(typeof(UnsignedTestTable));
+            Assert.AreEqual("CREATE TABLE [UnsignedTestTable] (\n\t[Name] ntext NOT NULL ,\n\t[Age] int NOT NULL \n);\n", StaticRecorder.LastMessage);
         }
     }
 }

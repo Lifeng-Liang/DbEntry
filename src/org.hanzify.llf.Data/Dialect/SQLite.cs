@@ -34,11 +34,6 @@ namespace Lephone.Data.Dialect
             get { return false; }
         }
 
-        public override bool SupportsRange
-        {
-            get { return true; }
-        }
-
         public override DbStructInterface GetDbStructInterface()
         {
             return new DbStructInterface(null, new string[]{null, null, null, "table"}, null, null, null);
@@ -50,16 +45,6 @@ namespace Lephone.Data.Dialect
             Sql.SqlCommandText = string.Format("{0} Limit {1}, {2}", 
                 Sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
             return Sql;
-        }
-
-        public override bool SupportsIdentitySelectInInsert
-        {
-            get { return true; }
-        }
-
-        public override string PrimaryKeyString
-        {
-            get { return "PRIMARY KEY"; }
         }
 
         public override string IdentityTypeString

@@ -39,6 +39,10 @@ namespace Lephone.Data
             dic.Add(typeof(float), "GetFloat");
             dic.Add(typeof(double), "GetDouble");
             dic.Add(typeof(Guid), "GetGuid");
+
+            dic.Add(typeof(ulong), "GetInt64");
+            dic.Add(typeof(uint), "GetInt32");
+            dic.Add(typeof(ushort), "GetInt16");
         }
 
         public MethodInfo GetMethodInfo(Type t)
@@ -221,7 +225,20 @@ namespace Lephone.Data
                     // cast or unbox
                     if (f.FieldType.IsValueType)
                     {
-                        il.Emit(OpCodes.Unbox_Any, f.FieldType);
+                        Type t = f.FieldType;
+                        if (f.FieldType == typeof(uint))
+                        {
+                            t = typeof(int);
+                        }
+                        else if (f.FieldType == typeof(ulong))
+                        {
+                            t = typeof(long);
+                        }
+                        else if (f.FieldType == typeof(ushort))
+                        {
+                            t = typeof(short);
+                        }
+                        il.Emit(OpCodes.Unbox_Any, t);
                     }
                     else
                     {

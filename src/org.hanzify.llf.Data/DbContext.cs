@@ -44,9 +44,19 @@ namespace Lephone.Data
                     IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate()
                     {
                         Create(DbObjectType);
-                        if (oi.ManyToManyMediTableName != null && !TableNames.ContainsKey(oi.ManyToManyMediTableName.ToLower()))
+                        foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
                         {
-                            CreateManyToManyMediTable(DbObjectType, GetManyToManyRelationType(oi));
+                            if (!TableNames.ContainsKey(mt.Name.ToLower()))
+                            {
+                                if (DbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
+                                {
+                                    CreateManyToManyMediTable(DbObjectType.BaseType, mt.HandleType);
+                                }
+                                else
+                                {
+                                    CreateManyToManyMediTable(DbObjectType, mt.HandleType);
+                                }
+                            }
                         }
                     });
                 }
@@ -63,18 +73,6 @@ namespace Lephone.Data
             {
                 callback();
             }
-        }
-
-        private Type GetManyToManyRelationType(ObjectInfo oi)
-        {
-            foreach (MemberHandler m in oi.Fields)
-            {
-                if (m.IsHasAndBelongsToMany)
-                {
-                    return m.FieldType.GetGenericArguments()[0];
-                }
-            }
-            throw new DbEntryException("impossible");
         }
 
         private void InitTableNames()
@@ -309,7 +307,7 @@ namespace Lephone.Data
                 UsingExistedTransaction(delegate()
                 {
                     if (ParentFirst) { e1(this); }
-                    object mkey = oi.KeyFields[0].GetValue(obj);
+                    object mkey = oi.Handler.GetKeyValue(obj);
                     using (new Scope<object>(mkey))
                     {
                         foreach (MemberHandler f in oi.RelationFields)
@@ -326,11 +324,11 @@ namespace Lephone.Data
                                 IHasAndBelongsToManyRelations so = ho as IHasAndBelongsToManyRelations;
                                 foreach (object n in so.SavedNewRelations)
                                 {
-                                    SetManyToManyRelation(oi, oi.Handler.GetKeyValue(obj), n);
+                                    SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
                                 }
                                 foreach (object n in so.RemovedRelations)
                                 {
-                                    RemoveManyToManyRelation(oi, oi.Handler.GetKeyValue(obj), n);
+                                    RemoveManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
                                 }
                             }
                         }
@@ -394,7 +392,10 @@ namespace Lephone.Data
                 {
                     object Key = dp.Dialect.ExecuteInsert(dp, sb, oi);
                     DbObjectHelper.SetKey(obj, Key);
-                    SetManyToManyRelation(oi, Key, Scope<object>.Current);
+                    foreach(Type t2 in oi.ManyToManys.Keys)
+                    {
+                        SetManyToManyRelation(oi, t2, Key, Scope<object>.Current);
+                    }
                 }, delegate(object o)
                 {
                     SetBelongsToForeignKey(obj, o, oi.Handler.GetKeyValue(obj));
@@ -409,26 +410,28 @@ namespace Lephone.Data
             }
         }
 
-        private void SetManyToManyRelation(ObjectInfo oi, object Key1, object Key2)
+        private void SetManyToManyRelation(ObjectInfo oi, Type t, object Key1, object Key2)
         {
-            if (oi.ManyToManyMediTableName != null && Key1 != null && Key2 != null)
+            if(oi.ManyToManys.ContainsKey(t) && Key1 != null && Key2 != null)
             {
-                InsertStatementBuilder sb = new InsertStatementBuilder(oi.ManyToManyMediTableName);
-                sb.Values.Add(new KeyValue(oi.ManyToManyMediColumeName1, Key1));
-                sb.Values.Add(new KeyValue(oi.ManyToManyMediColumeName2, Key2));
+                ManyToManyMediTable mt = oi.ManyToManys[t];
+                InsertStatementBuilder sb = new InsertStatementBuilder(mt.Name);
+                sb.Values.Add(new KeyValue(mt.ColumeName1, Key1));
+                sb.Values.Add(new KeyValue(mt.ColumeName2, Key2));
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
                 oi.LogSql(Sql);
                 ExecuteNonQuery(Sql);
             }
         }
 
-        private void RemoveManyToManyRelation(ObjectInfo oi, object Key1, object Key2)
+        private void RemoveManyToManyRelation(ObjectInfo oi, Type t, object Key1, object Key2)
         {
-            if (oi.ManyToManyMediTableName != null && Key1 != null && Key2 != null)
+            if (oi.ManyToManys.ContainsKey(t) && Key1 != null && Key2 != null)
             {
-                DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.ManyToManyMediTableName);
-                WhereCondition c = CK.K[oi.ManyToManyMediColumeName1] == Key1;
-                c &= CK.K[oi.ManyToManyMediColumeName2] == Key2;
+                ManyToManyMediTable mt = oi.ManyToManys[t];
+                DeleteStatementBuilder sb = new DeleteStatementBuilder(mt.Name);
+                WhereCondition c = CK.K[mt.ColumeName1] == Key1;
+                c &= CK.K[mt.ColumeName2] == Key2;
                 sb.Where.Conditions = c;
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
                 oi.LogSql(Sql);
@@ -475,15 +478,16 @@ namespace Lephone.Data
 
         private int DeleteRelation(ObjectInfo oi, object obj)
         {
-            if (oi.ManyToManyMediTableName != null)
+            int ret = 0;
+            foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
             {
-                DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.ManyToManyMediTableName);
-                sb.Where.Conditions = CK.K[oi.ManyToManyMediColumeName1] == oi.Handler.GetKeyValue(obj);
+                DeleteStatementBuilder sb = new DeleteStatementBuilder(mt.Name);
+                sb.Where.Conditions = CK.K[mt.ColumeName1] == oi.Handler.GetKeyValue(obj);
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
                 oi.LogSql(Sql);
-                return ExecuteNonQuery(Sql);
+                ret += ExecuteNonQuery(Sql);
             }
-            return 0;
+            return ret;
         }
 
         public int Delete<T>(WhereCondition iwc)
@@ -513,9 +517,9 @@ namespace Lephone.Data
                     Dialect.ExecuteDropSequence(this, tn);
                 });
             }
-            if (oi.ManyToManyMediTableName != null)
+            foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
             {
-                DropTable(oi.ManyToManyMediTableName, CatchException, oi);
+                DropTable(mt.Name, CatchException, oi);
             }
         }
 
@@ -556,27 +560,29 @@ namespace Lephone.Data
         {
             ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(t1);
             ObjectInfo oi2 = DbObjectHelper.GetObjectInfo(t2);
-            if (oi1.ManyToManyMediTableName == null || oi2.ManyToManyMediTableName == null || oi1.ManyToManyMediTableName != oi2.ManyToManyMediTableName)
+            if (!(oi1.ManyToManys.ContainsKey(t2) && oi2.ManyToManys.ContainsKey(t1)))
             {
                 throw new DbEntryException("They are not many to many relation ship classes!");
             }
-            CreateTableStatementBuilder cts = new CreateTableStatementBuilder(oi1.ManyToManyMediTableName);
+            ManyToManyMediTable mt1 = oi1.ManyToManys[t2];
+            ManyToManyMediTable mt2 = oi2.ManyToManys[t1];
+            CreateTableStatementBuilder cts = new CreateTableStatementBuilder(mt1.Name);
             List<string> ls = new List<string>();
-            ls.Add(oi1.ManyToManyMediColumeName1);
-            ls.Add(oi1.ManyToManyMediColumeName2);
+            ls.Add(mt1.ColumeName1);
+            ls.Add(mt1.ColumeName2);
             ls.Sort();
             cts.Columns.Add(new ColumnInfo(ls[0], oi1.KeyFields[0].FieldType, false, false, false, false, 0));
             cts.Columns.Add(new ColumnInfo(ls[1], oi2.KeyFields[0].FieldType, false, false, false, false, 0));
             // add index
-            cts.Indexes.Add(new DbIndex(null, false, (ASC)oi1.ManyToManyMediColumeName1));
-            cts.Indexes.Add(new DbIndex(null, false, (ASC)oi1.ManyToManyMediColumeName2));
+            cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName1));
+            cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName2));
             // execute
             SqlStatement Sql = cts.ToSqlStatement(this.Dialect);
             oi1.LogSql(Sql);
             this.ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
             {
-                TableNames.Add(oi1.ManyToManyMediTableName.ToLower(), 1);
+                TableNames.Add(mt1.Name.ToLower(), 1);
             }
         }
     }

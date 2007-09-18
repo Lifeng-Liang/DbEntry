@@ -23,11 +23,11 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Single] = "FLOAT(24)";
 
             TypeNames[DataType.Int32] = "NUMBER(10,0)";
-            TypeNames[DataType.UInt32] = "";
+            TypeNames[DataType.UInt32] = "NUMBER(10,0)";
             TypeNames[DataType.Int64] = "NUMBER(20,0)";
-            TypeNames[DataType.UInt64] = "";
+            TypeNames[DataType.UInt64] = "NUMBER(20,0)";
             TypeNames[DataType.Int16] = "NUMBER(5,0)";
-            TypeNames[DataType.UInt16] = "";
+            TypeNames[DataType.UInt16] = "NUMBER(5,0)";
 
             TypeNames[DataType.Binary] = "BLOB";
 
@@ -88,11 +88,6 @@ namespace Lephone.Data.Dialect
             get { return "NOT NULL"; }
         }
 
-        public override string PrimaryKeyString
-        {
-            get { return "PRIMARY KEY"; }
-        }
-
         public override string GetCreateSequenceString(string TableName)
         {
             return string.Format("CREATE SEQUENCE {0}_SEQ INCREMENT BY 1;\n", TableName.ToUpper());
@@ -126,11 +121,6 @@ namespace Lephone.Data.Dialect
             Sql.SqlCommandText = string.Format("select * from ( select row_.*, rownum rownum_ from ( {0} ) row_ where rownum <= {1} ) where rownum_ >= {2}",
                 Sql.SqlCommandText, ssb.Range.EndIndex, ssb.Range.StartIndex);
             return Sql;
-        }
-
-        public override bool SupportsRangeStartIndex
-        {
-            get { return true; }
         }
 
         public override char ParamterPrefix

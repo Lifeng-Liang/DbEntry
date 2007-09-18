@@ -61,6 +61,7 @@
     <Compile Include="Data\Inner\CommonTest.cs" />
     <Compile Include="Data\LazyLoadFieldTest.cs" />
     <Compile Include="Data\LogicalOperatorTest.cs" />
+    <Compile Include="Data\ManyMoreTest.cs" />
     <Compile Include="Data\NullTest.cs" />
     <Compile Include="Data\Objects\AbstractClasses.cs" />
     <Compile Include="Data\DynamicObjectAbstractClassTest.cs" />

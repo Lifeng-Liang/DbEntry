@@ -2,6 +2,7 @@
 #region usings
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder.Clause;
@@ -30,10 +31,7 @@ namespace Lephone.Data.Common
         public MemberHandler[] RelationFields;
         public bool AllowSqlLog = true;
         public bool HasOnePremarykey;
-        public FromClause ManyToManyMediFrom = null;
-        public string ManyToManyMediTableName = null;
-        public string ManyToManyMediColumeName1 = null;
-        public string ManyToManyMediColumeName2 = null;
+        public Dictionary<Type, ManyToManyMediTable> ManyToManys = new Dictionary<Type,ManyToManyMediTable>();
 
         public ObjectInfo(Type HandleType, string TableName, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
             : this(HandleType, new FromClause(TableName), KeyFields, Fields, DisableSqlLog)

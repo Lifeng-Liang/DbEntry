@@ -34,11 +34,11 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Single]  = "real";
 
             TypeNames[DataType.Int32]   = "int";
-            TypeNames[DataType.UInt32]  = "";
+            TypeNames[DataType.UInt32]  = "int";
             TypeNames[DataType.Int64]   = "bigint";
-            TypeNames[DataType.UInt64]  = "";
+            TypeNames[DataType.UInt64]  = "bigint";
             TypeNames[DataType.Int16]   = "smallint";
-            TypeNames[DataType.UInt16]  = "";
+            TypeNames[DataType.UInt16]  = "smallint";
 
             TypeNames[DataType.Guid]    = "uniqueidentifier";
             TypeNames[DataType.Binary]  = "binary";
@@ -137,11 +137,6 @@ namespace Lephone.Data.Dialect
             get { return "n"; }
         }
 
-        public virtual string NewGuidString()
-        {
-            throw new NotImplementedException();
-        }
-
         public virtual DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName)
         {
             return new CommonDbDriver(this, ConnectionString, DbProviderFactoryName);
@@ -163,14 +158,9 @@ namespace Lephone.Data.Dialect
             return s;
         }
 
-        public virtual bool SupportsRange
-        {
-            get { return false; }
-        }
-
         public virtual bool SupportsRangeStartIndex
         {
-            get { return SupportsRange; }
+            get { return true; }
         }
 
         public virtual SqlStatement GetSelectSqlStatement(SelectStatementBuilder ssb)
@@ -205,21 +195,6 @@ namespace Lephone.Data.Dialect
 			get { return false; }
 		}
 
-		public virtual bool SupportsIdentitySelectInInsert
-		{
-			get { return false; }
-		}
-
-		public virtual bool SupportsIdentityColumns
-		{
-			get { return false; }
-		}
-
-		public virtual string NullColumnString
-		{
-			get { return String.Empty; }
-		}
-
 		public virtual string AddIdentitySelectToInsert( string sql )
 		{
             return sql + IdentitySelectString;
@@ -247,7 +222,7 @@ namespace Lephone.Data.Dialect
 
         public virtual string PrimaryKeyString
         {
-            get { throw DoesNotSupportNativeKey; }
+            get { return "PRIMARY KEY"; }
         }
 
         public virtual string GetCreateSequenceString(string TableName)
@@ -265,11 +240,6 @@ namespace Lephone.Data.Dialect
             get { return " NOT NULL "; }
         }
 
-		public virtual string IdentityInsertString
-		{
-			get { return ""; }
-		}
-
 		public virtual char OpenQuote
 		{
 			get { return '"'; }
@@ -283,63 +253,6 @@ namespace Lephone.Data.Dialect
 		public virtual char ParamterPrefix
 		{
 			get { return '@'; }
-		}
-
-		protected virtual string CascadeConstraintsString
-		{
-			get { return String.Empty; }
-		}
-
-		public virtual string GetDropTableString( string tableName )
-		{
-			StringBuilder buf = new StringBuilder( "drop table " );
-			if( SupportsIfExistsBeforeTableName )
-			{
-				buf.Append( "if exists " );
-			}
-			
-			buf.Append( tableName ).Append( CascadeConstraintsString );
-			
-			if( SupportsIfExistsAfterTableName )
-			{
-				buf.Append( " if exists" );
-			}
-			return buf.ToString();
-		}
-
-		protected virtual bool SupportsIfExistsBeforeTableName
-		{
-			get { return false; }
-		}
-
-		protected virtual bool SupportsIfExistsAfterTableName
-		{
-			get { return false; }
-		}
-
-		public virtual int MaxAnsiStringSize
-		{
-			get { throw ShouldBeImplemented; }
-		}
-
-		public virtual int MaxBinarySize
-		{
-			get { throw ShouldBeImplemented; }
-		}
-
-		public virtual int MaxBinaryBlobSize
-		{
-			get { throw ShouldBeImplemented; }
-		}
-
-		public virtual int MaxStringClobSize
-		{
-			get { throw ShouldBeImplemented; }
-		}
-
-		public virtual int MaxStringSize
-		{
-			get { throw ShouldBeImplemented; }
 		}
 
 		protected virtual string Quote( string name )
@@ -368,11 +281,6 @@ namespace Lephone.Data.Dialect
             return OpenQuote + quotedName + CloseQuote;
         }
 
-		public virtual string QuoteForAliasName( string aliasName )
-		{
-			return Quote( aliasName );
-		}
-
 		public virtual string QuoteForColumnName( string columnName )
 		{
 			return Quote( columnName );
@@ -388,11 +296,6 @@ namespace Lephone.Data.Dialect
         {
             return Quote(tableName);
         }
-
-        public virtual string QuoteForSchemaName(string schemaName)
-		{
-			return Quote( schemaName );
-		}
 
         public virtual string QuoteDateTimeValue(string theDate)
         {

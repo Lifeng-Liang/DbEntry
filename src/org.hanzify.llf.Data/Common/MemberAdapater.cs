@@ -11,7 +11,7 @@ namespace Lephone.Data.Common
 
         internal class FieldAdapter : MemberAdapter
         {
-            private FieldInfo fi;
+            protected FieldInfo fi;
 
             public FieldAdapter(FieldInfo fi)
             {
@@ -69,7 +69,7 @@ namespace Lephone.Data.Common
 
         internal class PropertyAdapter : MemberAdapter
         {
-            private PropertyInfo pi;
+            protected PropertyInfo pi;
 
             public PropertyAdapter(PropertyInfo pi)
             {
@@ -78,10 +78,7 @@ namespace Lephone.Data.Common
 
             public override Type MemberType
             {
-                get
-                {
-                    return pi.PropertyType;
-                }
+                get { return pi.PropertyType; }
             }
 
             public override void SetValue(object obj, object value)
@@ -125,6 +122,54 @@ namespace Lephone.Data.Common
             }
         }
 
+        internal class UnsignedPropertyAdapter : PropertyAdapter
+        {
+            public UnsignedPropertyAdapter(PropertyInfo pi)
+                : base(pi)
+            {
+            }
+
+            public override void SetValue(object obj, object value)
+            {
+                if (pi.PropertyType == typeof(ulong))
+                {
+                    pi.SetValue(obj, (ulong)(long)value, null);
+                }
+                else if (pi.PropertyType == typeof(uint))
+                {
+                    pi.SetValue(obj, (uint)(int)value, null);
+                }
+                else if (pi.PropertyType == typeof(ushort))
+                {
+                    pi.SetValue(obj, (ushort)(short)value, null);
+                }
+            }
+        }
+
+        internal class UnsignedFieldAdapter : FieldAdapter
+        {
+            public UnsignedFieldAdapter(FieldInfo fi)
+                : base(fi)
+            {
+            }
+
+            public override void SetValue(object obj, object value)
+            {
+                if (fi.FieldType == typeof(ulong))
+                {
+                    fi.SetValue(obj, (ulong)(long)value);
+                }
+                else if (fi.FieldType == typeof(uint))
+                {
+                    fi.SetValue(obj, (uint)(int)value);
+                }
+                else if (fi.FieldType == typeof(ushort))
+                {
+                    fi.SetValue(obj, (ushort)(short)value);
+                }
+            }
+        }
+
         #endregion
 
         public abstract bool IsProperty { get; }
@@ -139,11 +184,19 @@ namespace Lephone.Data.Common
 
         public static MemberAdapter NewObject(FieldInfo fi)
         {
+            if (fi.FieldType == typeof(ulong) || fi.FieldType == typeof(uint) || fi.FieldType == typeof(ushort))
+            {
+                return new UnsignedFieldAdapter(fi);
+            }
             return new FieldAdapter(fi);
         }
 
         public static MemberAdapter NewObject(PropertyInfo pi)
         {
+            if (pi.PropertyType == typeof(ulong) || pi.PropertyType == typeof(uint) || pi.PropertyType == typeof(ushort))
+            {
+                return new UnsignedPropertyAdapter(pi);
+            }
             return new PropertyAdapter(pi);
         }
     }

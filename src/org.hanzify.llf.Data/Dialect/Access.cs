@@ -22,16 +22,12 @@ namespace Lephone.Data.Dialect
         public Access()
         {
             TypeNames[DataType.Int64] = "Decimal";
+            TypeNames[DataType.UInt64] = "Decimal";
         }
 
         public override DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName)
         {
             return new OleDbDriver(this, ConnectionString, DbProviderFactoryName);
-        }
-
-        public override string NewGuidString()
-        {
-            throw new NotImplementedException();
         }
 
         public override DbStructInterface GetDbStructInterface()

@@ -545,13 +545,13 @@ namespace Lephone.Data.Common
                     string SlaveTableName = GetObjectFromClause(ft).GetMainTableName();
                     string MediTableName = MainTableName.CompareTo(SlaveTableName) > 0 ?
                         SlaveTableName + "_" + MainTableName : MainTableName + "_" + SlaveTableName;
-                    oi.ManyToManyMediTableName = MediTableName;
-                    oi.ManyToManyMediColumeName1 = MainTableName + "_Id";
-                    oi.ManyToManyMediColumeName2 = SlaveTableName + "_Id";
+
                     FromClause fc = new FromClause(
                         new JoinClause(MediTableName + "." + SlaveTableName + "_Id", SlaveTableName + ".Id",
                             CompareOpration.Equal, JoinMode.Inner));
-                    oi.ManyToManyMediFrom = fc;
+                    Type t2 = f.FieldType.GetGenericArguments()[0];
+                    oi.ManyToManys[t2] 
+                        = new ManyToManyMediTable(t2, fc, MediTableName, MainTableName + "_Id", SlaveTableName + "_Id");
                 }
             }
         }
