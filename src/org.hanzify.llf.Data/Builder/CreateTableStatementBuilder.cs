@@ -14,7 +14,7 @@ namespace Lephone.Data.Builder
 {
     public class CreateTableStatementBuilder : ISqlStatementBuilder
     {
-        private string TableName;
+        internal string TableName;
         private List<ColumnInfo> _Columns;
         private List<DbIndex> _Indexes;
 

@@ -21,7 +21,7 @@ namespace Lephone.Data.Common
             colExp = (CK.K[ColumnName] == false);
         }
 
-        protected override CreateTableStatementBuilder GetCreateTableStatementBuilder()
+        public override CreateTableStatementBuilder GetCreateTableStatementBuilder()
         {
             CreateTableStatementBuilder cts = base.GetCreateTableStatementBuilder();
             cts.Columns.Add(new ColumnInfo(ColumnName, typeof(bool), false, false, false, false, 0));

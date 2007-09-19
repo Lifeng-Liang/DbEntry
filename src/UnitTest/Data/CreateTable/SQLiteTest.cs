@@ -157,7 +157,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void Test11()
         {
-            de.CreateManyToManyMediTable(typeof(Reader), typeof(Article));
+            de.Create_ManyToManyMediTable(typeof(Reader), typeof(Article));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("CREATE TABLE [Article_Reader] (\n\t[Article_Id] bigint NOT NULL ,\n\t[Reader_Id] bigint NOT NULL \n);\n" +
                 "CREATE INDEX [IX_Article_Reader_Reader_Id] ON [Article_Reader] ([Reader_Id] ASC);\n" +
@@ -176,10 +176,10 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestManyMore()
         {
-            de.CreateManyToManyMediTable(typeof(ManyMore), typeof(ManyMore1));
+            de.Create_ManyToManyMediTable(typeof(ManyMore), typeof(ManyMore1));
             Assert.AreEqual("CREATE TABLE [ManyMore_ManyMore1] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore1_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_ManyMore_ManyMore1_ManyMore_Id] ON [ManyMore_ManyMore1] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_ManyMore_ManyMore1_ManyMore1_Id] ON [ManyMore_ManyMore1] ([ManyMore1_Id] ASC);\n", StaticRecorder.LastMessage);
 
-            de.CreateManyToManyMediTable(typeof(ManyMore), typeof(ManyMore2));
+            de.Create_ManyToManyMediTable(typeof(ManyMore), typeof(ManyMore2));
             Assert.AreEqual("CREATE TABLE [ManyMore_ManyMore2] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore2_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_ManyMore_ManyMore2_ManyMore_Id] ON [ManyMore_ManyMore2] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_ManyMore_ManyMore2_ManyMore2_Id] ON [ManyMore_ManyMore2] ([ManyMore2_Id] ASC);\n", StaticRecorder.LastMessage);
         }
 

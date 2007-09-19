@@ -85,7 +85,7 @@ namespace Lephone.Data.Common
             return cts.ToSqlStatement(Dialect);
         }
 
-        protected virtual CreateTableStatementBuilder GetCreateTableStatementBuilder()
+        public virtual CreateTableStatementBuilder GetCreateTableStatementBuilder()
         {
             string tname = oi.From.GetMainTableName();
             CreateTableStatementBuilder cts = new CreateTableStatementBuilder(tname);

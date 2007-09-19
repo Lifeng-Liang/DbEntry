@@ -44,17 +44,21 @@ namespace Lephone.Data
                     IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate()
                     {
                         Create(DbObjectType);
+                        if (!string.IsNullOrEmpty(oi.DeleteToTableName))
+                        {
+                            Create_DeleteToTable(DbObjectType);
+                        }
                         foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
                         {
                             if (!TableNames.ContainsKey(mt.Name.ToLower()))
                             {
                                 if (DbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
                                 {
-                                    CreateManyToManyMediTable(DbObjectType.BaseType, mt.HandleType);
+                                    Create_ManyToManyMediTable(DbObjectType.BaseType, mt.HandleType);
                                 }
                                 else
                                 {
-                                    CreateManyToManyMediTable(DbObjectType, mt.HandleType);
+                                    Create_ManyToManyMediTable(DbObjectType, mt.HandleType);
                                 }
                             }
                         }
@@ -556,7 +560,22 @@ namespace Lephone.Data
             }
         }
 
-        public void CreateManyToManyMediTable(Type t1, Type t2)
+        public void Create_DeleteToTable(Type DbObjectType)
+        {
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            CreateTableStatementBuilder sb = oi.Composer.GetCreateTableStatementBuilder();
+            sb.TableName = oi.DeleteToTableName;
+            sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0));
+            SqlStatement Sql = sb.ToSqlStatement(Dialect);
+            oi.LogSql(Sql);
+            this.ExecuteNonQuery(Sql);
+            if (DataSetting.AutoCreateTable && TableNames != null)
+            {
+                TableNames.Add(oi.DeleteToTableName.ToLower(), 1);
+            }
+        }
+
+        public void Create_ManyToManyMediTable(Type t1, Type t2)
         {
             ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(t1);
             ObjectInfo oi2 = DbObjectHelper.GetObjectInfo(t2);
