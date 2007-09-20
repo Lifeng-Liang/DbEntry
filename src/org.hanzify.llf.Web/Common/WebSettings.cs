@@ -14,6 +14,8 @@ namespace Lephone.Web.Common
         public static readonly int PasswordAttemptWindow = 5;
         public static readonly string PasswordStrengthRegularExpression = "*";
 
+        public static readonly bool UsingAspxPostfix = false;
+
         static WebSettings()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(WebSettings));

@@ -12,6 +12,7 @@ namespace Lephone.Web
 {
     public class HttpDispatcher : IHttpHandler
     {
+        protected PageHandlerFactory factory = ClassHelper.CreateInstance<PageHandlerFactory>();
         internal static Dictionary<string, Type> ctls;
         private static char[] spliter = new char[] { '/' };
 
@@ -95,7 +96,7 @@ namespace Lephone.Web
             context.Response.StatusCode = 404;
         }
 
-        private void CallController(HttpContext context, string ControllerName, string op)
+        protected virtual void CallController(HttpContext context, string ControllerName, string op)
         {
             Type t = ctls[ControllerName];
             ControllerBase ctl = ClassHelper.CreateInstance(t) as ControllerBase;
@@ -103,16 +104,20 @@ namespace Lephone.Web
             MethodInfo mi = t.GetMethod(op, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
             mi.Invoke(ctl, new object[] { });
 
-            PageHandlerFactory phf = ClassHelper.CreateInstance<PageHandlerFactory>();
             string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + op + ".aspx";
             string pp = context.Server.MapPath(vp);
             if (File.Exists(pp))
             {
-                PageBase p = phf.GetHandler(context, context.Request.RequestType, vp, pp) as PageBase;
+                PageBase p = factory.GetHandler(context, context.Request.RequestType, vp, pp) as PageBase;
                 if (p != null)
                 {
                     p.bag = ctl.bag;
+                    p.ControllerName = ControllerName;
                     ((IHttpHandler)p).ProcessRequest(context);
+                }
+                else
+                {
+                    context.Response.Write("<b><big>The template page must inherits from PageBase!!!</big></b>");
                 }
             }
         }

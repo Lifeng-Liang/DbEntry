@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClearHttpHandler.cs" />
+    <Compile Include="HttpDispatcher.cs" />
     <Compile Include="Common\DbEntryDataSource.cs" />
     <Compile Include="Common\DbEntryMembershipProvider.cs" />
     <Compile Include="Common\DbEntryRole.cs" />
@@ -56,6 +56,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrlRewriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Web.snk" />
