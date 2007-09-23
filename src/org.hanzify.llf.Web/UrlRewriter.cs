@@ -10,9 +10,9 @@ namespace Lephone.Web
 {
     public class UrlRewriter : HttpDispatcher
     {
-        protected override void CallController(HttpContext context, string ControllerName, string op)
+        protected override void CallController(HttpContext context, string ControllerName, string Action, string Param)
         {
-            string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + op + ".aspx";
+            string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + Action + ".aspx";
             string pp = context.Server.MapPath(vp);
             if (File.Exists(pp))
             {

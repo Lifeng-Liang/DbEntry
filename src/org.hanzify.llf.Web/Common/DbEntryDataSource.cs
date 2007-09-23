@@ -190,8 +190,23 @@ namespace Lephone.Web.Common
                 {
                     if (values.Contains(name))
                     {
-                        string ms = values[name].ToString();
-                        object mo = Convert.ChangeType(ms, mh.FieldType);
+                        object ov = values[name];
+                        object mo;
+                        if (ov != null)
+                        {
+                            mo = Convert.ChangeType(ov.ToString(), mh.FieldType);
+                        }
+                        else
+                        {
+                            if (!mh.AllowNull)
+                            {
+                                mo = "";
+                            }
+                            else
+                            {
+                                mo = null;
+                            }
+                        }
                         if (!(mh.GetValue(obj).Equals(mo)))
                         {
                             mh.SetValue(obj, mo);

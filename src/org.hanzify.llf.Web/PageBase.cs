@@ -17,6 +17,16 @@ namespace Lephone.Web
         {
         }
 
+        protected internal void Print(object o)
+        {
+            Response.Write(o);
+        }
+
+        protected internal void Print(string s)
+        {
+            Response.Write(s);
+        }
+
         protected internal string LinkTo(string Title, string Controller, string Action, string Paramter)
         {
             if(string.IsNullOrEmpty(Title))

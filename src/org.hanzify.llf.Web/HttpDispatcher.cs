@@ -74,37 +74,53 @@ namespace Lephone.Web
             string[] ss = url.Split(spliter, StringSplitOptions.RemoveEmptyEntries);
             string ControllerName;
 
-            if(ss.Length== 0)
+            switch (ss.Length)
             {
-                ControllerName = "default";
-            }
-            else if (ss.Length > 2)
-            {
-                throw new NotSupportedException("Not supported more than 2 paramters now.");
-            }
-            else
-            {
-                ControllerName = ss[0].ToLower();
+                case 0:
+                    ControllerName = "default";
+                    break;
+                case 1:
+                case 2:
+                case 3:
+                    ControllerName = ss[0].ToLower();
+                    break;
+                default:
+                    throw new NotSupportedException("Not supported more than 3 paramters now.");
             }
 
             if (ctls.ContainsKey(ControllerName))
             {
-                string op = ss.Length > 1 ? ss[1] : "list";
-                CallController(context, ControllerName, op);
+                string Action = ss.Length > 1 ? ss[1] : "list";
+                string Param = ss.Length > 2 ? ss[2] : null;
+                CallController(context, ControllerName, Action, Param);
                 return;
             }
             context.Response.StatusCode = 404;
         }
 
-        protected virtual void CallController(HttpContext context, string ControllerName, string op)
+        protected virtual void CallController(HttpContext context, string ControllerName, string Action, string Param)
         {
+            // Invoke Controller
             Type t = ctls[ControllerName];
             ControllerBase ctl = ClassHelper.CreateInstance(t) as ControllerBase;
             ctl.ctx = context;
-            MethodInfo mi = t.GetMethod(op, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
-            mi.Invoke(ctl, new object[] { });
+            MethodInfo mi = t.GetMethod(Action, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
+            ParameterInfo[] pis = mi.GetParameters();
+            switch (pis.Length)
+            {
+                case 0:
+                    mi.Invoke(ctl, new object[] { });
+                    break;
+                case 1:
+                    object p1 = ChangeType(Param, pis[0].ParameterType);
+                    mi.Invoke(ctl, new object[] { p1 });
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
 
-            string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + op + ".aspx";
+            // Invoke Viewer
+            string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + Action + ".aspx";
             string pp = context.Server.MapPath(vp);
             if (File.Exists(pp))
             {
@@ -120,6 +136,30 @@ namespace Lephone.Web
                     context.Response.Write("<b><big>The template page must inherits from PageBase!!!</big></b>");
                 }
             }
+        }
+
+        private object ChangeType(string s, Type t)
+        {
+            if(t.IsValueType && string.IsNullOrEmpty(s))
+            {
+                if (t == typeof(int))
+                {
+                    return 0;
+                }
+                else if(t == typeof(DateTime))
+                {
+                    return DateTime.MinValue;
+                }
+                else if (t == typeof(Guid))
+                {
+                    return Guid.Empty;
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
+            return Convert.ChangeType(s, t);
         }
     }
 }

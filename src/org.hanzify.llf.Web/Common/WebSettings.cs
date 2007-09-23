@@ -14,6 +14,8 @@ namespace Lephone.Web.Common
         public static readonly int PasswordAttemptWindow = 5;
         public static readonly string PasswordStrengthRegularExpression = "*";
 
+        public static readonly int DefaultPageSize = 10;
+
         public static readonly bool UsingAspxPostfix = false;
 
         static WebSettings()

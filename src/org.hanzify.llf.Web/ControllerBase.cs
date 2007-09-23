@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 using Lephone.Data;
+using Lephone.Web.Common;
 
 namespace Lephone.Web
 {
@@ -23,17 +24,38 @@ namespace Lephone.Web
         {
         }
 
-        public virtual void List()
+        public virtual void List(int PageIndex)
         {
-            bag["list"] = DbEntry.From<T>().Where(null).OrderBy("Id DESC").Select();
+            if (PageIndex < 0)
+            {
+                throw new DbEntryException("The PageIndex out of supported range.");
+            }
+            if (PageIndex != 0)
+            {
+                PageIndex--;
+            }
+            IPagedSelector ps = DbEntry.From<T>().Where(null).OrderBy("Id DESC")
+                .PageSize(WebSettings.DefaultPageSize).GetPagedSelector();
+            bag["list"] = ps.GetCurrentPage(PageIndex);
+            bag["list_count"] = ps.GetResultCount();
         }
 
-        public virtual void Edit()
+        public virtual void Edit(int n)
         {
         }
 
-        public virtual void Destroy()
+        public virtual void Destroy(int n)
         {
+            object o = DbEntry.GetObject<T>(n);
+            if (o != null)
+            {
+                DbEntry.Delete(o);
+                bag["work"] = true;
+            }
+            else
+            {
+                bag["work"] = false;
+            }
         }
     }
 }

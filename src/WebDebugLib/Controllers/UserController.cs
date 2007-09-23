@@ -10,9 +10,5 @@ namespace DebugLib.Controllers
 {
     public class UserController : ControllerBase<User>
     {
-        public override void List()
-        {
-            bag["list"] = User.FindAll();
-        }
     }
 }
