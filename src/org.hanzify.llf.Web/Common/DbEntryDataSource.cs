@@ -6,6 +6,7 @@ using System.Text;
 using System.Data;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using System.ComponentModel;
 using System.Security.Permissions;
 using Lephone.Data;
@@ -94,7 +95,7 @@ namespace Lephone.Web.Common
                 DefaultOrderBy = se;
                 ResetOrderBy();
             }
-            int PageIndex = (int)(arguments.StartRowIndex / arguments.MaximumRows);
+            int PageIndex = (arguments.MaximumRows == 0) ? 0 : (int)(arguments.StartRowIndex / arguments.MaximumRows);
             int TotalRowCount = arguments.TotalRowCount;
             List<T> ret = ExecuteSelect(_Condition, m_OrderBy, arguments.MaximumRows, PageIndex, ref TotalRowCount);
             arguments.TotalRowCount = TotalRowCount;
@@ -103,14 +104,21 @@ namespace Lephone.Web.Common
 
         public virtual List<T> ExecuteSelect(WhereCondition condition, OrderBy order, int MaximumRows, int PageIndex, ref int TotalRowCount)
         {
-            IGetPagedSelector igp = DbEntry
-                .From<T>()
-                .Where(condition)
-                .OrderBy(order)
-                .PageSize(MaximumRows);
-            IPagedSelector ps = _IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
-            TotalRowCount = (int)ps.GetResultCount();
-            return (List<T>)ps.GetCurrentPage(PageIndex);
+            if (MaximumRows == 0)
+            {
+                return DbEntry.From<T>().Where(null).OrderBy(order).Select();
+            }
+            else
+            {
+                IGetPagedSelector igp = DbEntry
+                    .From<T>()
+                    .Where(condition)
+                    .OrderBy(order)
+                    .PageSize(MaximumRows);
+                IPagedSelector ps = _IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
+                TotalRowCount = (int)ps.GetResultCount();
+                return (List<T>)ps.GetCurrentPage(PageIndex);
+            }
         }
 
         protected void ResetOrderBy()
@@ -138,7 +146,8 @@ namespace Lephone.Web.Common
 
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
         {
-            return ExecuteDelete(values[KeyName]);
+            object key = Convert.ChangeType(keys[KeyName], ObjInfo.KeyFields[0].FieldType);
+            return ExecuteDelete(key);
         }
 
         public virtual int ExecuteDelete(object Key)
@@ -148,7 +157,7 @@ namespace Lephone.Web.Common
 
         int IExcuteableDataSource.Insert(IDictionary values)
         {
-            T obj = CreateObject(values);
+            T obj = CreateObject(null, values);
             return ExecuteInsert(obj);
         }
 
@@ -160,7 +169,7 @@ namespace Lephone.Web.Common
 
         int IExcuteableDataSource.Update(IDictionary keys, IDictionary values, IDictionary oldValues)
         {
-            T obj = CreateObject(values);
+            T obj = CreateObject(keys, values);
             return ExecuteUpdate(obj);
         }
 
@@ -170,20 +179,23 @@ namespace Lephone.Web.Common
             return 1;
         }
 
-        protected virtual T CreateObject(IDictionary values)
+        protected virtual T CreateObject(IDictionary keys, IDictionary values)
         {
-            ObjectInfo ii = DbObjectHelper.GetObjectInfo(typeof(T));
-            object key = Convert.ChangeType(values[KeyName], ii.KeyFields[0].FieldType);
             T obj;
-            if (key.Equals(ii.KeyFields[0].UnsavedValue))
+            object key = null;
+            if (keys != null)
             {
-                obj = (T)ii.NewObject();
+                key = Convert.ChangeType(keys[KeyName], ObjInfo.KeyFields[0].FieldType);
+            }
+            if (key == null || key.Equals(ObjInfo.KeyFields[0].UnsavedValue))
+            {
+                obj = (T)ObjInfo.NewObject();
             }
             else
             {
                 obj = DbEntry.GetObject<T>(key);
             }
-            foreach (MemberHandler mh in ii.SimpleFields)
+            foreach (MemberHandler mh in ObjInfo.SimpleFields)
             {
                 string name = mh.MemberInfo.IsProperty ? mh.MemberInfo.Name : mh.Name;
                 if (name != KeyName)
@@ -250,7 +262,7 @@ namespace Lephone.Web.Common
                 return owner.Insert(values);
             }
 
-            public override bool CanUpdate { get { return false; } }
+            public override bool CanUpdate { get { return true; } }
 
             protected override int ExecuteUpdate(IDictionary keys, IDictionary values, IDictionary oldValues)
             {
