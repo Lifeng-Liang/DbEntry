@@ -18,7 +18,7 @@ namespace Orm9
     [DbTable("People")]
     public abstract class Person : DbObjectModel<Person>
     {
-        [MaxLength(50)]
+        [Length(50)]
         public abstract string Name { get; set; }
 
         [HasOne(OrderBy = "Id DESC")]
@@ -31,7 +31,7 @@ namespace Orm9
     [DbTable("PCs")]
     public abstract class PersonalComputer : DbObjectModel<PersonalComputer>
     {
-        [MaxLength(50)]
+        [Length(50)]
         public string Name;
 
         [BelongsTo, DbColumn("Person_Id")]
@@ -44,7 +44,7 @@ namespace Orm9
     [DbTable("Books")]
     public abstract class Book : DbObjectModel<Book>
     {
-        [MaxLength(50)]
+        [Length(50)]
         public abstract string Name { get; set; }
 
         [BelongsTo, DbColumn("Category_Id")]
@@ -57,7 +57,7 @@ namespace Orm9
     [DbTable("Categories")]
     public abstract class Category : DbObjectModel<Category>
     {
-        [MaxLength(50)]
+        [Length(50)]
         public abstract string Name { get; set; }
 
         [HasMany(OrderBy = "Id")]

@@ -12,7 +12,7 @@ namespace DebugLib.Models
 
     public abstract class User : DbObjectModel<User>
     {
-        [MaxLength(20)]
+        [Length(20)]
         public abstract string Name { get; set; }
         public abstract int Age { get; set; }
         public abstract DateTime Birthday { get; set; }

@@ -9,19 +9,19 @@ namespace Lephone.Web.Common
 {
     public abstract class DbEntryMembershipUser : DbObjectModel<DbEntryMembershipUser>
     {
-        [MaxLength(30), Index(UNIQUE = true)]
+        [Length(1, 30), Index(UNIQUE = true)]
         public abstract string UserName { get; set; }
 
-        [MaxLength(30), Index(UNIQUE = true)]
+        [Length(1, 30), Index(UNIQUE = true)]
         public abstract string Password { get; set; }
 
-        [MaxLength(50), Index(UNIQUE = true)]
+        [Length(1, 50), Index(UNIQUE = true)]
         public abstract string Email { get; set; }
 
-        [MaxLength(50)]
+        [Length(50)]
         public abstract string PasswordQuestion { get; set; }
 
-        [MaxLength(50)]
+        [Length(50)]
         public abstract string PasswordAnswer { get; set; }
 
         public abstract bool IsApproved { get; set; }

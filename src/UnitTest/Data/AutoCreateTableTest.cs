@@ -105,7 +105,7 @@ namespace Lephone.UnitTest.Data
 
     public abstract class EnumTest : DbObjectModel<EnumTest>
     {
-        [MaxLength(50)]
+        [Length(50)]
         public abstract string Name { get; set; }
         public abstract MyEnum MyType { get; set; }
         public abstract DateTime MyDate { get; set; }
@@ -120,7 +120,7 @@ namespace Lephone.UnitTest.Data
 
     public abstract class SampleData : DbObjectModel<SampleData>
     {
-        [MaxLength(50)]
+        [Length(50)]
         public abstract string Name { get; set; }
 
         public abstract UserRole Role { get; set; }

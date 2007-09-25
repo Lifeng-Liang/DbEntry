@@ -62,7 +62,7 @@ namespace Lephone.UnitTest.Data
     {
         public abstract string Name { get; set; }
 
-        [LazyLoad, AllowNull, DbColumn("MyTest"), MaxLength(10)]
+        [LazyLoad, AllowNull, DbColumn("MyTest"), Length(10)]
         [StringColumn(IsUnicode=false, Regular=CommonRegular.EmailRegular)]
         [Index(ASC=true, IndexName="test", UNIQUE=true)]
         public abstract string Profile { get; set; }

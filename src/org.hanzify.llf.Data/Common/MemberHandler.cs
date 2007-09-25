@@ -76,6 +76,7 @@ namespace Lephone.Data.Common
         public bool IsDbGenerate;
         public object UnsavedValue;
         public bool AllowNull;
+        public int MinLength;
         public int MaxLength;
         public bool IsUnicode;
         public string Regular;

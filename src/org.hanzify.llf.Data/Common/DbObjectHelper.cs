@@ -308,14 +308,15 @@ namespace Lephone.Data.Common
                 }
             }
 
-            MaxLengthAttribute ml = GetAttribute<MaxLengthAttribute>(fi);
+            LengthAttribute ml = GetAttribute<LengthAttribute>(fi);
             if (ml != null)
             {
                 if (fi.MemberType.IsSubclassOf(typeof(ValueType)))
                 {
                     throw new DbEntryException("ValueType couldn't set MaxLengthAttribute!");
                 }
-                fh.MaxLength = ml.Value;
+                fh.MinLength = ml.Min;
+                fh.MaxLength = ml.Max;
             }
 
             if (fi.MemberType == typeof(string) || 

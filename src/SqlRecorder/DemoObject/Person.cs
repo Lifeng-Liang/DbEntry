@@ -11,7 +11,7 @@ namespace Lephone.DemoObject
     [DbTable("People")]
     public class Person : DbObject
     {
-        [DbColumn("FullName"), MaxLength(20), AllowNull, Index(ASC = false)]
+        [DbColumn("FullName"), Length(20), AllowNull, Index(ASC = false)]
         public string Name;
 
         [Index("LinkedIndex", ASC = false)]

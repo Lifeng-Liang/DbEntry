@@ -140,8 +140,8 @@ namespace Lephone.Data.Common
         private static readonly ConstructorInfo AllowNullAttributeConstructor
             = typeof(AllowNullAttribute).GetConstructor(new Type[] { });
 
-        private static readonly ConstructorInfo MaxLengthAttributeConstructor
-            = typeof(MaxLengthAttribute).GetConstructor(new Type[] { typeof(int) });
+        private static readonly ConstructorInfo LengthAttributeConstructor
+            = typeof(LengthAttribute).GetConstructor(new Type[] { typeof(int), typeof(int) });
 
         private CustomAttributeBuilder GetDbColumnBuilder(string Name)
         {
@@ -153,9 +153,9 @@ namespace Lephone.Data.Common
             return new CustomAttributeBuilder(AllowNullAttributeConstructor, new object[] { });
         }
 
-        private CustomAttributeBuilder GetMaxLengthBuilder(int Value)
+        private CustomAttributeBuilder GetMaxLengthBuilder(int Min, int Max)
         {
-            return new CustomAttributeBuilder(MaxLengthAttributeConstructor, new object[] { Value });
+            return new CustomAttributeBuilder(LengthAttributeConstructor, new object[] { Min, Max });
         }
 
         private CustomAttributeBuilder GetStringColumnBuilder(StringColumnAttribute o)
@@ -195,9 +195,9 @@ namespace Lephone.Data.Common
             {
                 fb.SetCustomAttribute(GetAllowNullBuilder());
             });
-            ProcessCustomAttribute<MaxLengthAttribute>(pi, true, delegate(MaxLengthAttribute o)
+            ProcessCustomAttribute<LengthAttribute>(pi, true, delegate(LengthAttribute o)
             {
-                fb.SetCustomAttribute(GetMaxLengthBuilder(o.Value));
+                fb.SetCustomAttribute(GetMaxLengthBuilder(o.Min, o.Max));
             });
             ProcessCustomAttribute<StringColumnAttribute>(pi, true, delegate(StringColumnAttribute o)
             {

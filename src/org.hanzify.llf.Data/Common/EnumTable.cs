@@ -13,7 +13,7 @@ namespace Lephone.Data.Common
 	{
 		public int Type;
 
-        [MaxLength(50)]
+        [Length(1, 50)]
         public string Name;
 
         [DbColumn("Value")]

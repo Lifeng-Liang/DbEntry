@@ -13,7 +13,7 @@ namespace Lephone.UnitTest.Data.Objects
     [DbTable("People")]
     public abstract class PeopleModel : DbObjectModel<PeopleModel>
     {
-        [MaxLength(5)]
+        [Length(5)]
         public abstract string Name { get; set; }
 
         public static PeopleModel FindByName(string Name)

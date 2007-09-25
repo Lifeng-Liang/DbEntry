@@ -8,7 +8,7 @@ namespace Lephone.Web.Common
 {
     public abstract class DbEntryRole : DbObjectModel<DbEntryRole>
     {
-        [MaxLength(30), Index(UNIQUE = true)]
+        [Length(1, 30), Index(UNIQUE = true)]
         public abstract string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]

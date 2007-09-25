@@ -135,7 +135,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Logging\DatabaseLogRecorder.cs" />
     <Compile Include="Definition\AllowNullAttribute.cs" />
     <Compile Include="Definition\IndexAttribute.cs" />
-    <Compile Include="Definition\MaxLengthAttribute.cs" />
+    <Compile Include="Definition\LengthAttribute.cs" />
     <Compile Include="Definition\StringColumnAttribute.cs" />
     <Compile Include="Definition\BelongsTo.cs" />
     <Compile Include="Definition\HasMany.cs" />

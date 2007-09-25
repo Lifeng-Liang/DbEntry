@@ -57,7 +57,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [DbKey(IsDbGenerate = false)]
         public long Id = 0;
 
-        [DbKey(IsDbGenerate = false), MaxLength(50)]
+        [DbKey(IsDbGenerate = false), Length(50)]
         public string Name = null;
 
         public int Age = 0;

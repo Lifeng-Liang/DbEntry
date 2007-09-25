@@ -2,6 +2,7 @@
 #region usings
 
 using System;
+using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -18,15 +19,13 @@ namespace Lephone.Data
     public class ValidateHandler
     {
         private string _InvalidFieldText;
-
-        public string InvalidFieldText
-        {
-            get { return _InvalidFieldText; }
-        }
+        private string _NotAllowNullText;
+        private string _NotMatchedText;
+        private string _MinLengthText;
+        private string _MaxLengthText;
 
         private bool EmptyAsNull;
         private bool IncludeClassName;
-        private int NotNullFieldMinSize;
         public bool IsValid;
 
         private Dictionary<string, string> _ErrorMessages;
@@ -37,22 +36,27 @@ namespace Lephone.Data
         }
 
         public ValidateHandler()
-            : this(false, 0)
+            : this(false)
         {
         }
 
-        public ValidateHandler(bool EmptyAsNull, int NotNullFieldMinSize)
-            : this(EmptyAsNull, NotNullFieldMinSize, false, "Invalid Field")
+        public ValidateHandler(bool EmptyAsNull)
+            : this(EmptyAsNull, false, "Invalid Field {0} {1}.", "Not Allow Null, ", "Not Matched, ", "Min Length is {0}, ", "Max Length is {0}, ")
         {
         }
 
-        public ValidateHandler(bool EmptyAsNull, int NotNullFieldMinSize, bool IncludeClassName, string InvalidFieldText)
+        public ValidateHandler(bool EmptyAsNull, bool IncludeClassName, string InvalidFieldText, string NotAllowNullText, string NotMatchedText, string MinLengthText, string MaxLengthText)
         {
             this.IsValid = true;
             this.EmptyAsNull = EmptyAsNull;
-            this.NotNullFieldMinSize = NotNullFieldMinSize;
             this.IncludeClassName = IncludeClassName;
+
             this._InvalidFieldText = InvalidFieldText;
+            this._NotAllowNullText = NotAllowNullText;
+            this._NotMatchedText = NotMatchedText;
+            this._MinLengthText = MinLengthText;
+            this._MaxLengthText = MaxLengthText;
+            
             _ErrorMessages = new Dictionary<string, string>();
         }
 
@@ -70,11 +74,13 @@ namespace Lephone.Data
                 if (fh.FieldType == StringType || (fh.IsLazyLoad && fh.FieldType.GetGenericArguments()[0] == StringType))
                 {
                     string Field = fh.IsLazyLoad ? ((LazyLoadField<string>)fh.GetValue(obj)).Value : (string)fh.GetValue(obj);
-                    bool isValid = ValidateField(Field, fh);
+                    StringBuilder ErrMsg = new StringBuilder();
+                    bool isValid = ValidateField(Field, fh, ErrMsg);
+                    if (ErrMsg.Length > 2) { ErrMsg.Length -= 2; }
                     if (!isValid)
                     {
                         string n = (IncludeClassName ? t.Name + "." + fh.Name : fh.Name);
-                        _ErrorMessages[n] = _InvalidFieldText;
+                        _ErrorMessages[n] = string.Format(_InvalidFieldText, n, ErrMsg);
                     }
                     this.IsValid &= isValid;
                 }
@@ -82,45 +88,53 @@ namespace Lephone.Data
             return this.IsValid;
         }
 
-        private bool ValidateField(string Field, MemberHandler fh)
+        private bool ValidateField(string Field, MemberHandler fh, StringBuilder ErrMsg)
         {
-            if (Field == null)
+            if (Field == null || (Field == "" && EmptyAsNull))
             {
-                return fh.AllowNull;
+                if (fh.AllowNull)
+                {
+                    return true;
+                }
+                else
+                {
+                    ErrMsg.Append(_NotAllowNullText);
+                    return false;
+                }
             }
             else
             {
-                if (Field == "" && EmptyAsNull)
-                {
-                    if (NotNullFieldMinSize > 0)
-                    {
-                        return fh.AllowNull;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
                 bool isValid = true;
                 Field = Field.Trim();
                 if (fh.MaxLength > 0)
                 {
-                    isValid &= IsValidField(Field, NotNullFieldMinSize, fh.MaxLength, !fh.IsUnicode);
+                    isValid &= IsValidField(Field, fh.MinLength, fh.MaxLength, !fh.IsUnicode, ErrMsg);
                 }
                 if (!string.IsNullOrEmpty(fh.Regular))
                 {
-                    isValid &= Regex.IsMatch(Field, fh.Regular);
+                    bool iv = Regex.IsMatch(Field, fh.Regular);
+                    if (iv)
+                    {
+                        ErrMsg.Append(_NotMatchedText);
+                    }
+                    isValid &= iv;
                 }
                 return isValid;
             }
         }
 
-        private bool IsValidField(string Field, int Min, int Max, bool IsAnsi)
+        private bool IsValidField(string Field, int Min, int Max, bool IsAnsi, StringBuilder ErrMsg)
         {
             int i = IsAnsi ? StringHelper.GetAnsiLength(Field) : Field.Length;
 
-            if ((i < Min) || (i > Max))
+            if (i < Min)
             {
+                ErrMsg.Append(string.Format(_MinLengthText, i));
+                return false;
+            }
+            else if (i > Max)
+            {
+                ErrMsg.Append(string.Format(_MaxLengthText, i));
                 return false;
             }
             else

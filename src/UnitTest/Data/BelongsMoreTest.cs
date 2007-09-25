@@ -40,7 +40,7 @@ namespace Lephone.UnitTest.Data
 
     public abstract class BelongsMore : DbObjectModel<BelongsMore>
     {
-        [MaxLength(50)]
+        [Length(50)]
         public abstract string Name { get; set; }
         [BelongsTo]
         public abstract bArticle art { get; set; }

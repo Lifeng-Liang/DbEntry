@@ -11,7 +11,7 @@ namespace Lephone.DemoObject
     [DbTable("Departments")]
     public class Department : DbObject
     {
-        [MaxLength(30)]
+        [Length(30)]
         public string Name;
 
         public Department(string Name)

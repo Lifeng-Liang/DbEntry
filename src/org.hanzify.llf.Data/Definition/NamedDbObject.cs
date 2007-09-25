@@ -11,7 +11,7 @@ namespace Lephone.Data.Definition
     [Serializable]
     public abstract class NamedDbObject
     {
-        [DbKey(IsDbGenerate=false), MaxLength(255)]
+        [DbKey(IsDbGenerate = false), Length(1, 255)]
         public string Name = "";
     }
 }

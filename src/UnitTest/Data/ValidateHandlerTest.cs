@@ -16,10 +16,10 @@ namespace Lephone.UnitTest.Data
 {
     class vtest
     {
-        [MaxLength(5), StringColumn(IsUnicode=false)]
+        [Length(1, 5), StringColumn(IsUnicode=false)]
         public string Name;
 
-        [AllowNull, MaxLength(8)]
+        [AllowNull, Length(1, 8)]
         public string Address;
 
         [StringColumn(Regular=CommonRegular.EmailRegular)]
@@ -33,13 +33,32 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    class vtest0
+    {
+        [Length(5), StringColumn(IsUnicode = false)]
+        public string Name;
+
+        [AllowNull, Length(8)]
+        public string Address;
+
+        [StringColumn(Regular = CommonRegular.EmailRegular)]
+        public string Email;
+
+        public vtest0(string Name, string Address, string Email)
+        {
+            this.Name = Name;
+            this.Address = Address;
+            this.Email = Email;
+        }
+    }
+
     [TestFixture]
     public class ValidateHandlerTest
     {
         [Test]
         public void Test1()
         {
-            ValidateHandler vh = new ValidateHandler(true, 1);
+            ValidateHandler vh = new ValidateHandler(true);
             Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("123456", null, "a@b.c")));
             Assert.IsTrue(vh.ValidateObject(new vtest("≤‚ ‘1", null, "a@b.c")));
@@ -63,15 +82,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            ValidateHandler vh = new ValidateHandler(false, 0);
-            Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")));
-            Assert.IsTrue(vh.ValidateObject(new vtest("12345", "", "a@b.c")));
+            ValidateHandler vh = new ValidateHandler(false);
+            Assert.IsTrue(vh.ValidateObject(new vtest0("12345", null, "a@b.c")));
+            Assert.IsTrue(vh.ValidateObject(new vtest0("12345", "", "a@b.c")));
         }
 
         [Test]
         public void Test3()
         {
-            ValidateHandler vh = new ValidateHandler(false, 1);
+            ValidateHandler vh = new ValidateHandler(false);
             Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("123456", "", "a@b.c")));
         }
