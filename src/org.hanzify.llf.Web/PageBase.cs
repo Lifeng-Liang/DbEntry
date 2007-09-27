@@ -27,27 +27,34 @@ namespace Lephone.Web
             Response.Write(s);
         }
 
+        protected internal string LinkTo(string Title, string Controller, string Action, object Paramter)
+        {
+            return LinkTo(Title, Controller, Action, Paramter.ToString());
+        }
+
         protected internal string LinkTo(string Title, string Controller, string Action, string Paramter)
         {
             if(string.IsNullOrEmpty(Title))
             {
                 throw new DbEntryException("Title can not be null or empty.");
             }
-            StringBuilder url = new StringBuilder("<a href=\"");
-            url.Append(Request.ApplicationPath).Append("/");
-            if (!string.IsNullOrEmpty(Controller))
-            {
-                url.Append(Controller).Append("/");
-            }
-            else
-            {
-                url.Append(ControllerName).Append("/");
-            }
+            string ret = string.Format("<a href=\"{0}\">{1}</a>",
+                UrlTo(Request.ApplicationPath,
+                string.IsNullOrEmpty(Controller) ? ControllerName : Controller,
+                Action, Paramter), Title);
+            return ret;
+        }
+
+        internal static string UrlTo(string AppPath, string Controller, string Action, string Paramter)
+        {
+            StringBuilder url = new StringBuilder();
+            url.Append(AppPath).Append("/");
+            url.Append(Controller).Append("/");
             if (!string.IsNullOrEmpty(Action))
             {
                 url.Append(Action).Append("/");
             }
-            if(!string.IsNullOrEmpty(Paramter))
+            if (!string.IsNullOrEmpty(Paramter))
             {
                 url.Append(Paramter).Append("/");
             }
@@ -56,9 +63,6 @@ namespace Lephone.Web
             {
                 url.Append(".aspx");
             }
-            url.Append("\">");
-            url.Append(Title);
-            url.Append("</a>");
             return url.ToString();
         }
     }

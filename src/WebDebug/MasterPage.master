@@ -9,13 +9,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
     <title>Lephone's WebEntry</title>
+    <link href="styles/scaffolding.css" type="text/css" />
 </head>
 <body>
-    <form id="form1" runat="server">
-    <div>
-        <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
-        </asp:contentplaceholder>
-    </div>
-    </form>
+    <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
+    </asp:contentplaceholder>
 </body>
 </html>

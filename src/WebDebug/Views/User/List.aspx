@@ -2,12 +2,17 @@
 <%@ Import Namespace="Lephone.Web.Common" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
-<%= LinkTo("New", null, "new", null) %><br />
+<h1>Listing users</h1>
 
 <table>
-<tr style="font-weight:bold"><td>Id</td><td>Name</td><td>Age</td></tr>
+<tr><th>Id</th><th>Name</th><th>Age</th></tr>
 <% foreach(DebugLib.Models.User u in bag["list"] as IEnumerable) { %>
-<tr><td><%= u.Id %></td><td><%= u.Name %></td><td><%= u.Age %></td></tr>
+<tr>
+  <td><%= u.Id %></td><td><%= u.Name %></td><td><%= u.Age %></td>
+  <td><%= LinkTo("Show", null, "show", u.Id) %></td>
+  <td><%= LinkTo("Edit", null, "edit", u.Id) %></td>
+  <td><%= LinkTo("Destroy", null, "destroy", u.Id) %></td>
+</tr>
 <% } %>
 </table>
 
@@ -15,5 +20,9 @@
    for (int i = 0, n = 1; i < count; n++, i += WebSettings.DefaultPageSize) { %>
       &nbsp;<%= LinkTo(n.ToString(), null, "list", n.ToString()) %>
 <% } %>
+
+<br /><br />
+
+<%= LinkTo("New User", null, "new", null) %><br />
 
 </asp:Content>

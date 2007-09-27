@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Web.Common;
 
 namespace Lephone.Web
@@ -20,8 +21,36 @@ namespace Lephone.Web
 
     public class ControllerBase<T> : ControllerBase
     {
+        private string GetControllerName()
+        {
+            string ControllerName = this.GetType().Name;
+            if (ControllerName.EndsWith("Controller"))
+            {
+                ControllerName = ControllerName.Substring(0, ControllerName.Length - 10);
+            }
+            return ControllerName.ToLower();
+        }
+
         public virtual void New()
         {
+        }
+
+        public virtual void Create()
+        {
+            string ControllerName = GetControllerName();
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            T obj = (T)oi.NewObject();
+            foreach(MemberHandler m in oi.SimpleFields)
+            {
+                if (!m.IsKey)
+                {
+                    string s = ctx.Request.Form[ControllerName + "_" + m.MemberInfo.Name.ToLower()];
+                    m.MemberInfo.SetValue(obj, Convert.ChangeType(s, m.FieldType));
+                }
+            }
+            DbEntry.Save(obj);
+            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, ControllerName, "list", null);
+            ctx.Response.Redirect(url);
         }
 
         public virtual void List(int PageIndex)
@@ -40,8 +69,36 @@ namespace Lephone.Web
             bag["list_count"] = ps.GetResultCount();
         }
 
+        public virtual void Show(int n)
+        {
+            bag["item"] = DbEntry.GetObject<T>(n);
+        }
+
         public virtual void Edit(int n)
         {
+            bag["item"] = DbEntry.GetObject<T>(n);
+        }
+
+        public virtual void Update(int n)
+        {
+            string ControllerName = GetControllerName();
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            T obj = (T)oi.NewObject();
+            foreach (MemberHandler m in oi.SimpleFields)
+            {
+                if (m.IsKey)
+                {
+                    m.SetValue(obj, Convert.ChangeType(n, m.FieldType));
+                }
+                else
+                {
+                    string s = ctx.Request.Form[ControllerName + "_" + m.MemberInfo.Name.ToLower()];
+                    m.MemberInfo.SetValue(obj, Convert.ChangeType(s, m.FieldType));
+                }
+            }
+            DbEntry.Save(obj);
+            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, ControllerName, "show", n.ToString());
+            ctx.Response.Redirect(url);
         }
 
         public virtual void Destroy(int n)
@@ -51,6 +108,8 @@ namespace Lephone.Web
             {
                 DbEntry.Delete(o);
                 bag["work"] = true;
+                string url = PageBase.UrlTo(ctx.Request.ApplicationPath, GetControllerName(), "list", null);
+                ctx.Response.Redirect(url);
             }
             else
             {
