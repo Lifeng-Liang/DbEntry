@@ -12,7 +12,6 @@ namespace Lephone.Web
 
         public void List()
         {
-            
             StringBuilder sb = new StringBuilder();
             foreach (string s in HttpDispatcher.ctls.Keys)
             {

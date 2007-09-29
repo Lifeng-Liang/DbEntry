@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FlashBox.cs" />
     <Compile Include="HttpDispatcher.cs" />
     <Compile Include="Common\DbEntryDataSource.cs" />
     <Compile Include="Common\DbEntryMembershipProvider.cs" />

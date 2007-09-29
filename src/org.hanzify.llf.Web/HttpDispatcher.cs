@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.UI;
 using System.Reflection;
 using System.IO;
+using Lephone.Data;
 using Lephone.Util;
 
 namespace Lephone.Web
@@ -105,36 +106,52 @@ namespace Lephone.Web
             ControllerBase ctl = ClassHelper.CreateInstance(t) as ControllerBase;
             ctl.ctx = context;
             MethodInfo mi = t.GetMethod(Action, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
-            ParameterInfo[] pis = mi.GetParameters();
-            switch (pis.Length)
-            {
-                case 0:
-                    mi.Invoke(ctl, new object[] { });
-                    break;
-                case 1:
-                    object p1 = ChangeType(Param, pis[0].ParameterType);
-                    mi.Invoke(ctl, new object[] { p1 });
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
 
-            // Invoke Viewer
-            string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + Action + ".aspx";
-            string pp = context.Server.MapPath(vp);
-            if (File.Exists(pp))
+            try
             {
-                PageBase p = factory.GetHandler(context, context.Request.RequestType, vp, pp) as PageBase;
-                if (p != null)
+                if (mi == null)
                 {
-                    p.bag = ctl.bag;
-                    p.ControllerName = ControllerName;
-                    ((IHttpHandler)p).ProcessRequest(context);
+                    throw new DbEntryException(string.Format("Action {0} doesn't exist!!!", Action));
                 }
-                else
+                ParameterInfo[] pis = mi.GetParameters();
+                switch (pis.Length)
                 {
-                    context.Response.Write("<b><big>The template page must inherits from PageBase!!!</big></b>");
+                    case 0:
+                        mi.Invoke(ctl, new object[] { });
+                        break;
+                    case 1:
+                        object p1 = ChangeType(Param, pis[0].ParameterType);
+                        mi.Invoke(ctl, new object[] { p1 });
+                        break;
+                    default:
+                        throw new DbEntryException("Action paramter number not allowed!");
                 }
+                // Invoke Viewer
+                string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + Action + ".aspx";
+                string pp = context.Server.MapPath(vp);
+                if (File.Exists(pp))
+                {
+                    PageBase p = factory.GetHandler(context, context.Request.RequestType, vp, pp) as PageBase;
+                    if (p != null)
+                    {
+                        p.bag = ctl.bag;
+                        p.ControllerName = ControllerName;
+                        ((IHttpHandler)p).ProcessRequest(context);
+                        factory.ReleaseHandler((IHttpHandler)p);
+                    }
+                    else
+                    {
+                        throw new DbEntryException("The template page must inherits from PageBase!!!");
+                    }
+                }
+            }
+            catch (TargetInvocationException ex)
+            {
+                ctl.OnException(ex);
+            }
+            catch (DbEntryException ex)
+            {
+                ctl.OnException(ex);
             }
         }
 

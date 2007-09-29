@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
+using System.Web.SessionState;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Web.Common;
@@ -17,10 +18,26 @@ namespace Lephone.Web
         public ControllerBase()
         {
         }
+
+        protected internal virtual void OnException(Exception ex)
+        {
+            Exception e = ex.InnerException ?? ex;
+            ctx.Response.Write(string.Format("<h1>{0}<h1>", ctx.Server.HtmlEncode(e.Message)));
+        }
     }
 
     public class ControllerBase<T> : ControllerBase
     {
+        protected FlashBox flash = new FlashBox();
+
+        protected void RedirectTo(string Controller, string Action, object Paramter)
+        {
+            string ParamterStr = (Paramter == null) ? null : Paramter.ToString();
+            string ControllerName = string.IsNullOrEmpty(Controller) ? GetControllerName() : Controller;
+            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, ControllerName, Action, ParamterStr);
+            ctx.Response.Redirect(url);
+        }
+
         private string GetControllerName()
         {
             string ControllerName = this.GetType().Name;
@@ -44,13 +61,13 @@ namespace Lephone.Web
             {
                 if (!m.IsKey)
                 {
-                    string s = ctx.Request.Form[ControllerName + "_" + m.MemberInfo.Name.ToLower()];
+                    string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
                     m.MemberInfo.SetValue(obj, Convert.ChangeType(s, m.FieldType));
                 }
             }
             DbEntry.Save(obj);
-            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, ControllerName, "list", null);
-            ctx.Response.Redirect(url);
+            flash["notice"] = string.Format("{0} was successfully created", ControllerName);
+            RedirectTo(null, "list", null);
         }
 
         public virtual void List(int PageIndex)
@@ -67,6 +84,7 @@ namespace Lephone.Web
                 .PageSize(WebSettings.DefaultPageSize).GetPagedSelector();
             bag["list"] = ps.GetCurrentPage(PageIndex);
             bag["list_count"] = ps.GetResultCount();
+            bag["list_pagesize"] = WebSettings.DefaultPageSize;
         }
 
         public virtual void Show(int n)
@@ -92,13 +110,13 @@ namespace Lephone.Web
                 }
                 else
                 {
-                    string s = ctx.Request.Form[ControllerName + "_" + m.MemberInfo.Name.ToLower()];
+                    string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
                     m.MemberInfo.SetValue(obj, Convert.ChangeType(s, m.FieldType));
                 }
             }
             DbEntry.Save(obj);
-            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, ControllerName, "show", n.ToString());
-            ctx.Response.Redirect(url);
+            flash["notice"] = string.Format("{0} was successfully updated", ControllerName);
+            RedirectTo(null, "show", n);
         }
 
         public virtual void Destroy(int n)
@@ -107,13 +125,7 @@ namespace Lephone.Web
             if (o != null)
             {
                 DbEntry.Delete(o);
-                bag["work"] = true;
-                string url = PageBase.UrlTo(ctx.Request.ApplicationPath, GetControllerName(), "list", null);
-                ctx.Response.Redirect(url);
-            }
-            else
-            {
-                bag["work"] = false;
+                RedirectTo(null, "list", null);
             }
         }
     }

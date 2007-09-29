@@ -65,43 +65,6 @@ namespace Lephone.Data.Common
             }
         }
 
-        public static void FillIndexes(CreateTableStatementBuilder ct, Type t)
-        {
-            ObjectInfo oi = m_GetObjectInfo(t);
-            Dictionary<string, List<ASC>> dict = new Dictionary<string,List<ASC>>();
-            Dictionary<string, bool> UniIndex = new Dictionary<string, bool>();
-            foreach( MemberHandler fh in oi.Fields)
-            {
-                IndexAttribute[] ias = (IndexAttribute[])fh.MemberInfo.GetCustomAttributes(typeof(IndexAttribute), false);
-                CheckIndexAttributes(ias);
-                foreach (IndexAttribute ia in ias)
-                {
-                    ASC a = ia.ASC ? (ASC)fh.Name : (DESC)fh.Name;
-                    if (ia.IndexName == null)
-                    {
-                        ct.Indexes.Add(new DbIndex(ia.IndexName, ia.UNIQUE, a));
-                    }
-                    else
-                    {
-                        if (!dict.ContainsKey(ia.IndexName))
-                        {
-                            dict.Add(ia.IndexName, new List<ASC>());
-                        }
-                        dict[ia.IndexName].Add(a);
-                        if (ia.UNIQUE)
-                        {
-                            UniIndex[ia.IndexName] = true;
-                        }
-                    }
-                }
-            }
-            foreach (string s in dict.Keys)
-            {
-                bool u = UniIndex.ContainsKey(s) ? true : false;
-                ct.Indexes.Add(new DbIndex(s, u, dict[s].ToArray()));
-            }
-        }
-
         public static ObjectInfo GetObjectInfo(Type DbObjectType)
         {
             return m_GetObjectInfo(DbObjectType);
@@ -493,7 +456,36 @@ namespace Lephone.Data.Common
                 oi.DeleteToTableName = dta.TableName;
             }
 
+            GetIndexes(oi);
+
             return oi;
+        }
+
+        private static void GetIndexes(ObjectInfo oi)
+        {
+            foreach (MemberHandler fh in oi.Fields)
+            {
+                IndexAttribute[] ias = (IndexAttribute[])fh.MemberInfo.GetCustomAttributes(typeof(IndexAttribute), false);
+                CheckIndexAttributes(ias);
+                foreach (IndexAttribute ia in ias)
+                {
+                    ASC a = ia.ASC ? (ASC)fh.Name : (DESC)fh.Name;
+                    string key = (ia.IndexName == null) ? a.Key : ia.IndexName;
+                    if (!oi.Indexes.ContainsKey(key))
+                    {
+                        oi.Indexes.Add(key, new List<ASC>());
+                    }
+                    oi.Indexes[key].Add(a);
+                    if (ia.UNIQUE)
+                    {
+                        if (!oi.UniqueIndexes.ContainsKey(key))
+                        {
+                            oi.UniqueIndexes.Add(key, new List<MemberHandler>());
+                        }
+                        oi.UniqueIndexes[key].Add(fh);
+                    }
+                }
+            }
         }
 
         internal static MemberHandler GetKeyField(Type tt)

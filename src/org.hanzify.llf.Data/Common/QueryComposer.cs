@@ -97,7 +97,11 @@ namespace Lephone.Data.Common
                     cts.Columns.Add(ci);
                 }
             }
-            DbObjectHelper.FillIndexes(cts, oi.HandleType);
+            foreach (string s in oi.Indexes.Keys)
+            {
+                bool u = oi.UniqueIndexes.ContainsKey(s) ? true : false;
+                cts.Indexes.Add(new DbIndex(s, u, oi.Indexes[s].ToArray()));
+            }
             return cts;
         }
     }

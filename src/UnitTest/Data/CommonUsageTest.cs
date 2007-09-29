@@ -28,6 +28,13 @@ namespace Lephone.UnitTest.Data
         public string Name = null;
     }
 
+    [DbTable("People")]
+    public class UniquePerson : DbObject
+    {
+        [Index(UNIQUE = true)]
+        public string Name = null;
+    }
+
     #endregion
 
     [TestFixture]
@@ -322,6 +329,22 @@ namespace Lephone.UnitTest.Data
             o2.Delete();
             GuidKey o3 = GuidKey.FindById(o.Id);
             Assert.IsNull(o3);
+        }
+
+        [Test]
+        public void TestUniqueValidate()
+        {
+            UniquePerson u = new UniquePerson();
+            u.Name = "test";
+            ValidateHandler vh = new ValidateHandler();
+            vh.ValidateObject(u);
+            Assert.IsTrue(vh.IsValid);
+
+            u.Name = "Tom";
+            vh = new ValidateHandler();
+            vh.ValidateObject(u);
+            Assert.IsFalse(vh.IsValid);
+            Assert.AreEqual("Invalid Field Name Should be UNIQUE.", vh.ErrorMessages["Name"]);
         }
     }
 }
