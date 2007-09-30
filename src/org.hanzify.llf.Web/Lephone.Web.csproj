@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\PageHelper.cs" />
     <Compile Include="FlashBox.cs" />
     <Compile Include="HttpDispatcher.cs" />
     <Compile Include="Common\DbEntryDataSource.cs" />
@@ -50,7 +51,7 @@
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="Common\DbEntryMembershipUser.cs" />
     <Compile Include="Common\UrlBuilder.cs" />
-    <Compile Include="Common\WebSettings.cs" />
+    <Compile Include="WebSettings.cs" />
     <Compile Include="ControllerBase.cs" />
     <Compile Include="DefaultController.cs" />
     <Compile Include="PageBase.cs">

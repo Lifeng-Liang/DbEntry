@@ -373,6 +373,7 @@ namespace Lephone.Data.Common
                 {
                     ObjectInfos[t] = oi;
                 }
+                oi.BaseType = tt;
                 return oi;
             }
         }

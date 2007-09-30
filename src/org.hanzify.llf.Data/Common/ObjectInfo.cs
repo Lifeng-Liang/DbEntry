@@ -22,6 +22,7 @@ namespace Lephone.Data.Common
         public Dictionary<string, List<ASC>> Indexes = new Dictionary<string, List<ASC>>();
         public Dictionary<string, List<MemberHandler>> UniqueIndexes = new Dictionary<string, List<MemberHandler>>();
 
+        public Type BaseType;
         public Type HandleType;
 		public FromClause From;
         public string DeleteToTableName;

@@ -74,6 +74,23 @@ namespace Lephone.Util
             fi.SetValue(obj, value);
         }
 
+        public static T GetValue<T>(string FieldName)
+        {
+            return (T)GetValue(typeof(T), FieldName);
+        }
+
+        public static object GetValue(Type SourceType, string FieldName)
+        {
+            FieldInfo fi = SourceType.GetField(FieldName, StaticFlag);
+            return fi.GetValue(null);
+        }
+
+        public static object GetValue(object obj, string FieldName)
+        {
+            FieldInfo fi = obj.GetType().GetField(FieldName, AllFlag);
+            return fi.GetValue(obj);
+        }
+
         public static object CallFunction(Type ot, string FunctionName, params object[] os)
         {
             return CallFunction(null, ot, FunctionName, os);

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Lephone.Util.Setting;
 
-namespace Lephone.Web.Common
+namespace Lephone.Web
 {
     public static class WebSettings
     {
