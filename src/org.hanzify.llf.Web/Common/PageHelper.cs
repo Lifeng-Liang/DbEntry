@@ -44,14 +44,17 @@ namespace Lephone.Web.Common
                 if (!h.IsKey)
                 {
                     string cid = string.Format("{0}_{1}", oi.BaseType.Name, h.MemberInfo.Name);
-                    Control c = (Control)ClassHelper.GetValue(p, cid);
+                    Control c = ClassHelper.GetValue(p, cid) as Control;
                     if (c != null)
                     {
                         callback(h, c);
                     }
                     else
                     {
-                        throw new DbEntryException(string.Format("Control {0} not find!", cid));
+                        if (!(h.IsCreatedOn || h.IsUpdatedOn))
+                        {
+                            throw new DbEntryException(string.Format("Control {0} not find!", cid));
+                        }
                     }
                 }
             }

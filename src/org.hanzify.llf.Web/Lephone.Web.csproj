@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ButtonIDConverter.cs" />
+    <Compile Include="Common\DbEntryDataBinder.cs" />
     <Compile Include="Common\PageHelper.cs" />
     <Compile Include="FlashBox.cs" />
     <Compile Include="HttpDispatcher.cs" />

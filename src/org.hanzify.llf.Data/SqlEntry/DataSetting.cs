@@ -19,9 +19,9 @@ namespace Lephone.Data.SqlEntry
 
 	public static class DataSetting
 	{
-        public static readonly HandlerType ObjectHandlerType= HandlerType.Emit;
+        public static readonly HandlerType ObjectHandlerType = HandlerType.Emit;
 
-        public static readonly bool AutoCreateTable         = false;
+        public static readonly bool AutoCreateTable = false;
 
         public static readonly string DefaultContext        = "";
 
