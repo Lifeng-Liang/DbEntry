@@ -34,7 +34,7 @@ namespace Lephone.UnitTest.Data.Inner
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
         }
 
-		[Test, ExpectedException(typeof(DbEntryException))]
+		[Test, ExpectedException(typeof(DataException))]
 		public void TestSelectSentenceBuilder1()
 		{
 			SelectStatementBuilder ssb = new SelectStatementBuilder( "UserTable", null, new Range(1, 10) );

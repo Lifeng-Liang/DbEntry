@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Common\ButtonIDConverter.cs" />
     <Compile Include="Common\DbEntryDataBinder.cs" />
+    <Compile Include="Common\ExcuteableDataSourceIDCoverter.cs" />
     <Compile Include="Common\PageHelper.cs" />
     <Compile Include="FlashBox.cs" />
     <Compile Include="HttpDispatcher.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="Common\DbEntryMembershipUser.cs" />
     <Compile Include="Common\UrlBuilder.cs" />
+    <Compile Include="WebException.cs" />
     <Compile Include="WebSettings.cs" />
     <Compile Include="ControllerBase.cs" />
     <Compile Include="DefaultController.cs" />

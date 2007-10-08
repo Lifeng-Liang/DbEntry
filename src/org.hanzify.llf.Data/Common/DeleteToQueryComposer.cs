@@ -29,7 +29,7 @@ namespace Lephone.Data.Common
 
         public override SqlStatement GetDeleteStatement(DbDialect Dialect, WhereCondition iwc)
         {
-            throw new DbEntryException("DeleteTo class doesn't support delete by WhereCondition.");
+            throw new DataException("DeleteTo class doesn't support delete by WhereCondition.");
         }
     }
 }

@@ -226,7 +226,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\Clause\WhereClause.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DbEntryException.cs">
+    <Compile Include="DataException.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SqlEntry\DataParamter.cs">

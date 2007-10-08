@@ -1,14 +1,10 @@
 
-#region usings
-
 using System;
 using System.Runtime.Serialization;
 
-#endregion
-
 namespace Lephone.Util
 {
-	public class SettingException : Exception
+    public class SettingException : UtilException
 	{
 		public SettingException() : base("Setting Error.") {}
 		public SettingException(string ErrorMessage) : base(ErrorMessage) {}

@@ -53,7 +53,7 @@ namespace Lephone.Web.Common
                     {
                         if (!(h.IsCreatedOn || h.IsUpdatedOn))
                         {
-                            throw new DbEntryException(string.Format("Control {0} not find!", cid));
+                            throw new DataException(string.Format("Control {0} not find!", cid));
                         }
                     }
                 }

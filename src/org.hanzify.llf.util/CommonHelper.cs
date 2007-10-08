@@ -48,5 +48,34 @@ namespace Lephone.Util
                 }
             }
         }
+
+        public static object GetEmptyValue(Type t)
+        {
+            return GetEmptyValue(t, true, "Unknown Type");
+        }
+
+        public static object GetEmptyValue(Type t, bool IncludeDateTime, string ExceptionText)
+        {
+            if (t == typeof(int))
+            {
+                return 0;
+            }
+            else if (t == typeof(long))
+            {
+                return 0L;
+            }
+            else if (IncludeDateTime && t == typeof(DateTime))
+            {
+                return DateTime.MinValue;
+            }
+            else if (t == typeof(Guid))
+            {
+                return Guid.Empty;
+            }
+            else
+            {
+                throw new NotSupportedException(ExceptionText);
+            }
+        }
     }
 }

@@ -53,7 +53,7 @@ namespace Lephone.Data.Builder
 		{
             if (Keys.Count == 0 && _Limit != null)
             {
-                throw new DbEntryException("When Values is empty, It means Get Count, Limit must be null.");
+                throw new DataException("When Values is empty, It means Get Count, Limit must be null.");
             }
             SqlStatement Sql = dd.GetSelectSqlStatement(this);
             if (_Limit != null)

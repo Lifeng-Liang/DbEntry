@@ -104,7 +104,7 @@ namespace Lephone.Data.Common
                     else
                     {
                         // TODO: should throw exception or not ?
-                        throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
+                        throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
                         // ho.Init(driver, "__");
                     }
                 }
@@ -119,7 +119,7 @@ namespace Lephone.Data.Common
                     else
                     {
                         // TODO: should throw exception or not ?
-                        throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
+                        throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
                         // ho.Init(driver, "__");
                     }
                 }
@@ -152,7 +152,7 @@ namespace Lephone.Data.Common
         {
             if (oi.KeyFields.Length != 1)
             {
-                throw new DbEntryException("The class must and just have one key");
+                throw new DataException("The class must and just have one key");
             }
             return oi.KeyFields[0].GetValue(o);
         }

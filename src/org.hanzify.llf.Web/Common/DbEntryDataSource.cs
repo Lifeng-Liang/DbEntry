@@ -269,5 +269,44 @@ namespace Lephone.Web.Common
                 return owner.Update(keys, values, oldValues);
             }
         }
+
+        #region IExcuteableDataSource functions for DataBinder
+
+        void IExcuteableDataSource.ValidateSave(object obj, Label msg, string NoticeText)
+        {
+            PageHelper.ValidateSave(obj, msg, NoticeText);
+        }
+
+        object IExcuteableDataSource.GetObject()
+        {
+            return PageHelper.GetObject(typeof(T), Page);
+        }
+
+        void IExcuteableDataSource.SetKey(object o, object Id)
+        {
+            ObjInfo.KeyFields[0].SetValue(o, Id);
+        }
+
+        void IExcuteableDataSource.SetControls(StateBag vs)
+        {
+            if (!Page.IsPostBack)
+            {
+                string sid = Page.Request["Id"];
+                if (!string.IsNullOrEmpty(sid))
+                {
+                    object Id = Convert.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
+                    T o = DbEntry.GetObject<T>(Id);
+                    PageHelper.SetObject(o, Page);
+                    vs["Id"] = Id;
+                }
+            }
+        }
+
+        string IExcuteableDataSource.GetClassName()
+        {
+            return typeof(T).Name;
+        }
+
+        #endregion
     }
 }

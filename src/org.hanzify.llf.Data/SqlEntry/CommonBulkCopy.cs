@@ -18,7 +18,7 @@ namespace Lephone.Data.SqlEntry
             get { return _BatchSize; }
             set
             {
-                if (value < 0) { throw new DbEntryException("Argument out of scope."); }
+                if (value < 0) { throw new DataException("Argument out of scope."); }
                 _BatchSize = value;
             }
         }
@@ -30,7 +30,7 @@ namespace Lephone.Data.SqlEntry
             get { return _BulkCopyTimeout; }
             set
             {
-                if (value < 0) { throw new DbEntryException("Argument out of scope."); }
+                if (value < 0) { throw new DataException("Argument out of scope."); }
                 _BulkCopyTimeout = value;
             }
         }
@@ -50,7 +50,7 @@ namespace Lephone.Data.SqlEntry
             get { return _NotifyAfter; }
             set
             {
-                if (value < 0) { throw new DbEntryException("Argument out of scope."); }
+                if (value < 0) { throw new DataException("Argument out of scope."); }
                 _NotifyAfter = value;
             }
         }

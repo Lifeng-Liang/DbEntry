@@ -19,6 +19,14 @@ namespace Lephone.Web
         {
         }
 
+        protected internal virtual void OnBeforeAction(string ActionName)
+        {
+        }
+
+        protected internal virtual void OnAfterAction(string ActionName)
+        {
+        }
+
         protected internal virtual void OnException(Exception ex)
         {
             Exception e = ex.InnerException ?? ex;
@@ -74,7 +82,7 @@ namespace Lephone.Web
         {
             if (PageIndex < 0)
             {
-                throw new DbEntryException("The PageIndex out of supported range.");
+                throw new DataException("The PageIndex out of supported range.");
             }
             if (PageIndex != 0)
             {

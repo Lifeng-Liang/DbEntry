@@ -17,7 +17,7 @@ namespace Lephone.Data.Dialect
         {
             if (ssb.Order == null || ssb.Keys.Count == 0)
             {
-                throw new DbEntryException("Paged select must have Order And Values not Empty.");
+                throw new DataException("Paged select must have Order And Values not Empty.");
             }
 
             const string PosName = "__rownumber__";

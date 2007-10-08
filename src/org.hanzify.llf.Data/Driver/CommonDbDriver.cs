@@ -32,7 +32,7 @@ namespace Lephone.Data.Driver
 			}
 			else
 			{
-                throw new DbEntryException("DeriveParameters not found.");
+                throw new DataException("DeriveParameters not found.");
             }
         }
 	}

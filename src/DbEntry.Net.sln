@@ -74,7 +74,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebDebug\", "WebDebu
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "2372"
+		VWDPort = "7891"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -116,7 +116,7 @@ Global
 		SccProjectUniqueName6 = org.hanzify.llf.Data\\Lephone.Data.csproj
 		SccProjectName6 = org.hanzify.llf.Data
 		SccLocalPath6 = org.hanzify.llf.Data
-		SccProjectUniqueName7 = org.hanzify.llf.util\\Lephone.util.csproj
+		SccProjectUniqueName7 = org.hanzify.llf.util\\Lephone.Util.csproj
 		SccProjectName7 = org.hanzify.llf.util
 		SccLocalPath7 = org.hanzify.llf.util
 		SccProjectUniqueName8 = org.hanzify.llf.Web\\Lephone.Web.csproj

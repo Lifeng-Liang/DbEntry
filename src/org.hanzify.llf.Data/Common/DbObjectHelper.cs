@@ -82,7 +82,7 @@ namespace Lephone.Data.Common
             ObjectInfo oi = m_GetObjectInfo(t);
             if (oi.KeyFields == null)
             {
-                throw new DbEntryException("dbobject not define key field : " + t.ToString());
+                throw new DataException("dbobject not define key field : " + t.ToString());
             }
             WhereCondition ret = null;
             Dictionary<string,object> dic = oi.Handler.GetKeyValues(obj);
@@ -99,7 +99,7 @@ namespace Lephone.Data.Common
             ObjectInfo oi = m_GetObjectInfo(t);
             if (!oi.HasSystemKey)
             {
-                throw new DbEntryException("dbobject not define SystemGeneration key field : " + t.ToString());
+                throw new DataException("dbobject not define SystemGeneration key field : " + t.ToString());
             }
             MemberHandler fh = oi.KeyFields[0];
             object sKey;
@@ -171,22 +171,10 @@ namespace Lephone.Data.Common
                 }
                 if (dk.UnsavedValue == null && dk.IsDbGenerate)
                 {
-                    if(fi.MemberType == typeof(long))
-                    {
-                        fh.UnsavedValue = 0L;
-                    }
-                    else if(fi.MemberType == typeof(int))
-                    {
-                        fh.UnsavedValue = 0;
-                    }
-                    else if(fi.MemberType == typeof(Guid))
+                    fh.UnsavedValue = CommonHelper.GetEmptyValue(fi.MemberType, false, "Unknown type of db key must set UnsavedValue");
+                    if(fi.MemberType == typeof(Guid))
                     {
                         fh.IsDbGenerate = false;
-                        fh.UnsavedValue = Guid.Empty;
-                    }
-                    else
-                    {
-                        throw new DbEntryException("Unknown type of db key must set UnsavedValue");
                     }
                 }
                 else
@@ -251,7 +239,7 @@ namespace Lephone.Data.Common
                     }
                     else
                     {
-                        throw new DbEntryException("CreatedOn must be datetime type.");
+                        throw new DataException("CreatedOn must be datetime type.");
                     }
                 }
                 else if (fi.Name == "UpdatedOn")
@@ -262,12 +250,12 @@ namespace Lephone.Data.Common
                     }
                     else
                     {
-                        throw new DbEntryException("UpdatedOn must be nullable datetime type.");
+                        throw new DataException("UpdatedOn must be nullable datetime type.");
                     }
                 }
                 else
                 {
-                    throw new DbEntryException("Only CreatedOn and UpdatedOn are supported as special name.");
+                    throw new DataException("Only CreatedOn and UpdatedOn are supported as special name.");
                 }
             }
 
@@ -276,7 +264,7 @@ namespace Lephone.Data.Common
             {
                 if (fi.MemberType.IsSubclassOf(typeof(ValueType)))
                 {
-                    throw new DbEntryException("ValueType couldn't set MaxLengthAttribute!");
+                    throw new DataException("ValueType couldn't set MaxLengthAttribute!");
                 }
                 fh.MinLength = ml.Min;
                 fh.MaxLength = ml.Max;
@@ -292,7 +280,7 @@ namespace Lephone.Data.Common
             {
                 if (!(fi.MemberType == typeof(string) || (fh.IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string))))
                 {
-                    throw new DbEntryException("StringFieldAttribute must set for String Type Field!");
+                    throw new DataException("StringFieldAttribute must set for String Type Field!");
                 }
                 fh.IsUnicode = sf.IsUnicode;
                 fh.Regular = sf.Regular;
@@ -417,7 +405,7 @@ namespace Lephone.Data.Common
                 {
                     if (k.IsDbGenerate)
                     {
-                        throw new DbEntryException("Multi key did not allow SystemGeneration!");
+                        throw new DataException("Multi key did not allow SystemGeneration!");
                     }
                 }
             }

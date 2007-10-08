@@ -68,7 +68,7 @@ namespace Lephone.Web.Common
         {
             if (deleteAllRelatedData)
             {
-                throw new DbEntryException("Not support deleteAllRelatedData");
+                throw new DataException("Not support deleteAllRelatedData");
             }
             DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null)

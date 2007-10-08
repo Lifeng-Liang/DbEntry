@@ -36,7 +36,7 @@ namespace Lephone.Web
             string ParamterStr = (Paramter == null) ? null : Paramter.ToString();
             if (string.IsNullOrEmpty(Title))
             {
-                throw new DbEntryException("Title can not be null or empty.");
+                throw new DataException("Title can not be null or empty.");
             }
             string ret = string.Format("<a href=\"{0}\">{1}</a>",
                 UrlTo(Request.ApplicationPath,

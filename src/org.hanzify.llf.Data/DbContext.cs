@@ -241,7 +241,7 @@ namespace Lephone.Data
                 string keyname = oi.KeyFields[0].Name;
                 return GetObject(t, CK.K[keyname] == key, null, null);
             }
-            throw new DbEntryException("To call this function, the table must have one premary key.");
+            throw new DataException("To call this function, the table must have one premary key.");
         }
 
         public object GetObject(Type t, WhereCondition c, OrderBy ob)
@@ -274,14 +274,14 @@ namespace Lephone.Data
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
             if (!oi.HasOnePremarykey)
             {
-                throw new DbEntryException("To call this function, the table must have one primary key.");
+                throw new DataException("To call this function, the table must have one primary key.");
             }
             MemberHandler k = oi.KeyFields[0];
             if (oi.HasSystemKey)
             {
                 if (k.UnsavedValue == null)
                 {
-                    throw new DbEntryException("To call this functionn, the UnsavedValue must be set.");
+                    throw new DataException("To call this functionn, the UnsavedValue must be set.");
                 }
                 InnerSave(k.UnsavedValue.Equals(k.GetValue(obj)), obj);
             }
@@ -581,7 +581,7 @@ namespace Lephone.Data
             ObjectInfo oi2 = DbObjectHelper.GetObjectInfo(t2);
             if (!(oi1.ManyToManys.ContainsKey(t2) && oi2.ManyToManys.ContainsKey(t1)))
             {
-                throw new DbEntryException("They are not many to many relation ship classes!");
+                throw new DataException("They are not many to many relation ship classes!");
             }
             ManyToManyMediTable mt1 = oi1.ManyToManys[t2];
             ManyToManyMediTable mt2 = oi2.ManyToManys[t1];

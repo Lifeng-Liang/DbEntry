@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonHelper.cs" />
+    <Compile Include="LephoneException.cs" />
     <Compile Include="Logging\ConsoleMessageRecorder.cs" />
     <Compile Include="Logging\DebugLogRecorder.cs" />
     <Compile Include="Logging\ILogDirect.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="TimingTask\TimingTaskController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UtilException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="util.snk" />

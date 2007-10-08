@@ -67,7 +67,7 @@ namespace Lephone.Data.Definition
                 }
                 else
                 {
-                    throw new DbEntryException("HasAndBelongsToMany relation need the class has one primary key.");
+                    throw new DataException("HasAndBelongsToMany relation need the class has one primary key.");
                 }
             }
         }

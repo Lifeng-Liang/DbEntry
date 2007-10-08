@@ -59,7 +59,7 @@ namespace Lephone.Web.Common
             {
                 if (throwOnPopulatedRole && r.Users.Count>0)
                 {
-                    throw new DbEntryException("This role has members.");
+                    throw new DataException("This role has members.");
                 }
                 r.Delete();
                 return true;

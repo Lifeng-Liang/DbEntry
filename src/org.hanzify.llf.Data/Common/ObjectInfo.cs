@@ -7,6 +7,7 @@ using System.Reflection;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder.Clause;
 using Lephone.Util.Logging;
+using Lephone.Util;
 
 #endregion
 
@@ -125,17 +126,9 @@ namespace Lephone.Data.Common
         {
             if (KeyFields.Length > 1)
             {
-                throw new DbEntryException("GetPrimaryKeyDefaultValue don't support multi key.");
+                throw new DataException("GetPrimaryKeyDefaultValue don't support multi key.");
             }
-            Type fkType = KeyFields[0].FieldType;
-            if (fkType == typeof(int))
-                return 0;
-            else if (fkType == typeof(long))
-                return 0L;
-            else if (fkType == typeof(Guid))
-                return Guid.Empty;
-            else
-                throw new NotSupportedException("only supported int long guid as primary key.");
+            return CommonHelper.GetEmptyValue(KeyFields[0].FieldType, false, "only supported int long guid as primary key.");
         }
 
         public void LogSql(SqlStatement Sql)

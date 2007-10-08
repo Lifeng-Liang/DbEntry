@@ -81,7 +81,7 @@ namespace Lephone.Data.Definition
             }
             else
             {
-                throw new DbEntryException("The object must have one key.");
+                throw new DataException("The object must have one key.");
             }
         }
 
@@ -128,7 +128,7 @@ namespace Lephone.Data.Definition
             {
                 return oi.KeyFields[0].Name;
             }
-            throw new DbEntryException("The object must have one primary key.");
+            throw new DataException("The object must have one primary key.");
         }
     }
 }

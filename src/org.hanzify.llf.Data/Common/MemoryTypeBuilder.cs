@@ -236,7 +236,7 @@ namespace Lephone.Data.Common
                     t = t.MakeGenericType(PropertyType);
                     break;
                 default:
-                    throw new DbEntryException("Impossible");
+                    throw new DataException("Impossible");
             }
             return t;
         }

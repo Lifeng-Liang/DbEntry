@@ -14,49 +14,63 @@ using Lephone.Web.Common;
 namespace Lephone.Web.Common
 {
     [AspNetHostingPermission(SecurityAction.LinkDemand, Level = AspNetHostingPermissionLevel.Minimal), AspNetHostingPermission(SecurityAction.InheritanceDemand, Level = AspNetHostingPermissionLevel.Minimal)]
-    public class DbEntryDataBinder<T> : Label
+    public class DbEntryDataBinder : Label
     {
         private Button _SaveButton;
+        private IExcuteableDataSource ds;
 
-        [IDReferenceProperty, TypeConverter(typeof(ButtonIDConverter)), Themeable(false), DefaultValue("")]
+        public DbEntryDataBinder() { }
+
+        [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false), DefaultValue("")]
         public string SaveButton
         {
             get
             {
-                object obj2 = this.ViewState[typeof(T).Name + "_SaveButton"];
-                if (obj2 != null)
+                object o = this.ViewState["SaveButton"];
+                if (o != null)
                 {
-                    return (string)obj2;
+                    return (string)o;
                 }
                 return string.Empty;
             }
             set
             {
-                this.ViewState[typeof(T).Name + "_SaveButton"] = value;
+                this.ViewState["SaveButton"] = value;
             }
         }
 
         void _SaveButton_Click(object sender, EventArgs e)
         {
-            string tn = typeof(T).Name;
-            object oid = ViewState[tn + "_Id"];
+            object o = ds.GetObject();
+            object oid = ViewState["Id"];
             if (oid == null)
             {
-                T o = PageHelper.GetObject<T>(Page);
-                PageHelper.ValidateSave(o, this, tn + " Created!");
+                ds.ValidateSave(o, this, ds.GetClassName() + " Created!");
             }
             else // Edit
             {
-                T o = PageHelper.GetObject<T>(Page);
-                ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
-                oi.KeyFields[0].SetValue(o, oid);
-                PageHelper.ValidateSave(o, this, tn + " Updated");
+                ds.SetKey(o, oid);
+                ds.ValidateSave(o, this, ds.GetClassName() + " Updated");
             }
             this.Visible = true;
         }
 
-        public DbEntryDataBinder()
+        [IDReferenceProperty(typeof(DataSourceControl)), TypeConverter(typeof(ExcuteableDataSourceIDCoverter)), Themeable(false), DefaultValue("")]
+        public string DataSourceID
         {
+            get
+            {
+                object o = this.ViewState["DataSourceID"];
+                if (o != null)
+                {
+                    return (string)o;
+                }
+                return string.Empty;
+            }
+            set
+            {
+                this.ViewState["DataSourceID"] = value;
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -64,31 +78,26 @@ namespace Lephone.Web.Common
             base.OnLoad(e);
             this.Visible = false;
             _SaveButton = this.NamingContainer.FindControl(SaveButton) as Button;
-            if (_SaveButton != null)
+            if (_SaveButton == null)
             {
-                _SaveButton.Click += new EventHandler(_SaveButton_Click);
+                throw new WebException("SaveButton must set!");
             }
-            else
+            ds = this.NamingContainer.FindControl(DataSourceID) as IExcuteableDataSource;
+            if (ds == null)
             {
-                throw new DbEntryException("SaveButton must set!");
+                throw new WebException("DataSourceID must set!");
             }
-            if (!Page.IsPostBack)
-            {
-                string sid = Page.Request["Id"];
-                if (!string.IsNullOrEmpty(sid))
-                {
-                    ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
-                    object Id = Convert.ChangeType(sid, oi.KeyFields[0].FieldType);
-                    T o = DbEntry.GetObject<T>(Id);
-                    PageHelper.SetObject(o, Page);
-                    ViewState[typeof(T).Name + "_Id"] = Id;
-                }
-            }
+
+            _SaveButton.Click += new EventHandler(_SaveButton_Click);
+            ds.SetControls(ViewState);
         }
 
         protected override void OnUnload(EventArgs e)
         {
-            _SaveButton.Click -= new EventHandler(_SaveButton_Click);
+            if (_SaveButton != null)
+            {
+                _SaveButton.Click -= new EventHandler(_SaveButton_Click);
+            }
             base.OnUnload(e);
         }
     }

@@ -280,7 +280,7 @@ namespace Lephone.Data
                         MemberHandler mh = oi1.GetBelongsTo(srcType);
                         if (mh == null)
                         {
-                            throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
+                            throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
                         }
                         il.Emit(OpCodes.Ldarg_1);
                         il.Emit(OpCodes.Ldstr, mh.Name);
@@ -292,7 +292,7 @@ namespace Lephone.Data
                         MemberHandler mh = oi1.GetHasAndBelongsToMany(srcType);
                         if (mh == null)
                         {
-                            throw new DbEntryException("HasOne or HasMany and BelongsTo must be paired.");
+                            throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
                         }
                         il.Emit(OpCodes.Ldarg_1);
                         il.Emit(OpCodes.Ldstr, mh.Name);

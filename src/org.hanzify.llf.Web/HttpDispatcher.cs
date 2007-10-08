@@ -111,20 +111,20 @@ namespace Lephone.Web
             {
                 if (mi == null)
                 {
-                    throw new DbEntryException(string.Format("Action {0} doesn't exist!!!", Action));
+                    throw new WebException(string.Format("Action {0} doesn't exist!!!", Action));
                 }
                 ParameterInfo[] pis = mi.GetParameters();
                 switch (pis.Length)
                 {
                     case 0:
-                        mi.Invoke(ctl, new object[] { });
+                        CallAction(mi, ctl, new object[] { });
                         break;
                     case 1:
                         object p1 = ChangeType(Param, pis[0].ParameterType);
-                        mi.Invoke(ctl, new object[] { p1 });
+                        CallAction(mi, ctl, new object[] { p1 });
                         break;
                     default:
-                        throw new DbEntryException("Action paramter number not allowed!");
+                        throw new WebException("Action paramter number not allowed!");
                 }
                 // Invoke Viewer
                 string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + Action + ".aspx";
@@ -141,7 +141,7 @@ namespace Lephone.Web
                     }
                     else
                     {
-                        throw new DbEntryException("The template page must inherits from PageBase!!!");
+                        throw new WebException("The template page must inherits from PageBase!!!");
                     }
                 }
             }
@@ -149,32 +149,24 @@ namespace Lephone.Web
             {
                 ctl.OnException(ex);
             }
-            catch (DbEntryException ex)
+            catch (WebException ex)
             {
                 ctl.OnException(ex);
             }
+        }
+
+        private void CallAction(MethodInfo mi, ControllerBase c, object[] ps)
+        {
+            c.OnBeforeAction(mi.Name);
+            mi.Invoke(c, ps);
+            c.OnAfterAction(mi.Name);
         }
 
         private object ChangeType(string s, Type t)
         {
             if(t.IsValueType && string.IsNullOrEmpty(s))
             {
-                if (t == typeof(int))
-                {
-                    return 0;
-                }
-                else if(t == typeof(DateTime))
-                {
-                    return DateTime.MinValue;
-                }
-                else if (t == typeof(Guid))
-                {
-                    return Guid.Empty;
-                }
-                else
-                {
-                    throw new NotSupportedException();
-                }
+                return CommonHelper.GetEmptyValue(t);
             }
             return Convert.ChangeType(s, t);
         }

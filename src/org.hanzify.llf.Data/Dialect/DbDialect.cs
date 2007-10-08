@@ -17,7 +17,7 @@ namespace Lephone.Data.Dialect
 		protected static readonly NotImplementedException ShouldBeImplemented = new NotImplementedException("should be implemented by subclass if needed.");
 		protected static readonly NotSupportedException DoesNotSupportNativeKey = new NotSupportedException( "Dialect does not support native key generation" );
         protected static readonly NotSupportedException DoesNotSupportPagedSelect = new NotSupportedException("Database not support paged select statement.");
-        protected static readonly DbEntryException PagedMustHaveOrder = new DbEntryException("Paged select must have Order And Values not Empty.");
+        protected static readonly DataException PagedMustHaveOrder = new DataException("Paged select must have Order And Values not Empty.");
 
         protected readonly Hashtable TypeNames = Hashtable.Synchronized(new Hashtable());
 

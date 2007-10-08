@@ -111,7 +111,7 @@ namespace Lephone.Data.SqlEntry
                     SqlConnection c = (SqlConnection)Scope<ConnectionContext>.Current.Connection;
                     return new SqlServerBulkCopy(c);
                 }
-                throw new DbEntryException("It must have current connection.");
+                throw new DataException("It must have current connection.");
             }
             else
             {
