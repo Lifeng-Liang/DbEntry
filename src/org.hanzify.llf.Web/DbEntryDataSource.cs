@@ -14,11 +14,12 @@ using Lephone.Data.Common;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.QuerySyntax;
+using Lephone.Web.Common;
 
-namespace Lephone.Web.Common
+namespace Lephone.Web
 {
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
-    public class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource
+    public abstract class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource
     {
         private static readonly ObjectInfo ObjInfo = DbObjectHelper.GetObjectInfo(typeof(T));
         protected static readonly string KeyName = ObjInfo.KeyFields[0].Name;
@@ -49,26 +50,41 @@ namespace Lephone.Web.Common
         }
 
         private OrderBy m_OrderBy;
-        private string _DefaultOrderBy;
 
-        [Browsable(true), EditorBrowsable]
+        [Themeable(false), DefaultValue("Id")]
         public string DefaultOrderBy
         {
-            get { return _DefaultOrderBy; }
+            get
+            {
+                object o = this.ViewState["DefaultOrderBy"];
+                if (o != null)
+                {
+                    return (string)o;
+                }
+                return "Id";
+            }
             set
             {
-                m_OrderBy = string.IsNullOrEmpty(value) ? new OrderBy((DESC)"Id") : OrderBy.Parse(value);
-                _DefaultOrderBy = value;
+                this.ViewState["DefaultOrderBy"] = value;
             }
         }
 
-        private bool _IsStatic = false;
-
-        [Browsable(true), EditorBrowsable]
+        [Themeable(false), DefaultValue(false)]
         public bool IsStatic
         {
-            get { return _IsStatic; }
-            set { _IsStatic = value; }
+            get
+            {
+                object o = this.ViewState["IsStatic"];
+                if (o != null)
+                {
+                    return (bool)o;
+                }
+                return false;
+            }
+            set
+            {
+                this.ViewState["IsStatic"] = value;
+            }
         }
 
         private WhereCondition _Condition;
@@ -86,6 +102,8 @@ namespace Lephone.Web.Common
 
         IEnumerable IExcuteableDataSource.Select(DataSourceSelectArguments arguments)
         {
+            m_OrderBy = string.IsNullOrEmpty(DefaultOrderBy) ? new OrderBy((DESC)"Id") : OrderBy.Parse(DefaultOrderBy);
+
             arguments.AddSupportedCapabilities(DataSourceCapabilities.Sort);
             arguments.AddSupportedCapabilities(DataSourceCapabilities.Page);
             arguments.AddSupportedCapabilities(DataSourceCapabilities.RetrieveTotalRowCount);
@@ -115,7 +133,7 @@ namespace Lephone.Web.Common
                     .Where(condition)
                     .OrderBy(order)
                     .PageSize(MaximumRows);
-                IPagedSelector ps = _IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
+                IPagedSelector ps = IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
                 TotalRowCount = (int)ps.GetResultCount();
                 return (List<T>)ps.GetCurrentPage(PageIndex);
             }
@@ -272,9 +290,9 @@ namespace Lephone.Web.Common
 
         #region IExcuteableDataSource functions for DataBinder
 
-        void IExcuteableDataSource.ValidateSave(object obj, Label msg, string NoticeText)
+        void IExcuteableDataSource.ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText)
         {
-            PageHelper.ValidateSave(obj, msg, NoticeText);
+            PageHelper.ValidateSave(vh, obj, msg, NoticeText);
         }
 
         object IExcuteableDataSource.GetObject()
@@ -287,19 +305,12 @@ namespace Lephone.Web.Common
             ObjInfo.KeyFields[0].SetValue(o, Id);
         }
 
-        void IExcuteableDataSource.SetControls(StateBag vs)
+        object IExcuteableDataSource.SetControls(string sid)
         {
-            if (!Page.IsPostBack)
-            {
-                string sid = Page.Request["Id"];
-                if (!string.IsNullOrEmpty(sid))
-                {
-                    object Id = Convert.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
-                    T o = DbEntry.GetObject<T>(Id);
-                    PageHelper.SetObject(o, Page);
-                    vs["Id"] = Id;
-                }
-            }
+            object Id = Convert.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
+            T o = DbEntry.GetObject<T>(Id);
+            PageHelper.SetObject(o, Page);
+            return Id;
         }
 
         string IExcuteableDataSource.GetClassName()

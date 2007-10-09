@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Lephone.Data;
 
 namespace Lephone.Web.Common
 {
@@ -13,10 +14,10 @@ namespace Lephone.Web.Common
         int Insert(IDictionary values);
         int Update(IDictionary keys, IDictionary values, IDictionary oldValues);
 
-        void ValidateSave(object obj, Label msg, string NoticeText);
+        void ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText);
         void SetKey(object o, object Id);
         object GetObject();
-        void SetControls(StateBag vs);
+        object SetControls(string sid);
         string GetClassName();
     }
 }

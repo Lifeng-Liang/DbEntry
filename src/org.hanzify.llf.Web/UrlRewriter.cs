@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Lephone.Web
 {
-    public class UrlRewriter : HttpDispatcher
+    public class UrlRewriter : RailsDispatcher
     {
         protected override void CallController(HttpContext context, string ControllerName, string Action, string Param)
         {

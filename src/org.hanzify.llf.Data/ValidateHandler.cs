@@ -21,8 +21,7 @@ namespace Lephone.Data
         private string _InvalidFieldText;
         private string _NotAllowNullText;
         private string _NotMatchedText;
-        private string _MinLengthText;
-        private string _MaxLengthText;
+        private string _LengthText;
         private string _ShouldBeUniqueText;
 
         private bool EmptyAsNull;
@@ -42,11 +41,11 @@ namespace Lephone.Data
         }
 
         public ValidateHandler(bool EmptyAsNull)
-            : this(EmptyAsNull, false, "Invalid Field {0} {1}.", "Not Allow Null, ", "Not Matched, ", "Min Length is {0}, ", "Max Length is {0}, ", "Should be UNIQUE")
+            : this(EmptyAsNull, false, "Invalid Field {0} {1}.", "Not Allow Null, ", "Not Matched, ", "The length should be {0} to {1} but was {2}, ", "Should be UNIQUE")
         {
         }
 
-        public ValidateHandler(bool EmptyAsNull, bool IncludeClassName, string InvalidFieldText, string NotAllowNullText, string NotMatchedText, string MinLengthText, string MaxLengthText, string ShouldBeUniqueText)
+        public ValidateHandler(bool EmptyAsNull, bool IncludeClassName, string InvalidFieldText, string NotAllowNullText, string NotMatchedText, string LengthText, string ShouldBeUniqueText)
         {
             this.IsValid = true;
             this.EmptyAsNull = EmptyAsNull;
@@ -55,8 +54,7 @@ namespace Lephone.Data
             this._InvalidFieldText = InvalidFieldText;
             this._NotAllowNullText = NotAllowNullText;
             this._NotMatchedText = NotMatchedText;
-            this._MinLengthText = MinLengthText;
-            this._MaxLengthText = MaxLengthText;
+            this._LengthText = LengthText;
             this._ShouldBeUniqueText = ShouldBeUniqueText;
             
             _ErrorMessages = new Dictionary<string, string>();
@@ -159,14 +157,9 @@ namespace Lephone.Data
         {
             int i = IsAnsi ? StringHelper.GetAnsiLength(Field) : Field.Length;
 
-            if (i < Min)
+            if (i < Min || i > Max)
             {
-                ErrMsg.Append(string.Format(_MinLengthText, i));
-                return false;
-            }
-            else if (i > Max)
-            {
-                ErrMsg.Append(string.Format(_MaxLengthText, i));
+                ErrMsg.Append(string.Format(_LengthText, Min, Max, i));
                 return false;
             }
             else

@@ -1,5 +1,5 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="User List" Inherits="Lephone.Web.PageBase, Lephone.Web" %>
-<%@ Import Namespace="Lephone.Web.Common" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="User List" Inherits="Lephone.Web.Rails.PageBase, Lephone.Web" %>
+<%@ Import Namespace="Lephone.Web.Rails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
@@ -14,7 +14,7 @@
   <td><%= u.Id %></td><td><%= u.Name %></td><td><%= u.Age %></td>
   <td><%= LinkTo("Show", null, "show", u.Id) %></td>
   <td><%= LinkTo("Edit", null, "edit", u.Id) %></td>
-  <td><%= LinkTo("Destroy", null, "destroy", u.Id) %></td>
+  <td><%= LinkTo("Destroy", null, "destroy", u.Id, "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"")%></td>
 </tr>
 <% } %>
 </table>

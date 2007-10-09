@@ -8,7 +8,7 @@ using System.Web.SessionState;
 using Lephone.Web.Common;
 using Lephone.Data;
 
-namespace Lephone.Web
+namespace Lephone.Web.Rails
 {
     public class PageBase : Page
     {
@@ -33,15 +33,20 @@ namespace Lephone.Web
 
         protected internal string LinkTo(string Title, string Controller, string Action, object Paramter)
         {
+            return LinkTo(Title, Controller, Action, Paramter, null);
+        }
+
+        protected internal string LinkTo(string Title, string Controller, string Action, object Paramter, string AddOn)
+        {
             string ParamterStr = (Paramter == null) ? null : Paramter.ToString();
             if (string.IsNullOrEmpty(Title))
             {
                 throw new DataException("Title can not be null or empty.");
             }
-            string ret = string.Format("<a href=\"{0}\">{1}</a>",
+            string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
                 UrlTo(Request.ApplicationPath,
                 string.IsNullOrEmpty(Controller) ? ControllerName : Controller,
-                Action, ParamterStr), Title);
+                Action, ParamterStr), Title, AddOn == null ? "" : " " + AddOn);
             return ret;
         }
 

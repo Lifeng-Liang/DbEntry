@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Web;
 
-namespace Lephone.Web.Common
+namespace Lephone.Web
 {
     public class UrlBuilder
     {

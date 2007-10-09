@@ -15,6 +15,11 @@ namespace Lephone.Web.Common
         public static void ValidateSave(object obj, Label msg, string NoticeText)
         {
             ValidateHandler vh = new ValidateHandler();
+            ValidateSave(vh, obj, msg, NoticeText);
+        }
+        
+        public static void ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText)
+        {
             vh.ValidateObject(obj);
             if (vh.IsValid)
             {

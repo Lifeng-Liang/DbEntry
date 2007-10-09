@@ -83,7 +83,8 @@ namespace Lephone.Data.Definition
 
         public static DbObjectList<T> FindRecent(int Count)
         {
-            return DbEntry.From<T>().Where(null).OrderBy((DESC)"Id").Range(1, Count).Select();
+            string Id = DbObjectHelper.GetKeyField(typeof(T)).Name;
+            return DbEntry.From<T>().Where(null).OrderBy((DESC)Id).Range(1, Count).Select();
         }
 
         public static long GetCount(WhereCondition con)

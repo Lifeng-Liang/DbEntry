@@ -6,8 +6,9 @@ using System.Web.Security;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Util;
+using Lephone.Web.Common;
 
-namespace Lephone.Web.Common
+namespace Lephone.Web
 {
     public class DbEntryMembershipProvider : MembershipProvider
     {

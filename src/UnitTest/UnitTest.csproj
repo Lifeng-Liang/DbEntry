@@ -105,6 +105,7 @@
     <Compile Include="util\SystemHelperTest.cs" />
     <Compile Include="util\TestEnum.cs" />
     <Compile Include="util\ThreadingQueueTest.cs" />
+    <Compile Include="Web\HtmlBuilderTest.cs" />
     <Compile Include="Web\UrlBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,7 +8,7 @@ using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Web.Common;
 
-namespace Lephone.Web
+namespace Lephone.Web.Rails
 {
     public class ControllerBase
     {

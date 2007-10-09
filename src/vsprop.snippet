@@ -1,0 +1,47 @@
+﻿<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>
+        Create ViewState Property
+      </Title>
+      <Shortcut>vsprop</Shortcut>
+      <Author>Lifeng Liang</Author>
+      <Description>It will help us to create ViewState Property</Description>
+      <HelpUrl>http://www.codeplex.com/dbentry</HelpUrl>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>PropertyName</ID>
+          <ToolTip>Property Name</ToolTip>
+          <Default>User</Default>
+        </Literal>
+        <Literal>
+          <ID>PropertyType</ID>
+          <ToolTip>Property Type</ToolTip>
+          <Default>string</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[[Themeable(false), DefaultValue("$end$")]
+public $PropertyType$ $PropertyName$
+{
+    get
+    {
+        object o = this.ViewState["$PropertyName$"];
+        if (o != null)
+        {
+            return ($PropertyType$)o;
+        }
+        return $PropertyType$.Empty;
+    }
+    set
+    {
+        this.ViewState["$PropertyName$"] = value;
+    }
+}]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

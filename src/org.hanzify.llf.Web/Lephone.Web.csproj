@@ -42,23 +42,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ButtonIDConverter.cs" />
-    <Compile Include="Common\DbEntryDataBinder.cs" />
+    <Compile Include="Common\LabelIDConverter.cs" />
+    <Compile Include="DbEntryDataBinder.cs" />
     <Compile Include="Common\ExcuteableDataSourceIDCoverter.cs" />
     <Compile Include="Common\PageHelper.cs" />
-    <Compile Include="FlashBox.cs" />
-    <Compile Include="HttpDispatcher.cs" />
-    <Compile Include="Common\DbEntryDataSource.cs" />
-    <Compile Include="Common\DbEntryMembershipProvider.cs" />
+    <Compile Include="HtmlBuilder.cs" />
+    <Compile Include="Rails\FlashBox.cs" />
+    <Compile Include="RailsDispatcher.cs" />
+    <Compile Include="DbEntryDataSource.cs" />
+    <Compile Include="DbEntryMembershipProvider.cs" />
     <Compile Include="Common\DbEntryRole.cs" />
-    <Compile Include="Common\DbEntryRoleProvider.cs" />
+    <Compile Include="DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="Common\DbEntryMembershipUser.cs" />
-    <Compile Include="Common\UrlBuilder.cs" />
+    <Compile Include="UrlBuilder.cs" />
     <Compile Include="WebException.cs" />
     <Compile Include="WebSettings.cs" />
-    <Compile Include="ControllerBase.cs" />
-    <Compile Include="DefaultController.cs" />
-    <Compile Include="PageBase.cs">
+    <Compile Include="Rails\ControllerBase.cs" />
+    <Compile Include="Rails\DefaultController.cs" />
+    <Compile Include="Rails\PageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,7 +80,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Default.htm" />
+    <EmbeddedResource Include="Rails\Default.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

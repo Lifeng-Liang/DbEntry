@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="Edit" Inherits="Lephone.Web.PageBase, Lephone.Web" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="Edit" Inherits="Lephone.Web.Rails.PageBase, Lephone.Web" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 <h1>New User</h1>
 <form action="/WebDebug/user/update/<%= ((DebugLib.Models.User)bag["item"]).Id %>" method="post">

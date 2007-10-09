@@ -7,7 +7,7 @@ using System.Web.UI;
 using System.Web.SessionState;
 using Lephone.Web.Common;
 
-namespace Lephone.Web
+namespace Lephone.Web.Rails
 {
     public class FlashBox
     {

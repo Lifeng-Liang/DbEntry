@@ -8,16 +8,17 @@ using System.Reflection;
 using System.IO;
 using Lephone.Data;
 using Lephone.Util;
+using Lephone.Web.Rails;
 
 namespace Lephone.Web
 {
-    public class HttpDispatcher : IHttpHandler
+    public class RailsDispatcher : IHttpHandler
     {
         protected PageHandlerFactory factory = ClassHelper.CreateInstance<PageHandlerFactory>();
         internal static Dictionary<string, Type> ctls;
         private static char[] spliter = new char[] { '/' };
 
-        static HttpDispatcher()
+        static RailsDispatcher()
         {
             Dictionary<string, object> excepted = CreateExcepted(
                 "Lephone.Data", "Lephone.Util", "Lephone.Web",

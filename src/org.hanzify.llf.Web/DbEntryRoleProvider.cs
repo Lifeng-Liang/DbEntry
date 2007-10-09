@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web.Security;
 using Lephone.Data;
+using Lephone.Web.Common;
 
-namespace Lephone.Web.Common
+namespace Lephone.Web
 {
     public class DbEntryRoleProvider : RoleProvider
     {
