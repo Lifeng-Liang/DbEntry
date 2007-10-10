@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web;
 
 namespace Lephone.Web
 {
@@ -79,7 +80,7 @@ namespace Lephone.Web
 
         public HtmlBuilder text(string text)
         {
-            result.Append(text);
+            result.Append(HttpUtility.HtmlEncode(text));
             return this;
         }
 
@@ -150,6 +151,12 @@ namespace Lephone.Web
                 result.Append("\n");
                 return this;
             }
+        }
+
+        public HtmlBuilder include(HtmlBuilder hb)
+        {
+            result.Append(hb.ToString());
+            return this;
         }
 
         public override string ToString()

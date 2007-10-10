@@ -22,9 +22,14 @@
           <ToolTip>Property Type</ToolTip>
           <Default>string</Default>
         </Literal>
+        <Literal>
+          <ID>PropertyDefault</ID>
+          <ToolTip>Property Default Value</ToolTip>
+          <Default>""</Default>
+        </Literal>
       </Declarations>
       <Code Language="CSharp">
-        <![CDATA[[Themeable(false), DefaultValue("$end$")]
+        <![CDATA[[Themeable(false), DefaultValue($PropertyDefault$)]
 public $PropertyType$ $PropertyName$
 {
     get
@@ -34,7 +39,7 @@ public $PropertyType$ $PropertyName$
         {
             return ($PropertyType$)o;
         }
-        return $PropertyType$.Empty;
+        return $PropertyDefault$;
     }
     set
     {

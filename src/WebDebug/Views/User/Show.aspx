@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="Show User" Inherits="Lephone.Web.Rails.PageBase, Lephone.Web" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="Show User" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
 <p style="color: Green"><%= flash["notice"] %></p>

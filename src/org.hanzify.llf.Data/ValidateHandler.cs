@@ -23,6 +23,7 @@ namespace Lephone.Data
         private string _NotMatchedText;
         private string _LengthText;
         private string _ShouldBeUniqueText;
+        private string _SeparatorText;
 
         private bool EmptyAsNull;
         private bool IncludeClassName;
@@ -41,11 +42,11 @@ namespace Lephone.Data
         }
 
         public ValidateHandler(bool EmptyAsNull)
-            : this(EmptyAsNull, false, "Invalid Field {0} {1}.", "Not Allow Null, ", "Not Matched, ", "The length should be {0} to {1} but was {2}, ", "Should be UNIQUE")
+            : this(EmptyAsNull, false, "Invalid Field {0} {1}.", "Not Allow Null", "Not Matched", "The length should be {0} to {1} but was {2}", "Should be UNIQUE", ", ")
         {
         }
 
-        public ValidateHandler(bool EmptyAsNull, bool IncludeClassName, string InvalidFieldText, string NotAllowNullText, string NotMatchedText, string LengthText, string ShouldBeUniqueText)
+        public ValidateHandler(bool EmptyAsNull, bool IncludeClassName, string InvalidFieldText, string NotAllowNullText, string NotMatchedText, string LengthText, string ShouldBeUniqueText, string SeparatorText)
         {
             this.IsValid = true;
             this.EmptyAsNull = EmptyAsNull;
@@ -56,6 +57,7 @@ namespace Lephone.Data
             this._NotMatchedText = NotMatchedText;
             this._LengthText = LengthText;
             this._ShouldBeUniqueText = ShouldBeUniqueText;
+            this._SeparatorText = SeparatorText;
             
             _ErrorMessages = new Dictionary<string, string>();
         }
@@ -67,6 +69,7 @@ namespace Lephone.Data
 
             Type t = obj.GetType();
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            string tn = oi.BaseType.Name;
             
             Type StringType = typeof(string);
             foreach (MemberHandler fh in oi.Fields)
@@ -79,7 +82,7 @@ namespace Lephone.Data
                     if (ErrMsg.Length > 2) { ErrMsg.Length -= 2; }
                     if (!isValid)
                     {
-                        string n = (IncludeClassName ? t.Name + "." + fh.Name : fh.Name);
+                        string n = (IncludeClassName ? tn + "." + fh.Name : fh.Name);
                         _ErrorMessages[n] = string.Format(_InvalidFieldText, n, ErrMsg);
                     }
                     this.IsValid &= isValid;
@@ -106,7 +109,7 @@ namespace Lephone.Data
                         this.IsValid = false;
                         if (_ErrorMessages.ContainsKey(n))
                         {
-                            _ErrorMessages[n] = string.Format("{0}, {1}", _ErrorMessages[n], _ShouldBeUniqueText);
+                            _ErrorMessages[n] = string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, _ShouldBeUniqueText);
                         }
                         else
                         {
@@ -128,7 +131,7 @@ namespace Lephone.Data
                 }
                 else
                 {
-                    ErrMsg.Append(_NotAllowNullText);
+                    ErrMsg.Append(_NotAllowNullText).Append(_SeparatorText);
                     return false;
                 }
             }
@@ -145,7 +148,7 @@ namespace Lephone.Data
                     bool iv = Regex.IsMatch(Field, fh.Regular);
                     if (iv)
                     {
-                        ErrMsg.Append(_NotMatchedText);
+                        ErrMsg.Append(_NotMatchedText).Append(_SeparatorText);
                     }
                     isValid &= iv;
                 }
@@ -159,7 +162,7 @@ namespace Lephone.Data
 
             if (i < Min || i > Max)
             {
-                ErrMsg.Append(string.Format(_LengthText, Min, Max, i));
+                ErrMsg.Append(string.Format(_LengthText, Min, Max, i)).Append(_SeparatorText);
                 return false;
             }
             else

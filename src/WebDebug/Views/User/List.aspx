@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="User List" Inherits="Lephone.Web.Rails.PageBase, Lephone.Web" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="User List" %>
 <%@ Import Namespace="Lephone.Web.Rails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">

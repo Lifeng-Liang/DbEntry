@@ -15,11 +15,12 @@ using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.QuerySyntax;
 using Lephone.Web.Common;
+using Lephone.Util;
 
 namespace Lephone.Web
 {
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
-    public abstract class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource
+    public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource
     {
         private static readonly ObjectInfo ObjInfo = DbObjectHelper.GetObjectInfo(typeof(T));
         protected static readonly string KeyName = ObjInfo.KeyFields[0].Name;
@@ -51,7 +52,7 @@ namespace Lephone.Web
 
         private OrderBy m_OrderBy;
 
-        [Themeable(false), DefaultValue("Id")]
+        [Themeable(false), DefaultValue("Id"), Category("Behavior")]
         public string DefaultOrderBy
         {
             get
@@ -69,7 +70,7 @@ namespace Lephone.Web
             }
         }
 
-        [Themeable(false), DefaultValue(false)]
+        [Themeable(false), DefaultValue(false), Category("Behavior")]
         public bool IsStatic
         {
             get
@@ -89,6 +90,7 @@ namespace Lephone.Web
 
         private WhereCondition _Condition;
 
+        [Browsable(false)]
         public WhereCondition Condition
         {
             get { return _Condition; }
@@ -287,37 +289,5 @@ namespace Lephone.Web
                 return owner.Update(keys, values, oldValues);
             }
         }
-
-        #region IExcuteableDataSource functions for DataBinder
-
-        void IExcuteableDataSource.ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText)
-        {
-            PageHelper.ValidateSave(vh, obj, msg, NoticeText);
-        }
-
-        object IExcuteableDataSource.GetObject()
-        {
-            return PageHelper.GetObject(typeof(T), Page);
-        }
-
-        void IExcuteableDataSource.SetKey(object o, object Id)
-        {
-            ObjInfo.KeyFields[0].SetValue(o, Id);
-        }
-
-        object IExcuteableDataSource.SetControls(string sid)
-        {
-            object Id = Convert.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
-            T o = DbEntry.GetObject<T>(Id);
-            PageHelper.SetObject(o, Page);
-            return Id;
-        }
-
-        string IExcuteableDataSource.GetClassName()
-        {
-            return typeof(T).Name;
-        }
-
-        #endregion
     }
 }

@@ -15,30 +15,36 @@ namespace Lephone.Web.Common
         public static void ValidateSave(object obj, Label msg, string NoticeText)
         {
             ValidateHandler vh = new ValidateHandler();
-            ValidateSave(vh, obj, msg, NoticeText);
+            ValidateSave(vh, obj, msg, NoticeText, "Notice", "Warning");
         }
         
-        public static void ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText)
+        public static void ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning)
         {
             vh.ValidateObject(obj);
             if (vh.IsValid)
             {
                 DbEntry.Save(obj);
-                msg.CssClass = "Notice";
-                msg.Text = HttpUtility.HtmlEncode(NoticeText);
-                msg.Visible = true;
+                if (msg != null)
+                {
+                    msg.CssClass = CssNotice;
+                    msg.Text = HttpUtility.HtmlEncode(NoticeText);
+                    msg.Visible = true;
+                }
             }
             else
             {
-                msg.CssClass = "Warning";
-                StringBuilder text = new StringBuilder("<ul>");
+                HtmlBuilder b = HtmlBuilder.New.ul;
                 foreach (string str in vh.ErrorMessages.Keys)
                 {
-                    text.Append("<li>").Append(HttpUtility.HtmlEncode(vh.ErrorMessages[str])).Append("</li>");
+                    b = b.li.text(vh.ErrorMessages[str]).end;
                 }
-                text.Append("</ul>");
-                msg.Text = text.ToString();
-                msg.Visible = true;
+                b = b.end;
+                if (msg != null)
+                {
+                    msg.CssClass = CssWarning;
+                    msg.Text = b.ToString();
+                    msg.Visible = true;
+                }
             }
         }
 

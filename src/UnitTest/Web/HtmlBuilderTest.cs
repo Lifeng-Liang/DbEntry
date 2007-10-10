@@ -72,5 +72,13 @@ namespace Lephone.UnitTest.Web
             HtmlBuilder b = HtmlBuilder.New.img("a.jpg", "abc", 96, 128);
             Assert.AreEqual("<img src=\"a.jpg\" alt=\"abc\" height=\"96\" width=\"128\" />", b.ToString());
         }
+
+        [Test]
+        public void Test5()
+        {
+            HtmlBuilder b = HtmlBuilder.New.a("t.aspx").text("tt").end;
+            HtmlBuilder b2 = HtmlBuilder.New.li.include(b).end;
+            Assert.AreEqual("<li><a href=\"t.aspx\">tt</a></li>", b2.ToString());
+        }
     }
 }
