@@ -18,8 +18,12 @@ namespace Lephone.Web
     {
         public event CallbackVoidHandler OnPageIsNew;
         public event CallbackVoidHandler OnPageIsEdit;
+        public event CallbackObjectHandler<T> OnObjectLoaded;
+        public event CallbackObjectHandler<T> OnValidateSave;
+        public event CallbackVoidHandler OnObjectDeleted;
 
         private Button SaveButton;
+        private Button DeleteButton;
         private Label ContentTitle;
         private Label NoticeMessage;
 
@@ -38,6 +42,24 @@ namespace Lephone.Web
             set
             {
                 this.ViewState["SaveButtonID"] = value;
+            }
+        }
+
+        [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false), DefaultValue(""), Category("Behavior")]
+        public string DeleteButtonID
+        {
+            get
+            {
+                object o = this.ViewState["DeleteButtonID"];
+                if (o != null)
+                {
+                    return (string)o;
+                }
+                return "";
+            }
+            set
+            {
+                this.ViewState["DeleteButtonID"] = value;
             }
         }
 
@@ -79,31 +101,55 @@ namespace Lephone.Web
 
         void SaveButton_Click(object sender, EventArgs e)
         {
-            object o = PageHelper.GetObject<T>(Page);
+            T o = PageHelper.GetObject<T>(Page);
             object oid = ViewState["Id"];
-            ValidateHandler vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
-                NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
 
             string tn = typeof(T).Name;
             if (oid == null)
             {
-                PageHelper.ValidateSave(vh, o, NoticeMessage, string.Format(ObjectCreatedText, tn), CssNotice, CssWarning);
+                ValidateSave(o, string.Format(ObjectCreatedText, tn));
             }
             else // Edit
             {
                 ObjInfo.KeyFields[0].SetValue(o, oid);
-                PageHelper.ValidateSave(vh, o, NoticeMessage, string.Format(ObjectUpdatedText, tn), CssNotice, CssWarning);
+                ValidateSave(o, string.Format(ObjectUpdatedText, tn));
             }
-            if (NoticeMessage != null)
+        }
+
+        void DeleteButton_Click(object sender, EventArgs e)
+        {
+            object oid = ViewState["Id"];
+
+            string tn = typeof(T).Name;
+            if (oid != null)
             {
-                NoticeMessage.Visible = true;
+                T o = DbEntry.GetObject<T>(oid);
+                PageHelper.Delete(o, NoticeMessage, string.Format(ObjectDeletedText, tn), CssNotice);
+                if (OnObjectDeleted != null)
+                {
+                    OnObjectDeleted();
+                }
             }
+        }
+
+        protected virtual void ValidateSave(T obj, string NoticeText)
+        {
+            if (OnValidateSave != null)
+            {
+                OnValidateSave(obj);
+            }
+
+            ValidateHandler vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
+                NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
+
+            PageHelper.ValidateSave(vh, obj, NoticeMessage, NoticeText, CssNotice, CssWarning);
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             SaveButton = this.NamingContainer.FindControl(SaveButtonID) as Button;
+            DeleteButton = this.NamingContainer.FindControl(DeleteButtonID) as Button;
             ContentTitle = this.NamingContainer.FindControl(ContentTitleID) as Label;
             NoticeMessage = this.NamingContainer.FindControl(NoticeMessageID) as Label;
 
@@ -133,6 +179,10 @@ namespace Lephone.Web
                         {
                             ContentTitle.Text = string.Format(EditObjectText, tn);
                         }
+                        if (OnObjectLoaded != null)
+                        {
+                            OnObjectLoaded(o);
+                        }
                     }
                     else
                     {
@@ -147,6 +197,10 @@ namespace Lephone.Web
                     }
                 }
             }
+            if (DeleteButton != null)
+            {
+                DeleteButton.Click += new EventHandler(DeleteButton_Click);
+            }
         }
 
         protected override void OnUnload(EventArgs e)
@@ -154,6 +208,10 @@ namespace Lephone.Web
             if (SaveButton != null)
             {
                 SaveButton.Click -= new EventHandler(SaveButton_Click);
+            }
+            if (DeleteButton != null)
+            {
+                DeleteButton.Click -= new EventHandler(DeleteButton_Click);
             }
             base.OnUnload(e);
         }
@@ -227,6 +285,24 @@ namespace Lephone.Web
             set
             {
                 this.ViewState["ObjectUpdatedText"] = value;
+            }
+        }
+
+        [Themeable(false), DefaultValue("{0} Deleted!")]
+        public string ObjectDeletedText
+        {
+            get
+            {
+                object o = this.ViewState["ObjectDeletedText"];
+                if (o != null)
+                {
+                    return (string)o;
+                }
+                return "{0} Deleted!";
+            }
+            set
+            {
+                this.ViewState["ObjectDeletedText"] = value;
             }
         }
 

@@ -48,6 +48,17 @@ namespace Lephone.Web.Common
             }
         }
 
+        public static void Delete(object obj, Label msg, string NoticeText, string CssNotice)
+        {
+            DbEntry.Delete(obj);
+            if (msg != null)
+            {
+                msg.Text = NoticeText;
+                msg.CssClass = CssNotice;
+                msg.Visible = true;
+            }
+        }
+
         private static void EnumControls(Page p, ObjectInfo oi, CallbackObjectHandler2<MemberHandler, Control> callback)
         {
             foreach (MemberHandler h in oi.SimpleFields)
