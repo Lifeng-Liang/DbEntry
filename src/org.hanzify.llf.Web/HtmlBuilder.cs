@@ -6,156 +6,207 @@ using System.Web;
 
 namespace Lephone.Web
 {
-    // It's not fully support for html.
     public class HtmlBuilder
     {
         public static HtmlBuilder New
         {
-            get
-            {
-                return new HtmlBuilder();
-            }
+            get { return new HtmlBuilder(); }
         }
 
         protected StringBuilder result = new StringBuilder();
         protected Stack<string> tags = new Stack<string>();
+        protected string ctag = "";
+        protected int cindex = 0;
 
         public HtmlBuilder br
         {
-            get
-            {
-                result.Append("<br />");
-                return this;
-            }
+            get { return include("<br />"); }
         }
 
         public HtmlBuilder hr
         {
-            get
-            {
-                result.Append("<hr />");
-                return this;
-            }
+            get { return include("<hr />"); }
         }
 
         public HtmlBuilder table
         {
-            get
-            {
-                result.Append("<table>");
-                tags.Push("table");
-                return this;
-            }
+            get { return tag("table"); }
         }
 
         public HtmlBuilder th
         {
-            get
-            {
-                result.Append("<th>");
-                tags.Push("th");
-                return this;
-            }
+            get { return tag("th"); }
         }
 
         public HtmlBuilder tr
         {
-            get
-            {
-                result.Append("<tr>");
-                tags.Push("tr");
-                return this;
-            }
+            get { return tag("tr"); }
         }
 
         public HtmlBuilder td
         {
-            get
-            {
-                result.Append("<td>");
-                tags.Push("td");
-                return this;
-            }
+            get { return tag("td"); }
         }
 
         public HtmlBuilder text(string text)
         {
-            result.Append(HttpUtility.HtmlEncode(text));
-            return this;
+            return include(HttpUtility.HtmlEncode(text));
         }
 
         public HtmlBuilder a(string href)
         {
-            result.Append("<a href=\"").Append(href).Append("\">");
-            tags.Push("a");
-            return this;
+            return tag("a").attr("href", href);
         }
 
         public HtmlBuilder img(string src)
         {
-            result.Append("<img src=\"").Append(src).Append("\" />");
-            return this;
+            return tag("img").attr("src", src).end;
         }
 
         public HtmlBuilder img(string src, string alt, int height, int width)
         {
-            result.Append("<img src=\"").Append(src).Append("\" alt=\"").Append(alt)
-                .Append("\" height=\"").Append(height).Append("\" width=\"").Append(width).Append("\" />");
-            return this;
+            return tag("img").attr("src", src).attr("alt", alt).attr("height", height).attr("width", width).end;
         }
 
         public HtmlBuilder ul
         {
-            get
-            {
-                result.Append("<ul>");
-                tags.Push("ul");
-                return this;
-            }
+            get { return tag("ul"); }
         }
 
         public HtmlBuilder ol
         {
-            get
-            {
-                result.Append("<ol>");
-                tags.Push("ol");
-                return this;
-            }
+            get { return tag("ol"); }
         }
 
         public HtmlBuilder li
         {
-            get
-            {
-                result.Append("<li>");
-                tags.Push("li");
-                return this;
-            }
+            get { return tag("li"); }
         }
 
         public HtmlBuilder end
         {
             get
             {
+                int n = tags.Count;
                 string s = tags.Pop();
-                result.Append("</").Append(s).Append(">");
+                if (n == cindex && s == ctag)
+                {
+                    result.Length--;
+                    result.Append(" />");
+                }
+                else
+                {
+                    result.Append("</").Append(s).Append(">");
+                }
+                cindex--;
+                ctag = string.Empty;
                 return this;
             }
         }
 
         public HtmlBuilder enter
         {
-            get
-            {
-                result.Append("\n");
-                return this;
-            }
+            get { return include("\r\n"); }
+        }
+
+        public HtmlBuilder newline
+        {
+            get { return include("\n"); }
         }
 
         public HtmlBuilder include(HtmlBuilder hb)
         {
-            result.Append(hb.ToString());
+            return include(hb.ToString());
+        }
+
+        public HtmlBuilder include(string text)
+        {
+            result.Append(text);
+            ctag = "";
+            return this;
+        }
+
+        public HtmlBuilder tag(string TagName)
+        {
+            result.Append("<").Append(TagName).Append(">");
+            tags.Push(TagName);
+            ctag = TagName;
+            cindex++;
+            return this;
+        }
+
+        public HtmlBuilder div
+        {
+            get { return tag("div"); }
+        }
+
+        public HtmlBuilder span
+        {
+            get { return tag("span"); }
+        }
+
+        public HtmlBuilder html
+        {
+            get { return tag("html"); }
+        }
+
+        public HtmlBuilder head
+        {
+            get { return tag("head"); }
+        }
+
+        public HtmlBuilder title
+        {
+            get { return tag("title"); }
+        }
+
+        public HtmlBuilder body
+        {
+            get { return tag("body"); }
+        }
+
+        public HtmlBuilder asp(string Name, string ID)
+        {
+            return tag("asp:" + Name).attr("ID", ID).attr("runat", "server");
+        }
+
+        public HtmlBuilder Class(string CssClass)
+        {
+            return attr("class", CssClass);
+        }
+
+        public HtmlBuilder id(string ID)
+        {
+            return attr("id", ID);
+        }
+
+        public HtmlBuilder attr(string Name, object Value)
+        {
+            return attr(Name, Value.ToString());
+        }
+
+        public HtmlBuilder attr(string Name, string Value)
+        {
+            if (result.Length > 0 && result[result.Length - 1] == '>')
+            {
+                result.Length--;
+                result.Append(" ").Append(Name).Append("=\"").Append(Value).Append("\">");
+                return this;
+            }
+            else
+            {
+                throw new WebException(string.Format("The attribute '{0}' can not be added because there is no tag before it.", Name));
+            }
+        }
+
+        /// <summary>
+        /// it is use as end point of code line and don't need set value mode.
+        /// Example:
+        /// b.end.over();  // Same as:  b = b.end;
+        /// </summary>
+        /// <returns>Instance of itself</returns>
+        public HtmlBuilder over()
+        {
             return this;
         }
 
