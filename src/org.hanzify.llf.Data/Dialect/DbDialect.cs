@@ -56,9 +56,9 @@ namespace Lephone.Data.Dialect
             return null;
         }
 
-        public virtual bool NeedStupidDataReader
+        public virtual IDataReader GetDataReader(IDataReader dr, Type ReturnType)
         {
-            get { return false; }
+            return dr;
         }
 
         public virtual bool NotSupportPostFix

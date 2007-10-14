@@ -12,7 +12,7 @@ namespace Lephone.Data.Common
     {
         private Dictionary<int, Type> indexType = null;
         private Dictionary<string, Type> nameType = null;
-        private IDataReader dr;
+        protected IDataReader dr;
 
         public StupidDataReader(IDataReader dr, Type ReturnType)
         {

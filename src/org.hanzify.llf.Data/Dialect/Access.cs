@@ -2,6 +2,7 @@
 #region usings
 
 using System;
+using System.Data;
 using Lephone.Data.Driver;
 using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
@@ -23,6 +24,11 @@ namespace Lephone.Data.Dialect
         {
             TypeNames[DataType.Int64] = "Decimal";
             TypeNames[DataType.UInt64] = "Decimal";
+        }
+
+        public override IDataReader GetDataReader(IDataReader dr, Type ReturnType)
+        {
+            return new AccessDataReader(dr, ReturnType);
         }
 
         public override DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName)

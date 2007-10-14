@@ -1,9 +1,11 @@
 
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Text;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
+using Lephone.Data.Common;
 using Lephone.Util.Logging;
 
 namespace Lephone.Data.Dialect
@@ -53,9 +55,9 @@ namespace Lephone.Data.Dialect
             return null;
         }
 
-        public override bool NeedStupidDataReader
+        public override IDataReader GetDataReader(IDataReader dr, Type ReturnType)
         {
-            get { return true; }
+            return new StupidDataReader(dr, ReturnType);
         }
 
         public override bool NotSupportPostFix

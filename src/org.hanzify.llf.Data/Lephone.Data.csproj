@@ -81,6 +81,7 @@ copy *.dll ..\..\..\..\bin\
   <ItemGroup>
     <Compile Include="Builder\Clause\ConstCondition.cs" />
     <Compile Include="Builder\ISqlKeys.cs" />
+    <Compile Include="Common\AccessDataReader.cs" />
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DeleteToQueryComposer.cs" />
     <Compile Include="Common\DynamicObjectReference.cs" />

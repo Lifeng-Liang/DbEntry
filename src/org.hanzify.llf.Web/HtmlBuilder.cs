@@ -15,8 +15,7 @@ namespace Lephone.Web
 
         protected StringBuilder result = new StringBuilder();
         protected Stack<string> tags = new Stack<string>();
-        protected string ctag = "";
-        protected int cindex = 0;
+        protected string ctag = string.Empty;
 
         public HtmlBuilder br
         {
@@ -87,9 +86,8 @@ namespace Lephone.Web
         {
             get
             {
-                int n = tags.Count;
                 string s = tags.Pop();
-                if (n == cindex && s == ctag)
+                if (s == ctag)
                 {
                     result.Length--;
                     result.Append(" />");
@@ -98,7 +96,6 @@ namespace Lephone.Web
                 {
                     result.Append("</").Append(s).Append(">");
                 }
-                cindex--;
                 ctag = string.Empty;
                 return this;
             }
@@ -122,7 +119,7 @@ namespace Lephone.Web
         public HtmlBuilder include(string text)
         {
             result.Append(text);
-            ctag = "";
+            ctag = string.Empty;
             return this;
         }
 
@@ -131,7 +128,6 @@ namespace Lephone.Web
             result.Append("<").Append(TagName).Append(">");
             tags.Push(TagName);
             ctag = TagName;
-            cindex++;
             return this;
         }
 

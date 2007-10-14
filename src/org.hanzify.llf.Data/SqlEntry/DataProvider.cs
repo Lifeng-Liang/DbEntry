@@ -237,15 +237,8 @@ namespace Lephone.Data.SqlEntry
                 }
                 IDataReader r = e.ExecuteReader(CommandBehavior.Default);
                 PopulateOutParams(Sql, e);
-                if (Dialect.NeedStupidDataReader)
-                {
-                    DbDataReader dr = new StupidDataReader(r, ReturnType);
-                    callback(dr);
-                }
-                else
-                {
-                    callback(r);
-                }
+                IDataReader dr = Dialect.GetDataReader(r, ReturnType);
+                callback(dr);
             });
         }
 
