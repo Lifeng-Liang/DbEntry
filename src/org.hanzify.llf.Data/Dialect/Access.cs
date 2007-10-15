@@ -14,12 +14,6 @@ namespace Lephone.Data.Dialect
 {
 	public class Access : SqlServer2000
 	{
-        static Access()
-        {
-            DataSetting.ObjectHandlerType.ToString();
-            ClassHelper.SetValue(typeof(DataSetting), "ObjectHandlerType", HandlerType.Reflection);
-        }
-
         public Access()
         {
             TypeNames[DataType.Int64] = "Decimal";

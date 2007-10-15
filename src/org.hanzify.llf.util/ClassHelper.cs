@@ -65,13 +65,15 @@ namespace Lephone.Util
         public static void SetValue(Type SourceType, string FieldName, object value)
         {
             FieldInfo fi = SourceType.GetField(FieldName, StaticFlag);
-            fi.SetValue(null, value);
+            if (fi != null)
+                fi.SetValue(null, value);
         }
 
         public static void SetValue(object obj, string FieldName, object value)
         {
             FieldInfo fi = obj.GetType().GetField(FieldName, AllFlag);
-            fi.SetValue(obj, value);
+            if (fi != null)
+                fi.SetValue(obj, value);
         }
 
         public static T GetValue<T>(string FieldName)
@@ -82,13 +84,13 @@ namespace Lephone.Util
         public static object GetValue(Type SourceType, string FieldName)
         {
             FieldInfo fi = SourceType.GetField(FieldName, StaticFlag);
-            return fi.GetValue(null);
+            return fi == null ? null : fi.GetValue(null);
         }
 
         public static object GetValue(object obj, string FieldName)
         {
             FieldInfo fi = obj.GetType().GetField(FieldName, AllFlag);
-            return fi.GetValue(obj);
+            return fi == null ? null : fi.GetValue(obj);
         }
 
         public static object CallFunction(Type ot, string FunctionName, params object[] os)

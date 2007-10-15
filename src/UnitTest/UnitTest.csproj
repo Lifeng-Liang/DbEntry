@@ -107,6 +107,7 @@
     <Compile Include="util\ThreadingQueueTest.cs" />
     <Compile Include="Web\HtmlBuilderTest.cs" />
     <Compile Include="Web\UrlBuilderTest.cs" />
+    <Compile Include="Web\XmlBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UnitTest.config.xml" />

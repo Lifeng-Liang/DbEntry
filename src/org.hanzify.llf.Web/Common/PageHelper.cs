@@ -93,12 +93,38 @@ namespace Lephone.Web.Common
             object obj = oi.NewObject();
             EnumControls(p, oi, delegate(MemberHandler h, Control c)
             {
-                h.SetValue(obj, Convert.ChangeType(GetValue(c), h.FieldType.IsEnum ? typeof(Int32) : h.FieldType));
+                string v = GetValue(c);
+                if (h.FieldType.IsEnum)
+                {
+                    int n = (int)Enum.Parse(h.FieldType, v);
+                    h.SetValue(obj, n);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(v))
+                    {
+                        if (h.AllowNull)
+                        {
+                            h.SetValue(obj, null);
+                        }
+                        else
+                        {
+                            if (h.FieldType == typeof(string))
+                            {
+                                h.SetValue(obj, "");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        h.SetValue(obj, Convert.ChangeType(v, h.FieldType));
+                    }
+                }
             });
             return obj;
         }
 
-        private static object GetValue(Control c)
+        private static string GetValue(Control c)
         {
             if (c is TextBox)
             {
@@ -106,11 +132,11 @@ namespace Lephone.Web.Common
             }
             if (c is CheckBox)
             {
-                return ((CheckBox)c).Checked;
+                return ((CheckBox)c).Checked.ToString();
             }
             if (c is DropDownList)
             {
-                return ((DropDownList)c).SelectedIndex;
+                return ((DropDownList)c).SelectedValue;
             }
             throw new NotSupportedException();
         }
@@ -130,7 +156,7 @@ namespace Lephone.Web.Common
         {
             if (c is TextBox)
             {
-                ((TextBox)c).Text = v.ToString();
+                ((TextBox)c).Text = (v ?? "").ToString();
             }
             else if (c is CheckBox)
             {
@@ -138,7 +164,8 @@ namespace Lephone.Web.Common
             }
             else if (c is DropDownList)
             {
-                ((DropDownList)c).SelectedIndex = (int)v;
+                Type t = v.GetType();
+                ((DropDownList)c).SelectedValue = v.ToString();
             }
             else throw new NotSupportedException();
         }

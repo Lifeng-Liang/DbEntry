@@ -70,6 +70,7 @@ namespace Lephone.Data
             Type t = obj.GetType();
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
             string tn = oi.BaseType.Name;
+            bool IsNew = (oi.KeyFields[0].UnsavedValue.Equals(oi.Handler.GetKeyValue(obj)));
             
             Type StringType = typeof(string);
             foreach (MemberHandler fh in oi.Fields)
@@ -88,32 +89,35 @@ namespace Lephone.Data
                     this.IsValid &= isValid;
                 }
             }
-            foreach (List<MemberHandler> mhs in oi.UniqueIndexes.Values)
+            if (IsNew)
             {
-                WhereCondition c = null;
-                string n = "";
-                foreach (MemberHandler h in mhs)
+                foreach (List<MemberHandler> mhs in oi.UniqueIndexes.Values)
                 {
-                    object v = h.GetValue(obj);
-                    if (v != null && v.GetType().IsGenericType)
+                    WhereCondition c = null;
+                    string n = "";
+                    foreach (MemberHandler h in mhs)
                     {
-                        v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
-                    }
-                    c &= (CK.K[h.Name] == v);
-                    n += h.Name;
-                }
-                if (c != null)
-                {
-                    if (DbEntry.Context.GetResultCount(t, c) != 0)
-                    {
-                        this.IsValid = false;
-                        if (_ErrorMessages.ContainsKey(n))
+                        object v = h.GetValue(obj);
+                        if (v != null && v.GetType().IsGenericType)
                         {
-                            _ErrorMessages[n] = string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, _ShouldBeUniqueText);
+                            v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
                         }
-                        else
+                        c &= (CK.K[h.Name] == v);
+                        n += h.Name;
+                    }
+                    if (c != null)
+                    {
+                        if (DbEntry.Context.GetResultCount(t, c) != 0)
                         {
-                            _ErrorMessages[n] = string.Format(_InvalidFieldText, n, _ShouldBeUniqueText);
+                            this.IsValid = false;
+                            if (_ErrorMessages.ContainsKey(n))
+                            {
+                                _ErrorMessages[n] = string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, _ShouldBeUniqueText);
+                            }
+                            else
+                            {
+                                _ErrorMessages[n] = string.Format(_InvalidFieldText, n, _ShouldBeUniqueText);
+                            }
                         }
                     }
                 }

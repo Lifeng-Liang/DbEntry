@@ -6,16 +6,12 @@ using System.Web;
 
 namespace Lephone.Web
 {
-    public class HtmlBuilder
+    public class HtmlBuilder : XmlBuilder
     {
-        public static HtmlBuilder New
+        public new static HtmlBuilder New
         {
             get { return new HtmlBuilder(); }
         }
-
-        protected StringBuilder result = new StringBuilder();
-        protected Stack<string> tags = new Stack<string>();
-        protected string ctag = string.Empty;
 
         public HtmlBuilder br
         {
@@ -47,11 +43,6 @@ namespace Lephone.Web
             get { return tag("td"); }
         }
 
-        public HtmlBuilder text(string text)
-        {
-            return include(HttpUtility.HtmlEncode(text));
-        }
-
         public HtmlBuilder a(string href)
         {
             return tag("a").attr("href", href);
@@ -80,55 +71,6 @@ namespace Lephone.Web
         public HtmlBuilder li
         {
             get { return tag("li"); }
-        }
-
-        public HtmlBuilder end
-        {
-            get
-            {
-                string s = tags.Pop();
-                if (s == ctag)
-                {
-                    result.Length--;
-                    result.Append(" />");
-                }
-                else
-                {
-                    result.Append("</").Append(s).Append(">");
-                }
-                ctag = string.Empty;
-                return this;
-            }
-        }
-
-        public HtmlBuilder enter
-        {
-            get { return include("\r\n"); }
-        }
-
-        public HtmlBuilder newline
-        {
-            get { return include("\n"); }
-        }
-
-        public HtmlBuilder include(HtmlBuilder hb)
-        {
-            return include(hb.ToString());
-        }
-
-        public HtmlBuilder include(string text)
-        {
-            result.Append(text);
-            ctag = string.Empty;
-            return this;
-        }
-
-        public HtmlBuilder tag(string TagName)
-        {
-            result.Append("<").Append(TagName).Append(">");
-            tags.Push(TagName);
-            ctag = TagName;
-            return this;
         }
 
         public HtmlBuilder div
@@ -171,28 +113,71 @@ namespace Lephone.Web
             return attr("class", CssClass);
         }
 
+        public HtmlBuilder style(string style)
+        {
+            return attr("style", style);
+        }
+
         public HtmlBuilder id(string ID)
         {
             return attr("id", ID);
         }
 
-        public HtmlBuilder attr(string Name, object Value)
+        #region shadow the base functions
+
+        public new HtmlBuilder text(string text)
         {
-            return attr(Name, Value.ToString());
+            return (HtmlBuilder)base.text(text);
         }
 
-        public HtmlBuilder attr(string Name, string Value)
+        public new HtmlBuilder text(object obj)
         {
-            if (result.Length > 0 && result[result.Length - 1] == '>')
-            {
-                result.Length--;
-                result.Append(" ").Append(Name).Append("=\"").Append(Value).Append("\">");
-                return this;
-            }
-            else
-            {
-                throw new WebException(string.Format("The attribute '{0}' can not be added because there is no tag before it.", Name));
-            }
+            return (HtmlBuilder)base.text(obj);
+        }
+
+        public new HtmlBuilder end
+        {
+            get { return (HtmlBuilder)base.end; }
+        }
+
+        public new HtmlBuilder enter
+        {
+            get { return (HtmlBuilder)base.enter; }
+        }
+
+        public new HtmlBuilder newline
+        {
+            get { return (HtmlBuilder)base.newline; }
+        }
+
+        public new HtmlBuilder tab
+        {
+            get { return (HtmlBuilder)base.tab; }
+        }
+
+        public HtmlBuilder include(HtmlBuilder hb)
+        {
+            return include(hb.ToString());
+        }
+
+        public new HtmlBuilder include(string text)
+        {
+            return (HtmlBuilder)base.include(text);
+        }
+
+        public new HtmlBuilder tag(string TagName)
+        {
+            return (HtmlBuilder)base.tag(TagName);
+        }
+
+        public new HtmlBuilder attr(string Name, object Value)
+        {
+            return (HtmlBuilder)base.attr(Name, Value);
+        }
+
+        public new HtmlBuilder attr(string Name, string Value)
+        {
+            return (HtmlBuilder)base.attr(Name, Value);
         }
 
         /// <summary>
@@ -201,18 +186,11 @@ namespace Lephone.Web
         /// b.end.over();  // Same as:  b = b.end;
         /// </summary>
         /// <returns>Instance of itself</returns>
-        public HtmlBuilder over()
+        public new HtmlBuilder over()
         {
             return this;
         }
 
-        public override string ToString()
-        {
-            if (tags.Count != 0)
-            {
-                throw new WebException("There are some tags not closed!");
-            }
-            return result.ToString();
-        }
+        #endregion
     }
 }
