@@ -73,7 +73,7 @@ namespace Lephone.Data.Definition
 
         public static T FindOne(WhereCondition con)
         {
-            return FindOne(con, null);
+            return DbEntry.GetObject<T>(con);
         }
 
         public static T FindOne(WhereCondition con, OrderBy ob)

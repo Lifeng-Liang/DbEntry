@@ -138,5 +138,10 @@ namespace Lephone.Data.Common
                 Logger.SQL.Trace(Sql);
             }
         }
+
+        public bool IsNewObject(object obj)
+        {
+            return KeyFields[0].UnsavedValue.Equals(Handler.GetKeyValue(obj));
+        }
     }
 }

@@ -20,10 +20,19 @@ namespace Lephone.Web.Common
         
         public static void ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning)
         {
+            ValidateSave(vh, obj, msg, NoticeText, CssNotice, CssWarning, delegate()
+            {
+                DbEntry.Save(obj);
+            });
+        }
+
+        public static void ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText,
+            string CssNotice, string CssWarning, CallbackVoidHandler callback)
+        {
             vh.ValidateObject(obj);
             if (vh.IsValid)
             {
-                DbEntry.Save(obj);
+                callback();
                 if (msg != null)
                 {
                     msg.CssClass = CssNotice;
@@ -45,17 +54,6 @@ namespace Lephone.Web.Common
                     msg.Text = b.ToString();
                     msg.Visible = true;
                 }
-            }
-        }
-
-        public static void Delete(object obj, Label msg, string NoticeText, string CssNotice)
-        {
-            DbEntry.Delete(obj);
-            if (msg != null)
-            {
-                msg.Text = NoticeText;
-                msg.CssClass = CssNotice;
-                msg.Visible = true;
             }
         }
 

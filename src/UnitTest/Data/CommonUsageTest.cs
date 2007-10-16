@@ -346,5 +346,22 @@ namespace Lephone.UnitTest.Data
             Assert.IsFalse(vh.IsValid);
             Assert.AreEqual("Invalid Field Name Should be UNIQUE.", vh.ErrorMessages["Name"]);
         }
+
+        [Test]
+        public void TestFindOneWithSqlServer2005()
+        {
+            DbContext de = new DbContext("SqlServerMock");
+            Person p = de.GetObject<Person>(CK.K["Name"] == "test", null); // before
+            Assert.IsNull(p);
+        }
+
+        [Test]
+        public void Test2ndPageWithSqlserver2005()
+        {
+            DbContext de = new DbContext("SqlServerMock");
+            StaticRecorder.ClearMessages();
+            de.From<Person>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
+            Assert.AreEqual("select [Id],[Name] from (select [Id],[Name], ROW_NUMBER() OVER ( Order By [Id] ASC) as __rownumber__ From [People]  Where [Age] > @Age_0) as T Where T.__rownumber__ >= 3 and T.__rownumber__ <= 5;\n", StaticRecorder.LastMessage);
+        }
     }
 }

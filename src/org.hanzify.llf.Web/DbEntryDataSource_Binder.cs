@@ -123,8 +123,16 @@ namespace Lephone.Web
             string tn = typeof(T).Name;
             if (oid != null)
             {
-                T o = DbEntry.GetObject<T>(oid);
-                PageHelper.Delete(o, NoticeMessage, string.Format(ObjectDeletedText, tn), CssNotice);
+                // T o = DbEntry.GetObject<T>(oid);
+
+                ExecuteDelete(oid);
+                if (NoticeMessage != null)
+                {
+                    NoticeMessage.Text = string.Format(ObjectDeletedText, tn);
+                    NoticeMessage.CssClass = CssNotice;
+                    NoticeMessage.Visible = true;
+                }
+
                 if (OnObjectDeleted != null)
                 {
                     OnObjectDeleted();
@@ -142,7 +150,18 @@ namespace Lephone.Web
             ValidateHandler vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
                 NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
 
-            PageHelper.ValidateSave(vh, obj, NoticeMessage, NoticeText, CssNotice, CssWarning);
+            PageHelper.ValidateSave(vh, obj, NoticeMessage, NoticeText, CssNotice, CssWarning, delegate()
+            {
+                ObjectInfo oi = DbObjectHelper.GetObjectInfo(obj.GetType());
+                if (oi.IsNewObject(obj))
+                {
+                    ExecuteInsert(obj);
+                }
+                else
+                {
+                    ExecuteUpdate(obj);
+                }
+            });
         }
 
         protected override void OnLoad(EventArgs e)

@@ -15,9 +15,14 @@ namespace Lephone.Data.Dialect
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
+            if (ssb.Range.StartIndex == 1)
+            {
+                return base.GetPagedSelectSqlStatement(ssb);
+            }
+
             if (ssb.Order == null || ssb.Keys.Count == 0)
             {
-                throw new DataException("Paged select must have Order And Values not Empty.");
+                throw PagedMustHaveOrder;
             }
 
             const string PosName = "__rownumber__";

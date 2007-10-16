@@ -70,7 +70,11 @@ namespace Lephone.Data
             Type t = obj.GetType();
             ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
             string tn = oi.BaseType.Name;
-            bool IsNew = (oi.KeyFields[0].UnsavedValue.Equals(oi.Handler.GetKeyValue(obj)));
+            bool IsNew = false;
+            if (oi.KeyFields.Length > 0)
+            {
+                IsNew = oi.IsNewObject(obj);
+            }
             
             Type StringType = typeof(string);
             foreach (MemberHandler fh in oi.Fields)
