@@ -9,7 +9,7 @@ using Lephone.Util.Logging;
 
 namespace Lephone.Data.Logging
 {
-	[DbTable("Log"), DisableSqlLog]
+	[DbTable("Lephone_Log"), DisableSqlLog]
 	public class LogItem : DbObject
 	{
 		public LogType Type;

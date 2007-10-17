@@ -271,7 +271,6 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany13()
         {
             // DbEntry.Save(c.Books) will save all data in the list,
-            // and do NOT cause other data (c or subitem of c but not in the list) saved.
             Category c = DbEntry.GetObject<Category>(3);
             Assert.AreEqual("Tour", c.Name);
             Assert.AreEqual(2, c.Books.Count);
@@ -281,15 +280,47 @@ namespace Lephone.UnitTest.Data
             Book b = new Book();
             b.Name = "Pingxiang";
             c.Books.Add(b);
-            c.Books.RemoveAt(0);
             DbEntry.Save(c.Books);
 
             Category c1 = DbEntry.GetObject<Category>(3);
             Assert.AreEqual("Tour", c1.Name);
             Assert.AreEqual(3, c1.Books.Count);
-            Assert.AreEqual("Beijing", c1.Books[0].Name);
+            Assert.AreEqual("Hongkong", c1.Books[0].Name);
             Assert.AreEqual("Luoyang", c1.Books[1].Name);
             Assert.AreEqual("Pingxiang", c1.Books[2].Name);
+        }
+
+        [Test]
+        public void TestRemoveAnItem()
+        {
+            Category c = DbEntry.GetObject<Category>(3);
+            Assert.AreEqual("Tour", c.Name);
+            Assert.AreEqual(2, c.Books.Count);
+            Assert.AreEqual("Beijing", c.Books[0].Name);
+            Assert.AreEqual("Shanghai", c.Books[1].Name);
+
+            c.Books.RemoveAt(0);
+            DbEntry.Save(c);
+
+            c = DbEntry.GetObject<Category>(3);
+            Assert.AreEqual("Tour", c.Name);
+            Assert.AreEqual(1, c.Books.Count);
+            Assert.AreEqual("Shanghai", c.Books[0].Name);
+        }
+
+        [Test]
+        public void TestRemoveAnItem2()
+        {
+            Book b = DbEntry.GetObject<Book>(2);
+            Assert.AreEqual("Beijing", b.Name);
+            Assert.IsNotNull(b.CurCategory);
+
+            b.CurCategory.Value = null;
+            DbEntry.Save(b);
+
+            b = DbEntry.GetObject<Book>(2);
+            Assert.AreEqual("Beijing", b.Name);
+            Assert.IsNull(b.CurCategory.Value);
         }
     }
 }

@@ -46,22 +46,22 @@ namespace Lephone.UnitTest.Data
         public void TestCreate()
         {
             de.Create(typeof(EnumTable));
-            string Exp = "CREATE TABLE \"ENUMTABLE\" (" +
+            string Exp = "CREATE TABLE \"LEPHONE_ENUM\" (" +
                 "\"ID\" bigint NOT NULL PRIMARY KEY," +
                 "\"TYPE\" int NOT NULL ," +
                 "\"NAME\" varchar (50) NOT NULL ," +
                 "\"VALUE\" int" +
                 ");";
             Assert.AreEqual(Exp, StaticRecorder.Messages[0]);
-            Assert.AreEqual("CREATE GENERATOR GEN_ENUMTABLE_ID;", StaticRecorder.Messages[1]);
+            Assert.AreEqual("CREATE GENERATOR GEN_LEPHONE_ENUM_ID;", StaticRecorder.Messages[1]);
         }
 
         [Test]
         public void TestDrop()
         {
             de.DropTable(typeof(EnumTable));
-            Assert.AreEqual("Drop Table \"ENUMTABLE\"", StaticRecorder.Messages[0]);
-            Assert.AreEqual("DROP GENERATOR GEN_ENUMTABLE_ID;", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Drop Table \"LEPHONE_ENUM\"", StaticRecorder.Messages[0]);
+            Assert.AreEqual("DROP GENERATOR GEN_LEPHONE_ENUM_ID;", StaticRecorder.Messages[1]);
         }
     }
 }

@@ -126,7 +126,7 @@ namespace Lephone.Web
         {
             if (MaximumRows == 0)
             {
-                return DbEntry.From<T>().Where(null).OrderBy(order).Select();
+                return DbEntry.From<T>().Where(condition).OrderBy(order).Select();
             }
             else
             {

@@ -40,13 +40,14 @@ namespace Lephone.Data.Definition
 
         void ILazyLoading.Write(object item, bool IsLoad)
         {
+            object OldValue = m_Value;
             m_Value = (T)item;
-            DoWrite(IsLoad);
+            DoWrite(OldValue, IsLoad);
             m_IsLoaded = true;
             context = null;
         }
 
-        protected virtual void DoWrite(bool IsLoad) { }
+        protected virtual void DoWrite(object OldValue, bool IsLoad) { }
 
         public T Value
         {

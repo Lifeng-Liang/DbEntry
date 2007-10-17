@@ -12,10 +12,18 @@ using Lephone.Data.Driver;
 
 namespace Lephone.Data.Definition
 {
+    public interface IHasOne
+    {
+        object LastValue { get; set; }
+    }
+
     [Serializable]
-    public class HasOne<T> : LazyLoadOneBase<T>, IRenew
+    public class HasOne<T> : LazyLoadOneBase<T>, IRenew, IHasOne
     {
         private OrderBy Order;
+
+        private object _LastValue;
+        object IHasOne.LastValue { get { return _LastValue; } set { _LastValue = value; } }
 
         internal HasOne(object owner) : base(owner) { }
 
@@ -31,15 +39,32 @@ namespace Lephone.Data.Definition
             this.Order = OrderBy.Parse(OrderByString);
         }
 
-        protected override void DoWrite(bool IsLoad)
+        protected override void DoWrite(object OldValue, bool IsLoad)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
-            MemberHandler mh = oi.GetBelongsTo(owner.GetType());
-            if (mh != null)
+            if (m_Value == null)
             {
-                ILazyLoading ll = (ILazyLoading)mh.GetValue(m_Value);
-                ll.Write(owner, false);
+                if (OldValue != null)
+                {
+                    ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+                    MemberHandler mh = oi.GetBelongsTo(owner.GetType());
+                    if (mh != null)
+                    {
+                        ILazyLoading ll = (ILazyLoading)mh.GetValue(OldValue);
+                        ll.Write(null, false);
+                    }
+                }
             }
+            else
+            {
+                ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+                MemberHandler mh = oi.GetBelongsTo(owner.GetType());
+                if (mh != null)
+                {
+                    ILazyLoading ll = (ILazyLoading)mh.GetValue(m_Value);
+                    ll.Write(owner, false);
+                }
+            }
+            _LastValue = OldValue;
         }
 
         protected override void DoSetOwner()

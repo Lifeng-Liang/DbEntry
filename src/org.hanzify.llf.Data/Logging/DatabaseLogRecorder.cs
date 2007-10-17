@@ -15,10 +15,7 @@ namespace Lephone.Data.Logging
             LogItem li = new LogItem(Type, Source, Name, Message, eException);
             try
             {
-                DbEntry.Context.UsingConnection(delegate()
-                {
-                    DbEntry.Save(li);
-                });
+                DbEntry.Context.Insert(li);
             }
             catch (Exception ex)
             {

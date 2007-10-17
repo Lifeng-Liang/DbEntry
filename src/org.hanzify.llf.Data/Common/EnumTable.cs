@@ -8,7 +8,7 @@ using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common
 {
-    [DisableSqlLog]
+    [DisableSqlLog, DbTable("Lephone_Enum")]
 	public class EnumTable : DbObject
 	{
 		public int Type;

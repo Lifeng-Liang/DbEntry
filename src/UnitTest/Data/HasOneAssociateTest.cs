@@ -245,5 +245,37 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(p.Id, p1.Id);
             Assert.AreEqual(null, p1.PC.Value);
         }
+
+        [Test]
+        public void TestRemoveRelation()
+        {
+            Person Jerry = DbEntry.GetObject<Person>(2);
+            Assert.IsNotNull(Jerry);
+            Assert.AreEqual("Jerry", Jerry.Name);
+            Assert.IsNotNull(Jerry.PC.Value);
+            Assert.AreEqual("IBM", Jerry.PC.Value.Name);
+
+            Jerry.PC.Value = null;
+            DbEntry.Save(Jerry);
+
+            Jerry = DbEntry.GetObject<Person>(2);
+            Assert.IsNotNull(Jerry);
+            Assert.IsNull(Jerry.PC.Value);
+        }
+
+        [Test]
+        public void TestRemoveRelation2()
+        {
+            PersonalComputer pc = DbEntry.GetObject<PersonalComputer>(1);
+            Assert.IsNotNull(pc);
+            Assert.IsNotNull(pc.Owner.Value);
+
+            pc.Owner.Value = null;
+            DbEntry.Save(pc);
+
+            pc = DbEntry.GetObject<PersonalComputer>(1);
+            Assert.IsNotNull(pc);
+            Assert.IsNull(pc.Owner.Value);
+        }
     }
 }

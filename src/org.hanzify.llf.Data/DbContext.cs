@@ -321,7 +321,21 @@ namespace Lephone.Data
                             if (f.IsHasOne || f.IsHasMany || (f.IsHasAndBelongsToMany && ParentFirst))
                             {
                                 object llo = ho.Read();
-                                CommonHelper.TryEnumerate(llo, e2);
+                                if (llo == null)
+                                {
+                                    if (f.IsHasOne)
+                                    {
+                                        IHasOne ho1 = ho as IHasOne;
+                                        if (ho1.LastValue != null)
+                                        {
+                                            Save(ho1.LastValue);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    CommonHelper.TryEnumerate(llo, e2);
+                                }
                             }
                             if (f.IsHasAndBelongsToMany)
                             {

@@ -71,7 +71,7 @@ namespace Lephone.Data.Definition
             if (oi.KeyFields != null & oi.KeyFields.Length == 1)
             {
                 _Value = (T)item;
-                _ForeignKey = oi.KeyFields[0].GetValue(item);
+                _ForeignKey = (item == null) ? CommonHelper.GetEmptyValue(oi.KeyFields[0].FieldType) : oi.KeyFields[0].GetValue(item);
                 _IsLoaded = true;
                 context = null;
                 if (ValueChanged != null && !IsLoad)
@@ -106,16 +106,19 @@ namespace Lephone.Data.Definition
         void ILazyLoading.Load()
         {
             _Value = context.GetObject<T>(_ForeignKey);
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
-            foreach (MemberHandler f in oi.Fields)
+            if (_Value != null)
             {
-                if (f.IsHasOne || f.IsHasMany)
+                ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+                foreach (MemberHandler f in oi.Fields)
                 {
-                    Type t = f.FieldType.GetGenericArguments()[0];
-                    if (t == owner.GetType())
+                    if (f.IsHasOne || f.IsHasMany)
                     {
-                        ILazyLoading ll = (ILazyLoading)f.GetValue(_Value);
-                        ll.Write(owner, true);
+                        Type t = f.FieldType.GetGenericArguments()[0];
+                        if (t == owner.GetType())
+                        {
+                            ILazyLoading ll = (ILazyLoading)f.GetValue(_Value);
+                            ll.Write(owner, true);
+                        }
                     }
                 }
             }
