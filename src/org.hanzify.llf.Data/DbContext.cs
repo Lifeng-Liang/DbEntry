@@ -246,7 +246,7 @@ namespace Lephone.Data
 
         public object GetObject(Type t, WhereCondition c, OrderBy ob)
         {
-            return GetObject(t, c, ob, new Range(1, 1));
+            return GetObject(t, c, ob, (ob == null) ? null : new Range(1, 1));
         }
 
         private object GetObject(Type t, WhereCondition c, OrderBy ob, Range r)
@@ -334,6 +334,15 @@ namespace Lephone.Data
                                 }
                                 else
                                 {
+                                    if (f.IsHasMany)
+                                    {
+                                        IHasMany ho2 = ho as IHasMany;
+                                        foreach (object item in ho2.RemovedValues)
+                                        {
+                                            Save(item);
+                                        }
+                                    }
+
                                     CommonHelper.TryEnumerate(llo, e2);
                                 }
                             }

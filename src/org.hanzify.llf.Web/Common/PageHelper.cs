@@ -12,21 +12,21 @@ namespace Lephone.Web.Common
 {
     public static class PageHelper
     {
-        public static void ValidateSave(object obj, Label msg, string NoticeText)
+        public static bool ValidateSave(object obj, Label msg, string NoticeText)
         {
             ValidateHandler vh = new ValidateHandler();
-            ValidateSave(vh, obj, msg, NoticeText, "Notice", "Warning");
+            return ValidateSave(vh, obj, msg, NoticeText, "Notice", "Warning");
         }
-        
-        public static void ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning)
+
+        public static bool ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning)
         {
-            ValidateSave(vh, obj, msg, NoticeText, CssNotice, CssWarning, delegate()
+            return ValidateSave(vh, obj, msg, NoticeText, CssNotice, CssWarning, delegate()
             {
                 DbEntry.Save(obj);
             });
         }
 
-        public static void ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText,
+        public static bool ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText,
             string CssNotice, string CssWarning, CallbackVoidHandler callback)
         {
             vh.ValidateObject(obj);
@@ -55,6 +55,7 @@ namespace Lephone.Web.Common
                     msg.Visible = true;
                 }
             }
+            return vh.IsValid;
         }
 
         private static void EnumControls(Page p, ObjectInfo oi, CallbackObjectHandler2<MemberHandler, Control> callback)

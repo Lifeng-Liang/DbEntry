@@ -351,7 +351,7 @@ namespace Lephone.UnitTest.Data
         public void TestFindOneWithSqlServer2005()
         {
             DbContext de = new DbContext("SqlServerMock");
-            Person p = de.GetObject<Person>(CK.K["Name"] == "test", null); // before
+            Person p = de.GetObject<Person>(CK.K["Name"] == "test", null);
             Assert.IsNull(p);
         }
 

@@ -32,7 +32,7 @@ namespace Orm9
     public abstract class PersonalComputer : DbObjectModel<PersonalComputer>
     {
         [Length(50)]
-        public string Name;
+        public abstract string Name { get; set; }
 
         [BelongsTo, DbColumn("Person_Id")]
         public abstract Person Owner { get; set; }

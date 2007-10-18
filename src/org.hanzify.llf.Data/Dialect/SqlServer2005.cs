@@ -15,11 +15,6 @@ namespace Lephone.Data.Dialect
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            if (ssb.Range.StartIndex == 1)
-            {
-                return base.GetPagedSelectSqlStatement(ssb);
-            }
-
             if (ssb.Order == null || ssb.Keys.Count == 0)
             {
                 throw PagedMustHaveOrder;

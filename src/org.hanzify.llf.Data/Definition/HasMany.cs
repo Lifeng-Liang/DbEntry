@@ -9,13 +9,19 @@ using System.Data;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Driver;
+using Lephone.Util;
 
 #endregion
 
 namespace Lephone.Data.Definition
 {
+    public interface IHasMany
+    {
+        List<object> RemovedValues { get; }
+    }
+
     [Serializable]
-    public class HasMany<T> : LazyLoadListBase<T>
+    public class HasMany<T> : LazyLoadListBase<T>, IHasMany
     {
         private OrderBy Order;
 
@@ -37,10 +43,13 @@ namespace Lephone.Data.Definition
             this.Order = OrderBy.Parse(OrderByString);
         }
 
+        private List<object> _RemovedValues = new List<object>();
+        List<object> IHasMany.RemovedValues { get { return _RemovedValues; } }
+
         protected override void InnerWrite(object item, bool IsLoad)
         {
-            ObjectInfo ti = DbObjectHelper.GetObjectInfo(typeof(T));
-            MemberHandler mh = ti.GetBelongsTo(owner.GetType());
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            MemberHandler mh = oi.GetBelongsTo(owner.GetType());
             if (mh != null)
             {
                 ILazyLoading ll = (ILazyLoading)mh.GetValue(item);
@@ -58,6 +67,19 @@ namespace Lephone.Data.Definition
                 .OrderBy(Order)
                 .Select();
             return l;
+        }
+
+        protected override void OnRemoveItem(T item)
+        {
+            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            if (!oi.IsNewObject(item))
+            {
+                Type ot = owner.GetType();
+                MemberHandler mh = oi.GetBelongsTo(ot);
+                IBelongsTo o = mh.GetValue(item) as IBelongsTo;
+                o.ForeignKey = CommonHelper.GetEmptyValue(o.ForeignKey.GetType());
+                _RemovedValues.Add(item);
+            }
         }
     }
 }
