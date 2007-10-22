@@ -34,6 +34,7 @@ namespace Lephone.Data.Common
 		public MemberHandler[] Fields;
         public MemberHandler[] SimpleFields;
         public MemberHandler[] RelationFields;
+        public MemberHandler LockVersion;
         public bool AllowSqlLog = true;
         public bool HasOnePremarykey;
         public Dictionary<Type, ManyToManyMediTable> ManyToManys = new Dictionary<Type,ManyToManyMediTable>();
@@ -67,6 +68,10 @@ namespace Lephone.Data.Common
                 if (f.IsBelongsTo || f.IsHasAndBelongsToMany) // TODO: no problem ?
                 {
                     IsAssociateObject = true;
+                }
+                if (f.IsLockVersion)
+                {
+                    LockVersion = f;
                 }
             }
 

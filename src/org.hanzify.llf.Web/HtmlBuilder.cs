@@ -6,9 +6,9 @@ using System.Web;
 
 namespace Lephone.Web
 {
-    public class HtmlBuilder : XmlBuilder
+    public class HtmlBuilder : XmlBuilder<HtmlBuilder>
     {
-        public new static HtmlBuilder New
+        public static HtmlBuilder New
         {
             get { return new HtmlBuilder(); }
         }
@@ -122,75 +122,5 @@ namespace Lephone.Web
         {
             return attr("id", ID);
         }
-
-        #region shadow the base functions
-
-        public new HtmlBuilder text(string text)
-        {
-            return (HtmlBuilder)base.text(text);
-        }
-
-        public new HtmlBuilder text(object obj)
-        {
-            return (HtmlBuilder)base.text(obj);
-        }
-
-        public new HtmlBuilder end
-        {
-            get { return (HtmlBuilder)base.end; }
-        }
-
-        public new HtmlBuilder enter
-        {
-            get { return (HtmlBuilder)base.enter; }
-        }
-
-        public new HtmlBuilder newline
-        {
-            get { return (HtmlBuilder)base.newline; }
-        }
-
-        public new HtmlBuilder tab
-        {
-            get { return (HtmlBuilder)base.tab; }
-        }
-
-        public HtmlBuilder include(HtmlBuilder hb)
-        {
-            return include(hb.ToString());
-        }
-
-        public new HtmlBuilder include(string text)
-        {
-            return (HtmlBuilder)base.include(text);
-        }
-
-        public new HtmlBuilder tag(string TagName)
-        {
-            return (HtmlBuilder)base.tag(TagName);
-        }
-
-        public new HtmlBuilder attr(string Name, object Value)
-        {
-            return (HtmlBuilder)base.attr(Name, Value);
-        }
-
-        public new HtmlBuilder attr(string Name, string Value)
-        {
-            return (HtmlBuilder)base.attr(Name, Value);
-        }
-
-        /// <summary>
-        /// it is use as end point of code line and don't need set value mode.
-        /// Example:
-        /// b.end.over();  // Same as:  b = b.end;
-        /// </summary>
-        /// <returns>Instance of itself</returns>
-        public new HtmlBuilder over()
-        {
-            return this;
-        }
-
-        #endregion
     }
 }

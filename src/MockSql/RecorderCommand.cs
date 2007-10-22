@@ -118,7 +118,7 @@ namespace Lephone.MockSql
         public override int ExecuteNonQuery()
         {
             Record(this.CommandText);
-            return 0;
+            return 1;
         }
 
         public override object ExecuteScalar()

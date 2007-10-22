@@ -68,6 +68,7 @@
     <Compile Include="Data\Objects\AssociateClasses.cs" />
     <Compile Include="Data\Objects\ModelObject.cs" />
     <Compile Include="Data\Objects\PropertyClasses.cs" />
+    <Compile Include="Data\OptimisticLockingTest.cs" />
     <Compile Include="Data\PagedSelectorTest.cs" />
     <Compile Include="Data\PropertyClassTest.cs" />
     <Compile Include="Data\SerializationTest.cs" />

@@ -253,6 +253,17 @@ namespace Lephone.Data.Common
                         throw new DataException("UpdatedOn must be nullable datetime type.");
                     }
                 }
+                else if (fi.Name == "LockVersion")
+                {
+                    if(fi.MemberType == typeof(int))
+                    {
+                        fh.IsLockVersion = true;
+                    }
+                    else
+                    {
+                        throw new DataException("LockVersion must be int type.");
+                    }
+                }
                 else
                 {
                     throw new DataException("Only CreatedOn and UpdatedOn are supported as special name.");
@@ -341,6 +352,10 @@ namespace Lephone.Data.Common
                 else if(!string.IsNullOrEmpty(oi.DeleteToTableName))
                 {
                     oi.Composer = new DeleteToQueryComposer(oi);
+                }
+                else if (oi.LockVersion != null)
+                {
+                    oi.Composer = new OptimisticLockingQueryComposer(oi);
                 }
                 else
                 {

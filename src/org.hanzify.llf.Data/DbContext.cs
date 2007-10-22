@@ -404,7 +404,11 @@ namespace Lephone.Data
         {
             SqlStatement Sql = oi.Composer.GetUpdateStatement(this.Dialect, obj, iwc);
             oi.LogSql(Sql);
-            dp.ExecuteNonQuery(Sql);
+            int n = dp.ExecuteNonQuery(Sql);
+            if (n == 0)
+            {
+                throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
+            }
         }
 
         public void Insert(object obj)
