@@ -74,59 +74,47 @@ namespace Lephone.Web
             }
 
             string[] ss = url.Split(spliter, StringSplitOptions.RemoveEmptyEntries);
-            string ControllerName;
-
-            switch (ss.Length)
-            {
-                case 0:
-                    ControllerName = "default";
-                    break;
-                case 1:
-                case 2:
-                case 3:
-                    ControllerName = ss[0].ToLower();
-                    break;
-                default:
-                    throw new NotSupportedException("Not supported more than 3 paramters now.");
-            }
+            string ControllerName = (ss.Length == 0) ? "default" : ss[0].ToLower();
 
             if (ctls.ContainsKey(ControllerName))
             {
-                string Action = ss.Length > 1 ? ss[1] : "list";
-                string Param = ss.Length > 2 ? ss[2] : null;
-                CallController(context, ControllerName, Action, Param);
+                InvokeAction(context, ControllerName, ss);
                 return;
             }
             context.Response.StatusCode = 404;
         }
 
-        protected virtual void CallController(HttpContext context, string ControllerName, string Action, string Param)
+        protected virtual void InvokeAction(HttpContext context, string ControllerName, string[] ss)
         {
             // Invoke Controller
             Type t = ctls[ControllerName];
             ControllerBase ctl = ClassHelper.CreateInstance(t) as ControllerBase;
             ctl.ctx = context;
-            MethodInfo mi = t.GetMethod(Action, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
 
             try
             {
+                string Action = ss.Length > 1 ? ss[1] : GetDefaultActionName(t);
+                MethodInfo mi = t.GetMethod(Action, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
                 if (mi == null)
                 {
                     throw new WebException(string.Format("Action {0} doesn't exist!!!", Action));
                 }
+
                 ParameterInfo[] pis = mi.GetParameters();
-                switch (pis.Length)
+                List<object> parameters = new List<object>();
+                for (int i = 0; i < pis.Length; i++)
                 {
-                    case 0:
-                        CallAction(mi, ctl, new object[] { });
-                        break;
-                    case 1:
-                        object p1 = ChangeType(Param, pis[0].ParameterType);
-                        CallAction(mi, ctl, new object[] { p1 });
-                        break;
-                    default:
-                        throw new WebException("Action paramter number not allowed!");
+                    if (i + 2 < ss.Length)
+                    {
+                        object px = ChangeType(ss[i + 2], pis[i].ParameterType);
+                        parameters.Add(px);
+                    }
+                    else
+                    {
+                        parameters.Add(null);
+                    }
                 }
+                CallAction(mi, ctl, parameters.ToArray());
                 // Invoke Viewer
                 string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + Action + ".aspx";
                 string pp = context.Server.MapPath(vp);
@@ -170,6 +158,16 @@ namespace Lephone.Web
                 return CommonHelper.GetEmptyValue(t);
             }
             return Convert.ChangeType(s, t);
+        }
+
+        protected string GetDefaultActionName(Type t)
+        {
+            object[] os = t.GetCustomAttributes(typeof(DefaultActionAttribute), false);
+            if (os != null && os.Length > 0)
+            {
+                return ((DefaultActionAttribute)os[0]).ActionName;
+            }
+            return "list";
         }
     }
 }
