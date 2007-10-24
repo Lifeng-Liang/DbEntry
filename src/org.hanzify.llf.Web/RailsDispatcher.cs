@@ -65,8 +65,8 @@ namespace Lephone.Web
 
         public void ProcessRequest(HttpContext context)
         {
-            string url = context.Request.RawUrl;
-            url = url.Substring(context.Request.ApplicationPath.Length);
+            string url = context.Request.AppRelativeCurrentExecutionFilePath;
+            url = url.Substring(2);
             
             if (url.ToLower().EndsWith(".aspx"))
             {
@@ -93,7 +93,7 @@ namespace Lephone.Web
 
             try
             {
-                string Action = ss.Length > 1 ? ss[1] : GetDefaultActionName(t);
+                string Action = ss.Length > 1 ? ss[1] : ControllerInfo.GetInstance(t).DefaultAction;
                 MethodInfo mi = t.GetMethod(Action, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
                 if (mi == null)
                 {
@@ -158,16 +158,6 @@ namespace Lephone.Web
                 return CommonHelper.GetEmptyValue(t);
             }
             return Convert.ChangeType(s, t);
-        }
-
-        protected string GetDefaultActionName(Type t)
-        {
-            object[] os = t.GetCustomAttributes(typeof(DefaultActionAttribute), false);
-            if (os != null && os.Length > 0)
-            {
-                return ((DefaultActionAttribute)os[0]).ActionName;
-            }
-            return "list";
         }
     }
 }

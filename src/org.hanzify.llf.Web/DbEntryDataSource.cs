@@ -22,7 +22,7 @@ namespace Lephone.Web
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource
     {
-        private static readonly ObjectInfo ObjInfo = DbObjectHelper.GetObjectInfo(typeof(T));
+        private static readonly ObjectInfo ObjInfo = ObjectInfo.GetInstance(typeof(T));
         protected static readonly string KeyName = ObjInfo.KeyFields[0].Name;
         public event EventHandler DataSourceChanged;
 

@@ -13,8 +13,75 @@ using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
-	public class ObjectInfo
+	public class ObjectInfo : FlyweightBase<Type, ObjectInfo>
 	{
+        #region GetInstance
+
+        public new static ObjectInfo GetInstance(Type DbObjectType)
+        {
+            Type t = (DbObjectType.IsAbstract) ? DynamicObject.GetImplType(DbObjectType) : DbObjectType;
+            ObjectInfo oi = FlyweightBase<Type, ObjectInfo>.GetInstance(t);
+            if (oi.BaseType == null)
+            {
+                oi.BaseType = DbObjectType;
+            }
+            return oi;
+        }
+
+        internal static ObjectInfo GetSimpleInstance(Type DbObjectType)
+        {
+            Type t = (DbObjectType.IsAbstract) ? DynamicObject.GetImplType(DbObjectType) : DbObjectType;
+            if (dic.ContainsKey(t))
+            {
+                return dic[t];
+            }
+            else
+            {
+                ObjectInfo oi = new ObjectInfo();
+                oi.InitBySimpleMode(t);
+                return oi;
+            }
+        }
+
+        protected override void Init(Type t)
+        {
+            InitBySimpleMode(t);
+            // binding QueryComposer
+            if (!string.IsNullOrEmpty(SoftDeleteColumnName))
+            {
+                Composer = new SoftDeleteQueryComposer(this, SoftDeleteColumnName);
+            }
+            else if (!string.IsNullOrEmpty(DeleteToTableName))
+            {
+                Composer = new DeleteToQueryComposer(this);
+            }
+            else if (LockVersion != null)
+            {
+                Composer = new OptimisticLockingQueryComposer(this);
+            }
+            else
+            {
+                Composer = new QueryComposer(this);
+            }
+            // binding DbObjectHandler
+            if (DataSetting.ObjectHandlerType == HandlerType.Emit
+                || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
+            {
+                Handler = DynamicObject.CreateDbObjectHandler(t, this);
+            }
+            else
+            {
+                Handler = new ReflectionDbObjectHandler(t, this);
+            }
+        }
+
+        private void InitBySimpleMode(Type t)
+        {
+            DbObjectHelper.InitObjectInfoBySimpleMode(t, this);
+        }
+
+        #endregion
+
         internal IDbObjectHandler Handler;
         internal QueryComposer Composer;
 
@@ -39,12 +106,14 @@ namespace Lephone.Data.Common
         public bool HasOnePremarykey;
         public Dictionary<Type, ManyToManyMediTable> ManyToManys = new Dictionary<Type,ManyToManyMediTable>();
 
-        public ObjectInfo(Type HandleType, string TableName, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
-            : this(HandleType, new FromClause(TableName), KeyFields, Fields, DisableSqlLog)
-		{
-		}
+        internal ObjectInfo() { }
 
-        public ObjectInfo(Type HandleType, FromClause From, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
+        internal ObjectInfo(Type HandleType, FromClause From, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
+        {
+            Init(HandleType, From, KeyFields, Fields, DisableSqlLog);
+        }
+
+        internal void Init(Type HandleType, FromClause From, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
         {
             this.HandleType = HandleType;
             this.From = From;
@@ -147,6 +216,19 @@ namespace Lephone.Data.Common
         public bool IsNewObject(object obj)
         {
             return KeyFields[0].UnsavedValue.Equals(Handler.GetKeyValue(obj));
+        }
+
+        public static object CloneObject(object obj)
+        {
+            if (obj == null) { return null; }
+            ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
+            object o = oi.NewObject();
+            foreach (MemberHandler m in oi.SimpleFields)
+            {
+                object v = m.GetValue(obj);
+                m.SetValue(o, v);
+            }
+            return o;
         }
     }
 }

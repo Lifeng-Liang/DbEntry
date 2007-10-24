@@ -16,6 +16,11 @@ namespace Lephone.Util
         public static readonly BindingFlags InstanceFlag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
         public static readonly BindingFlags InstancePublic = BindingFlags.Public | BindingFlags.Instance;
 
+        public static T CreateInstance<T>()
+        {
+            return (T)CreateInstance(typeof(T));
+        }
+
 		public static object CreateInstance(string ClassName)
 		{
 			Type t = Type.GetType(ClassName, true);
@@ -157,6 +162,86 @@ namespace Lephone.Util
                 sb.Length -= spliter.Length;
             }
             return string.Format(string.Format(msg, sb.ToString()), os);
+        }
+
+        public static T[] GetAttributes<T>(MethodInfo info, bool inherit) where T : Attribute
+        {
+            object[] os = info.GetCustomAttributes(typeof(T), inherit);
+            return (T[])os;
+        }
+
+        public static T GetAttribute<T>(MethodInfo info, bool inherit) where T : Attribute
+        {
+            T[] ts = GetAttributes<T>(info, inherit);
+            if (ts != null && ts.Length > 0)
+                return ts[0];
+            else
+                return null;
+        }
+
+        public static bool HasAttribute<T>(MethodInfo info, bool inherit) where T : Attribute
+        {
+            return GetAttribute<T>(info, inherit) != null;
+        }
+
+        public static T[] GetAttributes<T>(FieldInfo info, bool inherit) where T : Attribute
+        {
+            object[] os = info.GetCustomAttributes(typeof(T), inherit);
+            return (T[])os;
+        }
+
+        public static T GetAttribute<T>(FieldInfo info, bool inherit) where T : Attribute
+        {
+            T[] ts = GetAttributes<T>(info, inherit);
+            if (ts != null && ts.Length > 0)
+                return ts[0];
+            else
+                return null;
+        }
+
+        public static bool HasAttribute<T>(FieldInfo info, bool inherit) where T : Attribute
+        {
+            return GetAttribute<T>(info, inherit) != null;
+        }
+
+        public static T[] GetAttributes<T>(PropertyInfo info, bool inherit) where T : Attribute
+        {
+            object[] os = info.GetCustomAttributes(typeof(T), inherit);
+            return (T[])os;
+        }
+
+        public static T GetAttribute<T>(PropertyInfo info, bool inherit) where T : Attribute
+        {
+            T[] ts = GetAttributes<T>(info, inherit);
+            if (ts != null && ts.Length > 0)
+                return ts[0];
+            else
+                return null;
+        }
+
+        public static bool HasAttribute<T>(PropertyInfo info, bool inherit) where T : Attribute
+        {
+            return GetAttribute<T>(info, inherit) != null;
+        }
+
+        public static T[] GetAttributes<T>(Type info, bool inherit) where T : Attribute
+        {
+            object[] os = info.GetCustomAttributes(typeof(T), inherit);
+            return (T[])os;
+        }
+
+        public static T GetAttribute<T>(Type info, bool inherit) where T : Attribute
+        {
+            T[] ts = GetAttributes<T>(info, inherit);
+            if (ts != null && ts.Length > 0)
+                return ts[0];
+            else
+                return null;
+        }
+
+        public static bool HasAttribute<T>(Type info, bool inherit) where T : Attribute
+        {
+            return GetAttribute<T>(info, inherit) != null;
         }
     }
 }

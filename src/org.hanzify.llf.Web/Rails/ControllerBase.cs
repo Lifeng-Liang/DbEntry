@@ -63,7 +63,7 @@ namespace Lephone.Web.Rails
         public virtual void Create()
         {
             string ControllerName = GetControllerName();
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             T obj = (T)oi.NewObject();
             foreach(MemberHandler m in oi.SimpleFields)
             {
@@ -108,7 +108,7 @@ namespace Lephone.Web.Rails
         public virtual void Update(int n)
         {
             string ControllerName = GetControllerName();
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             T obj = (T)oi.NewObject();
             foreach (MemberHandler m in oi.SimpleFields)
             {

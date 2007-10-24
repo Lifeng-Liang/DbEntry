@@ -37,7 +37,7 @@ namespace Lephone.Data.Definition
 
         public XmlSchema GetSchema()
         {
-            //ObjectInfo oi = DbObjectHelper.GetObjectInfo(this.GetType());
+            //ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
             //XmlSchema xs = new XmlSchema();
             //XmlSchemaComplexType xct = new XmlSchemaComplexType();
             //xct.Name = "DbObject";
@@ -61,7 +61,7 @@ namespace Lephone.Data.Definition
 
         public void WriteXml(System.Xml.XmlWriter writer)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(this.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
             foreach (MemberHandler mh in oi.SimpleFields)
             {
                 object o = mh.GetValue(this);

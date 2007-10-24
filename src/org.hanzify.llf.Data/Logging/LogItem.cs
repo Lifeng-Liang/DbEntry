@@ -18,6 +18,7 @@ namespace Lephone.Data.Logging
 		public string Name;
 		public string Message;
 		[DbColumn("Exception")] public string eException;
+        [SpecialName] public DateTime CreatedOn;
 
         public LogItem(LogType Type, string Source, string Name, string Message, Exception eException)
 		{

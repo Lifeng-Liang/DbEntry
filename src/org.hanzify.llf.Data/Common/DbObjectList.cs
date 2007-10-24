@@ -46,7 +46,7 @@ namespace Lephone.Data.Common
         public void WriteXml(System.Xml.XmlWriter writer)
         {
             Type t = typeof(T);
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             foreach (object or in this)
             {
                 IXmlSerializable o = or as IXmlSerializable;
@@ -58,7 +58,7 @@ namespace Lephone.Data.Common
 
         public DataTable ToDataTable()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             DataTable dt = new DataTable(oi.From.GetMainTableName());
             foreach (MemberHandler m in oi.SimpleFields)
             {

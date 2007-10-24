@@ -78,7 +78,7 @@ namespace Lephone.Data.Definition
 
         protected void AddToInnerList(IList<T> l)
         {
-            MemberHandler af = DbObjectHelper.GetObjectInfo(typeof(T)).KeyFields[0];
+            MemberHandler af = ObjectInfo.GetInstance(typeof(T)).KeyFields[0];
             object tkey = null;
             if (InnerList.Count == 1)
             {
@@ -229,7 +229,7 @@ namespace Lephone.Data.Definition
 
         void IRenew.SetAsNew()
         {
-            MemberHandler f = DbObjectHelper.GetObjectInfo(typeof(T)).KeyFields[0];
+            MemberHandler f = ObjectInfo.GetInstance(typeof(T)).KeyFields[0];
             foreach (T t in InnerList)
             {
                 f.SetValue(t, f.UnsavedValue);

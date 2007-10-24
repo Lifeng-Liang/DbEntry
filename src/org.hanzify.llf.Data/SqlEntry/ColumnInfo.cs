@@ -35,7 +35,7 @@ namespace Lephone.Data.SqlEntry
         {
             if (fh.IsBelongsTo)
             {
-                Common.ObjectInfo oi = Common.DbObjectHelper.GetObjectInfo(fh.FieldType.GetGenericArguments()[0]);
+                Common.ObjectInfo oi = Common.ObjectInfo.GetInstance(fh.FieldType.GetGenericArguments()[0]);
                 if (oi.KeyFields != null && oi.KeyFields.Length == 1)
                 {
                     return oi.KeyFields[0].FieldType;

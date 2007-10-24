@@ -47,7 +47,7 @@ namespace Lephone.Data.Definition
 
         private void InitForeignKeyName()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             MemberHandler mh = oi.GetHasAndBelongsToMany(typeof(T));
             ForeignKeyName = mh.Name;
         }
@@ -56,7 +56,7 @@ namespace Lephone.Data.Definition
         {
             if (m_IsLoaded)
             {
-                ObjectInfo oi = DbObjectHelper.GetObjectInfo(item.GetType());
+                ObjectInfo oi = ObjectInfo.GetInstance(item.GetType());
                 if (oi.HasOnePremarykey)
                 {
                     object key = oi.Handler.GetKeyValue(item);
@@ -74,7 +74,7 @@ namespace Lephone.Data.Definition
 
         protected override IList<T> InnerLoad()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
             DbObjectList<T> il = new DbObjectList<T>();
             context.FillCollection(il, typeof(T), oi.ManyToManys[typeof(T)].From,
@@ -84,7 +84,7 @@ namespace Lephone.Data.Definition
 
         protected override void OnRemoveItem(T item)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(item.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(item.GetType());
             object key = oi.Handler.GetKeyValue(item);
             if (key == oi.KeyFields[0].UnsavedValue)
             {

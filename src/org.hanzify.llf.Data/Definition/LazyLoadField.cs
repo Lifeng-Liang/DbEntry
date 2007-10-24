@@ -19,7 +19,7 @@ namespace Lephone.Data.Definition
 
         protected override void DoLoad()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             string kn = oi.KeyFields[0].Name;
             object key = oi.KeyFields[0].GetValue(owner);
             SelectStatementBuilder sb = new SelectStatementBuilder(oi.From, null, null);

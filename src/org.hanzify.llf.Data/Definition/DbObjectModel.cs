@@ -11,7 +11,7 @@ using Lephone.Data.QuerySyntax;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class DbObjectModel<T, TKey> : DbObjectModelBase<T, TKey>
+    public class DbObjectModel<T, TKey> : DbObjectModelBase<T, TKey> where T : DbObjectModel<T, TKey>
     {
         private TKey m_Id;
 
@@ -24,7 +24,7 @@ namespace Lephone.Data.Definition
     }
 
     [Serializable]
-    public class DbObjectModel<T> : DbObjectModel<T, long>
+    public class DbObjectModel<T> : DbObjectModel<T, long> where T : DbObjectModel<T, long>
     {
     }
 }

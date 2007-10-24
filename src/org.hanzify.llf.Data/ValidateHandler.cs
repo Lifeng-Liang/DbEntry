@@ -42,7 +42,7 @@ namespace Lephone.Data
         }
 
         public ValidateHandler(bool EmptyAsNull)
-            : this(EmptyAsNull, false, "Invalid Field {0} {1}.", "Not Allow Null", "Not Matched", "The length should be {0} to {1} but was {2}", "Should be UNIQUE", ", ")
+            : this(EmptyAsNull, false, "Invalid Field {0} {1}.", "Not Allow Null", "Not Matched", "The length should be {0} to {1} but was {2}", "Should be UNIQUED", ", ")
         {
         }
 
@@ -68,7 +68,7 @@ namespace Lephone.Data
             this._ErrorMessages.Clear();
 
             Type t = obj.GetType();
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             string tn = oi.BaseType.Name;
             bool IsNew = false;
             if (oi.KeyFields.Length > 0)

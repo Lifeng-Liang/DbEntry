@@ -29,10 +29,10 @@ namespace Lephone.Data.Definition
         public BelongsTo(object owner)
         {
             this.owner = owner;
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             MemberHandler mh = oi.GetBelongsTo(typeof(T));
             ForeignKeyName = mh.Name;
-            ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(typeof(T));
+            ObjectInfo oi1 = ObjectInfo.GetInstance(typeof(T));
             _ForeignKey = oi1.GetPrimaryKeyDefaultValue();
             //_ForeignKey = oi.GetPrimaryKeyDefaultValue();
             DbObjectSmartUpdate o = owner as DbObjectSmartUpdate;
@@ -67,7 +67,7 @@ namespace Lephone.Data.Definition
 
         void ILazyLoading.Write(object item, bool IsLoad)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             if (oi.KeyFields != null & oi.KeyFields.Length == 1)
             {
                 _Value = (T)item;
@@ -108,7 +108,7 @@ namespace Lephone.Data.Definition
             _Value = context.GetObject<T>(_ForeignKey);
             if (_Value != null)
             {
-                ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+                ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
                 foreach (MemberHandler f in oi.Fields)
                 {
                     if (f.IsHasOne || f.IsHasMany)
@@ -126,7 +126,7 @@ namespace Lephone.Data.Definition
 
         private string GetKeyName()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             if (oi.KeyFields != null & oi.KeyFields.Length == 1)
             {
                 return oi.KeyFields[0].Name;

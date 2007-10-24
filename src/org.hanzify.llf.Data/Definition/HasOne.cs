@@ -45,7 +45,7 @@ namespace Lephone.Data.Definition
             {
                 if (OldValue != null)
                 {
-                    ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+                    ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
                     MemberHandler mh = oi.GetBelongsTo(owner.GetType());
                     if (mh != null)
                     {
@@ -56,7 +56,7 @@ namespace Lephone.Data.Definition
             }
             else
             {
-                ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+                ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
                 MemberHandler mh = oi.GetBelongsTo(owner.GetType());
                 if (mh != null)
                 {
@@ -71,7 +71,7 @@ namespace Lephone.Data.Definition
         {
             if (Order == null)
             {
-                ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+                ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
                 if (oi.HasSystemKey)
                 {
                     Order = new OrderBy(oi.KeyFields[0].Name);
@@ -82,13 +82,13 @@ namespace Lephone.Data.Definition
         protected override void DoLoad()
         {
             if (RelationName == null) { return; }
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
             m_Value = context.GetObject<T>(CK.K[RelationName] == key, Order);
 
             if (m_Value != null)
             {
-                ObjectInfo ti = DbObjectHelper.GetObjectInfo(typeof(T));
+                ObjectInfo ti = ObjectInfo.GetInstance(typeof(T));
                 MemberHandler mh = ti.GetBelongsTo(owner.GetType());
                 if (mh != null)
                 {
@@ -102,7 +102,7 @@ namespace Lephone.Data.Definition
         {
             if (m_Value != null)
             {
-                MemberHandler f = DbObjectHelper.GetObjectInfo(typeof(T)).KeyFields[0];
+                MemberHandler f = ObjectInfo.GetInstance(typeof(T)).KeyFields[0];
                 f.SetValue(m_Value, f.UnsavedValue);
             }
         }

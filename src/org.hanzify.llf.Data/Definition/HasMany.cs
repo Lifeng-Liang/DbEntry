@@ -48,7 +48,7 @@ namespace Lephone.Data.Definition
 
         protected override void InnerWrite(object item, bool IsLoad)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             MemberHandler mh = oi.GetBelongsTo(owner.GetType());
             if (mh != null)
             {
@@ -59,7 +59,7 @@ namespace Lephone.Data.Definition
 
         protected override IList<T> InnerLoad()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(owner.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
             IList<T> l = context
                 .From<T>()
@@ -71,7 +71,7 @@ namespace Lephone.Data.Definition
 
         protected override void OnRemoveItem(T item)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(typeof(T));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             if (!oi.IsNewObject(item))
             {
                 Type ot = owner.GetType();

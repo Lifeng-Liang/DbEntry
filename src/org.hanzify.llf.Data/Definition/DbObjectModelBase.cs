@@ -7,7 +7,7 @@ using Lephone.Data.Common;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class DbObjectModelBase<T, TKey> : DbObjectSmartUpdate
+    public class DbObjectModelBase<T, TKey> : DbObjectSmartUpdate where T : DbObjectModelBase<T, TKey>
     {
         protected static CK Col
         {

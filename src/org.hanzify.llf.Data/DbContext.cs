@@ -37,7 +37,7 @@ namespace Lephone.Data
                 {
                     InitTableNames();
                 }
-                ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+                ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
                 string Name = oi.From.GetMainTableName();
                 if (!TableNames.ContainsKey(Name.ToLower()))
                 {
@@ -96,7 +96,7 @@ namespace Lephone.Data
         public long GetResultCount(Type DbObjectType, WhereCondition iwc)
         {
             TryCreateTable(DbObjectType);
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             SqlStatement Sql = oi.Composer.GetResultCountStatement(this.Dialect, iwc);
             oi.LogSql(Sql);
             object ro = this.ExecuteScalar(Sql);
@@ -105,7 +105,7 @@ namespace Lephone.Data
 
         public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type DbObjectType, WhereCondition iwc, OrderBy order, string ColumnName)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             SqlStatement Sql = oi.Composer.GetGroupByStatement(this.Dialect, iwc, order, ColumnName);
             oi.LogSql(Sql);
             DbObjectList<GroupByObject<T1>> list = new DbObjectList<GroupByObject<T1>>();
@@ -163,14 +163,14 @@ namespace Lephone.Data
 
         public void DataLoad(IProcessor ip, Type DbObjectType, SqlStatement Sql)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             oi.LogSql(Sql);
             DataLoadDirect(ip, DbObjectType, Sql, false);
         }
 
         public void DataLoad(IProcessor ip, Type DbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             SqlStatement Sql = oi.Composer.GetSelectStatement(this.Dialect, from, iwc, oc, lc);
             oi.LogSql(Sql);
             DataLoadDirect(ip, DbObjectType, Sql);
@@ -235,7 +235,7 @@ namespace Lephone.Data
 
         public object GetObject(Type t, object key)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             if (oi.KeyFields != null && oi.KeyFields.Length == 1)
             {
                 string keyname = oi.KeyFields[0].Name;
@@ -271,7 +271,7 @@ namespace Lephone.Data
         private void InnerSave(object obj)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             if (!oi.HasOnePremarykey)
             {
                 throw new DataException("To call this function, the table must have one primary key.");
@@ -378,7 +378,7 @@ namespace Lephone.Data
         {
             Type t = obj.GetType();
             TryCreateTable(t);
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             ProcessRelation(oi, true, obj, delegate(DataProvider dp)
             {
                 DbObjectSmartUpdate to = obj as DbObjectSmartUpdate;
@@ -415,7 +415,7 @@ namespace Lephone.Data
         {
             Type t = obj.GetType();
             TryCreateTable(t);
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             InsertStatementBuilder sb = oi.Composer.GetInsertStatementBuilder(obj);
             if (oi.HasSystemKey)
             {
@@ -472,7 +472,7 @@ namespace Lephone.Data
 
         private void SetBelongsToForeignKey(object obj, object subobj, object ForeignKey)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(subobj.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(subobj.GetType());
             MemberHandler mh = oi.GetBelongsTo(obj.GetType());
             if (mh != null)
             {
@@ -488,7 +488,7 @@ namespace Lephone.Data
         {
             Type t = obj.GetType();
             TryCreateTable(t);
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             SqlStatement Sql = oi.Composer.GetDeleteStatement(this.Dialect, obj);
             oi.LogSql(Sql);
             int ret = 0;
@@ -525,7 +525,7 @@ namespace Lephone.Data
         {
             Type t = typeof(T);
             TryCreateTable(t);
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             SqlStatement Sql = oi.Composer.GetDeleteStatement(this.Dialect, iwc);
             oi.LogSql(Sql);
             return this.ExecuteNonQuery(Sql);
@@ -538,7 +538,7 @@ namespace Lephone.Data
 
         public void DropTable(Type DbObjectType, bool CatchException)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             string tn = oi.From.GetMainTableName();
             DropTable(tn, CatchException, oi);
             if (oi.HasSystemKey)
@@ -577,7 +577,7 @@ namespace Lephone.Data
 
         public void Create(Type DbObjectType)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             SqlStatement Sql = oi.Composer.GetCreateStatement(this.Dialect);
             oi.LogSql(Sql);
             this.ExecuteNonQuery(Sql);
@@ -589,7 +589,7 @@ namespace Lephone.Data
 
         public void Create_DeleteToTable(Type DbObjectType)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             CreateTableStatementBuilder sb = oi.Composer.GetCreateTableStatementBuilder();
             sb.TableName = oi.DeleteToTableName;
             sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0));
@@ -604,8 +604,8 @@ namespace Lephone.Data
 
         public void Create_ManyToManyMediTable(Type t1, Type t2)
         {
-            ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(t1);
-            ObjectInfo oi2 = DbObjectHelper.GetObjectInfo(t2);
+            ObjectInfo oi1 = ObjectInfo.GetInstance(t1);
+            ObjectInfo oi2 = ObjectInfo.GetInstance(t2);
             if (!(oi1.ManyToManys.ContainsKey(t2) && oi2.ManyToManys.ContainsKey(t1)))
             {
                 throw new DataException("They are not many to many relation ship classes!");

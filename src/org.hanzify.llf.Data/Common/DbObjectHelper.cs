@@ -21,11 +21,78 @@ namespace Lephone.Data.Common
 {
     public static class DbObjectHelper
     {
-        private static HybridDictionary ObjectInfos = new HybridDictionary();
+        internal static void InitObjectInfoBySimpleMode(Type t, ObjectInfo oi)
+        {
+            List<MemberHandler> ret = new List<MemberHandler>();
+            List<MemberHandler> kfs = new List<MemberHandler>();
+            foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
+            {
+                if (!fi.IsPrivate)
+                {
+                    MemberAdapter m = MemberAdapter.NewObject(fi);
+                    ProcessMember(m, ret, kfs);
+                }
+            }
+            foreach (PropertyInfo pi in t.GetProperties(ClassHelper.InstancePublic))
+            {
+                if (pi.CanRead && pi.CanWrite)
+                {
+                    MemberAdapter m = MemberAdapter.NewObject(pi);
+                    ProcessMember(m, ret, kfs);
+                }
+            }
+            if (kfs.Count > 1)
+            {
+                foreach (MemberHandler k in kfs)
+                {
+                    if (k.IsDbGenerate)
+                    {
+                        throw new DataException("Multi key did not allow SystemGeneration!");
+                    }
+                }
+            }
+
+            // fill simple and relation fields.
+            List<MemberHandler> rlfs = new List<MemberHandler>();
+            List<MemberHandler> sifs = new List<MemberHandler>();
+            foreach (MemberHandler mh in ret)
+            {
+                if (mh.IsHasOne || mh.IsHasMany || mh.IsHasAndBelongsToMany || mh.IsBelongsTo || mh.IsLazyLoad)
+                {
+                    rlfs.Add(mh);
+                }
+                else
+                {
+                    sifs.Add(mh);
+                }
+            }
+            List<MemberHandler> fields = new List<MemberHandler>(sifs);
+            fields.AddRange(rlfs);
+            MemberHandler[] keys = kfs.ToArray();
+
+            oi.Init(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
+            SetManyToManyMediFrom(oi, t, oi.From.GetMainTableName(), oi.Fields);
+
+            oi.RelationFields = rlfs.ToArray();
+            oi.SimpleFields = sifs.ToArray();
+
+            SoftDeleteAttribute sd = ClassHelper.GetAttribute<SoftDeleteAttribute>(t, true);
+            if (sd != null)
+            {
+                oi.SoftDeleteColumnName = sd.ColumnName;
+            }
+            DeleteToAttribute dta = ClassHelper.GetAttribute<DeleteToAttribute>(t, true);
+            if (dta != null)
+            {
+                oi.DeleteToTableName = dta.TableName;
+            }
+
+            GetIndexes(oi);
+        }
 
         public static object CreateObject(DbContext context, Type DbObjectType, IDataReader dr, bool UseIndex)
         {
-            ObjectInfo oi = m_GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             object obj = oi.NewObject();
             DbObjectSmartUpdate sudi = obj as DbObjectSmartUpdate;
             if (sudi != null)
@@ -65,21 +132,16 @@ namespace Lephone.Data.Common
             }
         }
 
-        public static ObjectInfo GetObjectInfo(Type DbObjectType)
-        {
-            return m_GetObjectInfo(DbObjectType);
-        }
-
         public static FromClause GetFromClause(Type DbObjectType)
         {
-            ObjectInfo oi = m_GetObjectInfo(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             return oi.From;
         }
 
         public static WhereCondition GetKeyWhereClause(object obj)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = m_GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             if (oi.KeyFields == null)
             {
                 throw new DataException("dbobject not define key field : " + t.ToString());
@@ -96,7 +158,7 @@ namespace Lephone.Data.Common
         public static void SetKey(object obj, object key)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = m_GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             if (!oi.HasSystemKey)
             {
                 throw new DataException("dbobject not define SystemGeneration key field : " + t.ToString());
@@ -118,50 +180,20 @@ namespace Lephone.Data.Common
             fh.SetValue(obj, sKey);
         }
 
-        public static T GetAttribute<T>(MemberAdapter fi) where T : Attribute
-        {
-            T[] ts = (T[])fi.GetCustomAttributes(typeof(T), false);
-            if (ts.Length == 1)
-            {
-                return ts[0];
-            }
-            return null;
-        }
-
-        public static T GetAttribute<T>(Type t) where T : Attribute
-        {
-            T[] ts = (T[])t.GetCustomAttributes(typeof(T), true);
-            if (ts.Length == 1)
-            {
-                return ts[0];
-            }
-            return null;
-        }
-
-        public static Attribute GetAttribute(Type type, MemberAdapter fi)
-        {
-            Attribute[] ts = (Attribute[])fi.GetCustomAttributes(type, false);
-            if (ts.Length == 1)
-            {
-                return ts[0];
-            }
-            return null;
-        }
-
         public static string GetColumuName(MemberAdapter fi)
         {
-            DbColumnAttribute fn = GetAttribute<DbColumnAttribute>(fi);
+            DbColumnAttribute fn = fi.GetAttribute<DbColumnAttribute>(false);
             return (fn == null) ? fi.Name : fn.Name;
         }
 
         internal static MemberHandler GetMemberHandler(MemberAdapter fi)
         {
-            DbColumnAttribute fn = GetAttribute<DbColumnAttribute>(fi);
+            DbColumnAttribute fn = fi.GetAttribute<DbColumnAttribute>(false);
             string Name = (fn == null) ? fi.Name : fn.Name;
 
             MemberHandler fh = MemberHandler.NewObject(fi, Name);
 
-            DbKeyAttribute dk = GetAttribute<DbKeyAttribute>(fi);
+            DbKeyAttribute dk = fi.GetAttribute<DbKeyAttribute>(false);
             if (dk != null)
             {
                 fh.IsKey = true;
@@ -224,12 +256,12 @@ namespace Lephone.Data.Common
                 }
             }
 
-            if (GetAttribute<AllowNullAttribute>(fi) != null || NullableHelper.IsNullableType(fi.MemberType))
+            if (fi.GetAttribute<AllowNullAttribute>(false) != null || NullableHelper.IsNullableType(fi.MemberType))
             {
                 fh.AllowNull = true;
             }
 
-            if (GetAttribute<SpecialNameAttribute>(fi) != null)
+            if (fi.GetAttribute<SpecialNameAttribute>(false) != null)
             {
                 if (fi.Name == "CreatedOn")
                 {
@@ -270,7 +302,7 @@ namespace Lephone.Data.Common
                 }
             }
 
-            LengthAttribute ml = GetAttribute<LengthAttribute>(fi);
+            LengthAttribute ml = fi.GetAttribute<LengthAttribute>(false);
             if (ml != null)
             {
                 if (fi.MemberType.IsSubclassOf(typeof(ValueType)))
@@ -286,7 +318,7 @@ namespace Lephone.Data.Common
             {
                 fh.IsUnicode = true;
             }
-            StringColumnAttribute sf = GetAttribute<StringColumnAttribute>(fi);
+            StringColumnAttribute sf = fi.GetAttribute<StringColumnAttribute>(false);
             if (sf != null)
             {
                 if (!(fi.MemberType == typeof(string) || (fh.IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string))))
@@ -296,7 +328,7 @@ namespace Lephone.Data.Common
                 fh.IsUnicode = sf.IsUnicode;
                 fh.Regular = sf.Regular;
             }
-            OrderByAttribute os = GetAttribute<OrderByAttribute>(fi);
+            OrderByAttribute os = fi.GetAttribute<OrderByAttribute>(false);
             if (os != null)
             {
                 fh.OrderByString = os.OrderBy;
@@ -306,8 +338,13 @@ namespace Lephone.Data.Common
 
         private static void ProcessMember(MemberAdapter m, List<MemberHandler> ret, List<MemberHandler> kfs)
         {
-            if (!HasAtributes(m, typeof(ExcludeAttribute), typeof(HasOneAttribute), typeof(HasManyAttribute),
-                typeof(HasAndBelongsToManyAttribute), typeof(BelongsToAttribute), typeof(LazyLoadAttribute)))
+            if (!(
+                m.HasAttribute<ExcludeAttribute>(false) ||
+                m.HasAttribute<HasOneAttribute>(false) ||
+                m.HasAttribute<HasManyAttribute>(false) ||
+                m.HasAttribute<HasAndBelongsToManyAttribute>(false) ||
+                m.HasAttribute<BelongsToAttribute>(false) ||
+                m.HasAttribute<LazyLoadAttribute>(false)))
             {
                 MemberHandler fh = GetMemberHandler(m);
                 if (fh.IsKey)
@@ -322,154 +359,11 @@ namespace Lephone.Data.Common
             }
         }
 
-        private static bool HasAtributes(MemberAdapter m, params Type[] atts)
-        {
-            foreach (Type att in atts)
-            {
-                if (GetAttribute(att, m) != null)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private static ObjectInfo m_GetObjectInfo(Type tt)
-        {
-            Type t = (tt.IsAbstract) ? DynamicObject.GetImplType(tt) : tt;
-            if (ObjectInfos.Contains(t))
-            {
-                return (ObjectInfo)ObjectInfos[t];
-            }
-            else
-            {
-                ObjectInfo oi = m_GetSimpleObjectInfo(t);
-                // binding QueryComposer
-                if (!string.IsNullOrEmpty(oi.SoftDeleteColumnName))
-                {
-                    oi.Composer = new SoftDeleteQueryComposer(oi, oi.SoftDeleteColumnName);
-                }
-                else if(!string.IsNullOrEmpty(oi.DeleteToTableName))
-                {
-                    oi.Composer = new DeleteToQueryComposer(oi);
-                }
-                else if (oi.LockVersion != null)
-                {
-                    oi.Composer = new OptimisticLockingQueryComposer(oi);
-                }
-                else
-                {
-                    oi.Composer = new QueryComposer(oi);
-                }
-                // binding DbObjectHandler
-                if (DataSetting.ObjectHandlerType == HandlerType.Emit
-                    || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
-                {
-                    oi.Handler = DynamicObject.CreateDbObjectHandler(t, oi);
-                }
-                else
-                {
-                    oi.Handler = new ReflectionDbObjectHandler(t, oi);
-                }
-
-                lock (ObjectInfos.SyncRoot)
-                {
-                    ObjectInfos[t] = oi;
-                }
-                oi.BaseType = tt;
-                return oi;
-            }
-        }
-
-        internal static ObjectInfo GetObjectInfoOnly(Type tt)
-        {
-            Type t = (tt.IsAbstract) ? DynamicObject.GetImplType(tt) : tt;
-            if (ObjectInfos.Contains(t))
-            {
-                return (ObjectInfo)ObjectInfos[t];
-            }
-            else
-            {
-                return m_GetSimpleObjectInfo(t);
-            }
-        }
-
-        private static ObjectInfo m_GetSimpleObjectInfo(Type t)
-        {
-            List<MemberHandler> ret = new List<MemberHandler>();
-            List<MemberHandler> kfs = new List<MemberHandler>();
-            foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
-            {
-                if (!fi.IsPrivate)
-                {
-                    MemberAdapter m = MemberAdapter.NewObject(fi);
-                    ProcessMember(m, ret, kfs);
-                }
-            }
-            foreach (PropertyInfo pi in t.GetProperties(ClassHelper.InstancePublic))
-            {
-                if (pi.CanRead && pi.CanWrite)
-                {
-                    MemberAdapter m = MemberAdapter.NewObject(pi);
-                    ProcessMember(m, ret, kfs);
-                }
-            }
-            if (kfs.Count > 1)
-            {
-                foreach (MemberHandler k in kfs)
-                {
-                    if (k.IsDbGenerate)
-                    {
-                        throw new DataException("Multi key did not allow SystemGeneration!");
-                    }
-                }
-            }
-
-            // fill simple and relation fields.
-            List<MemberHandler> rlfs = new List<MemberHandler>();
-            List<MemberHandler> sifs = new List<MemberHandler>();
-            foreach (MemberHandler mh in ret)
-            {
-                if (mh.IsHasOne || mh.IsHasMany || mh.IsHasAndBelongsToMany || mh.IsBelongsTo || mh.IsLazyLoad)
-                {
-                    rlfs.Add(mh);
-                }
-                else
-                {
-                    sifs.Add(mh);
-                }
-            }
-            List<MemberHandler> fields = new List<MemberHandler>(sifs);
-            fields.AddRange(rlfs);
-            MemberHandler[] keys = kfs.ToArray();
-
-            ObjectInfo oi = new ObjectInfo(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
-            SetManyToManyMediFrom(oi, t, oi.From.GetMainTableName(), oi.Fields);
-
-            oi.RelationFields = rlfs.ToArray();
-            oi.SimpleFields = sifs.ToArray();
-
-            SoftDeleteAttribute sd = GetAttribute<SoftDeleteAttribute>(t);
-            if (sd != null)
-            {
-                oi.SoftDeleteColumnName = sd.ColumnName;
-            }
-            DeleteToAttribute dta = GetAttribute<DeleteToAttribute>(t);
-            if(dta != null)
-            {
-                oi.DeleteToTableName = dta.TableName;
-            }
-
-            GetIndexes(oi);
-
-            return oi;
-        }
-
         private static void GetIndexes(ObjectInfo oi)
         {
             foreach (MemberHandler fh in oi.Fields)
             {
-                IndexAttribute[] ias = (IndexAttribute[])fh.MemberInfo.GetCustomAttributes(typeof(IndexAttribute), false);
+                IndexAttribute[] ias = (IndexAttribute[])fh.MemberInfo.GetAttributes<IndexAttribute>(false);
                 CheckIndexAttributes(ias);
                 foreach (IndexAttribute ia in ias)
                 {
@@ -494,42 +388,12 @@ namespace Lephone.Data.Common
 
         internal static MemberHandler GetKeyField(Type tt)
         {
-            Type t = (tt.IsAbstract) ? DynamicObject.GetImplType(tt) : tt;
-            if (ObjectInfos.Contains(t))
+            ObjectInfo oi = ObjectInfo.GetSimpleInstance(tt);
+            if (oi.KeyFields.Length > 0)
             {
-                return ((ObjectInfo)ObjectInfos[t]).KeyFields[0];
+                return oi.KeyFields[0];
             }
-            else
-            {
-                foreach (PropertyInfo pi in t.GetProperties(ClassHelper.InstancePublic))
-                {
-                    if (!pi.PropertyType.IsGenericType)
-                    {
-                        MemberAdapter m = MemberAdapter.NewObject(pi);
-                        if (HasAtributes(m, typeof(DbKeyAttribute)))
-                        {
-                            MemberHandler mh = GetMemberHandler(m);
-                            return mh;
-                        }
-                    }
-                }
-                foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
-                {
-                    if (!fi.IsPrivate)
-                    {
-                        if (!fi.FieldType.IsGenericType)
-                        {
-                            MemberAdapter m = MemberAdapter.NewObject(fi);
-                            if (HasAtributes(m, typeof(DbKeyAttribute)))
-                            {
-                                MemberHandler mh = GetMemberHandler(m);
-                                return mh;
-                            }
-                        }
-                    }
-                }
-                return null;
-            }
+            return null;
         }
 
         private static void SetManyToManyMediFrom(ObjectInfo oi, Type t, string MainTableName, MemberHandler[] Fields)

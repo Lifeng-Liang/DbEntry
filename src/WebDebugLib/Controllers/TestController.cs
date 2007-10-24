@@ -4,9 +4,9 @@ using Lephone.Web.Rails;
 
 namespace DebugLib.Controllers
 {
-    [DefaultAction("Add")]
     public class TestController : ControllerBase
     {
+        [DefaultAction]
         public void Add(int m, int n)
         {
             int r = m + n;

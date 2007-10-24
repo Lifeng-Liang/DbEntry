@@ -344,7 +344,7 @@ namespace Lephone.UnitTest.Data
             vh = new ValidateHandler();
             vh.ValidateObject(u);
             Assert.IsFalse(vh.IsValid);
-            Assert.AreEqual("Invalid Field Name Should be UNIQUE.", vh.ErrorMessages["Name"]);
+            Assert.AreEqual("Invalid Field Name Should be UNIQUED.", vh.ErrorMessages["Name"]);
         }
 
         [Test]

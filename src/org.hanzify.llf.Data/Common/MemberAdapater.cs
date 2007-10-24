@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
@@ -36,9 +37,19 @@ namespace Lephone.Data.Common
                 return fi.GetValue(obj);
             }
 
-            public override object[] GetCustomAttributes(Type t, bool inherit)
+            public override T[] GetAttributes<T>(bool inherit)
             {
-                return fi.GetCustomAttributes(t, inherit);
+                return ClassHelper.GetAttributes<T>(fi, inherit);
+            }
+
+            public override T GetAttribute<T>(bool inherit)
+            {
+                return ClassHelper.GetAttribute<T>(fi, inherit);
+            }
+
+            public override bool HasAttribute<T>(bool inherit)
+            {
+                return ClassHelper.HasAttribute<T>(fi, inherit);
             }
 
             public override string Name
@@ -91,9 +102,19 @@ namespace Lephone.Data.Common
                 return pi.GetValue(obj, null);
             }
 
-            public override object[] GetCustomAttributes(Type t, bool inherit)
+            public override T[] GetAttributes<T>(bool inherit)
             {
-                return pi.GetCustomAttributes(t, inherit);
+                return ClassHelper.GetAttributes<T>(pi, inherit);
+            }
+
+            public override T GetAttribute<T>(bool inherit)
+            {
+                return ClassHelper.GetAttribute<T>(pi, inherit);
+            }
+
+            public override bool HasAttribute<T>(bool inherit)
+            {
+                return ClassHelper.HasAttribute<T>(pi, inherit);
             }
 
             public override string Name
@@ -174,7 +195,9 @@ namespace Lephone.Data.Common
 
         public abstract bool IsProperty { get; }
         public abstract string Name { get; }
-        public abstract object[] GetCustomAttributes(Type t, bool inherit);
+        public abstract T[] GetAttributes<T>(bool inherit) where T : Attribute;
+        public abstract T GetAttribute<T>(bool inherit) where T : Attribute;
+        public abstract bool HasAttribute<T>(bool inherit) where T : Attribute;
         public abstract Type MemberType { get; }
         public abstract void SetValue(object obj, object value);
         public abstract object GetValue(object obj);

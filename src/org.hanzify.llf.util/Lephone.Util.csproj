@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonHelper.cs" />
+    <Compile Include="FlyweightBase.cs" />
     <Compile Include="LephoneException.cs" />
     <Compile Include="Logging\ConsoleMessageRecorder.cs" />
     <Compile Include="Logging\DebugLogRecorder.cs" />

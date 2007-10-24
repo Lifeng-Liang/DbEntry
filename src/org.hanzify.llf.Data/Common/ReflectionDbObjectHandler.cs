@@ -95,7 +95,7 @@ namespace Lephone.Data.Common
                 }
                 else if (f.IsHasOne || f.IsHasMany)
                 {
-                    ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
+                    ObjectInfo oi1 = ObjectInfo.GetInstance(f.FieldType.GetGenericArguments()[0]);
                     MemberHandler h1 = oi1.GetBelongsTo(oi.HandleType);
                     if (h1 != null)
                     {
@@ -110,7 +110,7 @@ namespace Lephone.Data.Common
                 }
                 else if (f.IsHasAndBelongsToMany)
                 {
-                    ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(f.FieldType.GetGenericArguments()[0]);
+                    ObjectInfo oi1 = ObjectInfo.GetInstance(f.FieldType.GetGenericArguments()[0]);
                     MemberHandler h1 = oi1.GetHasAndBelongsToMany(oi.HandleType);
                     if (h1 != null)
                     {

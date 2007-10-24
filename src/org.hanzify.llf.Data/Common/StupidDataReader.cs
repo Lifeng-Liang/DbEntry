@@ -21,7 +21,7 @@ namespace Lephone.Data.Common
             {
                 indexType = new Dictionary<int, Type>();
                 nameType = new Dictionary<string, Type>();
-                ObjectInfo oi = DbObjectHelper.GetObjectInfo(ReturnType);
+                ObjectInfo oi = ObjectInfo.GetInstance(ReturnType);
                 int n = 0;
                 foreach (MemberHandler mh in oi.SimpleFields)
                 {
@@ -32,7 +32,7 @@ namespace Lephone.Data.Common
                 {
                     if (mh.IsBelongsTo)
                     {
-                        ObjectInfo oi1 = DbObjectHelper.GetObjectInfo(mh.FieldType.GetGenericArguments()[0]);
+                        ObjectInfo oi1 = ObjectInfo.GetInstance(mh.FieldType.GetGenericArguments()[0]);
                         indexType.Add(n++, oi1.KeyFields[0].FieldType);
                         nameType.Add(mh.Name, oi1.KeyFields[0].FieldType);
                     }

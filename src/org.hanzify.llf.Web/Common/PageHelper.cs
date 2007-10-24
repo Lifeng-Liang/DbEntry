@@ -88,7 +88,7 @@ namespace Lephone.Web.Common
 
         public static object GetObject(Type t, Page p)
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             object obj = oi.NewObject();
             EnumControls(p, oi, delegate(MemberHandler h, Control c)
             {
@@ -143,7 +143,7 @@ namespace Lephone.Web.Common
         public static void SetObject(object obj, Page p)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(t);
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
             EnumControls(p, oi, delegate(MemberHandler h, Control c)
             {
                 object v = h.GetValue(obj);

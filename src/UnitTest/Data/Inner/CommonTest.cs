@@ -11,6 +11,8 @@ using NUnit.Framework;
 using Lephone.Data;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
+using Lephone.UnitTest.Data.Objects;
+using Lephone.Data.Common;
 
 #endregion
 
@@ -44,6 +46,37 @@ namespace Lephone.UnitTest.Data.Inner
             string ExpStr = Exp.ToSqlText(ds, DbEntry.Context.Dialect);
             string DstStr = Dst.ToSqlText(ds, DbEntry.Context.Dialect);
             Assert.AreEqual(ExpStr, DstStr);
+        }
+
+        [Test]
+        public void TestCloneObject()
+        {
+            People p = People.New();
+            p.Id = 10;
+            p.Name = "abc";
+            PCs pc = PCs.New();
+            pc.Name = "uuu";
+            p.pc = pc;
+
+            People p1 = (People)ObjectInfo.CloneObject(p);
+            Assert.AreEqual(10, p1.Id);
+            Assert.AreEqual("abc", p1.Name);
+            // Assert.IsNull(p1.pc);
+        }
+
+        [Test]
+        public void TestBaseType()
+        {
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(People));
+            Assert.AreEqual("People", oi.BaseType.Name);
+        }
+
+        [Test]
+        public void TestBaseType2()
+        {
+            Type t = People.New().GetType();
+            ObjectInfo oi = ObjectInfo.GetInstance(t);
+            Assert.AreEqual("People", oi.BaseType.Name);
         }
     }
 }

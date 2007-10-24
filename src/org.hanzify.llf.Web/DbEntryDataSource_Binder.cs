@@ -152,7 +152,7 @@ namespace Lephone.Web
 
             PageHelper.ValidateSave(vh, obj, NoticeMessage, NoticeText, CssNotice, CssWarning, delegate()
             {
-                ObjectInfo oi = DbObjectHelper.GetObjectInfo(obj.GetType());
+                ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
                 if (oi.IsNewObject(obj))
                 {
                     ExecuteInsert(obj);
@@ -397,7 +397,7 @@ namespace Lephone.Web
             }
         }
 
-        [Themeable(false), DefaultValue("Should be UNIQUE")]
+        [Themeable(false), DefaultValue("Should be UNIQUED")]
         public string ShouldBeUniqueText
         {
             get
@@ -407,7 +407,7 @@ namespace Lephone.Web
                 {
                     return (string)o;
                 }
-                return "Should be UNIQUE";
+                return "Should be UNIQUED";
             }
             set
             {

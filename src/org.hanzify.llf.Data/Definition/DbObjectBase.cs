@@ -19,7 +19,7 @@ namespace Lephone.Data.Definition
 
         void IRenew.SetAsNew()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(this.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
             if (oi.HasOnePremarykey)
             {
                 oi.KeyFields[0].SetValue(this, oi.KeyFields[0].UnsavedValue);
@@ -43,7 +43,7 @@ namespace Lephone.Data.Definition
 
         public override string ToString()
         {
-            ObjectInfo oi = DbObjectHelper.GetObjectInfo(this.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
             StringBuilder sb = new StringBuilder("{ ");
             foreach (MemberHandler m in oi.Fields)
             {
