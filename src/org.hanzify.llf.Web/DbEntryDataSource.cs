@@ -52,7 +52,7 @@ namespace Lephone.Web
 
         private OrderBy m_OrderBy;
 
-        [Themeable(false), DefaultValue("Id"), Category("Behavior")]
+        [Themeable(false), DefaultValue("Id DESC"), Category("Behavior")]
         public string DefaultOrderBy
         {
             get
@@ -62,7 +62,7 @@ namespace Lephone.Web
                 {
                     return (string)o;
                 }
-                return "Id";
+                return "Id DESC";
             }
             set
             {
@@ -99,7 +99,6 @@ namespace Lephone.Web
 
         public DbEntryDataSource()
         {
-            DefaultOrderBy = "";
         }
 
         IEnumerable IExcuteableDataSource.Select(DataSourceSelectArguments arguments)
@@ -113,7 +112,7 @@ namespace Lephone.Web
             if (!string.IsNullOrEmpty(se))
             {
                 DefaultOrderBy = se;
-                ResetOrderBy();
+                m_OrderBy = OrderBy.Parse(se);
             }
             int PageIndex = (arguments.MaximumRows == 0) ? 0 : (int)(arguments.StartRowIndex / arguments.MaximumRows);
             int TotalRowCount = arguments.TotalRowCount;
@@ -137,31 +136,9 @@ namespace Lephone.Web
                     .PageSize(MaximumRows);
                 IPagedSelector ps = IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
                 TotalRowCount = (int)ps.GetResultCount();
-                return (List<T>)ps.GetCurrentPage(PageIndex);
+                IList result = ps.GetCurrentPage(PageIndex);
+                return (List<T>)result;
             }
-        }
-
-        protected void ResetOrderBy()
-        {
-            Dictionary<string, string> odic = new Dictionary<string, string>();
-            foreach (MemberHandler m in ObjInfo.SimpleFields)
-            {
-                if (m.MemberInfo.IsProperty)
-                {
-                    odic[m.MemberInfo.Name] = m.Name;
-                }
-                else
-                {
-                    odic[m.Name] = m.Name;
-                }
-            }
-            List<ASC> las = new List<ASC>();
-            foreach (ASC a in m_OrderBy.OrderItems)
-            {
-                string s = odic[a.Key];
-                las.Add((a is DESC) ? new DESC(s) : new ASC(s));
-            }
-            m_OrderBy = new OrderBy(las.ToArray());
         }
 
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
