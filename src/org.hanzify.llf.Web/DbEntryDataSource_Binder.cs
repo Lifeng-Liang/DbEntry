@@ -21,6 +21,7 @@ namespace Lephone.Web
         public event CallbackObjectHandler<T> OnObjectLoaded;
         public event CallbackObjectHandler<T> OnValidateSave;
         public event CallbackVoidHandler OnObjectDeleted;
+        public event CallbackObjectHandler<bool> OnObjectSaved;
 
         private Button SaveButton;
         private Button DeleteButton;
@@ -108,11 +109,19 @@ namespace Lephone.Web
             if (oid == null)
             {
                 ValidateSave(o, string.Format(ObjectCreatedText, tn));
+                if (OnObjectSaved != null)
+                {
+                    OnObjectSaved(true);
+                }
             }
             else // Edit
             {
                 ObjInfo.KeyFields[0].SetValue(o, oid);
                 ValidateSave(o, string.Format(ObjectUpdatedText, tn));
+                if (OnObjectSaved != null)
+                {
+                    OnObjectSaved(false);
+                }
             }
         }
 
