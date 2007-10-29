@@ -20,8 +20,9 @@ namespace Lephone.Web
         public event CallbackVoidHandler OnPageIsEdit;
         public event CallbackObjectHandler<T> OnObjectLoaded;
         public event CallbackObjectHandler<T> OnValidateSave;
-        public event CallbackVoidHandler OnObjectDeleted;
-        public event CallbackObjectHandler<bool> OnObjectSaved;
+        public event CallbackObjectHandler<T> OnObjectDeleted;
+        public event CallbackObjectHandler<T> OnObjectInserted;
+        public event CallbackObjectHandler<T> OnObjectUpdated;
 
         private Button SaveButton;
         private Button DeleteButton;
@@ -109,19 +110,39 @@ namespace Lephone.Web
             if (oid == null)
             {
                 ValidateSave(o, string.Format(ObjectCreatedText, tn));
-                if (OnObjectSaved != null)
+                if (OnObjectInserted != null)
                 {
-                    OnObjectSaved(true);
+                    OnObjectInserted(o);
                 }
             }
             else // Edit
             {
                 ObjInfo.KeyFields[0].SetValue(o, oid);
                 ValidateSave(o, string.Format(ObjectUpdatedText, tn));
-                if (OnObjectSaved != null)
+                if (OnObjectUpdated != null)
                 {
-                    OnObjectSaved(false);
+                    OnObjectUpdated(o);
                 }
+            }
+        }
+
+        public void Notice(string msg)
+        {
+            if (NoticeMessage != null)
+            {
+                NoticeMessage.Text = msg;
+                NoticeMessage.CssClass = CssNotice;
+                NoticeMessage.Visible = true;
+            }
+        }
+
+        public void Warning(string msg)
+        {
+            if (NoticeMessage != null)
+            {
+                NoticeMessage.Text = msg;
+                NoticeMessage.CssClass = CssWarning;
+                NoticeMessage.Visible = true;
             }
         }
 
@@ -132,19 +153,19 @@ namespace Lephone.Web
             string tn = typeof(T).Name;
             if (oid != null)
             {
-                // T o = DbEntry.GetObject<T>(oid);
-
-                ExecuteDelete(oid);
-                if (NoticeMessage != null)
-                {
-                    NoticeMessage.Text = string.Format(ObjectDeletedText, tn);
-                    NoticeMessage.CssClass = CssNotice;
-                    NoticeMessage.Visible = true;
-                }
+                T o = default(T);
 
                 if (OnObjectDeleted != null)
                 {
-                    OnObjectDeleted();
+                    o = DbEntry.GetObject<T>(oid);
+                }
+
+                ExecuteDelete(oid);
+                Notice(string.Format(ObjectDeletedText, tn));
+
+                if (OnObjectDeleted != null)
+                {
+                    OnObjectDeleted(o);
                 }
             }
         }
@@ -192,13 +213,21 @@ namespace Lephone.Web
                 if (!Page.IsPostBack)
                 {
                     string tn = typeof(T).Name;
-                    string sid = Page.Request["Id"];
-                    if (!string.IsNullOrEmpty(sid))
+                    T o = GetRequestObject();
+                    if (o == null)
                     {
-                        object Id = Convert.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
-                        T o = DbEntry.GetObject<T>(Id);
+                        if (OnPageIsNew != null)
+                        {
+                            OnPageIsNew();
+                        }
+                        if (ContentTitle != null)
+                        {
+                            ContentTitle.Text = string.Format(NewObjectText, tn);
+                        }
+                    }
+                    else
+                    {
                         PageHelper.SetObject(o, Page);
-                        ViewState["Id"] = Id;
                         if (OnPageIsNew != null)
                         {
                             OnPageIsEdit();
@@ -212,23 +241,26 @@ namespace Lephone.Web
                             OnObjectLoaded(o);
                         }
                     }
-                    else
-                    {
-                        if (OnPageIsNew != null)
-                        {
-                            OnPageIsNew();
-                        }
-                        if (ContentTitle != null)
-                        {
-                            ContentTitle.Text = string.Format(NewObjectText, tn);
-                        }
-                    }
                 }
             }
             if (DeleteButton != null)
             {
                 DeleteButton.Click += new EventHandler(DeleteButton_Click);
+                T o = GetRequestObject();
             }
+        }
+
+        protected T GetRequestObject()
+        {
+            string sid = Page.Request["Id"];
+            if (!string.IsNullOrEmpty(sid))
+            {
+                object Id = Convert.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
+                T o = DbEntry.GetObject<T>(Id);
+                ViewState["Id"] = Id;
+                return o;
+            }
+            return default(T);
         }
 
         protected override void OnUnload(EventArgs e)

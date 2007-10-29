@@ -144,7 +144,17 @@ namespace Lephone.Web
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
         {
             object key = Convert.ChangeType(keys[KeyName], ObjInfo.KeyFields[0].FieldType);
-            return ExecuteDelete(key);
+            T obj = default(T);
+            if (OnObjectDeleted != null)
+            {
+                obj = DbEntry.GetObject<T>(key);
+            }
+            int n = ExecuteDelete(key);
+            if (OnObjectDeleted != null)
+            {
+                OnObjectDeleted(obj);
+            }
+            return n;
         }
 
         public virtual int ExecuteDelete(object Key)
@@ -155,7 +165,12 @@ namespace Lephone.Web
         int IExcuteableDataSource.Insert(IDictionary values)
         {
             T obj = CreateObject(null, values);
-            return ExecuteInsert(obj);
+            int n = ExecuteInsert(obj);
+            if (OnObjectInserted != null)
+            {
+                OnObjectInserted(obj);
+            }
+            return n;
         }
 
         public virtual int ExecuteInsert(object obj)
@@ -167,13 +182,18 @@ namespace Lephone.Web
         int IExcuteableDataSource.Update(IDictionary keys, IDictionary values, IDictionary oldValues)
         {
             T obj = CreateObject(keys, values);
-            return ExecuteUpdate(obj);
+            int n = ExecuteUpdate(obj);
+            if (OnObjectUpdated != null)
+            {
+                OnObjectUpdated(obj);
+            }
+            return n;
         }
 
         public virtual int ExecuteUpdate(object obj)
         {
             DbEntry.Save(obj);
-            return 1;
+            return 1; // TODO: return real count;
         }
 
         protected virtual T CreateObject(IDictionary keys, IDictionary values)
