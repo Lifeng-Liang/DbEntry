@@ -86,6 +86,7 @@
     <Compile Include="Setting\ConfigReader.cs" />
     <Compile Include="Setting\ConfigReaderProxy.cs" />
     <Compile Include="Setting\ResourceConfigReader.cs" />
+    <Compile Include="Setting\UtilSetting.cs" />
     <Compile Include="Text\StringSerializer.cs" />
     <Compile Include="Text\XmlSerializer.cs" />
     <Compile Include="ClassHelper.cs">
@@ -191,13 +192,10 @@
     <Compile Include="TimingTask\Timings\DayTiming.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TimingTask\Timings\INowTimeProvider.cs">
+    <Compile Include="NowProvider.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TimingTask\Timings\MonthTiming.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TimingTask\Timings\SystemNowTimeProvider.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TimingTask\Timings\TimeOfDayStruct.cs">

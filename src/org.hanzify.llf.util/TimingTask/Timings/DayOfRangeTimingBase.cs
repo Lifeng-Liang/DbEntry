@@ -7,13 +7,13 @@ namespace Lephone.Util.TimingTask.Timings
 	{
 		protected TimeSpan TimeOfDay;
 		protected int DayOfRange;
-		protected INowTimeProvider NowTimeProvider;
+		protected NowProvider NowTimeProvider;
 		protected DateTime LastCheckTime = DateTime.Now;
 
 		public DayOfRangeTimingBase(TimeOfDayStructure TimeOfDay, int DayOfRange)
-			: this(TimeOfDay, DayOfRange, SystemNowTimeProvider.Instance) {}
+			: this(TimeOfDay, DayOfRange, NowProvider.Instance) {}
 
-		public DayOfRangeTimingBase(TimeOfDayStructure TimeOfDay, int DayOfRange, INowTimeProvider NowTimeProvider)
+		public DayOfRangeTimingBase(TimeOfDayStructure TimeOfDay, int DayOfRange, NowProvider NowTimeProvider)
 		{
 			this.NowTimeProvider = NowTimeProvider;
 			this.TimeOfDay = TimeOfDay.TimeSpanFromMidNight;

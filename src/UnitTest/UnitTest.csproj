@@ -47,6 +47,7 @@
     <Compile Include="Data\AutoCreateTableTest.cs" />
     <Compile Include="Data\BelongsMoreTest.cs" />
     <Compile Include="Data\BulkCopyTest.cs" />
+    <Compile Include="Data\CacheTest.cs" />
     <Compile Include="Data\CommonUsageTest.cs" />
     <Compile Include="Data\ComplexDynamicObjectTest.cs" />
     <Compile Include="Data\CreateTable\SQLiteTest.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Data\HasManyAssociateTest.cs" />
     <Compile Include="Data\HasOneAssociateTest.cs" />
     <Compile Include="Data\Inner\CommonTest.cs" />
+    <Compile Include="Data\KeyGenTest.cs" />
     <Compile Include="Data\LazyLoadFieldTest.cs" />
     <Compile Include="Data\LogicalOperatorTest.cs" />
     <Compile Include="Data\ManyMoreTest.cs" />

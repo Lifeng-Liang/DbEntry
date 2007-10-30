@@ -7,7 +7,7 @@ namespace Lephone.Util.TimingTask.Timings
 	{
 		public MonthTiming(TimeOfDayStructure TimeOfDay, int DayOfMonth) : base(TimeOfDay, DayOfMonth) {}
 
-		public MonthTiming(TimeOfDayStructure TimeOfDay, int DayOfMonth, INowTimeProvider NowTimeProvider)
+		public MonthTiming(TimeOfDayStructure TimeOfDay, int DayOfMonth, NowProvider NowTimeProvider)
 			: base(TimeOfDay, DayOfMonth, NowTimeProvider) {}
 
 		protected override bool IsDayOfRange()

@@ -2,13 +2,13 @@
 #region usings
 
 using System;
-using Lephone.Util.TimingTask.Timings;
+using Lephone.Util;
 
 #endregion
 
 namespace Lephone.UnitTest.util.timingTask
 {
-	public class MockNowTimeProvider : INowTimeProvider
+	public class MockNowTimeProvider : NowProvider
 	{
 		private DateTime _Now = DateTime.MinValue;
 
@@ -19,7 +19,7 @@ namespace Lephone.UnitTest.util.timingTask
 			SetNow(dt);
 		}
 
-		public DateTime Now
+		public override DateTime Now
 		{
 			get { return _Now; }
 		}

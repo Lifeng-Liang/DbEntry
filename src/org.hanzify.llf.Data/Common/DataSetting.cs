@@ -8,16 +8,16 @@ using Lephone.Util.Setting;
 
 #endregion
 
-namespace Lephone.Data.SqlEntry
+namespace Lephone.Data.Common
 {
-    public enum HandlerType
+    internal enum HandlerType
     {
         Emit,
         Reflection,
         Both,
     }
 
-	public static class DataSetting
+    internal static class DataSetting
 	{
         public static readonly HandlerType ObjectHandlerType = HandlerType.Emit;
 
@@ -33,6 +33,16 @@ namespace Lephone.Data.SqlEntry
 
         [ShowString("Orm.UsingParamter")]
         public static readonly bool UsingParamter           = true;
+
+        public static readonly string CacheKeyGenerator     = "Lephone.Data.Caching.KeyGenerator, Lephone.Data";
+
+        public static readonly string CacheProvider         = "Lephone.Data.Caching.StaticHashCacheProvider, Lephone.Data";
+
+        public static readonly int CacheMinutes             = 5;
+
+        public static readonly int CacheSize                = 1000;
+
+        public static readonly bool CacheEnabled            = false;
 
         static DataSetting()
         {

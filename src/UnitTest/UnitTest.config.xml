@@ -5,6 +5,8 @@
 
     <add key="ObjectHandlerType" value="Emit" />
 
+    <add key="NowProvider" value="Lephone.UnitTest.util.timingTask.MockNowTimeProvider, Lephone.UnitTest" />
+
     <add key="AutoCreateTable" value="true" />
     <add key="DefaultContext" value="Development" />
  

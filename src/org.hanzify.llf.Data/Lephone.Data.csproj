@@ -81,6 +81,10 @@ copy *.dll ..\..\..\..\bin\
   <ItemGroup>
     <Compile Include="Builder\Clause\ConstCondition.cs" />
     <Compile Include="Builder\ISqlKeys.cs" />
+    <Compile Include="Caching\CacheProvider.cs" />
+    <Compile Include="Caching\KeyGenerator.cs" />
+    <Compile Include="Caching\StaticHashCacheProvider.cs" />
+    <Compile Include="Caching\TimeValue.cs" />
     <Compile Include="Common\AccessDataReader.cs" />
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DeleteToQueryComposer.cs" />
@@ -237,7 +241,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="SqlEntry\DataParamterCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SqlEntry\DataSetting.cs">
+    <Compile Include="Common\DataSetting.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SqlEntry\DataType.cs">

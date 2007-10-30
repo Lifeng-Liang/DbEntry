@@ -7,7 +7,7 @@ namespace Lephone.Util.TimingTask.Timings
 	{
 		public WeekTiming(TimeOfDayStructure TimeOfDay, DayOfWeek dow) : base(TimeOfDay, (int)dow) {}
 
-		public WeekTiming(TimeOfDayStructure TimeOfDay, DayOfWeek dow, INowTimeProvider NowTimeProvider)
+		public WeekTiming(TimeOfDayStructure TimeOfDay, DayOfWeek dow, NowProvider NowTimeProvider)
 			: base(TimeOfDay, (int)dow, NowTimeProvider) {}
 
 		protected override bool IsDayOfRange()

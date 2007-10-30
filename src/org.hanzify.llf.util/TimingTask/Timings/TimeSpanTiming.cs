@@ -7,11 +7,11 @@ namespace Lephone.Util.TimingTask.Timings
 	{
 		protected int SpanSeconds;
 		protected DateTime LastActiveTime;
-		protected INowTimeProvider NowTimeProvider;
+		protected NowProvider NowTimeProvider;
 
-		public TimeSpanTiming(TimeSpan Span) : this(Span, SystemNowTimeProvider.Instance) {}
+        public TimeSpanTiming(TimeSpan Span) : this(Span, NowProvider.Instance) { }
 
-		public TimeSpanTiming(TimeSpan Span, INowTimeProvider NowTimeProvider)
+		public TimeSpanTiming(TimeSpan Span, NowProvider NowTimeProvider)
 		{
 			this.SpanSeconds = (int)Span.TotalSeconds;
 			this.NowTimeProvider = NowTimeProvider;

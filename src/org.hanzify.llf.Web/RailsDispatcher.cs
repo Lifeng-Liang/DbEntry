@@ -23,7 +23,7 @@ namespace Lephone.Web
             Dictionary<string, object> excepted = CreateExcepted(
                 "Lephone.Data", "Lephone.Util", "Lephone.Web",
                 "mscorlib", "System", "System.Data", "System.Web", "System.Xml",
-                "System.Web.Mobile", "System.resources");
+                "System.Web.Mobile", "System.resources", "System.configuration");
 
             ctls = new Dictionary<string, Type>();
             ctls["default"] = typeof(DefaultController);

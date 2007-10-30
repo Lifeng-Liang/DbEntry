@@ -14,6 +14,7 @@ using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
+using Lephone.Data.Caching;
 
 #endregion
 
@@ -236,10 +237,28 @@ namespace Lephone.Data
         public object GetObject(Type t, object key)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            if (oi.KeyFields != null && oi.KeyFields.Length == 1)
+            if (oi.HasOnePremarykey)
             {
+                if (DataSetting.CacheEnabled)
+                {
+                    object co = CacheProvider.Instance[KeyGenerator.Instance.GetKey(t, key)];
+                    if (co != null)
+                    {
+                        return ObjectInfo.CloneObject(co);
+                    }
+                }
+
                 string keyname = oi.KeyFields[0].Name;
-                return GetObject(t, CK.K[keyname] == key, null, null);
+                object obj = GetObject(t, CK.K[keyname] == key, null, null);
+
+                if (DataSetting.CacheEnabled)
+                {
+                    if (obj != null)
+                    {
+                        CacheProvider.Instance[KeyGenerator.Instance.GetKey(t, key)] = ObjectInfo.CloneObject(obj);
+                    }
+                }
+                return obj;
             }
             throw new DataException("To call this function, the table must have one premary key.");
         }
@@ -409,6 +428,13 @@ namespace Lephone.Data
             {
                 throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
             }
+            if (DataSetting.CacheEnabled)
+            {
+                if (oi.HasOnePremarykey)
+                {
+                    CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
+                }
+            }
         }
 
         public void Insert(object obj)
@@ -438,6 +464,13 @@ namespace Lephone.Data
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
                 oi.LogSql(Sql);
                 this.ExecuteNonQuery(Sql);
+            }
+            if (DataSetting.CacheEnabled)
+            {
+                if (oi.HasOnePremarykey)
+                {
+                    CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
+                }
             }
         }
 

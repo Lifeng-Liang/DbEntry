@@ -3,6 +3,7 @@
 
 using System;
 using Lephone.Util.Text;
+using Lephone.Data.Common;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;

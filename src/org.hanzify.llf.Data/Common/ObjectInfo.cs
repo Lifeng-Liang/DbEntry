@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Lephone.Data.SqlEntry;
+using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;
 using Lephone.Util.Logging;
 using Lephone.Util;
@@ -223,10 +224,18 @@ namespace Lephone.Data.Common
             if (obj == null) { return null; }
             ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
             object o = oi.NewObject();
+            if (o is DbObjectSmartUpdate)
+            {
+                ((DbObjectSmartUpdate)o).m_InternalInit = true;
+            }
             foreach (MemberHandler m in oi.SimpleFields)
             {
                 object v = m.GetValue(obj);
                 m.SetValue(o, v);
+            }
+            if (o is DbObjectSmartUpdate)
+            {
+                ((DbObjectSmartUpdate)o).m_InternalInit = false;
             }
             return o;
         }
