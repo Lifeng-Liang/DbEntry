@@ -16,7 +16,7 @@ namespace Lephone.Data.Dialect
 
         public override string DbNowString
         {
-            get { return "CURRENT_TIMESTAMP"; }
+            get { return "datetime(current_timestamp, 'localtime')"; }
         }
 
         public override string GetConnectionString(string ConnectionString)

@@ -50,6 +50,16 @@ namespace Lephone.Web.Rails
             return ret;
         }
 
+        protected internal string UrlTo(string Action, string Paramter)
+        {
+            return UrlTo(ControllerName, Action, Paramter);
+        }
+
+        protected internal string UrlTo(string Controller, string Action, string Paramter)
+        {
+            return UrlTo(Request.ApplicationPath, Controller, Action, Paramter);
+        }
+
         internal static string UrlTo(string AppPath, string Controller, string Action, string Paramter)
         {
             StringBuilder url = new StringBuilder();

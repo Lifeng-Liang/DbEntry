@@ -13,6 +13,31 @@ namespace Lephone.Web
             get { return new HtmlBuilder(); }
         }
 
+        public HtmlBuilder form
+        {
+            get { return tag("form"); }
+        }
+
+        public HtmlBuilder p
+        {
+            get { return tag("p"); }
+        }
+
+        public HtmlBuilder h1
+        {
+            get { return tag("h1"); }
+        }
+
+        public HtmlBuilder label
+        {
+            get { return tag("label"); }
+        }
+
+        public HtmlBuilder input
+        {
+            get { return tag("input"); }
+        }
+
         public HtmlBuilder br
         {
             get { return include("<br />"); }

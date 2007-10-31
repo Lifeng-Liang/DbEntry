@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="Edit" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-<h1>New User</h1>
+<h1>User Edit</h1>
 <form action="/WebDebug/user/update/<%= ((DebugLib.Models.User)bag["item"]).Id %>" method="post">
 <p><label for="user_name">Name</label><br /><input id="user_name" name="user[name]" size="30" type="text" value="<%= ((DebugLib.Models.User)bag["item"]).Name %>" /></p>
 <p><label for="user_age">Age</label><br /><input id="user_age" name="user[age]" size="30" type="text" value="<%= ((DebugLib.Models.User)bag["item"]).Age %>" /></p>

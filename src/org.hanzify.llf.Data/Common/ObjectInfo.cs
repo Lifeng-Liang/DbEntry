@@ -83,7 +83,7 @@ namespace Lephone.Data.Common
 
         #endregion
 
-        internal IDbObjectHandler Handler;
+        public IDbObjectHandler Handler;
         internal QueryComposer Composer;
 
         public string SoftDeleteColumnName;
