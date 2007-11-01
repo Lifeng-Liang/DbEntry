@@ -13,9 +13,24 @@ namespace Lephone.Web
             get { return new HtmlBuilder(); }
         }
 
-        public HtmlBuilder form
+        public HtmlBuilder form(string method, string action)
         {
-            get { return tag("form"); }
+            return tag("form").attr("action", action).attr("method", method);
+        }
+
+        public HtmlBuilder name(object name)
+        {
+            return attr("name", name);
+        }
+
+        public HtmlBuilder type(object type)
+        {
+            return attr("type", type);
+        }
+
+        public HtmlBuilder value(object value)
+        {
+            return attr("value", value);
         }
 
         public HtmlBuilder p

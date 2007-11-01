@@ -93,11 +93,12 @@ namespace Lephone.Web
 
             try
             {
-                string Action = ss.Length > 1 ? ss[1] : ControllerInfo.GetInstance(t).DefaultAction;
-                MethodInfo mi = t.GetMethod(Action, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
+                ControllerInfo ci = ControllerInfo.GetInstance(t);
+                string ActionName = ss.Length > 1 ? ss[1] : ci.DefaultAction;
+                MethodInfo mi = t.GetMethod(ActionName, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
                 if (mi == null)
                 {
-                    throw new WebException(string.Format("Action {0} doesn't exist!!!", Action));
+                    throw new WebException(string.Format("Action {0} doesn't exist!!!", ActionName));
                 }
 
                 ParameterInfo[] pis = mi.GetParameters();
@@ -116,22 +117,14 @@ namespace Lephone.Web
                 }
                 CallAction(mi, ctl, parameters.ToArray());
                 // Invoke Viewer
-                string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + Action + ".aspx";
-                string pp = context.Server.MapPath(vp);
-                if (File.Exists(pp))
+                PageBase p = CreatePage(context, ci, t, ControllerName, ActionName);
+                if (p != null)
                 {
-                    PageBase p = factory.GetHandler(context, context.Request.RequestType, vp, pp) as PageBase;
-                    if (p != null)
-                    {
-                        p.bag = ctl.bag;
-                        p.ControllerName = ControllerName;
-                        ((IHttpHandler)p).ProcessRequest(context);
-                        factory.ReleaseHandler((IHttpHandler)p);
-                    }
-                    else
-                    {
-                        throw new WebException("The template page must inherits from PageBase!!!");
-                    }
+                    p.bag = ctl.bag;
+                    p.ControllerName = ControllerName;
+                    p.ActionName = ActionName;
+                    ((IHttpHandler)p).ProcessRequest(context);
+                    factory.ReleaseHandler((IHttpHandler)p);
                 }
             }
             catch (TargetInvocationException ex)
@@ -141,6 +134,50 @@ namespace Lephone.Web
             catch (WebException ex)
             {
                 ctl.OnException(ex);
+            }
+        }
+
+        private PageBase CreatePage(HttpContext context, ControllerInfo ci, Type t, string ControllerName, string ActionName)
+        {
+            string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + ActionName + ".aspx";
+            string pp = context.Server.MapPath(vp);
+            if (File.Exists(pp))
+            {
+                object o = factory.GetHandler(context, context.Request.RequestType, vp, pp);
+                if (o == null)
+                {
+                    throw new WebException("The template page must inherits from PageBase!!!");
+                }
+                return o as PageBase;
+            }
+            else if (ci.IsScaffolding)
+            {
+                Type tt = GetScaffoldingType(t);
+                return new ScaffoldingViews(tt, context);
+            }
+            else if (t == typeof(DefaultController))
+            {
+                return null;
+            }
+            else
+            {
+                throw new WebException(string.Format("The action {0} don't have view file!!!", ActionName));
+            }
+        }
+
+        private Type GetScaffoldingType(Type t)
+        {
+            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ControllerBase<>))
+            {
+                return t.GetGenericArguments()[0];
+            }
+            else if (t.BaseType == typeof(object))
+            {
+                throw new WebException("System Error!");
+            }
+            else
+            {
+                return GetScaffoldingType(t.BaseType);
             }
         }
 

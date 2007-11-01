@@ -14,6 +14,7 @@ namespace Lephone.Web.Rails
     {
         protected internal Dictionary<string, object> bag = new Dictionary<string, object>();
         protected internal string ControllerName;
+        protected internal string ActionName;
 
         protected FlashBox flash = new FlashBox();
 
@@ -38,13 +39,18 @@ namespace Lephone.Web.Rails
 
         protected internal string LinkTo(string Title, string Controller, string Action, object Paramter, string AddOn)
         {
+            return LinkTo(Request.ApplicationPath, Title, Controller, Action, Paramter, AddOn);
+        }
+
+        internal string LinkTo(string AppPath, string Title, string Controller, string Action, object Paramter, string AddOn)
+        {
             string ParamterStr = (Paramter == null) ? null : Paramter.ToString();
             if (string.IsNullOrEmpty(Title))
             {
                 throw new DataException("Title can not be null or empty.");
             }
             string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
-                UrlTo(Request.ApplicationPath,
+                UrlTo(AppPath,
                 string.IsNullOrEmpty(Controller) ? ControllerName : Controller,
                 Action, ParamterStr), Title, AddOn == null ? "" : " " + AddOn);
             return ret;

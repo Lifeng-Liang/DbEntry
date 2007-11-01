@@ -34,6 +34,7 @@ namespace Lephone.Web.Rails
         }
     }
 
+    [Scaffolding]
     public class ControllerBase<T> : ControllerBase
     {
         protected FlashBox flash = new FlashBox();
@@ -67,7 +68,7 @@ namespace Lephone.Web.Rails
             T obj = (T)oi.NewObject();
             foreach(MemberHandler m in oi.SimpleFields)
             {
-                if (!m.IsKey)
+                if (!m.IsDbGenerate && !m.IsCreatedOn && !m.IsUpdatedOn)
                 {
                     string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
                     m.MemberInfo.SetValue(obj, Convert.ChangeType(s, m.FieldType));
@@ -112,11 +113,11 @@ namespace Lephone.Web.Rails
             T obj = (T)oi.NewObject();
             foreach (MemberHandler m in oi.SimpleFields)
             {
-                if (m.IsKey)
+                if (m.IsDbGenerate)
                 {
                     m.SetValue(obj, Convert.ChangeType(n, m.FieldType));
                 }
-                else
+                else if(!m.IsCreatedOn && !m.IsUpdatedOn)
                 {
                     string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
                     m.MemberInfo.SetValue(obj, Convert.ChangeType(s, m.FieldType));

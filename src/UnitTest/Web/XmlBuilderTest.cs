@@ -27,7 +27,7 @@ namespace Lephone.UnitTest.Web
         [Test]
         public void Test3()
         {
-            XmlBuilder b = XmlBuilder.New().tag("Books").enter.tab.tag("Book").text("DbEntry.Net Development").end.end;
+            XmlBuilder b = XmlBuilder.New().tag("Books").enter().tab.tag("Book").text("DbEntry.Net Development").end.end;
             Assert.AreEqual("<Books>\r\n\t<Book>DbEntry.Net Development</Book></Books>", b.ToString());
         }
     }

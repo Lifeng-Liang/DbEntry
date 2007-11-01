@@ -17,5 +17,10 @@ namespace DebugLib.Controllers
         {
             bag["obj"] = dt.AddDays(n);
         }
+
+        public void NoView()
+        {
+            bag["item"] = "Test for no view file!";
+        }
     }
 }

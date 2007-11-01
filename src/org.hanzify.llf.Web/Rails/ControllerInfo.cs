@@ -23,6 +23,10 @@ namespace Lephone.Web.Rails
                     }
                 }
             }
+            if (ClassHelper.HasAttribute<ScaffoldingAttribute>(t, true))
+            {
+                _IsScaffolding = true;
+            }
         }
 
         private ControllerInfo() {}
@@ -32,6 +36,13 @@ namespace Lephone.Web.Rails
         public string DefaultAction
         {
             get { return _DefaultAction ?? "list"; }
+        }
+
+        private bool _IsScaffolding = false;
+
+        public bool IsScaffolding
+        {
+            get { return _IsScaffolding; }
         }
     }
 }

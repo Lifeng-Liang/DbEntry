@@ -41,9 +41,9 @@ namespace Lephone.Web
             }
         }
 
-        public T enter
+        public T enter()
         {
-            get { return include("\r\n"); }
+            return include("\r\n");
         }
 
         public T newline
@@ -78,7 +78,7 @@ namespace Lephone.Web
 
         public T attr(string Name, object Value)
         {
-            return attr(Name, Value.ToString());
+            return attr(Name, (Value == null) ? "" : Value.ToString());
         }
 
         public T attr(string Name, string Value)

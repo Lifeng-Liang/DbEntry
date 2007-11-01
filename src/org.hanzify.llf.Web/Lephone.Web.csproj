@@ -56,9 +56,11 @@
     <Compile Include="DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="Common\DbEntryMembershipUser.cs" />
+    <Compile Include="Rails\ScaffoldingAttribute.cs" />
     <Compile Include="Rails\ScaffoldingViews.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Rails\ControlMapper.cs" />
     <Compile Include="UrlBuilder.cs" />
     <Compile Include="WebException.cs" />
     <Compile Include="WebSettings.cs" />
