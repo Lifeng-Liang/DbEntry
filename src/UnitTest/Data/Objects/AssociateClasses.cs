@@ -86,7 +86,7 @@ namespace Lephone.UnitTest.Data.Objects
         public Reader Init(string Name) { this.Name = Name; return this; }
     }
 
-    public class Article_Reader
+    public class Article_Reader : IDbObject
     {
         public long Article_Id;
         public long Reader_Id;

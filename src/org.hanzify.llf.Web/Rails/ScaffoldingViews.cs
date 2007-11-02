@@ -78,7 +78,7 @@ namespace Lephone.Web.Rails
                     {
                         string n = cn + "_" + m.Name;
                         string n1 = cn + "[" + m.Name + "]";
-                        b.p.label.attr("for", n).text(m.Name).end.br.include(ControlMapper.Map(m, n, n1)).end.enter();
+                        b.p.label.attr("for", n).text(m.Name).end.br.include(ControlMapper.Map(m, n, n1, m.GetValue(o))).end.enter();
                     }
                 }
                 b.input.name("commit").type("submit").value("Update").end.enter().end.enter().enter();
@@ -146,7 +146,7 @@ namespace Lephone.Web.Rails
                     {
                         string n = cn + "_" + m.Name;
                         string n1 = cn + "[" + m.Name + "]";
-                        b.p.label.attr("for", n).text(m.Name).end.br.include(ControlMapper.Map(m, n, n1)).end.enter();
+                        b.p.label.attr("for", n).text(m.Name).end.br.include(ControlMapper.Map(m, n, n1, null)).end.enter();
                     }
                 }
 

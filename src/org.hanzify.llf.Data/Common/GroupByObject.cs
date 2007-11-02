@@ -11,7 +11,7 @@ using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common
 {
-    public class GroupByObject<T>
+    public class GroupByObject<T> : IDbObject
     {
         // set to key make it as the first column
         [DbKey(IsDbGenerate = false)]

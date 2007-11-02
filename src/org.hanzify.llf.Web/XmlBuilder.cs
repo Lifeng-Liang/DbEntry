@@ -78,15 +78,15 @@ namespace Lephone.Web
 
         public T attr(string Name, object Value)
         {
-            return attr(Name, (Value == null) ? "" : Value.ToString());
-        }
-
-        public T attr(string Name, string Value)
-        {
             if (result.Length > 0 && result[result.Length - 1] == '>')
             {
                 result.Length--;
-                result.Append(" ").Append(Name).Append("=\"").Append(Value).Append("\">");
+                result.Append(" ").Append(Name);
+                if (Value != null)
+                {
+                    result.Append("=\"").Append(Value).Append("\"");
+                }
+                result.Append(">");
                 return (T)this;
             }
             else

@@ -21,7 +21,7 @@ namespace Lephone.UnitTest.Data.CreateTable
 {
     #region objects
 
-    class MyTest1
+    class MyTest1 : IDbObject
     {
         [DbKey]
         public long Id = 0;
@@ -30,7 +30,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name = null;
     }
 
-    class MyTest2
+    class MyTest2 : IDbObject
     {
         [DbKey]
         public long Id = 0;
@@ -39,7 +39,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name = null;
     }
 
-    class MyTest3
+    class MyTest3 : IDbObject
     {
         [DbKey]
         public long Id = 0;
@@ -52,7 +52,7 @@ namespace Lephone.UnitTest.Data.CreateTable
     }
 
     [DbTable("MyTest")]
-    class MyTest8
+    class MyTest8 : IDbObject
     {
         [DbKey(IsDbGenerate = false)]
         public long Id = 0;
@@ -63,7 +63,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public int Age = 0;
     }
 
-    public class UnsignedTestTable
+    public class UnsignedTestTable : IDbObject
     {
         public string Name;
         public uint Age;

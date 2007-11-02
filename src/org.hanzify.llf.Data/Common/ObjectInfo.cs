@@ -14,8 +14,8 @@ using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
-	public class ObjectInfo : FlyweightBase<Type, ObjectInfo>
-	{
+    public class ObjectInfo : FlyweightBase<Type, ObjectInfo>
+    {
         #region GetInstance
 
         public new static ObjectInfo GetInstance(Type DbObjectType)
@@ -24,7 +24,7 @@ namespace Lephone.Data.Common
             ObjectInfo oi = FlyweightBase<Type, ObjectInfo>.GetInstance(t);
             if (oi.BaseType == null)
             {
-                oi.BaseType = DbObjectType;
+                oi._BaseType = DbObjectType;
             }
             return oi;
         }
@@ -50,29 +50,29 @@ namespace Lephone.Data.Common
             // binding QueryComposer
             if (!string.IsNullOrEmpty(SoftDeleteColumnName))
             {
-                Composer = new SoftDeleteQueryComposer(this, SoftDeleteColumnName);
+                _Composer = new SoftDeleteQueryComposer(this, SoftDeleteColumnName);
             }
             else if (!string.IsNullOrEmpty(DeleteToTableName))
             {
-                Composer = new DeleteToQueryComposer(this);
+                _Composer = new DeleteToQueryComposer(this);
             }
             else if (LockVersion != null)
             {
-                Composer = new OptimisticLockingQueryComposer(this);
+                _Composer = new OptimisticLockingQueryComposer(this);
             }
             else
             {
-                Composer = new QueryComposer(this);
+                _Composer = new QueryComposer(this);
             }
             // binding DbObjectHandler
             if (DataSetting.ObjectHandlerType == HandlerType.Emit
                 || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
             {
-                Handler = DynamicObject.CreateDbObjectHandler(t, this);
+                _Handler = DynamicObject.CreateDbObjectHandler(t, this);
             }
             else
             {
-                Handler = new ReflectionDbObjectHandler(t, this);
+                _Handler = new ReflectionDbObjectHandler(t, this);
             }
         }
 
@@ -83,29 +83,134 @@ namespace Lephone.Data.Common
 
         #endregion
 
-        public IDbObjectHandler Handler;
-        internal QueryComposer Composer;
+        #region properties
 
-        public string SoftDeleteColumnName;
+        private IDbObjectHandler _Handler;
+        private QueryComposer _Composer;
 
-        public Dictionary<string, List<ASC>> Indexes = new Dictionary<string, List<ASC>>();
-        public Dictionary<string, List<MemberHandler>> UniqueIndexes = new Dictionary<string, List<MemberHandler>>();
+        private Type _BaseType;
+        private Type _HandleType;
+        private FromClause _From;
+        private bool _HasSystemKey;
+        private bool _HasAssociate;
+        private bool _IsAssociateObject;
+        private bool _AllowSqlLog;
+        private bool _HasOnePremarykey;
+        internal string _DeleteToTableName;
+        internal string _SoftDeleteColumnName;
+        private MemberHandler _LockVersion;
+        private MemberHandler[] _KeyFields;
+        private MemberHandler[] _Fields;
+        internal MemberHandler[] _SimpleFields;
+        internal MemberHandler[] _RelationFields;
 
-        public Type BaseType;
-        public Type HandleType;
-		public FromClause From;
-        public string DeleteToTableName;
-        public bool HasSystemKey;
-        public bool HasAssociate;
-        public bool IsAssociateObject;
-		public MemberHandler[] KeyFields;
-		public MemberHandler[] Fields;
-        public MemberHandler[] SimpleFields;
-        public MemberHandler[] RelationFields;
-        public MemberHandler LockVersion;
-        public bool AllowSqlLog = true;
-        public bool HasOnePremarykey;
-        public Dictionary<Type, ManyToManyMediTable> ManyToManys = new Dictionary<Type,ManyToManyMediTable>();
+        private Dictionary<string, List<ASC>> _Indexes = new Dictionary<string, List<ASC>>();
+        private Dictionary<string, List<MemberHandler>> _UniqueIndexes = new Dictionary<string, List<MemberHandler>>();
+        private Dictionary<Type, ManyToManyMediTable> _ManyToManys = new Dictionary<Type, ManyToManyMediTable>();
+
+        public IDbObjectHandler Handler
+        {
+            get { return _Handler; }
+        }
+
+        internal QueryComposer Composer
+        {
+            get { return _Composer; }
+        }
+
+        public Type BaseType
+        {
+            get { return _BaseType; }
+        }
+
+        public Type HandleType
+        {
+            get { return _HandleType; }
+        }
+
+        public FromClause From
+        {
+            get { return _From; }
+        }
+
+        public bool HasSystemKey
+        {
+            get { return _HasSystemKey; }
+        }
+
+        public bool HasAssociate
+        {
+            get { return _HasAssociate; }
+        }
+
+        public bool IsAssociateObject
+        {
+            get { return _IsAssociateObject; }
+        }
+
+        public bool AllowSqlLog
+        {
+            get { return _AllowSqlLog; }
+        }
+
+        public bool HasOnePremarykey
+        {
+            get { return _HasOnePremarykey; }
+        }
+
+        public string DeleteToTableName
+        {
+            get { return _DeleteToTableName; }
+        }
+
+        public string SoftDeleteColumnName
+        {
+            get { return _SoftDeleteColumnName; }
+        }
+
+        public MemberHandler LockVersion
+        {
+            get { return _LockVersion; }
+        }
+
+        public MemberHandler[] KeyFields
+        {
+            get { return _KeyFields; }
+        }
+
+        public MemberHandler[] Fields
+        {
+            get { return _Fields; }
+        }
+
+        public MemberHandler[] SimpleFields
+        {
+            get { return _SimpleFields; }
+        }
+
+        public MemberHandler[] RelationFields
+        {
+            get { return _RelationFields; }
+        }
+
+        public Dictionary<string, List<ASC>> Indexes
+        {
+            get { return _Indexes; }
+        }
+
+        public Dictionary<string, List<MemberHandler>> UniqueIndexes
+        {
+            get { return _UniqueIndexes; }
+        }
+
+        public Dictionary<Type, ManyToManyMediTable> ManyToManys
+        {
+            get { return _ManyToManys; }
+        }
+
+        #endregion
+
+        #region ctor
 
         internal ObjectInfo() { }
 
@@ -116,37 +221,41 @@ namespace Lephone.Data.Common
 
         internal void Init(Type HandleType, FromClause From, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
         {
-            this.HandleType = HandleType;
-            this.From = From;
-            this.KeyFields = KeyFields;
-            this.Fields = Fields;
-            this.AllowSqlLog = !DisableSqlLog;
+            this._HandleType = HandleType;
+            this._From = From;
+            this._KeyFields = KeyFields;
+            this._Fields = Fields;
+            this._AllowSqlLog = !DisableSqlLog;
 
-            this.HasSystemKey = ((KeyFields.Length == 1) && (KeyFields[0].IsDbGenerate || KeyFields[0].FieldType == typeof(Guid)));
+            this._HasSystemKey = ((KeyFields.Length == 1) && (KeyFields[0].IsDbGenerate || KeyFields[0].FieldType == typeof(Guid)));
 
             foreach (MemberHandler f in Fields)
             {
                 if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany)
                 {
-                    HasAssociate = true;
-                    IsAssociateObject = true;
+                    _HasAssociate = true;
+                    _IsAssociateObject = true;
                 }
                 if (f.IsLazyLoad)
                 {
-                    IsAssociateObject = true;
+                    _IsAssociateObject = true;
                 }
                 if (f.IsBelongsTo || f.IsHasAndBelongsToMany) // TODO: no problem ?
                 {
-                    IsAssociateObject = true;
+                    _IsAssociateObject = true;
                 }
                 if (f.IsLockVersion)
                 {
-                    LockVersion = f;
+                    _LockVersion = f;
                 }
             }
 
-            HasOnePremarykey = (KeyFields != null && KeyFields.Length == 1);
+            _HasOnePremarykey = (KeyFields != null && KeyFields.Length == 1);
         }
+
+        #endregion
+
+        #region shortcut functions
 
         public object NewObject()
         {
@@ -239,5 +348,7 @@ namespace Lephone.Data.Common
             }
             return o;
         }
+
+        #endregion
     }
 }

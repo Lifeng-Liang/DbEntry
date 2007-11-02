@@ -16,7 +16,7 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("PCs")]
-    public class UnsignedPCReal
+    public class UnsignedPCReal : IDbObject
     {
         [DbKey] public long Id;
         public string Name;

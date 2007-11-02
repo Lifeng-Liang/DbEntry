@@ -10,40 +10,42 @@ namespace Lephone.Web.Rails
     internal class ControlMapper
     {
         private string id, name;
+        private object value;
         private HtmlBuilder b;
 
-        public static HtmlBuilder Map(MemberHandler m, string id, string name)
+        public static HtmlBuilder Map(MemberHandler m, string id, string name, object value)
         {
-            ControlMapper c = new ControlMapper(m, id, name);
+            ControlMapper c = new ControlMapper(m, id, name, value);
             return c.b;
         }
 
-        public ControlMapper(MemberHandler m, string id, string name)
+        public ControlMapper(MemberHandler m, string id, string name, object value)
         {
             this.id = id;
             this.name = name;
+            this.value = value;
 
             b = HtmlBuilder.New;
 
             if (m.FieldType.IsEnum)
             {
-                ProcessEnum(m);
+                ProcessEnum(m, value);
             }
             else if (m.FieldType == typeof(bool))
             {
-                ProcessBoolean(m);
+                ProcessBoolean(m, value);
             }
             else if (m.FieldType == typeof(string))
             {
-                ProcessString(m);
+                ProcessString(m, value);
             }
             else if (m.FieldType == typeof(DateTime))
             {
-                ProcessDateTime(m);
+                ProcessDateTime(m, value);
             }
             else if (m.FieldType.IsValueType)
             {
-                ProcessValueType(m);
+                ProcessValueType(m, value);
             }
             else
             {
@@ -56,49 +58,75 @@ namespace Lephone.Web.Rails
             return b.ToString();
         }
 
-        private void ProcessEnum(MemberHandler m)
+        private void ProcessEnum(MemberHandler m, object value)
         {
+            string v = (value == null) ? "" : value.ToString();
             b.tag("select").id(id).name(name);
             foreach (string s in Enum.GetNames(m.FieldType))
             {
                 object e = Enum.Parse(m.FieldType, s);
-                b.tag("option").attr("value", s).text(StringHelper.EnumToString(e)).end.over();
+                b.tag("option").attr("value", s);
+                if (s == v)
+                {
+                    b.attr("selected", "true");
+                }
+                b.text(StringHelper.EnumToString(e)).end.over();
             }
             b.end.over();
         }
 
-        private void ProcessBoolean(MemberHandler m)
+        private void ProcessBoolean(MemberHandler m, object value)
         {
-            b.input.id(id).name(name).type("checkbox").end.over();
+            b.input.id(id).name(name).type("checkbox");
+            if (value != null)
+            {
+                if((bool)value)
+                    b.attr("checked", null);
+            }
+            b.end.over();
         }
 
-        private void ProcessString(MemberHandler m)
+        private void ProcessString(MemberHandler m, object value)
         {
             if (m.MaxLength < 50 && m.MaxLength > 0)
             {
                 b.input.id(id).name(name).type("text");
                 b.attr("maxlength", m.MaxLength).attr("size", m.MaxLength);
+                if (value != null)
+                {
+                    b.value(value);
+                }
                 b.end.over();
             }
             else
             {
-                b.tag("textarea").id(id).name(name).attr("cols", 50).attr("rows", 5).text("").end.over();
+                string s = (value == null) ? "" : value.ToString();
+                b.tag("textarea").id(id).name(name).attr("cols", 50).attr("rows", 5).text(s).end.over();
             }
         }
 
-        private void ProcessDateTime(MemberHandler m)
+        private void ProcessDateTime(MemberHandler m, object value)
         {
             b.input.id(id).name(name).type("text").attr("cols", 19).attr("onclick", "getDateString(this, oCalendar)");
             if (m.IsCreatedOn || m.IsUpdatedOn)
             {
                 b.attr("disabled", "true");
             }
+            if (value != null)
+            {
+                b.value(value);
+            }
             b.end.over();
         }
 
-        private void ProcessValueType(MemberHandler m)
+        private void ProcessValueType(MemberHandler m, object value)
         {
-            b.input.id(id).name(name).attr("maxlength", 20).attr("cols", 20).end.over();
+            b.input.id(id).name(name).attr("maxlength", 20).attr("cols", 20);
+            if (value != null)
+            {
+                b.value(value);
+            }
+            b.end.over();
         }
     }
 }

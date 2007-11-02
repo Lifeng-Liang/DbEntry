@@ -117,6 +117,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\HasOne.cs" />
     <Compile Include="Definition\HasOneAttribute.cs" />
     <Compile Include="Definition\IBelongsTo.cs" />
+    <Compile Include="Definition\IDbObject.cs" />
     <Compile Include="Definition\ILazyLoading.cs" />
     <Compile Include="Common\EmptyCondition.cs" />
     <Compile Include="Builder\CreateTableStatementBuilder.cs" />

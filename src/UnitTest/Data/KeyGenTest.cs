@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Text;
 using Lephone.Data;
 using Lephone.Data.Caching;
+using Lephone.Data.Definition;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
     [TestFixture]
-    public class KeyGenTest
+    public class KeyGenTest : IDbObject
     {
         [Test]
         public void Test1()

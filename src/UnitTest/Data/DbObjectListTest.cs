@@ -11,7 +11,7 @@ using Lephone.Data.Definition;
 namespace Lephone.UnitTest.Data
 {
     [DbTable("Reader")]
-    public class MyReader
+    public class MyReader : IDbObject
     {
         public long Id;
         public string Name;

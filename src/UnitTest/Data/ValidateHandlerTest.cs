@@ -14,7 +14,7 @@ using Lephone.Data;
 
 namespace Lephone.UnitTest.Data
 {
-    class vtest
+    class vtest : IDbObject
     {
         [Length(1, 5), StringColumn(IsUnicode=false)]
         public string Name;
@@ -33,7 +33,7 @@ namespace Lephone.UnitTest.Data
         }
     }
 
-    class vtest0
+    class vtest0 : IDbObject
     {
         [Length(5), StringColumn(IsUnicode = false)]
         public string Name;

@@ -13,7 +13,7 @@ using Lephone.Data.Common;
 
 namespace Lephone.UnitTest.Data.Objects
 {
-    public abstract class AbstractClass
+    public abstract class AbstractClass : IDbObject
     {
         public abstract string Name { get; set; }
 
@@ -26,7 +26,7 @@ namespace Lephone.UnitTest.Data.Objects
     }
 
     [Serializable]
-    public abstract class SerializedBase
+    public abstract class SerializedBase : IDbObject
     {
         public abstract string Name { get; set; }
 
@@ -54,7 +54,7 @@ namespace Lephone.UnitTest.Data.Objects
         }
     }
 
-    public abstract class ConstructorBase
+    public abstract class ConstructorBase : IDbObject
     {
         public int p4;
         public bool p5;

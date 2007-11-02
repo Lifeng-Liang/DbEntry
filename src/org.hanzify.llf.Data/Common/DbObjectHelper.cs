@@ -23,6 +23,12 @@ namespace Lephone.Data.Common
     {
         internal static void InitObjectInfoBySimpleMode(Type t, ObjectInfo oi)
         {
+            List<Type> lt = new List<Type>(t.GetInterfaces());
+            if (!lt.Contains(typeof(IDbObject)))
+            {
+                throw new DataException("The data object must implements IDbObject!");
+            }
+
             List<MemberHandler> ret = new List<MemberHandler>();
             List<MemberHandler> kfs = new List<MemberHandler>();
             foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
@@ -73,18 +79,18 @@ namespace Lephone.Data.Common
             oi.Init(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
             SetManyToManyMediFrom(oi, t, oi.From.GetMainTableName(), oi.Fields);
 
-            oi.RelationFields = rlfs.ToArray();
-            oi.SimpleFields = sifs.ToArray();
+            oi._RelationFields = rlfs.ToArray();
+            oi._SimpleFields = sifs.ToArray();
 
             SoftDeleteAttribute sd = ClassHelper.GetAttribute<SoftDeleteAttribute>(t, true);
             if (sd != null)
             {
-                oi.SoftDeleteColumnName = sd.ColumnName;
+                oi._SoftDeleteColumnName = sd.ColumnName;
             }
             DeleteToAttribute dta = ClassHelper.GetAttribute<DeleteToAttribute>(t, true);
             if (dta != null)
             {
-                oi.DeleteToTableName = dta.TableName;
+                oi._DeleteToTableName = dta.TableName;
             }
 
             GetIndexes(oi);

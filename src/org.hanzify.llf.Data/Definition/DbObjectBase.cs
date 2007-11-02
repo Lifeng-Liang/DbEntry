@@ -11,7 +11,7 @@ using Lephone.Util;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class DbObjectBase : IRenew
+    public class DbObjectBase : IRenew, IDbObject
     {
         public DbObjectBase()
         {

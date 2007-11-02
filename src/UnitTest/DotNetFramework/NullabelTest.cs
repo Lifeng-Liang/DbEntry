@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Lephone.Data;
+using Lephone.Data.Definition;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.DotNetFramework
@@ -12,7 +13,7 @@ namespace Lephone.UnitTest.DotNetFramework
         public int? n;
     }
 
-    public abstract class test2
+    public abstract class test2 : IDbObject
     {
         public abstract int? n { get; set; }
     }

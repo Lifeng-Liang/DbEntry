@@ -71,7 +71,7 @@ namespace Lephone.Web.Rails
                 if (!m.IsDbGenerate && !m.IsCreatedOn && !m.IsUpdatedOn)
                 {
                     string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
-                    m.MemberInfo.SetValue(obj, Convert.ChangeType(s, m.FieldType));
+                    m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
                 }
             }
             DbEntry.Save(obj);
@@ -120,7 +120,7 @@ namespace Lephone.Web.Rails
                 else if(!m.IsCreatedOn && !m.IsUpdatedOn)
                 {
                     string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
-                    m.MemberInfo.SetValue(obj, Convert.ChangeType(s, m.FieldType));
+                    m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
                 }
             }
             DbEntry.Save(obj);
