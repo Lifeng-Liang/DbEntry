@@ -107,7 +107,7 @@ namespace Lephone.Web.Rails
 
         private void ProcessDateTime(MemberHandler m, object value)
         {
-            b.input.id(id).name(name).type("text").attr("cols", 19).attr("onclick", "getDateString(this, oCalendar)");
+            b.input.id(id).name(name).type("text").attr("cols", 19).attr("onclick", "PickDate(this)");
             if (m.IsCreatedOn || m.IsUpdatedOn)
             {
                 b.attr("disabled", "true");

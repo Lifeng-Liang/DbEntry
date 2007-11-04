@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("no")]
 [assembly: AssemblyProduct("MockSql.Net")]
-[assembly: AssemblyCopyright("Copyright (C) llf's studio 2006")]
+[assembly: AssemblyCopyright("Copyright (C) llf's studio 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -15,5 +15,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("159753d8-3102-436e-b749-462a6113146b")]
 
-[assembly: AssemblyVersion("0.25.*")]
+[assembly: AssemblyVersion("0.33.*")]
 

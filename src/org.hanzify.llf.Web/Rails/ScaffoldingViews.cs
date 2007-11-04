@@ -20,6 +20,7 @@ namespace Lephone.Web.Rails
 <html xmlns=""http://www.w3.org/1999/xhtml"" >
 <head>
 <title>Edit</title>
+<script type=""text/javascript"" language=""javascript"" src=""{0}/scripts/scaffolding.js""></script>
 <link href=""{0}/styles/scaffolding.css"" type=""text/css"" rel=""Stylesheet"" />
 </head>
 <body>

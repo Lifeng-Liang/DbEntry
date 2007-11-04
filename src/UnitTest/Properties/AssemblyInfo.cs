@@ -8,7 +8,7 @@ using Lephone.Data.Common;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("no")]
 [assembly: AssemblyProduct("UnitTest")]
-[assembly: AssemblyCopyright("Copyright (C) no 2006")]
+[assembly: AssemblyCopyright("Copyright (C) llf's studio 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

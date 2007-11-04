@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Lephone.Data;
 using Lephone.Data.Definition;
 
 namespace OrmA
@@ -13,6 +14,7 @@ namespace OrmA
         Client
     }
 
+    [Cacheable]
     public abstract class SampleData : DbObjectModel<SampleData>
     {
         [Length(50)]
@@ -63,6 +65,23 @@ namespace OrmA
 
             d.Name = "( 1)liang lifeng";
             d.Save();
+
+
+            try
+            {
+                DbEntry.UsingTransaction(delegate()
+                {
+                    // emulate exception of transaction
+                    int m = 0;
+                    int n = 1 / m;
+                });
+            }
+            catch { }
+
+            d = SampleData.FindById(1);
+            Console.WriteLine(d);
+            Console.WriteLine();
+
             Console.ReadLine();
         }
     }

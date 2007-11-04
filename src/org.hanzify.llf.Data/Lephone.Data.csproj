@@ -86,8 +86,10 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Caching\StaticHashCacheProvider.cs" />
     <Compile Include="Caching\TimeValue.cs" />
     <Compile Include="Common\AccessDataReader.cs" />
+    <Compile Include="Common\CachedListInserter.cs" />
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DeleteToQueryComposer.cs" />
+    <Compile Include="Definition\CacheableAttribute.cs" />
     <Compile Include="Common\DynamicObjectReference.cs" />
     <Compile Include="Common\EmitObjectHandlerBase.cs" />
     <Compile Include="Common\GroupByObject.cs" />

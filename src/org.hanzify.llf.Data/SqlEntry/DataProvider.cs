@@ -419,11 +419,17 @@ namespace Lephone.Data.SqlEntry
                     callback();
                     cc.Commit();
                 }
-                finally
+                catch
                 {
                     cc.Rollback();
+                    OnTransactionError();
+                    throw;
                 }
             });
+        }
+
+        protected virtual void OnTransactionError()
+        {
         }
 
         public void UsingConnection(CallbackVoidHandler callback)
@@ -436,12 +442,21 @@ namespace Lephone.Data.SqlEntry
                     {
                         callback();
                     }
+                    catch
+                    {
+                        OnConnectionError();
+                        throw;
+                    }
                     finally
                     {
                         cc.Close();
                     }
                 }
             }
+        }
+
+        protected virtual void OnConnectionError()
+        {
         }
 
         public void UsingExistedConnection(CallbackVoidHandler callback)

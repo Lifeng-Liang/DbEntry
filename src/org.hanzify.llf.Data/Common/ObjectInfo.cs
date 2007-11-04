@@ -25,6 +25,10 @@ namespace Lephone.Data.Common
             if (oi.BaseType == null)
             {
                 oi._BaseType = DbObjectType;
+                if (ClassHelper.HasAttribute<CacheableAttribute>(DbObjectType, false))
+                {
+                    oi._Cacheable = true;
+                }
             }
             return oi;
         }
@@ -88,13 +92,14 @@ namespace Lephone.Data.Common
         private IDbObjectHandler _Handler;
         private QueryComposer _Composer;
 
+        private bool _Cacheable;
         private Type _BaseType;
         private Type _HandleType;
         private FromClause _From;
         private bool _HasSystemKey;
         private bool _HasAssociate;
         private bool _IsAssociateObject;
-        private bool _AllowSqlLog;
+        private bool _AllowSqlLog = true;
         private bool _HasOnePremarykey;
         internal string _DeleteToTableName;
         internal string _SoftDeleteColumnName;
@@ -116,6 +121,11 @@ namespace Lephone.Data.Common
         internal QueryComposer Composer
         {
             get { return _Composer; }
+        }
+
+        public bool Cacheable
+        {
+            get { return _Cacheable; }
         }
 
         public Type BaseType

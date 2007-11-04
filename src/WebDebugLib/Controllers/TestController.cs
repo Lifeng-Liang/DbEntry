@@ -22,5 +22,10 @@ namespace DebugLib.Controllers
         {
             bag["item"] = "Test for no view file!";
         }
+
+        public void Say(string s1, string s2)
+        {
+            bag["item"] = string.Format("<b>{0}, {1}</b>", s1, s2);
+        }
     }
 }

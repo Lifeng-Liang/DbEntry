@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("no")]
 [assembly: AssemblyProduct("SqlRecorder")]
-[assembly: AssemblyCopyright("Copyright (C) no 2006")]
+[assembly: AssemblyCopyright("Copyright (C) llf's studio 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("9422045e-05cd-4081-b28a-12d937ab16f0")]
 
-[assembly: AssemblyVersion("0.25.*")]
+[assembly: AssemblyVersion("0.33.*")]

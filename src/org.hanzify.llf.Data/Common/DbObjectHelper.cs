@@ -53,7 +53,7 @@ namespace Lephone.Data.Common
                 {
                     if (k.IsDbGenerate)
                     {
-                        throw new DataException("Multi key did not allow SystemGeneration!");
+                        throw new DataException("Multiple key do not allow SystemGeneration!");
                     }
                 }
             }

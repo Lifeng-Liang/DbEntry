@@ -68,6 +68,14 @@ namespace Lephone.Data
             }
         }
 
+        protected override void OnTransactionError()
+        {
+            if (DataSetting.CacheEnabled)
+            {
+                CacheProvider.Instance.Clear();
+            }
+        }
+
         private void IfUsingTransaction(bool IsUsing, CallbackVoidHandler callback)
         {
             if (IsUsing)
@@ -110,7 +118,7 @@ namespace Lephone.Data
             SqlStatement Sql = oi.Composer.GetGroupByStatement(this.Dialect, iwc, order, ColumnName);
             oi.LogSql(Sql);
             DbObjectList<GroupByObject<T1>> list = new DbObjectList<GroupByObject<T1>>();
-            IProcessor ip = GetListProcessor(list);
+            IProcessor ip = GetListProcessor(list, DbObjectType);
             DataLoadDirect(ip, typeof(GroupByObject<T1>), DbObjectType, Sql, true);
             return list;
         }
@@ -132,33 +140,34 @@ namespace Lephone.Data
             return ret;
         }
 
-        protected IProcessor GetListProcessor(IList il)
+        protected IProcessor GetListProcessor(IList il, Type t)
         {
+            if (DataSetting.CacheAnySelectedItem)
+            {
+                return new CachedListInserter(il, t);
+            }
             if (DataSetting.MaxRecords == 0)
             {
                 return new ListInserter(il);
             }
-            else
-            {
-                return new LimitedListInserter(il);
-            }
+            return new LimitedListInserter(il);
         }
 
         public void FillCollection(IList list, Type DbObjectType, SqlStatement Sql)
         {
-            IProcessor ip = GetListProcessor(list);
+            IProcessor ip = GetListProcessor(list, DbObjectType);
             DataLoad(ip, DbObjectType, Sql);
         }
 
         public void FillCollection(IList list, Type DbObjectType, WhereCondition iwc, OrderBy oc, Range lc)
         {
-            IProcessor ip = GetListProcessor(list);
+            IProcessor ip = GetListProcessor(list, DbObjectType);
             DataLoad(ip, DbObjectType, null, iwc, oc, lc);
         }
 
         public void FillCollection(IList list, Type DbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
         {
-            IProcessor ip = GetListProcessor(list);
+            IProcessor ip = GetListProcessor(list, DbObjectType);
             DataLoad(ip, DbObjectType, from, iwc, oc, lc);
         }
 
@@ -239,7 +248,7 @@ namespace Lephone.Data
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             if (oi.HasOnePremarykey)
             {
-                if (DataSetting.CacheEnabled)
+                if (DataSetting.CacheEnabled && oi.Cacheable)
                 {
                     object co = CacheProvider.Instance[KeyGenerator.Instance.GetKey(t, key)];
                     if (co != null)
@@ -251,7 +260,7 @@ namespace Lephone.Data
                 string keyname = oi.KeyFields[0].Name;
                 object obj = GetObject(t, CK.K[keyname] == key, null, null);
 
-                if (DataSetting.CacheEnabled)
+                if (DataSetting.CacheEnabled && oi.Cacheable)
                 {
                     if (obj != null)
                     {
@@ -428,12 +437,9 @@ namespace Lephone.Data
             {
                 throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
             }
-            if (DataSetting.CacheEnabled)
+            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
             {
-                if (oi.HasOnePremarykey)
-                {
-                    CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
-                }
+                CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
             }
         }
 
@@ -465,12 +471,9 @@ namespace Lephone.Data
                 oi.LogSql(Sql);
                 this.ExecuteNonQuery(Sql);
             }
-            if (DataSetting.CacheEnabled)
+            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
             {
-                if (oi.HasOnePremarykey)
-                {
-                    CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
-                }
+                CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
             }
         }
 

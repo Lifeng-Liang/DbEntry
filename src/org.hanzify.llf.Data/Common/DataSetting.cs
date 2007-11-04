@@ -44,6 +44,8 @@ namespace Lephone.Data.Common
 
         public static readonly bool CacheEnabled            = false;
 
+        public static readonly bool CacheAnySelectedItem    = false;
+
         static DataSetting()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(DataSetting));
