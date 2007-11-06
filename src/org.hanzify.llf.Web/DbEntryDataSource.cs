@@ -16,11 +16,12 @@ using Lephone.Data.SqlEntry;
 using Lephone.Data.QuerySyntax;
 using Lephone.Web.Common;
 using Lephone.Util;
+using Lephone.Data.Definition;
 
 namespace Lephone.Web
 {
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
-    public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource
+    public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource where T : IDbObject
     {
         private static readonly ObjectInfo ObjInfo = ObjectInfo.GetInstance(typeof(T));
         protected static readonly string KeyName = ObjInfo.KeyFields[0].Name;

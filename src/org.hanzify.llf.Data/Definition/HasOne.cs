@@ -18,7 +18,7 @@ namespace Lephone.Data.Definition
     }
 
     [Serializable]
-    public class HasOne<T> : LazyLoadOneBase<T>, IRenew, IHasOne
+    public class HasOne<T> : LazyLoadOneBase<T>, IRenew, IHasOne where T : IDbObject
     {
         private OrderBy Order;
 

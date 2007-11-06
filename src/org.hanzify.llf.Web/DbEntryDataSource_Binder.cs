@@ -11,10 +11,11 @@ using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Web.Common;
 using Lephone.Util;
+using Lephone.Data.Definition;
 
 namespace Lephone.Web
 {
-    public abstract partial class DbEntryDataSource<T>
+    public abstract partial class DbEntryDataSource<T> where T : IDbObject
     {
         public event CallbackVoidHandler OnPageIsNew;
         public event CallbackVoidHandler OnPageIsEdit;

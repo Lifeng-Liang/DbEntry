@@ -5,12 +5,13 @@ using System;
 using System.Collections;
 using Lephone.Data.Common;
 using Lephone.Data.Builder.Clause;
+using Lephone.Data.Definition;
 
 #endregion
 
 namespace Lephone.Data.Common
 {
-    public class StaticPagedSelector<T> : PagedSelector<T>
+    public class StaticPagedSelector<T> : PagedSelector<T> where T : IDbObject
     {
         public StaticPagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds)
             : base(iwc, oc, PageSize, ds)

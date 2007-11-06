@@ -7,6 +7,7 @@ using System.Web.SessionState;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Web.Common;
+using Lephone.Data.Definition;
 
 namespace Lephone.Web.Rails
 {
@@ -35,7 +36,7 @@ namespace Lephone.Web.Rails
     }
 
     [Scaffolding]
-    public class ControllerBase<T> : ControllerBase
+    public class ControllerBase<T> : ControllerBase where T : IDbObject
     {
         protected FlashBox flash = new FlashBox();
 

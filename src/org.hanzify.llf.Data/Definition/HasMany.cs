@@ -21,7 +21,7 @@ namespace Lephone.Data.Definition
     }
 
     [Serializable]
-    public class HasMany<T> : LazyLoadListBase<T>, IHasMany
+    public class HasMany<T> : LazyLoadListBase<T>, IHasMany where T : IDbObject
     {
         private OrderBy Order;
 

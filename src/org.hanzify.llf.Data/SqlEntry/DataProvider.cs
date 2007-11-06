@@ -141,23 +141,25 @@ namespace Lephone.Data.SqlEntry
 		{
             UsingExistedConnection(delegate()
             {
-                IDbCommand e = GetDbCommand(Sql);
-                IDbDataAdapter d = m_Driver.GetDbAdapter(e);
-                if (Dialect.ExecuteEachLine)
+                using (IDbCommand e = GetDbCommand(Sql))
                 {
-                    int i = 0;
-                    foreach (string s in split(e.CommandText))
+                    IDbDataAdapter d = m_Driver.GetDbAdapter(e);
+                    if (Dialect.ExecuteEachLine)
                     {
-                        e.CommandText = s;
-                        ((DbDataAdapter)d).Fill(ds, 0, DataSetting.MaxRecords, "Table" + i.ToString());
-                        i++;
+                        int i = 0;
+                        foreach (string s in split(e.CommandText))
+                        {
+                            e.CommandText = s;
+                            ((DbDataAdapter)d).Fill(ds, 0, DataSetting.MaxRecords, "Table" + i.ToString());
+                            i++;
+                        }
                     }
+                    else
+                    {
+                        d.Fill(ds);
+                    }
+                    PopulateOutParams(Sql, e);
                 }
-                else
-                {
-                    d.Fill(ds);
-                }
-                PopulateOutParams(Sql, e);
             });
         }
 
@@ -167,8 +169,11 @@ namespace Lephone.Data.SqlEntry
             UsingExistedConnection(delegate()
             {
                 Sql.SqlCommandType = CommandType.Text;
-                IDbDataAdapter d = m_Driver.GetUpdateDbAdapter(GetDbCommand(Sql));
-                ret = d.Update(ds);
+                using (IDbCommand e = GetDbCommand(Sql))
+                {
+                    IDbDataAdapter d = m_Driver.GetUpdateDbAdapter(e);
+                    ret = d.Update(ds);
+                }
             });
             return ret;
         }
@@ -178,13 +183,15 @@ namespace Lephone.Data.SqlEntry
             object obj = null;
             UsingExistedConnection(delegate()
             {
-                IDbCommand e = GetDbCommand(Sql);
-                if (Dialect.ExecuteEachLine)
+                using (IDbCommand e = GetDbCommand(Sql))
                 {
-                    ExecuteBeforeLines(e);
+                    if (Dialect.ExecuteEachLine)
+                    {
+                        ExecuteBeforeLines(e);
+                    }
+                    obj = e.ExecuteScalar();
+                    PopulateOutParams(Sql, e);
                 }
-                obj = e.ExecuteScalar();
-                PopulateOutParams(Sql, e);
             });
             return obj;
         }
@@ -194,13 +201,15 @@ namespace Lephone.Data.SqlEntry
             int i = 0;
             UsingExistedConnection(delegate()
             {
-                IDbCommand e = GetDbCommand(Sql);
-                if (Dialect.ExecuteEachLine)
+                using (IDbCommand e = GetDbCommand(Sql))
                 {
-                    i = ExecuteBeforeLines(e);
+                    if (Dialect.ExecuteEachLine)
+                    {
+                        i = ExecuteBeforeLines(e);
+                    }
+                    i += e.ExecuteNonQuery();
+                    PopulateOutParams(Sql, e);
                 }
-                i += e.ExecuteNonQuery();
-                PopulateOutParams(Sql, e);
             });
             return i;
         }
@@ -214,14 +223,18 @@ namespace Lephone.Data.SqlEntry
         {
             UsingExistedConnection(delegate()
             {
-                IDbCommand e = GetDbCommand(Sql);
-                if (Dialect.ExecuteEachLine)
+                using (IDbCommand e = GetDbCommand(Sql))
                 {
-                    ExecuteBeforeLines(e);
+                    if (Dialect.ExecuteEachLine)
+                    {
+                        ExecuteBeforeLines(e);
+                    }
+                    using (IDataReader r = e.ExecuteReader(behavior))
+                    {
+                        PopulateOutParams(Sql, e);
+                        callback(r);
+                    }
                 }
-                IDataReader r = e.ExecuteReader(behavior);
-                PopulateOutParams(Sql, e);
-                callback(r);
             });
         }
 
@@ -230,15 +243,21 @@ namespace Lephone.Data.SqlEntry
         {
             UsingExistedConnection(delegate()
             {
-                IDbCommand e = GetDbCommand(Sql);
-                if (Dialect.ExecuteEachLine)
+                using (IDbCommand e = GetDbCommand(Sql))
                 {
-                    ExecuteBeforeLines(e);
+                    if (Dialect.ExecuteEachLine)
+                    {
+                        ExecuteBeforeLines(e);
+                    }
+                    using (IDataReader r = e.ExecuteReader(CommandBehavior.Default))
+                    {
+                        PopulateOutParams(Sql, e);
+                        using (IDataReader dr = Dialect.GetDataReader(r, ReturnType))
+                        {
+                            callback(dr);
+                        }
+                    }
                 }
-                IDataReader r = e.ExecuteReader(CommandBehavior.Default);
-                PopulateOutParams(Sql, e);
-                IDataReader dr = Dialect.GetDataReader(r, ReturnType);
-                callback(dr);
             });
         }
 
@@ -377,7 +396,7 @@ namespace Lephone.Data.SqlEntry
 
         #endregion
 
-        #region IUsingTransaction ≥…‘±
+        #region IUsingTransaction
 
         public void UsingExistedTransaction(CallbackVoidHandler callback)
         {

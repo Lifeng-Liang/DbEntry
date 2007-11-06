@@ -97,7 +97,7 @@ namespace Lephone.Data
             }
         }
 
-        public IWhere<T> From<T>()
+        public IWhere<T> From<T>() where T : IDbObject
         {
             return new QueryContent<T>(this);
         }
@@ -123,17 +123,17 @@ namespace Lephone.Data
             return list;
         }
 
-        public DbObjectList<T> ExecuteList<T>(string SqlStr)
+        public DbObjectList<T> ExecuteList<T>(string SqlStr) where T : IDbObject
         {
             return ExecuteList<T>(new SqlStatement(SqlStr));
         }
 
-        public DbObjectList<T> ExecuteList<T>(string SqlStr, params object[] os)
+        public DbObjectList<T> ExecuteList<T>(string SqlStr, params object[] os) where T : IDbObject
         {
             return ExecuteList<T>(GetSqlStatement(SqlStr, os));
         }
 
-        public DbObjectList<T> ExecuteList<T>(SqlStatement Sql)
+        public DbObjectList<T> ExecuteList<T>(SqlStatement Sql) where T : IDbObject
         {
             DbObjectList<T> ret = new DbObjectList<T>();
             FillCollection(ret, typeof(T), Sql);
@@ -228,17 +228,17 @@ namespace Lephone.Data
             });
         }
 
-        public T GetObject<T>(object key)
+        public T GetObject<T>(object key) where T : IDbObject
         {
             return (T)GetObject(typeof(T), key);
         }
 
-        public T GetObject<T>(WhereCondition c)
+        public T GetObject<T>(WhereCondition c) where T : IDbObject
         {
             return (T)GetObject(typeof(T), c, null, null);
         }
 
-        public T GetObject<T>(WhereCondition c, OrderBy ob)
+        public T GetObject<T>(WhereCondition c, OrderBy ob) where T : IDbObject
         {
             return (T)GetObject(typeof(T), c, ob);
         }
@@ -557,7 +557,7 @@ namespace Lephone.Data
             return ret;
         }
 
-        public int Delete<T>(WhereCondition iwc)
+        public int Delete<T>(WhereCondition iwc) where T : IDbObject
         {
             Type t = typeof(T);
             TryCreateTable(t);

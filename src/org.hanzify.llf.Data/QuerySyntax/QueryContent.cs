@@ -5,13 +5,14 @@ using System;
 using System.Collections.Generic;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
+using Lephone.Data.Definition;
 
 #endregion
 
 namespace Lephone.Data.QuerySyntax
 {
     [Serializable]
-    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, ISelectable<T>, IGetPagedSelector
+    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, ISelectable<T>, IGetPagedSelector where T : IDbObject
     {
         protected WhereCondition m_where;
         protected OrderBy m_order;

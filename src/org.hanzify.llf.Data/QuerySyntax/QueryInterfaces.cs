@@ -3,12 +3,13 @@
 
 using System;
 using Lephone.Data.Common;
+using Lephone.Data.Definition;
 
 #endregion
 
 namespace Lephone.Data.QuerySyntax
 {
-    public interface ISelectable<T>
+    public interface ISelectable<T> where T : IDbObject
     {
         DbObjectList<T> Select();
     }
@@ -24,14 +25,14 @@ namespace Lephone.Data.QuerySyntax
         DbObjectList<GroupByObject<T1>> GroupBy<T1>(string ColumnName);
     }
 
-    public interface IRangeable<T> : ISelectable<T>, IGroupByable
+    public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : IDbObject
     {
         ISelectable<T> Range(int StartIndex, int EndIndex);
         ISelectable<T> Range(Range r);
         IGetPagedSelector PageSize(int PageSize);
     }
 
-    public interface IAfterWhere<T> : ISelectable<T>, IGroupByable
+    public interface IAfterWhere<T> : ISelectable<T>, IGroupByable where T : IDbObject
     {
         IRangeable<T> OrderBy(string key);
         IRangeable<T> OrderBy(params ASC[] os);
@@ -39,7 +40,7 @@ namespace Lephone.Data.QuerySyntax
         long GetCount();
     }
 
-    public interface IWhere<T>
+    public interface IWhere<T> where T : IDbObject
     {
         IAfterWhere<T> Where(WhereCondition where);
     }

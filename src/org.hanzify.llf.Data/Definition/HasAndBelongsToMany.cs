@@ -14,7 +14,7 @@ using Lephone.Data.Driver;
 
 namespace Lephone.Data.Definition
 {
-    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, IHasAndBelongsToManyRelations
+    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, IHasAndBelongsToManyRelations where T : IDbObject
     {
         private OrderBy Order;
 

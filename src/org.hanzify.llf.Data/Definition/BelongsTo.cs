@@ -14,7 +14,7 @@ using Lephone.Util;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class BelongsTo<T> : IBelongsTo
+    public class BelongsTo<T> : IBelongsTo where T : IDbObject
     {
         private object owner;
         private string ForeignKeyName;

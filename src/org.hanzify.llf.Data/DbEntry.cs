@@ -11,6 +11,7 @@ using Lephone.Data.Common;
 using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
+using Lephone.Data.Definition;
 
 #endregion
 
@@ -57,22 +58,22 @@ namespace Lephone.Data
 
         #region Shortcut
 
-        public static IWhere<T> From<T>()
+        public static IWhere<T> From<T>() where T : IDbObject
         {
             return _Instance.From<T>();
         }
 
-        public static T GetObject<T>(object key)
+        public static T GetObject<T>(object key) where T : IDbObject
         {
             return _Instance.GetObject<T>(key);
         }
 
-        public static T GetObject<T>(WhereCondition c)
+        public static T GetObject<T>(WhereCondition c) where T : IDbObject
         {
             return _Instance.GetObject<T>(c);
         }
 
-        public static T GetObject<T>(WhereCondition c, OrderBy ob)
+        public static T GetObject<T>(WhereCondition c, OrderBy ob) where T : IDbObject
         {
             return _Instance.GetObject<T>(c, ob);
         }
@@ -97,7 +98,7 @@ namespace Lephone.Data
             _Instance.Delete(obj);
 		}
 
-        public static void Delete<T>(WhereCondition iwc)
+        public static void Delete<T>(WhereCondition iwc) where T : IDbObject
         {
             _Instance.Delete<T>(iwc);
         }
