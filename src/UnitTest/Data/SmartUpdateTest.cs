@@ -237,18 +237,18 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestPartialUpdateThatSetedValue()
+        public void TestPartialUpdateThatSetValue()
         {
             sUser u = new sUser("Tom", 18);
             u.Id = 1; // Make it looks like read from database
             u.Name = "Tom";
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [sUser] Set [Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void TestPartialUpdateThatSetedValueByTransaction()
+        public void TestPartialUpdateThatSetValueByTransaction()
         {
             de.UsingTransaction(delegate()
             {
@@ -258,7 +258,7 @@ namespace Lephone.UnitTest.Data
                 de.Save(u);
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [sUser] Set [Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -293,8 +293,8 @@ namespace Lephone.UnitTest.Data
             u.Articles.Add(a);
             de.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Insert Into [rArticle] ([Name],[thePrice],[Reader_Id]) Values (@Name_0,@thePrice_1,@Reader_Id_2);\nSELECT last_insert_rowid();\n", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Update [rArticle] Set [thePrice]=@thePrice_0,[Reader_Id]=@Reader_Id_1  Where [Id] = @Id_2;\n", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Insert Into [r_Article] ([Name],[thePrice],[Reader_Id]) Values (@Name_0,@thePrice_1,@Reader_Id_2);\nSELECT last_insert_rowid();\n", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Update [r_Article] Set [thePrice]=@thePrice_0,[Reader_Id]=@Reader_Id_1  Where [Id] = @Id_2;\n", StaticRecorder.Messages[1]);
         }
 
         [Test]
@@ -315,7 +315,7 @@ namespace Lephone.UnitTest.Data
             u.Name = "Tom";
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [asUser] Set [theName]=@theName_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -327,7 +327,7 @@ namespace Lephone.UnitTest.Data
             u.Age = 25;
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [asUser] Set [theName]=@theName_0,[Age]=@Age_1  Where [Id] = @Id_2;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0,[Age]=@Age_1  Where [Id] = @Id_2;\n", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -344,7 +344,7 @@ namespace Lephone.UnitTest.Data
                 });
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [asUser] Set [theName]=@theName_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
         }
     }
 }

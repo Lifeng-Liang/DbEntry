@@ -14,6 +14,7 @@ using Lephone.Data.Builder.Clause;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Driver;
 using Lephone.Data.Definition;
+using Lephone.Util.Text;
 
 #endregion
 
@@ -445,7 +446,8 @@ namespace Lephone.Data.Common
             {
                 if (joas.Length == 0)
                 {
-                    return new FromClause(GetTableNameFromConfig(DbObjectType.Name));
+                    string DefaultName = NameMapper.Instance.MapName(DbObjectType.Name);
+                    return new FromClause(GetTableNameFromConfig(DefaultName));
                 }
                 JoinClause[] jcs = new JoinClause[joas.Length];
                 for (int i = 0; i < joas.Length; i++)
@@ -473,7 +475,7 @@ namespace Lephone.Data.Common
             return new FromClause(dtas[0].LinkNames);
         }
 
-        private static string GetTableNameFromConfig(string DefinedName)
+        internal static string GetTableNameFromConfig(string DefinedName)
         {
             return ConfigHelper.DefaultSettings.GetValue("@" + DefinedName, DefinedName);
         }

@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.Data
 {
     #region objects
 
-    [SoftDelete]
+    [SoftDelete, DbTable("SoftDelete")]
     public abstract class SoftDelete : DbObjectModel<SoftDelete>
     {
         public abstract string Name { get; set; }

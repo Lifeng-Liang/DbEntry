@@ -363,5 +363,15 @@ namespace Lephone.UnitTest.Data
             de.From<Person>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
             Assert.AreEqual("select [Id],[Name] from (select [Id],[Name], ROW_NUMBER() OVER ( Order By [Id] ASC) as __rownumber__ From [People]  Where [Age] > @Age_0) as T Where T.__rownumber__ >= 3 and T.__rownumber__ <= 5;\n", StaticRecorder.LastMessage);
         }
+
+        [Test]
+        public void TestTableNameMapOfConfig()
+        {
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(Lephone.Data.Logging.LogItem));
+            Assert.AreEqual("System_Log", oi.From.GetMainTableName());
+
+            oi = ObjectInfo.GetInstance(typeof(EnumTable));
+            Assert.AreEqual("Lephone_Enum", oi.From.GetMainTableName());
+        }
     }
 }

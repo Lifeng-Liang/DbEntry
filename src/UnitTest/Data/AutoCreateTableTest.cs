@@ -72,6 +72,7 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [DbTable("cmmReader")]
     public class cmmReader : DbObject
     {
         public string Name;
@@ -84,6 +85,7 @@ namespace Lephone.UnitTest.Data
         public cmmReader(string Name) : this() { this.Name = Name; }
     }
 
+    [DbTable("cmmArticle")]
     public class cmmArticle : DbObject
     {
         public string Title;
@@ -103,6 +105,7 @@ namespace Lephone.UnitTest.Data
         Costomer,
     }
 
+    [DbTable("EnumTest")]
     public abstract class EnumTest : DbObjectModel<EnumTest>
     {
         [Length(50)]
@@ -118,6 +121,7 @@ namespace Lephone.UnitTest.Data
         Client
     }
 
+    [DbTable("SampleData")]
     public abstract class SampleData : DbObjectModel<SampleData>
     {
         [Length(50)]

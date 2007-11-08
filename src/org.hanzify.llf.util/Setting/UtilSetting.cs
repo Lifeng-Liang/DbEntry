@@ -8,6 +8,8 @@ namespace Lephone.Util.Setting
     {
         public static readonly string NowProvider = "Lephone.Util.NowProvider, Lephone.Util";
 
+        public static readonly string NameMapper = "Lephone.Util.Text.UnderlineNameMapper, Lephone.Util";
+
         static UtilSetting()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(UtilSetting));

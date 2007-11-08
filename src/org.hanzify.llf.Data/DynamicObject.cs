@@ -15,6 +15,7 @@ using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 
 using Lephone.Util;
+using Lephone.Util.Text;
 
 #endregion
 
@@ -680,9 +681,10 @@ namespace Lephone.Data
             hasAttr |= PopulateJoinOnAttribute(al, os);
             if (!hasAttr)
             {
+                string DefaultName = NameMapper.Instance.MapName(SourceType.Name);
                 al.Add(new CustomAttributeBuilder(
                     typeof(DbTableAttribute).GetConstructor(new Type[] { typeof(string) }),
-                    new object[] { SourceType.Name }));
+                    new object[] { DefaultName }));
             }
             return (CustomAttributeBuilder[])al.ToArray(typeof(CustomAttributeBuilder));
         }

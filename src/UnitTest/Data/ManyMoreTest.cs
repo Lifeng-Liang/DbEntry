@@ -11,6 +11,7 @@ namespace Lephone.UnitTest.Data
 {
     #region objects
 
+    [DbTable("ManyMore")]
     public abstract class ManyMore : DbObjectModel<ManyMore>
     {
         public abstract string Name { get; set; }
@@ -22,6 +23,7 @@ namespace Lephone.UnitTest.Data
         public abstract IList<ManyMore2> m2 { get; set; }
     }
 
+    [DbTable("ManyMore1")]
     public abstract class ManyMore1 : DbObjectModel<ManyMore1>
     {
         public abstract string Name { get; set; }
@@ -30,6 +32,7 @@ namespace Lephone.UnitTest.Data
         public abstract IList<ManyMore> m { get; set; }
     }
 
+    [DbTable("ManyMore2")]
     public abstract class ManyMore2 : DbObjectModel<ManyMore2>
     {
         public abstract string Name { get; set; }

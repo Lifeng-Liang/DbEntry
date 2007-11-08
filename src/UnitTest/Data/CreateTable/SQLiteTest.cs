@@ -86,21 +86,21 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void Test1()
         {
             de.Create(typeof(MyTest1));
-            Assert.AreEqual("CREATE TABLE [MyTest1] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL \n);\nCREATE INDEX [IX_MyTest1_Name] ON [MyTest1] ([Name] ASC);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [My_Test1] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL \n);\nCREATE INDEX [IX_My_Test1_Name] ON [My_Test1] ([Name] ASC);\n", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void Test2()
         {
             de.Create(typeof(MyTest2));
-            Assert.AreEqual("CREATE TABLE [MyTest2] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL \n);\nCREATE UNIQUE INDEX [IX_MyTest2_Name] ON [MyTest2] ([Name] ASC);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [My_Test2] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL \n);\nCREATE UNIQUE INDEX [IX_My_Test2_Name] ON [My_Test2] ([Name] ASC);\n", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void Test3()
         {
             de.Create(typeof(MyTest3));
-            Assert.AreEqual("CREATE TABLE [MyTest3] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[Age] int NOT NULL \n);\nCREATE UNIQUE INDEX [IX_MyTest3_Name_Age] ON [MyTest3] ([Name] DESC, [Age] ASC);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [My_Test3] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[Age] int NOT NULL \n);\nCREATE UNIQUE INDEX [IX_My_Test3_Name_Age] ON [My_Test3] ([Name] DESC, [Age] ASC);\n", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         {
             de.Create(typeof(GuidKey));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("CREATE TABLE [GuidKey] (\n\t[Id] uniqueidentifier PRIMARY KEY,\n\t[Name] ntext NOT NULL \n);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [Guid_Key] (\n\t[Id] uniqueidentifier PRIMARY KEY,\n\t[Name] ntext NOT NULL \n);\n", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void TestUnsigned()
         {
             de.Create(typeof(UnsignedTestTable));
-            Assert.AreEqual("CREATE TABLE [UnsignedTestTable] (\n\t[Name] ntext NOT NULL ,\n\t[Age] int NOT NULL \n);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [Unsigned_Test_Table] (\n\t[Name] ntext NOT NULL ,\n\t[Age] int NOT NULL \n);\n", StaticRecorder.LastMessage);
         }
     }
 }

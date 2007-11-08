@@ -95,7 +95,7 @@ namespace Lephone.UnitTest.Data
         public void TestCreate()
         {
             de.Create(typeof(lzUser));
-            Assert.AreEqual("CREATE TABLE [lzUser] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[Profile] ntext NOT NULL \n);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [lz_User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[Profile] ntext NOT NULL \n);\n", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace Lephone.UnitTest.Data
         public void TestRead()
         {
             de.GetObject<lzUser>(1);
-            Assert.AreEqual("Select [Id],[Name] From [lzUser] Where [Id] = @Id_0;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Select [Id],[Name] From [lz_User] Where [Id] = @Id_0;\n", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace Lephone.UnitTest.Data
             u.Name = "tom";
             u.Profile = "test";
             de.Insert(u);
-            Assert.AreEqual("Insert Into [lzUser] ([Name],[Profile]) Values (@Name_0,@Profile_1);\nSELECT last_insert_rowid();\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Insert Into [lz_User] ([Name],[Profile]) Values (@Name_0,@Profile_1);\nSELECT last_insert_rowid();\n", StaticRecorder.LastMessage);
         }
 
         [Test]

@@ -34,7 +34,7 @@ namespace Lephone.UnitTest.Data
             o.Id = 2;
             o.Name = "tom";
             de.Delete(o);
-            Assert.AreEqual("Delete From [DeleteToUser] Where [Id] = @Id_0;\nInsert Into [UnregUser] ([Name],[DeletedOn]) Values (@Name_0,datetime(current_timestamp, 'localtime'));\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Delete From [Delete_To_User] Where [Id] = @Id_0;\nInsert Into [UnregUser] ([Name],[DeletedOn]) Values (@Name_0,datetime(current_timestamp, 'localtime'));\n", StaticRecorder.LastMessage);
         }
 
         [Test]

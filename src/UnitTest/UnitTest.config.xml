@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <Lephone.Settings>
+    <add key="@Lephone_Log" value="System_Log" />
+    
     <add key="SqlLogRecorder" value="Lephone.Util.Logging.ConsoleMessageRecorder, Lephone.Util" />
 
     <add key="ObjectHandlerType" value="Emit" />

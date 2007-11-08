@@ -71,7 +71,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(1, ats.Length);
             Assert.IsTrue(ats[0] is DbTableAttribute);
             DbTableAttribute da = (DbTableAttribute)ats[0];
-            Assert.AreEqual("AbstractClass", da.TableName);
+            Assert.AreEqual("Abstract_Class", da.TableName);
         }
 
         [Test]

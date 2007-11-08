@@ -38,6 +38,7 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [DbTable("BelongsMore")]
     public abstract class BelongsMore : DbObjectModel<BelongsMore>
     {
         [Length(50)]

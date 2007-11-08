@@ -88,6 +88,7 @@
     <Compile Include="Data\Inner\TesterHelper.cs" />
     <Compile Include="Data\Inner\WhereConditionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="util\NameMapperTest.cs" />
     <Compile Include="util\timingTask\DayTimingTest.cs" />
     <Compile Include="util\timingTask\MockNowTimeProvider.cs" />
     <Compile Include="util\timingTask\MockTask.cs" />
