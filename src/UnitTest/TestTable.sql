@@ -28,7 +28,7 @@ INSERT INTO [Books] ([Id],[Name],[Category_Id]) VALUES (5, 'Wow', 2);
 
 CREATE TABLE Article ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL);
 CREATE TABLE Reader ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL);
-CREATE TABLE Article_Reader (Article_Id INTEGER NOT NULL, Reader_Id INTEGER NOT NULL);
+CREATE TABLE R_Article_Reader (Article_Id INTEGER NOT NULL, Reader_Id INTEGER NOT NULL);
 
 INSERT INTO Article ([Id],[Name]) VALUES (1, 'The lovely bones');
 INSERT INTO Article ([Id],[Name]) VALUES (2, 'The world is float');
@@ -38,12 +38,12 @@ INSERT INTO Reader ([Id],[Name]) VALUES (1, 'tom');
 INSERT INTO Reader ([Id],[Name]) VALUES (2, 'jerry');
 INSERT INTO Reader ([Id],[Name]) VALUES (3, 'mike');
 
-INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (1, 2);
-INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (1, 3);
-INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (1, 1);
-INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (2, 2);
-INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (2, 3);
-INSERT INTO Article_Reader (Article_Id,Reader_Id) VALUES (3, 1);
+INSERT INTO R_Article_Reader (Article_Id,Reader_Id) VALUES (1, 2);
+INSERT INTO R_Article_Reader (Article_Id,Reader_Id) VALUES (1, 3);
+INSERT INTO R_Article_Reader (Article_Id,Reader_Id) VALUES (1, 1);
+INSERT INTO R_Article_Reader (Article_Id,Reader_Id) VALUES (2, 2);
+INSERT INTO R_Article_Reader (Article_Id,Reader_Id) VALUES (2, 3);
+INSERT INTO R_Article_Reader (Article_Id,Reader_Id) VALUES (3, 1);
 
 --------------------------------------------------------------------------------------------------------------------
 

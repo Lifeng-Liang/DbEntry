@@ -171,8 +171,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGetTableNames()
         {
-            string[] ts = new string[] { "Article", "Article_Reader", "BelongsMore", "Books",
-                "Categories", "File", "NullTest", "PCs", "People", "Reader", "SoftDelete" };
+            string[] ts = new string[] { "Article", "BelongsMore", "Books", "Categories",
+                "File", "NullTest", "PCs", "People", "R_Article_Reader", "Reader", "SoftDelete" };
             List<string> li = DbEntry.Context.GetTableNames();
             li.Sort();
             Assert.AreEqual(ts, li.ToArray());

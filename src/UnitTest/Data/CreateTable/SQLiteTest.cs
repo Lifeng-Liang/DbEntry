@@ -159,9 +159,9 @@ namespace Lephone.UnitTest.Data.CreateTable
         {
             de.Create_ManyToManyMediTable(typeof(Reader), typeof(Article));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("CREATE TABLE [Article_Reader] (\n\t[Article_Id] bigint NOT NULL ,\n\t[Reader_Id] bigint NOT NULL \n);\n" +
-                "CREATE INDEX [IX_Article_Reader_Reader_Id] ON [Article_Reader] ([Reader_Id] ASC);\n" +
-                "CREATE INDEX [IX_Article_Reader_Article_Id] ON [Article_Reader] ([Article_Id] ASC);\n",
+            Assert.AreEqual("CREATE TABLE [R_Article_Reader] (\n\t[Article_Id] bigint NOT NULL ,\n\t[Reader_Id] bigint NOT NULL \n);\n" +
+                "CREATE INDEX [IX_R_Article_Reader_Reader_Id] ON [R_Article_Reader] ([Reader_Id] ASC);\n" +
+                "CREATE INDEX [IX_R_Article_Reader_Article_Id] ON [R_Article_Reader] ([Article_Id] ASC);\n",
                 StaticRecorder.Messages[0]);
         }
 
@@ -177,10 +177,10 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void TestManyMore()
         {
             de.Create_ManyToManyMediTable(typeof(ManyMore), typeof(ManyMore1));
-            Assert.AreEqual("CREATE TABLE [ManyMore_ManyMore1] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore1_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_ManyMore_ManyMore1_ManyMore_Id] ON [ManyMore_ManyMore1] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_ManyMore_ManyMore1_ManyMore1_Id] ON [ManyMore_ManyMore1] ([ManyMore1_Id] ASC);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [R_ManyMore_ManyMore1] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore1_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_R_ManyMore_ManyMore1_ManyMore_Id] ON [R_ManyMore_ManyMore1] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_R_ManyMore_ManyMore1_ManyMore1_Id] ON [R_ManyMore_ManyMore1] ([ManyMore1_Id] ASC);\n", StaticRecorder.LastMessage);
 
             de.Create_ManyToManyMediTable(typeof(ManyMore), typeof(ManyMore2));
-            Assert.AreEqual("CREATE TABLE [ManyMore_ManyMore2] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore2_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_ManyMore_ManyMore2_ManyMore_Id] ON [ManyMore_ManyMore2] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_ManyMore_ManyMore2_ManyMore2_Id] ON [ManyMore_ManyMore2] ([ManyMore2_Id] ASC);\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [R_ManyMore_ManyMore2] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore2_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore_Id] ON [R_ManyMore_ManyMore2] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore2_Id] ON [R_ManyMore_ManyMore2] ([ManyMore2_Id] ASC);\n", StaticRecorder.LastMessage);
         }
 
         [Test]

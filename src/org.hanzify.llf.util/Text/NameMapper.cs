@@ -12,5 +12,10 @@ namespace Lephone.Util.Text
         {
             return Name;
         }
+
+        public virtual string Prefix
+        {
+            get { return string.Empty; }
+        }
     }
 }

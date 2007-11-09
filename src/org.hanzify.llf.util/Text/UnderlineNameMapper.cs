@@ -31,5 +31,10 @@ namespace Lephone.Util.Text
         {
             return c >= 'a' && c <= 'z';
         }
+
+        public override string Prefix
+        {
+            get { return "R_"; }
+        }
     }
 }

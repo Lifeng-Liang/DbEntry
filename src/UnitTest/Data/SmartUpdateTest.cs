@@ -223,7 +223,7 @@ namespace Lephone.UnitTest.Data
             de.DropTable(typeof(Lephone.UnitTest.Data.Objects.DArticle));
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
             Assert.AreEqual("Drop Table [Article]", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Drop Table [Article_Reader]", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Drop Table [R_Article_Reader]", StaticRecorder.Messages[1]);
         }
 
         [Test]

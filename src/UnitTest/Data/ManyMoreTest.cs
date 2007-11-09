@@ -143,9 +143,9 @@ namespace Lephone.UnitTest.Data
             o2 = ManyMore2.FindById(o2.Id);
             Assert.AreEqual(0, o2.m.Count);
 
-            int n = Convert.ToInt32(DbEntry.Context.ExecuteScalar("select count(*) from [ManyMore_ManyMore1]"));
+            int n = Convert.ToInt32(DbEntry.Context.ExecuteScalar("select count(*) from [R_ManyMore_ManyMore1]"));
             Assert.AreEqual(0, n);
-            n = Convert.ToInt32(DbEntry.Context.ExecuteScalar("select count(*) from [ManyMore_ManyMore2]"));
+            n = Convert.ToInt32(DbEntry.Context.ExecuteScalar("select count(*) from [R_ManyMore_ManyMore2]"));
             Assert.AreEqual(0, n);
         }
     }

@@ -413,6 +413,7 @@ namespace Lephone.Data.Common
                     string SlaveTableName = GetObjectFromClause(ft).GetMainTableName();
                     string MediTableName = MainTableName.CompareTo(SlaveTableName) > 0 ?
                         SlaveTableName + "_" + MainTableName : MainTableName + "_" + SlaveTableName;
+                    MediTableName = NameMapper.Instance.Prefix + MediTableName;
 
                     FromClause fc = new FromClause(
                         new JoinClause(MediTableName + "." + SlaveTableName + "_Id", SlaveTableName + ".Id",
