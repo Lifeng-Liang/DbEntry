@@ -69,7 +69,7 @@ namespace Lephone.Web.Rails
             T obj = (T)oi.NewObject();
             foreach(MemberHandler m in oi.SimpleFields)
             {
-                if (!m.IsDbGenerate && !m.IsCreatedOn && !m.IsUpdatedOn)
+                if (!m.IsDbGenerate && !m.IsAutoSavedValue)
                 {
                     string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
                     m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
@@ -118,7 +118,7 @@ namespace Lephone.Web.Rails
                 {
                     m.SetValue(obj, Convert.ChangeType(n, m.FieldType));
                 }
-                else if(!m.IsCreatedOn && !m.IsUpdatedOn)
+                else if (!m.IsAutoSavedValue)
                 {
                     string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
                     m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion
 
@@ -76,6 +77,16 @@ namespace Lephone.Util
             {
                 throw new NotSupportedException(ExceptionText);
             }
+        }
+
+        public static List<T> NewList<T>(params T[] ts)
+        {
+            List<T> ret = new List<T>();
+            foreach (T t in ts)
+            {
+                ret.Add(t);
+            }
+            return ret;
         }
     }
 }

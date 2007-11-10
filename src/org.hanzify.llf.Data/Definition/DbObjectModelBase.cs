@@ -14,28 +14,6 @@ namespace Lephone.Data.Definition
             get { return CK.Column; }
         }
 
-        public virtual void Save()
-        {
-            DbEntry.Save(this);
-        }
-
-        public virtual void Delete()
-        {
-            DbEntry.Delete(this);
-        }
-
-        public virtual ValidateHandler Validate()
-        {
-            ValidateHandler v = new ValidateHandler();
-            v.ValidateObject(this);
-            return v;
-        }
-
-        public virtual bool IsValid()
-        {
-            return Validate().IsValid;
-        }
-
         public static T FindById(TKey Id)
         {
             return DbEntry.GetObject<T>(Id);

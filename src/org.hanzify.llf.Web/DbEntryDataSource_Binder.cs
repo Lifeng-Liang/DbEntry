@@ -154,14 +154,8 @@ namespace Lephone.Web
             string tn = typeof(T).Name;
             if (oid != null)
             {
-                T o = default(T);
-
-                if (OnObjectDeleted != null)
-                {
-                    o = DbEntry.GetObject<T>(oid);
-                }
-
-                ExecuteDelete(oid);
+                T o = DbEntry.GetObject<T>(oid);
+                ExecuteDelete(o);
                 Notice(string.Format(ObjectDeletedText, tn));
 
                 if (OnObjectDeleted != null)

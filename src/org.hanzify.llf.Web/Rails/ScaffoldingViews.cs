@@ -75,7 +75,7 @@ namespace Lephone.Web.Rails
 
                 foreach (MemberHandler m in oi.SimpleFields)
                 {
-                    if (!m.IsDbGenerate && !m.IsCreatedOn && !m.IsUpdatedOn)
+                    if (!m.IsDbGenerate && !m.IsAutoSavedValue)
                     {
                         string n = cn + "_" + m.Name;
                         string n1 = cn + "[" + m.Name + "]";
@@ -143,7 +143,7 @@ namespace Lephone.Web.Rails
 
                 foreach (MemberHandler m in oi.SimpleFields)
                 {
-                    if (!m.IsDbGenerate && !m.IsCreatedOn && !m.IsUpdatedOn)
+                    if (!m.IsDbGenerate && !m.IsAutoSavedValue)
                     {
                         string n = cn + "_" + m.Name;
                         string n1 = cn + "[" + m.Name + "]";

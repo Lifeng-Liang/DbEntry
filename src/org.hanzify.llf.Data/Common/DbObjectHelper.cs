@@ -307,6 +307,10 @@ namespace Lephone.Data.Common
                 {
                     throw new DataException("Only CreatedOn and UpdatedOn are supported as special name.");
                 }
+                if (fh.IsCreatedOn || fh.IsUpdatedOn || fh.IsSavedOn)
+                {
+                    fh.IsAutoSavedValue = true;
+                }
             }
 
             LengthAttribute ml = fi.GetAttribute<LengthAttribute>(false);

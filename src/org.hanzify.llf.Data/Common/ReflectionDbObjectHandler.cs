@@ -187,7 +187,7 @@ namespace Lephone.Data.Common
                 KeyValue kv = new KeyValue(fi.Name, ov, t);
                 isv.Values.Add(kv);
             }
-            else if (fi.IsCreatedOn || fi.IsUpdatedOn)
+            else if (fi.IsAutoSavedValue)
             {
                 isv.Values.Add(new KeyValue(fi.Name, DbNow.Value));
             }

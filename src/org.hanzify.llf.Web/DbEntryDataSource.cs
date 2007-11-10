@@ -145,12 +145,8 @@ namespace Lephone.Web
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
         {
             object key = Convert.ChangeType(keys[KeyName], ObjInfo.KeyFields[0].FieldType);
-            T obj = default(T);
-            if (OnObjectDeleted != null)
-            {
-                obj = DbEntry.GetObject<T>(key);
-            }
-            int n = ExecuteDelete(key);
+            T obj = DbEntry.GetObject<T>(key);
+            int n = ExecuteDelete(obj);
             if (OnObjectDeleted != null)
             {
                 OnObjectDeleted(obj);
@@ -158,9 +154,21 @@ namespace Lephone.Web
             return n;
         }
 
-        public virtual int ExecuteDelete(object Key)
+        public virtual int ExecuteDelete(object obj)
         {
-            return DbEntry.Context.Delete<T>(CK.K[KeyName] == Key);
+            if (obj != null)
+            {
+                if (obj is DbObjectSmartUpdate)
+                {
+                    ((DbObjectSmartUpdate)obj).Delete();
+                }
+                else
+                {
+                    DbEntry.Delete(obj);
+                }
+                return 1;
+            }
+            return 0;
         }
 
         int IExcuteableDataSource.Insert(IDictionary values)
@@ -176,8 +184,19 @@ namespace Lephone.Web
 
         public virtual int ExecuteInsert(object obj)
         {
-            DbEntry.Save(obj);
-            return 1;
+            if (obj != null)
+            {
+                if (obj is DbObjectSmartUpdate)
+                {
+                    ((DbObjectSmartUpdate)obj).Save();
+                }
+                else
+                {
+                    DbEntry.Save(obj);
+                }
+                return 1;
+            }
+            return 0;
         }
 
         int IExcuteableDataSource.Update(IDictionary keys, IDictionary values, IDictionary oldValues)
@@ -193,8 +212,19 @@ namespace Lephone.Web
 
         public virtual int ExecuteUpdate(object obj)
         {
-            DbEntry.Save(obj);
-            return 1; // TODO: return real count;
+            if (obj != null)
+            {
+                if (obj is DbObjectSmartUpdate)
+                {
+                    ((DbObjectSmartUpdate)obj).Save();
+                }
+                else
+                {
+                    DbEntry.Save(obj);
+                }
+                return 1;
+            }
+            return 0;
         }
 
         protected virtual T CreateObject(IDictionary keys, IDictionary values)

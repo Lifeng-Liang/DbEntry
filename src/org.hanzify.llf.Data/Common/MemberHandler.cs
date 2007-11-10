@@ -87,7 +87,9 @@ namespace Lephone.Data.Common
         public bool IsLazyLoad;
         public bool IsCreatedOn;
         public bool IsUpdatedOn;
+        public bool IsSavedOn;
         public bool IsLockVersion;
+        public bool IsAutoSavedValue;
         public string OrderByString = null;
 
         public MemberAdapter MemberInfo

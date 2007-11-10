@@ -108,7 +108,7 @@ namespace Lephone.Web.Rails
         private void ProcessDateTime(MemberHandler m, object value)
         {
             b.input.id(id).name(name).type("text").attr("cols", 19).attr("onclick", "PickDate(this)");
-            if (m.IsCreatedOn || m.IsUpdatedOn)
+            if (m.IsAutoSavedValue)
             {
                 b.attr("disabled", "true");
             }

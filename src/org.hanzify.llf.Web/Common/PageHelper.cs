@@ -72,7 +72,7 @@ namespace Lephone.Web.Common
                     }
                     else
                     {
-                        if (!(h.IsCreatedOn || h.IsUpdatedOn))
+                        if (!h.IsAutoSavedValue)
                         {
                             throw new DataException(string.Format("Control {0} not find!", cid));
                         }
