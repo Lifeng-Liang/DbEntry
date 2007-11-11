@@ -91,5 +91,13 @@ namespace Lephone.UnitTest.Data
             de.Update(o);
             Assert.AreEqual("Update [DateTable] Set [UpdatedOn]=datetime(current_timestamp, 'localtime'),[Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
         }
+
+        [Test]
+        public void TestSelectDatabaseTime()
+        {
+            DateTime dt = DbEntry.Context.GetDatabaseTime();
+            TimeSpan ts = DateTime.Now.Subtract(dt);
+            Assert.IsTrue(ts.TotalSeconds < 10);
+        }
     }
 }

@@ -30,6 +30,13 @@ namespace Lephone.Data
 
         public DbContext(DbDriver driver) : base(driver) { }
 
+        public DateTime GetDatabaseTime()
+        {
+            string sqlstr = "select " + Dialect.DbNowString;
+            DateTime dt = (DateTime)Convert.ChangeType(ExecuteScalar(sqlstr), typeof(DateTime));
+            return dt;
+        }
+
         private void TryCreateTable(Type DbObjectType)
         {
             if (DataSetting.AutoCreateTable)

@@ -154,13 +154,14 @@ namespace Lephone.Web
             return n;
         }
 
-        public virtual int ExecuteDelete(object obj)
+        public virtual int ExecuteDelete(T obj)
         {
             if (obj != null)
             {
-                if (obj is DbObjectSmartUpdate)
+                DbObjectSmartUpdate o = obj as DbObjectSmartUpdate;
+                if (o != null)
                 {
-                    ((DbObjectSmartUpdate)obj).Delete();
+                    o.Delete();
                 }
                 else
                 {
@@ -182,13 +183,14 @@ namespace Lephone.Web
             return n;
         }
 
-        public virtual int ExecuteInsert(object obj)
+        public virtual int ExecuteInsert(T obj)
         {
             if (obj != null)
             {
-                if (obj is DbObjectSmartUpdate)
+                DbObjectSmartUpdate o = obj as DbObjectSmartUpdate;
+                if (o != null)
                 {
-                    ((DbObjectSmartUpdate)obj).Save();
+                    o.Save();
                 }
                 else
                 {
@@ -210,13 +212,14 @@ namespace Lephone.Web
             return n;
         }
 
-        public virtual int ExecuteUpdate(object obj)
+        public virtual int ExecuteUpdate(T obj)
         {
             if (obj != null)
             {
-                if (obj is DbObjectSmartUpdate)
+                DbObjectSmartUpdate o = obj as DbObjectSmartUpdate;
+                if (o != null)
                 {
-                    ((DbObjectSmartUpdate)obj).Save();
+                    o.Save();
                 }
                 else
                 {
