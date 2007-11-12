@@ -88,7 +88,7 @@ namespace Lephone.UnitTest.Data
         {
             List<SinglePerson> l = DbEntry
                 .From<SinglePerson>()
-                .Where(null)
+                .Where(WhereCondition.EmptyCondition)
                 .OrderBy("Id")
                 .Range(1, 1)
                 .Select();
@@ -99,7 +99,7 @@ namespace Lephone.UnitTest.Data
 
             l = DbEntry
                 .From<SinglePerson>()
-                .Where(null)
+                .Where(WhereCondition.EmptyCondition)
                 .OrderBy("Id")
                 .Range(2, 2)
                 .Select();
@@ -110,7 +110,7 @@ namespace Lephone.UnitTest.Data
 
             l = DbEntry
                 .From<SinglePerson>()
-                .Where(null)
+                .Where(WhereCondition.EmptyCondition)
                 .OrderBy("Id")
                 .Range(3, 5)
                 .Select();
@@ -121,7 +121,7 @@ namespace Lephone.UnitTest.Data
 
             l = DbEntry
                 .From<SinglePerson>()
-                .Where(null)
+                .Where(WhereCondition.EmptyCondition)
                 .OrderBy((DESC)"Id")
                 .Range(3, 5)
                 .Select();
@@ -134,8 +134,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            Assert.AreEqual(3, DbEntry.From<Category>().Where(null).GetCount());
-            Assert.AreEqual(5, DbEntry.From<Book>().Where(null).GetCount());
+            Assert.AreEqual(3, DbEntry.From<Category>().Where(WhereCondition.EmptyCondition).GetCount());
+            Assert.AreEqual(5, DbEntry.From<Book>().Where(WhereCondition.EmptyCondition).GetCount());
             Assert.AreEqual(2, DbEntry.From<Book>().Where(CK.K["Category_Id"] == 3).GetCount());
         }
 
@@ -144,7 +144,7 @@ namespace Lephone.UnitTest.Data
         {
             List<GroupByObject<long>> l = DbEntry
                 .From<Book>()
-                .Where(null)
+                .Where(WhereCondition.EmptyCondition)
                 .OrderBy((DESC)DbEntry.CountColumn)
                 .GroupBy<long>("Category_Id");
 
@@ -160,7 +160,7 @@ namespace Lephone.UnitTest.Data
         {
             IList l = DbEntry
                 .From<Book>()
-                .Where(null)
+                .Where(WhereCondition.EmptyCondition)
                 .GroupBy<string>("Name");
 
             Assert.AreEqual(5, l.Count);
@@ -372,6 +372,26 @@ namespace Lephone.UnitTest.Data
 
             oi = ObjectInfo.GetInstance(typeof(EnumTable));
             Assert.AreEqual("Lephone_Enum", oi.From.GetMainTableName());
+        }
+
+        [Test]
+        public void Test_CK_Field()
+        {
+            DbContext de = new DbContext("SqlServerMock");
+            StaticRecorder.ClearMessages();
+            de.From<PropertyClassWithDbColumn>().Where(CK<PropertyClassWithDbColumn>.Field["TheName"] == "tom").Select();
+            Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] = @Name_0;\n", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void Test_CK_Field2()
+        {
+            DbContext de = new DbContext("SqlServerMock");
+            StaticRecorder.ClearMessages();
+            de.From<PropertyClassWithDbColumn>().Where(delegate(FieldNameGetter<PropertyClassWithDbColumn> Field) { return Field["TheName"] == "tom"; }).Select();
+            // same sentence in lambda:
+            // de.From<PropertyClassWithDbColumn>().Where(p => p["TheName"] == "tom").Select();
+            Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] = @Name_0;\n", StaticRecorder.LastMessage);
         }
     }
 }

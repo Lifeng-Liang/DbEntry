@@ -74,7 +74,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestStaticPagedSelecor2()
         {
-            IPagedSelector ps = DbEntry.From<SinglePerson>().Where(null).OrderBy((DESC)"Id").PageSize(3).GetStaticPagedSelector();
+            IPagedSelector ps = DbEntry.From<SinglePerson>().Where(WhereCondition.EmptyCondition).OrderBy((DESC)"Id").PageSize(3).GetStaticPagedSelector();
             Assert.AreEqual(3, ps.GetResultCount());
             List<SinglePerson> ls = (List<SinglePerson>)ps.GetCurrentPage(0);
             Assert.AreEqual(3, ls.Count);

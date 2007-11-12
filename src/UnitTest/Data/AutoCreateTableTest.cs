@@ -187,7 +187,7 @@ namespace Lephone.UnitTest.Data
             o.Age = 18;
             o.Birthday = DateTime.Now;
             DbEntry.Save(o);
-            List<MyTestTable> ls = DbEntry.From<MyTestTable>().Where(null).Select();
+            List<MyTestTable> ls = DbEntry.From<MyTestTable>().Where(WhereCondition.EmptyCondition).Select();
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("Tom", ls[0].Name);
             Assert.AreEqual(true, ls[0].Gender);

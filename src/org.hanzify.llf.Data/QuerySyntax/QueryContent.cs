@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Util;
 
 #endregion
 
@@ -39,6 +40,12 @@ namespace Lephone.Data.QuerySyntax
         public IAfterWhere<T> Where(WhereCondition where)
         {
             this.m_where = where;
+            return this;
+        }
+
+        public IAfterWhere<T> Where(CallbackHandler<FieldNameGetter<T>, WhereCondition> callback)
+        {
+            this.m_where = callback(CK<T>.Field);
             return this;
         }
 

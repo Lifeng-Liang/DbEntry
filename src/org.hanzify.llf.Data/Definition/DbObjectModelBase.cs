@@ -36,7 +36,7 @@ namespace Lephone.Data.Definition
 
         public static DbObjectList<T> FindAll(OrderBy ob)
         {
-            return DbEntry.From<T>().Where(null).OrderBy(ob).Select();
+            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy(ob).Select();
         }
 
         public static DbObjectList<T> Find(WhereCondition con)
@@ -62,7 +62,7 @@ namespace Lephone.Data.Definition
         public static DbObjectList<T> FindRecent(int Count)
         {
             string Id = DbObjectHelper.GetKeyField(typeof(T)).Name;
-            return DbEntry.From<T>().Where(null).OrderBy((DESC)Id).Range(1, Count).Select();
+            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy((DESC)Id).Range(1, Count).Select();
         }
 
         public static long GetCount(WhereCondition con)

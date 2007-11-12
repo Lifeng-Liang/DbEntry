@@ -44,7 +44,7 @@ namespace Lephone.UnitTest.Data
         public void TestCross()
         {
             DbContext de = new DbContext(EntryConfig.GetDriver("SQLite"));
-            de.From<ImpPeople>().Where(null).Select();
+            de.From<ImpPeople>().Where(WhereCondition.EmptyCondition).Select();
             StaticRecorder.ClearMessages();
 
             ImpPeople p = ImpPeople.FindById(1);

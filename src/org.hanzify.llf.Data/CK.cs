@@ -4,11 +4,44 @@
 using System;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
+using Lephone.Data.Common;
 
 #endregion
 
 namespace Lephone.Data
 {
+    [Serializable]
+    public class FieldNameGetter<T>
+    {
+        private static readonly ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
+
+        public CK this[string FieldName]
+        {
+            get
+            {
+                foreach (MemberHandler m in oi.Fields)
+                {
+                    if (m.MemberInfo.Name == FieldName)
+                    {
+                        return new CK(m.Name);
+                    }
+                }
+                throw new DataException("Can't find the field: " + FieldName);
+            }
+        }
+    }
+
+    [Serializable]
+    public class CK<T>
+    {
+        private static FieldNameGetter<T> _Field = new FieldNameGetter<T>();
+
+        public static FieldNameGetter<T> Field
+        {
+            get { return _Field; }
+        }
+    }
+
 	[Serializable]
 	public class CK
 	{

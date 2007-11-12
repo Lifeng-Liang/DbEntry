@@ -90,7 +90,7 @@ namespace Lephone.Web.Rails
             {
                 PageIndex--;
             }
-            IPagedSelector ps = DbEntry.From<T>().Where(null).OrderBy("Id DESC")
+            IPagedSelector ps = DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy("Id DESC")
                 .PageSize(WebSettings.DefaultPageSize).GetPagedSelector();
             bag["list"] = ps.GetCurrentPage(PageIndex);
             bag["list_count"] = ps.GetResultCount();

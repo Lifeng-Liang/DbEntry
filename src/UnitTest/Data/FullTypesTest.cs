@@ -78,7 +78,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            List<FullType> ls = de.From<FullType>().Where(null).Select();
+            List<FullType> ls = de.From<FullType>().Where(WhereCondition.EmptyCondition).Select();
             Assert.AreEqual(1, ls.Count);
             FullType o = ls[0];
             Assert.IsNotNull(o);

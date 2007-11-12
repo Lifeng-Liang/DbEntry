@@ -112,7 +112,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCount()
         {
-            long n = DbEntry.From<SoftDelete>().Where(null).GetCount();
+            long n = DbEntry.From<SoftDelete>().Where(WhereCondition.EmptyCondition).GetCount();
             Assert.AreEqual(3, n);
         }
 
@@ -120,7 +120,7 @@ namespace Lephone.UnitTest.Data
         public void TestGroupBy()
         {
             DbContext de = new DbContext("SQLite");
-            de.From<SoftDelete>().Where(null).GroupBy<string>("tom");
+            de.From<SoftDelete>().Where(WhereCondition.EmptyCondition).GroupBy<string>("tom");
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] ntext NOT NULL ,\n	[IsDeleted] bool NOT NULL \n);\n", StaticRecorder.Messages[0]);
             Assert.AreEqual("Select [tom],Count([tom]) As it__count__ From [SoftDelete] Where [IsDeleted] = @IsDeleted_0 Group By [tom];\n", StaticRecorder.LastMessage);
         }
