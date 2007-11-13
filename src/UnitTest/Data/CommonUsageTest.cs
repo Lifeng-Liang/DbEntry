@@ -382,16 +382,5 @@ namespace Lephone.UnitTest.Data
             de.From<PropertyClassWithDbColumn>().Where(CK<PropertyClassWithDbColumn>.Field["TheName"] == "tom").Select();
             Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] = @Name_0;\n", StaticRecorder.LastMessage);
         }
-
-        [Test]
-        public void Test_CK_Field2()
-        {
-            DbContext de = new DbContext("SqlServerMock");
-            StaticRecorder.ClearMessages();
-            de.From<PropertyClassWithDbColumn>().Where(delegate(FieldNameGetter<PropertyClassWithDbColumn> Field) { return Field["TheName"] == "tom"; }).Select();
-            // same sentence in lambda:
-            // de.From<PropertyClassWithDbColumn>().Where(p => p["TheName"] == "tom").Select();
-            Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] = @Name_0;\n", StaticRecorder.LastMessage);
-        }
     }
 }

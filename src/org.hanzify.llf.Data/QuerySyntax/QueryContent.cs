@@ -43,12 +43,6 @@ namespace Lephone.Data.QuerySyntax
             return this;
         }
 
-        public IAfterWhere<T> Where(CallbackHandler<FieldNameGetter<T>, WhereCondition> callback)
-        {
-            this.m_where = callback(CK<T>.Field);
-            return this;
-        }
-
         public IRangeable<T> OrderBy(string key)
         {
             return OrderBy(new OrderBy(key));

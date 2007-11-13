@@ -172,5 +172,10 @@ namespace Lephone.Util.Text
 				return s.ReadToEnd();
 			}
 		}
+
+        public static string Capitalize(string s)
+        {
+            return s[0].ToString().ToUpper() + s.Substring(1);
+        }
 	}
 }

@@ -44,6 +44,5 @@ namespace Lephone.Data.QuerySyntax
     public interface IWhere<T> where T : IDbObject
     {
         IAfterWhere<T> Where(WhereCondition where);
-        IAfterWhere<T> Where(CallbackHandler<FieldNameGetter<T>, WhereCondition> callback);
     }
 }

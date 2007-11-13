@@ -87,6 +87,8 @@
     <Compile Include="Setting\ConfigReaderProxy.cs" />
     <Compile Include="Setting\ResourceConfigReader.cs" />
     <Compile Include="Setting\UtilSetting.cs" />
+    <Compile Include="Text\InflectionNameMapper.cs" />
+    <Compile Include="Text\Inflector.cs" />
     <Compile Include="Text\NameMapper.cs" />
     <Compile Include="Text\StringSerializer.cs" />
     <Compile Include="Text\UnderlineNameMapper.cs" />
