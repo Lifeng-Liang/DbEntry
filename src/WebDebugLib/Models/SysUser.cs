@@ -10,7 +10,7 @@ namespace DebugLib.Models
         Female,
     }
 
-    public abstract class User : DbObjectModel<User>
+    public abstract class SysUser : DbObjectModel<SysUser>
     {
         [Length(20)]
         public abstract string Name { get; set; }
@@ -18,7 +18,7 @@ namespace DebugLib.Models
         public abstract DateTime Birthday { get; set; }
         public abstract bool IsMale { get; set; }
 
-        public User Init(string Name, int Age, DateTime Birthday, bool IsMale)
+        public SysUser Init(string Name, int Age, DateTime Birthday, bool IsMale)
         {
             this.Name = Name;
             this.Age = Age;

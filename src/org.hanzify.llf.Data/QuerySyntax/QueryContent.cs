@@ -15,18 +15,18 @@ namespace Lephone.Data.QuerySyntax
     [Serializable]
     public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, ISelectable<T>, IGetPagedSelector where T : IDbObject
     {
-        protected WhereCondition m_where;
-        protected OrderBy m_order;
-        protected Range m_range;
-        protected DbContext m_entry;
-        protected int m_pagesize;
+        protected internal WhereCondition m_where;
+        protected internal OrderBy m_order;
+        protected internal Range m_range;
+        protected internal DbContext m_entry;
+        protected internal int m_pagesize;
 
         public QueryContent(DbContext entry)
         {
             this.m_entry = entry;
         }
 
-        protected QueryContent(QueryContent<T> content)
+        protected internal QueryContent(QueryContent<T> content)
         {
             if (content != null)
             {

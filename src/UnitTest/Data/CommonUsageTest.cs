@@ -382,5 +382,23 @@ namespace Lephone.UnitTest.Data
             de.From<PropertyClassWithDbColumn>().Where(CK<PropertyClassWithDbColumn>.Field["TheName"] == "tom").Select();
             Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] = @Name_0;\n", StaticRecorder.LastMessage);
         }
+
+        [Test]
+        public void TestNull()
+        {
+            DbContext de = new DbContext("SqlServerMock");
+            StaticRecorder.ClearMessages();
+            de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] == null).Select();
+            Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] Is NULL;\n", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestNotNull()
+        {
+            DbContext de = new DbContext("SqlServerMock");
+            StaticRecorder.ClearMessages();
+            de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] != null).Select();
+            Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] Is Not NULL;\n", StaticRecorder.LastMessage);
+        }
     }
 }

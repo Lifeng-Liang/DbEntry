@@ -22,7 +22,8 @@ namespace Lephone.Data.SqlEntry
 
 		protected KeyValue(object Value) : this(null, Value) {}
 
-		public KeyValue(string Key, object Value) : this(Key, Value, Value.GetType()) {}
+		public KeyValue(string Key, object Value)
+            : this(Key, Value, (Value == null) ? typeof(DBNull) : Value.GetType()) { }
 
 		public KeyValue(string Key, object Value, Type ValueType)
 		{

@@ -8,7 +8,7 @@ using DebugLib.Models;
 
 namespace DebugLib.Controllers
 {
-    public class UserController : ControllerBase<User>
+    public class SysUserController : ControllerBase<SysUser>
     {
     }
 }

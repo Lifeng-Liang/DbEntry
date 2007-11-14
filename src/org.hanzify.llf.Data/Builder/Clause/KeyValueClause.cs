@@ -15,8 +15,8 @@ namespace Lephone.Data.Builder.Clause
 	[Serializable]
 	public class KeyValueClause : WhereCondition
 	{
-		public KeyValue KV;
-		public string Comp;
+		protected KeyValue KV;
+		protected string Comp;
 
 		public KeyValueClause(string Key, object Value)
 			: this(Key, Value, CompareOpration.Equal)
@@ -28,15 +28,17 @@ namespace Lephone.Data.Builder.Clause
 		{
 		}
 
-		public KeyValueClause(KeyValue kv)
-			: this(kv, CompareOpration.Equal)
-		{
-		}
-
 		public KeyValueClause(KeyValue kv, CompareOpration co)
 		{
-			Comp = StringHelper.EnumToString(co);
 			this.KV = kv;
+            if (kv.Value == null)
+            {
+                if (co == CompareOpration.Equal)
+                    co = CompareOpration.Is;
+                else if (co == CompareOpration.NotEqual)
+                    co = CompareOpration.IsNot;
+            }
+            Comp = StringHelper.EnumToString(co);
 		}
 
         public override bool SubClauseNotEmpty
@@ -46,6 +48,20 @@ namespace Lephone.Data.Builder.Clause
         
         public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
+            string dpStr;
+            if (KV.Value == null)
+            {
+                dpStr = "NULL";
+            }
+            else
+            {
+                dpStr = GetValueString(dpc, dd);
+            }
+			return string.Format("{0} {2} {1}", dd.QuoteForColumnName(KV.Key), dpStr, Comp);
+		}
+
+        protected virtual string GetValueString(DataParamterCollection dpc, DbDialect dd)
+        {
             string dpStr;
             if (DataSetting.UsingParamter)
             {
@@ -57,8 +73,8 @@ namespace Lephone.Data.Builder.Clause
             {
                 dpStr = DataTypeParser.ParseToString(KV.Value, dd);
             }
-			return string.Format("{0} {2} {1}", dd.QuoteForColumnName(KV.Key), dpStr, Comp);
-		}
+            return dpStr;
+        }
 
 		/*
 		public override string ToString()

@@ -1,5 +1,4 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="User List" %>
-<%@ Import Namespace="Lephone.Web.Rails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
@@ -9,7 +8,7 @@
 
 <table>
 <tr><th>Id</th><th>Name</th><th>Age</th></tr>
-<% foreach(DebugLib.Models.User u in bag["list"] as IEnumerable) { %>
+<% foreach(SysUser u in bag["list"] as IEnumerable) { %>
 <tr>
   <td><%= u.Id %></td><td><%= u.Name %></td><td><%= u.Age %></td>
   <td><%= LinkTo("Show", null, "show", u.Id) %></td>
