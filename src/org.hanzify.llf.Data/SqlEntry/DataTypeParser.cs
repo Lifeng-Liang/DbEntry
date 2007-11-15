@@ -38,6 +38,8 @@ namespace Lephone.Data.SqlEntry
             Types[typeof(Guid)]     = DataType.Guid;
             Types[typeof(byte[])]   = DataType.Binary;
             Types[typeof(Enum)]     = DataType.Int32;
+
+            Types[typeof(DBNull)]   = DataType.Single; // is that right?
         }
 
 		public static DataType Parse(object o)

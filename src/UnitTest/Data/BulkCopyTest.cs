@@ -209,5 +209,28 @@ namespace Lephone.UnitTest.Data
                 Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
             });
         }
+
+        [Test]
+        public void TestBulkCopyWithNullValue()
+        {
+            DbContext dc = new DbContext("SQLite");
+            SqlStatement sql = new SqlStatement("select [Id],[Name],[MyInt],[MyBool] from [NullTest] order by [Id]");
+            DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
+            {
+                dc.UsingConnection(delegate()
+                {
+                    IDbBulkCopy c = dc.GetDbBulkCopy();
+                    c.BatchSize = 2;
+                    c.DestinationTableName = "test";
+                    c.NotifyAfter = 3;
+                    c.WriteToServer(dr);
+                });
+            });
+            Assert.AreEqual(4, StaticRecorder.Messages.Count);
+            StaticRecorder.Messages.ForEach(delegate(string s)
+            {
+                Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n", s);
+            });
+        }
     }
 }
