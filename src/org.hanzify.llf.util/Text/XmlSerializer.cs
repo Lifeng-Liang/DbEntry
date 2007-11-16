@@ -22,11 +22,23 @@ namespace Lephone.Util.Text
             this.RootName = RootName;
         }
 
+        private XmlRootAttribute GetXmlRootAttribute()
+        {
+            Type t = typeof(T);
+            XmlRootAttribute xr = ClassHelper.GetAttribute<XmlRootAttribute>(t, false);
+            if (xr == null)
+            {
+                string rn = (string.IsNullOrEmpty(RootName)) ? t.Name : RootName;
+                xr = new XmlRootAttribute(rn);
+            }
+            return xr;
+        }
+
         public override string Serialize(T obj)
         {
             Type t = typeof(T);
-            string rn = (string.IsNullOrEmpty(RootName)) ? t.Name : RootName;
-            XmlSerializer ois = new XmlSerializer(t, new XmlRootAttribute(rn));
+            XmlRootAttribute xr = GetXmlRootAttribute();
+            XmlSerializer ois = new XmlSerializer(t, xr);
             using (MemoryStream ms = new MemoryStream())
             {
                 ois.Serialize(ms, obj);
@@ -39,8 +51,8 @@ namespace Lephone.Util.Text
         public override T Deserialize(string Source)
         {
             Type t = typeof(T);
-            string rn = (string.IsNullOrEmpty(RootName)) ? t.Name : RootName;
-            XmlSerializer ois = new XmlSerializer(t, new XmlRootAttribute(rn));
+            XmlRootAttribute xr = GetXmlRootAttribute();
+            XmlSerializer ois = new XmlSerializer(t, xr);
             using (MemoryStream ms = new MemoryStream())
             {
                 byte[] bs = Encoding.UTF8.GetBytes(Source);
