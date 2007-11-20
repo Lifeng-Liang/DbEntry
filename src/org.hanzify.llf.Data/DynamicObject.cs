@@ -459,7 +459,7 @@ namespace Lephone.Data
         {
             OverrideSetValuesDirect("SetValuesForInsertDirect", tb, srcType, Fields,
                 delegate(MemberHandler m) { return m.IsUpdatedOn; },
-                delegate(MemberHandler m) { return m.IsCreatedOn; });
+                delegate(MemberHandler m) { return m.IsCreatedOn || m.IsSavedOn; });
         }
 
         private static void OverrideSetValuesForUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
@@ -472,7 +472,7 @@ namespace Lephone.Data
             {
                 OverrideSetValuesDirect("SetValuesForUpdateDirect", tb, srcType, Fields,
                     delegate(MemberHandler m) { return m.IsCreatedOn; },
-                    delegate(MemberHandler m) { return m.IsUpdatedOn; });
+                    delegate(MemberHandler m) { return m.IsUpdatedOn || m.IsSavedOn; });
             }
 
         }
@@ -499,9 +499,9 @@ namespace Lephone.Data
                 {
                     if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                     {
-                        if (f.IsUpdatedOn || !f.IsCreatedOn)
+                        if (f.IsUpdatedOn || f.IsSavedOn || !f.IsCreatedOn)
                         {
-                            if (f.IsUpdatedOn)
+                            if (f.IsUpdatedOn || f.IsSavedOn)
                             {
                                 il.Emit(OpCodes.Ldarg_1);
                                 il.Emit(OpCodes.Ldarg_0);

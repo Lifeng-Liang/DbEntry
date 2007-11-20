@@ -110,6 +110,7 @@
     <Compile Include="util\SystemHelperTest.cs" />
     <Compile Include="util\TestEnum.cs" />
     <Compile Include="util\ThreadingQueueTest.cs" />
+    <Compile Include="util\XmlSerializerTest.cs" />
     <Compile Include="Web\HtmlBuilderTest.cs" />
     <Compile Include="Web\UrlBuilderTest.cs" />
     <Compile Include="Web\XmlBuilderTest.cs" />

@@ -25,13 +25,18 @@ namespace Lephone.Util.Text
         private XmlRootAttribute GetXmlRootAttribute()
         {
             Type t = typeof(T);
-            XmlRootAttribute xr = ClassHelper.GetAttribute<XmlRootAttribute>(t, false);
-            if (xr == null)
+            XmlTypeAttribute xt = ClassHelper.GetAttribute<XmlTypeAttribute>(t, false);
+            if (xt == null)
             {
-                string rn = (string.IsNullOrEmpty(RootName)) ? t.Name : RootName;
-                xr = new XmlRootAttribute(rn);
+                XmlRootAttribute xr = ClassHelper.GetAttribute<XmlRootAttribute>(t, false);
+                if (xr == null)
+                {
+                    string rn = (string.IsNullOrEmpty(RootName)) ? t.Name : RootName;
+                    xr = new XmlRootAttribute(rn);
+                }
+                return xr;
             }
-            return xr;
+            return new XmlRootAttribute(xt.TypeName);
         }
 
         public override string Serialize(T obj)

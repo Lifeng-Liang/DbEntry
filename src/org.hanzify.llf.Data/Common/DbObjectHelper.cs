@@ -193,160 +193,6 @@ namespace Lephone.Data.Common
             return (fn == null) ? fi.Name : fn.Name;
         }
 
-        internal static MemberHandler GetMemberHandler(MemberAdapter fi)
-        {
-            DbColumnAttribute fn = fi.GetAttribute<DbColumnAttribute>(false);
-            string Name = (fn == null) ? fi.Name : fn.Name;
-
-            MemberHandler fh = MemberHandler.NewObject(fi, Name);
-
-            DbKeyAttribute dk = fi.GetAttribute<DbKeyAttribute>(false);
-            if (dk != null)
-            {
-                fh.IsKey = true;
-                if (dk.IsDbGenerate)
-                {
-                    fh.IsDbGenerate = true;
-                }
-                if (dk.UnsavedValue == null && dk.IsDbGenerate)
-                {
-                    fh.UnsavedValue = CommonHelper.GetEmptyValue(fi.MemberType, false, "Unknown type of db key must set UnsavedValue");
-                    if(fi.MemberType == typeof(Guid))
-                    {
-                        fh.IsDbGenerate = false;
-                    }
-                }
-                else
-                {
-                    fh.UnsavedValue = dk.UnsavedValue;
-                }
-            }
-
-            if (fi.MemberType.IsGenericType)
-            {
-                Type t = typeof(HasOne<>);
-                if (fi.MemberType.GetGenericTypeDefinition() == t)
-                {
-                    fh.IsHasOne = true;
-                }
-                Type t0 = typeof(HasMany<>);
-                if (fi.MemberType.GetGenericTypeDefinition() == t0)
-                {
-                    fh.IsHasMany = true;
-                }
-                Type t1 = typeof(BelongsTo<>);
-                if (fi.MemberType.GetGenericTypeDefinition() == t1)
-                {
-                    fh.IsBelongsTo = true;
-                    if (fn == null)
-                    {
-                        Type ot = fi.MemberType.GetGenericArguments()[0];
-                        string n = GetObjectFromClause(ot).GetMainTableName();
-                        fh.Name = n + "_Id";
-                    }
-                }
-                Type t2 = typeof(HasAndBelongsToMany<>);
-                if (fi.MemberType.GetGenericTypeDefinition() == t2)
-                {
-                    fh.IsHasAndBelongsToMany = true;
-                    if (fn == null)
-                    {
-                        Type ot1 = fi.MemberType.GetGenericArguments()[0];
-                        string n1 = GetObjectFromClause(ot1).GetMainTableName();
-                        fh.Name = n1 + "_Id";
-                    }
-                }
-                Type t3 = typeof(LazyLoadField<>);
-                if (fi.MemberType.GetGenericTypeDefinition() == t3)
-                {
-                    fh.IsLazyLoad = true;
-                }
-            }
-
-            if (fi.GetAttribute<AllowNullAttribute>(false) != null || NullableHelper.IsNullableType(fi.MemberType))
-            {
-                fh.AllowNull = true;
-            }
-
-            if (fi.GetAttribute<SpecialNameAttribute>(false) != null)
-            {
-                if (fi.Name == "CreatedOn")
-                {
-                    if (fi.MemberType == typeof(DateTime))
-                    {
-                        fh.IsCreatedOn = true;
-                    }
-                    else
-                    {
-                        throw new DataException("CreatedOn must be datetime type.");
-                    }
-                }
-                else if (fi.Name == "UpdatedOn")
-                {
-                    if (fi.MemberType == typeof(DateTime?))
-                    {
-                        fh.IsUpdatedOn = true;
-                    }
-                    else
-                    {
-                        throw new DataException("UpdatedOn must be nullable datetime type.");
-                    }
-                }
-                else if (fi.Name == "LockVersion")
-                {
-                    if(fi.MemberType == typeof(int))
-                    {
-                        fh.IsLockVersion = true;
-                    }
-                    else
-                    {
-                        throw new DataException("LockVersion must be int type.");
-                    }
-                }
-                else
-                {
-                    throw new DataException("Only CreatedOn and UpdatedOn are supported as special name.");
-                }
-                if (fh.IsCreatedOn || fh.IsUpdatedOn || fh.IsSavedOn)
-                {
-                    fh.IsAutoSavedValue = true;
-                }
-            }
-
-            LengthAttribute ml = fi.GetAttribute<LengthAttribute>(false);
-            if (ml != null)
-            {
-                if (fi.MemberType.IsSubclassOf(typeof(ValueType)))
-                {
-                    throw new DataException("ValueType couldn't set MaxLengthAttribute!");
-                }
-                fh.MinLength = ml.Min;
-                fh.MaxLength = ml.Max;
-            }
-
-            if (fi.MemberType == typeof(string) || 
-                (fh.IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string)))
-            {
-                fh.IsUnicode = true;
-            }
-            StringColumnAttribute sf = fi.GetAttribute<StringColumnAttribute>(false);
-            if (sf != null)
-            {
-                if (!(fi.MemberType == typeof(string) || (fh.IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string))))
-                {
-                    throw new DataException("StringFieldAttribute must set for String Type Field!");
-                }
-                fh.IsUnicode = sf.IsUnicode;
-                fh.Regular = sf.Regular;
-            }
-            OrderByAttribute os = fi.GetAttribute<OrderByAttribute>(false);
-            if (os != null)
-            {
-                fh.OrderByString = os.OrderBy;
-            }
-            return fh;
-        }
-
         private static void ProcessMember(MemberAdapter m, List<MemberHandler> ret, List<MemberHandler> kfs)
         {
             if (!(
@@ -357,7 +203,7 @@ namespace Lephone.Data.Common
                 m.HasAttribute<BelongsToAttribute>(false) ||
                 m.HasAttribute<LazyLoadAttribute>(false)))
             {
-                MemberHandler fh = GetMemberHandler(m);
+                MemberHandler fh = MemberHandler.NewObject(m);
                 if (fh.IsKey)
                 {
                     kfs.Add(fh);
@@ -439,7 +285,7 @@ namespace Lephone.Data.Common
             return false;
         }
 
-        private static FromClause GetObjectFromClause(Type DbObjectType)
+        internal static FromClause GetObjectFromClause(Type DbObjectType)
         {
             DbTableAttribute[] dtas = (DbTableAttribute[])DbObjectType.GetCustomAttributes(typeof(DbTableAttribute), false);
             JoinOnAttribute[] joas = (JoinOnAttribute[])DbObjectType.GetCustomAttributes(typeof(JoinOnAttribute), false);

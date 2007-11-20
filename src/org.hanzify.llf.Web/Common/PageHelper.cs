@@ -81,12 +81,12 @@ namespace Lephone.Web.Common
             }
         }
 
-        public static T GetObject<T>(Page p)
+        public static T GetObject<T>(Page p, string ParseErrorText)
         {
-            return (T)GetObject(typeof(T), p);
+            return (T)GetObject(typeof(T), p, ParseErrorText);
         }
 
-        public static object GetObject(Type t, Page p)
+        public static object GetObject(Type t, Page p, string ParseErrorText)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             object obj = oi.NewObject();
@@ -116,7 +116,15 @@ namespace Lephone.Web.Common
                     }
                     else
                     {
-                        h.SetValue(obj, Convert.ChangeType(v, h.FieldType));
+                        try
+                        {
+                            object iv = Convert.ChangeType(v, h.FieldType);
+                            h.SetValue(obj, iv);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new WebException(string.Format(ParseErrorText, h.Name, ex.Message));
+                        }
                     }
                 }
             });

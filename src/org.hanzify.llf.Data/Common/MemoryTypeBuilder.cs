@@ -14,6 +14,16 @@ using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common
 {
+    internal enum FieldType
+    {
+        Normal,
+        HasOne,
+        HasMany,
+        BelongsTo,
+        HasAndBelongsToMany,
+        LazyLoad
+    }
+
     internal class MemoryTypeBuilder
     {
         public delegate void EmitCode(ILGenerator il);
@@ -94,16 +104,6 @@ namespace Lephone.Data.Common
         public Type CreateType()
         {
             return InnerType.CreateType();
-        }
-
-        public enum FieldType
-        {
-            Normal,
-            HasOne,
-            HasMany,
-            BelongsTo,
-            HasAndBelongsToMany,
-            LazyLoad
         }
 
         public FieldType GetFieldType(PropertyInfo pi)
@@ -295,26 +295,9 @@ namespace Lephone.Data.Common
             });
             if (ft != FieldType.Normal)
             {
-                return GetMemberHandler(ft, fi, pi);
+                return MemberHandler.NewObject(fi, ft, pi);
             }
             return null;
-        }
-
-        private MemberHandler GetMemberHandler(FieldType ft, FieldInfo fi, PropertyInfo pi)
-        {
-            MemberAdapter ma = MemberAdapter.NewObject(fi);
-            MemberHandler h = MemberHandler.NewObject(ma, "");
-            if (ft == FieldType.HasOne) h.IsHasOne = true;
-            if (ft == FieldType.HasMany) h.IsHasMany = true;
-            if (ft == FieldType.HasAndBelongsToMany) h.IsHasAndBelongsToMany = true;
-            if (ft == FieldType.BelongsTo) h.IsBelongsTo = true;
-            if (ft == FieldType.LazyLoad) h.IsLazyLoad = true;
-            OrderByAttribute[] obs = (OrderByAttribute[])pi.GetCustomAttributes(typeof(OrderByAttribute), true);
-            if (obs != null && obs.Length > 0)
-            {
-                h.OrderByString = obs[0].OrderBy;
-            }
-            return h;
         }
 
         public void OverrideMethod(MethodAttributes flag, string MethodName, Type OriginType, Type returnType, Type[] paramTypes, EmitCode emitCode)

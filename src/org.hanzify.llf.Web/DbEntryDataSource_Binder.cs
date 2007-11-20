@@ -104,26 +104,33 @@ namespace Lephone.Web
 
         void SaveButton_Click(object sender, EventArgs e)
         {
-            T o = PageHelper.GetObject<T>(Page);
-            object oid = ViewState["Id"];
-
-            string tn = typeof(T).Name;
-            if (oid == null)
+            try
             {
-                ValidateSave(o, string.Format(ObjectCreatedText, tn));
-                if (OnObjectInserted != null)
+                T o = PageHelper.GetObject<T>(Page, ParseErrorText);
+                object oid = ViewState["Id"];
+
+                string tn = typeof(T).Name;
+                if (oid == null)
                 {
-                    OnObjectInserted(o);
+                    ValidateSave(o, string.Format(ObjectCreatedText, tn));
+                    if (OnObjectInserted != null)
+                    {
+                        OnObjectInserted(o);
+                    }
+                }
+                else // Edit
+                {
+                    ObjInfo.KeyFields[0].SetValue(o, oid);
+                    ValidateSave(o, string.Format(ObjectUpdatedText, tn));
+                    if (OnObjectUpdated != null)
+                    {
+                        OnObjectUpdated(o);
+                    }
                 }
             }
-            else // Edit
+            catch (WebException ex)
             {
-                ObjInfo.KeyFields[0].SetValue(o, oid);
-                ValidateSave(o, string.Format(ObjectUpdatedText, tn));
-                if (OnObjectUpdated != null)
-                {
-                    OnObjectUpdated(o);
-                }
+                Warning(ex.Message);
             }
         }
 
@@ -538,6 +545,24 @@ namespace Lephone.Web
             set
             {
                 this.ViewState["CssWarning"] = value;
+            }
+        }
+
+        [Themeable(false), DefaultValue("Field [{0}] parse error: {1}")]
+        public string ParseErrorText
+        {
+            get
+            {
+                object o = this.ViewState["ParseErrorText"];
+                if (o != null)
+                {
+                    return (string)o;
+                }
+                return "Field [{0}] parse error: {1}";
+            }
+            set
+            {
+                this.ViewState["ParseErrorText"] = value;
             }
         }
     }

@@ -203,7 +203,7 @@ namespace Lephone.Data.Common
             Type t = obj.GetType();
             foreach (MemberHandler fi in oi.Fields)
             {
-                if (!fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany &&!fi.IsUpdatedOn)
+                if (!fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany && !fi.IsUpdatedOn)
                 {
                     AddKeyValue(isv, fi, obj);
                 }
@@ -218,7 +218,7 @@ namespace Lephone.Data.Common
             {
                 foreach (MemberHandler fi in oi.Fields)
                 {
-                    if (fi.IsUpdatedOn || (!fi.IsCreatedOn && to.m_UpdateColumns.ContainsKey(fi.Name)))
+                    if (fi.IsUpdatedOn || fi.IsSavedOn || (!fi.IsCreatedOn && to.m_UpdateColumns.ContainsKey(fi.Name)))
                     {
                         AddKeyValue(isv, fi, obj);
                     }
@@ -228,7 +228,7 @@ namespace Lephone.Data.Common
             {
                 foreach (MemberHandler fi in oi.Fields)
                 {
-                    if (fi.IsUpdatedOn || (!fi.IsCreatedOn && !fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany))
+                    if (fi.IsUpdatedOn || fi.IsSavedOn || (!fi.IsCreatedOn && !fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany))
                     {
                         AddKeyValue(isv, fi, obj);
                     }
