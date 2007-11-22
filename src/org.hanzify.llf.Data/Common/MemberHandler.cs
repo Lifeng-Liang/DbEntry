@@ -4,8 +4,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 
 using Lephone.Util;
-using Comm = Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Comm = Lephone.Data.Common;
 
 namespace Lephone.Data.Common
 {
