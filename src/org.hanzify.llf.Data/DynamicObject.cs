@@ -395,7 +395,6 @@ namespace Lephone.Data
             MethodInfo addmi = t.GetMethod("Add", new Type[] { typeof(KeyValue) });
             MethodInfo nkvmi = vhBaseType.GetMethod("NewKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
             MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
-            FieldInfo dbnowmi = typeof(DbNow).GetField("Value", ClassHelper.AllFlag);
 
             tb.OverrideMethodDirect(OverrideFlag, Name, vhBaseType, null,
                 new Type[] { t, typeof(object) }, delegate(ILGenerator il)
@@ -418,7 +417,8 @@ namespace Lephone.Data
                             EmitldcI4(il, n);
                             if (cb2(f))
                             {
-                                il.Emit(OpCodes.Ldsfld, dbnowmi);
+                                EmitldcI4(il, (int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow));
+                                il.Emit(OpCodes.Box, typeof(AutoValue));
                                 il.Emit(OpCodes.Call, nkvdmi);
                             }
                             else
@@ -459,7 +459,7 @@ namespace Lephone.Data
         {
             OverrideSetValuesDirect("SetValuesForInsertDirect", tb, srcType, Fields,
                 delegate(MemberHandler m) { return m.IsUpdatedOn; },
-                delegate(MemberHandler m) { return m.IsCreatedOn || m.IsSavedOn; });
+                delegate(MemberHandler m) { return m.IsCreatedOn || m.IsSavedOn || m.IsCount; });
         }
 
         private static void OverrideSetValuesForUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
@@ -472,7 +472,7 @@ namespace Lephone.Data
             {
                 OverrideSetValuesDirect("SetValuesForUpdateDirect", tb, srcType, Fields,
                     delegate(MemberHandler m) { return m.IsCreatedOn; },
-                    delegate(MemberHandler m) { return m.IsUpdatedOn || m.IsSavedOn; });
+                    delegate(MemberHandler m) { return m.IsUpdatedOn || m.IsSavedOn || m.IsCount; });
             }
 
         }
@@ -483,7 +483,6 @@ namespace Lephone.Data
             MethodInfo akvmi = vhBaseType.GetMethod("AddKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
             MethodInfo addmi = t.GetMethod("Add", new Type[] { typeof(KeyValue) });
             MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
-            FieldInfo dbnowmi = typeof(DbNow).GetField("Value", ClassHelper.AllFlag);
 
             tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", vhBaseType, null,
                 new Type[] { t, typeof(object) }, delegate(ILGenerator il)
@@ -499,14 +498,15 @@ namespace Lephone.Data
                 {
                     if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                     {
-                        if (f.IsUpdatedOn || f.IsSavedOn || !f.IsCreatedOn)
+                        if (f.IsUpdatedOn || f.IsSavedOn || !f.IsCreatedOn || f.IsCount)
                         {
-                            if (f.IsUpdatedOn || f.IsSavedOn)
+                            if (f.IsUpdatedOn || f.IsSavedOn || f.IsCount)
                             {
                                 il.Emit(OpCodes.Ldarg_1);
                                 il.Emit(OpCodes.Ldarg_0);
                                 EmitldcI4(il, n);
-                                il.Emit(OpCodes.Ldsfld, dbnowmi);
+                                EmitldcI4(il, (int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow));
+                                il.Emit(OpCodes.Box, typeof(AutoValue));
                                 il.Emit(OpCodes.Call, nkvdmi);
                                 il.Emit(OpCodes.Callvirt, addmi);
                             }

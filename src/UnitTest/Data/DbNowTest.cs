@@ -72,7 +72,7 @@ namespace Lephone.UnitTest.Data
         public void TestCreatedOn()
         {
             InsertStatementBuilder sb = new InsertStatementBuilder("user");
-            sb.Values.Add(new KeyValue("CreatedOn", DbNow.Value));
+            sb.Values.Add(new KeyValue("CreatedOn", AutoValue.DbNow));
             SqlStatement sql = sb.ToSqlStatement(de.Dialect);
             Assert.AreEqual("Insert Into [user] ([CreatedOn]) Values (datetime(current_timestamp, 'localtime'));\n", sql.SqlCommandText);
         }
@@ -81,7 +81,7 @@ namespace Lephone.UnitTest.Data
         public void TestUpdatedOn()
         {
             UpdateStatementBuilder sb = new UpdateStatementBuilder("user");
-            sb.Values.Add(new KeyValue("UpdatedOn", DbNow.Value));
+            sb.Values.Add(new KeyValue("UpdatedOn", AutoValue.DbNow));
             SqlStatement sql = sb.ToSqlStatement(de.Dialect);
             Assert.AreEqual("Update [user] Set [UpdatedOn]=datetime(current_timestamp, 'localtime') ;\n", sql.SqlCommandText);
         }

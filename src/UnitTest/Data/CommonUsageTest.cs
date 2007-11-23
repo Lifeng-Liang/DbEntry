@@ -35,6 +35,20 @@ namespace Lephone.UnitTest.Data
         public string Name = null;
     }
 
+    public class CountTable : DbObject
+    {
+        [SpecialName]
+        public int Count;
+    }
+
+    public abstract class CountTable2 : DbObjectModel<CountTable2>
+    {
+        public abstract string Name { get; set; }
+
+        [SpecialName]
+        public abstract int Count { get; set; }
+    }
+
     #endregion
 
     [TestFixture]
@@ -399,6 +413,29 @@ namespace Lephone.UnitTest.Data
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] != null).Select();
             Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] Is Not NULL;\n", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestCountTable()
+        {
+            DbContext de = new DbContext("SqlServerMock");
+            StaticRecorder.ClearMessages();
+            CountTable ct = new CountTable();
+            ct.Id = 1;
+            de.Save(ct);
+            Assert.AreEqual("Update [Count_Table] Set [Count]=[Count]+1  Where [Id] = @Id_0;\n", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestCountTable2()
+        {
+            DbContext de = new DbContext("SqlServerMock");
+            StaticRecorder.ClearMessages();
+            CountTable2 ct = CountTable2.New();
+            ct.Id = 1;
+            ct.Name = "tom";
+            de.Save(ct);
+            Assert.AreEqual("Update [Count_Table2] Set [Name]=@Name_0,[Count]=[Count]+1  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
         }
     }
 }

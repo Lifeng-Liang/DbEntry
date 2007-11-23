@@ -23,9 +23,19 @@ namespace Lephone.Data.Builder.Clause
 			foreach ( KeyValue kv in this )
 			{
 				string dpStr;
-                if (kv.ValueType == typeof(DbNow))
+                if (kv.ValueType == typeof(AutoValue))
                 {
-                    dpStr = dd.DbNowString;
+                    switch ((AutoValue)kv.Value)
+                    {
+                        case AutoValue.DbNow:
+                            dpStr = dd.DbNowString;
+                            break;
+                        case AutoValue.Count:
+                            dpStr = dd.QuoteForColumnName(kv.Key) + "+1";
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
                 }
                 else
                 {

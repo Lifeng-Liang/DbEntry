@@ -189,7 +189,7 @@ namespace Lephone.Data.Common
             }
             else if (fi.IsAutoSavedValue)
             {
-                isv.Values.Add(new KeyValue(fi.Name, DbNow.Value));
+                isv.Values.Add(new KeyValue(fi.Name, fi.IsCount ? AutoValue.Count : AutoValue.DbNow));
             }
             else
             {

@@ -26,7 +26,7 @@ namespace Lephone.Data.Builder.Clause
 			foreach ( KeyValue kv in this )
 			{
 				string dpStr;
-                if (kv.ValueType == typeof(DbNow))
+                if (kv.ValueType == typeof(AutoValue))
                 {
                     dpStr = dd.DbNowString;
                 }

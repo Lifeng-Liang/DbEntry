@@ -106,6 +106,7 @@ namespace Lephone.Data.Common
         public readonly bool IsUpdatedOn;
         public readonly bool IsSavedOn;
         public readonly bool IsLockVersion;
+        public readonly bool IsCount;
         public readonly bool IsAutoSavedValue;
         public readonly string OrderByString = null;
 
@@ -236,11 +237,22 @@ namespace Lephone.Data.Common
                         throw new DataException("LockVersion must be int type.");
                     }
                 }
+                else if (fi.Name == "Count")
+                {
+                    if(fi.MemberType == typeof(int))
+                    {
+                        this.IsCount = true;
+                    }
+                    else
+                    {
+                        throw new DataException("Count must be int type.");
+                    }
+                }
                 else
                 {
                     throw new DataException("Only CreatedOn and UpdatedOn are supported as special name.");
                 }
-                if (this.IsCreatedOn || this.IsUpdatedOn || this.IsSavedOn)
+                if (this.IsCreatedOn || this.IsUpdatedOn || this.IsSavedOn || this.IsCount)
                 {
                     this.IsAutoSavedValue = true;
                 }

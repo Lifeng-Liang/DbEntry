@@ -72,6 +72,7 @@
     <Compile Include="Data\Objects\PropertyClasses.cs" />
     <Compile Include="Data\OptimisticLockingTest.cs" />
     <Compile Include="Data\PagedSelectorTest.cs" />
+    <Compile Include="Data\PartialUpdateTest.cs" />
     <Compile Include="Data\PropertyClassTest.cs" />
     <Compile Include="Data\SerializationTest.cs" />
     <Compile Include="Data\SmartUpdateTest.cs" />

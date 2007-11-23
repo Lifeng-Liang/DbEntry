@@ -19,7 +19,7 @@ namespace Lephone.Data.Common
         {
             SqlStatement sql = base.GetDeleteStatement(Dialect, obj);
             InsertStatementBuilder sb = GetInsertStatementBuilder(obj);
-            sb.Values.Add(new KeyValue("DeletedOn", DbNow.Value));
+            sb.Values.Add(new KeyValue("DeletedOn", AutoValue.DbNow));
             sb.TableName = oi.DeleteToTableName;
             SqlStatement isql = sb.ToSqlStatement(Dialect);
             sql.SqlCommandText += isql.SqlCommandText;
