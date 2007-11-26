@@ -26,7 +26,7 @@ namespace Lephone.Data.Common
 
     internal class MemoryTypeBuilder
     {
-        public delegate void EmitCode(ILGenerator il);
+        public delegate void EmitCode(ILBuilder il);
 
         private const MethodAttributes OverrideFlag = MethodAttributes.Public |
             MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Virtual;
@@ -58,47 +58,40 @@ namespace Lephone.Data.Common
 
             ConstructorBuilder cb = InnerType.DefineConstructor(attr,
                 CallingConventions.ExplicitThis | CallingConventions.HasThis, ts);
-            ILGenerator il = cb.GetILGenerator();
+            ILBuilder il = new ILBuilder(cb.GetILGenerator());
             // call base consructor
-            il.Emit(OpCodes.Ldarg_0);
-            for (int i = 1; i <= ts.Length; i++)
-            {
-                il.Emit(OpCodes.Ldarg_S, i);
-            }
-            il.Emit(OpCodes.Call, ci);
+            il.LoadArg(0).LoadArgShort(1, ts.Length).Call(ci);
             // create relation fields.
             foreach (MemberHandler h in impRelations)
             {
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldarg_0);
+                il.LoadArg(0).LoadArg(0);
                 ConstructorInfo ci1;
                 if (h.IsHasOne || h.IsHasMany || h.IsHasAndBelongsToMany)
                 {
                     ci1 = h.FieldType.GetConstructor(new Type[] { typeof(object), typeof(string) });
                     if (string.IsNullOrEmpty(h.OrderByString))
                     {
-                        il.Emit(OpCodes.Ldnull);
+                        il.LoadNull();
                     }
                     else
                     {
-                        il.Emit(OpCodes.Ldstr, h.OrderByString);
+                        il.LoadString(h.OrderByString);
                     }
                 }
                 else
                 {
                     ci1 = h.FieldType.GetConstructor(new Type[] { typeof(object) });
                 }
-                il.Emit(OpCodes.Newobj, ci1);
+                il.NewObj(ci1);
                 h.MemberInfo.EmitSet(il);
             }
             // call m_InitUpdateColumns
             if (minit != null)
             {
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Call, minit);
+                il.LoadArg(0).Call(minit);
             }
             // return
-            il.Emit(OpCodes.Ret);
+            il.Return();
         }
 
         public Type CreateType()
@@ -258,38 +251,34 @@ namespace Lephone.Data.Common
             FieldType ft = GetFieldType(pi);
             FieldInfo fi = DefineField(FieldPrifix + PropertyName, PropertyType, ft, pi);
 
-            OverrideMethod(OverrideFlag, GetPropertyName, OriginType, PropertyType, null, delegate(ILGenerator il)
+            OverrideMethod(OverrideFlag, GetPropertyName, OriginType, PropertyType, null, delegate(ILBuilder il)
             {
-                il.Emit(OpCodes.Ldfld, fi);
+                il.LoadField(fi);
                 if (ft == FieldType.BelongsTo || ft == FieldType.HasOne || ft == FieldType.LazyLoad)
                 {
                     MethodInfo getValue = fi.FieldType.GetMethod("get_Value", ClassHelper.InstancePublic);
-                    il.Emit(OpCodes.Callvirt, getValue);
+                    il.CallVirtual(getValue);
                 }
             });
 
-            OverrideMethod(OverrideFlag, SetPropertyName, OriginType, null, new Type[] { PropertyType }, delegate(ILGenerator il)
+            OverrideMethod(OverrideFlag, SetPropertyName, OriginType, null, new Type[] { PropertyType }, delegate(ILBuilder il)
             {
                 if (ft == FieldType.HasOne || ft == FieldType.BelongsTo || ft == FieldType.LazyLoad)
                 {
-                    il.Emit(OpCodes.Ldfld, fi);
-                    il.Emit(OpCodes.Ldarg_1);
+                    il.LoadField(fi).LoadArg(1);
                     MethodInfo setValue = fi.FieldType.GetMethod("set_Value", ClassHelper.InstancePublic);
-                    il.Emit(OpCodes.Callvirt, setValue);
+                    il.CallVirtual(setValue);
                 }
                 else if (ft == FieldType.Normal)
                 {
-                    il.Emit(OpCodes.Ldarg_1);
-                    il.Emit(OpCodes.Stfld, fi);
+                    il.LoadArg(1).SetField(fi);
                 }
                 if (ft == FieldType.LazyLoad || ft == FieldType.Normal)
                 {
                     if (mupdate != null)
                     {
                         string cn = DbObjectHelper.GetColumuName(new MemberAdapter.PropertyAdapter(pi));
-                        il.Emit(OpCodes.Ldarg_0);
-                        il.Emit(OpCodes.Ldstr, cn);
-                        il.Emit(OpCodes.Call, mupdate);
+                        il.LoadArg(0).LoadString(cn).Call(mupdate);
                     }
                 }
             });
@@ -316,9 +305,9 @@ namespace Lephone.Data.Common
 
         public MethodBuilder DefineMethod(MethodAttributes flag, string MethodName, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
-            return DefineMethodDirect(flag, MethodName, returnType, paramTypes, delegate(ILGenerator il)
+            return DefineMethodDirect(flag, MethodName, returnType, paramTypes, delegate(ILBuilder il)
             {
-                il.Emit(OpCodes.Ldarg_0);
+                il.LoadArg(0);
                 emitCode(il);
             });
         }
@@ -326,9 +315,9 @@ namespace Lephone.Data.Common
         public MethodBuilder DefineMethodDirect(MethodAttributes flag, string MethodName, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
             MethodBuilder mb = InnerType.DefineMethod(MethodName, flag, returnType, paramTypes);
-            ILGenerator il = mb.GetILGenerator();
+            ILBuilder il = new ILBuilder(mb.GetILGenerator());
             emitCode(il);
-            il.Emit(OpCodes.Ret);
+            il.Return();
             return mb;
         }
     }

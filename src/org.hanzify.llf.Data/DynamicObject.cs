@@ -95,9 +95,9 @@ namespace Lephone.Data
             MethodAttributes.Virtual;
 
         private static readonly Type objType = typeof(object);
-        private static readonly Type[] emptyTypes = new Type[] { };
 
         private static Hashtable types = Hashtable.Synchronized(new Hashtable());
+        private static readonly Type[] emptyTypes = new Type[] { };
 
         public static T NewObject<T>(params object[] os)
         {
@@ -132,9 +132,9 @@ namespace Lephone.Data
             tb.DefineDefaultConstructor(MethodAttributes.Public);
             // implements CreateInstance
             tb.OverrideMethodDirect(OverridePublicFlag, "CreateInstance", vhBaseType,
-                objType, emptyTypes, delegate(ILGenerator il)
+                objType, emptyTypes, delegate(ILBuilder il)
             {
-                il.Emit(OpCodes.Newobj, ci);
+                il.NewObj(ci);
             });
             // implements others
             OverrideLoadSimpleValuesByIndex(tb, srcType, oi.SimpleFields);
@@ -155,42 +155,31 @@ namespace Lephone.Data
             MethodInfo mi = helper.GetMethodInfo(true);
             MethodInfo miGetNullable = vhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
             tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByIndex", vhBaseType, null,
-                new Type[] { typeof(object), typeof(IDataReader) }, delegate(ILGenerator il)
+                new Type[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
-                il.DeclareLocal(srcType);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Castclass, srcType);
-                il.Emit(OpCodes.Stloc_0);
+                il.DeclareLocal(srcType).LoadArg(1).Cast(srcType).SetLoc(0);
                 // set values
                 int n = 0;
                 foreach (MemberHandler f in SimpleFields)
                 {
-                    il.Emit(OpCodes.Ldloc_0);
-                    if (f.AllowNull) { il.Emit(OpCodes.Ldarg_0); }
-                    il.Emit(OpCodes.Ldarg_2);
-                    EmitldcI4(il, n);
+                    il.LoadLoc(0);
+                    if (f.AllowNull) { il.LoadArg(0); }
+                    il.LoadArg(2).LoadInt(n);
                     MethodInfo mi1 = helper.GetMethodInfo(f.FieldType);
                     if(f.AllowNull || mi1 == null)
                     {
-                        il.Emit(OpCodes.Callvirt, mi);
+                        il.CallVirtual(mi);
                         if (f.AllowNull)
                         {
-                            il.Emit(OpCodes.Call, miGetNullable);
+                            il.Call(miGetNullable);
                         }
                         // cast or unbox
-                        if (f.FieldType.IsValueType)
-                        {
-                            il.Emit(OpCodes.Unbox_Any, f.FieldType);
-                        }
-                        else
-                        {
-                            il.Emit(OpCodes.Castclass, f.FieldType);
-                        }
+                        il.CastOrUnbox(f.FieldType);
                     }
                     else
                     {
-                        il.Emit(OpCodes.Callvirt, mi1);
+                        il.CallVirtual(mi1);
                     }
                     f.MemberInfo.EmitSet(il);
                     n++;
@@ -203,48 +192,23 @@ namespace Lephone.Data
             MethodInfo mi = helper.GetMethodInfo();
             MethodInfo miGetNullable = vhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
             tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByName", vhBaseType, null,
-                new Type[] { typeof(object), typeof(IDataReader) }, delegate(ILGenerator il)
+                new Type[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
-                il.DeclareLocal(srcType);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Castclass, srcType);
-                il.Emit(OpCodes.Stloc_0);
+                il.DeclareLocal(srcType).LoadArg(1).Cast(srcType).SetLoc(0);
                 // set values
                 foreach (MemberHandler f in SimpleFields)
                 {
                     // get value
-                    il.Emit(OpCodes.Ldloc_0);
-                    if (f.AllowNull) { il.Emit(OpCodes.Ldarg_0); }
-                    il.Emit(OpCodes.Ldarg_2);
-                    il.Emit(OpCodes.Ldstr, f.Name);
-                    il.Emit(OpCodes.Callvirt, mi);
+                    il.LoadLoc(0);
+                    if (f.AllowNull) { il.LoadArg(0); }
+                    il.LoadArg(2).LoadString(f.Name).CallVirtual(mi);
                     if (f.AllowNull)
                     {
-                        il.Emit(OpCodes.Call, miGetNullable);
+                        il.Call(miGetNullable);
                     }
                     // cast or unbox
-                    if (f.FieldType.IsValueType)
-                    {
-                        Type t = f.FieldType;
-                        if (f.FieldType == typeof(uint))
-                        {
-                            t = typeof(int);
-                        }
-                        else if (f.FieldType == typeof(ulong))
-                        {
-                            t = typeof(long);
-                        }
-                        else if (f.FieldType == typeof(ushort))
-                        {
-                            t = typeof(short);
-                        }
-                        il.Emit(OpCodes.Unbox_Any, t);
-                    }
-                    else
-                    {
-                        il.Emit(OpCodes.Castclass, f.FieldType);
-                    }
+                    il.CastOrUnbox(f.FieldType);
                     // set field
                     f.MemberInfo.EmitSet(il);
                 }
@@ -256,24 +220,19 @@ namespace Lephone.Data
         {
             string MethodName = UseIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
             tb.OverrideMethodDirect(OverrideFlag, MethodName, vhBaseType, null,
-                new Type[] { typeof(DbContext), typeof(object), typeof(IDataReader) }, delegate(ILGenerator il)
+                new Type[] { typeof(DbContext), typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
-                il.DeclareLocal(srcType);
-                il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Castclass, srcType);
-                il.Emit(OpCodes.Stloc_0);
+                il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
                 // set values
                 MethodInfo mi = typeof(ILazyLoading).GetMethod("Init");
                 foreach (MemberHandler f in RelationFields)
                 {
-                    il.Emit(OpCodes.Ldloc_0);
+                    il.LoadLoc(0);
                     f.MemberInfo.EmitGet(il);
                     if (f.IsLazyLoad)
                     {
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Ldstr, f.Name);
-                        il.Emit(OpCodes.Callvirt, mi);
+                        il.LoadArg(1).LoadString(f.Name).CallVirtual(mi);
                     }
                     else if (f.IsHasOne || f.IsHasMany)
                     {
@@ -283,9 +242,7 @@ namespace Lephone.Data
                         {
                             throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
                         }
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Ldstr, mh.Name);
-                        il.Emit(OpCodes.Callvirt, mi);
+                        il.LoadArg(1).LoadString(mh.Name).CallVirtual(mi);
                     }
                     else if (f.IsHasAndBelongsToMany)
                     {
@@ -295,24 +252,20 @@ namespace Lephone.Data
                         {
                             throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
                         }
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Ldstr, mh.Name);
-                        il.Emit(OpCodes.Callvirt, mi);
+                        il.LoadArg(1).LoadString(mh.Name).CallVirtual(mi);
                     }
                     else if (f.IsBelongsTo)
                     {
-                        il.Emit(OpCodes.Ldarg_3);
+                        il.LoadArg(3);
                         if (UseIndex)
                         {
-                            EmitldcI4(il, Index++);
-                            il.Emit(OpCodes.Callvirt, helper.GetMethodInfo(true));
+                            il.LoadInt(Index++).CallVirtual(helper.GetMethodInfo(true));
                         }
                         else
                         {
-                            il.Emit(OpCodes.Ldstr, f.Name);
-                            il.Emit(OpCodes.Callvirt, helper.GetMethodInfo());
+                            il.LoadString(f.Name).CallVirtual(helper.GetMethodInfo());
                         }
-                        il.Emit(OpCodes.Callvirt, typeof(IBelongsTo).GetMethod("set_ForeignKey"));
+                        il.CallVirtual(typeof(IBelongsTo).GetMethod("set_ForeignKey"));
                     }
                 }
             });
@@ -323,25 +276,16 @@ namespace Lephone.Data
             Type t = typeof(Dictionary<string, object>);
             MethodInfo mi = t.GetMethod("Add", new Type[] { typeof(string), typeof(object) });
             tb.OverrideMethodDirect(OverrideFlag, "GetKeyValuesDirect", vhBaseType, null,
-                new Type[] { t, typeof(object) }, delegate(ILGenerator il)
+                new Type[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
-                il.DeclareLocal(srcType);
-                il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Castclass, srcType);
-                il.Emit(OpCodes.Stloc_0);
+                il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
                 // set values
                 foreach (MemberHandler f in KeyFields)
                 {
-                    il.Emit(OpCodes.Ldarg_1);
-                    il.Emit(OpCodes.Ldstr, f.Name);
-                    il.Emit(OpCodes.Ldloc_0);
+                    il.LoadArg(1).LoadString(f.Name).LoadLoc(0);
                     f.MemberInfo.EmitGet(il);
-                    if (f.FieldType.IsValueType)
-                    {
-                        il.Emit(OpCodes.Box, f.FieldType);
-                    }
-                    il.Emit(OpCodes.Callvirt, mi);
+                    il.Box(f.FieldType).CallVirtual(mi);
                 }
             });
         }
@@ -349,22 +293,18 @@ namespace Lephone.Data
         private static void OverrideGetKeyValue(MemoryTypeBuilder tb, Type srcType, MemberHandler[] KeyFields)
         {
             tb.OverrideMethodDirect(OverrideFlag, "GetKeyValueDirect", vhBaseType, typeof(object),
-                new Type[] { typeof(object) }, delegate(ILGenerator il)
+                new Type[] { typeof(object) }, delegate(ILBuilder il)
             {
                 if (KeyFields.Length == 1)
                 {
                     MemberHandler h = KeyFields[0];
-                    il.Emit(OpCodes.Ldarg_1);
-                    il.Emit(OpCodes.Castclass, srcType);
+                    il.LoadArg(1).Cast(srcType);
                     h.MemberInfo.EmitGet(il);
-                    if (h.FieldType.IsValueType)
-                    {
-                        il.Emit(OpCodes.Box, h.FieldType);
-                    }
+                    il.Box(h.FieldType);
                 }
                 else
                 {
-                    il.Emit(OpCodes.Ldnull);
+                    il.LoadNull();
                 }
             });
         }
@@ -374,15 +314,13 @@ namespace Lephone.Data
             Type t = typeof(List<string>);
             MethodInfo mi = t.GetMethod("Add", new Type[] { typeof(string) });
             tb.OverrideMethodDirect(OverrideFlag, "SetValuesForSelectDirect", vhBaseType, null,
-                new Type[] { t }, delegate(ILGenerator il)
+                new Type[] { t }, delegate(ILBuilder il)
             {
                 foreach (MemberHandler f in Fields)
                 {
                     if (!f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany && !f.IsLazyLoad)
                     {
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Ldstr, f.Name);
-                        il.Emit(OpCodes.Callvirt, mi);
+                        il.LoadArg(1).LoadString(f.Name).CallVirtual(mi);
                     }
                 }
             });
@@ -397,13 +335,10 @@ namespace Lephone.Data
             MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
 
             tb.OverrideMethodDirect(OverrideFlag, Name, vhBaseType, null,
-                new Type[] { t, typeof(object) }, delegate(ILGenerator il)
+                new Type[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
-                il.DeclareLocal(srcType);
-                il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Castclass, srcType);
-                il.Emit(OpCodes.Stloc_0);
+                il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
                 // set values
                 int n = 0;
                 foreach (MemberHandler f in Fields)
@@ -412,42 +347,32 @@ namespace Lephone.Data
                     {
                         if (!cb1(f))
                         {
-                            il.Emit(OpCodes.Ldarg_1);
-                            il.Emit(OpCodes.Ldarg_0);
-                            EmitldcI4(il, n);
+                            il.LoadArg(1).LoadArg(0).LoadInt(n);
                             if (cb2(f))
                             {
-                                EmitldcI4(il, (int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow));
-                                il.Emit(OpCodes.Box, typeof(AutoValue));
-                                il.Emit(OpCodes.Call, nkvdmi);
+                                il.LoadInt((int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow))
+                                    .Box(typeof(AutoValue)).Call(nkvdmi);
                             }
                             else
                             {
-                                il.Emit(OpCodes.Ldloc_0);
+                                il.LoadLoc(0);
                                 f.MemberInfo.EmitGet(il);
                                 if (f.IsBelongsTo)
                                 {
-                                    il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_ForeignKey"));
+                                    il.CallVirtual(f.FieldType.GetMethod("get_ForeignKey"));
                                 }
                                 else if (f.IsLazyLoad)
                                 {
-                                    il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_Value"));
                                     Type it = f.FieldType.GetGenericArguments()[0];
-                                    if (it.IsValueType)
-                                    {
-                                        il.Emit(OpCodes.Box, it);
-                                    }
+                                    il.CallVirtual(f.FieldType.GetMethod("get_Value")).Box(it);
                                 }
                                 else
                                 {
-                                    if (f.FieldType.IsValueType)
-                                    {
-                                        il.Emit(OpCodes.Box, f.FieldType);
-                                    }
+                                    il.Box(f.FieldType);
                                 }
-                                il.Emit(OpCodes.Call, nkvmi);
+                                il.Call(nkvmi);
                             }
-                            il.Emit(OpCodes.Callvirt, addmi);
+                            il.CallVirtual(addmi);
                         }
                         n++;
                     }
@@ -485,13 +410,10 @@ namespace Lephone.Data
             MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
 
             tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", vhBaseType, null,
-                new Type[] { t, typeof(object) }, delegate(ILGenerator il)
+                new Type[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
-                il.DeclareLocal(srcType);
-                il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Castclass, srcType);
-                il.Emit(OpCodes.Stloc_0);
+                il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
                 // set values
                 int n = 0;
                 foreach (MemberHandler f in Fields)
@@ -502,88 +424,34 @@ namespace Lephone.Data
                         {
                             if (f.IsUpdatedOn || f.IsSavedOn || f.IsCount)
                             {
-                                il.Emit(OpCodes.Ldarg_1);
-                                il.Emit(OpCodes.Ldarg_0);
-                                EmitldcI4(il, n);
-                                EmitldcI4(il, (int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow));
-                                il.Emit(OpCodes.Box, typeof(AutoValue));
-                                il.Emit(OpCodes.Call, nkvdmi);
-                                il.Emit(OpCodes.Callvirt, addmi);
+                                il.LoadArg(1).LoadArg(0).LoadInt(n)
+                                    .LoadInt((int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow)).Box(typeof(AutoValue))
+                                    .Call(nkvdmi).CallVirtual(addmi);
                             }
                             else
                             {
-                                il.Emit(OpCodes.Ldarg_0);
-                                il.Emit(OpCodes.Ldarg_1);
-                                il.Emit(OpCodes.Ldloc_0);
-                                //il.Emit(OpCodes.Ldstr, f.IsBelongsTo ? "$" : f.Name);
-                                il.Emit(OpCodes.Ldstr, f.Name);
-                                EmitldcI4(il, n);
-                                il.Emit(OpCodes.Ldloc_0);
+                                il.LoadArg(0).LoadArg(1).LoadLoc(0).LoadString(f.Name).LoadInt(n).LoadLoc(0);
                                 f.MemberInfo.EmitGet(il);
                                 if (f.IsBelongsTo)
                                 {
-                                    il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_ForeignKey"));
+                                    il.CallVirtual(f.FieldType.GetMethod("get_ForeignKey"));
                                 }
                                 else if (f.IsLazyLoad)
                                 {
-                                    il.Emit(OpCodes.Callvirt, f.FieldType.GetMethod("get_Value"));
                                     Type it = f.FieldType.GetGenericArguments()[0];
-                                    if (it.IsValueType)
-                                    {
-                                        il.Emit(OpCodes.Box, it);
-                                    }
+                                    il.CallVirtual(f.FieldType.GetMethod("get_Value")).Box(it);
                                 }
                                 else
                                 {
-                                    if (f.FieldType.IsValueType)
-                                    {
-                                        il.Emit(OpCodes.Box, f.FieldType);
-                                    }
+                                    il.Box(f.FieldType);
                                 }
-                                il.Emit(OpCodes.Call, akvmi);
+                                il.Call(akvmi);
                             }
                         }
                         n++;
                     }
                 }
             });
-        }
-
-        private static void EmitldcI4(ILGenerator il, int n)
-        {
-            switch (n)
-            {
-                case 0:
-                    il.Emit(OpCodes.Ldc_I4_0);
-                    break;
-                case 1:
-                    il.Emit(OpCodes.Ldc_I4_1);
-                    break;
-                case 2:
-                    il.Emit(OpCodes.Ldc_I4_2);
-                    break;
-                case 3:
-                    il.Emit(OpCodes.Ldc_I4_3);
-                    break;
-                case 4:
-                    il.Emit(OpCodes.Ldc_I4_4);
-                    break;
-                case 5:
-                    il.Emit(OpCodes.Ldc_I4_5);
-                    break;
-                case 6:
-                    il.Emit(OpCodes.Ldc_I4_6);
-                    break;
-                case 7:
-                    il.Emit(OpCodes.Ldc_I4_7);
-                    break;
-                case 8:
-                    il.Emit(OpCodes.Ldc_I4_8);
-                    break;
-                default:
-                    il.Emit(OpCodes.Ldc_I4, n);
-                    break;
-            }
         }
 
         public static Type GetImplType(Type SourceType)
@@ -630,11 +498,9 @@ namespace Lephone.Data
                     MethodInfo mi = typeof(DynamicObjectReference).GetMethod("SerializeObject", ClassHelper.StaticFlag);
                     tb.OverrideMethod(ImplFlag, "GetObjectData", typeof(ISerializable), null,
                         new Type[] { typeof(SerializationInfo), typeof(StreamingContext) },
-                        delegate(ILGenerator il)
+                        delegate(ILBuilder il)
                     {
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Ldarg_2);
-                        il.Emit(OpCodes.Call, mi);
+                        il.LoadArg(1).LoadArg(2).Call(mi);
                     });
                 }
 

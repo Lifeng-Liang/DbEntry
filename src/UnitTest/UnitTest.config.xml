@@ -10,6 +10,7 @@
     <add key="NowProvider" value="Lephone.UnitTest.util.timingTask.MockNowTimeProvider, Lephone.UnitTest" />
 
     <add key="AutoCreateTable" value="true" />
+    <add key="NameMapper" value="Lephone.Util.Text.UnderlineNameMapper, Lephone.Util" />
     <add key="DefaultContext" value="Development" />
  
     <add key="Development.DataBase" value="@SQLite : @c:\UnitTest.db" />

@@ -67,14 +67,14 @@ namespace Lephone.Data.Common
                 return fi;
             }
 
-            public override void EmitSet(ILGenerator il)
+            public override void EmitSet(ILBuilder il)
             {
-                il.Emit(OpCodes.Stfld, fi);
+                il.SetField(fi);
             }
 
-            public override void EmitGet(ILGenerator il)
+            public override void EmitGet(ILBuilder il)
             {
-                il.Emit(OpCodes.Ldfld, fi);
+                il.LoadField(fi);
             }
         }
 
@@ -132,14 +132,14 @@ namespace Lephone.Data.Common
                 return pi;
             }
 
-            public override void EmitSet(ILGenerator il)
+            public override void EmitSet(ILBuilder il)
             {
-                il.Emit(OpCodes.Callvirt, pi.GetSetMethod());
+                il.CallVirtual(pi.GetSetMethod());
             }
 
-            public override void EmitGet(ILGenerator il)
+            public override void EmitGet(ILBuilder il)
             {
-                il.Emit(OpCodes.Callvirt, pi.GetGetMethod());
+                il.CallVirtual(pi.GetGetMethod());
             }
         }
 
@@ -202,8 +202,8 @@ namespace Lephone.Data.Common
         public abstract void SetValue(object obj, object value);
         public abstract object GetValue(object obj);
         public abstract MemberInfo GetMemberInfo();
-        public abstract void EmitSet(ILGenerator il);
-        public abstract void EmitGet(ILGenerator il);
+        public abstract void EmitSet(ILBuilder il);
+        public abstract void EmitGet(ILBuilder il);
 
         public static MemberAdapter NewObject(FieldInfo fi)
         {
