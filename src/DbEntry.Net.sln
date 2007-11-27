@@ -1,40 +1,6 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Data", "org.hanzify.llf.Data\Lephone.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Util", "org.hanzify.llf.util\Lephone.Util.csproj", "{F53E89FC-F364-4C7D-A20A-CACFBF11C196}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{48E4289C-FABF-46F6-AC45-AAA4224F84D3}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockSql", "MockSql\MockSql.csproj", "{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlRecorder", "SqlRecorder\SqlRecorder.csproj", "{92805D19-5BFD-4EC4-B485-BEF6598CD14A}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E42B44C-3848-4A14-B2E7-69A309C59B91}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 	ProjectSection(SolutionItems) = preProject
 		actsastree.snippet = actsastree.snippet
 		aprop.snippet = aprop.snippet
@@ -48,19 +14,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		vsprop.snippet = vsprop.snippet
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debug", "Debug\Debug.csproj", "{EE0F0B59-1970-4929-A73D-1A89862F9B83}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Data", "org.hanzify.llf.Data\Lephone.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebDebug\", "WebDebug", "{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Util", "org.hanzify.llf.util\Lephone.Util.csproj", "{F53E89FC-F364-4C7D-A20A-CACFBF11C196}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{48E4289C-FABF-46F6-AC45-AAA4224F84D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockSql", "MockSql\MockSql.csproj", "{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlRecorder", "SqlRecorder\SqlRecorder.csproj", "{92805D19-5BFD-4EC4-B485-BEF6598CD14A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debug", "Debug\Debug.csproj", "{EE0F0B59-1970-4929-A73D-1A89862F9B83}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebDebug", "WebDebug", "{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A}"
 	ProjectSection(WebsiteProperties) = preProject
 		SccProjectName = "SAK"
 		SccAuxPath = "SAK"
 		SccLocalPath = "SAK"
 		SccProvider = "SAK"
-		ProjectReferences = "{25AFD300-493A-4553-B4DC-129D3A9022A8}|org.hanzify.llf.Data.dll;{9293C04C-D2E7-449F-833E-6E6624DCD6F4}|WebDebugLib.dll;"
+		TargetFramework = "2.0"
+		ProjectReferences = "{25AFD300-493A-4553-B4DC-129D3A9022A8}|Lephone.Data.dll;{9293C04C-D2E7-449F-833E-6E6624DCD6F4}|DebugLib.dll;{F53E89FC-F364-4C7D-A20A-CACFBF11C196}|Lephone.Util.dll;{A73147C3-73C4-4590-9EC4-250AC83F4EF5}|Lephone.Web.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/WebDebug"
 		Debug.AspNetCompiler.PhysicalPath = "WebDebug\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\WebDebug\"
@@ -80,16 +53,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebDebug\", "WebDebu
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Web", "org.hanzify.llf.Web\Lephone.Web.csproj", "{A73147C3-73C4-4590-9EC4-250AC83F4EF5}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\DebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
