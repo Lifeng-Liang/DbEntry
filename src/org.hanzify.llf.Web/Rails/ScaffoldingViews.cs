@@ -6,6 +6,7 @@ using System.Web;
 using System.Reflection;
 using Lephone.Data.Common;
 using Lephone.Util;
+using Lephone.Util.Text;
 
 namespace Lephone.Web.Rails
 {
@@ -95,7 +96,7 @@ namespace Lephone.Web.Rails
             {
                 string cn = oi.BaseType.Name;
                 b.p.style("color: Green").text(flash["notice"]).end.enter().enter();
-                b.h1.text("Listing " + cn).end.enter().enter();
+                b.h1.text("Listing " + Inflector.Pluralize(cn)).end.enter().enter();
 
                 b.table.tr.enter();
 

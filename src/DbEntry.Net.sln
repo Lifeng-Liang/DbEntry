@@ -56,9 +56,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Web", "org.hanzify.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\DebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Linq", "Lephone.Linq\Lephone.Linq.csproj", "{E93B9148-B6FB-4340-9981-6CBB407CC6F8}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
+		SccNumberOfProjects = 11
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs01.codeplex.com/
 		SccLocalPath0 = .
@@ -76,6 +78,7 @@ Global
 		SccLocalPath4 = UnitTest
 		SccWebProject5 = true
 		SccProjectUniqueName5 = WebDebug
+		SccProjectName5 = WebDebug
 		SccLocalPath5 = .
 		SccProjectFilePathRelativizedFromConnection5 = WebDebug\\
 		SccProjectEnlistmentChoice5 = 2
@@ -91,6 +94,9 @@ Global
 		SccProjectUniqueName9 = WebDebugLib\\DebugLib.csproj
 		SccProjectName9 = WebDebugLib
 		SccLocalPath9 = WebDebugLib
+		SccProjectUniqueName10 = Lephone.Linq\\Lephone.Linq.csproj
+		SccProjectName10 = Lephone.Linq
+		SccLocalPath10 = Lephone.Linq
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -191,6 +197,16 @@ Global
 		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|.NET.ActiveCfg = Release|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
