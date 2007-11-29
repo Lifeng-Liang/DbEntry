@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Data.Common;
+using System.Text;
 
 #endregion
 
@@ -121,6 +122,20 @@ namespace Lephone.MockSql
         public override object SyncRoot
         {
             get { return Parameters.SyncRoot; }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(RecorderParameter p in this)
+            {
+                sb.Append(p.ToString()).Append(",");
+            }
+            if (sb.Length > 0)
+            {
+                sb.Length--;
+            }
+            return sb.ToString();
         }
     }
 }

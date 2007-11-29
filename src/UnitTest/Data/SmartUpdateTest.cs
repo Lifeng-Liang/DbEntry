@@ -222,8 +222,8 @@ namespace Lephone.UnitTest.Data
         {
             de.DropTable(typeof(Lephone.UnitTest.Data.Objects.DArticle));
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Drop Table [Article]", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Drop Table [R_Article_Reader]", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Drop Table [Article]<Text><30>()", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Drop Table [R_Article_Reader]<Text><30>()", StaticRecorder.Messages[1]);
         }
 
         [Test]
@@ -244,7 +244,7 @@ namespace Lephone.UnitTest.Data
             u.Name = "Tom";
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -258,7 +258,7 @@ namespace Lephone.UnitTest.Data
                 de.Save(u);
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -293,8 +293,8 @@ namespace Lephone.UnitTest.Data
             u.Articles.Add(a);
             de.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Insert Into [r_Article] ([Name],[thePrice],[Reader_Id]) Values (@Name_0,@thePrice_1,@Reader_Id_2);\nSELECT last_insert_rowid();\n", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Update [r_Article] Set [thePrice]=@thePrice_0,[Reader_Id]=@Reader_Id_1  Where [Id] = @Id_2;\n", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Insert Into [r_Article] ([Name],[thePrice],[Reader_Id]) Values (@Name_0,@thePrice_1,@Reader_Id_2);\nSELECT last_insert_rowid();\n<Text><30>(@Name_0=sos:String,@thePrice_1=199:Int32,@Reader_Id_2=1:Int64)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Update [r_Article] Set [thePrice]=@thePrice_0,[Reader_Id]=@Reader_Id_1  Where [Id] = @Id_2;\n<Text><30>(@thePrice_0=180:Int32,@Reader_Id_1=1:Int64,@Id_2=1:Int64)", StaticRecorder.Messages[1]);
         }
 
         [Test]
@@ -315,7 +315,7 @@ namespace Lephone.UnitTest.Data
             u.Name = "Tom";
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n<Text><30>(@theName_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -327,7 +327,7 @@ namespace Lephone.UnitTest.Data
             u.Age = 25;
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0,[Age]=@Age_1  Where [Id] = @Id_2;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0,[Age]=@Age_1  Where [Id] = @Id_2;\n<Text><30>(@theName_0=Jerry:String,@Age_1=25:Int32,@Id_2=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -344,7 +344,7 @@ namespace Lephone.UnitTest.Data
                 });
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n", StaticRecorder.LastMessage);
+            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n<Text><30>(@theName_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
     }
 }

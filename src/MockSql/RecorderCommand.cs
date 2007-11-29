@@ -111,31 +111,31 @@ namespace Lephone.MockSql
 
         protected override DbDataReader ExecuteDbDataReader(System.Data.CommandBehavior behavior)
         {
-            Record(this.CommandText);
+            Record();
             return new RecorderReader();
         }
 
         public override int ExecuteNonQuery()
         {
-            Record(this.CommandText);
+            Record();
             return 1;
         }
 
         public override object ExecuteScalar()
         {
-            Record(this.CommandText);
+            Record();
             return serial++;
         }
 
-        private void Record(string s)
+        private void Record()
         {
             if (_DbTransaction == null)
             {
-                _DbConnection.Recorder.Write(this.CommandText);
+                _DbConnection.Recorder.Write(this.ToString());
             }
             else
             {
-                _DbTransaction.sqls.Add(s);
+                _DbTransaction.sqls.Add(this.ToString());
             }
         }
 
@@ -154,6 +154,16 @@ namespace Lephone.MockSql
             {
                 throw RecorderFactory.NotImplemented;
             }
+        }
+
+        public override string ToString()
+        {
+            string s = string.Format("{0}<{1}><{2}>({3})",
+                this.CommandText,
+                this.CommandType,
+                this.CommandTimeout,
+                this.Parameters);
+            return s;
         }
     }
 }

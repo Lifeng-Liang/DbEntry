@@ -118,10 +118,12 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(3, rcs[0]);
 
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
-            StaticRecorder.Messages.ForEach(delegate(string s)
-            {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
-            });
+
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
         }
 
         [Test]
@@ -147,10 +149,12 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(3, rcs[0]);
 
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
-            StaticRecorder.Messages.ForEach(delegate(string s)
-            {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
-            });
+
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
         }
 
         [Test]
@@ -177,10 +181,12 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(4, rcs[1]);
 
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
-            StaticRecorder.Messages.ForEach(delegate(string s)
-            {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
-            });
+
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
         }
 
         [Test]
@@ -204,10 +210,10 @@ namespace Lephone.UnitTest.Data
                 });
             });
             Assert.AreEqual(3, StaticRecorder.Messages.Count);
-            StaticRecorder.Messages.ForEach(delegate(string s)
-            {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n", s);
-            });
+
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
         }
 
         [Test]
@@ -227,10 +233,12 @@ namespace Lephone.UnitTest.Data
                 });
             });
             Assert.AreEqual(4, StaticRecorder.Messages.Count);
-            StaticRecorder.Messages.ForEach(delegate(string s)
-            {
-                Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n", s);
-            });
+
+            // TODO: why null value is single type ?
+            Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=1:Int64,@Name_1=tom:String,@MyInt_2=<NULL>:Single,@MyBool_3=True:Boolean)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=2:Int64,@Name_1=<NULL>:Single,@MyInt_2=1:Int32,@MyBool_3=False:Boolean)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=3:Int64,@Name_1=<NULL>:Single,@MyInt_2=<NULL>:Single,@MyBool_3=<NULL>:Single)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=4:Int64,@Name_1=tom:String,@MyInt_2=1:Int32,@MyBool_3=True:Boolean)", StaticRecorder.Messages[3]);
         }
     }
 }

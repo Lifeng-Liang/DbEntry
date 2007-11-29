@@ -127,5 +127,14 @@ namespace Lephone.MockSql
                 _Value = value;
             }
         }
+
+        public override string ToString()
+        {
+            string s = string.Format("{0}={1}:{2}",
+                this.ParameterName,
+                this.Value == DBNull.Value ? "<NULL>" : this.Value,
+                this.DbType);
+            return s;
+        }
     }
 }
