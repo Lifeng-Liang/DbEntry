@@ -1,0 +1,39 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Lephone.Data.Definition;
+using Lephone.Data.Common;
+using System.Linq.Expressions;
+using Lephone.Data;
+
+namespace Lephone.Linq
+{
+    public class LinqObjectModel<T, TKey> : DbObjectModel<T, TKey> where T : LinqObjectModel<T, TKey>
+    {
+        public static DbObjectList<T> Find(Expression<Func<T, bool>> condition)
+        {
+            return DbEntry.From<T>().Where(condition).Select();
+        }
+
+        public static DbObjectList<T> Find(Expression<Func<T, bool>> condition, Expression<Func<T, object>> orderby)
+        {
+            return DbEntry.From<T>().Where(condition).OrderBy(orderby).Select();
+        }
+
+        public static DbObjectList<T> Find(Expression<Func<T, bool>> condition, string orderby)
+        {
+            return DbEntry.From<T>().Where(condition).OrderBy(orderby).Select();
+        }
+
+        public static DbObjectList<T> FindAll(Expression<Func<T, object>> orderby)
+        {
+            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy(orderby).Select();
+        }
+    }
+
+    public class LinqObjectModel<T> : LinqObjectModel<T, long> where T : LinqObjectModel<T, long>
+    {
+    }
+}

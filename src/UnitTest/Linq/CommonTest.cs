@@ -16,7 +16,7 @@ namespace Lephone.UnitTest.Linq
     [TestFixture]
     public class CommonTest
     {
-        public abstract class Person : DbObjectModel<Person>
+        public abstract class Person : LinqObjectModel<Person>
         {
             [DbColumn("Name")]
             public abstract string FirstName { get; set; }
