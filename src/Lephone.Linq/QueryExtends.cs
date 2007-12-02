@@ -36,5 +36,11 @@ namespace Lephone.Linq
             }
             throw new LinqException("OrderBy error!");
         }
+
+        public static T GetObject<T>(this DbContext c, Expression<Func<T, bool>> expr) where T : IDbObject
+        {
+            var wc = ExpressionParser<T>.Parse(expr);
+            return c.GetObject<T>(wc);
+        }
     }
 }

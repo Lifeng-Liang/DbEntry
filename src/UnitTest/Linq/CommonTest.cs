@@ -56,5 +56,12 @@ namespace Lephone.UnitTest.Linq
                 .Where(p => p.FirstName.Contains("T")).Select();
             Assert.AreEqual("Select [Id],[Name] From [Person] Where [Name] Like @Name_0;\n<Text><60>(@Name_0=%T%:String)", StaticRecorder.LastMessage);
         }
+
+        [Test]
+        public void Test4()
+        {
+            var item = de.GetObject<Person>(p => p.FirstName == "Tom");
+            Assert.AreEqual("Select [Id],[Name] From [Person] Where [Name] = @Name_0;\n<Text><60>(@Name_0=Tom:String)", StaticRecorder.LastMessage);
+        }
     }
 }

@@ -284,7 +284,7 @@ namespace Lephone.Data
             return GetObject(t, c, ob, (ob == null) ? null : new Range(1, 1));
         }
 
-        private object GetObject(Type t, WhereCondition c, OrderBy ob, Range r)
+        internal object GetObject(Type t, WhereCondition c, OrderBy ob, Range r)
         {
             IList il = new ArrayList();
             FillCollection(il, t, c, ob, r);
