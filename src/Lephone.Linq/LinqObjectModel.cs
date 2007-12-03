@@ -12,6 +12,11 @@ namespace Lephone.Linq
 {
     public class LinqObjectModel<T, TKey> : DbObjectModel<T, TKey> where T : LinqObjectModel<T, TKey>
     {
+        public static LinqQueryable<T, TKey> Table
+        {
+            get { return new LinqQueryable<T, TKey>(null); }
+        }
+
         public static DbObjectList<T> Find(Expression<Func<T, bool>> condition)
         {
             return DbEntry.From<T>().Where(condition).Select();
@@ -30,6 +35,11 @@ namespace Lephone.Linq
         public static DbObjectList<T> FindAll(Expression<Func<T, object>> orderby)
         {
             return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy(orderby).Select();
+        }
+
+        public static T FindOne(Expression<Func<T, bool>> condition)
+        {
+            return DbEntry.Context.GetObject(condition);
         }
     }
 

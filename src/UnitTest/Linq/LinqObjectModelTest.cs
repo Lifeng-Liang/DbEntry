@@ -63,12 +63,18 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual("Shanghai", list[1].Name);
         }
 
-        //[Test]
-        //public void Test4()
-        //{
-        //    var list = Book.FindOne(p => p.Name == "Pal95");
-        //    Assert.AreEqual(4, list.Id);
-        //    Assert.AreEqual(2, list.Category_Id);
-        //}
+        [Test]
+        public void Test4()
+        {
+            var item = Book.FindOne(p => p.Name == "Pal95");
+            Assert.AreEqual(4, item.Id);
+            Assert.AreEqual(2, item.Category_Id);
+        }
+
+        [Test]
+        public void Test5()
+        {
+            var list = from p in Book.Table where p.Id == 2 select p;
+        }
     }
 }
