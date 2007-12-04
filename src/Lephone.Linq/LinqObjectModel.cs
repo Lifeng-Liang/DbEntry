@@ -10,11 +10,11 @@ using Lephone.Data;
 
 namespace Lephone.Linq
 {
-    public class LinqObjectModel<T, TKey> : DbObjectModel<T, TKey> where T : LinqObjectModel<T, TKey>
+    public partial class LinqObjectModel<T, TKey> : DbObjectModel<T, TKey> where T : LinqObjectModel<T, TKey>
     {
-        public static LinqQueryable<T, TKey> Table
+        public static LinqQueryProvider<T, TKey> Table
         {
-            get { return new LinqQueryable<T, TKey>(null); }
+            get { return new LinqQueryProvider<T, TKey>(null); }
         }
 
         public static DbObjectList<T> Find(Expression<Func<T, bool>> condition)

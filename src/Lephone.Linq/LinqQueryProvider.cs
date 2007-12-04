@@ -7,15 +7,13 @@ using System.Linq.Expressions;
 
 namespace Lephone.Linq
 {
-    public class LinqQueryable<T, TKey> : IOrderedQueryable<T> where T : LinqObjectModel<T, TKey>
+    public class LinqQueryProvider<T, TKey> : IOrderedQueryable<T>, IQueryProvider where T : LinqObjectModel<T, TKey>
     {
-        private Expression exp;
-        private IQueryProvider provider;
+        private Expression expression;
 
-        public LinqQueryable(Expression exp)
+        public LinqQueryProvider(Expression expression)
         {
-            this.exp = exp;
-            provider = new LinqQueryProvider();
+            this.expression = expression;
         }
 
         #region IEnumerable<T> Members
@@ -45,27 +43,29 @@ namespace Lephone.Linq
 
         public Expression Expression
         {
-            get { return exp; }
+            get
+            {
+                return expression ?? Expression.Constant(this);
+            }
         }
 
         public IQueryProvider Provider
         {
-            get { return provider; }
+            get { return this; }
         }
 
         #endregion
-    }
 
-    public class LinqQueryProvider : IQueryProvider
-    {
+        #region IQueryProvider Members
+
         public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
         {
-            throw new NotImplementedException();
+            return new LinqQueryProvider<T, TKey>(expression) as IQueryable<TElement>;
         }
 
         public IQueryable CreateQuery(Expression expression)
         {
-            throw new NotImplementedException();
+            return new LinqQueryProvider<T, TKey>(expression);
         }
 
         public TResult Execute<TResult>(Expression expression)
@@ -77,5 +77,7 @@ namespace Lephone.Linq
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }
