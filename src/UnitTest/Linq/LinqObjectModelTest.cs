@@ -75,6 +75,20 @@ namespace Lephone.UnitTest.Linq
         public void Test5()
         {
             var list = from p in Book.Table where p.Id == 2 select p;
+            foreach (var o in list)
+            {
+                Assert.AreEqual("Beijing", o.Name);
+            }
+        }
+
+        [Test]
+        public void Test6()
+        {
+            var list = from p in Book.Table where p.Name == "Pal95" select p;
+            foreach (var o in list)
+            {
+                Assert.AreEqual(4, o.Id);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using Lephone.Data;
 
 namespace Lephone.Linq
 {
@@ -20,7 +21,11 @@ namespace Lephone.Linq
 
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            MethodCallExpression mce = (MethodCallExpression)this.expression;
+            UnaryExpression ue = (UnaryExpression)mce.Arguments[1];
+            Expression<Func<T, bool>> condition = (Expression<Func<T, bool>>)ue.Operand;
+            var list = DbEntry.From<T>().Where(condition).Select();
+            return ((IEnumerable<T>)list).GetEnumerator();
         }
 
         #endregion
