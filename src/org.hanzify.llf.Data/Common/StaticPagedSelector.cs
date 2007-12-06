@@ -30,13 +30,13 @@ namespace Lephone.Data.Common
             PageIndex = pages - PageIndex;
             if (PageIndex <= 0)
             {
-                return Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems).Range(1, firstPageSize).Select();
+                return Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(1, firstPageSize).Select();
             }
             else
             {
                 int StartWith = firstPageSize + _PageSize * (PageIndex - 1);
                 int tn = StartWith + _PageSize;
-                IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems).Range(StartWith + 1, tn).Select();
+                IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(StartWith + 1, tn).Select();
                 return ret;
             }
         }

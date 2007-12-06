@@ -21,10 +21,8 @@ namespace Lephone.Linq
 
         public IEnumerator<T> GetEnumerator()
         {
-            MethodCallExpression mce = (MethodCallExpression)this.expression;
-            UnaryExpression ue = (UnaryExpression)mce.Arguments[1];
-            Expression<Func<T, bool>> condition = (Expression<Func<T, bool>>)ue.Operand;
-            var list = DbEntry.From<T>().Where(condition).Select();
+            LinqExpressionParser<T> lep = new LinqExpressionParser<T>(this.expression);
+            var list = DbEntry.From<T>().Where(lep.condition).OrderBy(lep.orderby).Select();
             return ((IEnumerable<T>)list).GetEnumerator();
         }
 

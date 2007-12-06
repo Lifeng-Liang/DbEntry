@@ -14,21 +14,21 @@ namespace Lephone.Data
 	[Serializable]
 	public class OrderBy : IClause
 	{
-		public ASC[] OrderItems;
+		public readonly List<ASC> OrderItems;
 
         public OrderBy(string OrderName)
         {
-            OrderItems = ParseClause(OrderName);
+            OrderItems = new List<ASC>(ParseClause(OrderName));
         }
 
 		public OrderBy(params ASC[] OrderItems)
 		{
-			this.OrderItems = OrderItems;
+			this.OrderItems = new List<ASC>(OrderItems);
 		}
 
-		public string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd)
+        public string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd)
 		{
-            if (OrderItems != null && OrderItems.Length > 0)
+            if (OrderItems != null && OrderItems.Count > 0)
             {
                 StringBuilder sb = new StringBuilder(" Order By ");
                 foreach (ASC oi in OrderItems)

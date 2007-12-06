@@ -75,20 +75,41 @@ namespace Lephone.UnitTest.Linq
         public void Test5()
         {
             var list = from p in Book.Table where p.Id == 2 select p;
-            foreach (var o in list)
-            {
-                Assert.AreEqual("Beijing", o.Name);
-            }
+            Assert.AreEqual("Beijing", list.ToList()[0].Name);
         }
 
         [Test]
         public void Test6()
         {
             var list = from p in Book.Table where p.Name == "Pal95" select p;
-            foreach (var o in list)
-            {
-                Assert.AreEqual(4, o.Id);
-            }
+            Assert.AreEqual(4, list.ToList()[0].Id);
+        }
+
+        [Test]
+        public void Test7()
+        {
+            var list = from p in Book.Table where p.Id >= 2 && p.Id <= 3 orderby p.Id select p;
+            var l = list.ToList();
+            Assert.AreEqual("Beijing", l[0].Name);
+            Assert.AreEqual("Shanghai", l[1].Name);
+        }
+
+        [Test]
+        public void Test8()
+        {
+            var list = from p in Book.Table where p.Id >= 2 && p.Id <= 3 orderby p.Id descending select p;
+            var l = list.ToList();
+            Assert.AreEqual("Shanghai", l[0].Name);
+            Assert.AreEqual("Beijing", l[1].Name);
+        }
+
+        [Test]
+        public void Test9()
+        {
+            var list = from p in Book.Table where p.Id >= 2 && p.Id <= 3 orderby p.Id descending, p.Name select p;
+            var l = list.ToList();
+            Assert.AreEqual("Shanghai", l[0].Name);
+            Assert.AreEqual("Beijing", l[1].Name);
         }
     }
 }

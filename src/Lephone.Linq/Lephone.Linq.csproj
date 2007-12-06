@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ExpressionParser.cs" />
     <Compile Include="LinqException.cs" />
+    <Compile Include="LinqExpressionParser.cs" />
     <Compile Include="LinqObjectModel.cs" />
     <Compile Include="LinqQueryProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

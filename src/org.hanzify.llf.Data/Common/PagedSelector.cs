@@ -40,7 +40,7 @@ namespace Lephone.Data.Common
         {
             int StartWith = _PageSize * PageIndex;
             int tn = StartWith + _PageSize;
-            IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems).Range(StartWith + 1, tn).Select();
+            IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(StartWith + 1, tn).Select();
             return ret;
         }
     }
