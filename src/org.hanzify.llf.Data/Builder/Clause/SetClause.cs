@@ -41,7 +41,7 @@ namespace Lephone.Data.Builder.Clause
                 {
                     if (DataSetting.UsingParamter)
                     {
-                        dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", kv.Key, dpc.Count);
+                        dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", DataParamter.LegalKey(kv.Key), dpc.Count);
                         DataParamter dp = new DataParamter(dpStr, kv.Value, kv.ValueType);
                         dpc.Add(dp);
                     }

@@ -14,7 +14,6 @@ namespace OrmA
         Client
     }
 
-    [Cacheable]
     public abstract class SampleData : DbObjectModel<SampleData>
     {
         [Length(50)]
@@ -30,57 +29,41 @@ namespace OrmA
 
         public SampleData() { }
 
-        public SampleData(string Name, UserRole Role, DateTime JoinDate, bool Enabled)
-            : this(Name, Role, JoinDate, Enabled, null)
-        {
-        }
-
-        public SampleData(string Name, UserRole Role, DateTime JoinDate, bool Enabled, int? NullInt)
+        public SampleData Init(string Name, UserRole Role, DateTime JoinDate, bool Enabled, int? NullInt)
         {
             this.Name = Name;
             this.Role = Role;
             this.JoinDate = JoinDate;
             this.Enabled = Enabled;
             this.NullInt = NullInt;
+            return this;
         }
+    }
+
+    [DbTable("Shippers")]
+    public class Shipper : IDbObject
+    {
+        [DbColumn("Shipper ID")]
+        public int Id;
+
+        [DbColumn("Company Name")]
+        public string Name;
     }
 
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Cache Sample");
-            Console.WriteLine("====================================");
-            SampleData d = SampleData.FindById(1);
+            //DbEntry.Context.DropAndCreate(typeof(SampleData));
 
-            Console.WriteLine(d);
-            Console.WriteLine();
+            //var list = SampleData.Find(CK.K["Id"] < 10);
+            var list = DbEntry.From<SampleData>().Where(CK.K["Id"] < 10).OrderBy("Id").Range(2,2).Select();
+            //var list = DbEntry.From<Shipper>().Where(CK.K["Shipper ID"] < 10).OrderBy(new DESC("Shipper ID")).Select();
 
-            d.Name = "test cache";
-            d.Save();
-
-            d = SampleData.FindById(1);
-            Console.WriteLine(d);
-            Console.WriteLine();
-
-            d.Name = "( 1)liang lifeng";
-            d.Save();
-
-
-            try
+            foreach (var o in list)
             {
-                DbEntry.UsingTransaction(delegate()
-                {
-                    // emulate exception of transaction
-                    int m = 0;
-                    int n = 1 / m;
-                });
+                Console.WriteLine(o);
             }
-            catch { }
-
-            d = SampleData.FindById(1);
-            Console.WriteLine(d);
-            Console.WriteLine();
 
             Console.ReadLine();
         }

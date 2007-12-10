@@ -18,7 +18,7 @@ namespace Lephone.Data.SqlEntry
         {
             if (Key != null)
             {
-                return Key.Replace('.', '_');
+                return Key.Replace('.', '_').Replace(' ', '_');
             }
             return null;
         }

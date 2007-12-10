@@ -157,6 +157,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Dialect\Firebird.cs" />
     <Compile Include="Dialect\Oracle.cs" />
     <Compile Include="Dialect\SequencedDialect.cs" />
+    <Compile Include="Dialect\SqlCE.cs" />
     <Compile Include="Driver\DbFactory.cs" />
     <Compile Include="Driver\SmartDbFactory.cs" />
     <Compile Include="DynamicObject.cs" />
