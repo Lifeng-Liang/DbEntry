@@ -54,7 +54,7 @@ namespace OrmA
     {
         static void Main(string[] args)
         {
-            //DbEntry.Context.DropAndCreate(typeof(SampleData));
+            DbEntry.Context.DropAndCreate(typeof(SampleData));
 
             //var list = SampleData.Find(CK.K["Id"] < 10);
             var list = DbEntry.From<SampleData>().Where(CK.K["Id"] < 10).OrderBy("Id").Range(2,2).Select();

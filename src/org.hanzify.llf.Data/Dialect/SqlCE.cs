@@ -29,6 +29,11 @@ namespace Lephone.Data.Dialect
             get { return "select @@identity;\n"; }
         }
 
+        public override string IdentityColumnString
+        {
+            get { return "IDENTITY NOT NULL"; }
+        }
+
         public override bool ExecuteEachLine
         {
             get { return true; }
