@@ -41,6 +41,11 @@ namespace Lephone.Linq
         {
             return DbEntry.Context.GetObject(condition);
         }
+
+        public static LinqOrderSytax<T> OrderBy(Expression<Func<T, object>> orderby)
+        {
+            return new LinqOrderSytax<T>(orderby);
+        }
     }
 
     public class LinqObjectModel<T> : LinqObjectModel<T, long> where T : LinqObjectModel<T, long>

@@ -49,6 +49,7 @@
     <Compile Include="LinqException.cs" />
     <Compile Include="LinqExpressionParser.cs" />
     <Compile Include="LinqObjectModel.cs" />
+    <Compile Include="LinqOrderSytax.cs" />
     <Compile Include="LinqQueryProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryExtends.cs" />

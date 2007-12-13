@@ -111,5 +111,32 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual("Shanghai", l[0].Name);
             Assert.AreEqual("Beijing", l[1].Name);
         }
+
+        [Test]
+        public void Test10()
+        {
+            var list = from p in Book.Table where p.Name == "Pal95" select p;
+            foreach (object o in list)
+            {
+                Assert.AreEqual(4, ((Book)o).Id);
+            }
+        }
+
+        [Test]
+        public void Test11()
+        {
+            var l = Book.OrderBy(p => p.Id).Find(p => p.Id >= 2 && p.Id <= 3);
+            Assert.AreEqual("Beijing", l[0].Name);
+            Assert.AreEqual("Shanghai", l[1].Name);
+        }
+
+        [Test]
+        public void Test12()
+        {
+            var l = Book.OrderBy(p => p.Name).Find(p => p.Id >= 1 && p.Id <= 3);
+            Assert.AreEqual("Beijing", l[0].Name);
+            Assert.AreEqual("Diablo", l[1].Name);
+            Assert.AreEqual("Shanghai", l[2].Name);
+        }
     }
 }
