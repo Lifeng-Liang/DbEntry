@@ -42,9 +42,14 @@ namespace Lephone.Linq
             return DbEntry.Context.GetObject(condition);
         }
 
-        public static LinqOrderSytax<T> OrderBy(Expression<Func<T, object>> orderby)
+        public static LinqOrderSyntax<T> OrderBy(Expression<Func<T, object>> orderby)
         {
-            return new LinqOrderSytax<T>(orderby);
+            return new LinqOrderSyntax<T>(orderby, true);
+        }
+
+        public static LinqOrderSyntax<T> OrderByDescending(Expression<Func<T, object>> orderby)
+        {
+            return new LinqOrderSyntax<T>(orderby, false);
         }
     }
 

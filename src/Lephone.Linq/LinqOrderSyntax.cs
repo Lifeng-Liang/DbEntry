@@ -10,13 +10,13 @@ using Lephone.Data.Definition;
 
 namespace Lephone.Linq
 {
-    public class LinqOrderSytax<T> where T : IDbObject
+    public class LinqOrderSyntax<T> where T : IDbObject
     {
         private OrderBy order = null;
 
-        public LinqOrderSytax(Expression<Func<T, object>> expr)
+        public LinqOrderSyntax(Expression<Func<T, object>> expr, bool isAsc)
         {
-            AddOrderBy(expr, true);
+            AddOrderBy(expr, isAsc);
         }
 
         public DbObjectList<T> Find(Expression<Func<T, bool>> condition)
@@ -24,21 +24,27 @@ namespace Lephone.Linq
             return DbEntry.From<T>().Where(condition).OrderBy(order).Select();
         }
 
-        public LinqOrderSytax<T> ThenBy(Expression<Func<T, object>> expr)
+        public LinqOrderSyntax<T> ThenBy(Expression<Func<T, object>> expr)
         {
-            // TODO: DESC
             AddOrderBy(expr, true);
+            return this;
+        }
+
+        public LinqOrderSyntax<T> ThenByDescending(Expression<Func<T, object>> expr)
+        {
+            AddOrderBy(expr, false);
             return this;
         }
 
         private void AddOrderBy(LambdaExpression expr, bool IsAsc)
         {
-            MemberExpression e = expr.Body as MemberExpression;
-            if (e != null)
+            MemberExpression e = QueryExtends.GetMemberExpression(expr);
+            if (e == null)
             {
-                string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
-                AddOrderBy(IsAsc ? new ASC(n) : new DESC(n));
+                throw new LinqException("Order By error!");
             }
+            string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
+            AddOrderBy(IsAsc ? new ASC(n) : new DESC(n));
         }
 
         private void AddOrderBy(ASC item)

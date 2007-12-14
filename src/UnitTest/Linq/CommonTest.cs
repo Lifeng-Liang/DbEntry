@@ -63,5 +63,19 @@ namespace Lephone.UnitTest.Linq
             var item = de.GetObject<Person>(p => p.FirstName == "Tom");
             Assert.AreEqual("Select [Id],[Name] From [Person] Where [Name] = @Name_0;\n<Text><60>(@Name_0=Tom:String)", StaticRecorder.LastMessage);
         }
+
+        [Test]
+        public void Test5()
+        {
+            de.From<Person>().Where(WhereCondition.EmptyCondition).OrderBy(p => p.FirstName).ThenBy(p => p.Id).Select();
+            Assert.AreEqual("Select [Id],[Name] From [Person] Order By [Name] ASC,[Id] ASC;\n<Text><60>()", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void Test6()
+        {
+            de.From<Person>().Where(WhereCondition.EmptyCondition).OrderByDescending(p => p.FirstName).ThenBy(p => p.Id).Select();
+            Assert.AreEqual("Select [Id],[Name] From [Person] Order By [Name] DESC,[Id] ASC;\n<Text><60>()", StaticRecorder.LastMessage);
+        }
     }
 }
