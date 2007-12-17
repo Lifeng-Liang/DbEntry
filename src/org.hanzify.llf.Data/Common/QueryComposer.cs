@@ -68,7 +68,7 @@ namespace Lephone.Data.Common
         public virtual SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
         {
             DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.From.GetMainTableName());
-            sb.Where.Conditions = DbObjectHelper.GetKeyWhereClause(obj);
+            sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj);
             return sb.ToSqlStatement(Dialect);
         }
 

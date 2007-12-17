@@ -60,7 +60,7 @@ namespace Lephone.Data.Common
             if (fi.IsBelongsTo)
             {
                 Type t = fi.FieldType.GetGenericArguments()[0];
-                MemberHandler h = DbObjectHelper.GetKeyField(t);
+                MemberHandler h = ObjectInfo.GetKeyField(t);
                 KeyValue kv = new KeyValue(fi.Name, null, h.FieldType);
                 return kv;
             }

@@ -164,7 +164,7 @@ namespace Lephone.Data.Common
                     if (fn == null)
                     {
                         Type ot = fi.MemberType.GetGenericArguments()[0];
-                        string n = DbObjectHelper.GetObjectFromClause(ot).GetMainTableName();
+                        string n = ObjectInfo.GetObjectFromClause(ot).GetMainTableName();
                         this.Name = n + "_Id";
                     }
                 }
@@ -175,7 +175,7 @@ namespace Lephone.Data.Common
                     if (fn == null)
                     {
                         Type ot1 = fi.MemberType.GetGenericArguments()[0];
-                        string n1 = DbObjectHelper.GetObjectFromClause(ot1).GetMainTableName();
+                        string n1 = ObjectInfo.GetObjectFromClause(ot1).GetMainTableName();
                         this.Name = n1 + "_Id";
                     }
                 }

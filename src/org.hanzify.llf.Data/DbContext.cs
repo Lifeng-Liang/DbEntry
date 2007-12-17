@@ -221,7 +221,7 @@ namespace Lephone.Data
                     Count++;
                     if (Count >= StartIndex)
                     {
-                        object di = DbObjectHelper.CreateObject(this, ReturnType, dr, UseIndex);
+                        object di = ObjectInfo.CreateObject(this, ReturnType, dr, UseIndex);
                         if (!ip.Process(di))
                         {
                             break;
@@ -406,7 +406,7 @@ namespace Lephone.Data
 
         public void Update(object obj)
         {
-            Update(obj, DbObjectHelper.GetKeyWhereClause(obj));
+            Update(obj, ObjectInfo.GetKeyWhereClause(obj));
         }
 
         private void Update(object obj, WhereCondition iwc)
@@ -461,7 +461,7 @@ namespace Lephone.Data
                 ProcessRelation(oi, true, obj, delegate(DataProvider dp)
                 {
                     object Key = dp.Dialect.ExecuteInsert(dp, sb, oi);
-                    DbObjectHelper.SetKey(obj, Key);
+                    ObjectInfo.SetKey(obj, Key);
                     foreach(Type t2 in oi.ManyToManys.Keys)
                     {
                         SetManyToManyRelation(oi, t2, Key, Scope<object>.Current);

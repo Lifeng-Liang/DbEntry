@@ -277,7 +277,7 @@ namespace Lephone.Data.Common
                 {
                     if (mupdate != null)
                     {
-                        string cn = DbObjectHelper.GetColumuName(new MemberAdapter.PropertyAdapter(pi));
+                        string cn = ObjectInfo.GetColumuName(new MemberAdapter.PropertyAdapter(pi));
                         il.LoadArg(0).LoadString(cn).Call(mupdate);
                     }
                 }

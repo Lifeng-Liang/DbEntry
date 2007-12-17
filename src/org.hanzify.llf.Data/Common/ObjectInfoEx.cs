@@ -20,9 +20,9 @@ using Lephone.Util.Text;
 
 namespace Lephone.Data.Common
 {
-    public static class DbObjectHelper
+    public partial class ObjectInfo
     {
-        internal static void InitObjectInfoBySimpleMode(Type t, ObjectInfo oi)
+        internal void InitObjectInfoBySimpleMode(Type t)
         {
             List<Type> lt = new List<Type>(t.GetInterfaces());
             if (!lt.Contains(typeof(IDbObject)))
@@ -77,24 +77,24 @@ namespace Lephone.Data.Common
             fields.AddRange(rlfs);
             MemberHandler[] keys = kfs.ToArray();
 
-            oi.Init(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
-            SetManyToManyMediFrom(oi, t, oi.From.GetMainTableName(), oi.Fields);
+            this.Init(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
+            SetManyToManyMediFrom(this, t, this.From.GetMainTableName(), this.Fields);
 
-            oi._RelationFields = rlfs.ToArray();
-            oi._SimpleFields = sifs.ToArray();
+            this._RelationFields = rlfs.ToArray();
+            this._SimpleFields = sifs.ToArray();
 
             SoftDeleteAttribute sd = ClassHelper.GetAttribute<SoftDeleteAttribute>(t, true);
             if (sd != null)
             {
-                oi._SoftDeleteColumnName = sd.ColumnName;
+                this._SoftDeleteColumnName = sd.ColumnName;
             }
             DeleteToAttribute dta = ClassHelper.GetAttribute<DeleteToAttribute>(t, true);
             if (dta != null)
             {
-                oi._DeleteToTableName = dta.TableName;
+                this._DeleteToTableName = dta.TableName;
             }
 
-            GetIndexes(oi);
+            this.GetIndexes();
         }
 
         public static object CreateObject(DbContext context, Type DbObjectType, IDataReader dr, bool UseIndex)
@@ -216,9 +216,9 @@ namespace Lephone.Data.Common
             }
         }
 
-        private static void GetIndexes(ObjectInfo oi)
+        private void GetIndexes()
         {
-            foreach (MemberHandler fh in oi.Fields)
+            foreach (MemberHandler fh in this.Fields)
             {
                 IndexAttribute[] ias = (IndexAttribute[])fh.MemberInfo.GetAttributes<IndexAttribute>(false);
                 CheckIndexAttributes(ias);
@@ -226,18 +226,18 @@ namespace Lephone.Data.Common
                 {
                     ASC a = ia.ASC ? (ASC)fh.Name : (DESC)fh.Name;
                     string key = (ia.IndexName == null) ? a.Key : ia.IndexName;
-                    if (!oi.Indexes.ContainsKey(key))
+                    if (!this.Indexes.ContainsKey(key))
                     {
-                        oi.Indexes.Add(key, new List<ASC>());
+                        this.Indexes.Add(key, new List<ASC>());
                     }
-                    oi.Indexes[key].Add(a);
+                    this.Indexes[key].Add(a);
                     if (ia.UNIQUE)
                     {
-                        if (!oi.UniqueIndexes.ContainsKey(key))
+                        if (!this.UniqueIndexes.ContainsKey(key))
                         {
-                            oi.UniqueIndexes.Add(key, new List<MemberHandler>());
+                            this.UniqueIndexes.Add(key, new List<MemberHandler>());
                         }
-                        oi.UniqueIndexes[key].Add(fh);
+                        this.UniqueIndexes[key].Add(fh);
                     }
                 }
             }

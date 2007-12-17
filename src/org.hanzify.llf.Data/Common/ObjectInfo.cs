@@ -14,7 +14,7 @@ using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
-    public class ObjectInfo : FlyweightBase<Type, ObjectInfo>
+    public partial class ObjectInfo : FlyweightBase<Type, ObjectInfo>
     {
         #region GetInstance
 
@@ -82,7 +82,7 @@ namespace Lephone.Data.Common
 
         private void InitBySimpleMode(Type t)
         {
-            DbObjectHelper.InitObjectInfoBySimpleMode(t, this);
+            this.InitObjectInfoBySimpleMode(t);
         }
 
         #endregion
