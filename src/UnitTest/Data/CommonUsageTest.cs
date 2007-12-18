@@ -49,6 +49,18 @@ namespace Lephone.UnitTest.Data
         public abstract int Count { get; set; }
     }
 
+    [DbTable("People")]
+    public abstract class FieldPerson : DbObjectModel<FieldPerson>
+    {
+        [DbColumn("Name")]
+        public abstract string theName { get; set; }
+
+        public static FieldPerson FindByName(string Name)
+        {
+            return FindOne(Field["theName"] == Name);
+        }
+    }
+
     #endregion
 
     [TestFixture]
@@ -436,6 +448,13 @@ namespace Lephone.UnitTest.Data
             ct.Name = "tom";
             de.Save(ct);
             Assert.AreEqual("Update [Count_Table2] Set [Name]=@Name_0,[Count]=[Count]+1  Where [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestFieldNameMapper()
+        {
+            FieldPerson p = FieldPerson.FindByName("Jerry");
+            Assert.AreEqual(2, p.Id);
         }
     }
 }

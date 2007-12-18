@@ -337,7 +337,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DbObjectList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\ObjectInfoEx.cs">
+    <Compile Include="Common\ObjectInfo_Helper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DbEntry.cs">
