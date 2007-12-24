@@ -435,8 +435,10 @@ namespace Lephone.Data.SqlEntry
                 cc.BeginTransaction(il);
                 try
                 {
+                    OnBeginTransaction();
                     callback();
                     cc.Commit();
+                    OnCommittedTransaction();
                 }
                 catch
                 {
@@ -445,6 +447,14 @@ namespace Lephone.Data.SqlEntry
                     throw;
                 }
             });
+        }
+
+        protected virtual void OnBeginTransaction()
+        {
+        }
+
+        protected virtual void OnCommittedTransaction()
+        {
         }
 
         protected virtual void OnTransactionError()

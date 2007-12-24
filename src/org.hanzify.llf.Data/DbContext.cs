@@ -75,11 +75,50 @@ namespace Lephone.Data
             }
         }
 
+        protected Stack<List<string>> TransLists = new Stack<List<string>>();
+
+        protected override void OnBeginTransaction()
+        {
+            if (DataSetting.CacheEnabled && DataSetting.CacheClearWhenError)
+            {
+                TransLists.Push(new List<string>());
+            }
+        }
+
+        protected override void OnCommittedTransaction()
+        {
+            if (DataSetting.CacheEnabled && DataSetting.CacheClearWhenError)
+            {
+                TransLists.Pop();
+            }
+        }
+
         protected override void OnTransactionError()
         {
             if (DataSetting.CacheEnabled)
             {
-                CacheProvider.Instance.Clear();
+                if (DataSetting.CacheClearWhenError)
+                {
+                    CacheProvider.Instance.Clear();
+                }
+                else
+                {
+                    List<string> KeyList = TransLists.Pop();
+                    foreach (string key in KeyList)
+                    {
+                        CacheProvider.Instance.Remove(key);
+                    }
+                }
+            }
+        }
+
+        protected virtual void SetCachedObject(object obj)
+        {
+            string key = KeyGenerator.Instance[obj];
+            CacheProvider.Instance[key] = ObjectInfo.CloneObject(obj);
+            if (TransLists.Count > 0)
+            {
+                TransLists.Peek().Add(key);
             }
         }
 
@@ -271,7 +310,7 @@ namespace Lephone.Data
                 {
                     if (obj != null)
                     {
-                        CacheProvider.Instance[KeyGenerator.Instance.GetKey(t, key)] = ObjectInfo.CloneObject(obj);
+                        SetCachedObject(obj);
                     }
                 }
                 return obj;
@@ -446,7 +485,7 @@ namespace Lephone.Data
             }
             if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
             {
-                CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
+                SetCachedObject(obj);
             }
         }
 
@@ -480,7 +519,7 @@ namespace Lephone.Data
             }
             if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
             {
-                CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
+                SetCachedObject(obj);
             }
         }
 
@@ -538,6 +577,7 @@ namespace Lephone.Data
             ProcessRelation(oi, false, obj, delegate(DataProvider dp)
             {
                 ret += dp.ExecuteNonQuery(Sql);
+                CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
                 ret += DeleteRelation(oi, obj);
             }, delegate(object o)
             {

@@ -32,7 +32,8 @@ namespace Lephone.Linq
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            // never used ???
+            return GetEnumerator();
         }
 
         #endregion
@@ -73,12 +74,14 @@ namespace Lephone.Linq
 
         public TResult Execute<TResult>(Expression expression)
         {
-            throw new NotImplementedException();
+            // never used ???
+            return (TResult)CreateQuery(expression).GetEnumerator();
         }
 
         public object Execute(Expression expression)
         {
-            throw new NotImplementedException();
+            // never used ???
+            return CreateQuery(expression).GetEnumerator();
         }
 
         #endregion
