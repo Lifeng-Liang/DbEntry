@@ -77,7 +77,7 @@ namespace Lephone.Data
 
         protected Stack<List<string>> TransLists = new Stack<List<string>>();
 
-        protected override void OnBeginTransaction()
+        protected internal override void OnBeginTransaction()
         {
             if (DataSetting.CacheEnabled && DataSetting.CacheClearWhenError)
             {
@@ -85,7 +85,7 @@ namespace Lephone.Data
             }
         }
 
-        protected override void OnCommittedTransaction()
+        protected internal override void OnCommittedTransaction()
         {
             if (DataSetting.CacheEnabled && DataSetting.CacheClearWhenError)
             {
@@ -93,7 +93,7 @@ namespace Lephone.Data
             }
         }
 
-        protected override void OnTransactionError()
+        protected internal override void OnTransactionError()
         {
             if (DataSetting.CacheEnabled)
             {
