@@ -16,6 +16,28 @@ namespace Lephone.Util
 
     public static class CommonHelper
     {
+        public static int Main(string[] args, string Usage, CallbackVoidHandler Callback)
+        {
+            if (args.Length > 0)
+            {
+                try
+                {
+                    Callback();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return 2;
+                }
+            }
+            else
+            {
+                Console.WriteLine(Usage);
+                return 1;
+            }
+        }
+
         public static void IfCatchException(bool CatchException, CallbackVoidHandler callback)
         {
             if (CatchException)
