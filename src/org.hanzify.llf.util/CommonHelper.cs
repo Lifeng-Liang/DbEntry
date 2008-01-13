@@ -16,9 +16,9 @@ namespace Lephone.Util
 
     public static class CommonHelper
     {
-        public static int Main(string[] args, string Usage, CallbackVoidHandler Callback)
+        public static int main(string[] args, int minArgCount, string Usage, CallbackVoidHandler Callback)
         {
-            if (args.Length > 0)
+            if (args.Length >= minArgCount)
             {
                 try
                 {
@@ -27,7 +27,14 @@ namespace Lephone.Util
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    if (args.Length > minArgCount && args[args.Length - 1] == "-m")
+                    {
+                        Console.WriteLine(ex);
+                    }
+                    else
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                     return 2;
                 }
             }
