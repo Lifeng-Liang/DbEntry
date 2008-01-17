@@ -16,6 +16,20 @@ namespace Lephone.Util
 
     public static class CommonHelper
     {
+        public static void Assert(bool AssertCondition)
+        {
+            Assert(AssertCondition, "");
+        }
+
+        public static void Assert(bool AssertCondition, string FailedMessage, params object[] os)
+        {
+            if (!AssertCondition)
+            {
+                string s = string.Format(FailedMessage, os);
+                throw new LephoneException(s);
+            }
+        }
+
         public static int main(string[] args, int minArgCount, string Usage, CallbackVoidHandler Callback)
         {
             if (args.Length >= minArgCount)
