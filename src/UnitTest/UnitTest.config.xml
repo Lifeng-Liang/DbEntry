@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+  <configSections>
+    <section name="Lephone.Settings" type="Lephone.Util.Setting.NameValueSectionHandler, Lephone.Util" />
+  </configSections>
+
   <Lephone.Settings>
     <add key="@Lephone_Log" value="System_Log" />
     
@@ -14,7 +18,7 @@
     <add key="DefaultContext" value="Development" />
  
     <add key="Development.DataBase" value="@SQLite : @c:\UnitTest.db" />
-    <add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.47.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
+    <add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.48.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
 
     <add key="1.DataBase" value="@Access : @~test.mdb" />
 

@@ -33,7 +33,8 @@ namespace Lephone.UnitTest.util
                 ms.Position = 0;
                 XmlDocument xd = new XmlDocument();
                 xd.Load(ms);
-                NameValueCollection l = (NameValueCollection)h.Create(null, null, xd["configuration"].ChildNodes[0]);
+
+                NameValueCollection l = (NameValueCollection)h.Create(null, null, xd["configuration"].ChildNodes[1]);
                 Assert.AreEqual("Lephone.Util.Logging.ConsoleMessageRecorder, Lephone.Util", l["SqlLogRecorder"]);
                 Assert.AreEqual("@Access : @~test.mdb", l["1.DataBase"]);
             }

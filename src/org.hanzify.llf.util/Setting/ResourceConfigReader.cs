@@ -80,11 +80,13 @@ namespace Lephone.Util.Setting
 
                 foreach (XmlNode n in xd["configuration"].ChildNodes)
                 {
-                    NameValueCollection l = (NameValueCollection)h.Create(
-                        null, null, n);
-                    lock (XmlConfigs)
+                    if (n.Name != "configSections")
                     {
-                        XmlConfigs[n.Name] = l;
+                        NameValueCollection l = (NameValueCollection)h.Create(null, null, n);
+                        lock (XmlConfigs)
+                        {
+                            XmlConfigs[n.Name] = l;
+                        }
                     }
                 }
             }
