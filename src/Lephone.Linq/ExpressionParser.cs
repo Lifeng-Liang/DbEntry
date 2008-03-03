@@ -8,6 +8,7 @@ using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
+using System.Collections;
 
 namespace Lephone.Linq
 {
@@ -80,13 +81,12 @@ namespace Lephone.Linq
 
         private static WhereCondition ParseMethodCall(MethodCallExpression e)
         {
-            if (e.Arguments.Count == 1 && e.Object is MemberExpression && e.Arguments[0] is ConstantExpression)
+            if (e.Arguments.Count == 1 && e.Object is MemberExpression)
             {
                 string key = GetColumnName(((MemberExpression)e.Object).Member.Name);
-                ConstantExpression evalue = (ConstantExpression)e.Arguments[0];
-                if (evalue.Value != null && evalue.Type == typeof(string))
+                object value = GetRightValue(e.Arguments[0]);
+                if (value != null && value.GetType() == typeof(string))
                 {
-                    string value = (string)evalue.Value;
                     switch (e.Method.Name)
                     {
                         case "StartsWith":
@@ -105,32 +105,63 @@ namespace Lephone.Linq
         {
             if (e.Left.NodeType == ExpressionType.MemberAccess)
             {
-                string key = GetColumnName(((MemberExpression)e.Left).Member.Name);
+                var left = (MemberExpression)e.Left;
+                string pn = left.Expression.ToString();
+                string key = GetColumnName(left.Member.Name);
 
-                if (e.Right.NodeType == ExpressionType.Constant)
+                if (e.Right.NodeType == ExpressionType.MemberAccess)
                 {
-                    object value = ((ConstantExpression)e.Right).Value;
-                    if (value == null)
+                    var right = (MemberExpression)e.Right;
+                    if (right.Expression.ToString() == pn)
                     {
-                        if (co == CompareOpration.Equal)
-                        {
-                            return new KeyValueClause(key, null, CompareOpration.Is);
-                        }
-                        else if (co == CompareOpration.NotEqual)
-                        {
-                            return new KeyValueClause(key, null, CompareOpration.IsNot);
-                        }
-                        throw new LinqException("NULL value only supported Equal and NotEqual!");
+                        string key2 = GetColumnName(right.Member.Name);
+                        return new KeyKeyClause(key, key2, co);
                     }
-                    return new KeyValueClause(key, value, co);
                 }
-                else if (e.Right.NodeType == ExpressionType.MemberAccess)
+
+                object value = GetRightValue(e.Right);
+
+                if (value == null)
                 {
-                    string key2 = GetColumnName(((MemberExpression)e.Right).Member.Name);
-                    return new KeyKeyClause(key, key2, co);
+                    if (co == CompareOpration.Equal)
+                    {
+                        return new KeyValueClause(key, null, CompareOpration.Is);
+                    }
+                    else if (co == CompareOpration.NotEqual)
+                    {
+                        return new KeyValueClause(key, null, CompareOpration.IsNot);
+                    }
+                    throw new LinqException("NULL value only supported Equal and NotEqual!");
                 }
+                return new KeyValueClause(key, value, co);
             }
             throw new LinqException("The expression must be 'Column op const' or 'Column op Column'");
+        }
+
+        private static object GetRightValue(Expression Right)
+        {
+            object value;
+
+            if (Right.NodeType == ExpressionType.Constant)
+            {
+                value = ((ConstantExpression)Right).Value;
+            }
+            else
+            {
+                value = Expression.Lambda(Right).Compile().DynamicInvoke();
+            }
+
+            //else if (Right.NodeType == ExpressionType.Convert
+            //    || Right.NodeType == ExpressionType.MemberAccess)
+            //{
+            //    value = Expression.Lambda(Right).Compile().DynamicInvoke();
+            //}
+            //else
+            //{
+            //    throw new LinqException("Unsupported expression.");
+            //}
+
+            return value;
         }
     }
 }
