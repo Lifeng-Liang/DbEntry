@@ -9,8 +9,8 @@ using Lephone.Util.Logging;
 
 namespace Lephone.Data.Logging
 {
-	[DbTable("Lephone_Log"), DisableSqlLog]
-	public class LogItem : DbObject
+	[DisableSqlLog]
+	public class LephoneLog : DbObject
 	{
 		public LogType Type;
 		public string Thread;
@@ -20,7 +20,7 @@ namespace Lephone.Data.Logging
 		[DbColumn("Exception")] public string eException;
         [SpecialName] public DateTime CreatedOn;
 
-        public LogItem(LogType Type, string Source, string Name, string Message, Exception eException)
+        public LephoneLog(LogType Type, string Source, string Name, string Message, Exception eException)
 		{
 			this.Type = Type;
 			this.Thread = GetThreadInfo();

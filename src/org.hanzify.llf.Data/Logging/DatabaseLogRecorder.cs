@@ -12,7 +12,7 @@ namespace Lephone.Data.Logging
     {
         public void ProcessLog(LogType Type, string Source, string Name, string Message, Exception eException)
         {
-            LogItem li = new LogItem(Type, Source, Name, Message, eException);
+            LephoneLog li = new LephoneLog(Type, Source, Name, Message, eException);
             try
             {
                 DbEntry.Context.Insert(li);

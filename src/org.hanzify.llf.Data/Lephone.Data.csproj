@@ -344,7 +344,7 @@ copy *.dll ..\..\..\..\bin\
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\DbEnum.cs" />
-    <Compile Include="Common\EnumTable.cs">
+    <Compile Include="Common\LephoneEnum.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\MemberHandler.cs">
@@ -370,7 +370,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Logging\Log2db.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Logging\LogItem.cs">
+    <Compile Include="Logging\LephoneLog.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SqlEntry\SqlStatement.cs">

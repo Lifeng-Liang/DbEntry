@@ -46,7 +46,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreate()
         {
-            de.Create(typeof(EnumTable));
+            de.Create(typeof(LephoneEnum));
             string Exp = "CREATE TABLE \"LEPHONE_ENUM\" (" +
                 "\"ID\" bigint NOT NULL PRIMARY KEY," +
                 "\"TYPE\" int NOT NULL ," +
@@ -60,7 +60,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDrop()
         {
-            de.DropTable(typeof(EnumTable));
+            de.DropTable(typeof(LephoneEnum));
             Assert.AreEqual("Drop Table \"LEPHONE_ENUM\"<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("DROP GENERATOR GEN_LEPHONE_ENUM_ID;<Text><30>()", StaticRecorder.Messages[1]);
         }

@@ -393,10 +393,10 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestTableNameMapOfConfig()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(Lephone.Data.Logging.LogItem));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(Lephone.Data.Logging.LephoneLog));
             Assert.AreEqual("System_Log", oi.From.GetMainTableName());
 
-            oi = ObjectInfo.GetInstance(typeof(EnumTable));
+            oi = ObjectInfo.GetInstance(typeof(LephoneEnum));
             Assert.AreEqual("Lephone_Enum", oi.From.GetMainTableName());
         }
 

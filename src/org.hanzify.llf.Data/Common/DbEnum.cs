@@ -21,7 +21,7 @@ namespace Lephone.Data.Common
         public DbEnum(int Type)
         {
             IList dic = DbEntry
-                .From<EnumTable>()
+                .From<LephoneEnum>()
                 .Where(CK.K["Type"] == Type)
                 .OrderBy("Id")
                 .Select();
@@ -30,7 +30,7 @@ namespace Lephone.Data.Common
             list = new string[dic.Count];
             int n = 0;
             int m = 0;
-            foreach (EnumTable e in dic)
+            foreach (LephoneEnum e in dic)
             {
                 list[n] = e.Name;
                 if (e.Value != null)
