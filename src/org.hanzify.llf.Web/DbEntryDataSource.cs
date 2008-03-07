@@ -21,6 +21,7 @@ using Lephone.Data.Definition;
 namespace Lephone.Web
 {
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
+    [Designer(typeof(Common.DbEntryDataSourceDesigner))]
     public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource where T : IDbObject
     {
         private static readonly ObjectInfo ObjInfo = ObjectInfo.GetInstance(typeof(T));
