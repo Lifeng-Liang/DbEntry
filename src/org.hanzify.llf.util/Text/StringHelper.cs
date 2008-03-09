@@ -144,15 +144,19 @@ namespace Lephone.Util.Text
 
 		public static string EnumToString(object o)
 		{
-			Type t = o.GetType();
-			string s = o.ToString();
-			ShowStringAttribute[] os = (ShowStringAttribute[])t.GetField(s).GetCustomAttributes(typeof(ShowStringAttribute), false);
-			if ( os != null && os.Length == 1 )
-			{
-				return os[0].ShowString;
-			}
-			return s;
+            return EnumToString(o.GetType(), o.ToString());
 		}
+
+        public static string EnumToString(Type EnumType, string Name)
+        {
+            ShowStringAttribute[] os = (ShowStringAttribute[])EnumType.GetField(Name)
+                .GetCustomAttributes(typeof(ShowStringAttribute), false);
+            if (os != null && os.Length == 1)
+            {
+                return os[0].ShowString;
+            }
+            return Name;
+        }
 
 		public static string StreamReadToEnd(Stream s)
 		{

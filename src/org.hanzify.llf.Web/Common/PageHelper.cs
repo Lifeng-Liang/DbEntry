@@ -7,6 +7,8 @@ using System.Web.UI.WebControls;
 using Lephone.Util;
 using Lephone.Data;
 using Lephone.Data.Common;
+using System.Collections.Generic;
+using Lephone.Util.Text;
 
 namespace Lephone.Web.Common
 {
@@ -175,6 +177,20 @@ namespace Lephone.Web.Common
                 ((DropDownList)c).SelectedValue = v.ToString();
             }
             else throw new NotSupportedException();
+        }
+
+        public static ListItem[] GetItems(Type EnumType)
+        {
+            if (!EnumType.IsEnum) throw new ArgumentOutOfRangeException();
+
+            var ret = new List<ListItem>();
+            foreach (var v in Enum.GetNames(EnumType))
+            {
+                string n = StringHelper.EnumToString(EnumType, v);
+                var li = new ListItem(n, v);
+                ret.Add(li);
+            }
+            return ret.ToArray();
         }
     }
 }
