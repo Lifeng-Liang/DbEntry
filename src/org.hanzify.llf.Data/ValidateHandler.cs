@@ -93,35 +93,33 @@ namespace Lephone.Data
                     this.IsValid &= isValid;
                 }
             }
-            if (IsNew)
+            WhereCondition EditCondition = IsNew ? null : !ObjectInfo.GetKeyWhereClause(obj);
+            foreach (List<MemberHandler> mhs in oi.UniqueIndexes.Values)
             {
-                foreach (List<MemberHandler> mhs in oi.UniqueIndexes.Values)
+                WhereCondition c = null;
+                string n = "";
+                foreach (MemberHandler h in mhs)
                 {
-                    WhereCondition c = null;
-                    string n = "";
-                    foreach (MemberHandler h in mhs)
+                    object v = h.GetValue(obj);
+                    if (v != null && v.GetType().IsGenericType)
                     {
-                        object v = h.GetValue(obj);
-                        if (v != null && v.GetType().IsGenericType)
-                        {
-                            v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
-                        }
-                        c &= (CK.K[h.Name] == v);
-                        n += h.Name;
+                        v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
                     }
-                    if (c != null)
+                    c &= (CK.K[h.Name] == v);
+                    n += h.Name;
+                }
+                if (c != null)
+                {
+                    if (DbEntry.Context.GetResultCount(t, c && EditCondition) != 0)
                     {
-                        if (DbEntry.Context.GetResultCount(t, c) != 0)
+                        this.IsValid = false;
+                        if (_ErrorMessages.ContainsKey(n))
                         {
-                            this.IsValid = false;
-                            if (_ErrorMessages.ContainsKey(n))
-                            {
-                                _ErrorMessages[n] = string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, _ShouldBeUniqueText);
-                            }
-                            else
-                            {
-                                _ErrorMessages[n] = string.Format(_InvalidFieldText, n, _ShouldBeUniqueText);
-                            }
+                            _ErrorMessages[n] = string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, _ShouldBeUniqueText);
+                        }
+                        else
+                        {
+                            _ErrorMessages[n] = string.Format(_InvalidFieldText, n, _ShouldBeUniqueText);
                         }
                     }
                 }
