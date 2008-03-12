@@ -182,7 +182,8 @@ namespace Lephone.Web
             ValidateHandler vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
                 NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
 
-            PageHelper.ValidateSave(vh, obj, NoticeMessage, NoticeText, CssNotice, CssWarning, delegate()
+            PageHelper.ValidateSave(Page, vh, obj, NoticeMessage, NoticeText,
+                CssNotice, CssWarning, CssErrInput, delegate()
             {
                 ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
                 if (oi.IsNewObject(obj))
@@ -218,6 +219,10 @@ namespace Lephone.Web
                     T o = GetRequestObject();
                     if (o == null)
                     {
+                        if (DeleteButton != null)
+                        {
+                            DeleteButton.Visible = false;
+                        }
                         if (OnPageIsNew != null)
                         {
                             OnPageIsNew();
@@ -230,7 +235,7 @@ namespace Lephone.Web
                     else
                     {
                         PageHelper.SetObject(o, Page);
-                        if (OnPageIsNew != null)
+                        if (OnPageIsEdit != null)
                         {
                             OnPageIsEdit();
                         }
@@ -545,6 +550,24 @@ namespace Lephone.Web
             set
             {
                 this.ViewState["CssWarning"] = value;
+            }
+        }
+
+        [Themeable(false), DefaultValue("ErrInput")]
+        public string CssErrInput
+        {
+            get
+            {
+                object o = this.ViewState["CssErrInput"];
+                if (o != null)
+                {
+                    return (string)o;
+                }
+                return "ErrInput";
+            }
+            set
+            {
+                this.ViewState["CssErrInput"] = value;
             }
         }
 

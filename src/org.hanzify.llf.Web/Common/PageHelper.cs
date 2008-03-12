@@ -14,23 +14,28 @@ namespace Lephone.Web.Common
 {
     public static class PageHelper
     {
-        public static bool ValidateSave(object obj, Label msg, string NoticeText)
+        public static bool ValidateSave(Page p, object obj, Label msg, string NoticeText)
         {
             ValidateHandler vh = new ValidateHandler();
-            return ValidateSave(vh, obj, msg, NoticeText, "Notice", "Warning");
+            return ValidateSave(p, vh, obj, msg, NoticeText, "Notice", "Warning", "ErrInput");
         }
 
-        public static bool ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning)
+        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning, string CssErrInput)
         {
-            return ValidateSave(vh, obj, msg, NoticeText, CssNotice, CssWarning, delegate()
+            return ValidateSave(p, vh, obj, msg, NoticeText, CssNotice, CssWarning, CssErrInput, delegate()
             {
                 DbEntry.Save(obj);
             });
         }
 
-        public static bool ValidateSave(ValidateHandler vh, object obj, Label msg, string NoticeText,
-            string CssNotice, string CssWarning, CallbackVoidHandler callback)
+        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, Label msg, string NoticeText,
+            string CssNotice, string CssWarning, string CssErrInput, CallbackVoidHandler callback)
         {
+            ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
+            EnumControls(p, oi, delegate(MemberHandler mh, WebControl c)
+            {
+                c.CssClass = "";
+            });
             vh.ValidateObject(obj);
             if (vh.IsValid)
             {
@@ -48,6 +53,11 @@ namespace Lephone.Web.Common
                 foreach (string str in vh.ErrorMessages.Keys)
                 {
                     b = b.li.text(vh.ErrorMessages[str]).end;
+                    WebControl c = GetWebControl(p, oi, str);
+                    if (c != null)
+                    {
+                        c.CssClass = CssErrInput;
+                    }
                 }
                 b = b.end;
                 if (msg != null)
@@ -60,21 +70,28 @@ namespace Lephone.Web.Common
             return vh.IsValid;
         }
 
-        private static void EnumControls(Page p, ObjectInfo oi, CallbackObjectHandler2<MemberHandler, Control> callback)
+        private static WebControl GetWebControl(Page p, ObjectInfo oi, string Name)
+        {
+            string cid = string.Format("{0}_{1}", oi.BaseType.Name, Name);
+            WebControl c = ClassHelper.GetValue(p, cid) as WebControl;
+            return c;
+        }
+
+        private static void EnumControls(Page p, ObjectInfo oi, CallbackObjectHandler2<MemberHandler, WebControl> callback)
         {
             foreach (MemberHandler h in oi.SimpleFields)
             {
                 if (!h.IsKey)
                 {
                     string cid = string.Format("{0}_{1}", oi.BaseType.Name, h.MemberInfo.Name);
-                    Control c = ClassHelper.GetValue(p, cid) as Control;
+                    WebControl c = ClassHelper.GetValue(p, cid) as WebControl;
                     if (c != null)
                     {
                         callback(h, c);
                     }
                     else
                     {
-                        if (!h.IsAutoSavedValue)
+                        if (!h.IsAutoSavedValue && !h.AllowNull)
                         {
                             throw new DataException(string.Format("Control {0} not find!", cid));
                         }
@@ -92,7 +109,7 @@ namespace Lephone.Web.Common
         {
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             object obj = oi.NewObject();
-            EnumControls(p, oi, delegate(MemberHandler h, Control c)
+            EnumControls(p, oi, delegate(MemberHandler h, WebControl c)
             {
                 string v = GetValue(c);
                 if (h.FieldType.IsEnum)
@@ -133,7 +150,7 @@ namespace Lephone.Web.Common
             return obj;
         }
 
-        private static string GetValue(Control c)
+        private static string GetValue(WebControl c)
         {
             if (c is TextBox)
             {
@@ -154,14 +171,14 @@ namespace Lephone.Web.Common
         {
             Type t = obj.GetType();
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            EnumControls(p, oi, delegate(MemberHandler h, Control c)
+            EnumControls(p, oi, delegate(MemberHandler h, WebControl c)
             {
                 object v = h.GetValue(obj);
                 SetValue(c, v);
             });
         }
 
-        private static void SetValue(Control c, object v)
+        private static void SetValue(WebControl c, object v)
         {
             if (c is TextBox)
             {
