@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
@@ -33,7 +34,7 @@ namespace Lephone.Web.Rails
             }
             else
             {
-                return Convert.ChangeType(value, t);
+                return ClassHelper.ChangeType(value, t);
             }
         }
     }

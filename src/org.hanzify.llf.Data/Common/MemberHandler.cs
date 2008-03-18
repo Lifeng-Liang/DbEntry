@@ -70,6 +70,14 @@ namespace Lephone.Data.Common
 
             protected override void InnerSetValue(object obj, object value)
             {
+                if (NullableField.PropertyType == typeof(Date))
+                {
+                    value = (Date)(DateTime)value;
+                }
+                else if (NullableField.PropertyType == typeof(Time))
+                {
+                    value = (Time)(DateTime)value;
+                }
                 object oo = ci.Invoke(new object[] { value });
                 MemberInfo.SetValue(obj, oo);
             }

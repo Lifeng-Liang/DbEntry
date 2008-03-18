@@ -116,6 +116,16 @@ namespace Lephone.Web.Common
                 DateTime dt = new DateTime(2008, 3, 6, 12, 24, 35);
                 return dt.AddDays(n);
             }
+            else if (FieldType == typeof(Date))
+            {
+                Date d = new Date(2008, 3, 17);
+                return d.AddDays(n);
+            }
+            else if (FieldType == typeof(Time))
+            {
+                Time t = new Time(12, 24, 35);
+                return t.AddMinutes(n);
+            }
             else if (FieldType == typeof(Guid))
             {
                 return Guid.NewGuid();

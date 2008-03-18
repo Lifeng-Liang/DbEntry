@@ -43,6 +43,14 @@ namespace Lephone.Web.Rails
             {
                 ProcessDateTime(m, value);
             }
+            else if (m.FieldType == typeof(Date))
+            {
+                ProcessDateTime(m, value);
+            }
+            else if (m.FieldType == typeof(Time))
+            {
+                ProcessDateTime(m, value);
+            }
             else if (m.FieldType.IsValueType)
             {
                 ProcessValueType(m, value);

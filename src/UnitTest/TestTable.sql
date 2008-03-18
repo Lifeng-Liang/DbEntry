@@ -96,3 +96,10 @@ INSERT INTO [SoftDelete] ([Id],[Name],[IsDeleted]) VALUES (1, 'tom', 0);
 INSERT INTO [SoftDelete] ([Id],[Name],[IsDeleted]) VALUES (2, 'jerry', 0);
 INSERT INTO [SoftDelete] ([Id],[Name],[IsDeleted]) VALUES (3, 'mike', 0);
 INSERT INTO [SoftDelete] ([Id],[Name],[IsDeleted]) VALUES (4, 'nothing', 1);
+
+--------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE [DateAndTime] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [dtValue] datetime NOT NULL, [dValue] date NOT NULL, [tValue] time NOT NULL, [dtnValue] datetime NULL, [dnValue] date NULL, [tnValue] time NULL);
+
+INSERT INTO [DateAndTime] ([Id],[dtValue],[dValue],[tValue],[dtnValue],[dnValue],[tnValue]) VALUES (1, datetime('1092941466','unixepoch'), date('1092941466','unixepoch'), time('1092941466','unixepoch'), null, null,null);
+INSERT INTO [DateAndTime] ([Id],[dtValue],[dValue],[tValue],[dtnValue],[dnValue],[tnValue]) VALUES (2, datetime('1092941466','unixepoch'), date('1092941466','unixepoch'), time('1092941466','unixepoch'), datetime('1092941466','unixepoch'), date('1092941466','unixepoch'), time('1092941466','unixepoch'));

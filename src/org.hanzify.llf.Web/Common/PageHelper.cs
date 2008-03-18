@@ -137,7 +137,7 @@ namespace Lephone.Web.Common
                     {
                         try
                         {
-                            object iv = Convert.ChangeType(v, h.FieldType);
+                            object iv = ClassHelper.ChangeType(v, h.FieldType);
                             h.SetValue(obj, iv);
                         }
                         catch (Exception ex)

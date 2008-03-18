@@ -78,18 +78,29 @@ namespace Lephone.Util.Setting
 			return DateTime.Parse(GetValue(key, (object)defaultValue).ToString());
 		}
 
-		public object GetValue(string key, object defaultValue)
+        public Date GetValue(string key, Date defaultValue)
+        {
+            return Date.Parse(GetValue(key, (object)defaultValue).ToString());
+        }
+
+        public Time GetValue(string key, Time defaultValue)
+        {
+            return Time.Parse(GetValue(key, (object)defaultValue).ToString());
+        }
+
+        public object GetValue(string key, object defaultValue)
 		{
 			string s = GetString(key);
 			if( s == null)
 			{
 				return defaultValue;
 			}
-			if( defaultValue.GetType().IsSubclassOf(typeof(System.Enum)) )
+            Type t = defaultValue.GetType();
+			if( t.IsSubclassOf(typeof(System.Enum)) )
 			{
-				return Enum.Parse(defaultValue.GetType(), s);
+				return Enum.Parse(t, s);
 			}
-			return Convert.ChangeType(s, defaultValue.GetType());
+            return ClassHelper.ChangeType(s, t);
 		}
 
 		protected abstract string GetString(string key);

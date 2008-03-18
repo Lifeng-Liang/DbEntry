@@ -16,7 +16,7 @@ namespace DebugLib.Models
     public abstract class Book : DbObjectModel<Book>
     {
         [Length(30)] public abstract string Name { get; set; }
-        public abstract DateTime BuyDate { get; set; }
+        public abstract Date BuyDate { get; set; }
         public abstract float Price { get; set; }
         public abstract BookCatagory Catagory { get; set; }
         public abstract bool Read { get; set; }

@@ -12,8 +12,11 @@ namespace Lephone.Data.SqlEntry
 	public enum DataType
 	{
 		String		= DbType.String,
-		Date		= DbType.DateTime,
-		Boolean		= DbType.Boolean,
+		DateTime	= DbType.DateTime,
+        Date        = DbType.Date,
+        Time        = DbType.Time,
+
+        Boolean     = DbType.Boolean,
 
 		Byte		= DbType.Byte,
 		SByte		= DbType.SByte,

@@ -262,7 +262,7 @@ namespace Lephone.Web
             string sid = Page.Request["Id"];
             if (!string.IsNullOrEmpty(sid))
             {
-                object Id = Convert.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
+                object Id = ClassHelper.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
                 T o = DbEntry.GetObject<T>(Id);
                 ViewState["Id"] = Id;
                 return o;

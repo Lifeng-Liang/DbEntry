@@ -112,6 +112,14 @@ namespace Lephone.Util
             {
                 return DateTime.MinValue;
             }
+            else if (IncludeDateTime && t == typeof(Date))
+            {
+                return new Date(DateTime.MinValue);
+            }
+            else if (IncludeDateTime && t == typeof(Time))
+            {
+                return new Time(DateTime.MinValue);
+            }
             else if (t == typeof(Guid))
             {
                 return Guid.Empty;

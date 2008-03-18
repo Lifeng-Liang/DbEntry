@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using System.Data.Common;
+using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
@@ -202,11 +203,11 @@ namespace Lephone.Data.Common
             {
                 if (t.IsGenericType)
                 {
-                    return Convert.ChangeType(o, t.GetGenericArguments()[0]);
+                    return ClassHelper.ChangeType(o, t.GetGenericArguments()[0]);
                 }
                 else
                 {
-                    return Convert.ChangeType(o, t);
+                    return ClassHelper.ChangeType(o, t);
                 }
             }
         }

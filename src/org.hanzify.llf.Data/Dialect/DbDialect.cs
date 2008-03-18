@@ -24,7 +24,9 @@ namespace Lephone.Data.Dialect
 		public DbDialect()
         {
             TypeNames[DataType.String]  = "text";
-            TypeNames[DataType.Date]    = "datetime";
+            TypeNames[DataType.DateTime]    = "datetime";
+            TypeNames[DataType.Date]    = "date";
+            TypeNames[DataType.Time]    = "time";
             TypeNames[DataType.Boolean] = "bool";
 
             TypeNames[DataType.Byte]    = "tinyint";

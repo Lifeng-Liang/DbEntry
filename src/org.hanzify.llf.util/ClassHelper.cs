@@ -16,6 +16,50 @@ namespace Lephone.Util
         public static readonly BindingFlags InstanceFlag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
         public static readonly BindingFlags InstancePublic = BindingFlags.Public | BindingFlags.Instance;
 
+        public static object ChangeType(object value, Type conversionType)
+        {
+            if (conversionType == typeof(Date))
+            {
+                return GetDate(value);
+            }
+            else if (conversionType == typeof(Time))
+            {
+                return GetTime(value);
+            }
+            else if (conversionType == typeof(Date?))
+            {
+                if (value == null) return null;
+                return new Date?(GetDate(value));
+            }
+            else if (conversionType == typeof(Time?))
+            {
+                if (value == null) return null;
+                return new Time?(GetTime(value));
+            }
+            else
+            {
+                return Convert.ChangeType(value, conversionType);
+            }
+        }
+
+        private static Date GetDate(object value)
+        {
+            if (value is string)
+            {
+                return Date.Parse((string)value);
+            }
+            return new Date(Convert.ToDateTime(value));
+        }
+
+        private static Time GetTime(object value)
+        {
+            if (value is string)
+            {
+                return Time.Parse((string)value);
+            }
+            return new Time(Convert.ToDateTime(value));
+        }
+
         public static T CreateInstance<T>()
         {
             return (T)CreateInstance(typeof(T));

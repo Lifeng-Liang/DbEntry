@@ -15,7 +15,9 @@ namespace Lephone.Data.Dialect
         public Oracle()
         {
             TypeNames[DataType.String] = "CLOB";
-            TypeNames[DataType.Date] = "TIMESTAMP";
+            TypeNames[DataType.DateTime] = "TIMESTAMP";
+            TypeNames[DataType.Date] = "DATE";
+            TypeNames[DataType.Time] = "DATE"; //TODO: Is it right?
             TypeNames[DataType.Boolean] = "NUMBER(1,0)";
 
             TypeNames[DataType.Byte] = "NUMBER(3,0)";

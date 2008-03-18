@@ -13,7 +13,7 @@ namespace Lephone.Data.Dialect
         public Firebird()
         {
             TypeNames[DataType.Boolean] = "smallint";
-            TypeNames[DataType.Date] = "timestamp";
+            TypeNames[DataType.DateTime] = "timestamp";
             TypeNames[DataType.String] = "BLOB SUB_TYPE 1";
             TypeNames[DataType.Binary] = "BLOB SUB_TYPE 0";
         }

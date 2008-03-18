@@ -15,10 +15,10 @@ namespace DebugLib.Models
         [Length(20)]
         public abstract string Name { get; set; }
         public abstract int Age { get; set; }
-        public abstract DateTime Birthday { get; set; }
+        public abstract Date Birthday { get; set; }
         public abstract bool IsMale { get; set; }
 
-        public SysUser Init(string Name, int Age, DateTime Birthday, bool IsMale)
+        public SysUser Init(string Name, int Age, Date Birthday, bool IsMale)
         {
             this.Name = Name;
             this.Age = Age;

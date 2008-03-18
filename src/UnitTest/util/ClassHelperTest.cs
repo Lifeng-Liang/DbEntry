@@ -59,5 +59,13 @@ namespace Lephone.UnitTest.util
             Assert.AreEqual(CallType.Static, ct);
             Assert.AreEqual("OK", str);
         }
+
+        [Test]
+        public void TestChangeType()
+        {
+            string v = "7:30:30";
+            object iv = ClassHelper.ChangeType(v, typeof(Time));
+            Assert.AreEqual("07:30:30", iv.ToString());
+        }
     }
 }

@@ -35,6 +35,8 @@ namespace Lephone.Data
             dic.Add(typeof(byte), "GetByte");
             dic.Add(typeof(bool), "GetBoolean");
             dic.Add(typeof(DateTime), "GetDateTime");
+            dic.Add(typeof(Date), "GetDateTime");
+            dic.Add(typeof(Time), "GetDateTime");
             dic.Add(typeof(string), "GetString");
             dic.Add(typeof(decimal), "GetDecimal");
             dic.Add(typeof(float), "GetFloat");

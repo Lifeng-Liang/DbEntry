@@ -19,7 +19,9 @@ namespace Lephone.Data.SqlEntry
 		{
 			Types = new HybridDictionary();
             Types[typeof(string)]   = DataType.String;
-            Types[typeof(DateTime)] = DataType.Date;
+            Types[typeof(DateTime)] = DataType.DateTime;
+            Types[typeof(Date)]     = DataType.Date;
+            Types[typeof(Time)]     = DataType.Time;
             Types[typeof(bool)]     = DataType.Boolean;
 
             Types[typeof(byte)]     = DataType.Byte;
@@ -81,7 +83,7 @@ namespace Lephone.Data.SqlEntry
 				s = s.Replace("'", "''");
 				return string.Format("N'{0}'", s);
 			}
-			else if ( typeof(DateTime) == ot )
+			else if ( typeof(DateTime) == ot || typeof(Date) == ot || typeof(Time) == ot )
 			{
                 return dd.QuoteDateTimeValue(o.ToString());
 			}

@@ -21,7 +21,7 @@ namespace OrmA
 
         public abstract UserRole Role { get; set; }
 
-        public abstract DateTime JoinDate { get; set; }
+        public abstract Date JoinDate { get; set; }
 
         public abstract bool Enabled { get; set; }
 
@@ -29,7 +29,7 @@ namespace OrmA
 
         public SampleData() { }
 
-        public SampleData Init(string Name, UserRole Role, DateTime JoinDate, bool Enabled, int? NullInt)
+        public SampleData Init(string Name, UserRole Role, Date JoinDate, bool Enabled, int? NullInt)
         {
             this.Name = Name;
             this.Role = Role;

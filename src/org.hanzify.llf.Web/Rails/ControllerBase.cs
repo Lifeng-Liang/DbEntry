@@ -8,6 +8,7 @@ using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Web.Common;
 using Lephone.Data.Definition;
+using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
@@ -116,7 +117,7 @@ namespace Lephone.Web.Rails
             {
                 if (m.IsDbGenerate)
                 {
-                    m.SetValue(obj, Convert.ChangeType(n, m.FieldType));
+                    m.SetValue(obj, ClassHelper.ChangeType(n, m.FieldType));
                 }
                 else if (!m.IsAutoSavedValue)
                 {

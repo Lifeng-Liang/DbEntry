@@ -33,7 +33,7 @@ namespace Lephone.Data
         public DateTime GetDatabaseTime()
         {
             string sqlstr = "select " + Dialect.DbNowString;
-            DateTime dt = (DateTime)Convert.ChangeType(ExecuteScalar(sqlstr), typeof(DateTime));
+            DateTime dt = Convert.ToDateTime(ExecuteScalar(sqlstr));
             return dt;
         }
 

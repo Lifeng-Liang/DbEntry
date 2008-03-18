@@ -7,6 +7,7 @@ using System.Reflection;
 using Lephone.Data.Builder;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
+using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
@@ -62,17 +63,17 @@ namespace Lephone.Data.Common
                 {
                     if (f.FieldType.IsEnum)
                     {
-                        f.SetValue(o, Convert.ChangeType(v, typeof(int)));
+                        f.SetValue(o, Convert.ToInt32(v));
                     }
                     else
                     {
                         if (f.FieldType.IsGenericType)
                         {
-                            f.SetValue(o, Convert.ChangeType(v, f.FieldType.GetGenericArguments()[0]));
+                            f.SetValue(o, ClassHelper.ChangeType(v, f.FieldType.GetGenericArguments()[0]));
                         }
                         else
                         {
-                            f.SetValue(o, Convert.ChangeType(v, f.FieldType));
+                            f.SetValue(o, ClassHelper.ChangeType(v, f.FieldType));
                         }
                     }
                 }

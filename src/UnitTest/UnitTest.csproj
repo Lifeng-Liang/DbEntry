@@ -60,6 +60,7 @@
     <Compile Include="Data\CommonUsageTest.cs" />
     <Compile Include="Data\ComplexDynamicObjectTest.cs" />
     <Compile Include="Data\CreateTable\SQLiteTest.cs" />
+    <Compile Include="Data\DateTimeTest.cs" />
     <Compile Include="Data\DbNowTest.cs" />
     <Compile Include="Data\DbObjectListTest.cs" />
     <Compile Include="Data\DeleteToTest.cs" />

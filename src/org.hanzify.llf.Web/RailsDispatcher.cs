@@ -194,7 +194,7 @@ namespace Lephone.Web
             {
                 return CommonHelper.GetEmptyValue(t);
             }
-            return Convert.ChangeType(s, t);
+            return ClassHelper.ChangeType(s, t);
         }
     }
 }

@@ -20,7 +20,9 @@ namespace Lephone.Data.Common
             NullableTypesToDataType = new HybridDictionary();
             NullableTypesToDataType[typeof(Nullable<bool>)]     = DataType.Boolean;
             NullableTypesToDataType[typeof(Nullable<byte>)]     = DataType.Byte;
-            NullableTypesToDataType[typeof(Nullable<DateTime>)] = DataType.Date;
+            NullableTypesToDataType[typeof(Nullable<DateTime>)] = DataType.DateTime;
+            NullableTypesToDataType[typeof(Nullable<Date>)]     = DataType.Date;
+            NullableTypesToDataType[typeof(Nullable<Time>)]     = DataType.Time;
             NullableTypesToDataType[typeof(Nullable<decimal>)]  = DataType.Decimal;
             NullableTypesToDataType[typeof(Nullable<double>)]   = DataType.Double;
             NullableTypesToDataType[typeof(Nullable<float>)]    = DataType.Single;
@@ -31,11 +33,14 @@ namespace Lephone.Data.Common
             NullableTypesToDataType[typeof(Nullable<uint>)]     = DataType.UInt32;
             NullableTypesToDataType[typeof(Nullable<ulong>)]    = DataType.UInt64;
             NullableTypesToDataType[typeof(Nullable<ushort>)]   = DataType.UInt16;
+            NullableTypesToDataType[typeof(Nullable<Guid>)]     = DataType.Guid;
 
             NullableTypesToUnderlyingType = new HybridDictionary();
             NullableTypesToUnderlyingType[typeof(Nullable<bool>)]       = typeof(Boolean);
             NullableTypesToUnderlyingType[typeof(Nullable<byte>)]       = typeof(Byte);
             NullableTypesToUnderlyingType[typeof(Nullable<DateTime>)]   = typeof(DateTime);
+            NullableTypesToUnderlyingType[typeof(Nullable<Date>)]       = typeof(Date);
+            NullableTypesToUnderlyingType[typeof(Nullable<Time>)]       = typeof(Time);
             NullableTypesToUnderlyingType[typeof(Nullable<decimal>)]    = typeof(Decimal);
             NullableTypesToUnderlyingType[typeof(Nullable<double>)]     = typeof(Double);
             NullableTypesToUnderlyingType[typeof(Nullable<float>)]      = typeof(Single);
@@ -46,6 +51,7 @@ namespace Lephone.Data.Common
             NullableTypesToUnderlyingType[typeof(Nullable<uint>)]       = typeof(UInt32);
             NullableTypesToUnderlyingType[typeof(Nullable<ulong>)]      = typeof(UInt64);
             NullableTypesToUnderlyingType[typeof(Nullable<ushort>)]     = typeof(UInt16);
+            NullableTypesToUnderlyingType[typeof(Nullable<Guid>)]       = typeof(Guid);
         }
 
         public static bool IsNullableType(Type t)

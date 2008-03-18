@@ -10,6 +10,8 @@ namespace Lephone.Util
     public class ILBuilder
     {
         private static readonly Type[] emptyTypes = new Type[] { };
+        private static readonly MethodInfo dateEx = typeof(Date).GetMethod("op_Explicit", new Type[] { typeof(DateTime) });
+        private static readonly MethodInfo timeEx = typeof(Time).GetMethod("op_Explicit", new Type[] { typeof(DateTime) });
 
         public readonly ILGenerator il;
 
@@ -223,6 +225,22 @@ namespace Lephone.Util
 
         public ILBuilder CastOrUnbox(Type t)
         {
+            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                Type inType = t.GetGenericArguments()[0];
+                if (inType == typeof(Date))
+                {
+                    il.Emit(OpCodes.Unbox_Any, typeof(DateTime?));
+                    il.Emit(OpCodes.Call, dateEx);
+                    return this;
+                }
+                else if (inType == typeof(Time))
+                {
+                    il.Emit(OpCodes.Unbox_Any, typeof(DateTime?));
+                    il.Emit(OpCodes.Call, timeEx);
+                    return this;
+                }
+            }
             if (t.IsValueType)
             {
                 if (t == typeof(uint))
