@@ -7,7 +7,46 @@ namespace System
 {
     public struct Date : IComparable, IFormattable, IConvertible, IComparable<Date>, IEquatable<Date>
     {
+        #region operators
+
+        public static bool operator >(Date d1, Date d2)
+        {
+            return d1.CompareTo(d2) > 0;
+        }
+
+        public static bool operator <(Date d1, Date d2)
+        {
+            return d1.CompareTo(d2) < 0;
+        }
+
+        public static bool operator >=(Date d1, Date d2)
+        {
+            return d1.CompareTo(d2) >= 0;
+        }
+
+        public static bool operator <=(Date d1, Date d2)
+        {
+            return d1.CompareTo(d2) <= 0;
+        }
+
+        public static bool operator ==(Date d1, Date d2)
+        {
+            return d1.CompareTo(d2) == 0;
+        }
+
+        public static bool operator !=(Date d1, Date d2)
+        {
+            return d1.CompareTo(d2) != 0;
+        }
+
+        #endregion
+
         #region common
+
+        public static Date Now
+        {
+            get { return new Date(DateTime.Now); }
+        }
 
         private DateTime dt;
 
@@ -246,7 +285,46 @@ namespace System
 
     public struct Time : IComparable, IFormattable, IConvertible, IComparable<Time>, IEquatable<Time>
     {
+        #region operators
+
+        public static bool operator >(Time t1, Time t2)
+        {
+            return t1.CompareTo(t2) > 0;
+        }
+
+        public static bool operator <(Time t1, Time t2)
+        {
+            return t1.CompareTo(t2) < 0;
+        }
+
+        public static bool operator >=(Time t1, Time t2)
+        {
+            return t1.CompareTo(t2) >= 0;
+        }
+
+        public static bool operator <=(Time t1, Time t2)
+        {
+            return t1.CompareTo(t2) <= 0;
+        }
+
+        public static bool operator ==(Time t1, Time t2)
+        {
+            return t1.CompareTo(t2) == 0;
+        }
+
+        public static bool operator !=(Time t1, Time t2)
+        {
+            return t1.CompareTo(t2) != 0;
+        }
+
+        #endregion
+
         #region common
+
+        public static Time Now
+        {
+            get { return new Time(DateTime.Now); }
+        }
 
         private DateTime dt;
 

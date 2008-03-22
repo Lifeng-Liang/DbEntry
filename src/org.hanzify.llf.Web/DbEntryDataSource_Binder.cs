@@ -19,6 +19,7 @@ namespace Lephone.Web
     {
         public event CallbackVoidHandler OnPageIsNew;
         public event CallbackVoidHandler OnPageIsEdit;
+        public event CallbackVoidHandler OnBeforeParsePage;
         public event CallbackObjectHandler<T> OnObjectLoaded;
         public event CallbackObjectHandler<T> OnValidateSave;
         public event CallbackObjectHandler<T> OnObjectDeleted;
@@ -106,6 +107,11 @@ namespace Lephone.Web
         {
             try
             {
+                if (OnBeforeParsePage != null)
+                {
+                    OnBeforeParsePage();
+                }
+
                 T o = PageHelper.GetObject<T>(Page, ParseErrorText);
                 object oid = ViewState["Id"];
 

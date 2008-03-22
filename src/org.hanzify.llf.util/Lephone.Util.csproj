@@ -114,6 +114,7 @@
     <Compile Include="Text\NameMapper.cs" />
     <Compile Include="Text\StringSerializer.cs" />
     <Compile Include="Text\UnderlineNameMapper.cs" />
+    <Compile Include="Text\XmlSerializable.cs" />
     <Compile Include="Text\XmlSerializer.cs" />
     <Compile Include="ClassHelper.cs">
       <SubType>Code</SubType>
