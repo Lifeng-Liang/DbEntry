@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using Lephone.Util;
 using Lephone.Data.Definition;
 using Comm = Lephone.Data.Common;
+using Lephone.Util.Text;
 
 namespace Lephone.Data.Common
 {
@@ -173,7 +174,7 @@ namespace Lephone.Data.Common
                     {
                         Type ot = fi.MemberType.GetGenericArguments()[0];
                         string n = ObjectInfo.GetObjectFromClause(ot).GetMainTableName();
-                        this.Name = n + "_Id";
+                        this.Name = NameMapper.Instance.UnmapName(n) + "_Id";
                     }
                 }
                 Type t2 = typeof(HasAndBelongsToMany<>);
@@ -184,7 +185,7 @@ namespace Lephone.Data.Common
                     {
                         Type ot1 = fi.MemberType.GetGenericArguments()[0];
                         string n1 = ObjectInfo.GetObjectFromClause(ot1).GetMainTableName();
-                        this.Name = n1 + "_Id";
+                        this.Name = NameMapper.Instance.UnmapName(n1) + "_Id";
                     }
                 }
                 Type t3 = typeof(LazyLoadField<>);

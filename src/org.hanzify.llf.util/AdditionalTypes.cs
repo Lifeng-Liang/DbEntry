@@ -5,6 +5,7 @@ using System.Text;
 
 namespace System
 {
+    [Serializable]
     public struct Date : IComparable, IFormattable, IConvertible, IComparable<Date>, IEquatable<Date>
     {
         #region operators
@@ -283,6 +284,7 @@ namespace System
         #endregion
     }
 
+    [Serializable]
     public struct Time : IComparable, IFormattable, IConvertible, IComparable<Time>, IEquatable<Time>
     {
         #region operators

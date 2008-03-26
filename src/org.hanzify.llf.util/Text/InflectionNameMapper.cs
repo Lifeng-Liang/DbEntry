@@ -9,5 +9,10 @@ namespace Lephone.Util.Text
         {
             return Inflector.Tableize(Name);
         }
+
+        public override string UnmapName(string Name)
+        {
+            return Inflector.Classify(Name);
+        }
     }
 }

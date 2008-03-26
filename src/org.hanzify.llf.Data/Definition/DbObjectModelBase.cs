@@ -36,7 +36,7 @@ namespace Lephone.Data.Definition
 
         public static DbObjectList<T> FindAll()
         {
-            return FindAll(null);
+            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).Select();
         }
 
         public static DbObjectList<T> FindAll(OrderBy ob)
@@ -44,14 +44,24 @@ namespace Lephone.Data.Definition
             return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy(ob).Select();
         }
 
+        public static DbObjectList<T> FindAll(string orderBy)
+        {
+            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy(orderBy).Select();
+        }
+
         public static DbObjectList<T> Find(WhereCondition con)
         {
-            return Find(con, null);
+            return DbEntry.From<T>().Where(con).Select();
         }
 
         public static DbObjectList<T> Find(WhereCondition con, OrderBy ob)
         {
             return DbEntry.From<T>().Where(con).OrderBy(ob).Select();
+        }
+
+        public static DbObjectList<T> Find(WhereCondition con, string orderBy)
+        {
+            return DbEntry.From<T>().Where(con).OrderBy(orderBy).Select();
         }
 
         public static T FindOne(WhereCondition con)
@@ -62,6 +72,11 @@ namespace Lephone.Data.Definition
         public static T FindOne(WhereCondition con, OrderBy ob)
         {
             return DbEntry.GetObject<T>(con, ob);
+        }
+
+        public static T FindOne(WhereCondition con, string orderBy)
+        {
+            return DbEntry.GetObject<T>(con, OrderBy.Parse(orderBy));
         }
 
         public static DbObjectList<T> FindRecent(int Count)

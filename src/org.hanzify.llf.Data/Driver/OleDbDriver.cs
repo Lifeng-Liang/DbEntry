@@ -34,15 +34,14 @@ namespace Lephone.Data.Driver
 		{
             OleDbParameter odp = (OleDbParameter)base.GetDbParameter(dp);
 			// TODO: Is OleDb Bug, Or Access Bug? Or, all Drivers bug£¿
-            //if ( dp.Type == DataType.DateTime )
-            //{
-            //    odp.OleDbType = OleDbType.Date;
-            //}
-            //else
-            //{
-            //    odp.DbType = (DbType)dp.Type;
-            //}
-            odp.DbType = (DbType)dp.Type;
+            if ( dp.Type == DataType.DateTime )
+            {
+                odp.OleDbType = OleDbType.Date;
+            }
+            else
+            {
+                odp.DbType = (DbType)dp.Type;
+            }
 			return odp;
 		}
 	}

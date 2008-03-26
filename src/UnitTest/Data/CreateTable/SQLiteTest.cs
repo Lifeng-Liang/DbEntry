@@ -69,6 +69,14 @@ namespace Lephone.UnitTest.Data.CreateTable
         public uint Age;
     }
 
+    public class GuidMultiKey : IDbObject
+    {
+        [DbKey(IsDbGenerate = false)]
+        public Guid RoleId;
+        [DbKey(IsDbGenerate = false)]
+        public Guid UserId;
+    }
+
     #endregion
 
     [TestFixture]
@@ -80,6 +88,13 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void SetUp()
         {
             StaticRecorder.ClearMessages();
+        }
+
+        [Test]
+        public void TestGuidMultiKey()
+        {
+            de.Create(typeof(GuidMultiKey));
+            Assert.AreEqual("CREATE TABLE [Guid_Multi_Key] (\n\t[UserId] uniqueidentifier NOT NULL ,\n\t[RoleId] uniqueidentifier NOT NULL ,\n\tPRIMARY KEY([UserId], [RoleId])\n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]

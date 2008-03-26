@@ -54,14 +54,14 @@ namespace Lephone.Data.Builder
                 }
                 if (ci.IsKey)
                 {
-                    if (ci.ValueType == typeof(Guid))
-                    {
-                        sql.Append(" PRIMARY KEY");
-                    }
-                    else if (isMutiKey)
+                    if (isMutiKey)
                     {
                         sql.Append(NullDefine);
                         keys += dd.QuoteForColumnName(ci.Key) + ", ";
+                    }
+                    else if (ci.ValueType == typeof(Guid))
+                    {
+                        sql.Append(" PRIMARY KEY");
                     }
                     else
                     {

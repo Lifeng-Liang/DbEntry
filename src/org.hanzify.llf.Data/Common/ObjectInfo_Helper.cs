@@ -261,16 +261,20 @@ namespace Lephone.Data.Common
                 {
                     Type ft = f.FieldType.GetGenericArguments()[0];
                     string SlaveTableName = GetObjectFromClause(ft).GetMainTableName();
-                    string MediTableName = MainTableName.CompareTo(SlaveTableName) > 0 ?
-                        SlaveTableName + "_" + MainTableName : MainTableName + "_" + SlaveTableName;
+
+                    string UnmappedMainTableName = NameMapper.Instance.UnmapName(MainTableName);
+                    string UnmappedSlaveTableName = NameMapper.Instance.UnmapName(SlaveTableName);
+
+                    string MediTableName = UnmappedMainTableName.CompareTo(UnmappedSlaveTableName) > 0 ?
+                        UnmappedSlaveTableName + "_" + UnmappedMainTableName : UnmappedMainTableName + "_" + UnmappedSlaveTableName;
                     MediTableName = NameMapper.Instance.Prefix + MediTableName;
 
                     FromClause fc = new FromClause(
-                        new JoinClause(MediTableName + "." + SlaveTableName + "_Id", SlaveTableName + ".Id",
+                        new JoinClause(MediTableName + "." + UnmappedSlaveTableName + "_Id", SlaveTableName + ".Id",
                             CompareOpration.Equal, JoinMode.Inner));
                     Type t2 = f.FieldType.GetGenericArguments()[0];
-                    oi.ManyToManys[t2] 
-                        = new ManyToManyMediTable(t2, fc, MediTableName, MainTableName + "_Id", SlaveTableName + "_Id");
+                    oi.ManyToManys[t2]
+                        = new ManyToManyMediTable(t2, fc, MediTableName, UnmappedMainTableName + "_Id", UnmappedSlaveTableName + "_Id");
                 }
             }
         }
