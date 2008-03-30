@@ -263,6 +263,15 @@ namespace Lephone.Web
             }
         }
 
+        public void RebindControls()
+        {
+            T o = GetRequestObject();
+            if (o != null)
+            {
+                PageHelper.SetObject(o, Page);
+            }
+        }
+
         protected T GetRequestObject()
         {
             string sid = Page.Request["Id"];
