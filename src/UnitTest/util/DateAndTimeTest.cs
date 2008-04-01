@@ -32,5 +32,12 @@ namespace Lephone.UnitTest.util
             Assert.IsTrue(t1 == t3);
             Assert.IsTrue(t2 >= t3);
         }
+
+        [Test]
+        public void Test3()
+        {
+            Time t = new Time(130);
+            Assert.AreEqual("00:02:10", t.ToString());
+        }
     }
 }

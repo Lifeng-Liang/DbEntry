@@ -360,9 +360,29 @@ namespace System
             return new Time(dt.AddTicks(value));
         }
 
+        public int Hour
+        {
+            get { return dt.Hour; }
+        }
+
+        public int Minute
+        {
+            get { return dt.Minute; }
+        }
+
+        public int Second
+        {
+            get { return dt.Second; }
+        }
+
         public Time(DateTime dt)
         {
             this.dt = dt;
+        }
+
+        public Time(int Second)
+        {
+            dt = DateTime.MinValue.AddSeconds(Second);
         }
 
         public Time(int Hour, int Minute, int Second)

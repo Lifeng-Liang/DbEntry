@@ -16,7 +16,7 @@ namespace Lephone.UnitTest
     {
         // private static readonly string TestTableSql = ResourceHelper.ReadToEnd(typeof(InitHelper), "TestTable.sql");
         private const string FileName = "UnitTest.db";
-        private const string TestFilePath = @"C:\" + FileName;
+        private const string TestFilePath = @"D:\" + FileName;
         private static readonly byte[] TestFileBuffer = ResourceHelper.ReadAll(typeof(InitHelper), FileName);
 
         public static void Init()
