@@ -103,9 +103,14 @@ namespace Lephone.Linq
 
         private static WhereCondition GetClause(BinaryExpression e, CompareOpration co)
         {
-            if (e.Left.NodeType == ExpressionType.MemberAccess)
+            Expression l = e.Left;
+            if (l.NodeType == ExpressionType.Convert)
             {
-                var left = (MemberExpression)e.Left;
+                l = ((UnaryExpression)l).Operand;
+            }
+            if (l.NodeType == ExpressionType.MemberAccess)
+            {
+                var left = (MemberExpression)l;
                 string pn = left.Expression.ToString();
                 string key = GetColumnName(left.Member.Name);
 

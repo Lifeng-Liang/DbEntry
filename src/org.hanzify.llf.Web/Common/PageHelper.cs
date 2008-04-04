@@ -131,6 +131,10 @@ namespace Lephone.Web.Common
                             {
                                 h.SetValue(obj, "");
                             }
+                            else
+                            {
+                                throw new WebException(string.Format(ParseErrorText, h.Name, ""));
+                            }
                         }
                     }
                     else
@@ -192,6 +196,10 @@ namespace Lephone.Web.Common
             {
                 Type t = v.GetType();
                 ((DropDownList)c).SelectedValue = v.ToString();
+            }
+            else if (c is Label)
+            {
+                ((Label)c).Text = (v ?? "").ToString();
             }
             else throw new NotSupportedException();
         }

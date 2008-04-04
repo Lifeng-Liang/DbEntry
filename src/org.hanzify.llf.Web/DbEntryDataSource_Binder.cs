@@ -118,19 +118,23 @@ namespace Lephone.Web
                 string tn = typeof(T).Name;
                 if (oid == null)
                 {
-                    ValidateSave(o, string.Format(ObjectCreatedText, tn));
-                    if (OnObjectInserted != null)
+                    if (ValidateSave(o, string.Format(ObjectCreatedText, tn)))
                     {
-                        OnObjectInserted(o);
+                        if (OnObjectInserted != null)
+                        {
+                            OnObjectInserted(o);
+                        }
                     }
                 }
                 else // Edit
                 {
                     ObjInfo.KeyFields[0].SetValue(o, oid);
-                    ValidateSave(o, string.Format(ObjectUpdatedText, tn));
-                    if (OnObjectUpdated != null)
+                    if (ValidateSave(o, string.Format(ObjectUpdatedText, tn)))
                     {
-                        OnObjectUpdated(o);
+                        if (OnObjectUpdated != null)
+                        {
+                            OnObjectUpdated(o);
+                        }
                     }
                 }
             }
@@ -178,7 +182,7 @@ namespace Lephone.Web
             }
         }
 
-        protected virtual void ValidateSave(T obj, string NoticeText)
+        protected virtual bool ValidateSave(T obj, string NoticeText)
         {
             if (OnValidateSave != null)
             {
@@ -188,7 +192,7 @@ namespace Lephone.Web
             ValidateHandler vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
                 NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
 
-            PageHelper.ValidateSave(Page, vh, obj, NoticeMessage, NoticeText,
+            return PageHelper.ValidateSave(Page, vh, obj, NoticeMessage, NoticeText,
                 CssNotice, CssWarning, CssErrInput, delegate()
             {
                 ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
