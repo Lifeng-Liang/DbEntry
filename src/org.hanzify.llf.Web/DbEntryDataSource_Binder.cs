@@ -19,11 +19,28 @@ namespace Lephone.Web
     {
         public event CallbackVoidHandler OnPageIsNew;
         public event CallbackVoidHandler OnPageIsEdit;
-        public event CallbackVoidHandler OnBeforeParsePage;
+
+        [Category("Data")]
+        public event CallbackVoidHandler OnObjectLoading;
+        [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectLoaded;
+
+        [Category("Data")]
         public event CallbackObjectHandler<T> OnValidateSave;
+
+        [Category("Data")]
+        public event CallbackObjectHandler<T> OnObjectDeleting;
+        [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectDeleted;
+
+        [Category("Data")]
+        public event CallbackObjectHandler<T> OnObjectInserting;
+        [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectInserted;
+
+        [Category("Data")]
+        public event CallbackObjectHandler<T> OnObjectUpdating;
+        [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectUpdated;
 
         private Button SaveButton;
@@ -107,9 +124,9 @@ namespace Lephone.Web
         {
             try
             {
-                if (OnBeforeParsePage != null)
+                if (OnObjectLoading != null)
                 {
-                    OnBeforeParsePage();
+                    OnObjectLoading();
                 }
 
                 T o = PageHelper.GetObject<T>(Page, ParseErrorText);
@@ -118,6 +135,10 @@ namespace Lephone.Web
                 string tn = typeof(T).Name;
                 if (oid == null)
                 {
+                    if (OnObjectInserting != null)
+                    {
+                        OnObjectInserting(o);
+                    }
                     if (ValidateSave(o, string.Format(ObjectCreatedText, tn)))
                     {
                         if (OnObjectInserted != null)
@@ -129,6 +150,10 @@ namespace Lephone.Web
                 else // Edit
                 {
                     ObjInfo.KeyFields[0].SetValue(o, oid);
+                    if (OnObjectUpdating != null)
+                    {
+                        OnObjectUpdating(o);
+                    }
                     if (ValidateSave(o, string.Format(ObjectUpdatedText, tn)))
                     {
                         if (OnObjectUpdated != null)
@@ -166,19 +191,32 @@ namespace Lephone.Web
 
         void DeleteButton_Click(object sender, EventArgs e)
         {
-            object oid = ViewState["Id"];
-
-            string tn = typeof(T).Name;
-            if (oid != null)
+            try
             {
-                T o = DbEntry.GetObject<T>(oid);
-                ExecuteDelete(o);
-                Notice(string.Format(ObjectDeletedText, tn));
+                object oid = ViewState["Id"];
 
-                if (OnObjectDeleted != null)
+                string tn = typeof(T).Name;
+                if (oid != null)
                 {
-                    OnObjectDeleted(o);
+                    T o = DbEntry.GetObject<T>(oid);
+
+                    if (OnObjectDeleting != null)
+                    {
+                        OnObjectDeleting(o);
+                    }
+
+                    ExecuteDelete(o);
+                    Notice(string.Format(ObjectDeletedText, tn));
+
+                    if (OnObjectDeleted != null)
+                    {
+                        OnObjectDeleted(o);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Warning(ex.Message);
             }
         }
 
