@@ -48,6 +48,13 @@ namespace Lephone.Web
         private Label ContentTitle;
         private Label NoticeMessage;
 
+        private bool _LastOprationSucceed = false;
+
+        public bool LastOprationSucceed
+        {
+            get { return _LastOprationSucceed; }
+        }
+
         [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false), DefaultValue(""), Category("Behavior")]
         public string SaveButtonID
         {
@@ -122,6 +129,12 @@ namespace Lephone.Web
 
         void SaveButton_Click(object sender, EventArgs e)
         {
+            SaveObject();
+        }
+
+        public T SaveObject()
+        {
+            _LastOprationSucceed = false;
             try
             {
                 if (OnObjectLoading != null)
@@ -145,6 +158,8 @@ namespace Lephone.Web
                         {
                             OnObjectInserted(o);
                         }
+                        _LastOprationSucceed = true;
+                        return o;
                     }
                 }
                 else // Edit
@@ -160,6 +175,8 @@ namespace Lephone.Web
                         {
                             OnObjectUpdated(o);
                         }
+                        _LastOprationSucceed = true;
+                        return o;
                     }
                 }
             }
@@ -167,6 +184,7 @@ namespace Lephone.Web
             {
                 Warning(ex.Message);
             }
+            return default(T);
         }
 
         public void Notice(string msg)
@@ -181,8 +199,17 @@ namespace Lephone.Web
 
         public void Warning(string msg)
         {
+            Warning(null, msg);
+        }
+
+        public void Warning(WebControl c, string msg)
+        {
             if (NoticeMessage != null)
             {
+                if (c != null)
+                {
+                    c.CssClass = CssErrInput;
+                }
                 NoticeMessage.Text = msg;
                 NoticeMessage.CssClass = CssWarning;
                 NoticeMessage.Visible = true;
@@ -191,6 +218,7 @@ namespace Lephone.Web
 
         void DeleteButton_Click(object sender, EventArgs e)
         {
+            _LastOprationSucceed = false;
             try
             {
                 object oid = ViewState["Id"];
@@ -212,6 +240,7 @@ namespace Lephone.Web
                     {
                         OnObjectDeleted(o);
                     }
+                    _LastOprationSucceed = true;
                 }
             }
             catch (Exception ex)

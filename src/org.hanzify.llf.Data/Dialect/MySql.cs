@@ -12,7 +12,10 @@ namespace Lephone.Data.Dialect
 {
 	public class MySql : DbDialect
 	{
-		public MySql() : base() {}
+		public MySql() : base()
+        {
+            TypeNames[DataType.Guid] = "char(36)";
+        }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
