@@ -180,7 +180,11 @@ namespace Lephone.Web
                     }
                 }
             }
-            catch (WebException ex)
+            catch (WebControlException ex)
+            {
+                Warning(ex.RelatedControl, ex.Message);
+            }
+            catch (Exception ex)
             {
                 Warning(ex.Message);
             }
@@ -242,6 +246,10 @@ namespace Lephone.Web
                     }
                     _LastOprationSucceed = true;
                 }
+            }
+            catch (WebControlException ex)
+            {
+                Warning(ex.RelatedControl, ex.Message);
             }
             catch (Exception ex)
             {

@@ -16,6 +16,7 @@
     <add key="AutoCreateTable" value="true" />
     <add key="NameMapper" value="Lephone.Util.Text.UnderlineNameMapper, Lephone.Util" />
     <add key="DefaultContext" value="Development" />
+    <add key="CacheEnabled" value="true" />
  
     <add key="Development.DataBase" value="@SQLite : @D:\UnitTest.db" />
     <add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.48.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />

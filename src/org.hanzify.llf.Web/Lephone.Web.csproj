@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Rails\ControlMapper.cs" />
     <Compile Include="UrlBuilder.cs" />
+    <Compile Include="WebControlException.cs" />
     <Compile Include="WebException.cs" />
     <Compile Include="WebSettings.cs" />
     <Compile Include="Rails\ControllerBase.cs" />

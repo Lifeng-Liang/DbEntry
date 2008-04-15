@@ -133,7 +133,7 @@ namespace Lephone.Web.Common
                             }
                             else
                             {
-                                throw new WebException(string.Format(ParseErrorText, h.Name, ""));
+                                throw new WebControlException(c, string.Format(ParseErrorText, h.Name, ""));
                             }
                         }
                     }
@@ -146,7 +146,7 @@ namespace Lephone.Web.Common
                         }
                         catch (Exception ex)
                         {
-                            throw new WebException(string.Format(ParseErrorText, h.Name, ex.Message));
+                            throw new WebControlException(c, string.Format(ParseErrorText, h.Name, ex.Message));
                         }
                     }
                 }

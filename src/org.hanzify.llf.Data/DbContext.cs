@@ -79,7 +79,7 @@ namespace Lephone.Data
 
         protected internal override void OnBeginTransaction()
         {
-            if (DataSetting.CacheEnabled && DataSetting.CacheClearWhenError)
+            if (DataSetting.CacheEnabled && !DataSetting.CacheClearWhenError)
             {
                 TransLists.Push(new List<string>());
             }
@@ -87,7 +87,7 @@ namespace Lephone.Data
 
         protected internal override void OnCommittedTransaction()
         {
-            if (DataSetting.CacheEnabled && DataSetting.CacheClearWhenError)
+            if (DataSetting.CacheEnabled && !DataSetting.CacheClearWhenError)
             {
                 TransLists.Pop();
             }
