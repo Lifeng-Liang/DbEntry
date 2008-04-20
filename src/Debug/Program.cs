@@ -7,63 +7,48 @@ using Lephone.Data.Definition;
 
 namespace OrmA
 {
-    public enum UserRole
+    public abstract class PlayerGroup : DbObjectModel<PlayerGroup>
     {
-        Manager,
-        Worker,
-        Client
-    }
-
-    public abstract class SampleData : DbObjectModel<SampleData>
-    {
-        [Length(50)]
+        [Length(1, 30), Index(UNIQUE = true)]
         public abstract string Name { get; set; }
 
-        public abstract UserRole Role { get; set; }
+        [Length(100), AllowNull]
+        public abstract string Description { get; set; }
 
-        public abstract Date JoinDate { get; set; }
+        public abstract Time StartTime { get; set; }
 
-        public abstract bool Enabled { get; set; }
+        public abstract Time EndTime { get; set; }
 
-        public abstract int? NullInt { get; set; }
+        public abstract Guid? NewScheduleGUID { get; set; }
 
-        public SampleData() { }
+        public abstract bool? NewScheduleIsActive { get; set; }
 
-        public SampleData Init(string Name, UserRole Role, Date JoinDate, bool Enabled, int? NullInt)
+        public abstract Guid? LastScheduleGUID { get; set; }
+
+        public PlayerGroup Init(string Name, string Description,
+            Time StartTime, Time EndTime,
+            Guid NewScheduleGUID, bool NewScheduleIsActive,
+            Guid LastScheduleGUID)
         {
             this.Name = Name;
-            this.Role = Role;
-            this.JoinDate = JoinDate;
-            this.Enabled = Enabled;
-            this.NullInt = NullInt;
+            this.Description = Description;
+            this.StartTime = StartTime;
+            this.EndTime = EndTime;
+            this.NewScheduleGUID = NewScheduleGUID;
+            this.NewScheduleIsActive = NewScheduleIsActive;
+            this.LastScheduleGUID = LastScheduleGUID;
             return this;
         }
-    }
-
-    [DbTable("Shippers")]
-    public class Shipper : IDbObject
-    {
-        [DbColumn("Shipper ID")]
-        public int Id;
-
-        [DbColumn("Company Name")]
-        public string Name;
     }
 
     class Program
     {
         static void Main(string[] args)
         {
-            DbEntry.Context.DropAndCreate(typeof(SampleData));
+            PlayerGroup g = PlayerGroup.New().Init("beijing", "", new Time(7, 30, 0),
+                new Time(23, 30, 0), Guid.NewGuid(), true, Guid.NewGuid());
 
-            //var list = SampleData.Find(CK.K["Id"] < 10);
-            var list = DbEntry.From<SampleData>().Where(CK.K["Id"] < 10).OrderBy("Id").Range(2,2).Select();
-            //var list = DbEntry.From<Shipper>().Where(CK.K["Shipper ID"] < 10).OrderBy(new DESC("Shipper ID")).Select();
-
-            foreach (var o in list)
-            {
-                Console.WriteLine(o);
-            }
+            g.Save();
 
             Console.ReadLine();
         }

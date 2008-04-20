@@ -483,7 +483,7 @@ namespace System
         private IConvertible GetConvertible()
         {
             TimeSpan t = dt.TimeOfDay;
-            DateTime r = new DateTime(1, 1, 1, t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
+            DateTime r = new DateTime(1900, 1, 1, t.Hours, t.Minutes, t.Seconds, t.Milliseconds); // It's a little stupid
             return (IConvertible)r;
         }
 

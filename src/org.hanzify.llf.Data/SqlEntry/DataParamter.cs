@@ -49,11 +49,21 @@ namespace Lephone.Data.SqlEntry
         protected void SetTypeByObject(object o)
 		{
 			this.Type = DataTypeParser.Parse(o);
+            // TODO: temp solution for time
+            if (this.Type == DataType.Time && this.Value != null && this.Value.GetType() != typeof(DBNull))
+            {
+                this.Value = ((IConvertible)this.Value).ToDateTime(null);
+            }
 		}
 
         protected void SetTypeByObject(Type t)
 		{
 			this.Type = DataTypeParser.Parse(t);
+            // TODO: temp solution for time
+            if (this.Type == DataType.Time && this.Value != null && this.Value.GetType() != typeof(DBNull))
+            {
+                this.Value = ((IConvertible)this.Value).ToDateTime(null);
+            }
         }
 
         /*

@@ -26,7 +26,7 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.String]  = "text";
             TypeNames[DataType.DateTime]    = "datetime";
             TypeNames[DataType.Date]    = "date";
-            TypeNames[DataType.Time]    = "time";
+            TypeNames[DataType.Time]    = "datetime";
             TypeNames[DataType.Boolean] = "bool";
 
             TypeNames[DataType.Byte]    = "tinyint";

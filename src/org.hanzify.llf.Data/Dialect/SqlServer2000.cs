@@ -13,6 +13,7 @@ namespace Lephone.Data.Dialect
 		public SqlServer2000() : base()
         {
             TypeNames[DataType.Boolean] = "bit";
+            TypeNames[DataType.Date]    = "smalldatetime";
         }
 
         public override string DbNowString

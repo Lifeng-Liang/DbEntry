@@ -14,7 +14,7 @@ namespace Lephone.Data.SqlEntry
 		String		= DbType.String,
 		DateTime	= DbType.DateTime,
         Date        = DbType.Date,
-        Time        = DbType.Time,
+        Time        = DbType.DateTime,
 
         Boolean     = DbType.Boolean,
 
