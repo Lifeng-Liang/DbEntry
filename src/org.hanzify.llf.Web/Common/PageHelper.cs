@@ -131,7 +131,7 @@ namespace Lephone.Web.Common
                             {
                                 h.SetValue(obj, "");
                             }
-                            else
+                            else if(!h.IsCreatedOn)
                             {
                                 throw new WebControlException(c, string.Format(ParseErrorText, h.Name, ""));
                             }

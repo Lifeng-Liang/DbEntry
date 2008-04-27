@@ -109,6 +109,24 @@ namespace Lephone.Web
             }
         }
 
+        [Themeable(false), DefaultValue(true), Category("Behavior")]
+        public bool ChangePageTitleToo 
+        {
+            get
+            {
+                object o = this.ViewState["ChangePageTitleToo "];
+                if (o != null)
+                {
+                    return (bool)o;
+                }
+                return true;
+            }
+            set
+            {
+                this.ViewState["ChangePageTitleToo "] = value;
+            }
+        }
+
         [IDReferenceProperty(typeof(Label)), TypeConverter(typeof(LabelIDConverter)), Themeable(false), DefaultValue(""), Category("Behavior")]
         public string NoticeMessageID
         {
@@ -315,6 +333,10 @@ namespace Lephone.Web
                         if (ContentTitle != null)
                         {
                             ContentTitle.Text = string.Format(NewObjectText, tn);
+                            if (ChangePageTitleToo)
+                            {
+                                this.Page.Title = ContentTitle.Text;
+                            }
                         }
                     }
                     else
@@ -327,6 +349,10 @@ namespace Lephone.Web
                         if (ContentTitle != null)
                         {
                             ContentTitle.Text = string.Format(EditObjectText, tn);
+                            if (ChangePageTitleToo)
+                            {
+                                this.Page.Title = ContentTitle.Text;
+                            }
                         }
                         if (OnObjectLoaded != null)
                         {
