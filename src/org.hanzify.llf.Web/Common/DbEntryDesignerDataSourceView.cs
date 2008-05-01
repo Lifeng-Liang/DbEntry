@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Web.UI.Design;
-using System.ComponentModel;
 using System.Web.UI;
 using Lephone.Data.Common;
-using System.Data;
 
 namespace Lephone.Web.Common
 {
@@ -81,72 +78,72 @@ namespace Lephone.Web.Common
         {
             if (FieldType == typeof(string))
             {
-                return "Sample Data " + n.ToString();
+                return "Sample Data " + n;
             }
-            else if (AllowNull)
+            if (AllowNull)
             {
                 return GetSampleValue(FieldType.GetGenericArguments()[0], false, n);
             }
-            else if (FieldType == typeof(int))
+            if (FieldType == typeof(int))
             {
                 return (int)(1 + n);
             }
-            else if (FieldType == typeof(short))
+            if (FieldType == typeof(short))
             {
                 return (short)(1 + n);
             }
-            else if (FieldType == typeof(long))
+            if (FieldType == typeof(long))
             {
                 return (long)(1 + n);
             }
-            else if (FieldType == typeof(float))
+            if (FieldType == typeof(float))
             {
                 return (float)(0.1 + n);
             }
-            else if (FieldType == typeof(double))
+            if (FieldType == typeof(double))
             {
                 return (double)(0.1 + n);
             }
-            else if (FieldType == typeof(bool))
+            if (FieldType == typeof(bool))
             {
                 return (n % 2) == 0;
             }
-            else if (FieldType == typeof(DateTime))
+            if (FieldType == typeof(DateTime))
             {
                 DateTime dt = new DateTime(2008, 3, 6, 12, 24, 35);
                 return dt.AddDays(n);
             }
-            else if (FieldType == typeof(Date))
+            if (FieldType == typeof(Date))
             {
                 Date d = new Date(2008, 3, 17);
                 return d.AddDays(n);
             }
-            else if (FieldType == typeof(Time))
+            if (FieldType == typeof(Time))
             {
                 Time t = new Time(12, 24, 35);
                 return t.AddMinutes(n);
             }
-            else if (FieldType == typeof(Guid))
+            if (FieldType == typeof(Guid))
             {
                 return Guid.NewGuid();
             }
-            else if (FieldType == typeof(byte))
+            if (FieldType == typeof(byte))
             {
                 return (byte)n;
             }
-            else if (FieldType == typeof(sbyte))
+            if (FieldType == typeof(sbyte))
             {
                 return (sbyte)n;
             }
-            else if (FieldType == typeof(decimal))
+            if (FieldType == typeof(decimal))
             {
                 return (decimal)n;
             }
-            else if (FieldType == typeof(byte[]))
+            if (FieldType == typeof(byte[]))
             {
                 return new byte[] { 61, 62, 63 };
             }
-            else if (FieldType.IsEnum)
+            if (FieldType.IsEnum)
             {
                 string[] ss = Enum.GetNames(FieldType);
                 string name = ss[n % ss.Length];

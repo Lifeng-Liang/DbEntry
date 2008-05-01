@@ -1,12 +1,7 @@
-
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.ComponentModel;
-using System.Security.Permissions;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Web.Common;
@@ -22,6 +17,7 @@ namespace Lephone.Web
 
         [Category("Data")]
         public event CallbackVoidHandler OnObjectLoading;
+
         [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectLoaded;
 
@@ -30,16 +26,19 @@ namespace Lephone.Web
 
         [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectDeleting;
+
         [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectDeleted;
 
         [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectInserting;
+
         [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectInserted;
 
         [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectUpdating;
+
         [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectUpdated;
 
@@ -48,104 +47,93 @@ namespace Lephone.Web
         private Label ContentTitle;
         private Label NoticeMessage;
 
-        private bool _LastOprationSucceed = false;
+        private bool _LastOprationSucceed;
 
         public bool LastOprationSucceed
         {
             get { return _LastOprationSucceed; }
         }
 
-        [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false), DefaultValue(""), Category("Behavior")]
+        [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false),
+         DefaultValue(""), Category("Behavior")]
         public string SaveButtonID
         {
             get
             {
-                object o = this.ViewState["SaveButtonID"];
+                object o = ViewState["SaveButtonID"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return string.Empty;
             }
-            set
-            {
-                this.ViewState["SaveButtonID"] = value;
-            }
+            set { ViewState["SaveButtonID"] = value; }
         }
 
-        [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false), DefaultValue(""), Category("Behavior")]
+        [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false),
+         DefaultValue(""), Category("Behavior")]
         public string DeleteButtonID
         {
             get
             {
-                object o = this.ViewState["DeleteButtonID"];
+                object o = ViewState["DeleteButtonID"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "";
             }
-            set
-            {
-                this.ViewState["DeleteButtonID"] = value;
-            }
+            set { ViewState["DeleteButtonID"] = value; }
         }
 
-        [IDReferenceProperty(typeof(Label)), TypeConverter(typeof(LabelIDConverter)), Themeable(false), DefaultValue(""), Category("Behavior")]
+        [IDReferenceProperty(typeof(Label)), TypeConverter(typeof(LabelIDConverter)), Themeable(false),
+         DefaultValue(""), Category("Behavior")]
         public string ContentTitleID
         {
             get
             {
-                object o = this.ViewState["ContentTitleID"];
+                object o = ViewState["ContentTitleID"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return string.Empty;
             }
-            set
-            {
-                this.ViewState["ContentTitleID"] = value;
-            }
+            set { ViewState["ContentTitleID"] = value; }
         }
 
         [Themeable(false), DefaultValue(true), Category("Behavior")]
-        public bool ChangePageTitleToo 
+        public bool ChangePageTitleToo
         {
             get
             {
-                object o = this.ViewState["ChangePageTitleToo "];
+                object o = ViewState["ChangePageTitleToo "];
                 if (o != null)
                 {
                     return (bool)o;
                 }
                 return true;
             }
-            set
-            {
-                this.ViewState["ChangePageTitleToo "] = value;
-            }
+            set { ViewState["ChangePageTitleToo "] = value; }
         }
 
-        [IDReferenceProperty(typeof(Label)), TypeConverter(typeof(LabelIDConverter)), Themeable(false), DefaultValue(""), Category("Behavior")]
+        [IDReferenceProperty(typeof(Label)), TypeConverter(typeof(LabelIDConverter)), Themeable(false),
+         DefaultValue(""), Category("Behavior")]
         public string NoticeMessageID
         {
             get
             {
-                object o = this.ViewState["NoticeMessageID"];
+                object o = ViewState["NoticeMessageID"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return string.Empty;
             }
-            set
-            {
-                this.ViewState["NoticeMessageID"] = value;
-            }
+            set { ViewState["NoticeMessageID"] = value; }
         }
 
-        void SaveButton_Click(object sender, EventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             SaveObject();
         }
@@ -238,7 +226,7 @@ namespace Lephone.Web
             }
         }
 
-        void DeleteButton_Click(object sender, EventArgs e)
+        private void DeleteButton_Click(object sender, EventArgs e)
         {
             _LastOprationSucceed = false;
             try
@@ -283,30 +271,33 @@ namespace Lephone.Web
             }
 
             ValidateHandler vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
-                NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
+                                                     NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText,
+                                                     SeparatorText);
 
             return PageHelper.ValidateSave(Page, vh, obj, NoticeMessage, NoticeText,
-                CssNotice, CssWarning, CssErrInput, delegate()
-            {
-                ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
-                if (oi.IsNewObject(obj))
-                {
-                    ExecuteInsert(obj);
-                }
-                else
-                {
-                    ExecuteUpdate(obj);
-                }
-            });
+                   CssNotice, CssWarning, CssErrInput, delegate
+                   {
+                       ObjectInfo oi =
+                           ObjectInfo.GetInstance(
+                               obj.GetType());
+                       if (oi.IsNewObject(obj))
+                       {
+                           ExecuteInsert(obj);
+                       }
+                       else
+                       {
+                           ExecuteUpdate(obj);
+                       }
+                   });
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            SaveButton = this.NamingContainer.FindControl(SaveButtonID) as Button;
-            DeleteButton = this.NamingContainer.FindControl(DeleteButtonID) as Button;
-            ContentTitle = this.NamingContainer.FindControl(ContentTitleID) as Label;
-            NoticeMessage = this.NamingContainer.FindControl(NoticeMessageID) as Label;
+            SaveButton = NamingContainer.FindControl(SaveButtonID) as Button;
+            DeleteButton = NamingContainer.FindControl(DeleteButtonID) as Button;
+            ContentTitle = NamingContainer.FindControl(ContentTitleID) as Label;
+            NoticeMessage = NamingContainer.FindControl(NoticeMessageID) as Label;
 
             if (NoticeMessage != null)
             {
@@ -315,7 +306,7 @@ namespace Lephone.Web
 
             if (SaveButton != null)
             {
-                SaveButton.Click += new EventHandler(SaveButton_Click);
+                SaveButton.Click += SaveButton_Click;
                 if (!Page.IsPostBack)
                 {
                     string tn = typeof(T).Name;
@@ -335,7 +326,7 @@ namespace Lephone.Web
                             ContentTitle.Text = string.Format(NewObjectText, tn);
                             if (ChangePageTitleToo)
                             {
-                                this.Page.Title = ContentTitle.Text;
+                                Page.Title = ContentTitle.Text;
                             }
                         }
                     }
@@ -351,7 +342,7 @@ namespace Lephone.Web
                             ContentTitle.Text = string.Format(EditObjectText, tn);
                             if (ChangePageTitleToo)
                             {
-                                this.Page.Title = ContentTitle.Text;
+                                Page.Title = ContentTitle.Text;
                             }
                         }
                         if (OnObjectLoaded != null)
@@ -363,7 +354,7 @@ namespace Lephone.Web
             }
             if (DeleteButton != null)
             {
-                DeleteButton.Click += new EventHandler(DeleteButton_Click);
+                DeleteButton.Click += DeleteButton_Click;
                 T o = GetRequestObject();
             }
         }
@@ -394,11 +385,11 @@ namespace Lephone.Web
         {
             if (SaveButton != null)
             {
-                SaveButton.Click -= new EventHandler(SaveButton_Click);
+                SaveButton.Click -= SaveButton_Click;
             }
             if (DeleteButton != null)
             {
-                DeleteButton.Click -= new EventHandler(DeleteButton_Click);
+                DeleteButton.Click -= DeleteButton_Click;
             }
             base.OnUnload(e);
         }
@@ -408,17 +399,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["EmptyAsNull"];
+                object o = ViewState["EmptyAsNull"];
                 if (o != null)
                 {
                     return (bool)o;
                 }
                 return false;
             }
-            set
-            {
-                this.ViewState["EmptyAsNull"] = value;
-            }
+            set { ViewState["EmptyAsNull"] = value; }
         }
 
         [Themeable(false), DefaultValue(false)]
@@ -426,17 +414,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["IncludeClassName"];
+                object o = ViewState["IncludeClassName"];
                 if (o != null)
                 {
                     return (bool)o;
                 }
                 return false;
             }
-            set
-            {
-                this.ViewState["IncludeClassName"] = value;
-            }
+            set { ViewState["IncludeClassName"] = value; }
         }
 
         [Themeable(false), DefaultValue("{0} Created!")]
@@ -444,17 +429,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["ObjectCreatedText"];
+                object o = ViewState["ObjectCreatedText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "{0} Created!";
             }
-            set
-            {
-                this.ViewState["ObjectCreatedText"] = value;
-            }
+            set { ViewState["ObjectCreatedText"] = value; }
         }
 
         [Themeable(false), DefaultValue("{0} Updated!")]
@@ -462,17 +444,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["ObjectUpdatedText"];
+                object o = ViewState["ObjectUpdatedText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "{0} Updated!";
             }
-            set
-            {
-                this.ViewState["ObjectUpdatedText"] = value;
-            }
+            set { ViewState["ObjectUpdatedText"] = value; }
         }
 
         [Themeable(false), DefaultValue("{0} Deleted!")]
@@ -480,17 +459,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["ObjectDeletedText"];
+                object o = ViewState["ObjectDeletedText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "{0} Deleted!";
             }
-            set
-            {
-                this.ViewState["ObjectDeletedText"] = value;
-            }
+            set { ViewState["ObjectDeletedText"] = value; }
         }
 
         [Themeable(false), DefaultValue("Invalid Field {0} {1}.")]
@@ -498,17 +474,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["InvalidFieldText"];
+                object o = ViewState["InvalidFieldText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "Invalid Field {0} {1}.";
             }
-            set
-            {
-                this.ViewState["InvalidFieldText"] = value;
-            }
+            set { ViewState["InvalidFieldText"] = value; }
         }
 
         [Themeable(false), DefaultValue("Not Allow Null")]
@@ -516,17 +489,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["NotAllowNullText"];
+                object o = ViewState["NotAllowNullText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "Not Allow Null";
             }
-            set
-            {
-                this.ViewState["NotAllowNullText"] = value;
-            }
+            set { ViewState["NotAllowNullText"] = value; }
         }
 
         [Themeable(false), DefaultValue("Not Matched")]
@@ -534,17 +504,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["NotMatchedText"];
+                object o = ViewState["NotMatchedText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "Not Matched";
             }
-            set
-            {
-                this.ViewState["NotMatchedText"] = value;
-            }
+            set { ViewState["NotMatchedText"] = value; }
         }
 
         [Themeable(false), DefaultValue("The length should be {0} to {1} but was {2}")]
@@ -552,17 +519,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["LengthText"];
+                object o = ViewState["LengthText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "The length should be {0} to {1} but was {2}";
             }
-            set
-            {
-                this.ViewState["LengthText"] = value;
-            }
+            set { ViewState["LengthText"] = value; }
         }
 
         [Themeable(false), DefaultValue("Should be UNIQUED")]
@@ -570,17 +534,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["ShouldBeUniqueText"];
+                object o = ViewState["ShouldBeUniqueText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "Should be UNIQUED";
             }
-            set
-            {
-                this.ViewState["ShouldBeUniqueText"] = value;
-            }
+            set { ViewState["ShouldBeUniqueText"] = value; }
         }
 
         [Themeable(false), DefaultValue(", ")]
@@ -588,17 +549,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["SeparatorText"];
+                object o = ViewState["SeparatorText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return ", ";
             }
-            set
-            {
-                this.ViewState["SeparatorText"] = value;
-            }
+            set { ViewState["SeparatorText"] = value; }
         }
 
         [Themeable(false), DefaultValue("New {0}")]
@@ -606,17 +564,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["NewObjectText"];
+                object o = ViewState["NewObjectText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "New {0}";
             }
-            set
-            {
-                this.ViewState["NewObjectText"] = value;
-            }
+            set { ViewState["NewObjectText"] = value; }
         }
 
         [Themeable(false), DefaultValue("{0} Edit")]
@@ -624,17 +579,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["EditObjectText"];
+                object o = ViewState["EditObjectText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "{0} Edit";
             }
-            set
-            {
-                this.ViewState["EditObjectText"] = value;
-            }
+            set { ViewState["EditObjectText"] = value; }
         }
 
         [Themeable(false), DefaultValue("Notice")]
@@ -642,17 +594,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["CssNotice"];
+                object o = ViewState["CssNotice"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "Notice";
             }
-            set
-            {
-                this.ViewState["CssNotice"] = value;
-            }
+            set { ViewState["CssNotice"] = value; }
         }
 
         [Themeable(false), DefaultValue("Warning")]
@@ -660,17 +609,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["CssWarning"];
+                object o = ViewState["CssWarning"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "Warning";
             }
-            set
-            {
-                this.ViewState["CssWarning"] = value;
-            }
+            set { ViewState["CssWarning"] = value; }
         }
 
         [Themeable(false), DefaultValue("ErrInput")]
@@ -678,17 +624,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["CssErrInput"];
+                object o = ViewState["CssErrInput"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "ErrInput";
             }
-            set
-            {
-                this.ViewState["CssErrInput"] = value;
-            }
+            set { ViewState["CssErrInput"] = value; }
         }
 
         [Themeable(false), DefaultValue("Field [{0}] parse error: {1}")]
@@ -696,17 +639,14 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["ParseErrorText"];
+                object o = ViewState["ParseErrorText"];
                 if (o != null)
                 {
                     return (string)o;
                 }
                 return "Field [{0}] parse error: {1}";
             }
-            set
-            {
-                this.ViewState["ParseErrorText"] = value;
-            }
+            set { ViewState["ParseErrorText"] = value; }
         }
     }
 }

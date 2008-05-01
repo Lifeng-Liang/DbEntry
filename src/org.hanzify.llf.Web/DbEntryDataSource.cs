@@ -2,17 +2,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Data;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.ComponentModel;
 using System.Security.Permissions;
 using Lephone.Data;
 using Lephone.Data.Common;
-using Lephone.Data.Builder;
-using Lephone.Data.SqlEntry;
 using Lephone.Data.QuerySyntax;
 using Lephone.Web.Common;
 using Lephone.Util;
@@ -263,14 +258,7 @@ namespace Lephone.Web
                         }
                         else
                         {
-                            if (!mh.AllowNull)
-                            {
-                                mo = "";
-                            }
-                            else
-                            {
-                                mo = null;
-                            }
+                            mo = !mh.AllowNull ? "" : null;
                         }
                         if (!(mh.GetValue(obj).Equals(mo)))
                         {
@@ -284,7 +272,7 @@ namespace Lephone.Web
 
         public class DbEntryDataSourceView : DataSourceView
         {
-            IExcuteableDataSource owner;
+            readonly IExcuteableDataSource owner;
 
             public DbEntryDataSourceView(IDataSource owner, string viewName)
                 : base(owner, viewName)

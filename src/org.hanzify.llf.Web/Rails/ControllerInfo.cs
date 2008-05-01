@@ -31,14 +31,14 @@ namespace Lephone.Web.Rails
 
         private ControllerInfo() {}
 
-        private string _DefaultAction = null;
+        private string _DefaultAction;
 
         public string DefaultAction
         {
             get { return _DefaultAction ?? "list"; }
         }
 
-        private bool _IsScaffolding = false;
+        private bool _IsScaffolding;
 
         public bool IsScaffolding
         {

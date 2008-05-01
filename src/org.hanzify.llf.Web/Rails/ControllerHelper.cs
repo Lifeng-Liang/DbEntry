@@ -1,7 +1,5 @@
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Lephone.Util;
 
 namespace Lephone.Web.Rails
@@ -14,7 +12,7 @@ namespace Lephone.Web.Rails
             {
                 return Enum.Parse(t, value.ToString());
             }
-            else if (t == typeof(bool))
+            if (t == typeof(bool))
             {
 
                 if (value == null) return false;
@@ -32,10 +30,7 @@ namespace Lephone.Web.Rails
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            else
-            {
-                return ClassHelper.ChangeType(value, t);
-            }
+            return ClassHelper.ChangeType(value, t);
         }
     }
 }

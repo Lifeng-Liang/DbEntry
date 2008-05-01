@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections;
-using System.Text;
 using System.Web;
 using System.Reflection;
 using Lephone.Data.Common;
@@ -12,10 +11,10 @@ namespace Lephone.Web.Rails
 {
     internal class ScaffoldingViews : PageBase
     {
-        private ObjectInfo oi;
-        private HttpContext ctx;
+        private readonly ObjectInfo oi;
+        private readonly HttpContext ctx;
 
-        private static readonly string tHeader = @"
+        private const string tHeader = @"
 <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
 
 <html xmlns=""http://www.w3.org/1999/xhtml"" >
@@ -28,7 +27,7 @@ namespace Lephone.Web.Rails
 
 ";
 
-        private static readonly string tFooter = @"
+        private const string tFooter = @"
 </body>
 </html>";
 

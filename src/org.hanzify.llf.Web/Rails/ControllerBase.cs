@@ -1,12 +1,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Web;
-using System.Web.SessionState;
 using Lephone.Data;
 using Lephone.Data.Common;
-using Lephone.Web.Common;
 using Lephone.Data.Definition;
 using Lephone.Util;
 
@@ -51,7 +48,7 @@ namespace Lephone.Web.Rails
 
         private string GetControllerName()
         {
-            string ControllerName = this.GetType().Name;
+            string ControllerName = GetType().Name;
             if (ControllerName.EndsWith("Controller"))
             {
                 ControllerName = ControllerName.Substring(0, ControllerName.Length - 10);

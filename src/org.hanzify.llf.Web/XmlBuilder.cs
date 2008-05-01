@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
@@ -89,10 +88,7 @@ namespace Lephone.Web
                 result.Append(">");
                 return (T)this;
             }
-            else
-            {
-                throw new WebException(string.Format("The attribute '{0}' can not be added because there is no tag before it.", Name));
-            }
+            throw new WebException(string.Format("The attribute '{0}' can not be added because there is no tag before it.", Name));
         }
 
         /// <summary>

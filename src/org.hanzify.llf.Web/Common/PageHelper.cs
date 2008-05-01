@@ -1,6 +1,5 @@
 
 using System;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -22,8 +21,7 @@ namespace Lephone.Web.Common
 
         public static bool ValidateSave(Page p, ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning, string CssErrInput)
         {
-            return ValidateSave(p, vh, obj, msg, NoticeText, CssNotice, CssWarning, CssErrInput, delegate()
-            {
+            return ValidateSave(p, vh, obj, msg, NoticeText, CssNotice, CssWarning, CssErrInput, delegate {
                 DbEntry.Save(obj);
             });
         }
@@ -194,7 +192,7 @@ namespace Lephone.Web.Common
             }
             else if (c is DropDownList)
             {
-                Type t = v.GetType();
+                // Type t = v.GetType();
                 ((DropDownList)c).SelectedValue = v.ToString();
             }
             else if (c is Label)
@@ -208,11 +206,11 @@ namespace Lephone.Web.Common
         {
             if (!EnumType.IsEnum) throw new ArgumentOutOfRangeException();
 
-            var ret = new List<ListItem>();
-            foreach (var v in Enum.GetNames(EnumType))
+            List<ListItem> ret = new List<ListItem>();
+            foreach (string v in Enum.GetNames(EnumType))
             {
                 string n = StringHelper.EnumToString(EnumType, v);
-                var li = new ListItem(n, v);
+                ListItem li = new ListItem(n, v);
                 ret.Add(li);
             }
             return ret.ToArray();

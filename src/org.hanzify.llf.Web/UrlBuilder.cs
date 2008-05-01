@@ -1,5 +1,4 @@
 
-using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Web;
@@ -8,9 +7,9 @@ namespace Lephone.Web
 {
     public class UrlBuilder
     {
-        private string _BaseUrl;
-        private Dictionary<string, byte[]> _Params;
-        private Encoding _Encoding;
+        private readonly string _BaseUrl;
+        private readonly Dictionary<string, byte[]> _Params;
+        private readonly Encoding _Encoding;
 
         public UrlBuilder(string BaseUrl)
             : this(BaseUrl, Encoding.Default)

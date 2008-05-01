@@ -1,7 +1,5 @@
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Lephone.Data.Common;
 using Lephone.Util.Text;
 
@@ -10,7 +8,7 @@ namespace Lephone.Web.Rails
     internal class ControlMapper
     {
         private string id, name;
-        private object value;
+        // private object value;
         private HtmlBuilder b;
 
         public static HtmlBuilder Map(MemberHandler m, string id, string name, object value)
@@ -23,7 +21,7 @@ namespace Lephone.Web.Rails
         {
             this.id = id;
             this.name = name;
-            this.value = value;
+            // this.value = value;
 
             b = HtmlBuilder.New;
 

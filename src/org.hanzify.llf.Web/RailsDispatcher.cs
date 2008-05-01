@@ -1,12 +1,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Reflection;
 using System.IO;
-using Lephone.Data;
 using Lephone.Util;
 using Lephone.Web.Rails;
 
@@ -16,7 +14,7 @@ namespace Lephone.Web
     {
         protected PageHandlerFactory factory = ClassHelper.CreateInstance<PageHandlerFactory>();
         internal static Dictionary<string, Type> ctls;
-        private static char[] spliter = new char[] { '/' };
+        private static readonly char[] spliter = new char[] { '/' };
 
         static RailsDispatcher()
         {

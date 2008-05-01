@@ -51,6 +51,11 @@ namespace Lephone.Linq
         {
             return new LinqOrderSyntax<T>(orderby, false);
         }
+
+        public static long GetCount(Expression<Func<T, bool>> condition)
+        {
+            return DbEntry.From<T>().Where(condition).GetCount();
+        }
     }
 
     public class LinqObjectModel<T> : LinqObjectModel<T, long> where T : LinqObjectModel<T, long>
