@@ -23,14 +23,16 @@ namespace Lephone.Web
             _Encoding = defaultEncoding;
         }
 
-        public void Add(string Key, string Value)
+        public UrlBuilder Add(string Key, string Value)
         {
             Add(Key, Value, _Encoding);
+            return this;
         }
 
-        public void Add(string Key, string Value, Encoding encoding)
+        public UrlBuilder Add(string Key, string Value, Encoding encoding)
         {
             _Params.Add(Key, encoding.GetBytes(Value));
+            return this;
         }
 
         public override string ToString()
