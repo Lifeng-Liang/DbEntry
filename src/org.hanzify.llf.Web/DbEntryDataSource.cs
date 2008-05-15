@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,8 +16,8 @@ namespace Lephone.Web
 {
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
     [ParseChildren(true), PersistChildren(false)]
-    [Designer(typeof(Common.DbEntryDataSourceDesigner))]
-    public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource where T : IDbObject
+    [Designer(typeof(DbEntryDataSourceDesigner))]
+    public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource where T : class, IDbObject
     {
         private static readonly ObjectInfo ObjInfo = ObjectInfo.GetInstance(typeof(T));
         protected static readonly string KeyName = ObjInfo.KeyFields[0].Name;
@@ -125,18 +124,15 @@ namespace Lephone.Web
             {
                 return DbEntry.From<T>().Where(condition).OrderBy(order).Select();
             }
-            else
-            {
-                IGetPagedSelector igp = DbEntry
-                    .From<T>()
-                    .Where(condition)
-                    .OrderBy(order)
-                    .PageSize(MaximumRows);
-                IPagedSelector ps = IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
-                TotalRowCount = (int)ps.GetResultCount();
-                IList result = ps.GetCurrentPage(PageIndex);
-                return (List<T>)result;
-            }
+            IGetPagedSelector igp = DbEntry
+                .From<T>()
+                .Where(condition)
+                .OrderBy(order)
+                .PageSize(MaximumRows);
+            IPagedSelector ps = IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
+            TotalRowCount = (int)ps.GetResultCount();
+            IList result = ps.GetCurrentPage(PageIndex);
+            return (List<T>)result;
         }
 
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)

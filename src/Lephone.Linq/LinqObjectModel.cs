@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using Lephone.Data.Definition;
 using Lephone.Data.Common;
 using System.Linq.Expressions;
@@ -10,7 +6,7 @@ using Lephone.Data;
 
 namespace Lephone.Linq
 {
-    public partial class LinqObjectModel<T, TKey> : DbObjectModel<T, TKey> where T : LinqObjectModel<T, TKey>
+    public class LinqObjectModel<T, TKey> : DbObjectModel<T, TKey> where T : LinqObjectModel<T, TKey>
     {
         public static LinqQueryProvider<T, TKey> Table
         {

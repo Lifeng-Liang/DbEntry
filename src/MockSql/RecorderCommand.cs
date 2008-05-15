@@ -1,13 +1,4 @@
-
-#region usings
-
-using System;
 using System.Data.Common;
-using Lephone.Util;
-
-using Lephone.MockSql.Recorder;
-
-#endregion
 
 namespace Lephone.MockSql
 {
@@ -17,8 +8,8 @@ namespace Lephone.MockSql
         private int _CommandTimeout;
         private System.Data.CommandType _CommandType;
         private RecorderConnection _DbConnection;
-        private RecorderDbTransaction _DbTransaction = null;
-        private DbParameterCollection _DbParameterCollection = new RecorderParameterCollection();
+        private RecorderDbTransaction _DbTransaction;
+        private readonly DbParameterCollection _DbParameterCollection = new RecorderParameterCollection();
 
         private static int serial = 1;
 

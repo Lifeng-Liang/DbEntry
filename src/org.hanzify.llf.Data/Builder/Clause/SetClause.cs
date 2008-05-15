@@ -1,14 +1,9 @@
-
-#region usings
-
 using System;
 using System.Text;
 using Lephone.Util.Text;
 using Lephone.Data.Common;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
-
-#endregion
 
 namespace Lephone.Data.Builder.Clause
 {

@@ -1,18 +1,13 @@
-
-#region usings
-
 using System;
 using System.Collections;
 using System.Data.Common;
 using System.Text;
 
-#endregion
-
 namespace Lephone.MockSql
 {
     public class RecorderParameterCollection : DbParameterCollection
     {
-        private ArrayList Parameters = new ArrayList();
+        private readonly ArrayList Parameters = new ArrayList();
 
         public override int Add(object value)
         {
@@ -49,7 +44,7 @@ namespace Lephone.MockSql
             get { return Parameters.Count; }
         }
 
-        public override System.Collections.IEnumerator GetEnumerator()
+        public override IEnumerator GetEnumerator()
         {
             return Parameters.GetEnumerator();
         }

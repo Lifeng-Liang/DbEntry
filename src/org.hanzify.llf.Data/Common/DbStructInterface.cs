@@ -1,10 +1,3 @@
-
-#region usings
-
-using System;
-
-#endregion
-
 namespace Lephone.Data.Common
 {
     public class DbStructInterface

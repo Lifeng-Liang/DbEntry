@@ -1,8 +1,3 @@
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;

@@ -1,17 +1,10 @@
-
-#region usings
-
-using System;
 using System.Collections;
-using Lephone.Data.SqlEntry;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
     public class LimitedListInserter : IProcessor
     {
-		private IList list;
+		private readonly IList list;
         private int Count;
 
         public LimitedListInserter(IList list)

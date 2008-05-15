@@ -1,14 +1,3 @@
-
-#region usings
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Lephone.Data.Driver;
-using Lephone.Data.Common;
-
-#endregion
-
 namespace Lephone.Data.Definition
 {
     public interface ILazyLoading

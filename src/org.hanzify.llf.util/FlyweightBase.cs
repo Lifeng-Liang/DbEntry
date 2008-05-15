@@ -1,5 +1,3 @@
-
-using System;
 using System.Collections.Generic;
 
 namespace Lephone.Util
@@ -14,16 +12,13 @@ namespace Lephone.Util
             {
                 return dic[t];
             }
-            else
+            TValue v = ClassHelper.CreateInstance<TValue>();
+            v.Init(t);
+            lock (dic)
             {
-                TValue v = ClassHelper.CreateInstance<TValue>();
-                v.Init(t);
-                lock (dic)
-                {
-                    dic[t] = v;
-                }
-                return v;
+                dic[t] = v;
             }
+            return v;
         }
 
         protected abstract void Init(TKey t);

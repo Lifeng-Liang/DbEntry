@@ -10,7 +10,7 @@ using Lephone.Data.Definition;
 
 namespace Lephone.Web
 {
-    public abstract partial class DbEntryDataSource<T> where T : IDbObject
+    public abstract partial class DbEntryDataSource<T> where T : class, IDbObject
     {
         public event CallbackVoidHandler OnPageIsNew;
         public event CallbackVoidHandler OnPageIsEdit;
@@ -355,7 +355,8 @@ namespace Lephone.Web
             if (DeleteButton != null)
             {
                 DeleteButton.Click += DeleteButton_Click;
-                T o = GetRequestObject();
+                //TODO: why left like: T o = GetRequestObject();
+                GetRequestObject();
             }
         }
 

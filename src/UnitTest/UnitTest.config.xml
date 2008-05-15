@@ -45,5 +45,6 @@
   <MySetting>
     <add key="TestInt" value="23" />
     <add key="CompMode" value="Release" />
+    <add key="MyClass" value="Lephone.UnitTest.util.ConfigTestClass, Lephone.UnitTest" />
   </MySetting>
 </configuration>

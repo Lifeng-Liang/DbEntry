@@ -1,9 +1,4 @@
-
-#region usings
-
 using System;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {
@@ -17,6 +12,6 @@ namespace Lephone.Data.Definition
     public class StringColumnAttribute : Attribute
     {
         public bool IsUnicode = true;
-        public string Regular = null;
+        public string Regular;
     }
 }

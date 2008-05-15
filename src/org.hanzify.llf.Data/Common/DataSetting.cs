@@ -1,12 +1,5 @@
-
-#region usings
-
-using System;
-using Lephone.Util;
 using Lephone.Util.Text;
 using Lephone.Util.Setting;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
@@ -21,7 +14,7 @@ namespace Lephone.Data.Common
 	{
         public static readonly HandlerType ObjectHandlerType = HandlerType.Emit;
 
-        public static readonly bool AutoCreateTable = false;
+        public static readonly bool AutoCreateTable         = false;
 
         public static readonly string DefaultContext        = "";
 

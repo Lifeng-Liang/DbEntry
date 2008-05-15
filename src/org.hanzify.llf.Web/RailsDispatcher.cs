@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -87,6 +86,10 @@ namespace Lephone.Web
             // Invoke Controller
             Type t = ctls[ControllerName];
             ControllerBase ctl = ClassHelper.CreateInstance(t) as ControllerBase;
+            if(ctl == null)
+            {
+                throw new WebException("The Controller must inherits from ControllerBase");
+            }
             ctl.ctx = context;
 
             try
@@ -122,7 +125,7 @@ namespace Lephone.Web
                     p.ControllerName = ControllerName;
                     p.ActionName = ActionName;
                     ((IHttpHandler)p).ProcessRequest(context);
-                    factory.ReleaseHandler((IHttpHandler)p);
+                    factory.ReleaseHandler(p);
                 }
             }
             catch (TargetInvocationException ex)
@@ -148,45 +151,39 @@ namespace Lephone.Web
                 }
                 return o as PageBase;
             }
-            else if (ci.IsScaffolding)
+            if (ci.IsScaffolding)
             {
                 Type tt = GetScaffoldingType(t);
                 return new ScaffoldingViews(tt, context);
             }
-            else if (t == typeof(DefaultController))
+            if (t == typeof(DefaultController))
             {
                 return null;
             }
-            else
-            {
-                throw new WebException(string.Format("The action {0} don't have view file!!!", ActionName));
-            }
+            throw new WebException(string.Format("The action {0} don't have view file!!!", ActionName));
         }
 
-        private Type GetScaffoldingType(Type t)
+        private static Type GetScaffoldingType(Type t)
         {
             if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ControllerBase<>))
             {
                 return t.GetGenericArguments()[0];
             }
-            else if (t.BaseType == typeof(object))
+            if (t.BaseType == typeof(object))
             {
                 throw new WebException("System Error!");
             }
-            else
-            {
-                return GetScaffoldingType(t.BaseType);
-            }
+            return GetScaffoldingType(t.BaseType);
         }
 
-        private void CallAction(MethodInfo mi, ControllerBase c, object[] ps)
+        private static void CallAction(MethodInfo mi, ControllerBase c, object[] ps)
         {
             c.OnBeforeAction(mi.Name);
             mi.Invoke(c, ps);
             c.OnAfterAction(mi.Name);
         }
 
-        private object ChangeType(string s, Type t)
+        private static object ChangeType(string s, Type t)
         {
             if(t.IsValueType && string.IsNullOrEmpty(s))
             {

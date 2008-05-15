@@ -1,12 +1,8 @@
-
-#region usings
-
 using System;
 using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 using Lephone.Util;
-using Lephone.Util.Logging;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;
 using Lephone.Data.Common;
@@ -16,13 +12,11 @@ using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Caching;
 
-#endregion
-
 namespace Lephone.Data
 {
     public class DbContext : DataProvider
     {
-        private Dictionary<string, int> TableNames = null;
+        private Dictionary<string, int> TableNames;
         // for remoting only
         public DbContext() : this(EntryConfig.Default) { }
 
@@ -49,7 +43,7 @@ namespace Lephone.Data
                 string Name = oi.From.GetMainTableName();
                 if (!TableNames.ContainsKey(Name.ToLower()))
                 {
-                    IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate()
+                    IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
                     {
                         Create(DbObjectType);
                         if (!string.IsNullOrEmpty(oi.DeleteToTableName))
@@ -143,7 +137,7 @@ namespace Lephone.Data
             }
         }
 
-        public IWhere<T> From<T>() where T : IDbObject
+        public IWhere<T> From<T>() where T : class, IDbObject
         {
             return new QueryContent<T>(this);
         }
@@ -169,17 +163,17 @@ namespace Lephone.Data
             return list;
         }
 
-        public DbObjectList<T> ExecuteList<T>(string SqlStr) where T : IDbObject
+        public DbObjectList<T> ExecuteList<T>(string SqlStr) where T : class, IDbObject
         {
             return ExecuteList<T>(new SqlStatement(SqlStr));
         }
 
-        public DbObjectList<T> ExecuteList<T>(string SqlStr, params object[] os) where T : IDbObject
+        public DbObjectList<T> ExecuteList<T>(string SqlStr, params object[] os) where T : class, IDbObject
         {
             return ExecuteList<T>(GetSqlStatement(SqlStr, os));
         }
 
-        public DbObjectList<T> ExecuteList<T>(SqlStatement Sql) where T : IDbObject
+        public DbObjectList<T> ExecuteList<T>(SqlStatement Sql) where T : class, IDbObject
         {
             DbObjectList<T> ret = new DbObjectList<T>();
             FillCollection(ret, typeof(T), Sql);
@@ -274,17 +268,17 @@ namespace Lephone.Data
             });
         }
 
-        public T GetObject<T>(object key) where T : IDbObject
+        public T GetObject<T>(object key) where T : class, IDbObject
         {
             return (T)GetObject(typeof(T), key);
         }
 
-        public T GetObject<T>(WhereCondition c) where T : IDbObject
+        public T GetObject<T>(WhereCondition c) where T : class, IDbObject
         {
             return (T)GetObject(typeof(T), c, null, null);
         }
 
-        public T GetObject<T>(WhereCondition c, OrderBy ob) where T : IDbObject
+        public T GetObject<T>(WhereCondition c, OrderBy ob) where T : class, IDbObject
         {
             return (T)GetObject(typeof(T), c, ob);
         }
@@ -382,7 +376,7 @@ namespace Lephone.Data
         {
             if (oi.HasAssociate)
             {
-                UsingExistedTransaction(delegate()
+                UsingExistedTransaction(delegate
                 {
                     if (ParentFirst) { e1(this); }
                     object mkey = oi.Handler.GetKeyValue(obj);
@@ -558,7 +552,7 @@ namespace Lephone.Data
             MemberHandler mh = oi.GetBelongsTo(obj.GetType());
             if (mh != null)
             {
-                Definition.IBelongsTo ho = mh.GetValue(subobj) as Definition.IBelongsTo;
+                Definition.IBelongsTo ho = mh.GetValue(subobj) as IBelongsTo;
                 if (ho != null)
                 {
                     ho.ForeignKey = ForeignKey;
@@ -604,7 +598,7 @@ namespace Lephone.Data
             return ret;
         }
 
-        public int Delete<T>(WhereCondition iwc) where T : IDbObject
+        public int Delete<T>(WhereCondition iwc) where T : class, IDbObject
         {
             Type t = typeof(T);
             TryCreateTable(t);

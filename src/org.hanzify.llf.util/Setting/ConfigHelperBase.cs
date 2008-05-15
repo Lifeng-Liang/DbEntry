@@ -1,12 +1,6 @@
-
-#region usings
-
 using System;
 using System.Reflection;
-
 using Lephone.Util.Text;
-
-#endregion
 
 namespace Lephone.Util.Setting
 {
@@ -33,7 +27,7 @@ namespace Lephone.Util.Setting
                 ShowStringAttribute[] ss = (ShowStringAttribute[])fi.GetCustomAttributes(typeof(ShowStringAttribute), false);
                 string Name = (ss != null && ss.Length == 1) ? ss[0].ShowString : fi.Name;
                 object o = fi.GetValue(obj);
-                o = GetValue(Name, o);
+                o = (o == null) ? GetValue(Name, fi.FieldType) : GetValue(Name, o);
                 fi.SetValue(obj, o);
             }
         }
@@ -91,17 +85,27 @@ namespace Lephone.Util.Setting
         public object GetValue(string key, object defaultValue)
 		{
 			string s = GetString(key);
-			if( s == null)
+			if(s == null)
 			{
-				return defaultValue;
+			    return defaultValue;
 			}
             Type t = defaultValue.GetType();
-			if( t.IsSubclassOf(typeof(System.Enum)) )
+			if(t.IsSubclassOf(typeof(Enum)))
 			{
 				return Enum.Parse(t, s);
 			}
             return ClassHelper.ChangeType(s, t);
 		}
+
+        public object GetValue(string key, Type objType)
+        {
+            string s = GetString(key);
+            if(string.IsNullOrEmpty(s))
+            {
+                return ClassHelper.CreateInstance(objType);
+            }
+            return ClassHelper.CreateInstance(s);
+        }
 
 		protected abstract string GetString(string key);
 	}

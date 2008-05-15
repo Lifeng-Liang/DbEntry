@@ -1,22 +1,12 @@
-
-#region usings
-
 using System;
 using System.Reflection;
 using System.Data;
-using System.Collections;
-using System.Collections.Specialized;
 using System.Collections.Generic;
 using Lephone.Util;
 using Lephone.Util.Setting;
-using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
-using Lephone.Data.SqlEntry;
-using Lephone.Data.Driver;
 using Lephone.Data.Definition;
 using Lephone.Util.Text;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
@@ -99,7 +89,7 @@ namespace Lephone.Data.Common
 
         public static object CreateObject(DbContext context, Type DbObjectType, IDataReader dr, bool UseIndex)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
+            ObjectInfo oi = GetInstance(DbObjectType);
             object obj = oi.NewObject();
             DbObjectSmartUpdate sudi = obj as DbObjectSmartUpdate;
             if (sudi != null)
@@ -141,17 +131,17 @@ namespace Lephone.Data.Common
 
         public static FromClause GetFromClause(Type DbObjectType)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
+            ObjectInfo oi = GetInstance(DbObjectType);
             return oi.From;
         }
 
         public static WhereCondition GetKeyWhereClause(object obj)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
+            ObjectInfo oi = GetInstance(t);
             if (oi.KeyFields == null)
             {
-                throw new DataException("dbobject not define key field : " + t.ToString());
+                throw new DataException("dbobject not define key field : " + t);
             }
             WhereCondition ret = null;
             Dictionary<string,object> dic = oi.Handler.GetKeyValues(obj);
@@ -165,10 +155,10 @@ namespace Lephone.Data.Common
         public static void SetKey(object obj, object key)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
+            ObjectInfo oi = GetInstance(t);
             if (!oi.HasSystemKey)
             {
-                throw new DataException("dbobject not define SystemGeneration key field : " + t.ToString());
+                throw new DataException("dbobject not define SystemGeneration key field : " + t);
             }
             MemberHandler fh = oi.KeyFields[0];
             object sKey;
@@ -245,7 +235,7 @@ namespace Lephone.Data.Common
 
         internal static MemberHandler GetKeyField(Type tt)
         {
-            ObjectInfo oi = ObjectInfo.GetSimpleInstance(tt);
+            ObjectInfo oi = GetSimpleInstance(tt);
             if (oi.KeyFields.Length > 0)
             {
                 return oi.KeyFields[0];

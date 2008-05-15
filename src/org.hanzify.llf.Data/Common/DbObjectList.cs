@@ -1,16 +1,9 @@
-
-#region usings
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Data;
-using Lephone.Data.Definition;
-using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
@@ -46,11 +39,13 @@ namespace Lephone.Data.Common
         public void WriteXml(System.Xml.XmlWriter writer)
         {
             Type t = typeof(T);
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
+            //TODO: why left this?
+            //ObjectInfo oi = ObjectInfo.GetInstance(t);
             foreach (object or in this)
             {
                 IXmlSerializable o = or as IXmlSerializable;
                 writer.WriteStartElement(t.Name);
+                //TODO: how to handle this may null?
                 o.WriteXml(writer);
                 writer.WriteEndElement();
             }
@@ -62,15 +57,10 @@ namespace Lephone.Data.Common
             DataTable dt = new DataTable(oi.From.GetMainTableName());
             foreach (MemberHandler m in oi.SimpleFields)
             {
-                DataColumn dc;
-                if (m.FieldType.IsGenericType)
-                {
-                    dc = new DataColumn(m.Name, m.FieldType.GetGenericArguments()[0]);
-                }
-                else
-                {
-                    dc = new DataColumn(m.Name, m.FieldType);
-                }
+                DataColumn dc 
+                    = m.FieldType.IsGenericType 
+                    ? new DataColumn(m.Name, m.FieldType.GetGenericArguments()[0]) 
+                    : new DataColumn(m.Name, m.FieldType);
                 if (m.AllowNull)
                 {
                     dc.AllowDBNull = true;
@@ -89,14 +79,10 @@ namespace Lephone.Data.Common
                     }
                     else
                     {
-                        if (m.FieldType.IsGenericType)
-                        {
-                            dr[m.Name] = m.FieldType.GetMethod("get_Value").Invoke(ov, null);
-                        }
-                        else
-                        {
-                            dr[m.Name] = ov;
-                        }
+                        dr[m.Name] 
+                            = m.FieldType.IsGenericType 
+                            ? m.FieldType.GetMethod("get_Value").Invoke(ov, null) 
+                            : ov;
                     }
                 }
                 dt.Rows.Add(dr);

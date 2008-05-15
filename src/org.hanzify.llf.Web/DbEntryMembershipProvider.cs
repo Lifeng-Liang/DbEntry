@@ -1,4 +1,3 @@
-
 using System;
 using System.Web.Security;
 using Lephone.Data;
@@ -102,7 +101,7 @@ namespace Lephone.Web
             return GetMembershipUserCollection(null, pageIndex, pageSize, out totalRecords);
         }
 
-        private MembershipUserCollection GetMembershipUserCollection(WhereCondition c, int pageIndex, int pageSize, out int totalRecords)
+        private static MembershipUserCollection GetMembershipUserCollection(WhereCondition c, int pageIndex, int pageSize, out int totalRecords)
         {
             IPagedSelector ps = DbEntry.From<DbEntryMembershipUser>().Where(c)
                 .OrderBy("Id DESC").PageSize(pageSize).GetPagedSelector();

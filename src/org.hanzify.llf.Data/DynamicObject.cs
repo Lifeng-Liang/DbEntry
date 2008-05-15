@@ -1,6 +1,3 @@
-
-#region usings
-
 using System;
 using System.Data;
 using System.Collections;
@@ -8,16 +5,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
-
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
-using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
-
 using Lephone.Util;
 using Lephone.Util.Text;
-
-#endregion
 
 namespace Lephone.Data
 {
@@ -73,12 +65,9 @@ namespace Lephone.Data
         {
             if (IsInt)
             {
-                return typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
+                return typeof(IDataRecord).GetMethod("get_Item", new[] { typeof(int) });
             }
-            else
-            {
-                return typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(string) });
-            }
+            return typeof(IDataRecord).GetMethod("get_Item", new[] { typeof(string) });
         }
     }
 
@@ -108,10 +97,7 @@ namespace Lephone.Data
                 Type ImplType = GetImplType(typeof(T));
                 return (T)ClassHelper.CreateInstance(ImplType, os);
             }
-            else
-            {
-                return (T)ObjectInfo.GetInstance(typeof(T)).NewObject();
-            }
+            return (T)ObjectInfo.GetInstance(typeof(T)).NewObject();
         }
 
         private static readonly Type vhBaseType = typeof(EmitObjectHandlerBase);
@@ -130,7 +116,7 @@ namespace Lephone.Data
             // TODO: process null value, nullable
             ConstructorInfo ci = GetConstructor(srcType);
             MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
-                DynamicObjectTypeAttr, vhBaseType, new Type[] { typeof(IDbObjectHandler) });
+                DynamicObjectTypeAttr, vhBaseType, new[] { typeof(IDbObjectHandler) });
             tb.DefineDefaultConstructor(MethodAttributes.Public);
             // implements CreateInstance
             tb.OverrideMethodDirect(OverridePublicFlag, "CreateInstance", vhBaseType,
@@ -157,7 +143,7 @@ namespace Lephone.Data
             MethodInfo mi = helper.GetMethodInfo(true);
             MethodInfo miGetNullable = vhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
             tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByIndex", vhBaseType, null,
-                new Type[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
+                new[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(1).Cast(srcType).SetLoc(0);
@@ -194,7 +180,7 @@ namespace Lephone.Data
             MethodInfo mi = helper.GetMethodInfo();
             MethodInfo miGetNullable = vhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
             tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByName", vhBaseType, null,
-                new Type[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
+                new[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(1).Cast(srcType).SetLoc(0);
@@ -222,7 +208,7 @@ namespace Lephone.Data
         {
             string MethodName = UseIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
             tb.OverrideMethodDirect(OverrideFlag, MethodName, vhBaseType, null,
-                new Type[] { typeof(DbContext), typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
+                new[] { typeof(DbContext), typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
@@ -276,9 +262,9 @@ namespace Lephone.Data
         private static void OverrideGetKeyValues(MemoryTypeBuilder tb, Type srcType, MemberHandler[] KeyFields)
         {
             Type t = typeof(Dictionary<string, object>);
-            MethodInfo mi = t.GetMethod("Add", new Type[] { typeof(string), typeof(object) });
+            MethodInfo mi = t.GetMethod("Add", new[] { typeof(string), typeof(object) });
             tb.OverrideMethodDirect(OverrideFlag, "GetKeyValuesDirect", vhBaseType, null,
-                new Type[] { t, typeof(object) }, delegate(ILBuilder il)
+                new[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
@@ -295,7 +281,7 @@ namespace Lephone.Data
         private static void OverrideGetKeyValue(MemoryTypeBuilder tb, Type srcType, MemberHandler[] KeyFields)
         {
             tb.OverrideMethodDirect(OverrideFlag, "GetKeyValueDirect", vhBaseType, typeof(object),
-                new Type[] { typeof(object) }, delegate(ILBuilder il)
+                new[] { typeof(object) }, delegate(ILBuilder il)
             {
                 if (KeyFields.Length == 1)
                 {
@@ -314,9 +300,9 @@ namespace Lephone.Data
         private static void OverrideSetValuesForSelect(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
         {
             Type t = typeof(List<string>);
-            MethodInfo mi = t.GetMethod("Add", new Type[] { typeof(string) });
+            MethodInfo mi = t.GetMethod("Add", new[] { typeof(string) });
             tb.OverrideMethodDirect(OverrideFlag, "SetValuesForSelectDirect", vhBaseType, null,
-                new Type[] { t }, delegate(ILBuilder il)
+                new[] { t }, delegate(ILBuilder il)
             {
                 foreach (MemberHandler f in Fields)
                 {
@@ -332,12 +318,12 @@ namespace Lephone.Data
             MemberHandler[] Fields, CallbackHandler<MemberHandler, bool> cb1, CallbackHandler<MemberHandler, bool> cb2)
         {
             Type t = typeof(KeyValueCollection);
-            MethodInfo addmi = t.GetMethod("Add", new Type[] { typeof(KeyValue) });
+            MethodInfo addmi = t.GetMethod("Add", new[] { typeof(KeyValue) });
             MethodInfo nkvmi = vhBaseType.GetMethod("NewKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
             MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
 
             tb.OverrideMethodDirect(OverrideFlag, Name, vhBaseType, null,
-                new Type[] { t, typeof(object) }, delegate(ILBuilder il)
+                new[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
@@ -408,11 +394,11 @@ namespace Lephone.Data
         {
             Type t = typeof(KeyValueCollection);
             MethodInfo akvmi = vhBaseType.GetMethod("AddKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
-            MethodInfo addmi = t.GetMethod("Add", new Type[] { typeof(KeyValue) });
+            MethodInfo addmi = t.GetMethod("Add", new[] { typeof(KeyValue) });
             MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
 
             tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", vhBaseType, null,
-                new Type[] { t, typeof(object) }, delegate(ILBuilder il)
+                new[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
@@ -462,60 +448,57 @@ namespace Lephone.Data
             {
                 return (Type)types[SourceType];
             }
-            else
+            TypeAttributes ta = DynamicObjectTypeAttr;
+            Type[] interfaces = null;
+            if ( SourceType.IsSerializable )
             {
-                TypeAttributes ta = DynamicObjectTypeAttr;
-                Type[] interfaces = null;
-                if ( SourceType.IsSerializable )
+                ta |= TypeAttributes.Serializable;
+                interfaces = new[] { typeof(ISerializable) };
+            }
+
+            MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
+                ta, SourceType, interfaces, GetCustomAttributes(SourceType));
+
+            MethodInfo minit = SourceType.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag);
+            MethodInfo mupdate = SourceType.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag);
+
+            PropertyInfo[] pis = SourceType.GetProperties();
+            List<MemberHandler> impRelations = new List<MemberHandler>();
+            foreach (PropertyInfo pi in pis)
+            {
+                if (pi.CanRead && pi.CanWrite)
                 {
-                    ta |= TypeAttributes.Serializable;
-                    interfaces = new Type[] { typeof(ISerializable) };
-                }
-
-                MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
-                    ta, SourceType, interfaces, GetCustomAttributes(SourceType));
-
-                MethodInfo minit = SourceType.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag);
-                MethodInfo mupdate = SourceType.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag);
-
-                PropertyInfo[] pis = SourceType.GetProperties();
-                List<MemberHandler> impRelations = new List<MemberHandler>();
-                foreach (PropertyInfo pi in pis)
-                {
-                    if (pi.CanRead && pi.CanWrite)
+                    if (pi.GetGetMethod().IsAbstract)
                     {
-                        if (pi.GetGetMethod().IsAbstract)
+                        MemberHandler h = tb.ImplProperty(pi.Name, pi.PropertyType, SourceType, mupdate, pi);
+                        if (h != null)
                         {
-                            MemberHandler h = tb.ImplProperty(pi.Name, pi.PropertyType, SourceType, mupdate, pi);
-                            if (h != null)
-                            {
-                                impRelations.Add(h);
-                            }
+                            impRelations.Add(h);
                         }
                     }
                 }
-
-                if (SourceType.IsSerializable)
-                {
-                    MethodInfo mi = typeof(DynamicObjectReference).GetMethod("SerializeObject", ClassHelper.StaticFlag);
-                    tb.OverrideMethod(ImplFlag, "GetObjectData", typeof(ISerializable), null,
-                        new Type[] { typeof(SerializationInfo), typeof(StreamingContext) },
-                        delegate(ILBuilder il)
-                    {
-                        il.LoadArg(1).LoadArg(2).Call(mi);
-                    });
-                }
-
-                ConstructorInfo[] cis = GetConstructorInfos(SourceType);
-                foreach (ConstructorInfo ci in cis)
-                {
-                    tb.DefineConstructor(MethodAttributes.Public, ci, minit, impRelations);
-                }
-
-                Type t = tb.CreateType();
-                types.Add(SourceType, t);
-                return t;
             }
+
+            if (SourceType.IsSerializable)
+            {
+                MethodInfo mi = typeof(DynamicObjectReference).GetMethod("SerializeObject", ClassHelper.StaticFlag);
+                tb.OverrideMethod(ImplFlag, "GetObjectData", typeof(ISerializable), null,
+                                  new[] { typeof(SerializationInfo), typeof(StreamingContext) },
+                                  delegate(ILBuilder il)
+                                  {
+                                      il.LoadArg(1).LoadArg(2).Call(mi);
+                                  });
+            }
+
+            ConstructorInfo[] cis = GetConstructorInfos(SourceType);
+            foreach (ConstructorInfo ci in cis)
+            {
+                tb.DefineConstructor(MethodAttributes.Public, ci, minit, impRelations);
+            }
+
+            Type t = tb.CreateType();
+            types.Add(SourceType, t);
+            return t;
         }
 
         private static ConstructorInfo GetConstructor(Type SourceType)
@@ -551,7 +534,7 @@ namespace Lephone.Data
             {
                 string DefaultName = NameMapper.Instance.MapName(SourceType.Name);
                 al.Add(new CustomAttributeBuilder(
-                    typeof(DbTableAttribute).GetConstructor(new Type[] { typeof(string) }),
+                    typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
                     new object[] { DefaultName }));
             }
             return (CustomAttributeBuilder[])al.ToArray(typeof(CustomAttributeBuilder));
@@ -567,13 +550,13 @@ namespace Lephone.Data
                     if (d.TableName != null)
                     {
                         al.Add(new CustomAttributeBuilder(
-                            typeof(DbTableAttribute).GetConstructor(new Type[] { typeof(string) }),
+                            typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
                             new object[] { d.TableName }));
                     }
                     else
                     {
                         al.Add(new CustomAttributeBuilder(
-                            typeof(DbTableAttribute).GetConstructor(new Type[] { typeof(string[]) }),
+                            typeof(DbTableAttribute).GetConstructor(new[] { typeof(string[]) }),
                             new object[] { d.LinkNames }));
                     }
                     return true;
@@ -593,7 +576,7 @@ namespace Lephone.Data
                     JoinOnAttribute j = o as JoinOnAttribute;
                     CustomAttributeBuilder c = new CustomAttributeBuilder(
                         typeof(JoinOnAttribute).GetConstructor(
-                            new Type[] { typeof(int), typeof(string), typeof(string), typeof(CompareOpration), typeof(JoinMode) }),
+                            new[] { typeof(int), typeof(string), typeof(string), typeof(CompareOpration), typeof(JoinMode) }),
                         new object[] { j.Index, j.joinner.Key1, j.joinner.Key2, j.joinner.comp, j.joinner.mode });
                     al.Add(c);
                 }

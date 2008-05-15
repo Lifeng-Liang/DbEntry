@@ -1,11 +1,5 @@
-
-#region usings
-
-using System;
 using System.Configuration;
 using System.Collections.Specialized;
-
-#endregion
 
 namespace Lephone.Util.Setting
 {

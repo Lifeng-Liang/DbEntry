@@ -1,19 +1,11 @@
-
-#region usings
-
 using System;
-using System.Collections.Generic;
-using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
-using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.QuerySyntax
 {
     [Serializable]
-    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, ISelectable<T>, IGetPagedSelector where T : IDbObject
+    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IGetPagedSelector where T : class, IDbObject
     {
         protected internal WhereCondition m_where;
         protected internal OrderBy m_order;

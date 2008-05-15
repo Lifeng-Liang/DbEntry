@@ -1,22 +1,13 @@
-
-#region usings
-
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using Lephone.Data.Driver;
 using Lephone.Data.Common;
 using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class BelongsTo<T> : IBelongsTo where T : IDbObject
+    public class BelongsTo<T> : IBelongsTo where T : class, IDbObject
     {
-        private object owner;
+        private readonly object owner;
         private string ForeignKeyName;
         private object _ForeignKey;
 
@@ -38,7 +29,7 @@ namespace Lephone.Data.Definition
             DbObjectSmartUpdate o = owner as DbObjectSmartUpdate;
             if (o != null)
             {
-                ValueChanged += new CallbackObjectHandler<string>(o.m_ColumnUpdated);
+                ValueChanged += o.m_ColumnUpdated;
             }
         }
 
@@ -124,14 +115,15 @@ namespace Lephone.Data.Definition
             }
         }
 
-        private string GetKeyName()
-        {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            if (oi.KeyFields != null & oi.KeyFields.Length == 1)
-            {
-                return oi.KeyFields[0].Name;
-            }
-            throw new DataException("The object must have one primary key.");
-        }
+        //TODO: why left this?
+        //private string GetKeyName()
+        //{
+        //    ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
+        //    if (oi.KeyFields != null & oi.KeyFields.Length == 1)
+        //    {
+        //        return oi.KeyFields[0].Name;
+        //    }
+        //    throw new DataException("The object must have one primary key.");
+        //}
     }
 }

@@ -1,7 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace System
 {
@@ -147,7 +144,7 @@ namespace System
 
         public static explicit operator Date(string value)
         {
-            return Date.Parse(value);
+            return Parse(value);
         }
 
         public static explicit operator Date(DateTime dt)
@@ -445,7 +442,7 @@ namespace System
 
         public static explicit operator Time(string value)
         {
-            return Time.Parse(value);
+            return Parse(value);
         }
 
         public static explicit operator Time(DateTime dt)
@@ -484,7 +481,7 @@ namespace System
         {
             TimeSpan t = dt.TimeOfDay;
             DateTime r = new DateTime(1900, 1, 1, t.Hours, t.Minutes, t.Seconds, t.Milliseconds); // It's a little stupid
-            return (IConvertible)r;
+            return r;
         }
 
         public bool ToBoolean(IFormatProvider provider)

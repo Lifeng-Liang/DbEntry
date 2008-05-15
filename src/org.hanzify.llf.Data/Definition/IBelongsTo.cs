@@ -1,10 +1,4 @@
-
-#region usings
-
-using System;
 using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {

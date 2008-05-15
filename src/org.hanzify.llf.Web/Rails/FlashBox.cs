@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -34,7 +33,7 @@ namespace Lephone.Web.Rails
             }
         }
 
-        protected Dictionary<string, object> GetCurrentBag()
+        protected static Dictionary<string, object> GetCurrentBag()
         {
             ClearExpires();
             HttpContext ctx = HttpContext.Current;
@@ -45,10 +44,11 @@ namespace Lephone.Web.Rails
                 bag["ExpireTime"] = DateTime.Now.AddMinutes(WebSettings.SessionExpire);
                 return bag;
             }
-            else
+            string fid = Guid.NewGuid().ToString();
+            HttpCookie rpc = ctx.Response.Cookies["flash_id"];
+            if(rpc != null)
             {
-                string fid = Guid.NewGuid().ToString();
-                ctx.Response.Cookies["flash_id"].Value = fid;
+                rpc.Value = fid;
                 Dictionary<string, object> bag = new Dictionary<string, object>();
                 bag["ExpireTime"] = DateTime.Now.AddMinutes(WebSettings.SessionExpire);
                 lock (BagSet)
@@ -57,9 +57,10 @@ namespace Lephone.Web.Rails
                 }
                 return bag;
             }
+            throw new WebException("Unexpacted exception");
         }
 
-        protected void ClearExpires()
+        protected static void ClearExpires()
         {
             DateTime now = DateTime.Now;
             if (now > NextChekTime)

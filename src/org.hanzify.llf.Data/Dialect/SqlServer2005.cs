@@ -1,5 +1,3 @@
-
-using System;
 using System.Data;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;

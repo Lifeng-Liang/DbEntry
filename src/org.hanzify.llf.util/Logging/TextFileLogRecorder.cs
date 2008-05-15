@@ -1,12 +1,7 @@
-
-#region usings
-
 using System;
 using System.Text;
 using System.IO;
 using Lephone.Util.Setting;
-
-#endregion
 
 namespace Lephone.Util.Logging
 {

@@ -1,22 +1,16 @@
-
-#region usings
-
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-
 using Lephone.Util.Text;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
     // order by [Id]
     public class DbEnum
     {
-        private HybridDictionary dict;
-        private HybridDictionary vdic;
-        private string[] list;
+        private readonly HybridDictionary dict;
+        private readonly HybridDictionary vdic;
+        private readonly string[] list;
 
         public DbEnum(int Type)
         {

@@ -1,4 +1,3 @@
-
 using System;
 
 namespace Lephone.Util.Text
@@ -6,7 +5,7 @@ namespace Lephone.Util.Text
 	[AttributeUsage(AttributeTargets.Field)]
 	public class ShowStringAttribute : Attribute
 	{
-		private string _ShowString;
+		private readonly string _ShowString;
 
 		public string ShowString
 		{

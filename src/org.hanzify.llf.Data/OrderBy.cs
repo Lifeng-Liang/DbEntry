@@ -1,13 +1,8 @@
-﻿
-#region usings
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
-
-#endregion
 
 namespace Lephone.Data
 {

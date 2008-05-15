@@ -1,6 +1,3 @@
-
-using System;
-
 namespace Lephone.Util.Logging
 {
     public enum LogType

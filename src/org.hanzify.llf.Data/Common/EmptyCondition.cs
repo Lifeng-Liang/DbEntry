@@ -1,10 +1,3 @@
-
-#region usings
-
-using System;
-
-#endregion
-
 namespace Lephone.Data.Common
 {
     public class EmptyCondition : WhereCondition
@@ -14,7 +7,7 @@ namespace Lephone.Data.Common
             get { return false; }
         }
 
-        public override string ToSqlText(Lephone.Data.SqlEntry.DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
+        public override string ToSqlText(SqlEntry.DataParamterCollection dpc, Dialect.DbDialect dd)
         {
             return null;
         }

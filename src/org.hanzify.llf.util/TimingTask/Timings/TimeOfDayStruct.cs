@@ -1,11 +1,10 @@
-
 using System;
 
 namespace Lephone.Util.TimingTask.Timings
 {
 	public class TimeOfDayStructure
 	{
-		private TimeSpan _TimeOfDay;
+		private readonly TimeSpan _TimeOfDay;
 
 		public TimeOfDayStructure(int Hour, int Minute, int Second)
 		{

@@ -1,11 +1,10 @@
-
 using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
     public class DefaultController : ControllerBase
     {
-        private static string template = ResourceHelper.ReadToEnd(typeof(DefaultController), "Rails.Default.htm");
+        private static readonly string template = ResourceHelper.ReadToEnd(typeof(DefaultController), "Rails.Default.htm");
 
         public void List()
         {

@@ -1,12 +1,6 @@
-
-#region usings
-
 using System;
 using System.Data;
 using Lephone.Data.Common;
-using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.SqlEntry
 {

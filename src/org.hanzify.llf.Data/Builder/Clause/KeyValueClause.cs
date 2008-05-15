@@ -1,14 +1,9 @@
-
-#region usings
-
 using System;
 using Lephone.Util.Text;
 using Lephone.Data.Common;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
-
-#endregion
 
 namespace Lephone.Data.Builder.Clause
 {
@@ -47,20 +42,15 @@ namespace Lephone.Data.Builder.Clause
         }
         
         public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
-		{
-            string dpStr;
-            if (KV.Value == null)
-            {
-                dpStr = "NULL";
-            }
-            else
-            {
-                dpStr = GetValueString(dpc, dd);
-            }
-			return string.Format("{0} {2} {1}", dd.QuoteForColumnName(KV.Key), dpStr, Comp);
-		}
+        {
+            string dpStr 
+                = KV.Value == null 
+                ? "NULL" 
+                : GetValueString(dpc, dd);
+            return string.Format("{0} {2} {1}", dd.QuoteForColumnName(KV.Key), dpStr, Comp);
+        }
 
-        protected virtual string GetValueString(DataParamterCollection dpc, DbDialect dd)
+	    protected virtual string GetValueString(DataParamterCollection dpc, DbDialect dd)
         {
             string dpStr;
             if (DataSetting.UsingParamter)

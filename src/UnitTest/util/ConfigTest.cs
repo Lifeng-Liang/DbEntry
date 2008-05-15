@@ -1,23 +1,13 @@
-
-#region usings
-
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-
 using NUnit.Framework;
-
 using Lephone.Util.Text;
 using Lephone.Util.Setting;
-
-#endregion
 
 namespace Lephone.UnitTest.util
 {
     [TestFixture]
 	public class ConfigTest1
 	{
-        private static ConfigTest1 ct = new ConfigTest1();
+        private static readonly ConfigTest1 ct = new ConfigTest1();
 
         public static readonly int TestInt = 0;
 
@@ -25,7 +15,6 @@ namespace Lephone.UnitTest.util
         public static readonly string TestString = "";
 
         private readonly bool TestBool = false;
-
 
         [SetUp]
         public void SetUp()
@@ -48,12 +37,31 @@ namespace Lephone.UnitTest.util
             Assert.AreEqual(23, ConfigTest2.TestInt);
             Assert.AreEqual(ConfigEnum.Release, ConfigTest2.TestEnum);
         }
+
+        [Test]
+        public void TestCreateClass()
+        {
+            Assert.IsNotNull(ConfigTest3.TheClass);
+            Assert.AreEqual("aaa", ConfigTest3.TheClass.Name);
+        }
+
+        [Test]
+        public void TestCreateClass2()
+        {
+            Assert.IsNotNull(ConfigTest3.MyClass);
+            Assert.AreEqual("aaa", ConfigTest3.MyClass.Name);
+        }
 	}
 
     public enum ConfigEnum
     {
         Debug,
         Release
+    }
+
+    public class ConfigTestClass
+    {
+        public string Name = "aaa";
     }
 
     public static class ConfigTest2
@@ -67,6 +75,17 @@ namespace Lephone.UnitTest.util
         {
             ConfigHelper ch = new ConfigHelper("MySetting");
             ch.InitClass(typeof(ConfigTest2));
+        }
+    }
+
+    public static class ConfigTest3
+    {
+        public static readonly ConfigTestClass TheClass = null;
+        public static readonly ConfigTestClass MyClass = null;
+
+        static ConfigTest3()
+        {
+            new ConfigHelper("MySetting").InitClass(typeof(ConfigTest3));
         }
     }
 }

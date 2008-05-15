@@ -1,11 +1,4 @@
-
-#region usings
-
-using System;
-using System.Data;
 using System.Collections;
-
-#endregion
 
 namespace Lephone.Util.TimingTask
 {

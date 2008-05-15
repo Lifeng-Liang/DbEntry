@@ -1,6 +1,3 @@
-
-#region usings
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -9,14 +6,12 @@ using System.Text;
 using System.Reflection;
 using System.Xml;
 
-#endregion
-
 namespace Lephone.Util.Setting
 {
     public class ResourceConfigReader : ConfigReader
     {
         private const string ConfigFilePostFix = ".config.xml";
-        private Dictionary<string, NameValueCollection> XmlConfigs = null;
+        private Dictionary<string, NameValueCollection> XmlConfigs;
 
         public override NameValueCollection GetSection(string SectionName)
         {
@@ -28,10 +23,7 @@ namespace Lephone.Util.Setting
             {
                 return XmlConfigs[SectionName];
             }
-            else
-            {
-                return new NameValueCollection();
-            }
+            return new NameValueCollection();
         }
 
         private void InitAllXmlConfigFiles()
@@ -78,7 +70,13 @@ namespace Lephone.Util.Setting
                 XmlDocument xd = new XmlDocument();
                 xd.Load(ms);
 
-                foreach (XmlNode n in xd["configuration"].ChildNodes)
+                XmlElement node  = xd["configuration"];
+                if (node == null)
+                {
+                    throw new SettingException("configuration section not found.");
+                }
+
+                foreach (XmlNode n in node.ChildNodes)
                 {
                     if (n.Name != "configSections")
                     {

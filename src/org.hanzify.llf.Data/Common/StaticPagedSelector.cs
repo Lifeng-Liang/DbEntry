@@ -1,17 +1,10 @@
-
-#region usings
-
-using System;
 using System.Collections;
 using Lephone.Data.Common;
-using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
-    public class StaticPagedSelector<T> : PagedSelector<T> where T : IDbObject
+    public class StaticPagedSelector<T> : PagedSelector<T> where T : class, IDbObject
     {
         public StaticPagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds)
             : base(iwc, oc, PageSize, ds)
@@ -32,13 +25,10 @@ namespace Lephone.Data.Common
             {
                 return Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(1, firstPageSize).Select();
             }
-            else
-            {
-                int StartWith = firstPageSize + _PageSize * (PageIndex - 1);
-                int tn = StartWith + _PageSize;
-                IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(StartWith + 1, tn).Select();
-                return ret;
-            }
+            int StartWith = firstPageSize + _PageSize * (PageIndex - 1);
+            int tn = StartWith + _PageSize;
+            IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(StartWith + 1, tn).Select();
+            return ret;
         }
     }
 }

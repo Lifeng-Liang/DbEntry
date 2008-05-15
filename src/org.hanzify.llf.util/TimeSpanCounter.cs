@@ -1,11 +1,10 @@
-﻿
-using System;
+﻿using System;
 
 namespace Lephone.Util
 {
 	public class TimeSpanCounter
 	{
-		private DateTime _TimeStart;
+		private readonly DateTime _TimeStart;
 
 		public TimeSpanCounter()
 		{

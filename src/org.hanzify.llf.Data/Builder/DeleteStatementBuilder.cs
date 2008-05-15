@@ -1,21 +1,15 @@
-
-#region usings
-
-using System;
 using System.Data;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.SqlEntry;
-
-#endregion
 
 namespace Lephone.Data.Builder
 {
 	public class DeleteStatementBuilder : ISqlStatementBuilder, ISqlWhere
 	{
 		private const string StatementTemplate = "Delete From {0}{1};\n";
-		private string TableName;
-        private WhereClause _WhereOptions = new WhereClause();
+		private readonly string TableName;
+        private readonly WhereClause _WhereOptions = new WhereClause();
 
 		public DeleteStatementBuilder(string TableName)
 		{

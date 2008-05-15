@@ -1,19 +1,13 @@
-
-#region usings
-
-using System;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data.Dialect
 {
 	public class MySql : DbDialect
 	{
-		public MySql() : base()
-        {
+		public MySql()
+		{
             TypeNames[DataType.Guid] = "char(36)";
         }
 
@@ -32,7 +26,7 @@ namespace Lephone.Data.Dialect
 
         public override DbStructInterface GetDbStructInterface()
         {
-            return new DbStructInterface(true, null, new string[] { null, null, null, "BASE TABLE" }, null, null, null);
+            return new DbStructInterface(true, null, new[] { null, null, null, "BASE TABLE" }, null, null, null);
         }
 
         public override string IdentitySelectString

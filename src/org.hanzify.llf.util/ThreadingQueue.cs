@@ -1,11 +1,6 @@
-
-#region usings
-
 using System;
 using System.Collections;
 using System.Threading;
-
-#endregion
 
 namespace Lephone.Util
 {
@@ -15,17 +10,17 @@ namespace Lephone.Util
 	{
 		public event OutputEventHandler Output;
 
-		private Queue ShareQueue = new Queue();
-		private ArrayList Threads = new ArrayList();
+		private readonly Queue ShareQueue = new Queue();
+		private readonly ArrayList Threads = new ArrayList();
 		private bool Running = true;
-		private AutoResetEvent HasIncoming = new AutoResetEvent(false);
-		private ManualResetEvent ItsTimeToDispose = new ManualResetEvent(false);
+		private readonly AutoResetEvent HasIncoming = new AutoResetEvent(false);
+		private readonly ManualResetEvent ItsTimeToDispose = new ManualResetEvent(false);
 
 		public ThreadingQueue(int ThreadNo)
 		{
 			for ( int i = 0; i < ThreadNo; i++ )
 			{
-				Thread t = new Thread(new ThreadStart(OutputThread));
+				Thread t = new Thread(OutputThread);
 				Threads.Add(t);
 				t.Start();
 			}

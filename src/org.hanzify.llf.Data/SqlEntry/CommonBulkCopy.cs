@@ -1,4 +1,3 @@
-
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -59,7 +58,7 @@ namespace Lephone.Data.SqlEntry
 
         public event SqlRowsCopiedEventHandler SqlRowsCopied;
 
-        private DataProvider Provider;
+        private readonly DataProvider Provider;
 
         public CommonBulkCopy(DataProvider Provider)
         {
@@ -73,7 +72,7 @@ namespace Lephone.Data.SqlEntry
 
         public void WriteToServer(DataRow[] rows)
         {
-            Provider.UsingTransaction(delegate()
+            Provider.UsingTransaction(delegate
             {
                 foreach (DataRow dr in rows)
                 {
@@ -91,7 +90,7 @@ namespace Lephone.Data.SqlEntry
 
         public void WriteToServer(DataTable table)
         {
-            Provider.UsingTransaction(delegate()
+            Provider.UsingTransaction(delegate
             {
                 foreach (DataRow dr in table.Rows)
                 {
@@ -108,7 +107,7 @@ namespace Lephone.Data.SqlEntry
 
         public void WriteToServer(IDataReader reader)
         {
-            Provider.UsingTransaction(delegate()
+            Provider.UsingTransaction(delegate
             {
                 while (reader.Read())
                 {
@@ -125,7 +124,7 @@ namespace Lephone.Data.SqlEntry
 
         public void WriteToServer(DataTable table, DataRowState rowState)
         {
-            Provider.UsingTransaction(delegate()
+            Provider.UsingTransaction(delegate
             {
                 foreach (DataRow dr in table.Rows)
                 {
@@ -148,7 +147,7 @@ namespace Lephone.Data.SqlEntry
             return (o == DBNull.Value) ? null : o;
         }
 
-        private long Count = 0;
+        private long Count;
 
         private bool WriteSingleToServer(InsertStatementBuilder sb)
         {

@@ -1,7 +1,4 @@
-
-using System;
 using System.Collections;
-using System.Text;
 using Lephone.Data.Common;
 using Lephone.Util;
 
@@ -22,7 +19,7 @@ namespace Lephone.Data.Caching
                 {
                     return null;
                 }
-                else if (NowProvider.Instance.Now > tv.ExpiredOn)
+                if (NowProvider.Instance.Now > tv.ExpiredOn)
                 {
                     Remove(Key);
                     return null;

@@ -1,18 +1,13 @@
-
-#region usings
-
 using System;
 using Lephone.DemoObject;
 using Lephone.Data;
 using Lephone.Data.Common;
 
-#endregion
-
 namespace Lephone
 {
     public class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Process(DbEntry.Context, "-->> Using Access : ");
             Process(new DbContext(EntryConfig.GetDriver(1)), "-->> Using SqlServer2000 : ");

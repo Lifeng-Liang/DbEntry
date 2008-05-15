@@ -1,9 +1,6 @@
-
 using System;
 using System.Data;
 using System.Collections.Generic;
-using Lephone.Util;
-using Lephone.Data.Driver;
 using Lephone.Data.Definition;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
@@ -64,7 +61,7 @@ namespace Lephone.Data.Common
                 KeyValue kv = new KeyValue(fi.Name, null, h.FieldType);
                 return kv;
             }
-            else if (fi.IsLazyLoad)
+            if (fi.IsLazyLoad)
             {
                 Type t = fi.FieldType.GetGenericArguments()[0];
                 KeyValue kv = new KeyValue(fi.Name, null, t);

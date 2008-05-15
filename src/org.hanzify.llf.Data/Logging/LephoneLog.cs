@@ -1,11 +1,6 @@
-
-#region usings
-
 using System;
 using Lephone.Data.Definition;
 using Lephone.Util.Logging;
-
-#endregion
 
 namespace Lephone.Data.Logging
 {

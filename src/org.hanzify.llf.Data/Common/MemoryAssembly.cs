@@ -1,12 +1,7 @@
-
-#region usings
-
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
@@ -14,11 +9,11 @@ namespace Lephone.Data.Common
     {
         public const string DefaultAssemblyName = "DbEntry_MemoryAssembly";
         public static readonly MemoryAssembly Instance = new MemoryAssembly();
-        private static int index = 0;
+        private static int index;
 
-        private AssemblyBuilder InnerAssembly;
+        private readonly AssemblyBuilder InnerAssembly;
         private ModuleBuilder InnerModule;
-        private string AssemblyName;
+        private readonly string AssemblyName;
 
         public MemoryAssembly()
             : this(DefaultAssemblyName) { }
@@ -43,7 +38,7 @@ namespace Lephone.Data.Common
 
         public MemoryTypeBuilder DefineType(TypeAttributes attr, Type InheritsFrom, Type[] Interfaces, CustomAttributeBuilder[] attributes)
         {
-            string TypeName = "T" + index.ToString();
+            string TypeName = "T" + index;
             index++;
             return DefineType(TypeName, attr, InheritsFrom, Interfaces, attributes);
         }

@@ -1,17 +1,11 @@
-
-#region usings
-
 using System;
-using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {
     [Serializable]
     public abstract class DbObject : DbObjectBase
 	{
-		private long m_Id = 0;
+		private long m_Id;
 
         [DbKey]
         public long Id

@@ -1,13 +1,8 @@
-
-#region usings
-
 using System;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
-#endregion
 
 namespace Lephone.Util.Text
 {
@@ -20,20 +15,17 @@ namespace Lephone.Util.Text
 
         public static string[] Split(string s, char c, int count)
         {
-            string[] ss = s.Split(new char[] { c }, count);
+            string[] ss = s.Split(new[] { c }, count);
             if (ss.Length == count)
             {
                 return ss;
             }
-            else
+            List<string> l = new List<string>(ss);
+            for (int i = ss.Length; i < count; i++)
             {
-                List<string> l = new List<string>(ss);
-                for (int i = ss.Length; i < count; i++)
-                {
-                    l.Add("");
-                }
-                return l.ToArray();
+                l.Add("");
             }
+            return l.ToArray();
         }
 
         public static string EnsureEndsWith(string s, char c)
@@ -94,10 +86,7 @@ namespace Lephone.Util.Text
 			{
 				return s.Substring(0, n);
 			}
-			else
-			{
-				return s;
-			}
+		    return s;
 		}
 
 		public static byte[] GetBytesByLength(byte[] bs, int length)
@@ -117,7 +106,7 @@ namespace Lephone.Util.Text
 			int n = 0;
 			for ( int i = 0; i < cs.Length; i++ )
 			{
-				int c = (int)cs[i];
+				int c = cs[i];
 				if ( c >=32 && c <128 )
 				{
 					n++;
@@ -134,10 +123,10 @@ namespace Lephone.Util.Text
 				{
 					return s.Substring(0, i + 1);
 				}
-				else if ( n > Count )
-				{
-					return s.Substring(0, i);
-				}
+			    if ( n > Count )
+			    {
+			        return s.Substring(0, i);
+			    }
 			}
 			return s;
 		}

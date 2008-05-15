@@ -1,14 +1,7 @@
-
-#region usings
-
 using System;
-using Lephone.Util.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
-using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data.Builder.Clause
 {
@@ -16,7 +9,7 @@ namespace Lephone.Data.Builder.Clause
     public class KeyKeyClause : KeyValueClause
     {
         public KeyKeyClause(CK k1, CK k2, CompareOpration co)
-            : this(k1.ColumnName, object.Equals(k2, null) ? null : k2.ColumnName, co)
+            : this(k1.ColumnName, Equals(k2, null) ? null : k2.ColumnName, co)
         {
         }
 

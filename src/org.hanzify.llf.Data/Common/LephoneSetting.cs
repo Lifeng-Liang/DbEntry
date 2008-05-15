@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Lephone.Data.Definition;
-using Lephone.Util;
-using System.Reflection;
-using Lephone.Util.Text;
 using Lephone.Util.Setting;
 
 namespace Lephone.Data.Common
@@ -28,7 +23,7 @@ namespace Lephone.Data.Common
     {
         public static readonly DbConfigHelper Instance = new DbConfigHelper();
 
-        private Dictionary<string, string> nvc = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> nvc = new Dictionary<string, string>();
 
         public DbConfigHelper()
         {

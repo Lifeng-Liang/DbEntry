@@ -1,11 +1,5 @@
-
-#region usings
-
 using System;
-using System.Text;
 using Lephone.Util.Setting;
-
-#endregion
 
 namespace Lephone.Util.Logging
 {
@@ -21,7 +15,7 @@ namespace Lephone.Util.Logging
         public static readonly Logger System = new Logger("System");
 
         public event LogEventHandler LogEvent;
-        private string Name;
+        private readonly string Name;
 
         #region Constructors
 
@@ -55,7 +49,7 @@ namespace Lephone.Util.Logging
         {
             if (ilc != null)
             {
-                LogEvent += new LogEventHandler(ilc.ProcessLog);
+                LogEvent += ilc.ProcessLog;
             }
         }
 

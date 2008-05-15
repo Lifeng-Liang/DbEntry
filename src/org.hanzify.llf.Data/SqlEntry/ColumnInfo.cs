@@ -1,10 +1,5 @@
-
-#region usings
-
 using System;
 using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data.SqlEntry
 {
@@ -35,7 +30,7 @@ namespace Lephone.Data.SqlEntry
         {
             if (fh.IsBelongsTo)
             {
-                Common.ObjectInfo oi = Common.ObjectInfo.GetInstance(fh.FieldType.GetGenericArguments()[0]);
+                Common.ObjectInfo oi = ObjectInfo.GetInstance(fh.FieldType.GetGenericArguments()[0]);
                 if (oi.KeyFields != null && oi.KeyFields.Length == 1)
                 {
                     return oi.KeyFields[0].FieldType;

@@ -1,43 +1,37 @@
-
-#region usings
-
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-
-#endregion
 
 namespace Lephone.MockSql
 {
     public class RecorderDbTransaction : DbTransaction
     {
-        private RecorderConnection c;
-        private IsolationLevel l;
+        private readonly RecorderConnection conn;
+        private readonly IsolationLevel level;
         internal List<string> sqls = new List<string>();
 
         public RecorderDbTransaction(DbConnection c, IsolationLevel l)
         {
-            this.c = (RecorderConnection)c;
-            this.l = l;
+            this.conn = (RecorderConnection)c;
+            this.level = l;
         }
 
         public override void Commit()
         {
             foreach (string s in sqls)
             {
-                c.Recorder.Write(s);
+                conn.Recorder.Write(s);
             }
         }
 
         protected override DbConnection DbConnection
         {
-            get { return c; }
+            get { return conn; }
         }
 
-        public override System.Data.IsolationLevel IsolationLevel
+        public override IsolationLevel IsolationLevel
         {
-            get { return l; }
+            get { return level; }
         }
 
         public override void Rollback()

@@ -1,10 +1,3 @@
-
-#region usings
-
-using System;
-
-#endregion
-
 namespace Lephone.MockSql.Recorder
 {
     public interface IRecorder

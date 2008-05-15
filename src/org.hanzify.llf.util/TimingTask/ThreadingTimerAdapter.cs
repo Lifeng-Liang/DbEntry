@@ -1,11 +1,4 @@
-
-#region usings
-
-using System;
 using System.Threading;
-using Lephone.Util.Logging;
-
-#endregion
 
 namespace Lephone.Util.TimingTask
 {
@@ -13,7 +6,7 @@ namespace Lephone.Util.TimingTask
 	{
 		protected TimerCallback tcb;
 		protected Timer mTimer;
-		protected bool mEnabled = false;
+		protected bool mEnabled;
 		protected double mInterval;
 		public event System.Timers.ElapsedEventHandler Elapsed;
 
@@ -21,7 +14,7 @@ namespace Lephone.Util.TimingTask
 
 		public ThreadingTimerAdapter(double Interval)
 		{
-			tcb = new TimerCallback( Timer_Elapsed );
+			tcb = Timer_Elapsed;
 			mInterval = Interval;
 			mTimer = new Timer(tcb, null, (long)mInterval, (long)mInterval);
 		}

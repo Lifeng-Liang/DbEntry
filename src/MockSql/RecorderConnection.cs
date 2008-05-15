@@ -1,23 +1,17 @@
-
-#region usings
-
-using System;
 using System.Data;
 using System.Data.Common;
 using Lephone.Util;
 using Lephone.MockSql.Recorder;
-
-#endregion
 
 namespace Lephone.MockSql
 {
     public class RecorderConnection : DbConnection
     {
         private string _ConnectionString;
-        private bool _IsOpened = false;
+        private bool _IsOpened;
         internal IRecorder Recorder;
 
-        protected override DbTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel)
+        protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {
             return new RecorderDbTransaction(this, isolationLevel);
         }
@@ -77,22 +71,22 @@ namespace Lephone.MockSql
             get { throw RecorderFactory.NotImplemented; }
         }
 
-        public override System.Data.ConnectionState State
+        public override ConnectionState State
         {
             get { throw RecorderFactory.NotImplemented; }
         }
 
-        public override System.Data.DataTable GetSchema()
+        public override DataTable GetSchema()
         {
             return new DataTable();
         }
 
-        public override System.Data.DataTable GetSchema(string collectionName)
+        public override DataTable GetSchema(string collectionName)
         {
             return new DataTable();
         }
 
-        public override System.Data.DataTable GetSchema(string collectionName, string[] restrictionValues)
+        public override DataTable GetSchema(string collectionName, string[] restrictionValues)
         {
             return new DataTable();
         }

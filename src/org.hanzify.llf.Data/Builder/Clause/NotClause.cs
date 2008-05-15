@@ -1,18 +1,13 @@
-
-#region usings
-
 using System;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
-
-#endregion
 
 namespace Lephone.Data.Builder.Clause
 {
 	[Serializable]
 	public class NotClause : WhereCondition
 	{
-		private WhereCondition _ic;
+		private readonly WhereCondition _ic;
 
 		public NotClause(WhereCondition ic)
 		{

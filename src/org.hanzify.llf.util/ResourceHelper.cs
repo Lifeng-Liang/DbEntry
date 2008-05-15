@@ -1,17 +1,12 @@
-
-#region usings
-
 using System;
 using System.Reflection;
 using System.IO;
-
-#endregion
 
 namespace Lephone.Util
 {
 	public static class ResourceHelper
 	{
-		private static Assembly Asm = Assembly.GetEntryAssembly();
+		private static readonly Assembly assembly = Assembly.GetEntryAssembly();
 
 		#region GetStream
 
@@ -34,8 +29,8 @@ namespace Lephone.Util
 
 		public static Stream GetStream(string FilePath)
 		{
-			string fn = string.Format("{0}.{1}",  Asm.GetName().Name, FilePath);
-			return Asm.GetManifestResourceStream(fn);
+			string fn = string.Format("{0}.{1}",  assembly.GetName().Name, FilePath);
+			return assembly.GetManifestResourceStream(fn);
 		}
 
 		#endregion
@@ -60,7 +55,7 @@ namespace Lephone.Util
 
 		public static StreamReader GetStreamReader(string FilePath)
 		{
-			return GetStreamReader(Asm, FilePath);
+			return GetStreamReader(assembly, FilePath);
 		}
 
 		#endregion
@@ -88,7 +83,7 @@ namespace Lephone.Util
 
 		public static string ReadToEnd(string FilePath)
 		{
-			return ReadToEnd(Asm, FilePath);
+			return ReadToEnd(assembly, FilePath);
 		}
 
         public static byte[] ReadAll(Type t, string FilePath)

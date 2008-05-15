@@ -1,4 +1,3 @@
-
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -74,16 +73,16 @@ namespace Lephone.Data.Common
         {
             Src.ExecuteDataReader(new SqlStatement(sql), delegate(IDataReader dr)
             {
-                Dest.UsingConnection(delegate()
+                Dest.UsingConnection(delegate
                 {
                     IDbBulkCopy c = Dest.GetDbBulkCopy();
                     c.BatchSize = _BatchSize;
                     c.DestinationTableName = DestinationTableName;
                     c.NotifyAfter = _NotifyAfter;
-                    c.SqlRowsCopied += new SqlRowsCopiedEventHandler(delegate(object sender, SqlRowsCopiedEventArgs e)
+                    c.SqlRowsCopied += delegate(object sender, SqlRowsCopiedEventArgs e)
                     {
                         Console.WriteLine("{0}: {1}", DestinationTableName, e.RowsCopied);
-                    });
+                    };
                     c.WriteToServer(dr);
                 });
             });
@@ -93,7 +92,7 @@ namespace Lephone.Data.Common
         public abstract void Run();
     }
 
-    public abstract class BulkCopyProcessor<T> : BulkCopyProcessor where T : IDbObject
+    public abstract class BulkCopyProcessor<T> : BulkCopyProcessor where T : class, IDbObject
     {
         public override void Run()
         {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Lephone.Util.Text
+﻿namespace Lephone.Util.Text
 {
     public abstract class XmlSerializable<T> where T : XmlSerializable<T>
     {

@@ -1,4 +1,3 @@
-
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -61,12 +60,12 @@ namespace Lephone.Data.SqlEntry
 
         public event SqlRowsCopiedEventHandler SqlRowsCopied;
 
-        private SqlBulkCopy BulkCopy;
+        private readonly SqlBulkCopy BulkCopy;
 
         public SqlServerBulkCopy(SqlConnection connection)
         {
             BulkCopy = new SqlBulkCopy(connection);
-            BulkCopy.SqlRowsCopied += new SqlRowsCopiedEventHandler(BulkCopy_SqlRowsCopied);
+            BulkCopy.SqlRowsCopied += BulkCopy_SqlRowsCopied;
         }
 
         void BulkCopy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)

@@ -1,35 +1,28 @@
-
-#region usings
-
 using System;
 using System.Text;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
 using Lephone.Util;
 using Lephone.Util.Text;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 
-#endregion
-
 namespace Lephone.Data
 {
     public class ValidateHandler
     {
-        private string _InvalidFieldText;
-        private string _NotAllowNullText;
-        private string _NotMatchedText;
-        private string _LengthText;
-        private string _ShouldBeUniqueText;
-        private string _SeparatorText;
+        private readonly string _InvalidFieldText;
+        private readonly string _NotAllowNullText;
+        private readonly string _NotMatchedText;
+        private readonly string _LengthText;
+        private readonly string _ShouldBeUniqueText;
+        private readonly string _SeparatorText;
 
-        private bool EmptyAsNull;
-        private bool IncludeClassName;
+        private readonly bool EmptyAsNull;
+        private readonly bool IncludeClassName;
         public bool IsValid;
 
-        private Dictionary<string, string> _ErrorMessages;
+        private readonly Dictionary<string, string> _ErrorMessages;
 
         public Dictionary<string, string> ErrorMessages
         {
@@ -113,14 +106,10 @@ namespace Lephone.Data
                     if (DbEntry.Context.GetResultCount(t, c && EditCondition) != 0)
                     {
                         this.IsValid = false;
-                        if (_ErrorMessages.ContainsKey(n))
-                        {
-                            _ErrorMessages[n] = string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, _ShouldBeUniqueText);
-                        }
-                        else
-                        {
-                            _ErrorMessages[n] = string.Format(_InvalidFieldText, n, _ShouldBeUniqueText);
-                        }
+                        _ErrorMessages[n] 
+                            = _ErrorMessages.ContainsKey(n) 
+                            ? string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, _ShouldBeUniqueText) 
+                            : string.Format(_InvalidFieldText, n, _ShouldBeUniqueText);
                     }
                 }
             }
@@ -135,31 +124,25 @@ namespace Lephone.Data
                 {
                     return true;
                 }
-                else
-                {
-                    ErrMsg.Append(_NotAllowNullText).Append(_SeparatorText);
-                    return false;
-                }
+                ErrMsg.Append(_NotAllowNullText).Append(_SeparatorText);
+                return false;
             }
-            else
+            bool isValid = true;
+            Field = Field.Trim();
+            if (fh.MaxLength > 0)
             {
-                bool isValid = true;
-                Field = Field.Trim();
-                if (fh.MaxLength > 0)
-                {
-                    isValid &= IsValidField(Field, fh.MinLength, fh.MaxLength, !fh.IsUnicode, ErrMsg);
-                }
-                if (!string.IsNullOrEmpty(fh.Regular))
-                {
-                    bool iv = Regex.IsMatch(Field, fh.Regular);
-                    if (iv)
-                    {
-                        ErrMsg.Append(_NotMatchedText).Append(_SeparatorText);
-                    }
-                    isValid &= iv;
-                }
-                return isValid;
+                isValid &= IsValidField(Field, fh.MinLength, fh.MaxLength, !fh.IsUnicode, ErrMsg);
             }
+            if (!string.IsNullOrEmpty(fh.Regular))
+            {
+                bool iv = Regex.IsMatch(Field, fh.Regular);
+                if (iv)
+                {
+                    ErrMsg.Append(_NotMatchedText).Append(_SeparatorText);
+                }
+                isValid &= iv;
+            }
+            return isValid;
         }
 
         private bool IsValidField(string Field, int Min, int Max, bool IsAnsi, StringBuilder ErrMsg)
@@ -171,10 +154,7 @@ namespace Lephone.Data
                 ErrMsg.Append(string.Format(_LengthText, Min, Max, i)).Append(_SeparatorText);
                 return false;
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
     }
 }

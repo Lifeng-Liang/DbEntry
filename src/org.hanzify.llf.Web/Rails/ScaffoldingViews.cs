@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Web;
@@ -106,30 +105,34 @@ namespace Lephone.Web.Rails
 
                 b.end.enter().enter();
 
-                foreach (object o in bag["list"] as IEnumerable)
+                IEnumerable objlist = bag["list"] as IEnumerable;
+                if(objlist != null)
                 {
-                    b.tr.over();
-                    object id = oi.Handler.GetKeyValue(o);
-                    foreach (MemberHandler m in oi.SimpleFields)
+                    foreach (object o in objlist)
                     {
-                        b.td.text(m.GetValue(o) ?? "<NULL>").end.enter();
+                        b.tr.over();
+                        object id = oi.Handler.GetKeyValue(o);
+                        foreach (MemberHandler m in oi.SimpleFields)
+                        {
+                            b.td.text(m.GetValue(o) ?? "<NULL>").end.enter();
+                        }
+                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Show", null, "show", id, null)).end.enter();
+                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Edit", null, "edit", id, null)).end.enter();
+                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Destroy", null, "destroy", id, "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"")).end.enter();
+                        b.end.enter().enter();
                     }
-                    b.td.include(LinkTo(ctx.Request.ApplicationPath, "Show", null, "show", id, null)).end.enter();
-                    b.td.include(LinkTo(ctx.Request.ApplicationPath, "Edit", null, "edit", id, null)).end.enter();
-                    b.td.include(LinkTo(ctx.Request.ApplicationPath, "Destroy", null, "destroy", id, "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"")).end.enter();
+
                     b.end.enter().enter();
+
+                    int count = (int)(long)bag["list_count"];
+                    int pagesize = (int)bag["list_pagesize"];
+                    for (int i = 0, n = 1; i < count; n++, i += pagesize)
+                    {
+                        b.include(LinkTo(ctx.Request.ApplicationPath, n.ToString(), null, "list", n.ToString(), null)).enter();
+                    }
+
+                    b.enter().br.br.include(LinkTo(ctx.Request.ApplicationPath, "New " + cn, null, "new", null, null)).br.enter();
                 }
-
-                b.end.enter().enter();
-
-                int count = (int)(long)bag["list_count"];
-                int pagesize = (int)bag["list_pagesize"];
-                for (int i = 0, n = 1; i < count; n++, i += pagesize)
-                {
-                    b.include(LinkTo(ctx.Request.ApplicationPath, n.ToString(), null, "list", n.ToString(), null)).enter();
-                }
-
-                b.enter().br.br.include(LinkTo(ctx.Request.ApplicationPath, "New " + cn, null, "new", null, null)).br.enter();
             });
         }
 

@@ -1,12 +1,7 @@
-
-#region usings
-
 using System;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
 using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data
 {
@@ -34,7 +29,7 @@ namespace Lephone.Data
     [Serializable]
     public class CK<T>
     {
-        private static FieldNameGetter<T> _Field = new FieldNameGetter<T>();
+        private static readonly FieldNameGetter<T> _Field = new FieldNameGetter<T>();
 
         public static FieldNameGetter<T> Field
         {
@@ -45,7 +40,7 @@ namespace Lephone.Data
 	[Serializable]
 	public class CK
 	{
-		private static CK _Col = new CK("");
+		private static readonly CK _Col = new CK("");
 
 		public CK this[string ColumnName]
 		{

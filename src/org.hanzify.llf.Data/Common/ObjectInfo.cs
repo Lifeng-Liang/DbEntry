@@ -1,16 +1,10 @@
-
-#region usings
-
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;
 using Lephone.Util.Logging;
 using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
@@ -40,12 +34,9 @@ namespace Lephone.Data.Common
             {
                 return dic[t];
             }
-            else
-            {
-                ObjectInfo oi = new ObjectInfo();
-                oi.InitBySimpleMode(t);
-                return oi;
-            }
+            ObjectInfo oi = new ObjectInfo();
+            oi.InitBySimpleMode(t);
+            return oi;
         }
 
         protected override void Init(Type t)
@@ -109,9 +100,9 @@ namespace Lephone.Data.Common
         internal MemberHandler[] _SimpleFields;
         internal MemberHandler[] _RelationFields;
 
-        private Dictionary<string, List<ASC>> _Indexes = new Dictionary<string, List<ASC>>();
-        private Dictionary<string, List<MemberHandler>> _UniqueIndexes = new Dictionary<string, List<MemberHandler>>();
-        private Dictionary<Type, ManyToManyMediTable> _ManyToManys = new Dictionary<Type, ManyToManyMediTable>();
+        private readonly Dictionary<string, List<ASC>> _Indexes = new Dictionary<string, List<ASC>>();
+        private readonly Dictionary<string, List<MemberHandler>> _UniqueIndexes = new Dictionary<string, List<MemberHandler>>();
+        private readonly Dictionary<Type, ManyToManyMediTable> _ManyToManys = new Dictionary<Type, ManyToManyMediTable>();
 
         public IDbObjectHandler Handler
         {
@@ -341,7 +332,7 @@ namespace Lephone.Data.Common
         public static object CloneObject(object obj)
         {
             if (obj == null) { return null; }
-            ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
+            ObjectInfo oi = GetInstance(obj.GetType());
             object o = oi.NewObject();
             if (o is DbObjectSmartUpdate)
             {

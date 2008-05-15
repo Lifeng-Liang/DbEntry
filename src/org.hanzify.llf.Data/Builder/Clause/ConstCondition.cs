@@ -1,15 +1,8 @@
-
-#region usings
-
-using System;
-
-#endregion
-
 namespace Lephone.Data.Builder.Clause
 {
     public class ConstCondition : WhereCondition
     {
-        private string Condition;
+        private readonly string Condition;
 
         internal ConstCondition(string Condition)
         {
@@ -21,7 +14,7 @@ namespace Lephone.Data.Builder.Clause
             get { return true; }
         }
 
-        public override string ToSqlText(Lephone.Data.SqlEntry.DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
+        public override string ToSqlText(SqlEntry.DataParamterCollection dpc, Dialect.DbDialect dd)
         {
             return Condition;
         }

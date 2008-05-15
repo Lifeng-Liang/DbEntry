@@ -1,10 +1,3 @@
-
-#region usings
-
-using System;
-
-#endregion
-
 namespace Lephone.Util.Text
 {
     public abstract class StringSerializer<T>

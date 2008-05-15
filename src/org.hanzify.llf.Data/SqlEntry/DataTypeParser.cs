@@ -1,19 +1,12 @@
-
-#region usings
-
 using System;
-using System.Collections;
 using System.Collections.Specialized;
-
 using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data.SqlEntry
 {
 	internal static class DataTypeParser
 	{
-		private static HybridDictionary Types;
+		private static readonly HybridDictionary Types;
 
 		static DataTypeParser()
 		{
@@ -61,7 +54,7 @@ namespace Lephone.Data.SqlEntry
 			}
             if ( NullableHelper.IsNullableType(t) )
             {
-                return (DataType)NullableHelper.GetDataType(t);
+                return NullableHelper.GetDataType(t);
             }
 			throw new ArgumentOutOfRangeException(t.ToString());
 		}
@@ -77,25 +70,25 @@ namespace Lephone.Data.SqlEntry
 			{
 				return Convert.ToInt32(o).ToString();
 			}
-			else if	( typeof(string) == ot )
-			{
-				string s = o.ToString();
-				s = s.Replace("'", "''");
-				return string.Format("N'{0}'", s);
-			}
-			else if ( typeof(DateTime) == ot || typeof(Date) == ot || typeof(Time) == ot )
-			{
-                return dd.QuoteDateTimeValue(o.ToString());
-			}
-            else if (ot.IsEnum)
-            {
-                return Convert.ToInt32(o).ToString();
-            }
-            else if (typeof(byte[]) == ot)
-            {
-                throw new ApplicationException("Sql without paramter can not support blob, please using paramter mode.");
-            }
-			{
+		    if	( typeof(string) == ot )
+		    {
+		        string s = o.ToString();
+		        s = s.Replace("'", "''");
+		        return string.Format("N'{0}'", s);
+		    }
+		    if ( typeof(DateTime) == ot || typeof(Date) == ot || typeof(Time) == ot )
+		    {
+		        return dd.QuoteDateTimeValue(o.ToString());
+		    }
+		    if (ot.IsEnum)
+		    {
+		        return Convert.ToInt32(o).ToString();
+		    }
+		    if (typeof(byte[]) == ot)
+		    {
+		        throw new ApplicationException("Sql without paramter can not support blob, please using paramter mode.");
+		    }
+		    {
 				return o.ToString();
 			}
 		}

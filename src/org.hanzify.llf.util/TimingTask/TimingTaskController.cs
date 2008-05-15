@@ -1,18 +1,13 @@
-
-#region usings
-
 using System;
 using System.Timers;
 using Lephone.Util.Logging;
-
-#endregion
 
 namespace Lephone.Util.TimingTask
 {
 	public class TimingTaskController : IDisposable
 	{
-		private ITimer tCheck;
-		private TimingTaskCollection Tasks;
+		private readonly ITimer tCheck;
+		private readonly TimingTaskCollection Tasks;
 		private bool Starting;
 
 		public TimingTaskController(TimingTaskCollection Tasks)
@@ -45,7 +40,7 @@ namespace Lephone.Util.TimingTask
 			if ( !Starting )
 			{
 				Starting = true;
-				tCheck.Elapsed += new ElapsedEventHandler(tCheck_Elapsed);
+				tCheck.Elapsed += tCheck_Elapsed;
 				tCheck.Start();
 			}
 		}
@@ -55,7 +50,7 @@ namespace Lephone.Util.TimingTask
 			if ( Starting )
 			{
 				Starting = false;
-				tCheck.Elapsed -= new ElapsedEventHandler(tCheck_Elapsed);
+				tCheck.Elapsed -= tCheck_Elapsed;
 				tCheck.Stop();
 			}
 		}

@@ -1,12 +1,6 @@
-
-#region usings
-
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Diagnostics;
-
-#endregion
 
 namespace Lephone.Util
 {
@@ -14,9 +8,10 @@ namespace Lephone.Util
     // http://www.microsoft.com/china/MSDN/library/netFramework/netframework/NETMattersSep.mspx?mfr=true
     public sealed class Scope<T> : IDisposable where T : class
     {
-        private bool _disposed, _ownsInstance;
-        private T _instance;
-        private Scope<T> _parent;
+        private bool _disposed;
+        private readonly bool _ownsInstance;
+        private readonly T _instance;
+        private readonly Scope<T> _parent;
 
         [ThreadStatic]
         private static Scope<T> _head;

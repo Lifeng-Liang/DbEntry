@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using Lephone.Data.Caching;
@@ -7,8 +6,8 @@ namespace Lephone.Data.Common
 {
     public class CachedListInserter : IProcessor
     {
-		private IList list;
-        private ObjectInfo oi;
+		private readonly IList list;
+        private readonly ObjectInfo oi;
 
         public CachedListInserter(IList list, Type t)
 		{

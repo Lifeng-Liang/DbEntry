@@ -1,13 +1,7 @@
-
-#region usings
-
 using System;
 using System.Data;
 using Lephone.Data.Common;
-using Lephone.Util;
 using Lephone.Util.Text;
-
-#endregion
 
 namespace Lephone.Data.SqlEntry
 {
@@ -18,22 +12,19 @@ namespace Lephone.Data.SqlEntry
 		public DataParamterCollection Paramters;
 		public int SqlTimeOut = DataSetting.SqlTimeOut;
 		public CommandType SqlCommandType;
-        internal int StartIndex = 0;
-        internal int EndIndex = 0;
+        internal int StartIndex;
+        internal int EndIndex;
 
 		internal protected static CommandType GetCommandType(string SqlCommandText)
 		{
-			if ( StringHelper.IsIndentityName(SqlCommandText) )
+		    if ( StringHelper.IsIndentityName(SqlCommandText) )
 			{
 				return CommandType.StoredProcedure;
 			}
-			else
-			{
-				return CommandType.Text;
-			}
+		    return CommandType.Text;
 		}
 
-		public SqlStatement(string SqlCommandText)
+	    public SqlStatement(string SqlCommandText)
 			: this( GetCommandType(SqlCommandText), SqlCommandText )
 		{
 		}

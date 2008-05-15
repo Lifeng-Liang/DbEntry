@@ -1,10 +1,5 @@
-
-#region usings
-
 using System;
 using System.Collections.Generic;
-
-#endregion
 
 namespace Lephone.MockSql.Recorder
 {
@@ -21,7 +16,7 @@ namespace Lephone.MockSql.Recorder
             get { return _LastMessage; }
         }
 
-        private static List<string> _Messages = new List<string>();
+        private static readonly List<string> _Messages = new List<string>();
 
         public static List<string> Messages
         {

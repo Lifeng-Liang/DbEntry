@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Lephone.Data.SqlEntry;
+﻿using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
 
 namespace Lephone.Data.Dialect

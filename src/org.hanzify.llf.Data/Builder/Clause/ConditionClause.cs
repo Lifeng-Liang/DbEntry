@@ -1,21 +1,16 @@
-
-#region usings
-
 using System;
 using System.Collections;
 using System.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
-#endregion
-
 namespace Lephone.Data.Builder.Clause
 {
 	[Serializable]
 	public abstract class ConditionClause : WhereCondition
 	{
-		private string Condition;
-		private ArrayList List = new ArrayList();
+		private readonly string Condition;
+		private readonly ArrayList List = new ArrayList();
 
 		public ConditionClause(string Condition)
 		{

@@ -1,12 +1,4 @@
-
-#region usings
-
 using System;
-using System.Collections.Generic;
-using Lephone.Data.Common;
-using Lephone.Data.QuerySyntax;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {

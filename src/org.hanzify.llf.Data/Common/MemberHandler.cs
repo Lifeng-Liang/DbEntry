@@ -1,8 +1,5 @@
-
 using System;
 using System.Reflection;
-using System.Reflection.Emit;
-
 using Lephone.Util;
 using Lephone.Data.Definition;
 using Comm = Lephone.Data.Common;
@@ -79,7 +76,7 @@ namespace Lephone.Data.Common
                 {
                     value = (Time)(DateTime)value;
                 }
-                object oo = ci.Invoke(new object[] { value });
+                object oo = ci.Invoke(new[] { value });
                 MemberInfo.SetValue(obj, oo);
             }
 
@@ -117,7 +114,7 @@ namespace Lephone.Data.Common
         public readonly bool IsLockVersion;
         public readonly bool IsCount;
         public readonly bool IsAutoSavedValue;
-        public readonly string OrderByString = null;
+        public readonly string OrderByString;
 
         public Type FieldType
         {
@@ -319,7 +316,7 @@ namespace Lephone.Data.Common
 
         public void SetValue(object obj, object value)
 		{
-			if ( value == System.DBNull.Value )
+			if ( value == DBNull.Value )
 			{
 				MemberInfo.SetValue(obj, null);
 			}
@@ -345,39 +342,33 @@ namespace Lephone.Data.Common
             {
                 return new EnumMemberHandler(fi);
             }
-            else if (fi.MemberType == typeof(bool))
+            if (fi.MemberType == typeof(bool))
             {
                 return new BooleanMemberHandler(fi);
             }
-            else if (NullableHelper.IsNullableType(fi.MemberType))
+            if (NullableHelper.IsNullableType(fi.MemberType))
             {
                 return new NullableMemberHandler(fi);
             }
-            else
-            {
-                return new MemberHandler(fi);
-            }
+            return new MemberHandler(fi);
         }
 
-        internal static MemberHandler NewObject(FieldInfo fi, FieldType ft, PropertyInfo pi)
+	    internal static MemberHandler NewObject(FieldInfo fi, FieldType ft, PropertyInfo pi)
         {
             MemberAdapter m = MemberAdapter.NewObject(fi);
             if (m.MemberType.IsEnum)
             {
                 return new EnumMemberHandler(m, ft, pi);
             }
-            else if (m.MemberType == typeof(bool))
-            {
-                return new BooleanMemberHandler(m, ft, pi);
-            }
-            else if (NullableHelper.IsNullableType(m.MemberType))
-            {
-                return new NullableMemberHandler(m, ft, pi);
-            }
-            else
-            {
-                return new MemberHandler(m, ft, pi);
-            }
+	        if (m.MemberType == typeof(bool))
+	        {
+	            return new BooleanMemberHandler(m, ft, pi);
+	        }
+	        if (NullableHelper.IsNullableType(m.MemberType))
+	        {
+	            return new NullableMemberHandler(m, ft, pi);
+	        }
+	        return new MemberHandler(m, ft, pi);
         }
     }
 }

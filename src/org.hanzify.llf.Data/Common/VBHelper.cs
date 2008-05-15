@@ -1,15 +1,7 @@
-
-#region usings
-
 using System;
-using System.Collections.Generic;
-using System.Text;
-
 using Lephone.Data.SqlEntry;
 using Lephone.Util;
 using System.Data;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
@@ -17,10 +9,10 @@ namespace Lephone.Data.Common
     {
         public class TransactionHelper : IDisposable
         {
-            private DbContext dc;
-            private ConnectionContext cc = null;
-            private Scope<ConnectionContext> sc = null;
-            private bool Committed = false;
+            private readonly DbContext dc;
+            private readonly ConnectionContext cc;
+            private readonly Scope<ConnectionContext> sc;
+            private bool Committed;
 
             public TransactionHelper(DbContext dc, IsolationLevel il)
             {
@@ -90,13 +82,14 @@ namespace Lephone.Data.Common
 
         public class ConnectionHelper : IDisposable
         {
-            private ConnectionContext cc = null;
-            private Scope<ConnectionContext> sc = null;
+            private readonly ConnectionContext cc;
+            //TODO: why left this?
+            //private Scope<ConnectionContext> sc;
 
             public ConnectionHelper(DbContext dc)
             {
                 cc = new ConnectionContext(dc.m_Driver);
-                sc = new Scope<ConnectionContext>(cc);
+                new Scope<ConnectionContext>(cc);
             }
 
             public void Dispose()

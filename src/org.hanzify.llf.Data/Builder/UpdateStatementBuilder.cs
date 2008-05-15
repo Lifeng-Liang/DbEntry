@@ -1,22 +1,16 @@
-
-#region usings
-
-using System;
 using System.Data;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.SqlEntry;
-
-#endregion
 
 namespace Lephone.Data.Builder
 {
 	public class UpdateStatementBuilder : ISqlStatementBuilder, ISqlValues, ISqlWhere
 	{
 		private const string StatementTemplate = "Update {0} {1} {2};\n";
-		private string TableName;
-        private WhereClause _WhereOptions = new WhereClause();
-		private SetClause _SetOptions = new SetClause();
+		private readonly string TableName;
+        private readonly WhereClause _WhereOptions = new WhereClause();
+		private readonly SetClause _SetOptions = new SetClause();
 
 		public UpdateStatementBuilder(string TableName)
 		{

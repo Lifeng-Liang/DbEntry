@@ -1,17 +1,8 @@
-
-#region usings
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-
 using Lephone.Data;
 using Lephone.Data.Common;
-using Lephone.Data.Driver;
 using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {
@@ -21,9 +12,9 @@ namespace Lephone.Data.Definition
     }
 
     [Serializable]
-    public class HasMany<T> : LazyLoadListBase<T>, IHasMany where T : IDbObject
+    public class HasMany<T> : LazyLoadListBase<T>, IHasMany where T : class, IDbObject
     {
-        private OrderBy Order;
+        private readonly OrderBy Order;
 
         internal HasMany(object owner)
             : base(owner)
@@ -43,7 +34,7 @@ namespace Lephone.Data.Definition
             this.Order = OrderBy.Parse(OrderByString);
         }
 
-        private List<object> _RemovedValues = new List<object>();
+        private readonly List<object> _RemovedValues = new List<object>();
         List<object> IHasMany.RemovedValues { get { return _RemovedValues; } }
 
         protected override void InnerWrite(object item, bool IsLoad)

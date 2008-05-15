@@ -8,9 +8,9 @@ namespace Lephone.Web.Common
 {
     public class DbEntryDesignerDataSourceView : DesignerDataSourceView
     {
-        private DataSourceControl DataSource;
-        private Type ModelType;
-        private ObjectInfo oi;
+        private readonly DataSourceControl DataSource;
+        private readonly Type ModelType;
+        private readonly ObjectInfo oi;
 
         public DbEntryDesignerDataSourceView(DbEntryDataSourceDesigner owner)
             : base(owner, "MainView")

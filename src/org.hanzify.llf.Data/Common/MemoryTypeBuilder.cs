@@ -1,16 +1,10 @@
-
-#region usings
-
 using System;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Collections;
-
 using Lephone.Util;
 using Lephone.Data.Definition;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
@@ -68,7 +62,7 @@ namespace Lephone.Data.Common
                 ConstructorInfo ci1;
                 if (h.IsHasOne || h.IsHasMany || h.IsHasAndBelongsToMany)
                 {
-                    ci1 = h.FieldType.GetConstructor(new Type[] { typeof(object), typeof(string) });
+                    ci1 = h.FieldType.GetConstructor(new[] { typeof(object), typeof(string) });
                     if (string.IsNullOrEmpty(h.OrderByString))
                     {
                         il.LoadNull();
@@ -80,7 +74,7 @@ namespace Lephone.Data.Common
                 }
                 else
                 {
-                    ci1 = h.FieldType.GetConstructor(new Type[] { typeof(object) });
+                    ci1 = h.FieldType.GetConstructor(new[] { typeof(object) });
                 }
                 il.NewObj(ci1);
                 h.MemberInfo.EmitSet(il);
@@ -128,13 +122,13 @@ namespace Lephone.Data.Common
         }
 
         private static readonly ConstructorInfo DbColumnAttributeConstructor
-            = typeof(DbColumnAttribute).GetConstructor(new Type[] { typeof(string) });
+            = typeof(DbColumnAttribute).GetConstructor(new[] { typeof(string) });
 
         private static readonly ConstructorInfo AllowNullAttributeConstructor
             = typeof(AllowNullAttribute).GetConstructor(new Type[] { });
 
         private static readonly ConstructorInfo LengthAttributeConstructor
-            = typeof(LengthAttribute).GetConstructor(new Type[] { typeof(int), typeof(int) });
+            = typeof(LengthAttribute).GetConstructor(new[] { typeof(int), typeof(int) });
 
         private CustomAttributeBuilder GetDbColumnBuilder(string Name)
         {

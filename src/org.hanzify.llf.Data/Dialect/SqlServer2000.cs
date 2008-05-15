@@ -1,5 +1,3 @@
-
-using System;
 using System.Data;
 using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
@@ -10,8 +8,8 @@ namespace Lephone.Data.Dialect
 {
 	public class SqlServer2000 : DbDialect
 	{
-		public SqlServer2000() : base()
-        {
+		public SqlServer2000()
+		{
             TypeNames[DataType.Boolean] = "bit";
             TypeNames[DataType.Date]    = "smalldatetime";
         }
@@ -28,7 +26,7 @@ namespace Lephone.Data.Dialect
 
         public override DbStructInterface GetDbStructInterface()
         {
-            return new DbStructInterface(null, new string[] { null, null, null, "BASE TABLE" }, null, null, null);
+            return new DbStructInterface(null, new[] { null, null, null, "BASE TABLE" }, null, null, null);
         }
 
         public override bool SupportsRangeStartIndex

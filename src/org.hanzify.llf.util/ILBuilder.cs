@@ -1,7 +1,4 @@
-
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -10,8 +7,8 @@ namespace Lephone.Util
     public class ILBuilder
     {
         private static readonly Type[] emptyTypes = new Type[] { };
-        private static readonly MethodInfo dateEx = typeof(Date).GetMethod("op_Explicit", new Type[] { typeof(DateTime) });
-        private static readonly MethodInfo timeEx = typeof(Time).GetMethod("op_Explicit", new Type[] { typeof(DateTime) });
+        private static readonly MethodInfo dateEx = typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) });
+        private static readonly MethodInfo timeEx = typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) });
 
         public readonly ILGenerator il;
 
@@ -119,16 +116,17 @@ namespace Lephone.Util
             return ret;
         }
 
-        private static ConstructorInfo[] GetConstructorList(Type SourceType)
-        {
-            Type t = SourceType;
-            ConstructorInfo[] ret;
-            while ((ret = t.GetConstructors()).Length == 0)
-            {
-                t = t.BaseType;
-            }
-            return ret;
-        }
+        //TODO: why left this function?
+        //private static ConstructorInfo[] GetConstructorList(Type SourceType)
+        //{
+        //    Type t = SourceType;
+        //    ConstructorInfo[] ret;
+        //    while ((ret = t.GetConstructors()).Length == 0)
+        //    {
+        //        t = t.BaseType;
+        //    }
+        //    return ret;
+        //}
 
         public ILBuilder NewObj(ConstructorInfo ci)
         {
@@ -234,7 +232,7 @@ namespace Lephone.Util
                     il.Emit(OpCodes.Call, dateEx);
                     return this;
                 }
-                else if (inType == typeof(Time))
+                if (inType == typeof(Time))
                 {
                     il.Emit(OpCodes.Unbox_Any, typeof(DateTime?));
                     il.Emit(OpCodes.Call, timeEx);

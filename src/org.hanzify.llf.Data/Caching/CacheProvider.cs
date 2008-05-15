@@ -1,5 +1,3 @@
-
-using System;
 using Lephone.Data.Common;
 using Lephone.Util;
 

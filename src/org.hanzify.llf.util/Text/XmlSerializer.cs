@@ -1,19 +1,13 @@
-
-#region usings
-
 using System;
 using System.IO;
 using System.Text;
-using System.Xml;
 using System.Xml.Serialization;
-
-#endregion
 
 namespace Lephone.Util.Text
 {
     public class XmlSerializer<T> : StringSerializer<T>
     {
-        private string RootName;
+        private readonly string RootName;
 
         public XmlSerializer() {}
 

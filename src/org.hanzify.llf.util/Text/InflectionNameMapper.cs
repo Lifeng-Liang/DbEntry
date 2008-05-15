@@ -1,6 +1,3 @@
-
-using System;
-
 namespace Lephone.Util.Text
 {
     public class InflectionNameMapper : UnderlineNameMapper

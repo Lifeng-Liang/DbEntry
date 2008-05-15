@@ -1,6 +1,3 @@
-
-using System;
-
 namespace Lephone.Util.Coding
 {
 	public interface ICoding

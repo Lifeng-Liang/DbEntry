@@ -1,16 +1,10 @@
-
-#region usings
-
-using System;
 using System.Collections;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
 	public class ListInserter : IProcessor
 	{
-		private IList list;
+		private readonly IList list;
 
 		public ListInserter(IList list)
 		{

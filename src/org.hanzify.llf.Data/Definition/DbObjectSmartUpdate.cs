@@ -1,14 +1,8 @@
-
-#region usings
-
 using System;
 using System.Xml.Serialization;
 using System.Xml.Schema;
 using System.Collections.Generic;
 using Lephone.Data.Common;
-using Lephone.Data.QuerySyntax;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {
@@ -17,10 +11,10 @@ namespace Lephone.Data.Definition
     public class DbObjectSmartUpdate : DbObjectBase, IXmlSerializable
     {
         [Exclude]
-        internal protected Dictionary<string, object> m_UpdateColumns = null;
+        internal protected Dictionary<string, object> m_UpdateColumns;
 
         [Exclude]
-        internal bool m_InternalInit = false;
+        internal bool m_InternalInit;
 
         protected void m_InitUpdateColumns()
         {

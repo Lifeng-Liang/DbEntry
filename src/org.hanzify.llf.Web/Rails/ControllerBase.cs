@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -34,7 +33,7 @@ namespace Lephone.Web.Rails
     }
 
     [Scaffolding]
-    public class ControllerBase<T> : ControllerBase where T : IDbObject
+    public class ControllerBase<T> : ControllerBase where T : class, IDbObject
     {
         protected FlashBox flash = new FlashBox();
 

@@ -1,20 +1,14 @@
-
-#region usings
-
 using System;
 using System.Collections;
-using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data
 {
     public class PagedCollection : ICollection
     {
-        private ICollection list;
-        private long PageIndex;
-        private int PageSize;
-        private long MaxSize;
+        private readonly ICollection list;
+        private readonly long PageIndex;
+        private readonly int PageSize;
+        private readonly long MaxSize;
 
         public PagedCollection(ICollection list, long PageIndex, int PageSize, long MaxSize)
         {
@@ -65,17 +59,17 @@ namespace Lephone.Data
             get { return list.SyncRoot; }
         }
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public IEnumerator GetEnumerator()
         {
             return new PagedCollectionEnumerator(list.GetEnumerator(), PageIndex, PageSize, MaxSize);
         }
 
         public class PagedCollectionEnumerator : IEnumerator
         {
-            private IEnumerator ListEnum;
-            private long MaxSize;
-            private long StartIndex;
-            private long EndIndex;
+            private readonly IEnumerator ListEnum;
+            private readonly long MaxSize;
+            private readonly long StartIndex;
+            private readonly long EndIndex;
             private long CurrentIndex;
 
             public PagedCollectionEnumerator(IEnumerator ListEnum, long PageIndex, int PageSize, long MaxSize)

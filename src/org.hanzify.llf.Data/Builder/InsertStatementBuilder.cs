@@ -1,13 +1,7 @@
-
-#region usings
-
-using System;
 using System.Data;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.SqlEntry;
-
-#endregion
 
 namespace Lephone.Data.Builder
 {
@@ -15,7 +9,7 @@ namespace Lephone.Data.Builder
 	{
 		private const string StatementTemplate = "Insert Into {0} {1};\n";
 		internal string TableName;
-		private ValuesClause _ValuesOptions = new ValuesClause();
+		private readonly ValuesClause _ValuesOptions = new ValuesClause();
 
         public InsertStatementBuilder(string TableName)
 		{

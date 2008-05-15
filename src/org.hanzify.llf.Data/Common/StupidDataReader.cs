@@ -1,7 +1,5 @@
-
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using System.Data.Common;
 using Lephone.Util;
@@ -11,8 +9,8 @@ namespace Lephone.Data.Common
     // for stupid oracle
     public class StupidDataReader : DbDataReader
     {
-        private Dictionary<int, Type> indexType = null;
-        private Dictionary<string, Type> nameType = null;
+        private readonly Dictionary<int, Type> indexType;
+        private readonly Dictionary<string, Type> nameType;
         protected IDataReader dr;
 
         public StupidDataReader(IDataReader dr, Type ReturnType)
@@ -108,7 +106,7 @@ namespace Lephone.Data.Common
             return dr.GetOrdinal(name);
         }
 
-        public override System.Data.DataTable GetSchemaTable()
+        public override DataTable GetSchemaTable()
         {
             return dr.GetSchemaTable();
         }
@@ -199,17 +197,11 @@ namespace Lephone.Data.Common
             {
                 return o;
             }
-            else
+            if (t.IsGenericType)
             {
-                if (t.IsGenericType)
-                {
-                    return ClassHelper.ChangeType(o, t.GetGenericArguments()[0]);
-                }
-                else
-                {
-                    return ClassHelper.ChangeType(o, t);
-                }
+                return ClassHelper.ChangeType(o, t.GetGenericArguments()[0]);
             }
+            return ClassHelper.ChangeType(o, t);
         }
 
         public override bool GetBoolean(int ordinal)

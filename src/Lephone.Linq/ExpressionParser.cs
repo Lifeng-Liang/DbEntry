@@ -1,20 +1,16 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
-using System.Collections;
 
 namespace Lephone.Linq
 {
-    internal static class ExpressionParser<T> where T : IDbObject
+    internal static class ExpressionParser<T> where T : class, IDbObject
     {
-        private static Dictionary<string, string> dic;
+        private static readonly Dictionary<string, string> dic;
 
         static ExpressionParser()
         {
@@ -47,7 +43,7 @@ namespace Lephone.Linq
             {
                 return ParseBinary((BinaryExpression)expr);
             }
-            else if (expr is MethodCallExpression)
+            if (expr is MethodCallExpression)
             {
                 return ParseMethodCall((MethodCallExpression)expr);
             }
@@ -132,7 +128,7 @@ namespace Lephone.Linq
                     {
                         return new KeyValueClause(key, null, CompareOpration.Is);
                     }
-                    else if (co == CompareOpration.NotEqual)
+                    if (co == CompareOpration.NotEqual)
                     {
                         return new KeyValueClause(key, null, CompareOpration.IsNot);
                     }
@@ -145,16 +141,10 @@ namespace Lephone.Linq
 
         private static object GetRightValue(Expression Right)
         {
-            object value;
-
-            if (Right.NodeType == ExpressionType.Constant)
-            {
-                value = ((ConstantExpression)Right).Value;
-            }
-            else
-            {
-                value = Expression.Lambda(Right).Compile().DynamicInvoke();
-            }
+            object value 
+                = Right.NodeType == ExpressionType.Constant 
+                ? ((ConstantExpression)Right).Value 
+                : Expression.Lambda(Right).Compile().DynamicInvoke();
 
             //else if (Right.NodeType == ExpressionType.Convert
             //    || Right.NodeType == ExpressionType.MemberAccess)

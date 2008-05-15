@@ -1,17 +1,12 @@
-
-#region usings
-
 using System;
 using System.Timers;
-
-#endregion
 
 namespace Lephone.Util.TimingTask
 {
 	internal class SystemTimerAdapter : ITimer
 	{
-		private Timer _Timer;
-		public event System.Timers.ElapsedEventHandler Elapsed;
+		private readonly Timer _Timer;
+		public event ElapsedEventHandler Elapsed;
 
 		public SystemTimerAdapter()
 		{
@@ -27,7 +22,7 @@ namespace Lephone.Util.TimingTask
 
 		private void Init()
 		{
-			_Timer.Elapsed += new ElapsedEventHandler(_Timer_Elapsed);
+			_Timer.Elapsed += _Timer_Elapsed;
 		}
 
 		private void _Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -36,10 +31,6 @@ namespace Lephone.Util.TimingTask
 			{
 				Elapsed(sender, e);
 			}
-		}
-
-		private void _Timer_Elapsed()
-		{
 		}
 
 		public bool Enabled

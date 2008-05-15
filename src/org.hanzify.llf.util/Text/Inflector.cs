@@ -1,7 +1,4 @@
-
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Lephone.Util.Text
@@ -9,8 +6,9 @@ namespace Lephone.Util.Text
     // Translate from ActiveSupport of Ruby On Rails
     public static class Inflector
     {
-        private static List<KeyValuePair<Regex, string>> Plurals, Singulars;
-        private static List<string> Uncountables;
+        private static readonly List<KeyValuePair<Regex, string>> Plurals;
+        private static readonly List<KeyValuePair<Regex, string>> Singulars;
+        private static readonly List<string> Uncountables;
 
         static Inflector()
         {
@@ -91,10 +89,7 @@ namespace Lephone.Util.Text
                 s = new Regex(@"(^|_)(.)").Replace(s, delegate(Match match) { return match.Groups[2].Value.ToUpper(); });
                 return s;
             }
-            else
-            {
-                return lower_case_and_underscored_word[0] + Camelize(lower_case_and_underscored_word).Substring(1);
-            }
+            return lower_case_and_underscored_word[0] + Camelize(lower_case_and_underscored_word).Substring(1);
         }
 
         public static string Titleize(string word)
@@ -156,19 +151,16 @@ namespace Lephone.Util.Text
         public static string Ordinalize(int number)
         {
             string n = number.ToString();
-            if (CommonHelper.NewList<int>(11, 12, 13).Contains(number % 100))
+            if (CommonHelper.NewList(11, 12, 13).Contains(number % 100))
             {
                 return n + "th";
             }
-            else
+            switch (number % 10)
             {
-                switch (number % 10)
-                {
-                    case 1: return n + "st";
-                    case 2: return n + "nd";
-                    case 3: return n + "rd";
-                    default: return n + "th";
-                }
+                case 1: return n + "st";
+                case 2: return n + "nd";
+                case 3: return n + "rd";
+                default: return n + "th";
             }
         }
 

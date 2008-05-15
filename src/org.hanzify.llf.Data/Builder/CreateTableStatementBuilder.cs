@@ -1,6 +1,3 @@
-
-#region usings
-
 using System;
 using System.Data;
 using System.Text;
@@ -8,15 +5,13 @@ using System.Collections.Generic;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
-#endregion
-
 namespace Lephone.Data.Builder
 {
     public class CreateTableStatementBuilder : ISqlStatementBuilder
     {
         internal string TableName;
-        private List<ColumnInfo> _Columns;
-        private List<DbIndex> _Indexes;
+        private readonly List<ColumnInfo> _Columns;
+        private readonly List<DbIndex> _Indexes;
 
         public CreateTableStatementBuilder(string TableName)
         {

@@ -1,18 +1,13 @@
-
-#region usings
-
 using System;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     public class IndexAttribute : Attribute
     {
-        public string IndexName = null;
+        public string IndexName;
         public bool ASC = true;
-        public bool UNIQUE = false;
+        public bool UNIQUE;
 
         public IndexAttribute() { }
 

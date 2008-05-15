@@ -1,12 +1,6 @@
-
-#region usings
-
-using System;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data.Dialect
 {
@@ -36,7 +30,7 @@ namespace Lephone.Data.Dialect
 
         public override DbStructInterface GetDbStructInterface()
         {
-            return new DbStructInterface(null, new string[]{null, null, null, "table"}, null, null, null);
+            return new DbStructInterface(null, new[]{null, null, null, "table"}, null, null, null);
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)

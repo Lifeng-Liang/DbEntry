@@ -1,6 +1,3 @@
-
-using System;
-
 namespace Lephone.Data.Dialect
 {
 	public class Excel : Access

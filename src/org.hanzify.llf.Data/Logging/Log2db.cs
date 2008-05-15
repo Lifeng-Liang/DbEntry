@@ -1,10 +1,4 @@
-
-#region usings
-
-using System;
 using Lephone.Util.Logging;
-
-#endregion
 
 namespace Lephone.Data.Logging
 {
@@ -18,8 +12,8 @@ namespace Lephone.Data.Logging
         static Log2db()
 		{
             DatabaseLogRecorder r = new DatabaseLogRecorder();
-            Logger.SQL.LogEvent += new LogEventHandler(r.ProcessLog);
-            Logger.Default.LogEvent += new LogEventHandler(r.ProcessLog);
+            Logger.SQL.LogEvent += r.ProcessLog;
+            Logger.Default.LogEvent += r.ProcessLog;
         }
     }
 }

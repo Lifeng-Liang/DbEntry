@@ -1,17 +1,12 @@
-
-#region usings
-
 using System;
 using System.IO;
 using System.Text;
-
-#endregion
 
 namespace Lephone.Util.Logging
 {
     public class DtsFileLogRecorder : TextFileLogRecorder
     {
-        public DtsFileLogRecorder() : base() { }
+        public DtsFileLogRecorder() { }
 
         public DtsFileLogRecorder(string LogFileName) : base(LogFileName) { }
 

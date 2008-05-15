@@ -1,5 +1,3 @@
-
-using System;
 using System.Text;
 
 namespace Lephone.Util.Text
@@ -22,12 +20,12 @@ namespace Lephone.Util.Text
             return sb.ToString();
         }
 
-        private bool IsLarge(char c)
+        private static bool IsLarge(char c)
         {
             return c >= 'A' && c <= 'Z';
         }
 
-        private bool IsSmall(char c)
+        private static bool IsSmall(char c)
         {
             return c >= 'a' && c <= 'z';
         }

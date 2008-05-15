@@ -1,10 +1,3 @@
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Lephone.Data.Common;
-using Lephone.Data.Driver;
-
 namespace Lephone.Data.Definition
 {
     public abstract class LazyLoadOneBase<T> : ILazyLoading

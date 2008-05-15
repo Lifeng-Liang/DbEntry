@@ -1,6 +1,3 @@
-
-using System;
-
 namespace Lephone.Util.TimingTask.Timings
 {
 	public class DayTiming : DayOfRangeTimingBase

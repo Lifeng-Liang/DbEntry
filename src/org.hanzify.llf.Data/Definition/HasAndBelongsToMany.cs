@@ -1,27 +1,17 @@
-
-#region usings
-
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-
 using Lephone.Data;
 using Lephone.Data.Common;
-using Lephone.Data.Driver;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {
-    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, IHasAndBelongsToManyRelations where T : IDbObject
+    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, IHasAndBelongsToManyRelations where T : class, IDbObject
     {
-        private OrderBy Order;
+        private readonly OrderBy Order;
 
-        private List<object> _SavedNewRelations = new List<object>();
+        private readonly List<object> _SavedNewRelations = new List<object>();
         List<object> IHasAndBelongsToManyRelations.SavedNewRelations { get { return _SavedNewRelations; } }
 
-        private List<object> _RemovedRelations = new List<object>();
+        private readonly List<object> _RemovedRelations = new List<object>();
         List<object> IHasAndBelongsToManyRelations.RemovedRelations { get { return _RemovedRelations; } }
 
         internal HasAndBelongsToMany(object owner)

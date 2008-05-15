@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using Lephone.Data.Common;
 using System.Linq.Expressions;
 using Lephone.Data;
@@ -10,9 +6,9 @@ using Lephone.Data.Definition;
 
 namespace Lephone.Linq
 {
-    public class LinqOrderSyntax<T> where T : IDbObject
+    public class LinqOrderSyntax<T> where T : class, IDbObject
     {
-        private OrderBy order = null;
+        private OrderBy order;
 
         public LinqOrderSyntax(Expression<Func<T, object>> expr, bool isAsc)
         {

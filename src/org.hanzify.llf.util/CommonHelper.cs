@@ -1,11 +1,6 @@
-
-#region usings
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
-#endregion
 
 namespace Lephone.Util
 {
@@ -52,11 +47,8 @@ namespace Lephone.Util
                     return 2;
                 }
             }
-            else
-            {
-                Console.WriteLine(Usage);
-                return 1;
-            }
+            Console.WriteLine(Usage);
+            return 1;
         }
 
         public static void IfCatchException(bool CatchException, CallbackVoidHandler callback)
@@ -104,30 +96,27 @@ namespace Lephone.Util
             {
                 return 0;
             }
-            else if (t == typeof(long))
+            if (t == typeof(long))
             {
                 return 0L;
             }
-            else if (IncludeDateTime && t == typeof(DateTime))
+            if (IncludeDateTime && t == typeof(DateTime))
             {
                 return DateTime.MinValue;
             }
-            else if (IncludeDateTime && t == typeof(Date))
+            if (IncludeDateTime && t == typeof(Date))
             {
                 return new Date(DateTime.MinValue);
             }
-            else if (IncludeDateTime && t == typeof(Time))
+            if (IncludeDateTime && t == typeof(Time))
             {
                 return new Time(DateTime.MinValue);
             }
-            else if (t == typeof(Guid))
+            if (t == typeof(Guid))
             {
                 return Guid.Empty;
             }
-            else
-            {
-                throw new NotSupportedException(ExceptionText);
-            }
+            throw new NotSupportedException(ExceptionText);
         }
 
         public static List<T> NewList<T>(params T[] ts)

@@ -1,13 +1,10 @@
-
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Reflection;
 using Lephone.Data.Builder;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
@@ -15,8 +12,8 @@ namespace Lephone.Data.Common
     {
         private static readonly object[] os = new object[] { };
 
-        private ConstructorInfo Creator;
-        private ObjectInfo oi;
+        private readonly ConstructorInfo Creator;
+        private readonly ObjectInfo oi;
 
         public ReflectionDbObjectHandler(Type srcType, ObjectInfo oi)
         {
@@ -51,38 +48,39 @@ namespace Lephone.Data.Common
             }
         }
 
-        private void SetValue(MemberHandler f, object o, object v)
-        {
-            if (v.GetType() == typeof(decimal))
-            {
-                if (f.FieldType == typeof(decimal))
-                {
-                    f.SetValue(o, v);
-                }
-                else
-                {
-                    if (f.FieldType.IsEnum)
-                    {
-                        f.SetValue(o, Convert.ToInt32(v));
-                    }
-                    else
-                    {
-                        if (f.FieldType.IsGenericType)
-                        {
-                            f.SetValue(o, ClassHelper.ChangeType(v, f.FieldType.GetGenericArguments()[0]));
-                        }
-                        else
-                        {
-                            f.SetValue(o, ClassHelper.ChangeType(v, f.FieldType));
-                        }
-                    }
-                }
-            }
-            else
-            {
-                f.SetValue(o, v);
-            }
-        }
+        //TODO: why left this?
+        //private void SetValue(MemberHandler f, object o, object v)
+        //{
+        //    if (v.GetType() == typeof(decimal))
+        //    {
+        //        if (f.FieldType == typeof(decimal))
+        //        {
+        //            f.SetValue(o, v);
+        //        }
+        //        else
+        //        {
+        //            if (f.FieldType.IsEnum)
+        //            {
+        //                f.SetValue(o, Convert.ToInt32(v));
+        //            }
+        //            else
+        //            {
+        //                if (f.FieldType.IsGenericType)
+        //                {
+        //                    f.SetValue(o, ClassHelper.ChangeType(v, f.FieldType.GetGenericArguments()[0]));
+        //                }
+        //                else
+        //                {
+        //                    f.SetValue(o, ClassHelper.ChangeType(v, f.FieldType));
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        f.SetValue(o, v);
+        //    }
+        //}
 
         public void LoadRelationValues(DbContext driver, object o, bool UseIndex, IDataReader dr)
         {
@@ -201,7 +199,8 @@ namespace Lephone.Data.Common
 
         public void SetValuesForInsert(ISqlValues isv, object obj)
         {
-            Type t = obj.GetType();
+            //TODO: why left this?
+            //Type t = obj.GetType();
             foreach (MemberHandler fi in oi.Fields)
             {
                 if (!fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany && !fi.IsUpdatedOn)
@@ -213,7 +212,8 @@ namespace Lephone.Data.Common
 
         public void SetValuesForUpdate(ISqlValues isv, object obj)
         {
-            Type t = obj.GetType();
+            //TODO: why left this?
+            //Type t = obj.GetType();
             DbObjectSmartUpdate to = obj as DbObjectSmartUpdate;
             if (to != null && to.m_UpdateColumns != null)
             {

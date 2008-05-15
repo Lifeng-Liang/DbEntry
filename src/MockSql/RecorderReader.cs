@@ -1,7 +1,5 @@
-
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data.Common;
 using Lephone.MockSql.Recorder;
 
@@ -167,10 +165,7 @@ namespace Lephone.MockSql
                 {
                     return DBNull.Value;
                 }
-                else
-                {
-                    return o;
-                }
+                return o;
             }
             throw new MockDbException("type error.");
         }
@@ -200,7 +195,7 @@ namespace Lephone.MockSql
             throw new Exception("The method or operation is not implemented.");
         }
 
-        private int index = 0;
+        private int index;
 
         public override bool Read()
         {
@@ -208,13 +203,10 @@ namespace Lephone.MockSql
             {
                 return (CurRow != null);
             }
-            else
-            {
-                CurRow = null;
-                CurRowNames = null;
-                CurRowTypes = null;
-                return false;
-            }
+            CurRow = null;
+            CurRowNames = null;
+            CurRowTypes = null;
+            return false;
         }
 
         public override int RecordsAffected

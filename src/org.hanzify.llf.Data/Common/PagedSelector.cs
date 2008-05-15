@@ -1,17 +1,9 @@
-
-#region usings
-
-using System;
 using System.Collections;
-using Lephone.Data.Common;
-using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
-
-#endregion
 
 namespace Lephone.Data.Common
 {
-    public class PagedSelector<T> : IPagedSelector where T : IDbObject
+    public class PagedSelector<T> : IPagedSelector where T : class, IDbObject
     {
         protected WhereCondition iwc;
         protected OrderBy oc;

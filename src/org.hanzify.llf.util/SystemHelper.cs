@@ -1,24 +1,15 @@
-
-#region usings
-
 using System;
-using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Reflection;
-using System.Collections.Specialized;
 using System.Security;
-
-using Lephone.Util.Text;
-
-#endregion
 
 namespace Lephone.Util
 {
 	public static class SystemHelper
 	{
-		private static string _ExeFileName;
-        private static string _BaseDirectory;
+		private static readonly string _ExeFileName;
+        private static readonly string _BaseDirectory;
 
         public static string ExeFileName
         {
@@ -78,27 +69,25 @@ namespace Lephone.Util
 				StackFrame sf = st.GetFrame(Index);
 				return GetMothodDesc(sf, false);
 			}
-			else
-			{
-				return null;
-			}
+		    return null;
 		}
 
-		private static StringCollection GetMothodLineCollection(StackTrace st)
-		{
-			return GetMothodLineCollection(st, false);
-		}
+        //TODO: why left it?
+        //private static StringCollection GetMothodLineCollection(StackTrace st)
+        //{
+        //    return GetMothodLineCollection(st, false);
+        //}
 
-		private static StringCollection GetMothodLineCollection(StackTrace st, bool NeedLineNo)
-		{
-			StringCollection sc = new StringCollection();
-			for (int i = 0; i < st.FrameCount; i++)
-			{
-				StackFrame sf = st.GetFrame(i);
-				sc.Add( GetMothodDesc(sf, NeedLineNo) );
-			}
-			return sc;
-		}
+        //private static StringCollection GetMothodLineCollection(StackTrace st, bool NeedLineNo)
+        //{
+        //    StringCollection sc = new StringCollection();
+        //    for (int i = 0; i < st.FrameCount; i++)
+        //    {
+        //        StackFrame sf = st.GetFrame(i);
+        //        sc.Add( GetMothodDesc(sf, NeedLineNo) );
+        //    }
+        //    return sc;
+        //}
 
 		private static string GetMothodDesc(StackFrame sf, bool NeedLineNo)
 		{
@@ -107,10 +96,7 @@ namespace Lephone.Util
 			{
 				return GetMothodLine(mb) + GetCurLine(sf);
 			}
-			else
-			{
-				return GetMothodLine(mb);
-			}
+		    return GetMothodLine(mb);
 		}
 
 		private static string GetMothodLine(MethodBase mb)
@@ -123,10 +109,7 @@ namespace Lephone.Util
 				if (s != null)
 				{
 					sb.Append(s);
-					if (sb != null)
-					{
-						sb.Append(".");
-					}
+					sb.Append(".");
 				}
 				sb.Append(t.Name);
 				sb.Append(".");

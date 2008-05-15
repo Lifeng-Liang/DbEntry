@@ -1,18 +1,13 @@
-
-#region usings
-
 using System;
 using System.Text;
 using System.Collections;
-
-#endregion
 
 namespace Lephone.Data.SqlEntry
 {
 	[Serializable]
 	public class DataParamterCollection : CollectionBase
 	{
-        private bool _ParamsNameUserSet = false;
+        private bool _ParamsNameUserSet;
 
 		internal bool UserSetKey
 		{
@@ -33,7 +28,7 @@ namespace Lephone.Data.SqlEntry
 
 		public void Add(DataParamter dp)
 		{
-			bool UserSet = (dp.Key != null && dp.Key != "");
+			bool UserSet = !string.IsNullOrEmpty(dp.Key);
 			if ( List.Count == 0 )
 			{
 				_ParamsNameUserSet = UserSet;

@@ -1,8 +1,4 @@
-
-#region usings
-
 using System;
-using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Collections;
@@ -10,8 +6,6 @@ using Lephone.Util;
 using Lephone.Util.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
-
-#endregion
 
 namespace Lephone.Data.Driver
 {
@@ -35,7 +29,7 @@ namespace Lephone.Data.Driver
             get { return m_ConnectionString; }
         }
 
-        public DbDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
+        public DbDriver(DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
 		{
             this.m_ConnectionString = ConnectionString;
             m_Dialect = DialectClass;
@@ -59,25 +53,19 @@ namespace Lephone.Data.Driver
                     ((SmartDbFactory)f).Init(addon);
                     return (SmartDbFactory)f;
                 }
-                else
-                {
-                    return new DbFactory((DbProviderFactory)f);
-                }
+                return new DbFactory((DbProviderFactory)f);
             }
-            else
-            {
-                return new DbFactory(GetDefaultProviderFactory());
-            }
+            return new DbFactory(GetDefaultProviderFactory());
         }
 
-        protected abstract DbProviderFactory GetDefaultProviderFactory();
+	    protected abstract DbProviderFactory GetDefaultProviderFactory();
 
 		private ArrayList CloneSpParamters(IList eps)
 		{
 			ArrayList ps = new ArrayList();
 			for (int i = 0; i < eps.Count; i++)
 			{
-				ps.Add( (IDataParameter)((ICloneable)eps[i]).Clone() );
+				ps.Add( ((ICloneable)eps[i]).Clone() );
 			}
 			return ps;
 		}
@@ -149,18 +137,18 @@ namespace Lephone.Data.Driver
         public virtual IDbDataAdapter GetDbAdapter(IDbCommand command)
         {
             // DbCommand c = (DbCommand)(command is LinesDbCommand ? ((LinesDbCommand)command).InternalCommand : command);
-            IDbCommand c = (IDbCommand)command;
+            IDbCommand c = command;
             IDbDataAdapter d = ProviderFactory.CreateDataAdapter();
-            d.SelectCommand = (IDbCommand)c;
+            d.SelectCommand = c;
             return d;
         }
 
         public virtual IDbDataAdapter GetUpdateDbAdapter(IDbCommand command)
         {
             // DbCommand c = (DbCommand)(command is LinesDbCommand ? ((LinesDbCommand)command).InternalCommand : command);
-            IDbCommand c = (IDbCommand)command;
+            IDbCommand c = command;
             IDbDataAdapter d = ProviderFactory.CreateDataAdapter();
-            d.UpdateCommand = (IDbCommand)c;
+            d.UpdateCommand = c;
             return d;
         }
 
@@ -177,7 +165,7 @@ namespace Lephone.Data.Driver
             catch { }
 
             e.CommandType = Sql.SqlCommandType;
-            e.Connection = (IDbConnection)conn;
+            e.Connection = conn;
             FillDbParameters(Sql, e);
             return e;
         }

@@ -1,4 +1,3 @@
-
 using System;
 using Lephone.Data.Common;
 using Lephone.Util.Text;
@@ -7,9 +6,10 @@ namespace Lephone.Web.Rails
 {
     internal class ControlMapper
     {
-        private string id, name;
+        private readonly string id;
+        private readonly string name;
         // private object value;
-        private HtmlBuilder b;
+        private readonly HtmlBuilder b;
 
         public static HtmlBuilder Map(MemberHandler m, string id, string name, object value)
         {
@@ -31,7 +31,7 @@ namespace Lephone.Web.Rails
             }
             else if (m.FieldType == typeof(bool))
             {
-                ProcessBoolean(m, value);
+                ProcessBoolean(value);
             }
             else if (m.FieldType == typeof(string))
             {
@@ -51,7 +51,7 @@ namespace Lephone.Web.Rails
             }
             else if (m.FieldType.IsValueType)
             {
-                ProcessValueType(m, value);
+                ProcessValueType(value);
             }
             else
             {
@@ -81,7 +81,7 @@ namespace Lephone.Web.Rails
             b.end.over();
         }
 
-        private void ProcessBoolean(MemberHandler m, object value)
+        private void ProcessBoolean(object value)
         {
             b.input.id(id).name(name).type("checkbox");
             if (value != null)
@@ -125,7 +125,7 @@ namespace Lephone.Web.Rails
             b.end.over();
         }
 
-        private void ProcessValueType(MemberHandler m, object value)
+        private void ProcessValueType(object value)
         {
             b.input.id(id).name(name).attr("maxlength", 20).attr("cols", 20);
             if (value != null)

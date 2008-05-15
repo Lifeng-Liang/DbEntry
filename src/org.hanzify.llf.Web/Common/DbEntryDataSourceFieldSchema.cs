@@ -15,28 +15,28 @@ namespace Lephone.Web.Common
             _Nullable = Nullable;
         }
 
-        private Type _DataType;
+        private readonly Type _DataType;
 
         public Type DataType
         {
             get { return _DataType; }
         }
 
-        private bool _Identity;
+        private readonly bool _Identity;
 
         public bool Identity
         {
             get { return _Identity; }
         }
 
-        private string _Name;
+        private readonly string _Name;
 
         public string Name
         {
             get { return _Name; }
         }
 
-        private bool _PrimaryKey;
+        private readonly bool _PrimaryKey;
 
         public bool PrimaryKey
         {
@@ -58,7 +58,7 @@ namespace Lephone.Web.Common
             get { return 0; }
         }
 
-        private bool _Nullable;
+        private readonly bool _Nullable;
 
         public bool Nullable
         {

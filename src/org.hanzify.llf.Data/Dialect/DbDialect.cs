@@ -1,4 +1,3 @@
-
 using System;
 using System.Text;
 using System.Collections;
@@ -8,7 +7,6 @@ using Lephone.Data.SqlEntry;
 using Lephone.Data.Driver;
 using Lephone.Data.Builder;
 using Lephone.Util;
-using Lephone.Util.Logging;
 
 namespace Lephone.Data.Dialect
 {
@@ -94,13 +92,10 @@ namespace Lephone.Data.Dialect
                 dp.ExecuteNonQuery(sql);
                 return key;
             }
-            else
-            {
-                return ExecuteInsertIntKey(dp, sb, oi);
-            }
+            return ExecuteInsertIntKey(dp, sb, oi);
         }
 
-        protected virtual object ExecuteInsertIntKey(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
+	    protected virtual object ExecuteInsertIntKey(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
         {
             SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
             sql.SqlCommandText = AddIdentitySelectToInsert(sql.SqlCommandText);
@@ -120,7 +115,7 @@ namespace Lephone.Data.Dialect
         public virtual string GetTypeName(DataType dt, bool IsUnicode, int Length)
         {
             object key = (dt == DataType.String && Length > 0) ?
-                (object)typeof(string) :
+                typeof(string) :
                 (object)dt;
             string s =(string)TypeNames[key];
             if (IsUnicode)
@@ -129,7 +124,7 @@ namespace Lephone.Data.Dialect
             }
             if (Length > 0)
             {
-                return s + " (" + Length.ToString() + ")";
+                return s + " (" + Length + ")";
             }
             return s;
         }

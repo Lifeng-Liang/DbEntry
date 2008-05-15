@@ -1,12 +1,7 @@
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
-using Lephone.Util.Logging;
 
 namespace Lephone.Data.Dialect
 {

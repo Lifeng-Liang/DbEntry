@@ -1,33 +1,26 @@
-
-#region usings
-
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using Lephone.Data.Driver;
-
-#endregion
 
 namespace Lephone.Data.SqlEntry
 {
     public class ConnectionContext : IDisposable
     {
-        private IDbConnection _Connection = null;
+        private readonly IDbConnection _Connection;
 
         public IDbConnection Connection
         {
             get { return _Connection; }
         }
 
-        private IDbTransaction _Transaction = null;
+        private IDbTransaction _Transaction;
 
         public IDbTransaction Transaction
         {
             get { return _Transaction; }
         }
 
-        private bool IsProcessed = false;
+        private bool IsProcessed;
 
         internal IsolationLevel IsolationLevel
         {

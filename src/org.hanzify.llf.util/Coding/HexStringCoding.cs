@@ -1,12 +1,11 @@
-
 using System;
 
 namespace Lephone.Util.Coding
 {
 	public class HexStringCoding : StringCoding
 	{
-		private static char[] HexChar = new char[] {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-		private static byte[] ReverseHexChar = new byte[128];
+		private static readonly char[] HexChar = new[] {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+		private static readonly byte[] ReverseHexChar = new byte[128];
 
 		static HexStringCoding()
 		{
@@ -17,9 +16,9 @@ namespace Lephone.Util.Coding
 
 		private static void SetReverseHexChar(char a, char b, int Add)
 		{
-			for ( int i=(int)a; i<=(int)b; i++ )
+			for ( int i=a; i<=b; i++ )
 			{
-				ReverseHexChar[i] = (byte)(i - (int)a + Add);
+				ReverseHexChar[i] = (byte)(i - a + Add);
 			}
 		}
 
@@ -38,17 +37,14 @@ namespace Lephone.Util.Coding
 						for( int i=0, j=0; i<m; i++ )
 						{
 							byte b1 = (byte)(r[ p[j++] ] << 4 );
-							byte b2 = (byte)(r[ p[j++] ]);
+							byte b2 = r[ p[j++] ];
 							ret[i] = (byte)(b1 | b2);
 						}
 					}
 				}
 				return ret;
 			}
-			else
-			{
-				throw new ArgumentException("String length error!");
-			}
+		    throw new ArgumentException("String length error!");
 		}
 
 		public override string Decode(byte[] Src)

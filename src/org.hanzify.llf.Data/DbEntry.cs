@@ -1,19 +1,8 @@
-
-#region usings
-
-using System;
 using System.Data;
-using System.Collections;
 using Lephone.Util;
-using Lephone.Util.Logging;
 using Lephone.Data.QuerySyntax;
 using Lephone.Data.Common;
-using Lephone.Data.Driver;
-using Lephone.Data.SqlEntry;
-using Lephone.Data.Builder;
 using Lephone.Data.Definition;
-
-#endregion
 
 namespace Lephone.Data
 {
@@ -58,22 +47,22 @@ namespace Lephone.Data
 
         #region Shortcut
 
-        public static IWhere<T> From<T>() where T : IDbObject
+        public static IWhere<T> From<T>() where T : class, IDbObject
         {
             return _Instance.From<T>();
         }
 
-        public static T GetObject<T>(object key) where T : IDbObject
+        public static T GetObject<T>(object key) where T : class, IDbObject
         {
             return _Instance.GetObject<T>(key);
         }
 
-        public static T GetObject<T>(WhereCondition c) where T : IDbObject
+        public static T GetObject<T>(WhereCondition c) where T : class, IDbObject
         {
             return _Instance.GetObject<T>(c);
         }
 
-        public static T GetObject<T>(WhereCondition c, OrderBy ob) where T : IDbObject
+        public static T GetObject<T>(WhereCondition c, OrderBy ob) where T : class, IDbObject
         {
             return _Instance.GetObject<T>(c, ob);
         }
@@ -98,7 +87,7 @@ namespace Lephone.Data
             _Instance.Delete(obj);
 		}
 
-        public static void Delete<T>(WhereCondition iwc) where T : IDbObject
+        public static void Delete<T>(WhereCondition iwc) where T : class, IDbObject
         {
             _Instance.Delete<T>(iwc);
         }

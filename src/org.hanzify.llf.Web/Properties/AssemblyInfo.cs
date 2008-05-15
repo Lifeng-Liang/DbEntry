@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("WebEntry.Net")]
 [assembly: AssemblyDescription("WebEntry.Net")]

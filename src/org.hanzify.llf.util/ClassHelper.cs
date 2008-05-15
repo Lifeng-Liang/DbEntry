@@ -1,11 +1,6 @@
-
-#region usings
-
 using System;
 using System.Reflection;
 using System.Text;
-
-#endregion
 
 namespace Lephone.Util
 {
@@ -22,27 +17,24 @@ namespace Lephone.Util
             {
                 return GetDate(value);
             }
-            else if (conversionType == typeof(Time))
+            if (conversionType == typeof(Time))
             {
                 return GetTime(value);
             }
-            else if (conversionType == typeof(Date?))
+            if (conversionType == typeof(Date?))
             {
                 if (value == null) return null;
-                return new Date?(GetDate(value));
+                return (Date?)(GetDate(value));
             }
-            else if (conversionType == typeof(Time?))
+            if (conversionType == typeof(Time?))
             {
                 if (value == null) return null;
-                return new Time?(GetTime(value));
+                return (Time?)(GetTime(value));
             }
-            else
-            {
-                return Convert.ChangeType(value, conversionType);
-            }
+            return Convert.ChangeType(value, conversionType);
         }
 
-        private static Date GetDate(object value)
+	    private static Date GetDate(object value)
         {
             if (value is string)
             {
@@ -205,7 +197,7 @@ namespace Lephone.Util
             {
                 sb.Length -= spliter.Length;
             }
-            return string.Format(string.Format(msg, sb.ToString()), os);
+            return string.Format(string.Format(msg, sb), os);
         }
 
         public static T[] GetAttributes<T>(MethodInfo info, bool inherit) where T : Attribute
@@ -219,8 +211,7 @@ namespace Lephone.Util
             T[] ts = GetAttributes<T>(info, inherit);
             if (ts != null && ts.Length > 0)
                 return ts[0];
-            else
-                return null;
+            return null;
         }
 
         public static bool HasAttribute<T>(MethodInfo info, bool inherit) where T : Attribute
@@ -239,8 +230,7 @@ namespace Lephone.Util
             T[] ts = GetAttributes<T>(info, inherit);
             if (ts != null && ts.Length > 0)
                 return ts[0];
-            else
-                return null;
+            return null;
         }
 
         public static bool HasAttribute<T>(FieldInfo info, bool inherit) where T : Attribute
@@ -259,8 +249,7 @@ namespace Lephone.Util
             T[] ts = GetAttributes<T>(info, inherit);
             if (ts != null && ts.Length > 0)
                 return ts[0];
-            else
-                return null;
+            return null;
         }
 
         public static bool HasAttribute<T>(PropertyInfo info, bool inherit) where T : Attribute
@@ -279,8 +268,7 @@ namespace Lephone.Util
             T[] ts = GetAttributes<T>(info, inherit);
             if (ts != null && ts.Length > 0)
                 return ts[0];
-            else
-                return null;
+            return null;
         }
 
         public static bool HasAttribute<T>(Type info, bool inherit) where T : Attribute

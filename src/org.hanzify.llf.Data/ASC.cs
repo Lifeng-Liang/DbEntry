@@ -1,6 +1,3 @@
-
-using System;
-
 namespace Lephone.Data
 {
 	public class ASC

@@ -1,19 +1,13 @@
-
-#region usings
-
-using System;
 using System.Text;
-
-#endregion
 
 namespace Lephone.Util
 {
 	public class EncodingEx
 	{
-		private static Encoding _GBK;
-		private static Encoding _BIG5;
-		private static Encoding _ShiftJIS;
-		private static Encoding _Korea;
+		private static readonly Encoding _GBK;
+		private static readonly Encoding _BIG5;
+		private static readonly Encoding _ShiftJIS;
+		private static readonly Encoding _Korea;
 
 		static EncodingEx()
 		{
@@ -25,7 +19,7 @@ namespace Lephone.Util
 
 		private static Encoding GetCoding(int n)
 		{
-			Encoding c = null;
+			Encoding c;
 			try
 			{
 				c = Encoding.GetEncoding(n);

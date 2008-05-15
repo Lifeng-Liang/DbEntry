@@ -1,27 +1,18 @@
-
-#region usings
-
 using System;
 using System.Data;
-using System.Data.Common;
 using System.Reflection;
-using System.Collections.Generic;
-
 using Lephone.Util;
-using Lephone.Util.Setting;
-
-#endregion
 
 namespace Lephone.Data.Driver
 {
     internal class SmartDbFactory : DbFactory
     {
-        private object[] CiParam = new object[] { };
+        private readonly object[] CiParam = new object[] { };
         private ConstructorInfo CiCommand;
         private ConstructorInfo CiConnection;
         private ConstructorInfo CiDataAdapter;
         private ConstructorInfo CiParameter;
-        private MethodInfo MiCb_DeriveParameters = null;
+        private MethodInfo MiCb_DeriveParameters;
 
         public bool DeriveParametersIsValid
         {
@@ -73,9 +64,10 @@ namespace Lephone.Data.Driver
                 {
                     if (t.Name.EndsWith("CommandBuilder"))
                     {
-                        object[] os = new object[] { };
+                        //TODO: why left this?
+                        //object[] os = new object[] { };
                         MiCb_DeriveParameters = t.GetMethod("DeriveParameters", ClassHelper.StaticFlag,
-                            null, CallingConventions.Any, new Type[] { CommandType }, null);
+                            null, CallingConventions.Any, new[] { CommandType }, null);
                         break;
                     }
                 }
@@ -89,10 +81,7 @@ namespace Lephone.Data.Driver
             {
                 return false;
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         private void AssertConstructorNotNull(params ConstructorInfo[] ts)
@@ -101,7 +90,7 @@ namespace Lephone.Data.Driver
             {
                 if (t == null)
                 {
-                    throw new ArgumentNullException("Type is null, please check info of App.config.");
+                    throw new ArgumentNullException("ts", "Type is null, please check info of App.config.");
                 }
             }
         }

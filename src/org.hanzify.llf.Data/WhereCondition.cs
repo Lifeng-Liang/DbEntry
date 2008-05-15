@@ -1,12 +1,7 @@
-
-#region usings
-
 using System;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder.Clause;
-
-#endregion
 
 namespace Lephone.Data
 {
@@ -91,6 +86,6 @@ namespace Lephone.Data
             return (Condition == null || (Condition is Common.EmptyCondition));
         }
 
-        public abstract string ToSqlText(DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd);
+        public abstract string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd);
 	}
 }

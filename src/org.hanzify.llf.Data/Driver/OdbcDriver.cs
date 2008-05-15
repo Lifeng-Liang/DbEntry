@@ -1,12 +1,6 @@
-
-#region usings
-
-using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.Odbc;
-
-#endregion
 
 namespace Lephone.Data.Driver
 {

@@ -1,7 +1,3 @@
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Lephone.Data.SqlEntry;
 using Lephone.Util.Logging;
 using Lephone.Data.Common;
@@ -25,7 +21,7 @@ namespace Lephone.Data.Dialect
 
         public override DbStructInterface GetDbStructInterface()
         {
-            return new DbStructInterface(null, new string[] { null, null, null, "TABLE" }, null, null, null);
+            return new DbStructInterface(null, new[] { null, null, null, "TABLE" }, null, null, null);
         }
 
         protected override string GetSelectSequenceSql(string TableName)
@@ -80,7 +76,7 @@ namespace Lephone.Data.Dialect
             dp.ExecuteNonQuery(sql);
         }
 
-        protected override SqlStatement GetPagedSelectSqlStatement(Lephone.Data.Builder.SelectStatementBuilder ssb)
+        protected override SqlStatement GetPagedSelectSqlStatement(Builder.SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
             Sql.SqlCommandText = string.Format("{0} Rows {1} to {2}",

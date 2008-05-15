@@ -1,14 +1,8 @@
-
-#region usings
-
 using System;
 using System.Data;
 using Lephone.Data.Driver;
 using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
-using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.Dialect
 {
@@ -32,7 +26,7 @@ namespace Lephone.Data.Dialect
 
         public override DbStructInterface GetDbStructInterface()
         {
-            return new DbStructInterface(null, new string[] { null, null, null, "TABLE" }, null, null, null);
+            return new DbStructInterface(null, new[] { null, null, null, "TABLE" }, null, null, null);
         }
 
         public override string GetConnectionString(string ConnectionString)

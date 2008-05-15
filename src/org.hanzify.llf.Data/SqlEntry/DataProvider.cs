@@ -1,23 +1,15 @@
-
-#region usings
-
 using System;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Data;
-using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using Lephone.Util;
-using Lephone.Util.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.Driver;
 using Lephone.Data.Common;
-
-#endregion
 
 namespace Lephone.Data.SqlEntry
 {
@@ -82,7 +74,7 @@ namespace Lephone.Data.SqlEntry
             List<string> ret = new List<string>();
             DbStructInterface si = Dialect.GetDbStructInterface();
             string UserId = Dialect.GetUserId(Driver.ConnectionString);
-            UsingConnection(delegate()
+            UsingConnection(delegate
             {
                 DbConnection c = (DbConnection)ConProvider.Connection;
                 foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
@@ -113,13 +105,10 @@ namespace Lephone.Data.SqlEntry
                 }
                 throw new DataException("It must have current connection.");
             }
-            else
-            {
-                return new CommonBulkCopy(this);
-            }
+            return new CommonBulkCopy(this);
         }
-        
-        #endregion
+
+	    #endregion
 
         #region Execute Sql
 
@@ -139,7 +128,7 @@ namespace Lephone.Data.SqlEntry
 
 		private void ExecuteDataset(SqlStatement Sql, DataSet ds)
 		{
-            UsingExistedConnection(delegate()
+            UsingExistedConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -150,7 +139,7 @@ namespace Lephone.Data.SqlEntry
                         foreach (string s in split(e.CommandText))
                         {
                             e.CommandText = s;
-                            ((DbDataAdapter)d).Fill(ds, 0, DataSetting.MaxRecords, "Table" + i.ToString());
+                            ((DbDataAdapter)d).Fill(ds, 0, DataSetting.MaxRecords, "Table" + i);
                             i++;
                         }
                     }
@@ -166,7 +155,7 @@ namespace Lephone.Data.SqlEntry
 		public int UpdateDataset(SqlStatement Sql, DataSet ds)
 		{
             int ret = 0;
-            UsingExistedConnection(delegate()
+            UsingExistedConnection(delegate
             {
                 Sql.SqlCommandType = CommandType.Text;
                 using (IDbCommand e = GetDbCommand(Sql))
@@ -181,7 +170,7 @@ namespace Lephone.Data.SqlEntry
 		public object ExecuteScalar(SqlStatement Sql)
 		{
             object obj = null;
-            UsingExistedConnection(delegate()
+            UsingExistedConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -199,7 +188,7 @@ namespace Lephone.Data.SqlEntry
 		public int ExecuteNonQuery(SqlStatement Sql)
 		{
             int i = 0;
-            UsingExistedConnection(delegate()
+            UsingExistedConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -221,7 +210,7 @@ namespace Lephone.Data.SqlEntry
 
         public void ExecuteDataReader(SqlStatement Sql, CommandBehavior behavior, CallbackObjectHandler<IDataReader> callback)
         {
-            UsingExistedConnection(delegate()
+            UsingExistedConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -241,7 +230,7 @@ namespace Lephone.Data.SqlEntry
         // It's only for stupid oracle
         internal void ExecuteDataReader(SqlStatement Sql, Type ReturnType, CallbackObjectHandler<IDataReader> callback)
         {
-            UsingExistedConnection(delegate()
+            UsingExistedConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -300,7 +289,7 @@ namespace Lephone.Data.SqlEntry
                 e.CommandText = al[i];
                 ret += e.ExecuteNonQuery();
             }
-            e.CommandText = (string)al[al.Count - 1];
+            e.CommandText = al[al.Count - 1];
             return ret;
         }
 
@@ -429,7 +418,7 @@ namespace Lephone.Data.SqlEntry
 
         public void UsingTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
-            UsingConnection(delegate()
+            UsingConnection(delegate
             {
                 ConnectionContext cc = ConProvider;
                 cc.BeginTransaction(il);

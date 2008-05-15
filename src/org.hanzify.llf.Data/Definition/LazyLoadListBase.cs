@@ -1,16 +1,7 @@
-
-#region usings
-
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-
 using Lephone.Data;
 using Lephone.Data.Common;
-using Lephone.Data.Driver;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {

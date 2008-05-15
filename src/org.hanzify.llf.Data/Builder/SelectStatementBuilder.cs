@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
@@ -11,16 +9,16 @@ namespace Lephone.Data.Builder
 {
 	public class SelectStatementBuilder : ISqlStatementBuilder, ISqlKeys, ISqlWhere
 	{
-        private OrderBy _Order;
-        private Range _Limit;
-        private FromClause _From;
-        private WhereClause _WhereOptions = new WhereClause();
+        private readonly OrderBy _Order;
+        private readonly Range _Limit;
+        private readonly FromClause _From;
+        private readonly WhereClause _WhereOptions = new WhereClause();
 
-        private List<string> keys = new List<string>();
+        private readonly List<string> keys = new List<string>();
 
-        internal string CountCol = null;
+        internal string CountCol;
 
-        internal bool IsGroupBy = false;
+        internal bool IsGroupBy;
 
 		public SelectStatementBuilder(string TableName) : this(TableName, null, null)
 		{

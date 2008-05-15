@@ -1,11 +1,6 @@
-
-#region usings
-
 using System;
 using System.Data.Common;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Lephone.MockSql
 {

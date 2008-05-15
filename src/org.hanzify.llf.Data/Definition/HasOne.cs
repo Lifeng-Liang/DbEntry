@@ -1,14 +1,5 @@
-
-#region usings
-
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
 using Lephone.Data.Common;
-using Lephone.Data.Driver;
-
-#endregion
 
 namespace Lephone.Data.Definition
 {
@@ -18,7 +9,7 @@ namespace Lephone.Data.Definition
     }
 
     [Serializable]
-    public class HasOne<T> : LazyLoadOneBase<T>, IRenew, IHasOne where T : IDbObject
+    public class HasOne<T> : LazyLoadOneBase<T>, IRenew, IHasOne where T : class, IDbObject
     {
         private OrderBy Order;
 

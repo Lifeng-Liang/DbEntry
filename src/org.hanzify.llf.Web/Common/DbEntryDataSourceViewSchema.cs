@@ -6,7 +6,7 @@ namespace Lephone.Web.Common
 {
     public class DbEntryDataSourceViewSchema : IDataSourceViewSchema
     {
-        private ObjectInfo oi;
+        private readonly ObjectInfo oi;
 
         public DbEntryDataSourceViewSchema(ObjectInfo oi)
         {

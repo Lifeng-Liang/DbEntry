@@ -1,8 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 using Lephone.Data;
 
@@ -10,7 +8,7 @@ namespace Lephone.Linq
 {
     public class LinqQueryProvider<T, TKey> : IOrderedQueryable<T>, IQueryProvider where T : LinqObjectModel<T, TKey>
     {
-        private Expression expression;
+        private readonly Expression expression;
 
         public LinqQueryProvider(Expression expression)
         {

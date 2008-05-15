@@ -1,7 +1,3 @@
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Dialect;
@@ -11,8 +7,8 @@ namespace Lephone.Data.Common
 {
     internal class SoftDeleteQueryComposer : QueryComposer
     {
-        private string ColumnName;
-        private KeyValueClause colExp;
+        private readonly string ColumnName;
+        private readonly KeyValueClause colExp;
 
         public SoftDeleteQueryComposer(ObjectInfo oi, string ColumnName)
             : base(oi)

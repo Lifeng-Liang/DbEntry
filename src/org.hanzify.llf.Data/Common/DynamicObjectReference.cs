@@ -1,13 +1,7 @@
-
-#region usings
-
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
-
 using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data.Common
 {

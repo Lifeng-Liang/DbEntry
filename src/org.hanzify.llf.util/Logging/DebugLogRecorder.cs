@@ -1,10 +1,5 @@
-
-#region usings
-
 using System;
 using System.Diagnostics;
-
-#endregion
 
 namespace Lephone.Util.Logging
 {
@@ -15,7 +10,7 @@ namespace Lephone.Util.Logging
             DebugPrint("{0},{1},{2},{3},{4}", Type, Source, Name, Message, eException);
         }
 
-        private void DebugPrint(string msg, params object[] os)
+        private static void DebugPrint(string msg, params object[] os)
         {
             ClassHelper.CallFunction(typeof(Debug), "Print", msg, os);
         }

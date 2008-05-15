@@ -1,19 +1,14 @@
-
-#region usings
-
 using System;
 using System.Collections.Specialized;
 using System.Reflection;
 using Lephone.Data.SqlEntry;
 
-#endregion
-
 namespace Lephone.Data.Common
 {
     internal class NullableHelper
     {
-        private static HybridDictionary NullableTypesToDataType;
-        private static HybridDictionary NullableTypesToUnderlyingType;
+        private static readonly HybridDictionary NullableTypesToDataType;
+        private static readonly HybridDictionary NullableTypesToUnderlyingType;
 
         static NullableHelper()
         {
@@ -76,14 +71,14 @@ namespace Lephone.Data.Common
                 throw new ArgumentOutOfRangeException();
             }
             ConstructorInfo ci = NullableType.GetConstructor(
-                new Type[] { GetUnderlyingType(NullableType) });
+                new[] { GetUnderlyingType(NullableType) });
             return ci;
         }
 
         public static object CreateNullableObject(Type NullableType, object value)
         {
             ConstructorInfo ci = GetConstructorInfo(NullableType);
-            return ci.Invoke(new object[] { value });
+            return ci.Invoke(new[] { value });
         }
     }
 }

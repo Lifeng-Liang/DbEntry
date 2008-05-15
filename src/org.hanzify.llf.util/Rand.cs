@@ -1,15 +1,10 @@
-
-#region usings
-
 using System;
-
-#endregion
 
 namespace Lephone.Util
 {
 	public static class Rand
 	{
-		private static Random r = new Random();
+		private static readonly Random r = new Random();
 
 		public static int Next(int MaxValue)
 		{

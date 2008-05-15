@@ -1,21 +1,15 @@
-
-#region usings
-
 using System;
-using System.Text;
 using System.Collections.Specialized;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
-
-#endregion
 
 namespace Lephone.Data.Builder.Clause
 {
     public class FromClause : IClause
     {
-        private string TableNameMain = null;
-        private JoinClause[] jcs = null;
-        private HybridDictionary FromStrings = new HybridDictionary();
+        private readonly string TableNameMain;
+        private readonly JoinClause[] jcs;
+        private readonly HybridDictionary FromStrings = new HybridDictionary();
 
         public FromClause(string TableName)
         {
@@ -46,7 +40,7 @@ namespace Lephone.Data.Builder.Clause
             return TableNameMain;
         }
 
-        public string ToSqlText(DataParamterCollection dpc, Lephone.Data.Dialect.DbDialect dd)
+        public string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd)
         {
             if (TableNameMain != null)
             {
@@ -57,32 +51,30 @@ namespace Lephone.Data.Builder.Clause
             {
                 return (string)FromStrings[dd];
             }
-            else
+
+            StringDictionary sd = new StringDictionary();
+            string ret = dd.QuoteForTableName(jcs[0].Key1);
+            sd.Add(ret, "");
+            for (int i = 0; i < jcs.Length; i++)
             {
-                StringDictionary sd = new StringDictionary();
-                string ret = dd.QuoteForTableName(jcs[0].Key1);
-                sd.Add(ret, "");
-                for (int i = 0; i < jcs.Length; i++)
+                if (i != 0 && dd.NeedBracketForJoin)
                 {
-                    if (i != 0 && dd.NeedBracketForJoin)
-                    {
-                        ret = string.Format("({0})", ret);
-                    }
-                    string tn = dd.QuoteForTableName(jcs[i].Key2);
-                    if (sd.ContainsKey(tn)) { tn = dd.QuoteForTableName(jcs[i].Key1); }
-                    sd.Add(tn, "");
-                    ret = string.Format("{0} {3} Join {1} On {2}",
-                        ret,
-                        tn,
-                        jcs[i].ToSqlText(dpc, dd),
-                        jcs[i].mode);
+                    ret = string.Format("({0})", ret);
                 }
-                lock (FromStrings.SyncRoot)
-                {
-                    FromStrings[dd] = ret;
-                }
-                return ret;
+                string tn = dd.QuoteForTableName(jcs[i].Key2);
+                if (sd.ContainsKey(tn)) { tn = dd.QuoteForTableName(jcs[i].Key1); }
+                sd.Add(tn, "");
+                ret = string.Format("{0} {3} Join {1} On {2}",
+                                    ret,
+                                    tn,
+                                    jcs[i].ToSqlText(dpc, dd),
+                                    jcs[i].mode);
             }
+            lock (FromStrings.SyncRoot)
+            {
+                FromStrings[dd] = ret;
+            }
+            return ret;
         }
     }
 }

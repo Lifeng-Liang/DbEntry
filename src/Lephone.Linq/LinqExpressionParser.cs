@@ -1,19 +1,14 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Linq.Expressions;
 using Lephone.Data;
-using System.Reflection;
 using Lephone.Data.Definition;
 
 namespace Lephone.Linq
 {
-    internal class LinqExpressionParser<T> where T : IDbObject
+    internal class LinqExpressionParser<T> where T : class, IDbObject
     {
-        public WhereCondition condition = null;
-        public OrderBy orderby = null;
+        public WhereCondition condition;
+        public OrderBy orderby;
 
         public LinqExpressionParser(Expression expr)
         {

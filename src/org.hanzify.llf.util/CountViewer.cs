@@ -1,18 +1,12 @@
-
-#region usings
-
-using System;
 using Lephone.Util.Logging;
-
-#endregion
 
 namespace Lephone.Util
 {
 	public class CountViewer
 	{
-		private string Teamplate;
-		private int OutputCount;
-		private int nMax;
+		private readonly string Teamplate;
+		private readonly int OutputCount;
+		private readonly int nMax;
 		private int n;
 
 		public CountViewer(string Teamplate, int OutputCount, int nMax)

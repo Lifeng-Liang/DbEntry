@@ -1,10 +1,4 @@
-
-#region usings
-
-using System;
 using System.Text;
-
-#endregion
 
 namespace Lephone.Util
 {
@@ -12,7 +6,7 @@ namespace Lephone.Util
 	{
 		#region Singleton
 
-		private static NullEncoding _Instance = new NullEncoding();
+		private static readonly NullEncoding _Instance = new NullEncoding();
 
 		public static NullEncoding Instance
 		{

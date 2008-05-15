@@ -1,10 +1,5 @@
-
-#region usings
-
 using System;
 using Lephone.Util.Logging;
-
-#endregion
 
 namespace Lephone.Data.Logging
 {
@@ -19,7 +14,7 @@ namespace Lephone.Data.Logging
             }
             catch (Exception ex)
             {
-                string msg = (eException == null) ? Message : Message + "\n" + eException.ToString();
+                string msg = (eException == null) ? Message : Message + "\n" + eException;
                 ((ILogDirect)Logger.System).Log(Type, Source, Name, msg, ex);
             }
         }

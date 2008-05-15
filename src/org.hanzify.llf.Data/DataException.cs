@@ -1,11 +1,6 @@
-
-#region usings
-
 using System;
 using System.Runtime.Serialization;
 using Lephone.Util;
-
-#endregion
 
 namespace Lephone.Data
 {
