@@ -20,7 +20,7 @@ namespace Lephone.Web
             {
                 cu |= CK.K["UserName"] == s;
             }
-            DbEntry.UsingExistedTransaction(delegate
+            DbEntry.UsingTransaction(delegate
             {
                 List<DbEntryMembershipUser> ls = DbEntryMembershipUser.Find(cu);
                 foreach (DbEntryRole r in DbEntryRole.Find(c))
@@ -137,7 +137,7 @@ namespace Lephone.Web
                 c |= CK.K["Name"] == s;
             }
             List<string> uns = new List<string>(usernames);
-            DbEntry.UsingExistedTransaction(delegate
+            DbEntry.UsingTransaction(delegate
             {
                 foreach (DbEntryRole r in DbEntryRole.Find(c))
                 {

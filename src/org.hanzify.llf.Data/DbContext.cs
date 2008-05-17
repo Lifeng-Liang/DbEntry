@@ -120,7 +120,7 @@ namespace Lephone.Data
         {
             if (IsUsing)
             {
-                UsingTransaction(callback);
+                NewTransaction(callback);
             }
             else
             {
@@ -376,7 +376,7 @@ namespace Lephone.Data
         {
             if (oi.HasAssociate)
             {
-                UsingExistedTransaction(delegate
+                UsingTransaction(delegate
                 {
                     if (ParentFirst) { e1(this); }
                     object mkey = oi.Handler.GetKeyValue(obj);

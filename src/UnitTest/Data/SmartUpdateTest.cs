@@ -250,7 +250,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPartialUpdateThatSetValueByTransaction()
         {
-            de.UsingTransaction(delegate()
+            de.NewTransaction(delegate()
             {
                 sUser u = new sUser("Tom", 18);
                 u.Id = 1; // Make it looks like read from database
@@ -266,7 +266,7 @@ namespace Lephone.UnitTest.Data
         {
             try
             {
-                de.UsingTransaction(delegate()
+                de.NewTransaction(delegate()
                 {
                     sUser u = new sUser("Tom", 18);
                     u.Id = 1; // Make it looks like read from database
@@ -333,9 +333,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject4()
         {
-            DbEntry.UsingTransaction(delegate()
+            DbEntry.NewTransaction(delegate()
             {
-                de.UsingTransaction(delegate()
+                de.NewTransaction(delegate()
                 {
                     asUser u = asUser.New("Tom", 18);
                     u.Id = 1; // Make it looks like read from database

@@ -13,7 +13,7 @@ public static class DataInit
     {
         if (File.Exists(dbpath)) { return; }
 
-        DbEntry.UsingTransaction(delegate()
+        DbEntry.NewTransaction(delegate
         {
             SysUser.New().Init("tom", 19, GetDate(), true).Save();
             SysUser.New().Init("jerry", 26, GetDate(), true).Save();

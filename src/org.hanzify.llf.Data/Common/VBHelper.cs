@@ -103,34 +103,34 @@ namespace Lephone.Data.Common
             }
         }
 
-        public static TransactionHelper UsingTransaction()
+        public static TransactionHelper NewTransaction()
         {
             return new TransactionHelper(DbEntry.Context, IsolationLevel.ReadCommitted);
         }
 
-        public static TransactionHelper UsingTransaction(IsolationLevel il)
+        public static TransactionHelper NewTransaction(IsolationLevel il)
         {
             return new TransactionHelper(DbEntry.Context, il);
         }
 
-        public static TransactionHelper UsingTransaction(DbContext dc)
+        public static TransactionHelper NewTransaction(DbContext dc)
         {
             return new TransactionHelper(dc, IsolationLevel.ReadCommitted);
         }
 
-        public static TransactionHelper UsingTransaction(DbContext dc, IsolationLevel il)
+        public static TransactionHelper NewTransaction(DbContext dc, IsolationLevel il)
         {
             return new TransactionHelper(dc, il);
         }
 
-        public static TransactionHelper UsingExistedTransaction()
+        public static TransactionHelper UsingTransaction()
         {
             ConnectionContext cc = Scope<ConnectionContext>.Current;
             if (cc != null)
             {
                 return new TransactionHelper(cc);
             }
-            return UsingTransaction();
+            return NewTransaction();
         }
 
         public static void Commit()

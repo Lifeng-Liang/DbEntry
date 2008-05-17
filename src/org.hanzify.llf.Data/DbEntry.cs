@@ -10,17 +10,7 @@ namespace Lephone.Data
     {
         public const string CountColumn = "it__count__";
 
-        #region UsingTransaction
-
-        public static void UsingExistedTransaction(CallbackVoidHandler callback)
-        {
-            _Instance.UsingExistedTransaction(callback);
-        }
-
-        public static void UsingExistedTransaction(IsolationLevel il, CallbackVoidHandler callback)
-        {
-            _Instance.UsingExistedTransaction(il, callback);
-        }
+        #region NewTransaction
 
         public static void UsingTransaction(CallbackVoidHandler callback)
         {
@@ -30,6 +20,16 @@ namespace Lephone.Data
         public static void UsingTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
             _Instance.UsingTransaction(il, callback);
+        }
+
+        public static void NewTransaction(CallbackVoidHandler callback)
+        {
+            _Instance.NewTransaction(callback);
+        }
+
+        public static void NewTransaction(IsolationLevel il, CallbackVoidHandler callback)
+        {
+            _Instance.NewTransaction(il, callback);
         }
 
         #endregion

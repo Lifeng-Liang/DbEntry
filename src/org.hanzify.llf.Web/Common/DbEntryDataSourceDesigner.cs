@@ -34,15 +34,5 @@ namespace Lephone.Web.Common
         {
             throw new NotImplementedException();
         }
-
-        public override void ResumeDataSourceEvents()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void SuppressDataSourceEvents()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

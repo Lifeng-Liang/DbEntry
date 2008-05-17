@@ -1,17 +1,7 @@
-
-#region usings
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using Lephone.Data;
 using Lephone.Data.Common;
 using NUnit.Framework;
-
 using Lephone.UnitTest.Data.Objects;
-
-#endregion
 
 namespace Lephone.UnitTest.Data
 {
@@ -37,7 +27,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            using (VBHelper.UsingTransaction())
+            using (VBHelper.NewTransaction())
             {
                 Person p = new Person();
                 p.Name = "uuu";
@@ -56,7 +46,7 @@ namespace Lephone.UnitTest.Data
         {
             try
             {
-                using (VBHelper.UsingTransaction())
+                using (VBHelper.NewTransaction())
                 {
                     Person p = new Person();
                     p.Name = "uuu";

@@ -225,6 +225,7 @@ namespace System
             return ((IConvertible)(dt.Date)).ToInt64(provider);
         }
 
+        [CLSCompliant(false)]
         public sbyte ToSByte(IFormatProvider provider)
         {
             return ((IConvertible)(dt.Date)).ToSByte(provider);
@@ -245,16 +246,19 @@ namespace System
             return ((IConvertible)(dt.Date)).ToType(conversionType, provider);
         }
 
+        [CLSCompliant(false)]
         public ushort ToUInt16(IFormatProvider provider)
         {
             return ((IConvertible)(dt.Date)).ToUInt16(provider);
         }
 
+        [CLSCompliant(false)]
         public uint ToUInt32(IFormatProvider provider)
         {
             return ((IConvertible)(dt.Date)).ToUInt32(provider);
         }
 
+        [CLSCompliant(false)]
         public ulong ToUInt64(IFormatProvider provider)
         {
             return ((IConvertible)(dt.Date)).ToUInt64(provider);
@@ -538,6 +542,7 @@ namespace System
             return o.ToInt64(provider);
         }
 
+        [CLSCompliant(false)]
         public sbyte ToSByte(IFormatProvider provider)
         {
             IConvertible o = GetConvertible();
@@ -562,18 +567,21 @@ namespace System
             return o.ToType(conversionType, provider);
         }
 
+        [CLSCompliant(false)]
         public ushort ToUInt16(IFormatProvider provider)
         {
             IConvertible o = GetConvertible();
             return o.ToUInt16(provider);
         }
 
+        [CLSCompliant(false)]
         public uint ToUInt32(IFormatProvider provider)
         {
             IConvertible o = GetConvertible();
             return o.ToUInt32(provider);
         }
 
+        [CLSCompliant(false)]
         public ulong ToUInt64(IFormatProvider provider)
         {
             IConvertible o = GetConvertible();

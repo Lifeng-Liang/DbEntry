@@ -1,15 +1,12 @@
 //#define SqlServerActive
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using NUnit.Framework;
 using Lephone.Data;
 using Lephone.Data.SqlEntry;
-using Lephone.MockSql;
 using Lephone.MockSql.Recorder;
 
 namespace Lephone.UnitTest.Data
@@ -39,7 +36,7 @@ namespace Lephone.UnitTest.Data
         public void TestGetTheRightCopier3()
         {
             DbContext dc = new DbContext("SqlServer");
-            dc.UsingTransaction(delegate()
+            dc.NewTransaction(delegate()
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy();
                 Assert.IsNotNull(c);
@@ -55,7 +52,7 @@ namespace Lephone.UnitTest.Data
             List<long> rcs = new List<long>();
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.UsingConnection(delegate()
+                dc.NewConnection(delegate()
                 {
                     IDbBulkCopy c = dc.GetDbBulkCopy();
                     c.BatchSize = 2;
@@ -85,7 +82,7 @@ namespace Lephone.UnitTest.Data
         public void TestGetTheRightCopier2()
         {
             DbContext dc = new DbContext("SqlServerMock");
-            dc.UsingTransaction(delegate()
+            dc.NewTransaction(delegate()
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy(); // exception
                 Assert.IsNotNull(c);
@@ -101,7 +98,7 @@ namespace Lephone.UnitTest.Data
             List<long> rcs = new List<long>();
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.UsingConnection(delegate()
+                dc.NewConnection(delegate()
                 {
                     IDbBulkCopy c = dc.GetDbBulkCopy();
                     c.BatchSize = 2;
@@ -133,7 +130,7 @@ namespace Lephone.UnitTest.Data
             SqlStatement sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
             List<long> rcs = new List<long>();
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
-            dc.UsingConnection(delegate()
+            dc.NewConnection(delegate()
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy();
                 c.BatchSize = 2;
@@ -164,7 +161,7 @@ namespace Lephone.UnitTest.Data
             SqlStatement sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
             List<long> rcs = new List<long>();
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
-            dc.UsingConnection(delegate()
+            dc.NewConnection(delegate()
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy();
                 c.BatchSize = 2;
@@ -196,7 +193,7 @@ namespace Lephone.UnitTest.Data
             SqlStatement sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.UsingConnection(delegate()
+                dc.NewConnection(delegate()
                 {
                     IDbBulkCopy c = dc.GetDbBulkCopy();
                     c.BatchSize = 2;
@@ -223,7 +220,7 @@ namespace Lephone.UnitTest.Data
             SqlStatement sql = new SqlStatement("select [Id],[Name],[MyInt],[MyBool] from [NullTest] order by [Id]");
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.UsingConnection(delegate()
+                dc.NewConnection(delegate()
                 {
                     IDbBulkCopy c = dc.GetDbBulkCopy();
                     c.BatchSize = 2;

@@ -74,7 +74,7 @@ namespace Lephone.Data.SqlEntry
             List<string> ret = new List<string>();
             DbStructInterface si = Dialect.GetDbStructInterface();
             string UserId = Dialect.GetUserId(Driver.ConnectionString);
-            UsingConnection(delegate
+            NewConnection(delegate
             {
                 DbConnection c = (DbConnection)ConProvider.Connection;
                 foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
@@ -128,7 +128,7 @@ namespace Lephone.Data.SqlEntry
 
 		private void ExecuteDataset(SqlStatement Sql, DataSet ds)
 		{
-            UsingExistedConnection(delegate
+            UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -155,7 +155,7 @@ namespace Lephone.Data.SqlEntry
 		public int UpdateDataset(SqlStatement Sql, DataSet ds)
 		{
             int ret = 0;
-            UsingExistedConnection(delegate
+            UsingConnection(delegate
             {
                 Sql.SqlCommandType = CommandType.Text;
                 using (IDbCommand e = GetDbCommand(Sql))
@@ -170,7 +170,7 @@ namespace Lephone.Data.SqlEntry
 		public object ExecuteScalar(SqlStatement Sql)
 		{
             object obj = null;
-            UsingExistedConnection(delegate
+            UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -188,7 +188,7 @@ namespace Lephone.Data.SqlEntry
 		public int ExecuteNonQuery(SqlStatement Sql)
 		{
             int i = 0;
-            UsingExistedConnection(delegate
+            UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -210,7 +210,7 @@ namespace Lephone.Data.SqlEntry
 
         public void ExecuteDataReader(SqlStatement Sql, CommandBehavior behavior, CallbackObjectHandler<IDataReader> callback)
         {
-            UsingExistedConnection(delegate
+            UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -230,7 +230,7 @@ namespace Lephone.Data.SqlEntry
         // It's only for stupid oracle
         internal void ExecuteDataReader(SqlStatement Sql, Type ReturnType, CallbackObjectHandler<IDataReader> callback)
         {
-            UsingExistedConnection(delegate
+            UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
@@ -387,17 +387,17 @@ namespace Lephone.Data.SqlEntry
 
         #region IUsingTransaction
 
-        public void UsingExistedTransaction(CallbackVoidHandler callback)
+        public void UsingTransaction(CallbackVoidHandler callback)
         {
             if (Scope<ConnectionContext>.Current != null)
             {
                 callback();
                 return;
             }
-            UsingTransaction(callback);
+            NewTransaction(callback);
         }
 
-        public void UsingExistedTransaction(IsolationLevel il, CallbackVoidHandler callback)
+        public void UsingTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
             if (Scope<ConnectionContext>.Current != null)
             {
@@ -408,17 +408,17 @@ namespace Lephone.Data.SqlEntry
                     return;
                 }
             }
-            UsingTransaction(callback);
+            NewTransaction(callback);
         }
 
-        public void UsingTransaction(CallbackVoidHandler callback)
+        public void NewTransaction(CallbackVoidHandler callback)
         {
-            UsingTransaction(IsolationLevel.ReadCommitted, callback);
+            NewTransaction(IsolationLevel.ReadCommitted, callback);
         }
 
-        public void UsingTransaction(IsolationLevel il, CallbackVoidHandler callback)
+        public void NewTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
-            UsingConnection(delegate
+            NewConnection(delegate
             {
                 ConnectionContext cc = ConProvider;
                 cc.BeginTransaction(il);
@@ -456,7 +456,7 @@ namespace Lephone.Data.SqlEntry
         {
         }
 
-        public void UsingConnection(CallbackVoidHandler callback)
+        public void NewConnection(CallbackVoidHandler callback)
         {
             using (ConnectionContext cc = new ConnectionContext(m_Driver))
             {
@@ -474,14 +474,14 @@ namespace Lephone.Data.SqlEntry
             }
         }
 
-        public void UsingExistedConnection(CallbackVoidHandler callback)
+        public void UsingConnection(CallbackVoidHandler callback)
         {
             if (Scope<ConnectionContext>.Current != null)
             {
                 callback();
                 return;
             }
-            UsingConnection(callback);
+            NewConnection(callback);
         }
 
         #endregion
