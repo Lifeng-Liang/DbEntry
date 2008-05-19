@@ -47,8 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DemoObject\Department.cs" />
-    <Compile Include="DemoObject\Person.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -56,6 +54,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Lephone.Linq\Lephone.Linq.csproj">
+      <Project>{E93B9148-B6FB-4340-9981-6CBB407CC6F8}</Project>
+      <Name>Lephone.Linq</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MockSql\MockSql.csproj">
       <Project>{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}</Project>
       <Name>MockSql</Name>

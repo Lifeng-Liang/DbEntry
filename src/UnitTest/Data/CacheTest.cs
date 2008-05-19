@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using Lephone.Data.Caching;
@@ -14,6 +13,8 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class CacheTest
     {
+        #region Init & models
+
         [DbTable("DCS_USERS"), Cacheable]
         public abstract class User : LinqObjectModel<User>
         {
@@ -24,6 +25,7 @@ namespace Lephone.UnitTest.Data
         [DbTable("REF_ORG_UNIT"), Cacheable]
         public abstract class OrganisationalUnit : LinqObjectModel<OrganisationalUnit>
         {
+            [HasMany]
             public abstract IList<JobRoleRelation> JobRoleRelations { get; set; }
         }
 
@@ -112,6 +114,20 @@ namespace Lephone.UnitTest.Data
             Manager,
         }
 
+        [SetUp]
+        public void SetUp()
+        {
+            InitHelper.Init();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            InitHelper.Clear();
+        }
+
+        #endregion
+
         [Test]
         public void Test1()
         {
@@ -161,7 +177,7 @@ namespace Lephone.UnitTest.Data
         *This exception is only thrown on the last line of the testing method when caching is enabled.*
         */
 
-        //[Test]
+        [Test]
         public void T0300_HRM_JobRoleRelation()
         {
             // get system user

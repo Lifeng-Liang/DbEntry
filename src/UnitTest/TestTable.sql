@@ -103,3 +103,59 @@ CREATE TABLE [DateAndTime] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [dtValue] da
 
 INSERT INTO [DateAndTime] ([Id],[dtValue],[dValue],[tValue],[dtnValue],[dnValue],[tnValue]) VALUES (1, datetime('1092941466','unixepoch'), date('1092941466','unixepoch'), time('1092941466','unixepoch'), null, null,null);
 INSERT INTO [DateAndTime] ([Id],[dtValue],[dValue],[tValue],[dtnValue],[dnValue],[tnValue]) VALUES (2, datetime('1092941466','unixepoch'), date('1092941466','unixepoch'), time('1092941466','unixepoch'), datetime('1092941466','unixepoch'), date('1092941466','unixepoch'), time('1092941466','unixepoch'));
+
+--------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE [DCS_USERS] (
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+	[USER_NAME] ntext NOT NULL 
+);
+
+INSERT INTO [DCS_USERS] ([Id], [USER_NAME]) VALUES (1, 'SYSTEM');
+
+CREATE TABLE [REF_ORG_UNIT] (
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT 
+);
+
+INSERT INTO [REF_ORG_UNIT] ([Id]) VALUES (1);
+
+CREATE TABLE [HRM_EMPLOYEES] (
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+	[DCS_PERSONS_Id] bigint NOT NULL 
+);
+
+INSERT INTO [HRM_EMPLOYEES] ([Id], [DCS_PERSONS_Id]) VALUES (1, 1);
+
+CREATE TABLE [DCS_PERSONS] (
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+	[NAME_LAST] ntext NOT NULL 
+);
+
+INSERT INTO [DCS_PERSONS] ([Id], [NAME_LAST]) VALUES (1, 'Mustermann');
+
+CREATE TABLE [REL_EMP_JOB_ROLE] (
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+	[UC] bigint NOT NULL ,
+	[AF] bool NOT NULL ,
+	[START_DATE] datetime NULL ,
+	[HRM_EMPLOYEES_Id] bigint NOT NULL ,
+	[HRM_JOB_ROLES_Id] bigint NOT NULL 
+);
+
+CREATE TABLE [REL_JOB_ROLE_ORG_UNIT] (
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+	[UC] bigint NOT NULL ,
+	[AF] bool NOT NULL ,
+	[RELATION_TYPE] int NOT NULL ,
+	[REF_ORG_UNIT_Id] bigint NOT NULL ,
+	[HRM_JOB_ROLES_Id] bigint NOT NULL 
+);
+
+CREATE TABLE [HRM_JOB_ROLES] (
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+	[UC] bigint NOT NULL ,
+	[CODE] ntext NOT NULL ,
+	[ROLE_NAME] ntext NOT NULL ,
+	[DESCRIPTION] ntext NOT NULL 
+);
+

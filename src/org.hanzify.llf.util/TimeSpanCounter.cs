@@ -49,6 +49,11 @@ namespace Lephone.Util
 			return string.Format(format, GetSeconds());
 		}
 
+        public TimeSpan GetTimeSpan()
+        {
+            return Diff;
+        }
+
 		public override string ToString()
 		{
 			return GetMillisecondsString();
