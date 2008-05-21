@@ -293,7 +293,8 @@ namespace Lephone.Data
                     object co = CacheProvider.Instance[KeyGenerator.Instance.GetKey(t, key)];
                     if (co != null)
                     {
-                        return ObjectInfo.CloneObject(co);
+                        object objInCache = ObjectInfo.CloneObject(co, this);
+                        return objInCache;
                     }
                 }
 

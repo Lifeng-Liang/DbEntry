@@ -329,7 +329,7 @@ namespace Lephone.Data.Common
             return KeyFields[0].UnsavedValue.Equals(Handler.GetKeyValue(obj));
         }
 
-        public static object CloneObject(object obj)
+        public static object CloneObject(object obj, DbContext context)
         {
             if (obj == null) { return null; }
             ObjectInfo oi = GetInstance(obj.GetType());
@@ -338,16 +338,86 @@ namespace Lephone.Data.Common
             {
                 ((DbObjectSmartUpdate)o).m_InternalInit = true;
             }
+            if (context != null)
+            {
+                foreach (MemberHandler mh in oi.RelationFields)
+                {
+                    if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
+                    {
+                        ILazyLoading bt = (ILazyLoading)mh.GetValue(o);
+                        bt.Init(context, mh.Name);
+                    }
+                }
+            }
             foreach (MemberHandler m in oi.SimpleFields)
             {
                 object v = m.GetValue(obj);
                 m.SetValue(o, v);
             }
+            foreach (var m in oi.RelationFields)
+            {
+                if (m.IsBelongsTo)
+                {
+                    IBelongsTo os = (IBelongsTo) m.GetValue(obj);
+                    IBelongsTo od = (IBelongsTo) m.GetValue(o);
+                    od.ForeignKey = os.ForeignKey;
+                }
+            }
+            Doit(context, o, oi);
             if (o is DbObjectSmartUpdate)
             {
                 ((DbObjectSmartUpdate)o).m_InternalInit = false;
             }
             return o;
+        }
+
+        public static object CloneObject(object obj)
+        {
+            return CloneObject(obj, null);
+        }
+
+        // TODO: move this method to IObjectHandler
+        // TODO: Or IObjectHandler should have a method called "CloneObject"?
+        private static void Doit(DbContext driver, object o, ObjectInfo oi)
+        {
+            foreach (MemberHandler f in oi.RelationFields)
+            {
+                ILazyLoading ho = (ILazyLoading)f.GetValue(o);
+                if (f.IsLazyLoad)
+                {
+                    ho.Init(driver, f.Name);
+                }
+                else if (f.IsHasOne || f.IsHasMany)
+                {
+                    ObjectInfo oi1 = ObjectInfo.GetInstance(f.FieldType.GetGenericArguments()[0]);
+                    MemberHandler h1 = oi1.GetBelongsTo(oi.HandleType);
+                    if (h1 != null)
+                    {
+                        ho.Init(driver, h1.Name);
+                    }
+                    else
+                    {
+                        // TODO: should throw exception or not ?
+                        throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
+                        // ho.Init(driver, "__");
+                    }
+                }
+                else if (f.IsHasAndBelongsToMany)
+                {
+                    ObjectInfo oi1 = ObjectInfo.GetInstance(f.FieldType.GetGenericArguments()[0]);
+                    MemberHandler h1 = oi1.GetHasAndBelongsToMany(oi.HandleType);
+                    if (h1 != null)
+                    {
+                        ho.Init(driver, h1.Name);
+                    }
+                    else
+                    {
+                        // TODO: should throw exception or not ?
+                        throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
+                        // ho.Init(driver, "__");
+                    }
+                }
+            }
         }
 
         #endregion
