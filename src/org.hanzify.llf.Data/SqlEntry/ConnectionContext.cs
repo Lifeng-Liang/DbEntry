@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using Lephone.Data.Driver;
+using Lephone.Util;
 
 namespace Lephone.Data.SqlEntry
 {
@@ -73,11 +74,7 @@ namespace Lephone.Data.SqlEntry
             {
                 if (!IsProcessed)
                 {
-                    try
-                    {
-                        _Transaction.Rollback();
-                    }
-                    catch { }
+                    CommonHelper.CatchAll(() => _Transaction.Rollback());
                 }
                 _Transaction.Dispose();
             }

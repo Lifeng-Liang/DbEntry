@@ -8,8 +8,8 @@ namespace Lephone.Util
 {
 	public static class SystemHelper
 	{
-		private static readonly string _ExeFileName;
-        private static readonly string _BaseDirectory;
+		private static string _ExeFileName;
+        private static string _BaseDirectory;
 
         public static string ExeFileName
         {
@@ -23,13 +23,12 @@ namespace Lephone.Util
 
 		static SystemHelper()
 		{
-			try
-			{
+            CommonHelper.CatchAll(delegate
+            {
                 AppDomainSetup s = AppDomain.CurrentDomain.SetupInformation;
-                _ExeFileName     = s.ApplicationName;
-                _BaseDirectory   = s.ApplicationBase;
-            }
-			catch {}
+                _ExeFileName = s.ApplicationName;
+                _BaseDirectory = s.ApplicationBase;
+            });
 		}
 
 		public static string GetDateTimeString()

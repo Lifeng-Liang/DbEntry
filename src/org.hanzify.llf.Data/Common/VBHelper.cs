@@ -14,6 +14,11 @@ namespace Lephone.Data.Common
             private readonly Scope<ConnectionContext> sc;
             private bool Committed;
 
+            public TransactionHelper(DbContext dc)
+                : this(dc, IsolationLevel.ReadCommitted)
+            {
+            }
+
             public TransactionHelper(DbContext dc, IsolationLevel il)
             {
                 if (dc == null)
@@ -67,13 +72,7 @@ namespace Lephone.Data.Common
                 }
                 catch
                 {
-                    try
-                    {
-                        cc.Close();
-                    }
-                    catch
-                    {
-                    }
+                    CommonHelper.CatchAll(() => cc.Close());
                 }
                 if (sc != null) { sc.Dispose(); }
                 cc.Dispose();
@@ -83,10 +82,8 @@ namespace Lephone.Data.Common
         public class ConnectionHelper : IDisposable
         {
             private readonly ConnectionContext cc;
-            //TODO: why left this?
-            //private Scope<ConnectionContext> sc;
 
-            public ConnectionHelper(DbContext dc)
+            public ConnectionHelper(DataProvider dc)
             {
                 cc = new ConnectionContext(dc.m_Driver);
                 new Scope<ConnectionContext>(cc);
@@ -94,11 +91,7 @@ namespace Lephone.Data.Common
 
             public void Dispose()
             {
-                try
-                {
-                    cc.Close();
-                }
-                catch { }
+                CommonHelper.CatchAll(() => cc.Close());
                 cc.Dispose();
             }
         }
@@ -136,6 +129,11 @@ namespace Lephone.Data.Common
         public static void Commit()
         {
             DbEntry.Context.ConProvider.Commit();
+        }
+
+        public static void Rollback()
+        {
+            DbEntry.Context.ConProvider.Rollback();
         }
     }
 }

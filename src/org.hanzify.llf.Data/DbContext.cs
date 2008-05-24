@@ -394,7 +394,7 @@ namespace Lephone.Data
                                 {
                                     if (f.IsHasOne)
                                     {
-                                        IHasOne ho1 = ho as IHasOne;
+                                        IHasOne ho1 = (IHasOne)ho;
                                         if (ho1.LastValue != null)
                                         {
                                             Save(ho1.LastValue);
@@ -405,7 +405,7 @@ namespace Lephone.Data
                                 {
                                     if (f.IsHasMany)
                                     {
-                                        IHasMany ho2 = ho as IHasMany;
+                                        IHasMany ho2 = (IHasMany)ho;
                                         foreach (object item in ho2.RemovedValues)
                                         {
                                             Save(item);
@@ -417,7 +417,7 @@ namespace Lephone.Data
                             }
                             if (f.IsHasAndBelongsToMany)
                             {
-                                IHasAndBelongsToManyRelations so = ho as IHasAndBelongsToManyRelations;
+                                IHasAndBelongsToManyRelations so = (IHasAndBelongsToManyRelations)ho;
                                 foreach (object n in so.SavedNewRelations)
                                 {
                                     SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
@@ -621,7 +621,7 @@ namespace Lephone.Data
             DropTable(tn, CatchException, oi);
             if (oi.HasSystemKey)
             {
-                CommonHelper.IfCatchException(true, delegate()
+                CommonHelper.IfCatchException(true, delegate
                 {
                     Dialect.ExecuteDropSequence(this, tn);
                 });
@@ -637,7 +637,7 @@ namespace Lephone.Data
             string s = "Drop Table " + this.Dialect.QuoteForTableName(TableName);
             SqlStatement Sql = new SqlStatement(s);
             oi.LogSql(Sql);
-            CommonHelper.IfCatchException(CatchException, delegate()
+            CommonHelper.IfCatchException(CatchException, delegate
             {
                 this.ExecuteNonQuery(Sql);
             });
@@ -689,7 +689,8 @@ namespace Lephone.Data
                 throw new DataException("They are not many to many relation ship classes!");
             }
             ManyToManyMediTable mt1 = oi1.ManyToManys[t2];
-            ManyToManyMediTable mt2 = oi2.ManyToManys[t1];
+            //TODO: why left this?
+            //ManyToManyMediTable mt2 = oi2.ManyToManys[t1];
             CreateTableStatementBuilder cts = new CreateTableStatementBuilder(mt1.Name);
             List<string> ls = new List<string>();
             ls.Add(mt1.ColumeName1);

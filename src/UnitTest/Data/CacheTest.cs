@@ -135,9 +135,7 @@ namespace Lephone.UnitTest.Data
             now.SetNow(new DateTime(2007, 11, 4, 15, 23, 43));
             StaticHashCacheProvider c = ClassHelper.CreateInstance<StaticHashCacheProvider>();
 
-            SinglePerson p = new SinglePerson();
-            p.Id = 15;
-            p.Name = "tom";
+            SinglePerson p = new SinglePerson {Id = 15, Name = "tom"};
 
             string key = KeyGenerator.Instance.GetKey(p.GetType(), p.Id);
             c[key] = ObjectInfo.CloneObject(p);

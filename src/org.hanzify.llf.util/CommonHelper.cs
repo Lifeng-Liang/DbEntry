@@ -51,6 +51,11 @@ namespace Lephone.Util
             return 1;
         }
 
+        public static void CatchAll(CallbackVoidHandler callback)
+        {
+            IfCatchException(true, callback);
+        }
+
         public static void IfCatchException(bool CatchException, CallbackVoidHandler callback)
         {
             if (CatchException)
