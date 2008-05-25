@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Lephone.Data;
 using Lephone.Data.Definition;
 
 namespace Lephone.UnitTest.Data

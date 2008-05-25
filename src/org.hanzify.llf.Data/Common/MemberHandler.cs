@@ -87,17 +87,20 @@ namespace Lephone.Data.Common
 
             protected override void InnerSetValue(object obj, object value)
             {
-                if (NullableField.PropertyType == typeof(Date))
+                if (value != null)
                 {
-                    value = (Date)(DateTime)value;
-                }
-                else if (NullableField.PropertyType == typeof(Time))
-                {
-                    value = (Time)(DateTime)value;
-                }
-                else if(NullableField.PropertyType == typeof(Guid) && value != null && value.GetType() != typeof(Guid))
-                {
-                    value = new Guid(value.ToString());
+                    if (NullableField.PropertyType == typeof(Date) && value.GetType() != typeof(DateTime))
+                    {
+                        value = (Date) (DateTime) value;
+                    }
+                    else if (NullableField.PropertyType == typeof(Time) && value.GetType() != typeof(DateTime))
+                    {
+                        value = (Time) (DateTime) value;
+                    }
+                    else if (NullableField.PropertyType == typeof (Guid) && value.GetType() != typeof (Guid))
+                    {
+                        value = new Guid(value.ToString());
+                    }
                 }
                 object oo = ci.Invoke(new[] { value });
                 MemberInfo.SetValue(obj, oo);
@@ -351,11 +354,11 @@ namespace Lephone.Data.Common
 
         protected virtual void InnerSetValue(object obj, object value)
         {
-            if (MemberInfo.MemberType == typeof(Date))
+            if (MemberInfo.MemberType == typeof(Date) && value.GetType() == typeof(DateTime))
             {
                 value = (Date)(DateTime)value;
             }
-            else if (MemberInfo.MemberType == typeof(Time))
+            else if (MemberInfo.MemberType == typeof(Time) && value.GetType() == typeof(DateTime))
             {
                 value = (Time)(DateTime)value;
             }
