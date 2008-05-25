@@ -15,29 +15,29 @@ namespace Lephone.Data
 {
     internal class DataReaderEmitHelper
     {
-        Dictionary<Type, string> dic;
+        readonly Dictionary<Type, string> dic;
 
         public DataReaderEmitHelper()
         {
             // process chars etc.
             dic = new Dictionary<Type, string>();
-            dic.Add(typeof(long), "GetInt64");
-            dic.Add(typeof(int), "GetInt32");
-            dic.Add(typeof(short), "GetInt16");
-            dic.Add(typeof(byte), "GetByte");
-            dic.Add(typeof(bool), "GetBoolean");
-            dic.Add(typeof(DateTime), "GetDateTime");
-            dic.Add(typeof(Date), "GetDateTime");
-            dic.Add(typeof(Time), "GetDateTime");
-            dic.Add(typeof(string), "GetString");
-            dic.Add(typeof(decimal), "GetDecimal");
-            dic.Add(typeof(float), "GetFloat");
-            dic.Add(typeof(double), "GetDouble");
-            dic.Add(typeof(Guid), "GetGuid");
+            dic.Add(typeof(long),       "GetInt64");
+            dic.Add(typeof(int),        "GetInt32");
+            dic.Add(typeof(short),      "GetInt16");
+            dic.Add(typeof(byte),       "GetByte");
+            dic.Add(typeof(bool),       "GetBoolean");
+            dic.Add(typeof(DateTime),   "GetDateTime");
+            dic.Add(typeof(Date),       "GetDateTime");
+            dic.Add(typeof(Time),       "GetDateTime");
+            dic.Add(typeof(string),     "GetString");
+            dic.Add(typeof(decimal),    "GetDecimal");
+            dic.Add(typeof(float),      "GetFloat");
+            dic.Add(typeof(double),     "GetDouble");
+            dic.Add(typeof(Guid),       "GetGuid");
 
-            dic.Add(typeof(ulong), "GetInt64");
-            dic.Add(typeof(uint), "GetInt32");
-            dic.Add(typeof(ushort), "GetInt16");
+            dic.Add(typeof(ulong),      "GetInt64");
+            dic.Add(typeof(uint),       "GetInt32");
+            dic.Add(typeof(ushort),     "GetInt16");
         }
 
         public MethodInfo GetMethodInfo(Type t)
@@ -101,7 +101,7 @@ namespace Lephone.Data
         }
 
         private static readonly Type vhBaseType = typeof(EmitObjectHandlerBase);
-        private static DataReaderEmitHelper helper = new DataReaderEmitHelper();
+        private static readonly DataReaderEmitHelper helper = new DataReaderEmitHelper();
 
         internal static IDbObjectHandler CreateDbObjectHandler(Type srcType, ObjectInfo oi)
         {
@@ -160,6 +160,7 @@ namespace Lephone.Data
                         il.CallVirtual(mi);
                         if (f.AllowNull)
                         {
+                            Set2ndArgForGetNullable(f, il);
                             il.Call(miGetNullable);
                         }
                         // cast or unbox
@@ -193,6 +194,7 @@ namespace Lephone.Data
                     il.LoadArg(2).LoadString(f.Name).CallVirtual(mi);
                     if (f.AllowNull)
                     {
+                        Set2ndArgForGetNullable(f, il);
                         il.Call(miGetNullable);
                     }
                     // cast or unbox
@@ -201,6 +203,22 @@ namespace Lephone.Data
                     f.MemberInfo.EmitSet(il);
                 }
             });
+        }
+
+        private static void Set2ndArgForGetNullable(MemberHandler f, ILBuilder il)
+        {
+            if (f.MemberInfo.MemberType.IsValueType && f.MemberInfo.MemberType.GetGenericArguments()[0] == typeof(Guid))
+            {
+                il.LoadInt(1);
+            }
+            else if (f.MemberInfo.MemberType.IsValueType && f.MemberInfo.MemberType.GetGenericArguments()[0] == typeof(bool))
+            {
+                il.LoadInt(2);
+            }
+            else
+            {
+                il.LoadInt(0);
+            }
         }
 
         private static void OverrideLoadRelationValues(MemoryTypeBuilder tb, Type srcType,

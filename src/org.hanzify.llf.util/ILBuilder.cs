@@ -226,22 +226,22 @@ namespace Lephone.Util
             if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 Type inType = t.GetGenericArguments()[0];
-                if (inType == typeof(Date))
+                if (ProcessDateAndTime(inType, typeof(DateTime?)))
                 {
-                    il.Emit(OpCodes.Unbox_Any, typeof(DateTime?));
-                    il.Emit(OpCodes.Call, dateEx);
-                    return this;
-                }
-                if (inType == typeof(Time))
-                {
-                    il.Emit(OpCodes.Unbox_Any, typeof(DateTime?));
-                    il.Emit(OpCodes.Call, timeEx);
                     return this;
                 }
             }
             if (t.IsValueType)
             {
-                if (t == typeof(uint))
+                if (ProcessDateAndTime(t, typeof(DateTime)))
+                {
+                    return this;
+                }
+                if (t == typeof(bool))
+                {
+                    t = typeof(bool);
+                }
+                else if (t == typeof(uint))
                 {
                     t = typeof(int);
                 }
@@ -260,6 +260,23 @@ namespace Lephone.Util
                 il.Emit(OpCodes.Castclass, t);
             }
             return this;
+        }
+
+        private bool ProcessDateAndTime(Type inType, Type UnboxType)
+        {
+            if (inType == typeof(Date))
+            {
+                il.Emit(OpCodes.Unbox_Any, UnboxType);
+                il.Emit(OpCodes.Call, dateEx);
+                return true;
+            }
+            if (inType == typeof(Time))
+            {
+                il.Emit(OpCodes.Unbox_Any, UnboxType);
+                il.Emit(OpCodes.Call, timeEx);
+                return true;
+            }
+            return false;
         }
 
         public ILBuilder Cast(Type t)

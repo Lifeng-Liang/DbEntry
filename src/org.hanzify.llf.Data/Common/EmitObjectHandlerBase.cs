@@ -148,11 +148,19 @@ namespace Lephone.Data.Common
 
         protected abstract void SetValuesForUpdateDirect(KeyValueCollection Values, object obj);
 
-        protected object GetNullable(object o)
+        protected object GetNullable(object o, int objType)
         {
             if (o == DBNull.Value)
             {
                 return null;
+            }
+            if (objType == 1)
+            {
+                return new Guid(o.ToString());
+            }
+            if(objType == 2)
+            {
+                return Convert.ToBoolean(o);
             }
             return o;
         }

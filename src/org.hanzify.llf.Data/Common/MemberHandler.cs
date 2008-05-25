@@ -47,10 +47,29 @@ namespace Lephone.Data.Common
             }
         }
 
+        public class NullableBooleanMemberHandler : NullableMemberHandler
+        {
+            public NullableBooleanMemberHandler(MemberAdapter fi)
+                : base(fi)
+            {
+            }
+
+            internal NullableBooleanMemberHandler(MemberAdapter fi, FieldType ft, PropertyInfo pi)
+                : base(fi, ft, pi)
+            {
+            }
+
+            protected override void InnerSetValue(object obj, object value)
+            {
+                object oo = ci.Invoke(new object[] { Convert.ToBoolean(value) });
+                MemberInfo.SetValue(obj, oo);
+            }
+        }
+
         public class NullableMemberHandler : MemberHandler
         {
-            private ConstructorInfo ci;
-            private PropertyInfo NullableField;
+            protected readonly ConstructorInfo ci;
+            protected readonly PropertyInfo NullableField;
 
             public NullableMemberHandler(MemberAdapter fi)
                 : base(fi)
@@ -75,6 +94,10 @@ namespace Lephone.Data.Common
                 else if (NullableField.PropertyType == typeof(Time))
                 {
                     value = (Time)(DateTime)value;
+                }
+                else if(NullableField.PropertyType == typeof(Guid) && value != null && value.GetType() != typeof(Guid))
+                {
+                    value = new Guid(value.ToString());
                 }
                 object oo = ci.Invoke(new[] { value });
                 MemberInfo.SetValue(obj, oo);
@@ -328,6 +351,18 @@ namespace Lephone.Data.Common
 
         protected virtual void InnerSetValue(object obj, object value)
         {
+            if (MemberInfo.MemberType == typeof(Date))
+            {
+                value = (Date)(DateTime)value;
+            }
+            else if (MemberInfo.MemberType == typeof(Time))
+            {
+                value = (Time)(DateTime)value;
+            }
+            else if (MemberInfo.MemberType == typeof(Guid) && value != null && value.GetType() != typeof(Guid))
+            {
+                value = new Guid(value.ToString());
+            }
             MemberInfo.SetValue(obj, value);
         }
 
@@ -348,6 +383,10 @@ namespace Lephone.Data.Common
             }
             if (NullableHelper.IsNullableType(fi.MemberType))
             {
+                if(fi.MemberType.GetGenericArguments()[0] == typeof(bool))
+                {
+                    return new NullableBooleanMemberHandler(fi);
+                }
                 return new NullableMemberHandler(fi);
             }
             return new MemberHandler(fi);
@@ -366,7 +405,11 @@ namespace Lephone.Data.Common
 	        }
 	        if (NullableHelper.IsNullableType(m.MemberType))
 	        {
-	            return new NullableMemberHandler(m, ft, pi);
+                if (m.MemberType.GetGenericArguments()[0] == typeof(bool))
+                {
+                    return new NullableBooleanMemberHandler(m, ft, pi);
+                }
+                return new NullableMemberHandler(m, ft, pi);
 	        }
 	        return new MemberHandler(m, ft, pi);
         }

@@ -1,15 +1,8 @@
-
-#region usings
-
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using NUnit.Framework;
 
-#endregion
-
-namespace Lephone.UnitTest.Framework
+namespace Lephone.UnitTest.DotNetFramework
 {
     [TestFixture]
     public class GenericTest

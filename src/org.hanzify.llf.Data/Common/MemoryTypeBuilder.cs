@@ -27,7 +27,7 @@ namespace Lephone.Data.Common
 
         public static readonly string FieldPrifix = "$";
 
-        private TypeBuilder InnerType;
+        private readonly TypeBuilder InnerType;
 
         public MemoryTypeBuilder(TypeBuilder builder)
         {
