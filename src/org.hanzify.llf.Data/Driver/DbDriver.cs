@@ -131,6 +131,10 @@ namespace Lephone.Data.Driver
             {
                 return DBNull.Value;
             }
+            if(DotNetValue.GetType().IsEnum)
+            {
+                return (int) DotNetValue;
+            }
             return DotNetValue;
         }
 

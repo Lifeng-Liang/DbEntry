@@ -572,7 +572,10 @@ namespace Lephone.Data
             ProcessRelation(oi, false, obj, delegate(DataProvider dp)
             {
                 ret += dp.ExecuteNonQuery(Sql);
-                CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
+                if(DataSetting.CacheEnabled && oi.Cacheable)
+                {
+                    CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
+                }
                 ret += DeleteRelation(oi, obj);
             }, delegate(object o)
             {
