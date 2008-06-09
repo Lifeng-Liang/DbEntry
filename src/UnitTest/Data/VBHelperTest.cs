@@ -1,7 +1,7 @@
 using Lephone.Data;
 using Lephone.Data.Common;
-using NUnit.Framework;
 using Lephone.UnitTest.Data.Objects;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {

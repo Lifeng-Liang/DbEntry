@@ -130,38 +130,40 @@ namespace Lephone.Data.Common
         private static readonly ConstructorInfo LengthAttributeConstructor
             = typeof(LengthAttribute).GetConstructor(new[] { typeof(int), typeof(int) });
 
-        private CustomAttributeBuilder GetDbColumnBuilder(string Name)
+        private static CustomAttributeBuilder GetDbColumnBuilder(string Name)
         {
             return new CustomAttributeBuilder(DbColumnAttributeConstructor, new object[] { Name });
         }
 
-        private CustomAttributeBuilder GetAllowNullBuilder()
+        private static CustomAttributeBuilder GetAllowNullBuilder()
         {
             return new CustomAttributeBuilder(AllowNullAttributeConstructor, new object[] { });
         }
 
-        private CustomAttributeBuilder GetMaxLengthBuilder(int Min, int Max)
+        private static CustomAttributeBuilder GetMaxLengthBuilder(LengthAttribute o)
         {
-            return new CustomAttributeBuilder(LengthAttributeConstructor, new object[] { Min, Max });
+            Type t = typeof (LengthAttribute);
+            return new CustomAttributeBuilder(LengthAttributeConstructor, new object[] { o.Min, o.Max },
+                new [] {t.GetField("ErrorMessage")}, new object[] { o.ErrorMessage } );
         }
 
-        private CustomAttributeBuilder GetStringColumnBuilder(StringColumnAttribute o)
+        private static CustomAttributeBuilder GetStringColumnBuilder(StringColumnAttribute o)
         {
             Type t = typeof(StringColumnAttribute);
             return new CustomAttributeBuilder(t.GetConstructor(new Type[] { }), new object[] { },
-                new FieldInfo[] { t.GetField("IsUnicode"), t.GetField("Regular") },
-                new object[] { o.IsUnicode, o.Regular });
+                new [] { t.GetField("IsUnicode"), t.GetField("Regular"), t.GetField("ErrorMessage") },
+                new object[] { o.IsUnicode, o.Regular, o.ErrorMessage });
         }
 
-        private CustomAttributeBuilder GetIndexBuilder(IndexAttribute o)
+        private static CustomAttributeBuilder GetIndexBuilder(IndexAttribute o)
         {
             Type t = typeof(IndexAttribute);
             return new CustomAttributeBuilder(t.GetConstructor(new Type[] { }), new object[] { },
-                new FieldInfo[] { t.GetField("ASC"), t.GetField("IndexName"), t.GetField("UNIQUE") },
-                new object[] { o.ASC, o.IndexName, o.UNIQUE });
+                new [] { t.GetField("ASC"), t.GetField("IndexName"), t.GetField("UNIQUE"), t.GetField("UniqueErrorMessage") },
+                new object[] { o.ASC, o.IndexName, o.UNIQUE, o.UniqueErrorMessage });
         }
 
-        private FieldInfo DefineField(string Name, Type PropertyType, FieldType ft, PropertyInfo pi)
+        private FieldInfo DefineField(string Name, Type PropertyType, FieldType ft, MemberInfo pi)
         {
             if (ft == FieldType.Normal)
             {
@@ -178,28 +180,16 @@ namespace Lephone.Data.Common
             {
                 fb.SetCustomAttribute(GetDbColumnBuilder(pi.Name));
             }
-            ProcessCustomAttribute<AllowNullAttribute>(pi, true, delegate(AllowNullAttribute o)
-            {
-                fb.SetCustomAttribute(GetAllowNullBuilder());
-            });
-            ProcessCustomAttribute<LengthAttribute>(pi, true, delegate(LengthAttribute o)
-            {
-                fb.SetCustomAttribute(GetMaxLengthBuilder(o.Min, o.Max));
-            });
-            ProcessCustomAttribute<StringColumnAttribute>(pi, true, delegate(StringColumnAttribute o)
-            {
-                fb.SetCustomAttribute(GetStringColumnBuilder(o));
-            });
-            ProcessCustomAttribute<IndexAttribute>(pi, true, delegate(IndexAttribute o)
-            {
-                fb.SetCustomAttribute(GetIndexBuilder(o));
-            });
+            ProcessCustomAttribute<AllowNullAttribute>(pi, o => fb.SetCustomAttribute(GetAllowNullBuilder()));
+            ProcessCustomAttribute<LengthAttribute>(pi, o => fb.SetCustomAttribute(GetMaxLengthBuilder(o)));
+            ProcessCustomAttribute<StringColumnAttribute>(pi, o => fb.SetCustomAttribute(GetStringColumnBuilder(o)));
+            ProcessCustomAttribute<IndexAttribute>(pi, o => fb.SetCustomAttribute(GetIndexBuilder(o)));
             return fb;
         }
 
-        private Type GetRealType(Type PropertyType, FieldType ft)
+        private static Type GetRealType(Type PropertyType, FieldType ft)
         {
-            Type t = null;
+            Type t;
             switch (ft)
             {
                 case FieldType.HasOne:
@@ -228,7 +218,7 @@ namespace Lephone.Data.Common
             return t;
         }
 
-        private void ProcessCustomAttribute<T>(PropertyInfo pi, bool inhrit, CallbackObjectHandler<T> callback)
+        private static void ProcessCustomAttribute<T>(ICustomAttributeProvider pi, CallbackObjectHandler<T> callback)
         {
             object[] bs = pi.GetCustomAttributes(typeof(T), true);
             if (bs != null && bs.Length > 0)
@@ -255,7 +245,7 @@ namespace Lephone.Data.Common
                 }
             });
 
-            OverrideMethod(OverrideFlag, SetPropertyName, OriginType, null, new Type[] { PropertyType }, delegate(ILBuilder il)
+            OverrideMethod(OverrideFlag, SetPropertyName, OriginType, null, new[] { PropertyType }, delegate(ILBuilder il)
             {
                 if (ft == FieldType.HasOne || ft == FieldType.BelongsTo || ft == FieldType.LazyLoad)
                 {

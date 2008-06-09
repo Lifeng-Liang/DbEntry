@@ -1,10 +1,7 @@
-
-using System;
 using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
 using Lephone.Data;
 using Lephone.Data.SqlEntry;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {

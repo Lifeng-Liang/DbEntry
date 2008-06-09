@@ -1,12 +1,6 @@
-
-#region usings
-
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Lephone.Util.Setting;
-
-#endregion
 
 namespace Lephone.UnitTest.util
 {

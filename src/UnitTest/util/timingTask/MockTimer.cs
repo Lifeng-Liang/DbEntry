@@ -1,10 +1,4 @@
-
-#region usings
-
-using System;
 using Lephone.Util.TimingTask;
-
-#endregion
 
 namespace Lephone.UnitTest.util.timingTask
 {

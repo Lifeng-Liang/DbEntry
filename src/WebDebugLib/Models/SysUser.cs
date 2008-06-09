@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using Lephone.Data.Definition;
 
 namespace DebugLib.Models
@@ -18,12 +17,12 @@ namespace DebugLib.Models
         public abstract Date Birthday { get; set; }
         public abstract bool IsMale { get; set; }
 
-        public SysUser Init(string Name, int Age, Date Birthday, bool IsMale)
+        public SysUser Init(string name, int age, Date birthday, bool isMale)
         {
-            this.Name = Name;
-            this.Age = Age;
-            this.Birthday = Birthday;
-            this.IsMale = IsMale;
+            this.Name = name;
+            this.Age = age;
+            this.Birthday = birthday;
+            this.IsMale = isMale;
             return this;
         }
     }

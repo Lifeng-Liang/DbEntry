@@ -1,6 +1,6 @@
-using NUnit.Framework;
-using Lephone.Util.Text;
 using Lephone.Util.Setting;
+using Lephone.Util.Text;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
 {

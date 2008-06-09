@@ -1,10 +1,4 @@
-﻿
-#region usings
-
-using System;
-using Lephone.Util.Text;
-
-#endregion
+﻿using Lephone.Util.Text;
 
 namespace Lephone.UnitTest.util
 {

@@ -33,15 +33,16 @@ namespace Lephone.Web.Common
         [HasAndBelongsToMany(OrderBy = "Id")]
         public abstract IList<DbEntryRole> Roles { get; set; }
 
-        public DbEntryMembershipUser Init(string UserName, string Password, string Email, string PasswordQuestion, string PasswordAnswer, bool IsApproved, string Comment)
+        public DbEntryMembershipUser Init(string userName, string password, string email, 
+            string passwordQuestion, string passwordAnswer, bool isApproved, string comment)
         {
-            this.UserName = UserName;
-            this.Password = Password;
-            this.Email = Email;
-            this.PasswordQuestion = PasswordQuestion;
-            this.PasswordAnswer = PasswordAnswer;
-            this.IsApproved = IsApproved;
-            this.Comment = Comment;
+            this.UserName = userName;
+            this.Password = password;
+            this.Email = email;
+            this.PasswordQuestion = passwordQuestion;
+            this.PasswordAnswer = passwordAnswer;
+            this.IsApproved = isApproved;
+            this.Comment = comment;
             return this;
         }
 

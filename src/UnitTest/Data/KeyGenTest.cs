@@ -1,8 +1,3 @@
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Lephone.Data;
 using Lephone.Data.Caching;
 using Lephone.Data.Definition;
 using NUnit.Framework;

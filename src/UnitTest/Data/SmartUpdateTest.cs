@@ -1,18 +1,10 @@
-
-#region usings
-
 using System;
 using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
-
 using Lephone.Data;
-using Lephone.Data.Definition;
 using Lephone.Data.Common;
-using Lephone.MockSql;
+using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
-
-#endregion
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {

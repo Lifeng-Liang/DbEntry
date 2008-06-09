@@ -8,6 +8,7 @@ namespace Lephone.Data.Definition
         public string IndexName;
         public bool ASC = true;
         public bool UNIQUE;
+        public string UniqueErrorMessage;
 
         public IndexAttribute() { }
 

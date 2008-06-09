@@ -1,14 +1,5 @@
-
-#region usings
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
-
 using Lephone.Util;
-
-#endregion
 
 namespace Lephone.UnitTest
 {

@@ -1,20 +1,11 @@
-
-#region usings
-
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
-
-using NUnit.Framework;
-
 using Lephone.Data;
-using Lephone.Data.SqlEntry;
-using Lephone.Data.Definition;
-using Lephone.UnitTest.Data.Objects;
 using Lephone.Data.Common;
-
-#endregion
+using Lephone.Data.Definition;
+using Lephone.Data.SqlEntry;
+using Lephone.UnitTest.Data.Objects;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data.Inner
 {
@@ -39,7 +30,7 @@ namespace Lephone.UnitTest.Data.Inner
             Assert.IsNull(OrderBy.Parse(""));
             Assert.IsNull(OrderBy.Parse(null));
 
-            string s = "Id desc, Name";
+            const string s = "Id desc, Name";
             OrderBy Exp = new OrderBy((DESC)"Id", (ASC)"Name");
             OrderBy Dst = OrderBy.Parse(s);
             DataParamterCollection ds = new DataParamterCollection();

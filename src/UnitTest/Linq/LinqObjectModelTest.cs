@@ -1,10 +1,5 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Lephone.Data.Definition;
-using Lephone.Data;
 using Lephone.Linq;
 using NUnit.Framework;
 

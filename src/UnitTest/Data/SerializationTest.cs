@@ -1,20 +1,9 @@
-
-#region usings
-
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using NUnit.Framework;
-
 using Lephone.Data;
-using Lephone.Data.Common;
-using Lephone.Util.Coding;
-using Lephone.Util;
-
 using Lephone.UnitTest.Data.Objects;
-
-#endregion
+using Lephone.Util;
+using Lephone.Util.Coding;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {

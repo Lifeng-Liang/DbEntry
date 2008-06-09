@@ -1,11 +1,6 @@
-
-#region usings
-
 using System;
-using NUnit.Framework;
 using Lephone.Data.SqlEntry;
-
-#endregion
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data.Inner
 {

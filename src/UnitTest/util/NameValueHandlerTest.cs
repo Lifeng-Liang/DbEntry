@@ -1,19 +1,10 @@
-
-#region usings
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Xml;
 using System.Collections.Specialized;
-
-using NUnit.Framework;
-
+using System.IO;
+using System.Text;
+using System.Xml;
 using Lephone.Util;
 using Lephone.Util.Setting;
-
-#endregion
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
 {

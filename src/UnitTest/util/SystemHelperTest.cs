@@ -1,11 +1,5 @@
-
-#region usings
-
-using System;
-using NUnit.Framework;
 using Lephone.Util;
-
-#endregion
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
 {

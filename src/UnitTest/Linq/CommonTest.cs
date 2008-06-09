@@ -1,15 +1,8 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Lephone.Data;
+﻿using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Linq;
-
-using NUnit.Framework;
 using Lephone.MockSql.Recorder;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Linq
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("Utils.Net")]
 [assembly: AssemblyDescription("Utils.Net")]

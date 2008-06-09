@@ -1,16 +1,9 @@
-
-#region usings
-
-using System;
-using NUnit.Framework;
 using Lephone.Data;
-using Lephone.Data.Dialect;
 using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
-using Lephone.Data.SqlEntry;
 using Lephone.Data.Common;
-
-#endregion
+using Lephone.Data.Dialect;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data.Inner
 {

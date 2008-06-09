@@ -68,7 +68,7 @@ namespace Lephone.Data.Common
             MemberHandler[] keys = kfs.ToArray();
 
             this.Init(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
-            SetManyToManyMediFrom(this, t, this.From.GetMainTableName(), this.Fields);
+            SetManyToManyMediFrom(this, this.From.GetMainTableName(), this.Fields);
 
             this._RelationFields = rlfs.ToArray();
             this._SimpleFields = sifs.ToArray();
@@ -113,7 +113,7 @@ namespace Lephone.Data.Common
             return obj;
         }
 
-        private static void CheckIndexAttributes(IndexAttribute[] ias)
+        private static void CheckIndexAttributes(IEnumerable<IndexAttribute> ias)
         {
             List<string> ls = new List<string>();
             foreach (IndexAttribute ia in ias)
@@ -144,10 +144,10 @@ namespace Lephone.Data.Common
                 throw new DataException("dbobject not define key field : " + t);
             }
             WhereCondition ret = null;
-            Dictionary<string,object> dic = oi.Handler.GetKeyValues(obj);
-            foreach (string s in dic.Keys)
+            Dictionary<string,object> dictionary = oi.Handler.GetKeyValues(obj);
+            foreach (string s in dictionary.Keys)
             {
-                ret &= (CK.K[s] == dic[s]);
+                ret &= (CK.K[s] == dictionary[s]);
             }
             return ret;
         }
@@ -183,7 +183,7 @@ namespace Lephone.Data.Common
             return (fn == null) ? fi.Name : fn.Name;
         }
 
-        private static void ProcessMember(MemberAdapter m, List<MemberHandler> ret, List<MemberHandler> kfs)
+        private static void ProcessMember(MemberAdapter m, IList<MemberHandler> ret, ICollection<MemberHandler> kfs)
         {
             if (!(
                 m.HasAttribute<ExcludeAttribute>(false) ||
@@ -210,12 +210,12 @@ namespace Lephone.Data.Common
         {
             foreach (MemberHandler fh in this.Fields)
             {
-                IndexAttribute[] ias = (IndexAttribute[])fh.MemberInfo.GetAttributes<IndexAttribute>(false);
+                IndexAttribute[] ias = fh.MemberInfo.GetAttributes<IndexAttribute>(false);
                 CheckIndexAttributes(ias);
                 foreach (IndexAttribute ia in ias)
                 {
                     ASC a = ia.ASC ? (ASC)fh.Name : (DESC)fh.Name;
-                    string key = (ia.IndexName == null) ? a.Key : ia.IndexName;
+                    string key = ia.IndexName ?? a.Key;
                     if (!this.Indexes.ContainsKey(key))
                     {
                         this.Indexes.Add(key, new List<ASC>());
@@ -243,7 +243,7 @@ namespace Lephone.Data.Common
             return null;
         }
 
-        private static void SetManyToManyMediFrom(ObjectInfo oi, Type t, string MainTableName, MemberHandler[] Fields)
+        private static void SetManyToManyMediFrom(ObjectInfo oi, string MainTableName, IEnumerable<MemberHandler> Fields)
         {
             foreach (MemberHandler f in Fields)
             {

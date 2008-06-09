@@ -1,12 +1,8 @@
-
 using System;
 using System.Data;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {

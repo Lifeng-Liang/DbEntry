@@ -13,5 +13,6 @@ namespace Lephone.Data.Definition
     {
         public bool IsUnicode = true;
         public string Regular;
+        public string ErrorMessage;
     }
 }

@@ -7,6 +7,7 @@ namespace Lephone.Data.Definition
     {
         public int Min;
         public int Max;
+        public string ErrorMessage;
 
         public LengthAttribute(int Max)
         {

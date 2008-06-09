@@ -1,16 +1,6 @@
-
-#region usings
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using NUnit.Framework;
-
-using Lephone.Data.Definition;
 using Lephone.Data;
-
-#endregion
+using Lephone.Data.Definition;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
@@ -35,13 +25,13 @@ namespace Lephone.UnitTest.Data
 
     class vtest0 : IDbObject
     {
-        [Length(5), StringColumn(IsUnicode = false)]
+        [Length(5, ErrorMessage = "Length limited by 5"), StringColumn(IsUnicode = false)]
         public string Name;
 
         [AllowNull, Length(8)]
         public string Address;
 
-        [StringColumn(Regular = CommonRegular.EmailRegular)]
+        [StringColumn(Regular = CommonRegular.EmailRegular, ErrorMessage = "Please input valid email address")]
         public string Email;
 
         public vtest0(string Name, string Address, string Email)
@@ -52,9 +42,51 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [DbTable("People")]
+    public abstract class vPeople : DbObjectModel<vPeople>
+    {
+        [Index(UNIQUE = true, UniqueErrorMessage = "Already in use, please input another")]
+        public abstract string Name { get; set; }
+
+        public vPeople Init(string name)
+        {
+            this.Name = name;
+            return this;
+        }
+    }
+
+    [DbTable("People")]
+    public abstract class vPeople0 : DbObjectModel<vPeople0>
+    {
+        [Index(UNIQUE = true)]
+        public abstract string Name { get; set; }
+
+        public vPeople0 Init(string name)
+        {
+            this.Name = name;
+            return this;
+        }
+    }
+
     [TestFixture]
     public class ValidateHandlerTest
     {
+        #region Init
+
+        [SetUp]
+        public void SetUp()
+        {
+            InitHelper.Init();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            InitHelper.Clear();
+        }
+
+        #endregion
+
         [Test]
         public void Test1()
         {
@@ -93,6 +125,58 @@ namespace Lephone.UnitTest.Data
             ValidateHandler vh = new ValidateHandler(false);
             Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("123456", "", "a@b.c")));
+        }
+
+        [Test]
+        public void Test4()
+        {
+            ValidateHandler vh = new ValidateHandler(false, false,"{1}", "", "", "", "", ", ");
+            Assert.IsFalse(vh.ValidateObject(new vtest0("llf", "beijing", "aaa")));
+            Assert.AreEqual(1, vh.ErrorMessages.Count);
+            Assert.AreEqual("Please input valid email address", vh.ErrorMessages["Email"]);
+        }
+
+        [Test]
+        public void Test5()
+        {
+            ValidateHandler vh = new ValidateHandler(false);
+            Assert.IsTrue(vh.ValidateObject(new vtest0("llf", "beijing", "aaa@bbb.ccc")));
+        }
+
+        [Test]
+        public void Test6()
+        {
+            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
+            Assert.IsFalse(vh.ValidateObject(new vtest0("lifeng", "beijing", "aaa@bbb.ccc")));
+            Assert.AreEqual(1, vh.ErrorMessages.Count);
+            Assert.AreEqual("Length limited by 5", vh.ErrorMessages["Name"]);
+        }
+
+        [Test]
+        public void Test7()
+        {
+            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
+            Assert.IsFalse(vh.ValidateObject(new vtest("lifeng", "beijing", "aaa@bbb.ccc")));
+            Assert.AreEqual(1, vh.ErrorMessages.Count);
+            Assert.AreEqual("length", vh.ErrorMessages["Name"]);
+        }
+
+        [Test]
+        public void Test8()
+        {
+            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
+            Assert.IsFalse(vh.ValidateObject(vPeople.New().Init("Tom")));
+            Assert.AreEqual(1, vh.ErrorMessages.Count);
+            Assert.AreEqual("Already in use, please input another", vh.ErrorMessages["Name"]);
+        }
+
+        [Test]
+        public void Test9()
+        {
+            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
+            Assert.IsFalse(vh.ValidateObject(vPeople0.New().Init("Tom")));
+            Assert.AreEqual(1, vh.ErrorMessages.Count);
+            Assert.AreEqual("unique", vh.ErrorMessages["Name"]);
         }
     }
 }

@@ -127,8 +127,10 @@ namespace Lephone.Data.Common
         public readonly bool AllowNull;
         public readonly int MinLength;
         public readonly int MaxLength;
+	    public readonly string LengthErrorMessage;
         public readonly bool IsUnicode;
         public readonly string Regular;
+	    public readonly string RegularErrorMessage;
         public readonly bool IsHasOne;
         public readonly bool IsBelongsTo;
         public readonly bool IsHasMany;
@@ -141,6 +143,7 @@ namespace Lephone.Data.Common
         public readonly bool IsCount;
         public readonly bool IsAutoSavedValue;
         public readonly string OrderByString;
+	    public readonly string UniqueErrorMessage;
 
         public Type FieldType
         {
@@ -150,10 +153,10 @@ namespace Lephone.Data.Common
         protected MemberHandler(MemberAdapter fi)
         {
             DbColumnAttribute fn = fi.GetAttribute<DbColumnAttribute>(false);
-            string Name = (fn == null) ? fi.Name : fn.Name;
+            string memberName = (fn == null) ? fi.Name : fn.Name;
 
             this.MemberInfo = fi;
-            this.Name = Name;
+            this.Name = memberName;
 
             DbKeyAttribute dk = fi.GetAttribute<DbKeyAttribute>(false);
             if (dk != null)
@@ -290,15 +293,16 @@ namespace Lephone.Data.Common
                 }
             }
 
-            LengthAttribute ml = fi.GetAttribute<LengthAttribute>(false);
-            if (ml != null)
+            LengthAttribute lengthAttribute = fi.GetAttribute<LengthAttribute>(false);
+            if (lengthAttribute != null)
             {
                 if (fi.MemberType.IsSubclassOf(typeof(ValueType)))
                 {
                     throw new DataException("ValueType couldn't set MaxLengthAttribute!");
                 }
-                this.MinLength = ml.Min;
-                this.MaxLength = ml.Max;
+                this.MinLength = lengthAttribute.Min;
+                this.MaxLength = lengthAttribute.Max;
+                this.LengthErrorMessage = lengthAttribute.ErrorMessage;
             }
 
             if (fi.MemberType == typeof(string) ||
@@ -315,11 +319,22 @@ namespace Lephone.Data.Common
                 }
                 this.IsUnicode = sf.IsUnicode;
                 this.Regular = sf.Regular;
+                this.RegularErrorMessage = sf.ErrorMessage;
             }
             OrderByAttribute os = fi.GetAttribute<OrderByAttribute>(false);
             if (os != null)
             {
                 this.OrderByString = os.OrderBy;
+            }
+            //TODO: if the column of object really have multiple index attirbute, the current process is right?
+            var indexs = fi.GetAttributes<IndexAttribute>(false);
+            foreach (var index in indexs)
+            {
+                if(index.UNIQUE && !string.IsNullOrEmpty(index.UniqueErrorMessage))
+                {
+                    this.UniqueErrorMessage = index.UniqueErrorMessage;
+                    break;
+                }
             }
         }
 

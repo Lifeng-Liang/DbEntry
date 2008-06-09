@@ -11,9 +11,9 @@ namespace Lephone.Web.Common
         [HasAndBelongsToMany(OrderBy = "Id")]
         public abstract IList<DbEntryMembershipUser> Users { get; set; }
 
-        public DbEntryRole Init(string Name)
+        public DbEntryRole Init(string name)
         {
-            this.Name = Name;
+            this.Name = name;
             return this;
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System;
-using NUnit.Framework;
 using Lephone.Data.Definition;
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {

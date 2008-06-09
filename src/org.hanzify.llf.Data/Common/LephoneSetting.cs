@@ -11,10 +11,10 @@ namespace Lephone.Data.Common
 
         public abstract string Content { get; set; }
 
-        public LephoneSetting Init(string Name, string Content)
+        public LephoneSetting Init(string name, string content)
         {
-            this.Name = Name;
-            this.Content = Content;
+            this.Name = name;
+            this.Content = content;
             return this;
         }
     }
@@ -27,10 +27,7 @@ namespace Lephone.Data.Common
 
         public DbConfigHelper()
         {
-            LephoneSetting.FindAll().ForEach(delegate(LephoneSetting p)
-            {
-                nvc.Add(p.Name, p.Content);
-            });
+            LephoneSetting.FindAll().ForEach(p => nvc.Add(p.Name, p.Content));
         }
 
         protected override string GetString(string key)

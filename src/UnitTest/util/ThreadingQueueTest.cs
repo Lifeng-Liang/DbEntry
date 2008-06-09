@@ -1,15 +1,7 @@
-
-#region usings
-
-using System;
 using System.Collections;
 using System.Threading;
-using NUnit.Framework;
-
 using Lephone.Util;
-using Lephone.Util.TimingTask;
-
-#endregion
+using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
 {

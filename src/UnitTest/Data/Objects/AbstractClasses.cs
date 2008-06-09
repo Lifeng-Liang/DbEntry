@@ -1,15 +1,8 @@
-
-#region usings
-
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.Serialization;
-
-using Lephone.Data.Definition;
 using Lephone.Data.Common;
-
-#endregion
+using Lephone.Data.Definition;
 
 namespace Lephone.UnitTest.Data.Objects
 {
