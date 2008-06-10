@@ -16,14 +16,14 @@ namespace Lephone.UnitTest.Data
     [DbTable("People")]
     class SinglePerson : DbObject
     {
-        public string Name = null;
+        public string Name;
     }
 
     [DbTable("People")]
     public class UniquePerson : DbObject
     {
         [Index(UNIQUE = true)]
-        public string Name = null;
+        public string Name;
     }
 
     public class CountTable : DbObject
@@ -50,6 +50,15 @@ namespace Lephone.UnitTest.Data
         {
             return FindOne(Field["theName"] == Name);
         }
+    }
+
+    [DbTable("LockVersionTest")]
+    public abstract class LockVersionTest : DbObjectModel<LockVersionTest>
+    {
+        public abstract string Name { get; set; }
+
+        [SpecialName]
+        public abstract int LockVersion { get; set; }
     }
 
     #endregion
@@ -446,6 +455,31 @@ namespace Lephone.UnitTest.Data
         {
             FieldPerson p = FieldPerson.FindByName("Jerry");
             Assert.AreEqual(2, p.Id);
+        }
+
+        [Test]
+        public void TestLockVersion()
+        {
+            var item = LockVersionTest.FindById(1);
+            Assert.AreEqual(1, item.LockVersion);
+            item.Name = "jerry";
+            item.Save();
+
+            var item0 = LockVersionTest.FindById(1);
+            Assert.AreEqual(2, item0.LockVersion);
+        }
+
+        [Test, ExpectedException(typeof(DataException))]
+        public void TestLockVersionException()
+        {
+            var item = LockVersionTest.FindById(1);
+            var item2 = LockVersionTest.FindById(1);
+
+            item.Name = "jerry";
+            item.Save();
+
+            item2.Name = "mike";
+            item2.Save();
         }
     }
 }

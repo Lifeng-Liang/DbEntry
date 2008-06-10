@@ -164,7 +164,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test8()
         {
-            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
+            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ",");
             Assert.IsFalse(vh.ValidateObject(vPeople.New().Init("Tom")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("Already in use, please input another", vh.ErrorMessages["Name"]);

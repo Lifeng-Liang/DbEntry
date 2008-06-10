@@ -129,13 +129,13 @@ namespace Lephone.UnitTest.Data
 
         public abstract int? NullInt { get; set; }
 
-        public SampleData Init(string Name, UserRole Role, DateTime JoinDate, bool Enabled, int? NullInt)
+        public SampleData Init(string name, UserRole role, DateTime joinDate, bool enabled, int? nullInt)
         {
-            this.Name = Name;
-            this.Role = Role;
-            this.JoinDate = JoinDate;
-            this.Enabled = Enabled;
-            this.NullInt = NullInt;
+            this.Name = name;
+            this.Role = role;
+            this.JoinDate = joinDate;
+            this.Enabled = enabled;
+            this.NullInt = nullInt;
             return this;
         }
     }
@@ -165,7 +165,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGetTableNames()
         {
-            var tables = new List<string>() { "Article", "BelongsMore", "Books", "Categories",
+            var tables = new List<string> { "Article", "BelongsMore", "Books", "Categories", "LockVersionTest",
                 "DateAndTime", "File", "NullTest", "PCs", "People", "R_Article_Reader", "Reader", "SoftDelete",
                 "DCS_USERS", "REF_ORG_UNIT", "HRM_EMPLOYEES", "DCS_PERSONS", "REL_EMP_JOB_ROLE", "REL_JOB_ROLE_ORG_UNIT", "HRM_JOB_ROLES" };
             tables.Sort();

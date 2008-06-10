@@ -18,6 +18,8 @@ namespace Lephone.Data
         private readonly string _ShouldBeUniqueText;
         private readonly string _SeparatorText;
 
+        private readonly int _SeparatorTextLength;
+
         private readonly bool EmptyAsNull;
         private readonly bool IncludeClassName;
         public bool IsValid;
@@ -51,6 +53,8 @@ namespace Lephone.Data
             this._LengthText = LengthText;
             this._ShouldBeUniqueText = ShouldBeUniqueText;
             this._SeparatorText = SeparatorText;
+
+            this._SeparatorTextLength = _SeparatorText.Length;
             
             _ErrorMessages = new Dictionary<string, string>();
         }
@@ -84,7 +88,7 @@ namespace Lephone.Data
                     string Field = fh.IsLazyLoad ? ((LazyLoadField<string>)fh.GetValue(obj)).Value : (string)fh.GetValue(obj);
                     StringBuilder ErrMsg = new StringBuilder();
                     bool isValid = validateField(Field, fh, ErrMsg);
-                    if (ErrMsg.Length > 2) { ErrMsg.Length -= 2; }
+                    if (ErrMsg.Length > _SeparatorTextLength) { ErrMsg.Length -= _SeparatorTextLength; }
                     if (!isValid)
                     {
                         string n = (IncludeClassName ? tn + "." + fh.Name : fh.Name);

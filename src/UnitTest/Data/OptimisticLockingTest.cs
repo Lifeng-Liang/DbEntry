@@ -13,9 +13,9 @@ namespace Lephone.UnitTest.Data
         [DbColumn("Category_Id"), SpecialName]
         public abstract int LockVersion { get; set; }
 
-        public LockBook Init(string Name)
+        public LockBook Init(string name)
         {
-            this.Name = Name;
+            this.Name = name;
             return this;
         }
     }

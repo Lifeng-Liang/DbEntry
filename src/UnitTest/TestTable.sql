@@ -106,6 +106,12 @@ INSERT INTO [DateAndTime] ([Id],[dtValue],[dValue],[tValue],[dtnValue],[dnValue]
 
 --------------------------------------------------------------------------------------------------------------------
 
+CREATE TABLE [LockVersionTest] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, LockVersion INT NOT NULL);
+
+INSERT INTO [LockVersionTest] ([Id],[Name],[LockVersion]) VALUES (1, 'test', 1);
+
+--------------------------------------------------------------------------------------------------------------------
+
 CREATE TABLE [DCS_USERS] (
 	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
 	[USER_NAME] ntext NOT NULL 
