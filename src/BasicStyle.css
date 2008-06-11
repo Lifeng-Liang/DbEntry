@@ -1,0 +1,12 @@
+hr { border: dashed 1px blue; height: 1px; }
+
+.Warning { color: Red; }
+.Notice { color: Green; }
+.ErrInput { border:2px solid red; }
+
+.ContentTitle, #ContentTitle { font-size: 18pt; font-weight: bold; }
+.Content { width: auto; min-width: 620px; vertical-align: top; }
+.ItemTitle { font-weight: bold; }
+.FieldTitle { font-weight: bold; text-align: right; }
+.FieldCenter { font-weight: bold; text-align: center; }
+.FieldControl { text-align: left; }

@@ -5,13 +5,10 @@ namespace Lephone.Util.Setting
 {
     public class ConfigReader
     {
-        public virtual NameValueCollection GetSection(string SectionName)
+        public virtual NameValueCollection GetSection(string sectionName)
         {
-            NameValueCollection c = (NameValueCollection)ConfigurationManager.GetSection(SectionName);
-            if (c == null)
-            {
-                c = new NameValueCollection();
-            }
+            NameValueCollection c = (NameValueCollection)ConfigurationManager.GetSection(sectionName) ??
+                                    new NameValueCollection();
             return c;
         }
     }

@@ -11,29 +11,29 @@ namespace Lephone.Util.Logging
 
 		public TextFileLogRecorder()
 		{
-            string s = ConfigHelper.AppSettings.GetValue("LogFileName", "{0}.{1}.log");
+		    string s = UtilSetting.LogFileName;
 			Init(s);
 		}
 
-        public TextFileLogRecorder(string LogFileName)
+        public TextFileLogRecorder(string logFileName)
 		{
-			Init(LogFileName);
+			Init(logFileName);
 		}
 
-		protected void Init(string LogFileName)
+		protected void Init(string logFileName)
 		{
-			if ( LogFileName == "" )
+			if ( logFileName == "" )
 			{
 				throw new SettingException();
 			}
-			this.LogFileName = string.Format(LogFileName, SystemHelper.ExeFileName, SystemHelper.GetDateTimeString());
+			this.LogFileName = string.Format(logFileName, SystemHelper.ExeFileName, SystemHelper.GetDateTimeString());
 		}
 
-        public virtual void ProcessLog(LogType Type, string Source, string Name, string Message, Exception eException)
+        public virtual void ProcessLog(LogType type, string source, string name, string message, Exception eException)
         {
             using (StreamWriter sw = new StreamWriter(LogFileName, true, Encoding.Default))
             {
-                sw.WriteLine("{0},{1},{2},{3},{4}", Type, Source, Name, Message, eException);
+                sw.WriteLine("{0},{1},{2},{3},{4}", type, source, name, message, eException);
             }
         }
     }

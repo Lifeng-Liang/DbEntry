@@ -10,12 +10,12 @@ namespace Lephone.Util.Logging
 
         public DtsFileLogRecorder(string LogFileName) : base(LogFileName) { }
 
-        public override void ProcessLog(LogType Type, string Source, string Name, string Message, Exception eException)
+        public override void ProcessLog(LogType type, string source, string name, string message, Exception eException)
         {
             using (StreamWriter sw = new StreamWriter(LogFileName, true, Encoding.Default))
             {
-                sw.WriteLine("{0},{1},{2},{3},{4}", Type, GetString4Dts(Source),
-                    GetString4Dts(Name), GetString4Dts(Message), GetString4Dts(eException.ToString()));
+                sw.WriteLine("{0},{1},{2},{3},{4}", type, GetString4Dts(source),
+                    GetString4Dts(name), GetString4Dts(message), GetString4Dts(eException.ToString()));
             }
         }
 

@@ -4,9 +4,9 @@ namespace Lephone.Util.Logging
 {
     public class ConsoleLogRecorder : ILogRecorder
 	{
-        public void ProcessLog(LogType Type, string Source, string Name, string Message, Exception eException)
+        public void ProcessLog(LogType type, string source, string name, string message, Exception eException)
         {
-            Console.WriteLine("{0},{1},{2},{3},{4}", Type, Source, Name, Message, eException);
+            Console.WriteLine("{0},{1},{2},{3},{4}", type, source, name, message, eException);
         }
     }
 }

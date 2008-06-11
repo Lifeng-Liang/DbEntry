@@ -28,7 +28,7 @@ namespace Lephone.Util.Logging
         {
             Name = SettingName;
             ILogRecorder ilc = null;
-            string s = ConfigHelper.DefaultSettings.GetValue(Name + "LogRecorder", "");
+            string s = ConfigHelper.DefaultSettings.GetValue(Name + "LogRecorder");
             if (s != "")
             {
                 ilc = (ILogRecorder)ClassHelper.CreateInstance(s);
@@ -57,26 +57,26 @@ namespace Lephone.Util.Logging
 
         #region ILogDirect
 
-        void ILogDirect.Log(LogType Type, string Name, string Message)
+        void ILogDirect.Log(LogType Type, string name, string Message)
         {
-            ((ILogDirect)this).Log(Type, SystemHelper.CallerFunctionName, Name, Message, null);
+            ((ILogDirect)this).Log(Type, SystemHelper.CallerFunctionName, name, Message, null);
         }
 
-        void ILogDirect.Log(LogType Type, string Source, string Name, string Message)
+        void ILogDirect.Log(LogType Type, string Source, string name, string Message)
         {
-            ((ILogDirect)this).Log(Type, Source, Name, Message, null);
+            ((ILogDirect)this).Log(Type, Source, name, Message, null);
         }
 
-        void ILogDirect.Log(LogType Type, string Name, string Message, Exception eException)
+        void ILogDirect.Log(LogType Type, string name, string Message, Exception eException)
         {
-            ((ILogDirect)this).Log(Type, SystemHelper.CallerFunctionName, Name, Message, eException);
+            ((ILogDirect)this).Log(Type, SystemHelper.CallerFunctionName, name, Message, eException);
         }
 
-        void ILogDirect.Log(LogType Type, string Source, string Name, string Message, Exception eException)
+        void ILogDirect.Log(LogType Type, string Source, string name, string Message, Exception eException)
         {
             if (LogEvent != null)
             {
-                LogEvent(Type, Source, Name, Message, eException);
+                LogEvent(Type, Source, name, Message, eException);
             }
         }
 

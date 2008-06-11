@@ -6,8 +6,6 @@ namespace Lephone.Util.Setting
 {
 	public abstract class ConfigHelperBase
 	{
-		public ConfigHelperBase() {}
-
         public void InitClass(Type t)
         {
             InitClass(ClassHelper.StaticFlag, t, null);

@@ -123,20 +123,7 @@
     <Compile Include="ClassHelper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Coding\Base64Coding.cs" />
-    <Compile Include="Coding\HexStringCoding.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Coding\ICoding.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Coding\IStringCoding.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Coding\SerializationCoding.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Coding\StringCoding.cs">
+    <Compile Include="Text\HexStringCoding.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CountViewer.cs">

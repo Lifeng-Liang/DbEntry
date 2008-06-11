@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 
@@ -9,8 +10,8 @@ namespace Lephone.UnitTest.DotNetFramework
         [Test]
         public void TestForReplace()
         {
-            string s = "Select * from User where Age > ? And Age < ?";
-            string exp = "Select * from User where Age > @p0 And Age < @p1";
+            const string s = "Select * from User where Age > ? And Age < ?";
+            const string exp = "Select * from User where Age > @p0 And Age < @p1";
             Regex reg = new Regex("\\?");
             string act = reg.Replace(s, "@p0", 1);
             act = reg.Replace(act, "@p1", 1);
@@ -20,8 +21,8 @@ namespace Lephone.UnitTest.DotNetFramework
         [Test]
         public void TestForReplace2()
         {
-            string s = "Select * from User where Id = ? Name Like '%?%' Age > ? And Age < ? ";
-            string exp = "Select * from User where Id = @p0 Name Like '%?%' Age > @p1 And Age < @p2 ";
+            const string s = "Select * from User where Id = ? Name Like '%?%' Age > ? And Age < ? ";
+            const string exp = "Select * from User where Id = @p0 Name Like '%?%' Age > @p1 And Age < @p2 ";
             Regex reg = new Regex("'.*'|\\?");
             int start = 0, n = 0;
             string act = "";
@@ -39,6 +40,16 @@ namespace Lephone.UnitTest.DotNetFramework
                 act += s.Substring(start);
             }
             Assert.AreEqual(exp, act);
+        }
+
+        [Test]
+        public void TestConvert()
+        {
+            int n = (int)Convert.ChangeType("18", typeof (int));
+            Assert.AreEqual(18, n);
+
+            bool b = (bool) Convert.ChangeType("true", typeof (bool));
+            Assert.AreEqual(true, b);
         }
     }
 }

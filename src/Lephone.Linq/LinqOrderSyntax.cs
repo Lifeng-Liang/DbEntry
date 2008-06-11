@@ -34,7 +34,7 @@ namespace Lephone.Linq
 
         private void AddOrderBy(LambdaExpression expr, bool IsAsc)
         {
-            MemberExpression e = QueryExtends.GetMemberExpression(expr);
+            MemberExpression e = expr.GetMemberExpression();
             if (e == null)
             {
                 throw new LinqException("Order By error!");

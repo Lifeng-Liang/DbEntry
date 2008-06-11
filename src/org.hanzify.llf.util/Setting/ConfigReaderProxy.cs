@@ -4,25 +4,25 @@ namespace Lephone.Util.Setting
 {
     public class ConfigReaderProxy : ConfigReader
     {
-        private static ConfigReader _Instance = new ConfigReaderProxy();
+        private static ConfigReader instance = new ConfigReaderProxy();
 
         public static ConfigReader Instance
         {
-            get { return _Instance; }
+            get { return instance; }
         }
 
-        protected void SetInstance(ConfigReader r)
+        protected static void SetInstance(ConfigReader r)
         {
-            _Instance = r;
+            instance = r;
             new ConfigHelper();
         }
 
-        public override NameValueCollection GetSection(string SectionName)
+        public override NameValueCollection GetSection(string sectionName)
         {
-            NameValueCollection nvc = base.GetSection(SectionName);
+            NameValueCollection nvc = base.GetSection(sectionName);
             if (nvc.Count == 0)
             {
-                nvc = (new ResourceConfigReader()).GetSection(SectionName);
+                nvc = (new ResourceConfigReader()).GetSection(sectionName);
             }
             return nvc;
         }

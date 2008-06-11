@@ -4,6 +4,6 @@ namespace Lephone.Util.Logging
 {
 	public interface ILogRecorder
 	{
-        void ProcessLog(LogType Type, string Source, string Name, string Message, Exception eException);
+        void ProcessLog(LogType type, string source, string name, string message, Exception eException);
 	}
 }

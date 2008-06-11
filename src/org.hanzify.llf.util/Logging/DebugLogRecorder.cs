@@ -5,9 +5,9 @@ namespace Lephone.Util.Logging
 {
     public class DebugLogRecorder : ILogRecorder
     {
-        public void ProcessLog(LogType Type, string Source, string Name, string Message, Exception eException)
+        public void ProcessLog(LogType type, string source, string name, string message, Exception eException)
         {
-            DebugPrint("{0},{1},{2},{3},{4}", Type, Source, Name, Message, eException);
+            DebugPrint("{0},{1},{2},{3},{4}", type, source, name, message, eException);
         }
 
         private static void DebugPrint(string msg, params object[] os)

@@ -60,26 +60,26 @@ namespace Lephone.Linq
 
         #region IQueryProvider Members
 
-        public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
+        public IQueryable<TElement> CreateQuery<TElement>(Expression expr)
         {
-            return new LinqQueryProvider<T, TKey>(expression) as IQueryable<TElement>;
+            return new LinqQueryProvider<T, TKey>(expr) as IQueryable<TElement>;
         }
 
-        public IQueryable CreateQuery(Expression expression)
+        public IQueryable CreateQuery(Expression expr)
         {
-            return new LinqQueryProvider<T, TKey>(expression);
+            return new LinqQueryProvider<T, TKey>(expr);
         }
 
-        public TResult Execute<TResult>(Expression expression)
+        public TResult Execute<TResult>(Expression expr)
         {
             // never used ???
-            return (TResult)CreateQuery(expression).GetEnumerator();
+            return (TResult)CreateQuery(expr).GetEnumerator();
         }
 
-        public object Execute(Expression expression)
+        public object Execute(Expression expr)
         {
             // never used ???
-            return CreateQuery(expression).GetEnumerator();
+            return CreateQuery(expr).GetEnumerator();
         }
 
         #endregion

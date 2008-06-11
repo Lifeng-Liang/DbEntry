@@ -5,6 +5,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		actsastree.snippet = actsastree.snippet
 		aprop.snippet = aprop.snippet
 		aprop.vb.snippet = aprop.vb.snippet
+		BasicStyle.css = BasicStyle.css
 		dbentry.xml.snippet = dbentry.xml.snippet
 		dbmodel.snippet = dbmodel.snippet
 		dbmodel.vb.snippet = dbmodel.vb.snippet

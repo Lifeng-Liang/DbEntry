@@ -13,15 +13,15 @@ namespace Lephone.Util.Setting
         private const string ConfigFilePostFix = ".config.xml";
         private Dictionary<string, NameValueCollection> XmlConfigs;
 
-        public override NameValueCollection GetSection(string SectionName)
+        public override NameValueCollection GetSection(string sectionName)
         {
             if (XmlConfigs == null)
             {
                 InitAllXmlConfigFiles();
             }
-            if (XmlConfigs.ContainsKey(SectionName))
+            if (XmlConfigs.ContainsKey(sectionName))
             {
-                return XmlConfigs[SectionName];
+                return XmlConfigs[sectionName];
             }
             return new NameValueCollection();
         }
@@ -46,7 +46,7 @@ namespace Lephone.Util.Setting
             }
         }
 
-        private string[] GetManifestResourceNames(Assembly a)
+        private static string[] GetManifestResourceNames(Assembly a)
         {
             try
             {

@@ -18,11 +18,11 @@ namespace Lephone.UnitTest.util
             //SetInstance(this);
         }
 
-        public override NameValueCollection GetSection(string SectionName)
+        public override NameValueCollection GetSection(string sectionName)
         {
-            if (dict.ContainsKey(SectionName))
+            if (dict.ContainsKey(sectionName))
             {
-                return dict[SectionName];
+                return dict[sectionName];
             }
             else
             {
