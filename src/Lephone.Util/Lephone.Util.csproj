@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -116,7 +116,6 @@
     <Compile Include="Text\InflectionNameMapper.cs" />
     <Compile Include="Text\Inflector.cs" />
     <Compile Include="Text\NameMapper.cs" />
-    <Compile Include="Text\StringSerializer.cs" />
     <Compile Include="Text\UnderlineNameMapper.cs" />
     <Compile Include="Text\XmlSerializable.cs" />
     <Compile Include="Text\XmlSerializer.cs" />
@@ -210,7 +209,7 @@
     <Compile Include="TimingTask\Timings\DayTiming.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NowProvider.cs">
+    <Compile Include="TimingTask\NowProvider.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TimingTask\Timings\MonthTiming.cs">

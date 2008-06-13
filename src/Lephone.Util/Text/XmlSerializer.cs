@@ -5,8 +5,10 @@ using System.Xml.Serialization;
 
 namespace Lephone.Util.Text
 {
-    public class XmlSerializer<T> : StringSerializer<T>
+    public class XmlSerializer<T>
     {
+        public static readonly XmlSerializer<T> Xml = new XmlSerializer<T>();
+
         private readonly string RootName;
 
         public XmlSerializer() {}
@@ -33,7 +35,7 @@ namespace Lephone.Util.Text
             return new XmlRootAttribute(xt.TypeName);
         }
 
-        public override string Serialize(T obj)
+        public virtual string Serialize(T obj)
         {
             Type t = typeof(T);
             XmlRootAttribute xr = GetXmlRootAttribute();
@@ -47,7 +49,7 @@ namespace Lephone.Util.Text
             }
         }
 
-        public override T Deserialize(string Source)
+        public virtual T Deserialize(string Source)
         {
             Type t = typeof(T);
             XmlRootAttribute xr = GetXmlRootAttribute();

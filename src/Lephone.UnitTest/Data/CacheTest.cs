@@ -6,6 +6,7 @@ using Lephone.Data.Definition;
 using Lephone.Linq;
 using Lephone.UnitTest.util.timingTask;
 using Lephone.Util;
+using Lephone.Util.TimingTask;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data

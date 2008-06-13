@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9293C04C-D2E7-449F-833E-6E6624DCD6F4}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,15 +56,15 @@
     <Compile Include="Models\SysUser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.hanzify.llf.Data\Lephone.Data.csproj">
+    <ProjectReference Include="..\Lephone.Data\Lephone.Data.csproj">
       <Project>{25AFD300-493A-4553-B4DC-129D3A9022A8}</Project>
       <Name>Lephone.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.hanzify.llf.util\Lephone.Util.csproj">
+    <ProjectReference Include="..\Lephone.Util\Lephone.Util.csproj">
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
       <Name>Lephone.Util</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.hanzify.llf.Web\Lephone.Web.csproj">
+    <ProjectReference Include="..\Lephone.Web\Lephone.Web.csproj">
       <Project>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</Project>
       <Name>Lephone.Web</Name>
     </ProjectReference>

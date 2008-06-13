@@ -1,5 +1,5 @@
 using System;
-using Lephone.Util;
+using Lephone.Util.TimingTask;
 
 namespace Lephone.UnitTest.util.timingTask
 {

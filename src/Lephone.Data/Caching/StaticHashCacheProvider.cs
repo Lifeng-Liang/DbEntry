@@ -1,6 +1,6 @@
 using System.Collections;
 using Lephone.Data.Common;
-using Lephone.Util;
+using Lephone.Util.TimingTask;
 
 namespace Lephone.Data.Caching
 {

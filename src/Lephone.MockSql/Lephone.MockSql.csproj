@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -71,7 +71,7 @@
     <Compile Include="Recorder\StaticRecorder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.hanzify.llf.util\Lephone.Util.csproj">
+    <ProjectReference Include="..\Lephone.Util\Lephone.Util.csproj">
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
       <Name>Lephone.Util</Name>
     </ProjectReference>

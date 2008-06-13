@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{25AFD300-493A-4553-B4DC-129D3A9022A8}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -387,7 +387,7 @@ copy *.dll ..\..\..\..\bin\
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.hanzify.llf.util\Lephone.Util.csproj">
+    <ProjectReference Include="..\Lephone.Util\Lephone.Util.csproj">
       <Name>Lephone.Util</Name>
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
