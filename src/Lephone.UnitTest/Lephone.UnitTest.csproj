@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30428</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{48E4289C-FABF-46F6-AC45-AAA4224F84D3}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -127,6 +127,7 @@
     <Compile Include="util\SystemHelperTest.cs" />
     <Compile Include="util\TestEnum.cs" />
     <Compile Include="util\ThreadingQueueTest.cs" />
+    <Compile Include="util\XDictionaryTest.cs" />
     <Compile Include="util\XmlSerializerTest.cs" />
     <Compile Include="Web\CommonTest.cs" />
     <Compile Include="Web\HtmlBuilderTest.cs" />

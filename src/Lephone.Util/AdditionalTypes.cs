@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace System
+﻿namespace System
 {
     [Serializable]
     public struct Date : IComparable, IFormattable, IConvertible, IComparable<Date>, IEquatable<Date>
@@ -604,6 +602,92 @@ namespace System
         public bool Equals(Time other)
         {
             return dt.TimeOfDay.Equals(other.dt.TimeOfDay);
+        }
+
+        #endregion
+    }
+}
+
+namespace System.Collections.Generic
+{
+    using System;
+    using Xml.Serialization;
+    using Runtime.Serialization;
+
+    [XmlRoot("dictionary"), Serializable]
+    public class XDictionary<TKey, TValue>
+        : Dictionary<TKey, TValue>, IXmlSerializable
+    {
+        #region ctor
+
+        public XDictionary()
+        {
+        }
+
+        public XDictionary(IDictionary<TKey, TValue> dictionary)
+            : base(dictionary)
+        {
+        }
+
+
+        public XDictionary(IEqualityComparer<TKey> comparer)
+            : base(comparer)
+        {
+        }
+
+
+        public XDictionary(int capacity)
+            : base(capacity)
+        {
+        }
+
+        public XDictionary(int capacity, IEqualityComparer<TKey> comparer)
+            : base(capacity, comparer)
+        {
+        }
+
+        protected XDictionary(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+        #endregion
+
+        #region IXmlSerializable Members
+
+        public Xml.Schema.XmlSchema GetSchema()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ReadXml(Xml.XmlReader reader)
+        {
+            bool wasEmpty = reader.IsEmptyElement;
+            reader.Read();
+            if (wasEmpty) { return; }
+
+            while (reader.NodeType != Xml.XmlNodeType.EndElement)
+            {
+                string key = reader.GetAttribute("key");
+                string value = reader.GetAttribute("value");
+                this.Add((TKey)Convert.ChangeType(key, typeof(TKey)),
+                    (TValue)Convert.ChangeType(value, typeof(TValue)));
+                reader.Read();
+                reader.MoveToContent();
+
+            }
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(Xml.XmlWriter writer)
+        {
+            foreach (TKey key in this.Keys)
+            {
+                writer.WriteStartElement("item");
+                writer.WriteAttributeString("key", key.ToString());
+                writer.WriteAttributeString("value", this[key].ToString());
+                writer.WriteEndElement();
+            }
         }
 
         #endregion
