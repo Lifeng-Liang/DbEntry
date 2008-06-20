@@ -3,12 +3,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Lephone.Data.Common;
 
-[assembly: AssemblyTitle("UnitTest")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Lephone Framework UnitTest")]
+[assembly: AssemblyDescription("Lephone Framework UnitTest")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("no")]
 [assembly: AssemblyProduct("UnitTest")]
-[assembly: AssemblyCopyright("Copyright (C) llf's studio 2007")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

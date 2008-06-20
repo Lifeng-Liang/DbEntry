@@ -13,7 +13,7 @@ namespace Lephone.Util.Setting
             DefaultSettings.nvc = new ConfigHelper("Lephone.Settings").nvc;
         }
 
-        private NameValueCollection nvc = null;
+        private NameValueCollection nvc;
 
 		public ConfigHelper(string SectionName)
 		{

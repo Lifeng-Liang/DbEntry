@@ -5,6 +5,7 @@ using Lephone.Data;
 using Lephone.Data.QuerySyntax;
 using Lephone.Data.Definition;
 using Lephone.Linq;
+using Lephone.Util;
 using Lephone.Util.Text;
 
 public static class CommonExtends
@@ -169,6 +170,11 @@ public static class CommonExtends
     public static string ReadToEnd(this StreamReader s)
     {
         return StringHelper.StreamReadToEnd(s);
+    }
+
+    public static bool IsChildrenOf(this Type tc, Type tf)
+    {
+        return ClassHelper.IsChildrenOf(tf, tc);
     }
 
 	#endregion

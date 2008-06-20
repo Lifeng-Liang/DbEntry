@@ -100,6 +100,9 @@
     <Compile Include="CommonHelper.cs" />
     <Compile Include="FlyweightBase.cs" />
     <Compile Include="ILBuilder.cs" />
+    <Compile Include="Ioc\IocEntryAttribute.cs" />
+    <Compile Include="Ioc\IocImplAttribute.cs" />
+    <Compile Include="Ioc\SimpleContainer.cs" />
     <Compile Include="LephoneException.cs" />
     <Compile Include="Logging\ConsoleMessageRecorder.cs" />
     <Compile Include="Logging\DebugLogRecorder.cs" />

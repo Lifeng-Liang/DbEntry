@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("no")]
 [assembly: AssemblyProduct("SqlRecorder")]
-[assembly: AssemblyCopyright("Copyright (C) llf's studio 2007")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

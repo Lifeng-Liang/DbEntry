@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Lephone.Linq")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Lephone Framework Linq")]
+[assembly: AssemblyDescription("Lephone Framework Linq")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("Lephone.Linq")]
-[assembly: AssemblyCopyright("Copyright © Lephone Studio 2007")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

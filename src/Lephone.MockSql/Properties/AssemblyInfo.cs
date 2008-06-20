@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("MockSql.Net")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Lephone Framework MockSql")]
+[assembly: AssemblyDescription("Lephone Framework MockSql")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("no")]
+[assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("MockSql.Net")]
-[assembly: AssemblyCopyright("Copyright (C) llf's studio 2007")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

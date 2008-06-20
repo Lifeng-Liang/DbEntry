@@ -12,7 +12,7 @@ namespace Lephone.UnitTest.DotNetFramework
         {
             const string s = "Select * from User where Age > ? And Age < ?";
             const string exp = "Select * from User where Age > @p0 And Age < @p1";
-            Regex reg = new Regex("\\?");
+            var reg = new Regex("\\?");
             string act = reg.Replace(s, "@p0", 1);
             act = reg.Replace(act, "@p1", 1);
             Assert.AreEqual(exp, act);
@@ -23,7 +23,7 @@ namespace Lephone.UnitTest.DotNetFramework
         {
             const string s = "Select * from User where Id = ? Name Like '%?%' Age > ? And Age < ? ";
             const string exp = "Select * from User where Id = @p0 Name Like '%?%' Age > @p1 And Age < @p2 ";
-            Regex reg = new Regex("'.*'|\\?");
+            var reg = new Regex("'.*'|\\?");
             int start = 0, n = 0;
             string act = "";
             foreach (Match m in reg.Matches(s))
@@ -45,10 +45,10 @@ namespace Lephone.UnitTest.DotNetFramework
         [Test]
         public void TestConvert()
         {
-            int n = (int)Convert.ChangeType("18", typeof (int));
+            var n = (int)Convert.ChangeType("18", typeof (int));
             Assert.AreEqual(18, n);
 
-            bool b = (bool) Convert.ChangeType("true", typeof (bool));
+            var b = (bool) Convert.ChangeType("true", typeof (bool));
             Assert.AreEqual(true, b);
         }
     }

@@ -59,25 +59,25 @@ namespace Lephone.Util
 
 		public static object CreateInstance(string ClassName)
 		{
-			Type t = Type.GetType(ClassName, true);
+			var t = Type.GetType(ClassName, true);
 			return CreateInstance(t);
 		}
 
         public static object CreateInstance(string ClassName, params object[] os)
 		{
-			Type t = Type.GetType(ClassName, true);
+			var t = Type.GetType(ClassName, true);
 			return CreateInstance(t, os);
 		}
 
 		public static object CreateInstance(Assembly FromAssembly, string ClassName)
 		{
-			Type t = FromAssembly.GetType(ClassName);
+			var t = FromAssembly.GetType(ClassName);
 			return CreateInstance(t);
 		}
 
         public static object CreateInstance(Assembly FromAssembly, string ClassName, params object[] os)
 		{
-			Type t = FromAssembly.GetType(ClassName);
+			var t = FromAssembly.GetType(ClassName);
 			return CreateInstance(t, os);
 		}
 
@@ -88,8 +88,8 @@ namespace Lephone.Util
 
         public static object CreateInstance(Type t, params object[] os)
         {
-            Type[] ts = GetTypesByObjs(os);
-            ConstructorInfo ci = t.GetConstructor(InstanceFlag, null, ts, null);
+            var ts = GetTypesByObjs(os);
+            var ci = t.GetConstructor(InstanceFlag, null, ts, null);
             return ci.Invoke(os);
         }
 
@@ -105,14 +105,14 @@ namespace Lephone.Util
 
         public static void SetValue(Type SourceType, string FieldName, object value)
         {
-            FieldInfo fi = SourceType.GetField(FieldName, StaticFlag);
+            var fi = SourceType.GetField(FieldName, StaticFlag);
             if (fi != null)
                 fi.SetValue(null, value);
         }
 
         public static void SetValue(object obj, string FieldName, object value)
         {
-            FieldInfo fi = obj.GetType().GetField(FieldName, AllFlag);
+            var fi = obj.GetType().GetField(FieldName, AllFlag);
             if (fi != null)
                 fi.SetValue(obj, value);
         }
@@ -124,13 +124,13 @@ namespace Lephone.Util
 
         public static object GetValue(Type SourceType, string FieldName)
         {
-            FieldInfo fi = SourceType.GetField(FieldName, StaticFlag);
+            var fi = SourceType.GetField(FieldName, StaticFlag);
             return fi == null ? null : fi.GetValue(null);
         }
 
         public static object GetValue(object obj, string FieldName)
         {
-            FieldInfo fi = obj.GetType().GetField(FieldName, AllFlag);
+            var fi = obj.GetType().GetField(FieldName, AllFlag);
             return fi == null ? null : fi.GetValue(obj);
         }
 
@@ -146,8 +146,8 @@ namespace Lephone.Util
 
         private static object CallFunction(object obj, Type ot, string FunctionName, object[] os)
         {
-            Type[] ts = GetTypesByObjs(os);
-            MethodInfo mi = ot.GetMethod(FunctionName, AllFlag, null, CallingConventions.Any, ts, null);
+            var ts = GetTypesByObjs(os);
+            var mi = ot.GetMethod(FunctionName, AllFlag, null, CallingConventions.Any, ts, null);
             if (mi == null)
             {
                 throw new SystemException(string.Format("Can not find the function called [{0}] in [{1}]", FunctionName, ot));
@@ -157,7 +157,7 @@ namespace Lephone.Util
 
         public static Type[] GetTypesByObjs(params object[] os)
         {
-            Type[] ts = new Type[os.Length];
+            var ts = new Type[os.Length];
             for (int i = 0; i < os.Length; i++)
             {
                 ts[i] = os[i].GetType();
@@ -176,9 +176,9 @@ namespace Lephone.Util
         /// <returns></returns>
         public static string ObjectToString(object o, string msg, string spliter, string NameTemplate, string NullString)
         {
-            StringBuilder sb = new StringBuilder();
-            System.Reflection.FieldInfo[] fis = o.GetType().GetFields();
-            object[] os = new object[fis.Length];
+            var sb = new StringBuilder();
+            var fis = o.GetType().GetFields();
+            var os = new object[fis.Length];
 
             for (int i = 0; i < fis.Length; i++)
             {
@@ -202,13 +202,13 @@ namespace Lephone.Util
 
         public static T[] GetAttributes<T>(MethodInfo info, bool inherit) where T : Attribute
         {
-            object[] os = info.GetCustomAttributes(typeof(T), inherit);
+            var os = info.GetCustomAttributes(typeof(T), inherit);
             return (T[])os;
         }
 
         public static T GetAttribute<T>(MethodInfo info, bool inherit) where T : Attribute
         {
-            T[] ts = GetAttributes<T>(info, inherit);
+            var ts = GetAttributes<T>(info, inherit);
             if (ts != null && ts.Length > 0)
                 return ts[0];
             return null;
@@ -221,13 +221,13 @@ namespace Lephone.Util
 
         public static T[] GetAttributes<T>(FieldInfo info, bool inherit) where T : Attribute
         {
-            object[] os = info.GetCustomAttributes(typeof(T), inherit);
+            var os = info.GetCustomAttributes(typeof(T), inherit);
             return (T[])os;
         }
 
         public static T GetAttribute<T>(FieldInfo info, bool inherit) where T : Attribute
         {
-            T[] ts = GetAttributes<T>(info, inherit);
+            var ts = GetAttributes<T>(info, inherit);
             if (ts != null && ts.Length > 0)
                 return ts[0];
             return null;
@@ -240,13 +240,13 @@ namespace Lephone.Util
 
         public static T[] GetAttributes<T>(PropertyInfo info, bool inherit) where T : Attribute
         {
-            object[] os = info.GetCustomAttributes(typeof(T), inherit);
+            var os = info.GetCustomAttributes(typeof(T), inherit);
             return (T[])os;
         }
 
         public static T GetAttribute<T>(PropertyInfo info, bool inherit) where T : Attribute
         {
-            T[] ts = GetAttributes<T>(info, inherit);
+            var ts = GetAttributes<T>(info, inherit);
             if (ts != null && ts.Length > 0)
                 return ts[0];
             return null;
@@ -259,13 +259,13 @@ namespace Lephone.Util
 
         public static T[] GetAttributes<T>(Type info, bool inherit) where T : Attribute
         {
-            object[] os = info.GetCustomAttributes(typeof(T), inherit);
+            var os = info.GetCustomAttributes(typeof(T), inherit);
             return (T[])os;
         }
 
         public static T GetAttribute<T>(Type info, bool inherit) where T : Attribute
         {
-            T[] ts = GetAttributes<T>(info, inherit);
+            var ts = GetAttributes<T>(info, inherit);
             if (ts != null && ts.Length > 0)
                 return ts[0];
             return null;
@@ -275,5 +275,22 @@ namespace Lephone.Util
         {
             return GetAttribute<T>(info, inherit) != null;
         }
-    }
+
+        public static bool IsChildrenOf(Type tf, Type tc)
+        {
+            if(tf.IsInterface)
+            {
+                var list = tc.GetInterfaces();
+                foreach (var type in list)
+                {
+                    if(type.Equals(tf))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return tc.IsSubclassOf(tf);
+        }
+	}
 }

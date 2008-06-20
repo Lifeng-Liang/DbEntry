@@ -3,12 +3,12 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Lephone.Data.Common;
 
-[assembly: AssemblyTitle("DbEntry.Net")]
-[assembly: AssemblyDescription("DbEntry.Net")]
+[assembly: AssemblyTitle("Lephone Framework Data")]
+[assembly: AssemblyDescription("Lephone Framework Data")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("DbEntry.Net")]
-[assembly: AssemblyCopyright("Copyright © Lephone Studio 2007")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
