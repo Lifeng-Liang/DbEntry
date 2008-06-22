@@ -10,9 +10,7 @@ namespace Lephone.UnitTest.util
         [Test]
         public void Test1()
         {
-            XDictionary<string, string> dictionary = new XDictionary<string, string>();
-            dictionary.Add("test", "ok");
-            dictionary.Add("run", "fine");
+            XDictionary<string, string> dictionary = new XDictionary<string, string> {{"test", "ok"}, {"run", "fine"}};
             string act = XmlSerializer<XDictionary<string, string>>.Xml.Serialize(dictionary);
             const string exp = @"<?xml version=""1.0""?>
 <dictionary>

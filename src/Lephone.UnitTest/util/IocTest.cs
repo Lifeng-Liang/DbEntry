@@ -1,57 +1,75 @@
-﻿using System;
-using Lephone.Util.Ioc;
+using System;
+using Lephone.Util.IoC;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
 {
-    [IocEntry]
+    [DependenceEntry]
     public interface ITest
     {
-        void Run();
+        string Run();
     }
 
-    [IocImpl]
+    [Implementation]
     public class TestImpl : ITest
     {
-        #region ITest Members
-
-        public void Run()
+        public string Run()
         {
-            throw new NotImplementedException();
+            return "1st impl";
         }
-
-        #endregion
     }
 
-    [IocImpl("2nd")]
+    [Implementation("2nd")]
     public class NewTestImpl : ITest
     {
-        #region ITest Members
-
-        public void Run()
+        public string Run()
         {
-            throw new NotImplementedException();
+            return "2nd impl";
         }
-
-        #endregion
     }
 
-    [IocEntry]
-    [IocImpl]
+    [DependenceEntry, Implementation]
     public class IocSame
     {
         public virtual string Run()
         {
             return "same";
         }
+
+        [Injection("2nd")]
+        public ITest TestProperty { get; set; }
     }
 
-    [IocImpl("sub")]
+    [Implementation("sub")]
     public class IocSameSub : IocSame
     {
         public override string Run()
         {
-            return "sub";
+            return "sub class";
+        }
+    }
+
+    public class IocSameReg : IocSame
+    {
+        public override string Run()
+        {
+            return "reg class";
+        }
+    }
+
+    [DependenceEntry, Implementation]
+    public class IocConstractor
+    {
+        private readonly ITest test;
+
+        public IocConstractor([Injection("2nd")]ITest test)
+        {
+            this.test = test;
+        }
+
+        public virtual string Run()
+        {
+            return test.Run();
         }
     }
 
@@ -76,7 +94,32 @@ namespace Lephone.UnitTest.util
             var t4 = SimpleContainer.Get<IocSame>("sub");
             Assert.IsNotNull(t4);
             Assert.IsTrue(t4 is IocSameSub);
-            Assert.AreEqual("sub", t4.Run());
+            Assert.AreEqual("sub class", t4.Run());
+        }
+
+        [Test]
+        public void Test2()
+        {
+            SimpleContainer.Register<IocSame, IocSameReg>("reg");
+            var t = SimpleContainer.Get<IocSame>("reg");
+            Assert.IsNotNull(t);
+            Assert.AreEqual("reg class", t.Run());
+            Assert.IsNotNull(t.TestProperty);
+            Assert.AreEqual("2nd impl", t.TestProperty.Run());
+        }
+
+        [Test, ExpectedException(typeof(ArgumentException))]
+        public void Test3()
+        {
+            SimpleContainer.Register<ITest, ITest>("error");
+        }
+
+        [Test]
+        public void Test4()
+        {
+            var item = SimpleContainer.Get<IocConstractor>();
+            Assert.IsNotNull(item);
+            Assert.AreEqual("2nd impl", item.Run());
         }
     }
 }

@@ -74,13 +74,13 @@ namespace Lephone.UnitTest.util
             var tb = typeof(DbConnection);
             var to = typeof(SqlConnection);
 
-            Assert.IsTrue(ClassHelper.IsChildrenOf(tb, to));
-            Assert.IsTrue(ClassHelper.IsChildrenOf(ti, to));
-            Assert.IsTrue(ClassHelper.IsChildrenOf(ti, tb));
+            Assert.IsTrue(ClassHelper.IsChildOf(tb, to));
+            Assert.IsTrue(ClassHelper.IsChildOf(ti, to));
+            Assert.IsTrue(ClassHelper.IsChildOf(ti, tb));
 
-            Assert.IsFalse(ClassHelper.IsChildrenOf(to, tb));
-            Assert.IsFalse(ClassHelper.IsChildrenOf(tb, ti));
-            Assert.IsFalse(ClassHelper.IsChildrenOf(to, ti));
+            Assert.IsFalse(ClassHelper.IsChildOf(to, tb));
+            Assert.IsFalse(ClassHelper.IsChildOf(tb, ti));
+            Assert.IsFalse(ClassHelper.IsChildOf(to, ti));
         }
 
         [Test]
@@ -88,8 +88,8 @@ namespace Lephone.UnitTest.util
         {
             var to = typeof (IBelongsTo);
             var ti = typeof (ILazyLoading);
-            Assert.IsTrue(to.IsChildrenOf(ti));
-            Assert.IsFalse(ti.IsChildrenOf(to));
+            Assert.IsTrue(to.IsChildOf(ti));
+            Assert.IsFalse(ti.IsChildOf(to));
         }
 
         [Test]
@@ -99,13 +99,13 @@ namespace Lephone.UnitTest.util
             var tb = typeof(DbConnection);
             var to = typeof(SqlConnection);
 
-            Assert.IsTrue(to.IsChildrenOf(tb));
-            Assert.IsTrue(to.IsChildrenOf(ti));
-            Assert.IsTrue(tb.IsChildrenOf(ti));
+            Assert.IsTrue(to.IsChildOf(tb));
+            Assert.IsTrue(to.IsChildOf(ti));
+            Assert.IsTrue(tb.IsChildOf(ti));
 
-            Assert.IsFalse(tb.IsChildrenOf(to));
-            Assert.IsFalse(ti.IsChildrenOf(tb));
-            Assert.IsFalse(ti.IsChildrenOf(to));
+            Assert.IsFalse(tb.IsChildOf(to));
+            Assert.IsFalse(ti.IsChildOf(tb));
+            Assert.IsFalse(ti.IsChildOf(to));
         }
     }
 }

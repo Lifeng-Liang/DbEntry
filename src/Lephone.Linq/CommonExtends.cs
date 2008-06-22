@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq.Expressions;
 using Lephone.Data;
@@ -172,9 +172,9 @@ public static class CommonExtends
         return StringHelper.StreamReadToEnd(s);
     }
 
-    public static bool IsChildrenOf(this Type tc, Type tf)
+    public static bool IsChildOf(this Type tc, Type tf)
     {
-        return ClassHelper.IsChildrenOf(tf, tc);
+        return ClassHelper.IsChildOf(tf, tc);
     }
 
 	#endregion

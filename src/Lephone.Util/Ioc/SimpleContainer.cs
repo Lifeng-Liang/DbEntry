@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Lephone.Util.Setting;
 
-namespace Lephone.Util.Ioc
+namespace Lephone.Util.IoC
 {
     public static class SimpleContainer
     {
@@ -21,7 +21,7 @@ namespace Lephone.Util.Ioc
                 SearchAssemblies(entries, impls);
                 foreach (var entry in entries)
                 {
-                    var list = impls.FindAll(t => entry.Equals(t.Value) || ClassHelper.IsChildrenOf(entry, t.Value));
+                    var list = impls.FindAll(t => entry.Equals(t.Value) || ClassHelper.IsChildOf(entry, t.Value));
                     foreach (var pair in list)
                     {
                         Register(entry, pair.Value, pair.Key, true);
@@ -43,12 +43,12 @@ namespace Lephone.Util.Ioc
                 var asm = Assembly.Load(asmName);
                 foreach (var type in asm.GetTypes())
                 {
-                    var entry =ClassHelper.GetAttribute<IocEntryAttribute>(type, false);
+                    var entry =ClassHelper.GetAttribute<DependenceEntryAttribute>(type, false);
                     if(entry != null)
                     {
                         entries.Add(type);
                     }
-                    var impl = ClassHelper.GetAttribute<IocImplAttribute>(type, false);
+                    var impl = ClassHelper.GetAttribute<ImplementationAttribute>(type, false);
                     if(impl != null)
                     {
                         impls.Add(new KeyValuePair<string, Type>(impl.Name, type));
@@ -73,9 +73,9 @@ namespace Lephone.Util.Ioc
 
         public static void Register(Type ti, Type to, string name, bool throwException)
         {
-            if(to.IsInterface)
+            if(to.IsInterface || to.IsAbstract)
             {
-                throw new ArgumentException("Impl type could not be interface", "to");
+                throw new ArgumentException("Impl type could not be interface or abstract class", "to");
             }
             if(container.ContainsKey(ti))
             {
@@ -108,16 +108,57 @@ namespace Lephone.Util.Ioc
 
         public static T Get<T>(string name)
         {
-            var t = typeof (T);
-            if(container.ContainsKey(t))
+            return (T) Get(typeof (T), name);
+        }
+
+        public static object Get(Type t, string name)
+        {
+            if (container.ContainsKey(t))
             {
                 var value = container[t];
                 if (value.ContainsKey(name))
                 {
-                    return (T)ClassHelper.CreateInstance(value[name]);
+                    object obj = CreateInjectableObject(value[name]);
+                    InjectProperties(obj);
+                    return obj;
                 }
             }
             throw new UtilException("Can not found {0} in SimpleContainer", name);
+        }
+
+        private static object CreateInjectableObject(Type type)
+        {
+            var cis = type.GetConstructors(ClassHelper.InstancePublic);
+            if(cis.Length == 0 || cis.Length > 1)
+            {
+                throw new UtilException("IoC object must have only one public constractor.");
+            }
+            var ci = cis[0];
+            var ps = ci.GetParameters();
+            object[] os = new object[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var ia = ClassHelper.GetAttribute<InjectionAttribute>(ps[i], false);
+                string name = ia == null ? DefaultName : ia.Name;
+                object op = Get(ps[i].ParameterType, name);
+                os[i] = op;
+            }
+            return ci.Invoke(os);
+        }
+
+        private static void InjectProperties(object obj)
+        {
+            Type t = obj.GetType();
+            var ps = t.GetProperties(ClassHelper.AllFlag);
+            foreach (var p in ps)
+            {
+                var ia = ClassHelper.GetAttribute<InjectionAttribute>(p, false);
+                if(ia != null)
+                {
+                    object op = Get(p.PropertyType, ia.Name);
+                    p.SetValue(obj, op, null);
+                }
+            }
         }
     }
 }

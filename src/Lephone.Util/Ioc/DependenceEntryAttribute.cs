@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Lephone.Util.Ioc
+namespace Lephone.Util.IoC
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
-    public class IocEntryAttribute : Attribute
+    public class DependenceEntryAttribute : Attribute
     {
     }
 }

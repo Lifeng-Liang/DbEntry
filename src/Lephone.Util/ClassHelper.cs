@@ -214,11 +214,6 @@ namespace Lephone.Util
             return null;
         }
 
-        public static bool HasAttribute<T>(MethodInfo info, bool inherit) where T : Attribute
-        {
-            return GetAttribute<T>(info, inherit) != null;
-        }
-
         public static T[] GetAttributes<T>(FieldInfo info, bool inherit) where T : Attribute
         {
             var os = info.GetCustomAttributes(typeof(T), inherit);
@@ -231,11 +226,6 @@ namespace Lephone.Util
             if (ts != null && ts.Length > 0)
                 return ts[0];
             return null;
-        }
-
-        public static bool HasAttribute<T>(FieldInfo info, bool inherit) where T : Attribute
-        {
-            return GetAttribute<T>(info, inherit) != null;
         }
 
         public static T[] GetAttributes<T>(PropertyInfo info, bool inherit) where T : Attribute
@@ -252,11 +242,6 @@ namespace Lephone.Util
             return null;
         }
 
-        public static bool HasAttribute<T>(PropertyInfo info, bool inherit) where T : Attribute
-        {
-            return GetAttribute<T>(info, inherit) != null;
-        }
-
         public static T[] GetAttributes<T>(Type info, bool inherit) where T : Attribute
         {
             var os = info.GetCustomAttributes(typeof(T), inherit);
@@ -271,12 +256,41 @@ namespace Lephone.Util
             return null;
         }
 
+        public static T[] GetAttributes<T>(ParameterInfo info, bool inherit) where T : Attribute
+        {
+            var os = info.GetCustomAttributes(typeof(T), inherit);
+            return (T[])os;
+        }
+
+        public static T GetAttribute<T>(ParameterInfo info, bool inherit) where T : Attribute
+        {
+            var ts = GetAttributes<T>(info, inherit);
+            if (ts != null && ts.Length > 0)
+                return ts[0];
+            return null;
+        }
+
+        public static bool HasAttribute<T>(MethodInfo info, bool inherit) where T : Attribute
+        {
+            return GetAttribute<T>(info, inherit) != null;
+        }
+
+        public static bool HasAttribute<T>(FieldInfo info, bool inherit) where T : Attribute
+        {
+            return GetAttribute<T>(info, inherit) != null;
+        }
+
+        public static bool HasAttribute<T>(PropertyInfo info, bool inherit) where T : Attribute
+        {
+            return GetAttribute<T>(info, inherit) != null;
+        }
+
         public static bool HasAttribute<T>(Type info, bool inherit) where T : Attribute
         {
             return GetAttribute<T>(info, inherit) != null;
         }
 
-        public static bool IsChildrenOf(Type tf, Type tc)
+        public static bool IsChildOf(Type tf, Type tc)
         {
             if(tf.IsInterface)
             {

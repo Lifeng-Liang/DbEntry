@@ -1,18 +1,18 @@
 ﻿using System;
 
-namespace Lephone.Util.Ioc
+namespace Lephone.Util.IoC
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class IocImplAttribute : Attribute
+    public class ImplementationAttribute : Attribute
     {
         public string Name { get; set; }
 
-        public IocImplAttribute()
+        public ImplementationAttribute()
             : this(SimpleContainer.DefaultName)
         {
         }
 
-        public IocImplAttribute(string name)
+        public ImplementationAttribute(string name)
         {
             this.Name = name;
         }
