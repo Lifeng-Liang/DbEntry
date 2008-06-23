@@ -100,10 +100,10 @@
     <Compile Include="CommonHelper.cs" />
     <Compile Include="FlyweightBase.cs" />
     <Compile Include="ILBuilder.cs" />
-    <Compile Include="Ioc\DependenceEntryAttribute.cs" />
-    <Compile Include="Ioc\ImplementationAttribute.cs" />
-    <Compile Include="Ioc\InjectionAttribute.cs" />
-    <Compile Include="Ioc\SimpleContainer.cs" />
+    <Compile Include="IoC\DependenceEntryAttribute.cs" />
+    <Compile Include="IoC\ImplementationAttribute.cs" />
+    <Compile Include="IoC\InjectionAttribute.cs" />
+    <Compile Include="IoC\SimpleContainer.cs" />
     <Compile Include="LephoneException.cs" />
     <Compile Include="Logging\ConsoleMessageRecorder.cs" />
     <Compile Include="Logging\DebugLogRecorder.cs" />
