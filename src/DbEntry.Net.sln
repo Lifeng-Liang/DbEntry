@@ -63,6 +63,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\Deb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Linq", "Lephone.Linq\Lephone.Linq.csproj", "{E93B9148-B6FB-4340-9981-6CBB407CC6F8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debug Projects", "Debug Projects", "{B56B0A84-6668-4625-BBE3-7AADF2DBE22C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest Projects", "UnitTest Projects", "{A0CF8258-917F-4756-BF94-7C3F7E254352}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -176,6 +180,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EE0F0B59-1970-4929-A73D-1A89862F9B83} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
+		{9293C04C-D2E7-449F-833E-6E6624DCD6F4} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
+		{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
+		{92805D19-5BFD-4EC4-B485-BEF6598CD14A} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
+		{C79309C3-3E59-490C-89EA-6A4AA05B0DD5} = {A0CF8258-917F-4756-BF94-7C3F7E254352}
+		{48E4289C-FABF-46F6-AC45-AAA4224F84D3} = {A0CF8258-917F-4756-BF94-7C3F7E254352}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 11

@@ -90,8 +90,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            LBook b = new LBook();
-            b.Name = "l";
+            var b = new LBook {Name = "l"};
             DbEntry.Save(b);
             long n = b.Id;
 

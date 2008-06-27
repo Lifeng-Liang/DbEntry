@@ -148,7 +148,7 @@ namespace Lephone.Web
                     OnObjectLoading();
                 }
 
-                T o = PageHelper.GetObject<T>(Page, ParseErrorText);
+                var o = PageHelper.GetObject<T>(Page, ParseErrorText);
                 object oid = ViewState["Id"];
 
                 string tn = typeof(T).Name;
@@ -236,7 +236,7 @@ namespace Lephone.Web
                 string tn = typeof(T).Name;
                 if (oid != null)
                 {
-                    T o = DbEntry.GetObject<T>(oid);
+                    var o = DbEntry.GetObject<T>(oid);
 
                     if (OnObjectDeleting != null)
                     {
@@ -270,7 +270,7 @@ namespace Lephone.Web
                 OnValidateSave(obj);
             }
 
-            ValidateHandler vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
+            var vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
                                                      NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText,
                                                      SeparatorText);
 
@@ -321,14 +321,7 @@ namespace Lephone.Web
                         {
                             OnPageIsNew();
                         }
-                        if (ContentTitle != null)
-                        {
-                            ContentTitle.Text = string.Format(NewObjectText, tn);
-                            if (ChangePageTitleToo)
-                            {
-                                Page.Title = ContentTitle.Text;
-                            }
-                        }
+                        SetContentTitle(NewObjectText, tn);
                     }
                     else
                     {
@@ -337,14 +330,7 @@ namespace Lephone.Web
                         {
                             OnPageIsEdit();
                         }
-                        if (ContentTitle != null)
-                        {
-                            ContentTitle.Text = string.Format(EditObjectText, tn);
-                            if (ChangePageTitleToo)
-                            {
-                                Page.Title = ContentTitle.Text;
-                            }
-                        }
+                        SetContentTitle(EditObjectText, tn);
                         if (OnObjectLoaded != null)
                         {
                             OnObjectLoaded(o);
@@ -357,6 +343,18 @@ namespace Lephone.Web
                 DeleteButton.Click += DeleteButton_Click;
                 //TODO: why left like: T o = GetRequestObject();
                 GetRequestObject();
+            }
+        }
+
+        private void SetContentTitle(string textTemplate, string tn)
+        {
+            if (ContentTitle != null)
+            {
+                ContentTitle.Text = string.Format(textTemplate, tn);
+                if (ChangePageTitleToo)
+                {
+                    Page.Title = ContentTitle.Text;
+                }
             }
         }
 
@@ -375,8 +373,28 @@ namespace Lephone.Web
             if (!string.IsNullOrEmpty(sid))
             {
                 object Id = ClassHelper.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
-                T o = DbEntry.GetObject<T>(Id);
+                var o = DbEntry.GetObject<T>(Id);
+                if(o == null)
+                {
+                    throw new DataException("The record doesn't exist.");
+                }
                 ViewState["Id"] = Id;
+                ObjectInfo oi = ObjectInfo.GetInstance(typeof (T));
+                if(oi.LockVersion != null)
+                {
+                    var lv = (int)oi.LockVersion.GetValue(o);
+                    if (Page.IsPostBack)
+                    {
+                        if(lv != ObjectLockVersion)
+                        {
+                            throw new DataException("The version of record was changed.");
+                        }
+                    }
+                    else
+                    {
+                        ObjectLockVersion = lv;
+                    }
+                }
                 return o;
             }
             return default(T);
@@ -648,6 +666,23 @@ namespace Lephone.Web
                 return "Field [{0}] parse error: {1}";
             }
             set { ViewState["ParseErrorText"] = value; }
+        }
+
+        private int ObjectLockVersion
+        {
+            get
+            {
+                object o = this.ViewState["ObjectLockVersion"];
+                if (o != null)
+                {
+                    return (int)o;
+                }
+                return -1;
+            }
+            set
+            {
+                this.ViewState["ObjectLockVersion"] = value;
+            }
         }
     }
 }

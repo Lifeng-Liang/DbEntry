@@ -157,7 +157,7 @@ namespace Lephone.Data
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             SqlStatement Sql = oi.Composer.GetGroupByStatement(this.Dialect, iwc, order, ColumnName);
             oi.LogSql(Sql);
-            DbObjectList<GroupByObject<T1>> list = new DbObjectList<GroupByObject<T1>>();
+            var list = new DbObjectList<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list, DbObjectType);
             DataLoadDirect(ip, typeof(GroupByObject<T1>), DbObjectType, Sql, true);
             return list;
@@ -175,12 +175,12 @@ namespace Lephone.Data
 
         public DbObjectList<T> ExecuteList<T>(SqlStatement Sql) where T : class, IDbObject
         {
-            DbObjectList<T> ret = new DbObjectList<T>();
+            var ret = new DbObjectList<T>();
             FillCollection(ret, typeof(T), Sql);
             return ret;
         }
 
-        protected IProcessor GetListProcessor(IList il, Type t)
+        protected static IProcessor GetListProcessor(IList il, Type t)
         {
             if (DataSetting.CacheAnySelectedItem)
             {
@@ -331,10 +331,7 @@ namespace Lephone.Data
 
         public void Save(object obj)
         {
-            CommonHelper.TryEnumerate(obj, delegate(object o)
-            {
-                InnerSave(o);
-            });
+            CommonHelper.TryEnumerate(obj, InnerSave);
         }
 
         private void InnerSave(object obj)
@@ -385,7 +382,7 @@ namespace Lephone.Data
                     {
                         foreach (MemberHandler f in oi.RelationFields)
                         {
-                            ILazyLoading ho = (ILazyLoading)f.GetValue(obj);
+                            var ho = (ILazyLoading)f.GetValue(obj);
                             ho.IsLoaded = true;
                             if (f.IsHasOne || f.IsHasMany || (f.IsHasAndBelongsToMany && ParentFirst))
                             {
@@ -394,7 +391,7 @@ namespace Lephone.Data
                                 {
                                     if (f.IsHasOne)
                                     {
-                                        IHasOne ho1 = (IHasOne)ho;
+                                        var ho1 = (IHasOne)ho;
                                         if (ho1.LastValue != null)
                                         {
                                             Save(ho1.LastValue);
@@ -405,7 +402,7 @@ namespace Lephone.Data
                                 {
                                     if (f.IsHasMany)
                                     {
-                                        IHasMany ho2 = (IHasMany)ho;
+                                        var ho2 = (IHasMany)ho;
                                         foreach (object item in ho2.RemovedValues)
                                         {
                                             Save(item);
@@ -417,7 +414,7 @@ namespace Lephone.Data
                             }
                             if (f.IsHasAndBelongsToMany)
                             {
-                                IHasAndBelongsToManyRelations so = (IHasAndBelongsToManyRelations)ho;
+                                var so = (IHasAndBelongsToManyRelations)ho;
                                 foreach (object n in so.SavedNewRelations)
                                 {
                                     SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
@@ -450,7 +447,7 @@ namespace Lephone.Data
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             ProcessRelation(oi, true, obj, delegate(DataProvider dp)
             {
-                DbObjectSmartUpdate to = obj as DbObjectSmartUpdate;
+                var to = obj as DbObjectSmartUpdate;
                 if (to != null && to.m_UpdateColumns != null)
                 {
                     if (to.m_UpdateColumns.Count > 0)
@@ -523,7 +520,7 @@ namespace Lephone.Data
             if(oi.ManyToManys.ContainsKey(t) && Key1 != null && Key2 != null)
             {
                 ManyToManyMediTable mt = oi.ManyToManys[t];
-                InsertStatementBuilder sb = new InsertStatementBuilder(mt.Name);
+                var sb = new InsertStatementBuilder(mt.Name);
                 sb.Values.Add(new KeyValue(mt.ColumeName1, Key1));
                 sb.Values.Add(new KeyValue(mt.ColumeName2, Key2));
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
@@ -537,7 +534,7 @@ namespace Lephone.Data
             if (oi.ManyToManys.ContainsKey(t) && Key1 != null && Key2 != null)
             {
                 ManyToManyMediTable mt = oi.ManyToManys[t];
-                DeleteStatementBuilder sb = new DeleteStatementBuilder(mt.Name);
+                var sb = new DeleteStatementBuilder(mt.Name);
                 WhereCondition c = CK.K[mt.ColumeName1] == Key1;
                 c &= CK.K[mt.ColumeName2] == Key2;
                 sb.Where.Conditions = c;
@@ -547,13 +544,13 @@ namespace Lephone.Data
             }
         }
 
-        private void SetBelongsToForeignKey(object obj, object subobj, object ForeignKey)
+        private static void SetBelongsToForeignKey(object obj, object subobj, object ForeignKey)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(subobj.GetType());
             MemberHandler mh = oi.GetBelongsTo(obj.GetType());
             if (mh != null)
             {
-                Definition.IBelongsTo ho = mh.GetValue(subobj) as IBelongsTo;
+                var ho = mh.GetValue(subobj) as IBelongsTo;
                 if (ho != null)
                 {
                     ho.ForeignKey = ForeignKey;
@@ -577,10 +574,7 @@ namespace Lephone.Data
                     CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
                 }
                 ret += DeleteRelation(oi, obj);
-            }, delegate(object o)
-            {
-                Delete(o);
-            });
+            }, o => Delete(o));
             if (oi.KeyFields[0].UnsavedValue != null)
             {
                 oi.KeyFields[0].SetValue(obj, oi.KeyFields[0].UnsavedValue);
@@ -593,7 +587,7 @@ namespace Lephone.Data
             int ret = 0;
             foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
             {
-                DeleteStatementBuilder sb = new DeleteStatementBuilder(mt.Name);
+                var sb = new DeleteStatementBuilder(mt.Name);
                 sb.Where.Conditions = CK.K[mt.ColumeName1] == oi.Handler.GetKeyValue(obj);
                 SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
                 oi.LogSql(Sql);
@@ -624,10 +618,7 @@ namespace Lephone.Data
             DropTable(tn, CatchException, oi);
             if (oi.HasSystemKey)
             {
-                CommonHelper.IfCatchException(true, delegate
-                {
-                    Dialect.ExecuteDropSequence(this, tn);
-                });
+                CommonHelper.IfCatchException(true, () => Dialect.ExecuteDropSequence(this, tn));
             }
             foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
             {
@@ -638,12 +629,9 @@ namespace Lephone.Data
         private void DropTable(string TableName, bool CatchException, ObjectInfo oi)
         {
             string s = "Drop Table " + this.Dialect.QuoteForTableName(TableName);
-            SqlStatement Sql = new SqlStatement(s);
+            var Sql = new SqlStatement(s);
             oi.LogSql(Sql);
-            CommonHelper.IfCatchException(CatchException, delegate
-            {
-                this.ExecuteNonQuery(Sql);
-            });
+            CommonHelper.IfCatchException(CatchException, () => this.ExecuteNonQuery(Sql));
             if (DataSetting.AutoCreateTable && TableNames != null)
             {
                 TableNames.Remove(TableName.ToLower());
@@ -694,10 +682,8 @@ namespace Lephone.Data
             ManyToManyMediTable mt1 = oi1.ManyToManys[t2];
             //TODO: why left this?
             //ManyToManyMediTable mt2 = oi2.ManyToManys[t1];
-            CreateTableStatementBuilder cts = new CreateTableStatementBuilder(mt1.Name);
-            List<string> ls = new List<string>();
-            ls.Add(mt1.ColumeName1);
-            ls.Add(mt1.ColumeName2);
+            var cts = new CreateTableStatementBuilder(mt1.Name);
+            var ls = new List<string> {mt1.ColumeName1, mt1.ColumeName2};
             ls.Sort();
             cts.Columns.Add(new ColumnInfo(ls[0], oi1.KeyFields[0].FieldType, false, false, false, false, 0));
             cts.Columns.Add(new ColumnInfo(ls[1], oi2.KeyFields[0].FieldType, false, false, false, false, 0));

@@ -145,7 +145,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Lephone.MockSql\Lephone.MockSql.csproj">
       <Project>{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}</Project>
-      <Name>MockSql</Name>
+      <Name>Lephone.MockSql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Lephone.Data\Lephone.Data.csproj">
       <Project>{25AFD300-493A-4553-B4DC-129D3A9022A8}</Project>

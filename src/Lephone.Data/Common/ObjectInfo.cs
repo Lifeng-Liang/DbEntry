@@ -34,7 +34,7 @@ namespace Lephone.Data.Common
             {
                 return dic[t];
             }
-            ObjectInfo oi = new ObjectInfo();
+            var oi = new ObjectInfo();
             oi.InitBySimpleMode(t);
             return oi;
         }
@@ -220,17 +220,17 @@ namespace Lephone.Data.Common
             Init(HandleType, From, KeyFields, Fields, DisableSqlLog);
         }
 
-        internal void Init(Type HandleType, FromClause From, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
+        internal void Init(Type handleType, FromClause fromClause, MemberHandler[] keyFields, MemberHandler[] fields, bool DisableSqlLog)
         {
-            this._HandleType = HandleType;
-            this._From = From;
-            this._KeyFields = KeyFields;
-            this._Fields = Fields;
+            this._HandleType = handleType;
+            this._From = fromClause;
+            this._KeyFields = keyFields;
+            this._Fields = fields;
             this._AllowSqlLog = !DisableSqlLog;
 
-            this._HasSystemKey = ((KeyFields.Length == 1) && (KeyFields[0].IsDbGenerate || KeyFields[0].FieldType == typeof(Guid)));
+            this._HasSystemKey = ((keyFields.Length == 1) && (keyFields[0].IsDbGenerate || keyFields[0].FieldType == typeof(Guid)));
 
-            foreach (MemberHandler f in Fields)
+            foreach (MemberHandler f in fields)
             {
                 if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany)
                 {
@@ -251,7 +251,7 @@ namespace Lephone.Data.Common
                 }
             }
 
-            _HasOnePremarykey = (KeyFields != null && KeyFields.Length == 1);
+            _HasOnePremarykey = (keyFields != null && keyFields.Length == 1);
         }
 
         #endregion
@@ -344,7 +344,7 @@ namespace Lephone.Data.Common
                 {
                     if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
                     {
-                        ILazyLoading bt = (ILazyLoading)mh.GetValue(o);
+                        var bt = (ILazyLoading)mh.GetValue(o);
                         bt.Init(context, mh.Name);
                     }
                 }
@@ -358,8 +358,8 @@ namespace Lephone.Data.Common
             {
                 if (m.IsBelongsTo)
                 {
-                    IBelongsTo os = (IBelongsTo) m.GetValue(obj);
-                    IBelongsTo od = (IBelongsTo) m.GetValue(o);
+                    var os = (IBelongsTo) m.GetValue(obj);
+                    var od = (IBelongsTo) m.GetValue(o);
                     od.ForeignKey = os.ForeignKey;
                 }
             }
@@ -382,14 +382,14 @@ namespace Lephone.Data.Common
         {
             foreach (MemberHandler f in oi.RelationFields)
             {
-                ILazyLoading ho = (ILazyLoading)f.GetValue(o);
+                var ho = (ILazyLoading)f.GetValue(o);
                 if (f.IsLazyLoad)
                 {
                     ho.Init(driver, f.Name);
                 }
                 else if (f.IsHasOne || f.IsHasMany)
                 {
-                    ObjectInfo oi1 = ObjectInfo.GetInstance(f.FieldType.GetGenericArguments()[0]);
+                    ObjectInfo oi1 = GetInstance(f.FieldType.GetGenericArguments()[0]);
                     MemberHandler h1 = oi1.GetBelongsTo(oi.HandleType);
                     if (h1 != null)
                     {
@@ -404,7 +404,7 @@ namespace Lephone.Data.Common
                 }
                 else if (f.IsHasAndBelongsToMany)
                 {
-                    ObjectInfo oi1 = ObjectInfo.GetInstance(f.FieldType.GetGenericArguments()[0]);
+                    ObjectInfo oi1 = GetInstance(f.FieldType.GetGenericArguments()[0]);
                     MemberHandler h1 = oi1.GetHasAndBelongsToMany(oi.HandleType);
                     if (h1 != null)
                     {

@@ -14,14 +14,14 @@ namespace Lephone.Data.Common
     {
         internal void InitObjectInfoBySimpleMode(Type t)
         {
-            List<Type> lt = new List<Type>(t.GetInterfaces());
+            var lt = new List<Type>(t.GetInterfaces());
             if (!lt.Contains(typeof(IDbObject)))
             {
                 throw new DataException("The data object must implements IDbObject!");
             }
 
-            List<MemberHandler> ret = new List<MemberHandler>();
-            List<MemberHandler> kfs = new List<MemberHandler>();
+            var ret = new List<MemberHandler>();
+            var kfs = new List<MemberHandler>();
             foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
             {
                 if (!fi.IsPrivate)
@@ -50,8 +50,8 @@ namespace Lephone.Data.Common
             }
 
             // fill simple and relation fields.
-            List<MemberHandler> rlfs = new List<MemberHandler>();
-            List<MemberHandler> sifs = new List<MemberHandler>();
+            var rlfs = new List<MemberHandler>();
+            var sifs = new List<MemberHandler>();
             foreach (MemberHandler mh in ret)
             {
                 if (mh.IsHasOne || mh.IsHasMany || mh.IsHasAndBelongsToMany || mh.IsBelongsTo || mh.IsLazyLoad)
@@ -63,7 +63,7 @@ namespace Lephone.Data.Common
                     sifs.Add(mh);
                 }
             }
-            List<MemberHandler> fields = new List<MemberHandler>(sifs);
+            var fields = new List<MemberHandler>(sifs);
             fields.AddRange(rlfs);
             MemberHandler[] keys = kfs.ToArray();
 
@@ -73,12 +73,12 @@ namespace Lephone.Data.Common
             this._RelationFields = rlfs.ToArray();
             this._SimpleFields = sifs.ToArray();
 
-            SoftDeleteAttribute sd = ClassHelper.GetAttribute<SoftDeleteAttribute>(t, true);
+            var sd = ClassHelper.GetAttribute<SoftDeleteAttribute>(t, true);
             if (sd != null)
             {
                 this._SoftDeleteColumnName = sd.ColumnName;
             }
-            DeleteToAttribute dta = ClassHelper.GetAttribute<DeleteToAttribute>(t, true);
+            var dta = ClassHelper.GetAttribute<DeleteToAttribute>(t, true);
             if (dta != null)
             {
                 this._DeleteToTableName = dta.TableName;
@@ -91,7 +91,7 @@ namespace Lephone.Data.Common
         {
             ObjectInfo oi = GetInstance(DbObjectType);
             object obj = oi.NewObject();
-            DbObjectSmartUpdate sudi = obj as DbObjectSmartUpdate;
+            var sudi = obj as DbObjectSmartUpdate;
             if (sudi != null)
             {
                 sudi.m_InternalInit = true;
@@ -100,7 +100,7 @@ namespace Lephone.Data.Common
             {
                 if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
                 {
-                    ILazyLoading bt = (ILazyLoading)mh.GetValue(obj);
+                    var bt = (ILazyLoading)mh.GetValue(obj);
                     bt.Init(context, mh.Name);
                 }
             }
@@ -115,7 +115,7 @@ namespace Lephone.Data.Common
 
         private static void CheckIndexAttributes(IEnumerable<IndexAttribute> ias)
         {
-            List<string> ls = new List<string>();
+            var ls = new List<string>();
             foreach (IndexAttribute ia in ias)
             {
                 foreach (string s in ls)
@@ -179,7 +179,7 @@ namespace Lephone.Data.Common
 
         public static string GetColumuName(MemberAdapter fi)
         {
-            DbColumnAttribute fn = fi.GetAttribute<DbColumnAttribute>(false);
+            var fn = fi.GetAttribute<DbColumnAttribute>(false);
             return (fn == null) ? fi.Name : fn.Name;
         }
 
@@ -259,7 +259,7 @@ namespace Lephone.Data.Common
                         UnmappedSlaveTableName + "_" + UnmappedMainTableName : UnmappedMainTableName + "_" + UnmappedSlaveTableName;
                     MediTableName = NameMapper.Instance.Prefix + MediTableName;
 
-                    FromClause fc = new FromClause(
+                    var fc = new FromClause(
                         new JoinClause(MediTableName + "." + UnmappedSlaveTableName + "_Id", SlaveTableName + ".Id",
                             CompareOpration.Equal, JoinMode.Inner));
                     Type t2 = f.FieldType.GetGenericArguments()[0];
@@ -281,8 +281,8 @@ namespace Lephone.Data.Common
 
         internal static FromClause GetObjectFromClause(Type DbObjectType)
         {
-            DbTableAttribute[] dtas = (DbTableAttribute[])DbObjectType.GetCustomAttributes(typeof(DbTableAttribute), false);
-            JoinOnAttribute[] joas = (JoinOnAttribute[])DbObjectType.GetCustomAttributes(typeof(JoinOnAttribute), false);
+            var dtas = (DbTableAttribute[])DbObjectType.GetCustomAttributes(typeof(DbTableAttribute), false);
+            var joas = (JoinOnAttribute[])DbObjectType.GetCustomAttributes(typeof(JoinOnAttribute), false);
             if (dtas.Length != 0 && joas.Length != 0)
             {
                 throw new ArgumentException(string.Format("class [{0}] defined DbTable and JoinOn. Only one allowed.", DbObjectType.Name));
@@ -294,7 +294,7 @@ namespace Lephone.Data.Common
                     string DefaultName = NameMapper.Instance.MapName(DbObjectType.Name);
                     return new FromClause(GetTableNameFromConfig(DefaultName));
                 }
-                JoinClause[] jcs = new JoinClause[joas.Length];
+                var jcs = new JoinClause[joas.Length];
                 for (int i = 0; i < joas.Length; i++)
                 {
                     int n = joas[i].Index;
