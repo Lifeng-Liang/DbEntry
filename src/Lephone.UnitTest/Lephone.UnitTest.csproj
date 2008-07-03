@@ -108,6 +108,7 @@
     <Compile Include="util\InflectorTest.cs" />
     <Compile Include="util\IocTest.cs" />
     <Compile Include="util\NameMapperTest.cs" />
+    <Compile Include="util\TestBOMChecker.cs" />
     <Compile Include="util\timingTask\DayTimingTest.cs" />
     <Compile Include="util\timingTask\MockNowTimeProvider.cs" />
     <Compile Include="util\timingTask\MockTask.cs" />
