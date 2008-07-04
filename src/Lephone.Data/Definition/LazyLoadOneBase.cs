@@ -1,4 +1,4 @@
-namespace Lephone.Data.Definition
+﻿namespace Lephone.Data.Definition
 {
     public abstract class LazyLoadOneBase<T> : ILazyLoading
     {

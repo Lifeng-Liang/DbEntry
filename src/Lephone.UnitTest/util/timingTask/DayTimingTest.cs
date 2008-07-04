@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Lephone.Util.TimingTask;
 using Lephone.Util.TimingTask.Timings;
 using NUnit.Framework;

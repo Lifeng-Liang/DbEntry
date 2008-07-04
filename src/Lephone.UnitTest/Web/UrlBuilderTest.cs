@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lephone.Util;
 using Lephone.Web;
 using NUnit.Framework;
@@ -43,7 +43,7 @@ namespace Lephone.UnitTest.Web
         {
             UrlBuilder ub = new UrlBuilder("http://llf.hanzify.org/llf/search.asp");
             ub.Add("Where", "title");
-            ub.Add("keyword", "ÖÐÎÄ", EncodingEx.GBK);
+            ub.Add("keyword", "ä¸­æ–‡", EncodingEx.GBK);
             string dst = ub.ToString();
             Assert.AreEqual("http://llf.hanzify.org/llf/search.asp?Where=title&keyword=%d6%d0%ce%c4", dst);
         }

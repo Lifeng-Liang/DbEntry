@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.SqlEntry;

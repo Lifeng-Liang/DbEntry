@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Lephone.Util.TimingTask;
 
 namespace Lephone.UnitTest.util.timingTask

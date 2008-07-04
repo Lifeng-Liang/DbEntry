@@ -1,4 +1,4 @@
-using System.Configuration;
+﻿using System.Configuration;
 using System.Collections.Specialized;
 
 namespace Lephone.Util.Setting

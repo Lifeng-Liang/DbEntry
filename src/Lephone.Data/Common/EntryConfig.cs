@@ -1,4 +1,4 @@
-using Lephone.Data.Dialect;
+﻿using Lephone.Data.Dialect;
 using Lephone.Data.Driver;
 using Lephone.Util;
 using Lephone.Util.Text;

@@ -1,4 +1,4 @@
-using System.Data;
+ï»¿using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
 using Lephone.Data.SqlEntry;
@@ -25,7 +25,7 @@ namespace Lephone.Data.Driver
 		protected override IDbDataParameter GetDbParameter(DataParamter dp)
 		{
             OleDbParameter odp = (OleDbParameter)base.GetDbParameter(dp);
-			// TODO: Is OleDb Bug, Or Access Bug? Or, all Drivers bug£¿
+			// TODO: Is OleDb Bug, Or Access Bug? Or, all Drivers bugï¼Ÿ
             if ( dp.Type == DataType.DateTime )
             {
                 odp.OleDbType = OleDbType.Date;

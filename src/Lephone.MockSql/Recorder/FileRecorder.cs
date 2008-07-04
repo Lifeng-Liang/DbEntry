@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using Lephone.Util;
 using Lephone.Util.Setting;
 

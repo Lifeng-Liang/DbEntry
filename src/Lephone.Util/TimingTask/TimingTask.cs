@@ -1,4 +1,4 @@
-namespace Lephone.Util.TimingTask
+﻿namespace Lephone.Util.TimingTask
 {
 	public class TimingTask
 	{

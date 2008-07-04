@@ -1,4 +1,4 @@
-namespace Lephone.Data.SqlEntry
+﻿namespace Lephone.Data.SqlEntry
 {
     public enum AutoValue
     {

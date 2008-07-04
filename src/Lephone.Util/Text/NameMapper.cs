@@ -1,4 +1,4 @@
-using Lephone.Util.Setting;
+﻿using Lephone.Util.Setting;
 
 namespace Lephone.Util.Text
 {

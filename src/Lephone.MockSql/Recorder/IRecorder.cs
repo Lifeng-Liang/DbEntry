@@ -1,4 +1,4 @@
-namespace Lephone.MockSql.Recorder
+﻿namespace Lephone.MockSql.Recorder
 {
     public interface IRecorder
     {

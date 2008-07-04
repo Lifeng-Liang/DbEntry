@@ -1,4 +1,4 @@
-using Lephone.Util.Logging;
+﻿using Lephone.Util.Logging;
 
 namespace Lephone.Util
 {

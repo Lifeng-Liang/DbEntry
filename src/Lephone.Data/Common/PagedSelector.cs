@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common

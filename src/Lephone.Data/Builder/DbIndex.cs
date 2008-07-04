@@ -1,4 +1,4 @@
-namespace Lephone.Data.Builder
+﻿namespace Lephone.Data.Builder
 {
     public class DbIndex
     {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Lephone.Data.Common;
 using Lephone.Util.TimingTask;
 

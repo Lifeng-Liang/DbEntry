@@ -1,4 +1,4 @@
-namespace DebugLib.Helpers
+﻿namespace DebugLib.Helpers
 {
     public class UserHelper
     {

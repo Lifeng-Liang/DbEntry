@@ -1,4 +1,4 @@
-using DebugLib.Models;
+﻿using DebugLib.Models;
 using Lephone.Web.Rails;
 
 namespace DebugLib.Controllers

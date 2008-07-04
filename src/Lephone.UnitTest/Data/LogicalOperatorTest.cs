@@ -1,4 +1,4 @@
-using Lephone.Data;
+﻿using Lephone.Data;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 using NUnit.Framework;

@@ -1,4 +1,4 @@
-using Lephone.Data.SqlEntry;
+﻿using Lephone.Data.SqlEntry;
 using Lephone.Util.Logging;
 using Lephone.Data.Common;
 

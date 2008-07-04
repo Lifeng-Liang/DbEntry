@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Lephone.Data.Common;
 
 namespace Lephone.Data.Definition

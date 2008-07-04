@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using Lephone.Data.Caching;
 using Lephone.Data.Common;
@@ -167,7 +167,7 @@ namespace Lephone.UnitTest.Data
         /*
         Hi Lifeng, 
 
-        here¡äs my testing code (all used classes are marked cacheable and inherit from LinqObjectModel<T>):
+        hereâ€²s my testing code (all used classes are marked cacheable and inherit from LinqObjectModel<T>):
 
         Test Case Failures:
         1) Docas.UnitTests.Common.ModelTest.T0300_HRM_JobRoleRelation : System.NullReferenceException : Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.

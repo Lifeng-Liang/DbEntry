@@ -1,4 +1,4 @@
-namespace Lephone.Data.Builder.Clause
+﻿namespace Lephone.Data.Builder.Clause
 {
     public class ConstCondition : WhereCondition
     {

@@ -1,4 +1,4 @@
-using Lephone.Util;
+﻿using Lephone.Util;
 
 namespace Lephone.Data.Definition
 {

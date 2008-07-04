@@ -1,4 +1,4 @@
-namespace Lephone.Util.Logging
+﻿namespace Lephone.Util.Logging
 {
     public enum LogType
     {

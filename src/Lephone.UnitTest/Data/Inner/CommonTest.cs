@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text.RegularExpressions;
 using Lephone.Data;
 using Lephone.Data.Common;

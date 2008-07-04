@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
@@ -27,7 +27,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            // A.Select ½«»áÔØÈë A, A.B ½«»á LazyLoading
+            // A.Select å°†ä¼šè½½å…¥ A, A.B å°†ä¼š LazyLoading
             Article a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
             Assert.AreEqual(3, a.Readers.Count);
@@ -39,7 +39,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            // A.Select ½«»áÔØÈë A, Èç¹û A.B ±»ĞŞ¸Ä£¬Ôò²»ÔÙ Loading B
+            // A.Select å°†ä¼šè½½å…¥ A, å¦‚æœ A.B è¢«ä¿®æ”¹ï¼Œåˆ™ä¸å† Loading B
             Article a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
             a.Readers.Add(Reader.New().Init("ruby"));
@@ -50,7 +50,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            // A.Save ½«»á±£´æ A, Èç¹û A.B ÖĞÓĞĞÂÔªËØ£¬Ôò²åÈë B£¬²åÈë A_B
+            // A.Save å°†ä¼šä¿å­˜ A, å¦‚æœ A.B ä¸­æœ‰æ–°å…ƒç´ ï¼Œåˆ™æ’å…¥ Bï¼Œæ’å…¥ A_B
             Article a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
             a.Readers.Add(Reader.New().Init("ruby"));
@@ -64,7 +64,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test4()
         {
-            // A.Save ½«»á±£´æ A, Èç¹û A.B ÖĞÓĞÔØÈëµÄÔªËØ£¬Ôò update B£¬²»ĞŞ¸Ä A_B
+            // A.Save å°†ä¼šä¿å­˜ A, å¦‚æœ A.B ä¸­æœ‰è½½å…¥çš„å…ƒç´ ï¼Œåˆ™ update Bï¼Œä¸ä¿®æ”¹ A_B
             Article a = DbEntry.GetObject<Article>(3);
             Assert.IsNotNull(a);
             Assert.AreEqual(1, a.Readers.Count);
@@ -82,7 +82,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test5()
         {
-            // A.Delete ½«»áÉ¾³ı A£¬ ²¢ÇÒÉ¾³ı A_B ÖĞËùÓĞºÍ A Ïà¹ØµÄÌõÄ¿
+            // A.Delete å°†ä¼šåˆ é™¤ Aï¼Œ å¹¶ä¸”åˆ é™¤ A_B ä¸­æ‰€æœ‰å’Œ A ç›¸å…³çš„æ¡ç›®
             Article a = DbEntry.GetObject<Article>(1);
             DbEntry.Delete(a);
 
@@ -96,7 +96,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test6()
         {
-            // Èç¹û A Îª Insert, A.Save ½«»á±£´æ A, Èç¹û A.B ÖĞÓĞĞÂÔªËØ£¬Ôò²åÈë B£¬²åÈë A_B
+            // å¦‚æœ A ä¸º Insert, A.Save å°†ä¼šä¿å­˜ A, å¦‚æœ A.B ä¸­æœ‰æ–°å…ƒç´ ï¼Œåˆ™æ’å…¥ Bï¼Œæ’å…¥ A_B
             Article a = Article.New().Init("Call from hell");
             a.Readers.Add(Reader.New().Init("ruby"));
             DbEntry.Save(a);

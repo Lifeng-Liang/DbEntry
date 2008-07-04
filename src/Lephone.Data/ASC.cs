@@ -1,4 +1,4 @@
-namespace Lephone.Data
+﻿namespace Lephone.Data
 {
 	public class ASC
 	{

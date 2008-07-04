@@ -1,4 +1,4 @@
-namespace Lephone.Data.Common
+﻿namespace Lephone.Data.Common
 {
     public class DbStructInterface
     {

@@ -1,4 +1,4 @@
-using Lephone.Data;
+ï»¿using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
@@ -93,8 +93,8 @@ namespace Lephone.UnitTest.Data
             ValidateHandler vh = new ValidateHandler(true);
             Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("123456", null, "a@b.c")));
-            Assert.IsTrue(vh.ValidateObject(new vtest("²âÊÔ1", null, "a@b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("²âÊÔÒ»", null, "a@b.c")));
+            Assert.IsTrue(vh.ValidateObject(new vtest("æµ‹è¯•1", null, "a@b.c")));
+            Assert.IsFalse(vh.ValidateObject(new vtest("æµ‹è¯•ä¸€", null, "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest(null, null, "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("", null, "a@b.c")));
             Assert.IsTrue(vh.ValidateObject(new vtest("1", null, "a@b.c")));
@@ -102,8 +102,8 @@ namespace Lephone.UnitTest.Data
             Assert.IsTrue(vh.ValidateObject(new vtest("1", "", "a@b.c")));
             Assert.IsTrue(vh.ValidateObject(new vtest("1", "12345678", "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("1", "123456789", "a@b.c")));
-            Assert.IsTrue(vh.ValidateObject(new vtest("1", "²âÊÔ²âÊÔ²âÊÔ²âÊÔ", "a@b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("1", "²âÊÔ²âÊÔ²âÊÔ²âÊÔ1", "a@b.c")));
+            Assert.IsTrue(vh.ValidateObject(new vtest("1", "æµ‹è¯•æµ‹è¯•æµ‹è¯•æµ‹è¯•", "a@b.c")));
+            Assert.IsFalse(vh.ValidateObject(new vtest("1", "æµ‹è¯•æµ‹è¯•æµ‹è¯•æµ‹è¯•1", "a@b.c")));
 
             Assert.IsFalse(vh.ValidateObject(new vtest("1", null, "a.b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("1", null, null)));

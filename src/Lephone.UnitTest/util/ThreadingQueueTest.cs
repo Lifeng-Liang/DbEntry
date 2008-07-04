@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Threading;
 using Lephone.Util;
 using NUnit.Framework;

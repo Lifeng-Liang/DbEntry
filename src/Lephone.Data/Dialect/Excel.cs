@@ -1,4 +1,4 @@
-namespace Lephone.Data.Dialect
+﻿namespace Lephone.Data.Dialect
 {
 	public class Excel : Access
 	{

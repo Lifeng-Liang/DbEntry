@@ -1,4 +1,4 @@
-using Lephone.Util.Setting;
+﻿using Lephone.Util.Setting;
 using Lephone.Util.Text;
 using NUnit.Framework;
 

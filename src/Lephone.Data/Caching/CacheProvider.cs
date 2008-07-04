@@ -1,4 +1,4 @@
-using Lephone.Data.Common;
+﻿using Lephone.Data.Common;
 using Lephone.Util;
 
 namespace Lephone.Data.Caching

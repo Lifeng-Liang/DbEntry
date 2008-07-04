@@ -1,4 +1,4 @@
-namespace Lephone.Web
+﻿namespace Lephone.Web
 {
     public class HtmlBuilder : XmlBuilder<HtmlBuilder>
     {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Lephone.Data.Common;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;

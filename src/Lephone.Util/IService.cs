@@ -1,4 +1,4 @@
-namespace Lephone.Util
+﻿namespace Lephone.Util
 {
 	public interface IService
 	{

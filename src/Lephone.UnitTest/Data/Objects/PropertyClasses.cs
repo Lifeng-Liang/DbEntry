@@ -1,4 +1,4 @@
-using Lephone.Data.Definition;
+﻿using Lephone.Data.Definition;
 
 namespace Lephone.UnitTest.Data.Objects
 {
