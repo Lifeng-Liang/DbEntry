@@ -35,6 +35,11 @@
             return d1.CompareTo(d2) != 0;
         }
 
+        public static TimeSpan operator -(Date d1, Date d2)
+        {
+            return d1.dt.Date - d2.dt.Date;
+        }
+
         #endregion
 
         #region common
@@ -316,6 +321,11 @@
         public static bool operator !=(Time t1, Time t2)
         {
             return t1.CompareTo(t2) != 0;
+        }
+
+        public static TimeSpan operator -(Time t1, Time t2)
+        {
+            return t1.dt.TimeOfDay - t2.dt.TimeOfDay;
         }
 
         #endregion
