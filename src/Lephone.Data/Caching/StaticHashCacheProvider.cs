@@ -14,7 +14,7 @@ namespace Lephone.Data.Caching
         {
             get
             {
-                TimeValue tv = (TimeValue)pool[Key];
+                var tv = (TimeValue)pool[Key];
                 if (tv == null)
                 {
                     return null;

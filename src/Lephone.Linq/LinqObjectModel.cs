@@ -6,6 +6,7 @@ using Lephone.Data;
 
 namespace Lephone.Linq
 {
+    [Serializable]
     public class LinqObjectModel<T, TKey> : DbObjectModel<T, TKey> where T : LinqObjectModel<T, TKey>
     {
         public static LinqQueryProvider<T, TKey> Table
@@ -54,6 +55,7 @@ namespace Lephone.Linq
         }
     }
 
+    [Serializable]
     public class LinqObjectModel<T> : LinqObjectModel<T, long> where T : LinqObjectModel<T, long>
     {
     }
