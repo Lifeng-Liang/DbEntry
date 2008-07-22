@@ -1,0 +1,65 @@
+                                          Lephone Library Public License 1.0
+
+Copyright (C) 2008 Lephone Studio <http://llf.hanzify.org>
+Everyone is permitted to copy and distribute verbatim copies of this license document, but changing 
+it is not allowed.
+
+0. Additional Definitions.
+As used herein, ¡°this License¡± refers to version 1.0 of Lephone Library Public License.
+"The Library" refers to a covered work governed by this License, other than an Application or a 
+Combined Work as defined below.
+"The Original Author" refers to the author/team who created the project.
+An "Application" is any work that makes use of an interface provided by the Library, but which is 
+not otherwise based on the Library. Defining a subclass of a class defined by the Library is deemed 
+a mode of using an interface provided by the Library.
+
+1. Basic Permissions
+All rights granted under this License are granted for the term of copyright on the Program, and are 
+irrevocable provided the stated conditions are met. This License explicitly affirms your unlimited 
+permission to run the unmodified Program. The output from running a covered work is covered by 
+this License only if the output, given its content, constitutes a covered work. This License 
+acknowledges your rights of fair use or other equivalent, as provided by copyright law.
+You may make, run and propagate covered works that you do not convey, without conditions 
+so long as your license otherwise remains in force. You may convey covered works to others for 
+the sole purpose of having them make modifications exclusively for you, or provide you with 
+facilities for running those works, provided that you comply with the terms of this License in 
+conveying all material for which you do not control copyright. Those thus making or running the 
+covered works for you must do so exclusively on your behalf, under your direction and control, on 
+terms that prohibit them from making any copies of your copyrighted material outside their 
+relationship with you. 
+
+2. Conveying Verbatim Copies
+You may convey verbatim copies of the Program's source code as you receive it, in any medium, 
+provided that you conspicuously and appropriately publish on each copy an appropriate copyright 
+notice; keep intact all notices stating that this License apply to the code; keep intact all notices 
+of the absence of any warranty; and give all recipients a copy of this License along with the 
+Program.
+You may charge any price or no price for each copy that you convey, and you may offer support 
+or warranty protection for a fee. 
+
+3. Conveying Modified Versions
+You may convey modified version of The Library.
+But the following modification are NOT allowed:
+    1. library title
+    2. library description
+    3. library company
+    4. library product name
+    5. library copyright
+    6. library main version
+    7. library file name
+    8. etc of such infomation
+If you modified the code of The Library and convey it, it means you waive the rights of your 
+modified code and contribute it to The Original Author. And you need send a full copy of the 
+modified code to The Original Author before you convey it.
+Copy code from The Library to other project is NOT allowed.
+
+4. Disclaimer of Warranty
+THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
+EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER 
+PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED 
+OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY 
+AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND 
+PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, 
+YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION. 
+
+Copyright (C) Lephone Studio 2008-7-22

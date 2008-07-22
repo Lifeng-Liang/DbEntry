@@ -18,7 +18,7 @@ namespace Lephone.Data.Dialect
 
         public override DbStructInterface GetDbStructInterface()
         {
-            return new DbStructInterface(true, null, new[] { null, null, null, "TABLE" }, null, null, null);
+            return new DbStructInterface(null, new[] { null, null, null, "BASE TABLE" }, null, null, null);
         }
 
         public override string UnicodeTypePrefix
