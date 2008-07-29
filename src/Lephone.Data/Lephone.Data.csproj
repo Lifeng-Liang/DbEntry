@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30428</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{25AFD300-493A-4553-B4DC-129D3A9022A8}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -159,6 +159,8 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\OrderByAttribute.cs" />
     <Compile Include="Definition\SoftDeleteAttribute.cs" />
     <Compile Include="Definition\SpecialNameAttribute.cs" />
+    <Compile Include="Dialect\Access2007.cs" />
+    <Compile Include="Dialect\Excel2007.cs" />
     <Compile Include="Dialect\Firebird.cs" />
     <Compile Include="Dialect\Oracle.cs" />
     <Compile Include="Dialect\PostgreSQL.cs" />

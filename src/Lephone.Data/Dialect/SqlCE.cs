@@ -12,7 +12,7 @@ namespace Lephone.Data.Dialect
 
         public override string GetConnectionString(string ConnectionString)
         {
-            string s = base.ProcessConnectionnString(ConnectionString);
+            string s = ProcessConnectionnString(ConnectionString);
             if (s[0] == '@')
             {
                 return "Data Source=" + s.Substring(1);

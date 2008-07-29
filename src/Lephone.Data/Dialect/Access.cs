@@ -31,7 +31,7 @@ namespace Lephone.Data.Dialect
 
         public override string GetConnectionString(string ConnectionString)
         {
-            string s = base.ProcessConnectionnString(ConnectionString);
+            string s = ProcessConnectionnString(ConnectionString);
             if (s[0] == '@')
             {
                 return "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + s.Substring(1);

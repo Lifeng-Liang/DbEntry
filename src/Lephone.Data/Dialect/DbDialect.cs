@@ -117,7 +117,7 @@ namespace Lephone.Data.Dialect
             object key = (dt == DataType.String && Length > 0) ?
                 typeof(string) :
                 (object)dt;
-            string s =(string)TypeNames[key];
+            var s =(string)TypeNames[key];
             if (IsUnicode)
             {
                 s = UnicodeTypePrefix + s;
@@ -144,13 +144,13 @@ namespace Lephone.Data.Dialect
             return ProcessConnectionnString(ConnectionString);
         }
 
-        protected string ProcessConnectionnString(string ConnectionString)
+        protected static string ProcessConnectionnString(string ConnectionString)
         {
             string s = ConnectionString.Trim();
+            s = s.Replace("{BaseDirectory}", SystemHelper.BaseDirectory);
             if (s.StartsWith("@"))
             {
-                s = s.Replace("{BaseDirectory}", SystemHelper.BaseDirectory)
-                    .Replace("~", SystemHelper.BaseDirectory);
+                s = s.Replace("~", SystemHelper.BaseDirectory);
             }
             return s;
         }
@@ -171,12 +171,12 @@ namespace Lephone.Data.Dialect
 
         protected virtual SqlStatement GetNormalSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            DataParamterCollection dpc = new DataParamterCollection();
+            var dpc = new DataParamterCollection();
             string SqlString = string.Format("Select {0} From {1}{2}{3}{4}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),
-                ssb.IsGroupBy ? " Group By " + this.QuoteForColumnName(ssb.CountCol) : "",
+                ssb.IsGroupBy ? " Group By " + QuoteForColumnName(ssb.CountCol) : "",
                 (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this)
                 );
             return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
@@ -255,7 +255,7 @@ namespace Lephone.Data.Dialect
 		protected virtual string Quote( string name )
 		{
             string[] ss = name.Split('.');
-            StringBuilder ret = new StringBuilder();
+            var ret = new StringBuilder();
             foreach (string s in ss)
             {
                 ret.Append(QuoteSingle(s));
