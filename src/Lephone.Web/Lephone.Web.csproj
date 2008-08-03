@@ -57,6 +57,7 @@
     <Compile Include="Common\DbEntryDataSourceViewSchema.cs" />
     <Compile Include="Common\DbEntryDesignerDataSourceView.cs" />
     <Compile Include="Common\LabelIDConverter.cs" />
+    <Compile Include="Common\NoticeLabel.cs" />
     <Compile Include="DbEntryDataSource_Binder.cs" />
     <Compile Include="Common\PageHelper.cs" />
     <Compile Include="HtmlBuilder.cs" />

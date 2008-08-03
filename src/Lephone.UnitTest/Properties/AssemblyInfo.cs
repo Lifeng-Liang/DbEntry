@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Lephone Framework UnitTest")]
 [assembly: AssemblyDescription("Lephone Framework UnitTest")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("no")]
+[assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("UnitTest")]
 [assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("http://www.codeplex.com/DbEntry")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]

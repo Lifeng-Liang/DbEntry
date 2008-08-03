@@ -14,15 +14,13 @@ namespace Lephone.Web.Common
     {
         public static bool ValidateSave(Page p, object obj, Label msg, string NoticeText)
         {
-            ValidateHandler vh = new ValidateHandler();
+            var vh = new ValidateHandler();
             return ValidateSave(p, vh, obj, msg, NoticeText, "Notice", "Warning", "ErrInput");
         }
 
         public static bool ValidateSave(Page p, ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning, string CssErrInput)
         {
-            return ValidateSave(p, vh, obj, msg, NoticeText, CssNotice, CssWarning, CssErrInput, delegate {
-                DbEntry.Save(obj);
-            });
+            return ValidateSave(p, vh, obj, msg, NoticeText, CssNotice, CssWarning, CssErrInput, () => DbEntry.Save(obj));
         }
 
         public static bool ValidateSave(Page p, ValidateHandler vh, object obj, Label msg, string NoticeText,
@@ -70,7 +68,7 @@ namespace Lephone.Web.Common
         private static WebControl GetWebControl(Page p, ObjectInfo oi, string Name)
         {
             string cid = string.Format("{0}_{1}", oi.BaseType.Name, Name);
-            WebControl c = ClassHelper.GetValue(p, cid) as WebControl;
+            var c = ClassHelper.GetValue(p, cid) as WebControl;
             return c;
         }
 
@@ -81,7 +79,7 @@ namespace Lephone.Web.Common
                 if (!h.IsKey)
                 {
                     string cid = string.Format("{0}_{1}", oi.BaseType.Name, h.MemberInfo.Name);
-                    WebControl c = ClassHelper.GetValue(p, cid) as WebControl;
+                    var c = ClassHelper.GetValue(p, cid) as WebControl;
                     if (c != null)
                     {
                         callback(h, c);
@@ -111,7 +109,7 @@ namespace Lephone.Web.Common
                 string v = GetValue(c);
                 if (h.FieldType.IsEnum)
                 {
-                    int n = (int)Enum.Parse(h.FieldType, v);
+                    var n = (int)Enum.Parse(h.FieldType, v);
                     h.SetValue(obj, n);
                 }
                 else
@@ -205,11 +203,11 @@ namespace Lephone.Web.Common
         {
             if (!EnumType.IsEnum) throw new ArgumentOutOfRangeException();
 
-            List<ListItem> ret = new List<ListItem>();
+            var ret = new List<ListItem>();
             foreach (string v in Enum.GetNames(EnumType))
             {
                 string n = StringHelper.EnumToString(EnumType, v);
-                ListItem li = new ListItem(n, v);
+                var li = new ListItem(n, v);
                 ret.Add(li);
             }
             return ret.ToArray();
