@@ -109,6 +109,11 @@ namespace Lephone.Data
                 foreach (MemberHandler h in mhs)
                 {
                     object v = h.GetValue(obj);
+                    if (h.AllowNull && v == null)
+                    {
+                        c = null;
+                        break;
+                    }
                     if (v != null && v.GetType().IsGenericType)
                     {
                         v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
