@@ -13,9 +13,9 @@ namespace Lephone.UnitTest.Data
     {
         public abstract string Name { get; set; }
 
-        public SoftDelete Init(string Name)
+        public SoftDelete Init(string name)
         {
-            this.Name = Name;
+            this.Name = name;
             return this;
         }
     }
@@ -25,6 +25,19 @@ namespace Lephone.UnitTest.Data
     {
         public abstract string Name { get; set; }
         public abstract bool IsDeleted { get; set; }
+    }
+
+    [SoftDelete, DbTable("Tests")]
+    public abstract class Test : DbObjectModel<Test>
+    {
+        [Length(100), StringColumn(IsUnicode = false)]
+        public abstract string Nome { get; set; }
+
+        public Test Init(string nome)
+        {
+            Nome = nome;
+            return this;
+        }
     }
 
     #endregion
@@ -116,7 +129,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGroupBy()
         {
-            DbContext de = new DbContext("SQLite");
+            var de = new DbContext("SQLite");
             de.From<SoftDelete>().Where(WhereCondition.EmptyCondition).GroupBy<string>("tom");
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] ntext NOT NULL ,\n	[IsDeleted] bool NOT NULL \n);\n<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("Select [tom],Count([tom]) As it__count__ From [SoftDelete] Where [IsDeleted] = @IsDeleted_0 Group By [tom];\n<Text><60>(@IsDeleted_0=False:Boolean)", StaticRecorder.LastMessage);
@@ -125,9 +138,29 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateTable()
         {
-            DbContext de = new DbContext("SQLite");
+            var de = new DbContext("SQLite");
             de.Create(typeof(SoftDelete));
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] ntext NOT NULL ,\n	[IsDeleted] bool NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestSoftDeleteOnlyWorksForTheRightOne()
+        {
+            DbEntry.Context.DropAndCreate(typeof(Test));
+
+            var t = Test.New().Init("myName");
+            t.Save();
+            t = Test.New().Init("myName2");
+            t.Save();
+            t = Test.FindById(1);
+            t.Delete();
+
+            t = Test.FindById(1);
+            Assert.IsNull(t);
+
+            t = Test.FindById(2);
+            Assert.IsNotNull(t);
+            Assert.AreEqual("myName2", t.Nome);
         }
     }
 }

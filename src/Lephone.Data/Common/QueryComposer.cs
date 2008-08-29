@@ -16,24 +16,24 @@ namespace Lephone.Data.Common
 
         public virtual SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc)
         {
-            SelectStatementBuilder sb = new SelectStatementBuilder(oi.From, null, null);
+            var sb = new SelectStatementBuilder(oi.From, null, null);
             sb.Where.Conditions = iwc;
             sb.SetCountColumn("*");
             return sb.ToSqlStatement(Dialect);
         }
 
-        public virtual SqlStatement GetGroupByStatement(DbDialect Dialect, WhereCondition iwc, OrderBy order, string ColumnName)
+        public virtual SqlStatement GetGroupByStatement(DbDialect dialect, WhereCondition iwc, OrderBy order, string columnName)
         {
-            SelectStatementBuilder sb = new SelectStatementBuilder(oi.From, order, null);
+            var sb = new SelectStatementBuilder(oi.From, order, null);
             sb.Where.Conditions = iwc;
-            sb.Keys.Add(ColumnName);
-            sb.SetAsGroupBy(ColumnName);
-            return sb.ToSqlStatement(Dialect);
+            sb.Keys.Add(columnName);
+            sb.SetAsGroupBy(columnName);
+            return sb.ToSqlStatement(dialect);
         }
 
         public virtual SqlStatement GetSelectStatement(DbDialect Dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
         {
-            SelectStatementBuilder sb = new SelectStatementBuilder(from != null ? from : oi.From, oc, lc);
+            var sb = new SelectStatementBuilder(from ?? oi.From, oc, lc);
             sb.Where.Conditions = iwc;
             oi.Handler.SetValuesForSelect(sb);
             // DataBase Process
@@ -48,14 +48,14 @@ namespace Lephone.Data.Common
 
         public virtual InsertStatementBuilder GetInsertStatementBuilder(object obj)
         {
-            InsertStatementBuilder sb = new InsertStatementBuilder(oi.From.GetMainTableName());
+            var sb = new InsertStatementBuilder(oi.From.GetMainTableName());
             oi.Handler.SetValuesForInsert(sb, obj);
             return sb;
         }
 
         public virtual SqlStatement GetUpdateStatement(DbDialect Dialect, object obj, WhereCondition iwc)
         {
-            UpdateStatementBuilder sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
+            var sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
             oi.Handler.SetValuesForUpdate(sb, obj);
             sb.Where.Conditions = iwc;
             return sb.ToSqlStatement(Dialect);
@@ -63,14 +63,14 @@ namespace Lephone.Data.Common
 
         public virtual SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
         {
-            DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.From.GetMainTableName());
+            var sb = new DeleteStatementBuilder(oi.From.GetMainTableName());
             sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj);
             return sb.ToSqlStatement(Dialect);
         }
 
         public virtual SqlStatement GetDeleteStatement(DbDialect Dialect, WhereCondition iwc)
         {
-            DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.From.GetMainTableName());
+            var sb = new DeleteStatementBuilder(oi.From.GetMainTableName());
             sb.Where.Conditions = iwc;
             return sb.ToSqlStatement(Dialect);
         }
@@ -84,12 +84,12 @@ namespace Lephone.Data.Common
         public virtual CreateTableStatementBuilder GetCreateTableStatementBuilder()
         {
             string tname = oi.From.GetMainTableName();
-            CreateTableStatementBuilder cts = new CreateTableStatementBuilder(tname);
+            var cts = new CreateTableStatementBuilder(tname);
             foreach (MemberHandler fh in oi.Fields)
             {
                 if (!fh.IsHasMany && !fh.IsHasOne && !fh.IsHasAndBelongsToMany)
                 {
-                    ColumnInfo ci = new ColumnInfo(fh);
+                    var ci = new ColumnInfo(fh);
                     cts.Columns.Add(ci);
                 }
             }

@@ -26,9 +26,9 @@ namespace Lephone.Data.Common
 
         public override SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
         {
-            UpdateStatementBuilder sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
+            var sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
             sb.Values.Add(new KeyValue(ColumnName, true));
-            sb.Where.Conditions = colExp;
+            sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj) && colExp;
             return sb.ToSqlStatement(Dialect);
         }
 
@@ -37,9 +37,9 @@ namespace Lephone.Data.Common
             return base.GetDeleteStatement(Dialect, iwc && colExp);
         }
 
-        public override SqlStatement GetGroupByStatement(DbDialect Dialect, WhereCondition iwc, OrderBy order, string ColumnName)
+        public override SqlStatement GetGroupByStatement(DbDialect dialect, WhereCondition iwc, OrderBy order, string columnName)
         {
-            return base.GetGroupByStatement(Dialect, iwc && colExp, order, ColumnName);
+            return base.GetGroupByStatement(dialect, iwc && colExp, order, columnName);
         }
 
         public override InsertStatementBuilder GetInsertStatementBuilder(object obj)
