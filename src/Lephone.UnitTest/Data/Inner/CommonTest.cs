@@ -5,10 +5,33 @@ using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
 using Lephone.UnitTest.Data.Objects;
+using Lephone.Util;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data.Inner
 {
+    #region objects
+
+    public class ClassSite {}
+
+    public abstract class indexSample
+    {
+        [Index(UNIQUE = true, IndexName = "indexname1", ASC = true)]
+        [Index(UNIQUE = false, IndexName = "indexname2", ASC = true)]
+        public string Name { get; set; }
+
+        [Index(UNIQUE = true, IndexName = "indexname1", ASC = true)]
+        [Index(UNIQUE = false, IndexName = "indexname2", ASC = true)]
+        [BelongsTo, DbColumn("SiteId")]
+        public abstract ClassSite Site { get; set; }
+
+        [Index(UNIQUE = true, IndexName = "qid", ASC = true)]
+        [BelongsTo, DbColumn("SiteId"), Index(IndexName = "xxx"), Index(IndexName = "ccc")]
+        public abstract ClassSite Site2 { get; set; }
+    }
+
+    #endregion
+
     [TestFixture]
     public class CommonTest
     {
@@ -31,9 +54,9 @@ namespace Lephone.UnitTest.Data.Inner
             Assert.IsNull(OrderBy.Parse(null));
 
             const string s = "Id desc, Name";
-            OrderBy Exp = new OrderBy((DESC)"Id", (ASC)"Name");
-            OrderBy Dst = OrderBy.Parse(s);
-            DataParamterCollection ds = new DataParamterCollection();
+            var Exp = new OrderBy((DESC)"Id", (ASC)"Name");
+            var Dst = OrderBy.Parse(s);
+            var ds = new DataParamterCollection();
             string ExpStr = Exp.ToSqlText(ds, DbEntry.Context.Dialect);
             string DstStr = Dst.ToSqlText(ds, DbEntry.Context.Dialect);
             Assert.AreEqual(ExpStr, DstStr);
@@ -42,14 +65,14 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void TestCloneObject()
         {
-            People p = People.New();
+            var p = People.New();
             p.Id = 10;
             p.Name = "abc";
             PCs pc = PCs.New();
             pc.Name = "uuu";
             p.pc = pc;
 
-            People p1 = (People)ObjectInfo.CloneObject(p);
+            var p1 = (People)ObjectInfo.CloneObject(p);
             Assert.AreEqual(10, p1.Id);
             Assert.AreEqual("abc", p1.Name);
             // Assert.IsNull(p1.pc);
@@ -68,6 +91,28 @@ namespace Lephone.UnitTest.Data.Inner
             Type t = People.New().GetType();
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             Assert.AreEqual("People", oi.BaseType.Name);
+        }
+
+        [Test]
+        public void TestIndexes()
+        {
+            var t = typeof (indexSample);
+            var f = t.GetProperty("Name");
+            var os = ClassHelper.GetAttributes<IndexAttribute>(f, false);
+            Assert.AreEqual(2, os.Length);
+        }
+
+        [Test]
+        public void TestIndexes2()
+        {
+            var t = typeof(indexSample);
+            var f = t.GetProperty("Site");
+            var os = ClassHelper.GetAttributes<IndexAttribute>(f, false);
+            Assert.AreEqual(2, os.Length);
+
+            f = t.GetProperty("Site2");
+            os = ClassHelper.GetAttributes<IndexAttribute>(f, false);
+            Assert.AreEqual(3, os.Length);
         }
     }
 }
