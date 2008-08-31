@@ -210,7 +210,7 @@ namespace Lephone.Data.Common
         {
             foreach (MemberHandler fh in this.Fields)
             {
-                IndexAttribute[] ias = fh.MemberInfo.GetAttributes<IndexAttribute>(false);
+                var ias = fh.MemberInfo.GetAttributes<IndexAttribute>(false);
                 CheckIndexAttributes(ias);
                 foreach (IndexAttribute ia in ias)
                 {

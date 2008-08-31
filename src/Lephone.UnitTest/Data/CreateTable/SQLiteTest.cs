@@ -10,6 +10,20 @@ namespace Lephone.UnitTest.Data.CreateTable
 {
     #region objects
 
+    class CCC1 : DbObjectModel<IndexTestClass> {}
+
+    abstract class IndexTestClass : DbObjectModel<IndexTestClass>
+    {
+        [BelongsTo, DbColumn("CCCId"), Index(IndexName = "xxx1", UNIQUE = true), Index(IndexName = "ccc1", UNIQUE = true)]
+        public abstract CCC1 CCC { get; set; }
+
+        [Index(IndexName = "xxx1", UNIQUE = true)]
+        public abstract int QQQId { get; set; }
+
+        [Length(50), Index(IndexName = "ccc1", UNIQUE = true)]
+        public abstract string UUUs { get; set; }
+    }
+
     class MyTest1 : IDbObject
     {
         [DbKey]
@@ -71,7 +85,7 @@ namespace Lephone.UnitTest.Data.CreateTable
     [TestFixture]
     public class SQLiteTest
     {
-        private DbContext de = new DbContext(EntryConfig.GetDriver("SQLite"));
+        private readonly DbContext de = new DbContext(EntryConfig.GetDriver("SQLite"));
 
         [SetUp]
         public void SetUp()
@@ -192,6 +206,22 @@ namespace Lephone.UnitTest.Data.CreateTable
         {
             de.Create(typeof(UnsignedTestTable));
             Assert.AreEqual("CREATE TABLE [Unsigned_Test_Table] (\n\t[Name] ntext NOT NULL ,\n\t[Age] int NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestCreateIndex()
+        {
+            de.Create(typeof(IndexTestClass));
+            Assert.AreEqual(
+@"CREATE TABLE [Index_Test_Class] (
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+	[QQQId] int NOT NULL ,
+	[UUUs] nvarchar (50) NOT NULL ,
+	[CCCId] bigint NOT NULL 
+);
+CREATE UNIQUE INDEX [IX_Index_Test_Class_xxx1] ON [Index_Test_Class] ([QQQId] ASC, [CCCId] ASC);
+CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC, [CCCId] ASC);
+<Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
         }
     }
 }

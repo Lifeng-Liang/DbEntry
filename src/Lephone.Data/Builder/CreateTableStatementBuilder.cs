@@ -24,7 +24,7 @@ namespace Lephone.Data.Builder
         {
             bool isMutiKey = IsMutiKey();
             string keys = "";
-            StringBuilder sql = new StringBuilder();
+            var sql = new StringBuilder();
             sql.Append("CREATE TABLE ");
             sql.Append(dd.QuoteForLimitTableName(TableName));
             sql.Append(" (");
@@ -118,7 +118,7 @@ namespace Lephone.Data.Builder
             foreach (DbIndex i in _Indexes)
             {
                 string n = prefix;
-                n += (i.IndexName != null) ? i.IndexName : i.Columns[0].Key;
+                n += i.IndexName ?? i.Columns[0].Key;
                 if (i.UNIQUE)
                 {
                     sb.Append("CREATE UNIQUE ");

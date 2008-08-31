@@ -20,24 +20,25 @@ namespace Lephone.Data
         public DataReaderEmitHelper()
         {
             // process chars etc.
-            dic = new Dictionary<Type, string>();
-            dic.Add(typeof(long),       "GetInt64");
-            dic.Add(typeof(int),        "GetInt32");
-            dic.Add(typeof(short),      "GetInt16");
-            dic.Add(typeof(byte),       "GetByte");
-            dic.Add(typeof(bool),       "GetBoolean");
-            dic.Add(typeof(DateTime),   "GetDateTime");
-            dic.Add(typeof(Date),       "GetDateTime");
-            dic.Add(typeof(Time),       "GetDateTime");
-            dic.Add(typeof(string),     "GetString");
-            dic.Add(typeof(decimal),    "GetDecimal");
-            dic.Add(typeof(float),      "GetFloat");
-            dic.Add(typeof(double),     "GetDouble");
-            dic.Add(typeof(Guid),       "GetGuid");
-
-            dic.Add(typeof(ulong),      "GetInt64");
-            dic.Add(typeof(uint),       "GetInt32");
-            dic.Add(typeof(ushort),     "GetInt16");
+            dic = new Dictionary<Type, string>
+                      {
+                          {typeof (long), "GetInt64"},
+                          {typeof (int), "GetInt32"},
+                          {typeof (short), "GetInt16"},
+                          {typeof (byte), "GetByte"},
+                          {typeof (bool), "GetBoolean"},
+                          {typeof (DateTime), "GetDateTime"},
+                          {typeof (Date), "GetDateTime"},
+                          {typeof (Time), "GetDateTime"},
+                          {typeof (string), "GetString"},
+                          {typeof (decimal), "GetDecimal"},
+                          {typeof (float), "GetFloat"},
+                          {typeof (double), "GetDouble"},
+                          {typeof (Guid), "GetGuid"},
+                          {typeof (ulong), "GetInt64"},
+                          {typeof (uint), "GetInt32"},
+                          {typeof (ushort), "GetInt16"}
+                      };
         }
 
         public MethodInfo GetMethodInfo(Type t)
@@ -87,7 +88,7 @@ namespace Lephone.Data
 
         private static readonly Type objType = typeof(object);
 
-        private static Hashtable types = Hashtable.Synchronized(new Hashtable());
+        private static readonly Hashtable types = Hashtable.Synchronized(new Hashtable());
         private static readonly Type[] emptyTypes = new Type[] { };
 
         public static T NewObject<T>(params object[] os)
@@ -106,7 +107,7 @@ namespace Lephone.Data
         internal static IDbObjectHandler CreateDbObjectHandler(Type srcType, ObjectInfo oi)
         {
             Type t = GetDbObjectHandler(srcType, oi);
-            EmitObjectHandlerBase o = (EmitObjectHandlerBase)ClassHelper.CreateInstance(t);
+            var o = (EmitObjectHandlerBase)ClassHelper.CreateInstance(t);
             o.Init(oi);
             return o;
         }
@@ -120,10 +121,7 @@ namespace Lephone.Data
             tb.DefineDefaultConstructor(MethodAttributes.Public);
             // implements CreateInstance
             tb.OverrideMethodDirect(OverridePublicFlag, "CreateInstance", vhBaseType,
-                objType, emptyTypes, delegate(ILBuilder il)
-            {
-                il.NewObj(ci);
-            });
+                objType, emptyTypes, il => il.NewObj(ci));
             // implements others
             OverrideLoadSimpleValuesByIndex(tb, srcType, oi.SimpleFields);
             OverrideLoadSimpleValuesByName(tb, srcType, oi.SimpleFields);
@@ -389,8 +387,8 @@ namespace Lephone.Data
         private static void OverrideSetValuesForInsert(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
         {
             OverrideSetValuesDirect("SetValuesForInsertDirect", tb, srcType, Fields,
-                delegate(MemberHandler m) { return m.IsUpdatedOn; },
-                delegate(MemberHandler m) { return m.IsCreatedOn || m.IsSavedOn || m.IsCount; });
+                                    m => m.IsUpdatedOn,
+                                    m => m.IsCreatedOn || m.IsSavedOn || m.IsCount);
         }
 
         private static void OverrideSetValuesForUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
@@ -402,8 +400,8 @@ namespace Lephone.Data
             else
             {
                 OverrideSetValuesDirect("SetValuesForUpdateDirect", tb, srcType, Fields,
-                    delegate(MemberHandler m) { return m.IsCreatedOn; },
-                    delegate(MemberHandler m) { return m.IsUpdatedOn || m.IsSavedOn || m.IsCount; });
+                                        m => m.IsCreatedOn,
+                                        m => m.IsUpdatedOn || m.IsSavedOn || m.IsCount);
             }
 
         }
@@ -481,7 +479,7 @@ namespace Lephone.Data
             MethodInfo mupdate = SourceType.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag);
 
             PropertyInfo[] pis = SourceType.GetProperties();
-            List<MemberHandler> impRelations = new List<MemberHandler>();
+            var impRelations = new List<MemberHandler>();
             foreach (PropertyInfo pi in pis)
             {
                 if (pi.CanRead && pi.CanWrite)
@@ -502,10 +500,7 @@ namespace Lephone.Data
                 MethodInfo mi = typeof(DynamicObjectReference).GetMethod("SerializeObject", ClassHelper.StaticFlag);
                 tb.OverrideMethod(ImplFlag, "GetObjectData", typeof(ISerializable), null,
                                   new[] { typeof(SerializationInfo), typeof(StreamingContext) },
-                                  delegate(ILBuilder il)
-                                  {
-                                      il.LoadArg(1).LoadArg(2).Call(mi);
-                                  });
+                                  il => il.LoadArg(1).LoadArg(2).Call(mi));
             }
 
             ConstructorInfo[] cis = GetConstructorInfos(SourceType);
@@ -544,7 +539,7 @@ namespace Lephone.Data
         private static CustomAttributeBuilder[] GetCustomAttributes(Type SourceType)
         {
             object[] os = SourceType.GetCustomAttributes(false);
-            ArrayList al = new ArrayList();
+            var al = new ArrayList();
             bool hasAttr = false;
             hasAttr |= PopulateDbTableAttribute(al, os);
             hasAttr |= PopulateJoinOnAttribute(al, os);
@@ -564,7 +559,7 @@ namespace Lephone.Data
             {
                 if (o is DbTableAttribute)
                 {
-                    DbTableAttribute d = o as DbTableAttribute;
+                    var d = o as DbTableAttribute;
                     if (d.TableName != null)
                     {
                         al.Add(new CustomAttributeBuilder(
@@ -591,8 +586,8 @@ namespace Lephone.Data
                 if (o is JoinOnAttribute)
                 {
                     hasJoinOnAttribute = true;
-                    JoinOnAttribute j = o as JoinOnAttribute;
-                    CustomAttributeBuilder c = new CustomAttributeBuilder(
+                    var j = o as JoinOnAttribute;
+                    var c = new CustomAttributeBuilder(
                         typeof(JoinOnAttribute).GetConstructor(
                             new[] { typeof(int), typeof(string), typeof(string), typeof(CompareOpration), typeof(JoinMode) }),
                         new object[] { j.Index, j.joinner.Key1, j.joinner.Key2, j.joinner.comp, j.joinner.mode });

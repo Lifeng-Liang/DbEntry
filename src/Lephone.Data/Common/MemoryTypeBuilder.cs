@@ -31,7 +31,7 @@ namespace Lephone.Data.Common
 
         public MemoryTypeBuilder(TypeBuilder builder)
         {
-            this.InnerType = builder;
+            InnerType = builder;
         }
 
         public void DefineDefaultConstructor(MethodAttributes attr)
@@ -43,16 +43,16 @@ namespace Lephone.Data.Common
         {
             ParameterInfo[] pis = ci.GetParameters();
 
-            ArrayList al = new ArrayList();
+            var al = new ArrayList();
             foreach (ParameterInfo pi in pis)
             {
                 al.Add(pi.ParameterType);
             }
-            Type[] ts = (Type[])al.ToArray(typeof(Type));
+            var ts = (Type[])al.ToArray(typeof(Type));
 
             ConstructorBuilder cb = InnerType.DefineConstructor(attr,
                 CallingConventions.ExplicitThis | CallingConventions.HasThis, ts);
-            ILBuilder il = new ILBuilder(cb.GetILGenerator());
+            var il = new ILBuilder(cb.GetILGenerator());
             // call base consructor
             il.LoadArg(0).LoadArgShort(1, ts.Length).Call(ci);
             // create relation fields.
@@ -171,7 +171,7 @@ namespace Lephone.Data.Common
             }
             Type t = GetRealType(PropertyType, ft);
             FieldBuilder fb = InnerType.DefineField(Name, t, FieldAttributes.FamORAssem);
-            DbColumnAttribute[] bs = (DbColumnAttribute[])pi.GetCustomAttributes(typeof(DbColumnAttribute), true);
+            var bs = (DbColumnAttribute[])pi.GetCustomAttributes(typeof(DbColumnAttribute), true);
             if (bs != null && bs.Length > 0)
             {
                 fb.SetCustomAttribute(GetDbColumnBuilder(bs[0].Name));
@@ -223,7 +223,10 @@ namespace Lephone.Data.Common
             object[] bs = pi.GetCustomAttributes(typeof(T), true);
             if (bs != null && bs.Length > 0)
             {
-                callback((T)bs[0]);
+                foreach(var b in bs)
+                {
+                    callback((T)b);
+                }
             }
         }
 
@@ -299,7 +302,7 @@ namespace Lephone.Data.Common
         public MethodBuilder DefineMethodDirect(MethodAttributes flag, string MethodName, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
             MethodBuilder mb = InnerType.DefineMethod(MethodName, flag, returnType, paramTypes);
-            ILBuilder il = new ILBuilder(mb.GetILGenerator());
+            var il = new ILBuilder(mb.GetILGenerator());
             emitCode(il);
             il.Return();
             return mb;
