@@ -4,6 +4,7 @@ using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
+using Lephone.Linq;
 using Lephone.UnitTest.Data.Objects;
 using Lephone.Util;
 using NUnit.Framework;
@@ -11,6 +12,26 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data.Inner
 {
     #region objects
+
+    [Serializable]
+    public abstract class TableA : LinqObjectModel<TableA>
+    {
+        public abstract string Name { get; set; }
+
+        [HasOne]
+        public abstract TableB tableB { get; set; }
+    }
+
+    [Serializable]
+    public abstract class TableB : LinqObjectModel<TableB>
+    {
+        [Index(UNIQUE = true, IndexName = "Url_TableAId", ASC = false)]
+        public abstract string Url { get; set; }
+
+        [Index(UNIQUE = true, IndexName = "Url_TableAId", ASC = false)]
+        [BelongsTo, DbColumn("TableAId")]
+        public abstract TableA TB { get; set; }
+    }
 
     public class ClassSite {}
 
@@ -113,6 +134,25 @@ namespace Lephone.UnitTest.Data.Inner
             f = t.GetProperty("Site2");
             os = ClassHelper.GetAttributes<IndexAttribute>(f, false);
             Assert.AreEqual(3, os.Length);
+        }
+
+        [Test]
+        public void TestX()
+        {
+            DbContext de = DbEntry.Context;
+            de.DropAndCreate(typeof(TableA));
+            de.DropAndCreate(typeof(TableB));
+
+            var t1 = TableA.New();
+            t1.Name = "TestName1";
+            t1.Save();
+
+            var t2 = TableA.FindById(1);
+            var t3 = TableB.New();
+            t3.Url = "TestUrl1";
+            t3.TB = t2;
+            t3.Validate();
+            t3.Save();
         }
     }
 }

@@ -114,9 +114,19 @@ namespace Lephone.Data
                         c = null;
                         break;
                     }
-                    if (v != null && v.GetType().IsGenericType)
+                    if (v != null)
                     {
-                        v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
+                        if (v.GetType().IsGenericType)
+                        {
+                            if (v is IBelongsTo)
+                            {
+                                v = ((IBelongsTo)v).ForeignKey;
+                            }
+                            else
+                            {
+                                v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
+                            }
+                        }
                     }
                     c &= (CK.K[h.Name] == v);
                     n += h.Name;
