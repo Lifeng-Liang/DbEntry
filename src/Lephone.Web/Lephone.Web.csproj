@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -58,6 +58,7 @@
     <Compile Include="Common\DbEntryDesignerDataSourceView.cs" />
     <Compile Include="Common\LabelIDConverter.cs" />
     <Compile Include="Common\NoticeLabel.cs" />
+    <Compile Include="Common\NoticeLabelIDConverter.cs" />
     <Compile Include="DbEntryDataSource_Binder.cs" />
     <Compile Include="Common\PageHelper.cs" />
     <Compile Include="HtmlBuilder.cs" />

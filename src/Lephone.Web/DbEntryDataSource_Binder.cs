@@ -45,7 +45,7 @@ namespace Lephone.Web
         private Button SaveButton;
         private Button DeleteButton;
         private Label ContentTitle;
-        private Label NoticeMessage;
+        private NoticeLabel NoticeMessage;
 
         private bool _LastOprationSucceed;
 
@@ -117,7 +117,7 @@ namespace Lephone.Web
             set { ViewState["ChangePageTitleToo "] = value; }
         }
 
-        [IDReferenceProperty(typeof(Label)), TypeConverter(typeof(LabelIDConverter)), Themeable(false),
+        [IDReferenceProperty(typeof(Label)), TypeConverter(typeof(NoticeLabelIDConverter)), Themeable(false),
          DefaultValue(""), Category("Behavior")]
         public string NoticeMessageID
         {
@@ -188,31 +188,29 @@ namespace Lephone.Web
             }
             catch (WebControlException ex)
             {
-                Warning(ex.RelatedControl, ex.Message);
+                AddWarning(ex.RelatedControl, ex.Message);
             }
             catch (Exception ex)
             {
-                Warning(ex.Message);
+                AddWarning(ex.Message);
             }
             return default(T);
         }
 
-        public void Notice(string msg)
+        public void AddNotice(string msg)
         {
             if (NoticeMessage != null)
             {
-                NoticeMessage.Text = msg;
-                NoticeMessage.CssClass = CssNotice;
-                NoticeMessage.Visible = true;
+                NoticeMessage.AddNotice(msg);
             }
         }
 
-        public void Warning(string msg)
+        public void AddWarning(string msg)
         {
-            Warning(null, msg);
+            AddWarning(null, msg);
         }
 
-        public void Warning(WebControl c, string msg)
+        public void AddWarning(WebControl c, string msg)
         {
             if (NoticeMessage != null)
             {
@@ -220,9 +218,7 @@ namespace Lephone.Web
                 {
                     c.CssClass = CssErrInput;
                 }
-                NoticeMessage.Text = msg;
-                NoticeMessage.CssClass = CssWarning;
-                NoticeMessage.Visible = true;
+                NoticeMessage.AddWarning(msg);
             }
         }
 
@@ -244,7 +240,7 @@ namespace Lephone.Web
                     }
 
                     ExecuteDelete(o);
-                    Notice(string.Format(ObjectDeletedText, tn));
+                    AddNotice(string.Format(ObjectDeletedText, tn));
 
                     if (OnObjectDeleted != null)
                     {
@@ -255,11 +251,11 @@ namespace Lephone.Web
             }
             catch (WebControlException ex)
             {
-                Warning(ex.RelatedControl, ex.Message);
+                AddWarning(ex.RelatedControl, ex.Message);
             }
             catch (Exception ex)
             {
-                Warning(ex.Message);
+                AddWarning(ex.Message);
             }
         }
 
@@ -274,8 +270,8 @@ namespace Lephone.Web
                                                      NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText,
                                                      SeparatorText);
 
-            return PageHelper.ValidateSave(Page, vh, obj, NoticeMessage, NoticeText,
-                   CssNotice, CssWarning, CssErrInput, delegate
+            return PageHelper.ValidateSave(Page, vh, obj, NoticeMessage, NoticeText, CssErrInput,
+                delegate
                    {
                        ObjectInfo oi =
                            ObjectInfo.GetInstance(
@@ -297,12 +293,7 @@ namespace Lephone.Web
             SaveButton = NamingContainer.FindControl(SaveButtonID) as Button;
             DeleteButton = NamingContainer.FindControl(DeleteButtonID) as Button;
             ContentTitle = NamingContainer.FindControl(ContentTitleID) as Label;
-            NoticeMessage = NamingContainer.FindControl(NoticeMessageID) as Label;
-
-            if (NoticeMessage != null)
-            {
-                NoticeMessage.Visible = false;
-            }
+            NoticeMessage = NamingContainer.FindControl(NoticeMessageID) as NoticeLabel;
 
             if (SaveButton != null)
             {
@@ -608,36 +599,6 @@ namespace Lephone.Web
             set { ViewState["EditObjectText"] = value; }
         }
 
-        [Themeable(false), DefaultValue("Notice")]
-        public string CssNotice
-        {
-            get
-            {
-                object o = ViewState["CssNotice"];
-                if (o != null)
-                {
-                    return (string)o;
-                }
-                return "Notice";
-            }
-            set { ViewState["CssNotice"] = value; }
-        }
-
-        [Themeable(false), DefaultValue("Warning")]
-        public string CssWarning
-        {
-            get
-            {
-                object o = ViewState["CssWarning"];
-                if (o != null)
-                {
-                    return (string)o;
-                }
-                return "Warning";
-            }
-            set { ViewState["CssWarning"] = value; }
-        }
-
         [Themeable(false), DefaultValue("ErrInput")]
         public string CssErrInput
         {
@@ -672,7 +633,7 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["ObjectLockVersion"];
+                object o = ViewState["ObjectLockVersion"];
                 if (o != null)
                 {
                     return (int)o;
@@ -681,7 +642,7 @@ namespace Lephone.Web
             }
             set
             {
-                this.ViewState["ObjectLockVersion"] = value;
+                ViewState["ObjectLockVersion"] = value;
             }
         }
     }

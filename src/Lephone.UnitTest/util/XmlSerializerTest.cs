@@ -38,8 +38,7 @@ namespace Lephone.UnitTest.util
         [Test]
         public void Test1()
         {
-            MyList l = new MyList();
-            l.Add(new MyItem("tom"));
+            var l = new MyList {new MyItem("tom")};
             string act = XmlSerializer<MyList>.Xml.Serialize(l);
             Assert.AreEqual("<?xml version=\"1.0\"?>\r\n<List xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>", act);
         }
@@ -47,8 +46,7 @@ namespace Lephone.UnitTest.util
         [Test]
         public void Test2()
         {
-            MyList2 l = new MyList2();
-            l.Add(new MyItem("tom"));
+            var l = new MyList2 {new MyItem("tom")};
             string act = XmlSerializer<MyList2>.Xml.Serialize(l);
             Assert.AreEqual("<?xml version=\"1.0\"?>\r\n<List xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>", act);
         }

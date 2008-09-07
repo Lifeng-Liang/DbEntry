@@ -10,11 +10,13 @@ namespace Lephone.Web.Common
         private bool isInited;
         private bool isWarning;
         private bool isModified;
-        private readonly List<string> msgList = new List<string>();
+        private List<string> msgList;
 
-        protected override void OnInit(System.EventArgs e)
+        protected override void OnLoad(System.EventArgs e)
         {
-            base.OnInit(e);
+            isInited = false;
+            msgList = new List<string>();
+            base.OnLoad(e);
             Visible = false;
         }
 

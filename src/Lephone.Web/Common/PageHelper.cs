@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Lephone.Util;
@@ -12,19 +11,19 @@ namespace Lephone.Web.Common
 {
     public static class PageHelper
     {
-        public static bool ValidateSave(Page p, object obj, Label msg, string NoticeText)
+        public static bool ValidateSave(Page p, object obj, NoticeLabel msg, string NoticeText)
         {
             var vh = new ValidateHandler();
-            return ValidateSave(p, vh, obj, msg, NoticeText, "Notice", "Warning", "ErrInput");
+            return ValidateSave(p, vh, obj, msg, NoticeText, "ErrInput");
         }
 
-        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, Label msg, string NoticeText, string CssNotice, string CssWarning, string CssErrInput)
+        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string NoticeText, string CssErrInput)
         {
-            return ValidateSave(p, vh, obj, msg, NoticeText, CssNotice, CssWarning, CssErrInput, () => DbEntry.Save(obj));
+            return ValidateSave(p, vh, obj, msg, NoticeText, CssErrInput, () => DbEntry.Save(obj));
         }
 
-        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, Label msg, string NoticeText,
-            string CssNotice, string CssWarning, string CssErrInput, CallbackVoidHandler callback)
+        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string NoticeText,
+            string CssErrInput, CallbackVoidHandler callback)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
             EnumControls(p, oi, delegate(MemberHandler mh, WebControl c)
@@ -37,29 +36,22 @@ namespace Lephone.Web.Common
                 callback();
                 if (msg != null)
                 {
-                    msg.CssClass = CssNotice;
-                    msg.Text = HttpUtility.HtmlEncode(NoticeText);
-                    msg.Visible = true;
+                    msg.AddNotice(NoticeText);
                 }
             }
             else
             {
-                HtmlBuilder b = HtmlBuilder.New.ul;
                 foreach (string str in vh.ErrorMessages.Keys)
                 {
-                    b = b.li.text(vh.ErrorMessages[str]).end;
+                    if (msg != null)
+                    {
+                        msg.AddWarning(vh.ErrorMessages[str]);
+                    }
                     WebControl c = GetWebControl(p, oi, str);
                     if (c != null)
                     {
                         c.CssClass = CssErrInput;
                     }
-                }
-                b = b.end;
-                if (msg != null)
-                {
-                    msg.CssClass = CssWarning;
-                    msg.Text = b.ToString();
-                    msg.Visible = true;
                 }
             }
             return vh.IsValid;
