@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Lephone.Data;
 using Lephone.Data.Common;
 
 namespace Lephone.Data.Definition
@@ -17,7 +16,7 @@ namespace Lephone.Data.Definition
         internal HasAndBelongsToMany(object owner)
             : base(owner)
         {
-            this.Order = new OrderBy();
+            Order = new OrderBy();
             InitForeignKeyName();
         }
 
@@ -31,7 +30,7 @@ namespace Lephone.Data.Definition
         public HasAndBelongsToMany(object owner, string OrderByString)
             : base(owner)
         {
-            this.Order = OrderBy.Parse(OrderByString);
+            Order = OrderBy.Parse(OrderByString);
             InitForeignKeyName();
         }
 
@@ -66,7 +65,7 @@ namespace Lephone.Data.Definition
         {
             ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
-            DbObjectList<T> il = new DbObjectList<T>();
+            var il = new DbObjectList<T>();
             context.FillCollection(il, typeof(T), oi.ManyToManys[typeof(T)].From,
                 CK.K[ForeignKeyName] == key, Order, null);
             return il;

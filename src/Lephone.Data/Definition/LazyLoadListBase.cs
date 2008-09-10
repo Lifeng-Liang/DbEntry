@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Lephone.Data;
 using Lephone.Data.Common;
 
 namespace Lephone.Data.Definition
@@ -13,7 +12,7 @@ namespace Lephone.Data.Definition
         protected bool m_IsLoaded;
         protected IList<T> InnerList = new DbObjectList<T>();
 
-        public LazyLoadListBase(object owner)
+        protected LazyLoadListBase(object owner)
         {
             this.owner = owner;
         }
@@ -186,12 +185,28 @@ namespace Lephone.Data.Definition
         public bool Remove(T item)
         {
             ((ILazyLoading)this).Read();
-            bool ret = InnerList.Remove(item);
+            bool ret = RemoveItem(item);
             if (ret)
             {
                 OnRemoveItem(item);
             }
             return ret;
+        }
+
+        private bool RemoveItem(T item)
+        {
+            var oi = ObjectInfo.GetInstance(typeof(T));
+            var kh = oi.KeyFields[0];
+            var id = kh.GetValue(item);
+            foreach (var obj in InnerList)
+            {
+                var idx = kh.GetValue(obj);
+                if(idx.Equals(id))
+                {
+                    return InnerList.Remove(obj);
+                }
+            }
+            return false;
         }
 
         #endregion
