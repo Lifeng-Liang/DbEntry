@@ -15,7 +15,7 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class DeleteToTest
     {
-        private static DbContext de = new DbContext("SQLite");
+        private static readonly DbContext de = new DbContext("SQLite");
 
         [TearDown]
         public void TearDown()
@@ -37,7 +37,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreate()
         {
-            de.Create_DeleteToTable(typeof(DeleteToUser));
+            de.CreateDeleteToTable(typeof(DeleteToUser));
             Assert.AreEqual("CREATE TABLE [UnregUser] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[DeletedOn] datetime NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
     }

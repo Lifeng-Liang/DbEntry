@@ -66,7 +66,7 @@ namespace Lephone.Data.Definition
             ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             object key = oi.KeyFields[0].GetValue(owner);
             var il = new DbObjectList<T>();
-            context.FillCollection(il, typeof(T), oi.ManyToManys[typeof(T)].From,
+            context.FillCollection(il, typeof(T), oi.CrossTables[typeof(T)].From,
                 CK.K[ForeignKeyName] == key, Order, null);
             return il;
         }

@@ -73,7 +73,7 @@ namespace Lephone.Data.Common
 
         private void InitBySimpleMode(Type t)
         {
-            this.InitObjectInfoBySimpleMode(t);
+            InitObjectInfoBySimpleMode(t);
         }
 
         #endregion
@@ -102,7 +102,7 @@ namespace Lephone.Data.Common
 
         private readonly Dictionary<string, List<ASC>> _Indexes = new Dictionary<string, List<ASC>>();
         private readonly Dictionary<string, List<MemberHandler>> _UniqueIndexes = new Dictionary<string, List<MemberHandler>>();
-        private readonly Dictionary<Type, ManyToManyMediTable> _ManyToManys = new Dictionary<Type, ManyToManyMediTable>();
+        private readonly Dictionary<Type, CrossTable> _CrossTables = new Dictionary<Type, CrossTable>();
 
         public IDbObjectHandler Handler
         {
@@ -204,9 +204,9 @@ namespace Lephone.Data.Common
             get { return _UniqueIndexes; }
         }
 
-        public Dictionary<Type, ManyToManyMediTable> ManyToManys
+        public Dictionary<Type, CrossTable> CrossTables
         {
-            get { return _ManyToManys; }
+            get { return _CrossTables; }
         }
 
         #endregion
@@ -222,13 +222,13 @@ namespace Lephone.Data.Common
 
         internal void Init(Type handleType, FromClause fromClause, MemberHandler[] keyFields, MemberHandler[] fields, bool DisableSqlLog)
         {
-            this._HandleType = handleType;
-            this._From = fromClause;
-            this._KeyFields = keyFields;
-            this._Fields = fields;
-            this._AllowSqlLog = !DisableSqlLog;
+            _HandleType = handleType;
+            _From = fromClause;
+            _KeyFields = keyFields;
+            _Fields = fields;
+            _AllowSqlLog = !DisableSqlLog;
 
-            this._HasSystemKey = ((keyFields.Length == 1) && (keyFields[0].IsDbGenerate || keyFields[0].FieldType == typeof(Guid)));
+            _HasSystemKey = ((keyFields != null && keyFields.Length == 1) && (keyFields[0].IsDbGenerate || keyFields[0].FieldType == typeof(Guid)));
 
             foreach (MemberHandler f in fields)
             {

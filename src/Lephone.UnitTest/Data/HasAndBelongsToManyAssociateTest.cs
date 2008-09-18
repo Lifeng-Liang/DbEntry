@@ -229,7 +229,7 @@ namespace Lephone.UnitTest.Data
             DbContext de = DbEntry.Context;
             de.DropAndCreate(typeof(TableC));
             de.DropAndCreate(typeof(TableD));
-            de.Create_ManyToManyMediTable(typeof(TableC), typeof(TableD));
+            de.CreateCrossTable(typeof(TableC), typeof(TableD));
 
             var t1 = TableC.New();
             t1.Title = "Article1";

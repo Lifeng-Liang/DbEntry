@@ -2,6 +2,7 @@
 using System.Data;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Lephone.Util;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;
@@ -41,6 +42,7 @@ namespace Lephone.Data
                 }
                 ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
                 string Name = oi.From.GetMainTableName();
+                Debug.Assert(TableNames != null);
                 if (!TableNames.ContainsKey(Name.ToLower()))
                 {
                     IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
@@ -48,19 +50,20 @@ namespace Lephone.Data
                         Create(DbObjectType);
                         if (!string.IsNullOrEmpty(oi.DeleteToTableName))
                         {
-                            Create_DeleteToTable(DbObjectType);
+                            CreateDeleteToTable(DbObjectType);
                         }
-                        foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
+                        foreach (CrossTable mt in oi.CrossTables.Values)
                         {
                             if (!TableNames.ContainsKey(mt.Name.ToLower()))
                             {
+                                Debug.Assert(DbObjectType.Assembly.FullName != null);
                                 if (DbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
                                 {
-                                    Create_ManyToManyMediTable(DbObjectType.BaseType, mt.HandleType);
+                                    CreateCrossTable(DbObjectType.BaseType, mt.HandleType);
                                 }
                                 else
                                 {
-                                    Create_ManyToManyMediTable(DbObjectType, mt.HandleType);
+                                    CreateCrossTable(DbObjectType, mt.HandleType);
                                 }
                             }
                         }
@@ -146,16 +149,16 @@ namespace Lephone.Data
         {
             TryCreateTable(DbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetResultCountStatement(this.Dialect, iwc);
+            SqlStatement Sql = oi.Composer.GetResultCountStatement(Dialect, iwc);
             oi.LogSql(Sql);
-            object ro = this.ExecuteScalar(Sql);
+            object ro = ExecuteScalar(Sql);
             return Convert.ToInt64(ro);
         }
 
         public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type DbObjectType, WhereCondition iwc, OrderBy order, string ColumnName)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetGroupByStatement(this.Dialect, iwc, order, ColumnName);
+            SqlStatement Sql = oi.Composer.GetGroupByStatement(Dialect, iwc, order, ColumnName);
             oi.LogSql(Sql);
             var list = new DbObjectList<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list, DbObjectType);
@@ -221,7 +224,7 @@ namespace Lephone.Data
         public void DataLoad(IProcessor ip, Type DbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetSelectStatement(this.Dialect, from, iwc, oc, lc);
+            SqlStatement Sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc);
             oi.LogSql(Sql);
             DataLoadDirect(ip, DbObjectType, Sql);
         }
@@ -241,7 +244,7 @@ namespace Lephone.Data
             TryCreateTable(DbObjectType);
             int StartIndex = Sql.StartIndex;
             int EndIndex = Sql.EndIndex;
-            if (this.Dialect.SupportsRangeStartIndex && EndIndex > 0)
+            if (Dialect.SupportsRangeStartIndex && EndIndex > 0)
             {
                 EndIndex = EndIndex - StartIndex + 1;
                 StartIndex = 1;
@@ -468,7 +471,7 @@ namespace Lephone.Data
 
         private void InnerUpdate(object obj, WhereCondition iwc, ObjectInfo oi, DataProvider dp)
         {
-            SqlStatement Sql = oi.Composer.GetUpdateStatement(this.Dialect, obj, iwc);
+            SqlStatement Sql = oi.Composer.GetUpdateStatement(Dialect, obj, iwc);
             oi.LogSql(Sql);
             int n = dp.ExecuteNonQuery(Sql);
             if (n == 0)
@@ -493,7 +496,7 @@ namespace Lephone.Data
                 {
                     object Key = dp.Dialect.ExecuteInsert(dp, sb, oi);
                     ObjectInfo.SetKey(obj, Key);
-                    foreach(Type t2 in oi.ManyToManys.Keys)
+                    foreach(Type t2 in oi.CrossTables.Keys)
                     {
                         SetManyToManyRelation(oi, t2, Key, Scope<object>.Current);
                     }
@@ -505,9 +508,9 @@ namespace Lephone.Data
             }
             else
             {
-                SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+                SqlStatement Sql = sb.ToSqlStatement(Dialect);
                 oi.LogSql(Sql);
-                this.ExecuteNonQuery(Sql);
+                ExecuteNonQuery(Sql);
             }
             if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
             {
@@ -517,13 +520,13 @@ namespace Lephone.Data
 
         private void SetManyToManyRelation(ObjectInfo oi, Type t, object Key1, object Key2)
         {
-            if(oi.ManyToManys.ContainsKey(t) && Key1 != null && Key2 != null)
+            if(oi.CrossTables.ContainsKey(t) && Key1 != null && Key2 != null)
             {
-                ManyToManyMediTable mt = oi.ManyToManys[t];
+                CrossTable mt = oi.CrossTables[t];
                 var sb = new InsertStatementBuilder(mt.Name);
                 sb.Values.Add(new KeyValue(mt.ColumeName1, Key1));
                 sb.Values.Add(new KeyValue(mt.ColumeName2, Key2));
-                SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+                SqlStatement Sql = sb.ToSqlStatement(Dialect);
                 oi.LogSql(Sql);
                 ExecuteNonQuery(Sql);
             }
@@ -531,14 +534,14 @@ namespace Lephone.Data
 
         private void RemoveManyToManyRelation(ObjectInfo oi, Type t, object Key1, object Key2)
         {
-            if (oi.ManyToManys.ContainsKey(t) && Key1 != null && Key2 != null)
+            if (oi.CrossTables.ContainsKey(t) && Key1 != null && Key2 != null)
             {
-                ManyToManyMediTable mt = oi.ManyToManys[t];
+                CrossTable mt = oi.CrossTables[t];
                 var sb = new DeleteStatementBuilder(mt.Name);
                 WhereCondition c = CK.K[mt.ColumeName1] == Key1;
                 c &= CK.K[mt.ColumeName2] == Key2;
                 sb.Where.Conditions = c;
-                SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+                SqlStatement Sql = sb.ToSqlStatement(Dialect);
                 oi.LogSql(Sql);
                 ExecuteNonQuery(Sql);
             }
@@ -563,7 +566,7 @@ namespace Lephone.Data
             Type t = obj.GetType();
             TryCreateTable(t);
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            SqlStatement Sql = oi.Composer.GetDeleteStatement(this.Dialect, obj);
+            SqlStatement Sql = oi.Composer.GetDeleteStatement(Dialect, obj);
             oi.LogSql(Sql);
             int ret = 0;
             ProcessRelation(oi, false, obj, delegate(DataProvider dp)
@@ -585,11 +588,11 @@ namespace Lephone.Data
         private int DeleteRelation(ObjectInfo oi, object obj)
         {
             int ret = 0;
-            foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
+            foreach (CrossTable mt in oi.CrossTables.Values)
             {
                 var sb = new DeleteStatementBuilder(mt.Name);
                 sb.Where.Conditions = CK.K[mt.ColumeName1] == oi.Handler.GetKeyValue(obj);
-                SqlStatement Sql = sb.ToSqlStatement(this.Dialect);
+                SqlStatement Sql = sb.ToSqlStatement(Dialect);
                 oi.LogSql(Sql);
                 ret += ExecuteNonQuery(Sql);
             }
@@ -601,9 +604,9 @@ namespace Lephone.Data
             Type t = typeof(T);
             TryCreateTable(t);
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            SqlStatement Sql = oi.Composer.GetDeleteStatement(this.Dialect, iwc);
+            SqlStatement Sql = oi.Composer.GetDeleteStatement(Dialect, iwc);
             oi.LogSql(Sql);
-            return this.ExecuteNonQuery(Sql);
+            return ExecuteNonQuery(Sql);
         }
 
         public void DropTable(Type DbObjectType)
@@ -620,7 +623,7 @@ namespace Lephone.Data
             {
                 CommonHelper.IfCatchException(true, () => Dialect.ExecuteDropSequence(this, tn));
             }
-            foreach (ManyToManyMediTable mt in oi.ManyToManys.Values)
+            foreach (CrossTable mt in oi.CrossTables.Values)
             {
                 DropTable(mt.Name, CatchException, oi);
             }
@@ -628,10 +631,10 @@ namespace Lephone.Data
 
         private void DropTable(string TableName, bool CatchException, ObjectInfo oi)
         {
-            string s = "Drop Table " + this.Dialect.QuoteForTableName(TableName);
+            string s = "Drop Table " + Dialect.QuoteForTableName(TableName);
             var Sql = new SqlStatement(s);
             oi.LogSql(Sql);
-            CommonHelper.IfCatchException(CatchException, () => this.ExecuteNonQuery(Sql));
+            CommonHelper.IfCatchException(CatchException, () => ExecuteNonQuery(Sql));
             if (DataSetting.AutoCreateTable && TableNames != null)
             {
                 TableNames.Remove(TableName.ToLower());
@@ -647,16 +650,16 @@ namespace Lephone.Data
         public void Create(Type DbObjectType)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetCreateStatement(this.Dialect);
+            SqlStatement Sql = oi.Composer.GetCreateStatement(Dialect);
             oi.LogSql(Sql);
-            this.ExecuteNonQuery(Sql);
+            ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
             {
                 TableNames.Add(oi.From.GetMainTableName().ToLower(), 1);
             }
         }
 
-        public void Create_DeleteToTable(Type DbObjectType)
+        public void CreateDeleteToTable(Type DbObjectType)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             CreateTableStatementBuilder sb = oi.Composer.GetCreateTableStatementBuilder();
@@ -664,24 +667,22 @@ namespace Lephone.Data
             sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0));
             SqlStatement Sql = sb.ToSqlStatement(Dialect);
             oi.LogSql(Sql);
-            this.ExecuteNonQuery(Sql);
+            ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
             {
                 TableNames.Add(oi.DeleteToTableName.ToLower(), 1);
             }
         }
 
-        public void Create_ManyToManyMediTable(Type t1, Type t2)
+        public void CreateCrossTable(Type t1, Type t2)
         {
             ObjectInfo oi1 = ObjectInfo.GetInstance(t1);
             ObjectInfo oi2 = ObjectInfo.GetInstance(t2);
-            if (!(oi1.ManyToManys.ContainsKey(t2) && oi2.ManyToManys.ContainsKey(t1)))
+            if (!(oi1.CrossTables.ContainsKey(t2) && oi2.CrossTables.ContainsKey(t1)))
             {
                 throw new DataException("They are not many to many relation ship classes!");
             }
-            ManyToManyMediTable mt1 = oi1.ManyToManys[t2];
-            //TODO: why left this?
-            //ManyToManyMediTable mt2 = oi2.ManyToManys[t1];
+            CrossTable mt1 = oi1.CrossTables[t2];
             var cts = new CreateTableStatementBuilder(mt1.Name);
             var ls = new List<string> {mt1.ColumeName1, mt1.ColumeName2};
             ls.Sort();
@@ -691,9 +692,9 @@ namespace Lephone.Data
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName1));
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName2));
             // execute
-            SqlStatement Sql = cts.ToSqlStatement(this.Dialect);
+            SqlStatement Sql = cts.ToSqlStatement(Dialect);
             oi1.LogSql(Sql);
-            this.ExecuteNonQuery(Sql);
+            ExecuteNonQuery(Sql);
             if (DataSetting.AutoCreateTable && TableNames != null)
             {
                 TableNames.Add(mt1.Name.ToLower(), 1);

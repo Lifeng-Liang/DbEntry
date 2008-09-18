@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{25AFD300-493A-4553-B4DC-129D3A9022A8}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -120,7 +120,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\EmitObjectHandlerBase.cs" />
     <Compile Include="Common\GroupByObject.cs" />
     <Compile Include="Common\IDbObjectHandler.cs" />
-    <Compile Include="Common\ManyToManyMediTable.cs" />
+    <Compile Include="Common\CrossTable.cs" />
     <Compile Include="Common\OptimisticLockingQueryComposer.cs" />
     <Compile Include="Common\QueryComposer.cs" />
     <Compile Include="Common\MemberAdapater.cs" />

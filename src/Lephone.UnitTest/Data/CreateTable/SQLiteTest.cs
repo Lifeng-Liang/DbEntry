@@ -27,43 +27,43 @@ namespace Lephone.UnitTest.Data.CreateTable
     class MyTest1 : IDbObject
     {
         [DbKey]
-        public long Id = 0;
+        public long Id;
 
         [Index]
-        public string Name = null;
+        public string Name;
     }
 
     class MyTest2 : IDbObject
     {
         [DbKey]
-        public long Id = 0;
+        public long Id;
 
         [Index(UNIQUE = true)]
-        public string Name = null;
+        public string Name;
     }
 
     class MyTest3 : IDbObject
     {
         [DbKey]
-        public long Id = 0;
+        public long Id;
 
         [Index("Name_Age", ASC = false, UNIQUE = true)]
-        public string Name = null;
+        public string Name;
 
         [Index("Name_Age")]
-        public int Age = 0;
+        public int Age;
     }
 
     [DbTable("MyTest")]
     class MyTest8 : IDbObject
     {
         [DbKey(IsDbGenerate = false)]
-        public long Id = 0;
+        public long Id;
 
         [DbKey(IsDbGenerate = false), Length(50)]
-        public string Name = null;
+        public string Name;
 
-        public int Age = 0;
+        public int Age;
     }
 
     public class UnsignedTestTable : IDbObject
@@ -175,7 +175,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void Test11()
         {
-            de.Create_ManyToManyMediTable(typeof(Reader), typeof(Article));
+            de.CreateCrossTable(typeof(Reader), typeof(Article));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("CREATE TABLE [R_Article_Reader] (\n\t[Article_Id] bigint NOT NULL ,\n\t[Reader_Id] bigint NOT NULL \n);\n" +
                 "CREATE INDEX [IX_R_Article_Reader_Reader_Id] ON [R_Article_Reader] ([Reader_Id] ASC);\n" +
@@ -194,10 +194,10 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestManyMore()
         {
-            de.Create_ManyToManyMediTable(typeof(ManyMore), typeof(ManyMore1));
+            de.CreateCrossTable(typeof(ManyMore), typeof(ManyMore1));
             Assert.AreEqual("CREATE TABLE [R_ManyMore_ManyMore1] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore1_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_R_ManyMore_ManyMore1_ManyMore_Id] ON [R_ManyMore_ManyMore1] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_R_ManyMore_ManyMore1_ManyMore1_Id] ON [R_ManyMore_ManyMore1] ([ManyMore1_Id] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
 
-            de.Create_ManyToManyMediTable(typeof(ManyMore), typeof(ManyMore2));
+            de.CreateCrossTable(typeof(ManyMore), typeof(ManyMore2));
             Assert.AreEqual("CREATE TABLE [R_ManyMore_ManyMore2] (\n\t[ManyMore_Id] bigint NOT NULL ,\n\t[ManyMore2_Id] bigint NOT NULL \n);\nCREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore_Id] ON [R_ManyMore_ManyMore2] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore2_Id] ON [R_ManyMore_ManyMore2] ([ManyMore2_Id] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
