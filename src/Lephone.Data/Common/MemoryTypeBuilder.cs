@@ -140,7 +140,7 @@ namespace Lephone.Data.Common
             return new CustomAttributeBuilder(AllowNullAttributeConstructor, new object[] { });
         }
 
-        private static CustomAttributeBuilder GetMaxLengthBuilder(LengthAttribute o)
+        private static CustomAttributeBuilder GetLengthBuilder(LengthAttribute o)
         {
             Type t = typeof (LengthAttribute);
             return new CustomAttributeBuilder(LengthAttributeConstructor, new object[] { o.Min, o.Max },
@@ -181,7 +181,7 @@ namespace Lephone.Data.Common
                 fb.SetCustomAttribute(GetDbColumnBuilder(pi.Name));
             }
             ProcessCustomAttribute<AllowNullAttribute>(pi, o => fb.SetCustomAttribute(GetAllowNullBuilder()));
-            ProcessCustomAttribute<LengthAttribute>(pi, o => fb.SetCustomAttribute(GetMaxLengthBuilder(o)));
+            ProcessCustomAttribute<LengthAttribute>(pi, o => fb.SetCustomAttribute(GetLengthBuilder(o)));
             ProcessCustomAttribute<StringColumnAttribute>(pi, o => fb.SetCustomAttribute(GetStringColumnBuilder(o)));
             ProcessCustomAttribute<IndexAttribute>(pi, o => fb.SetCustomAttribute(GetIndexBuilder(o)));
             return fb;

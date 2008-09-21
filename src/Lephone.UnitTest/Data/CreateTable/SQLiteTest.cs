@@ -80,6 +80,14 @@ namespace Lephone.UnitTest.Data.CreateTable
         public Guid UserId;
     }
 
+    public class BinaryAndBLOB : IDbObject
+    {
+        [Length(5, 5)]
+        public byte[] password;
+
+        public byte[] image;
+    }
+
     #endregion
 
     [TestFixture]
@@ -222,6 +230,35 @@ namespace Lephone.UnitTest.Data.CreateTable
 CREATE UNIQUE INDEX [IX_Index_Test_Class_xxx1] ON [Index_Test_Class] ([QQQId] ASC, [CCCId] ASC);
 CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC, [CCCId] ASC);
 <Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestBinaryAndBLOB()
+        {
+            de.Create(typeof(BinaryAndBLOB));
+            Assert.AreEqual(
+@"CREATE TABLE [Binary_And_BLOB] (
+    [password] binary (5) NOT NULL ,
+    [image] blob NOT NULL 
+);
+<Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestValidationOfBinaryAndBLOB()
+        {
+            var o = new BinaryAndBLOB {password = new byte[] {1}, image = new byte[] {}};
+            var vh = new ValidateHandler();
+            var isValid = vh.ValidateObject(o);
+            Assert.IsFalse(isValid);
+
+            o.password = new byte[]{1,2,3,4,5, 6};
+            isValid = vh.ValidateObject(o);
+            Assert.IsFalse(isValid);
+
+            o.password = new byte[] {1, 2, 3, 4, 5};
+            isValid = vh.ValidateObject(o);
+            Assert.IsTrue(isValid);
         }
     }
 }

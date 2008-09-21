@@ -152,31 +152,31 @@ namespace Lephone.Data.Common
 
         protected MemberHandler(MemberAdapter fi)
         {
-            DbColumnAttribute fn = fi.GetAttribute<DbColumnAttribute>(false);
+            var fn = fi.GetAttribute<DbColumnAttribute>(false);
             string memberName = (fn == null) ? fi.Name : fn.Name;
 
-            this.MemberInfo = fi;
-            this.Name = memberName;
+            MemberInfo = fi;
+            Name = memberName;
 
-            DbKeyAttribute dk = fi.GetAttribute<DbKeyAttribute>(false);
+            var dk = fi.GetAttribute<DbKeyAttribute>(false);
             if (dk != null)
             {
-                this.IsKey = true;
+                IsKey = true;
                 if (dk.IsDbGenerate)
                 {
-                    this.IsDbGenerate = true;
+                    IsDbGenerate = true;
                 }
                 if (dk.UnsavedValue == null && dk.IsDbGenerate)
                 {
-                    this.UnsavedValue = CommonHelper.GetEmptyValue(fi.MemberType, false, "Unknown type of db key must set UnsavedValue");
+                    UnsavedValue = CommonHelper.GetEmptyValue(fi.MemberType, false, "Unknown type of db key must set UnsavedValue");
                     if (fi.MemberType == typeof(Guid))
                     {
-                        this.IsDbGenerate = false;
+                        IsDbGenerate = false;
                     }
                 }
                 else
                 {
-                    this.UnsavedValue = dk.UnsavedValue;
+                    UnsavedValue = dk.UnsavedValue;
                 }
             }
 
@@ -185,45 +185,45 @@ namespace Lephone.Data.Common
                 Type t = typeof(HasOne<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t)
                 {
-                    this.IsHasOne = true;
+                    IsHasOne = true;
                 }
                 Type t0 = typeof(HasMany<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t0)
                 {
-                    this.IsHasMany = true;
+                    IsHasMany = true;
                 }
                 Type t1 = typeof(BelongsTo<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t1)
                 {
-                    this.IsBelongsTo = true;
+                    IsBelongsTo = true;
                     if (fn == null)
                     {
                         Type ot = fi.MemberType.GetGenericArguments()[0];
                         string n = ObjectInfo.GetObjectFromClause(ot).GetMainTableName();
-                        this.Name = NameMapper.Instance.UnmapName(n) + "_Id";
+                        Name = NameMapper.Instance.UnmapName(n) + "_Id";
                     }
                 }
                 Type t2 = typeof(HasAndBelongsToMany<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t2)
                 {
-                    this.IsHasAndBelongsToMany = true;
+                    IsHasAndBelongsToMany = true;
                     if (fn == null)
                     {
                         Type ot1 = fi.MemberType.GetGenericArguments()[0];
                         string n1 = ObjectInfo.GetObjectFromClause(ot1).GetMainTableName();
-                        this.Name = NameMapper.Instance.UnmapName(n1) + "_Id";
+                        Name = NameMapper.Instance.UnmapName(n1) + "_Id";
                     }
                 }
                 Type t3 = typeof(LazyLoadField<>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t3)
                 {
-                    this.IsLazyLoad = true;
+                    IsLazyLoad = true;
                 }
             }
 
             if (fi.GetAttribute<AllowNullAttribute>(false) != null || NullableHelper.IsNullableType(fi.MemberType))
             {
-                this.AllowNull = true;
+                AllowNull = true;
             }
 
             if (fi.GetAttribute<SpecialNameAttribute>(false) != null)
@@ -232,7 +232,7 @@ namespace Lephone.Data.Common
                 {
                     if (fi.MemberType == typeof(DateTime))
                     {
-                        this.IsCreatedOn = true;
+                        IsCreatedOn = true;
                     }
                     else
                     {
@@ -243,7 +243,7 @@ namespace Lephone.Data.Common
                 {
                     if (fi.MemberType == typeof(DateTime?))
                     {
-                        this.IsUpdatedOn = true;
+                        IsUpdatedOn = true;
                     }
                     else
                     {
@@ -254,7 +254,7 @@ namespace Lephone.Data.Common
                 {
                     if (fi.MemberType == typeof(DateTime))
                     {
-                        this.IsSavedOn = true;
+                        IsSavedOn = true;
                     }
                     else
                     {
@@ -265,7 +265,7 @@ namespace Lephone.Data.Common
                 {
                     if (fi.MemberType == typeof(int))
                     {
-                        this.IsLockVersion = true;
+                        IsLockVersion = true;
                     }
                     else
                     {
@@ -276,7 +276,7 @@ namespace Lephone.Data.Common
                 {
                     if(fi.MemberType == typeof(int))
                     {
-                        this.IsCount = true;
+                        IsCount = true;
                     }
                     else
                     {
@@ -287,44 +287,44 @@ namespace Lephone.Data.Common
                 {
                     throw new DataException("Only CreatedOn and UpdatedOn are supported as special name.");
                 }
-                if (this.IsCreatedOn || this.IsUpdatedOn || this.IsSavedOn || this.IsCount)
+                if (IsCreatedOn || IsUpdatedOn || IsSavedOn || IsCount)
                 {
-                    this.IsAutoSavedValue = true;
+                    IsAutoSavedValue = true;
                 }
             }
 
-            LengthAttribute lengthAttribute = fi.GetAttribute<LengthAttribute>(false);
+            var lengthAttribute = fi.GetAttribute<LengthAttribute>(false);
             if (lengthAttribute != null)
             {
                 if (fi.MemberType.IsSubclassOf(typeof(ValueType)))
                 {
-                    throw new DataException("ValueType couldn't set MaxLengthAttribute!");
+                    throw new DataException("ValueType couldn't set LengthAttribute!");
                 }
-                this.MinLength = lengthAttribute.Min;
-                this.MaxLength = lengthAttribute.Max;
-                this.LengthErrorMessage = lengthAttribute.ErrorMessage;
+                MinLength = lengthAttribute.Min;
+                MaxLength = lengthAttribute.Max;
+                LengthErrorMessage = lengthAttribute.ErrorMessage;
             }
 
             if (fi.MemberType == typeof(string) ||
-                (this.IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string)))
+                (IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string)))
             {
-                this.IsUnicode = true;
+                IsUnicode = true;
             }
-            StringColumnAttribute sf = fi.GetAttribute<StringColumnAttribute>(false);
+            var sf = fi.GetAttribute<StringColumnAttribute>(false);
             if (sf != null)
             {
-                if (!(fi.MemberType == typeof(string) || (this.IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string))))
+                if (!(fi.MemberType == typeof(string) || (IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string))))
                 {
                     throw new DataException("StringFieldAttribute must set for String Type Field!");
                 }
-                this.IsUnicode = sf.IsUnicode;
-                this.Regular = sf.Regular;
-                this.RegularErrorMessage = sf.ErrorMessage;
+                IsUnicode = sf.IsUnicode;
+                Regular = sf.Regular;
+                RegularErrorMessage = sf.ErrorMessage;
             }
-            OrderByAttribute os = fi.GetAttribute<OrderByAttribute>(false);
+            var os = fi.GetAttribute<OrderByAttribute>(false);
             if (os != null)
             {
-                this.OrderByString = os.OrderBy;
+                OrderByString = os.OrderBy;
             }
             //TODO: if the column of object really have multiple index attirbute, the current process is right?
             var indexs = fi.GetAttributes<IndexAttribute>(false);
@@ -332,7 +332,7 @@ namespace Lephone.Data.Common
             {
                 if(index.UNIQUE && !string.IsNullOrEmpty(index.UniqueErrorMessage))
                 {
-                    this.UniqueErrorMessage = index.UniqueErrorMessage;
+                    UniqueErrorMessage = index.UniqueErrorMessage;
                     break;
                 }
             }
@@ -340,15 +340,15 @@ namespace Lephone.Data.Common
 
         internal MemberHandler(MemberAdapter fi, FieldType ft, PropertyInfo pi)
         {
-            this.MemberInfo = fi;
-            this.Name = "";
+            MemberInfo = fi;
+            Name = "";
 
             IsHasOne = (ft == Comm.FieldType.HasOne);
             IsHasMany = (ft == Comm.FieldType.HasMany);
             IsHasAndBelongsToMany = (ft == Comm.FieldType.HasAndBelongsToMany);
             IsBelongsTo = (ft == Comm.FieldType.BelongsTo);
             IsLazyLoad = (ft == Comm.FieldType.LazyLoad);
-            OrderByAttribute[] obs = (OrderByAttribute[])pi.GetCustomAttributes(typeof(OrderByAttribute), true);
+            var obs = (OrderByAttribute[])pi.GetCustomAttributes(typeof(OrderByAttribute), true);
             if (obs != null && obs.Length > 0)
             {
                 OrderByString = obs[0].OrderBy;

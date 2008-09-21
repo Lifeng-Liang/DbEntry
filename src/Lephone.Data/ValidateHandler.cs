@@ -41,62 +41,76 @@ namespace Lephone.Data
         {
         }
 
-        public ValidateHandler(bool EmptyAsNull, bool IncludeClassName, string InvalidFieldText, string NotAllowNullText, string NotMatchedText, string LengthText, string ShouldBeUniqueText, string SeparatorText)
+        public ValidateHandler(bool emptyAsNull, bool includeClassName, string invalidFieldText, string notAllowNullText, string notMatchedText, string lengthText, string shouldBeUniqueText, string separatorText)
         {
-            this.IsValid = true;
-            this.EmptyAsNull = EmptyAsNull;
-            this.IncludeClassName = IncludeClassName;
+            IsValid = true;
+            EmptyAsNull = emptyAsNull;
+            IncludeClassName = includeClassName;
 
-            this._InvalidFieldText = InvalidFieldText;
-            this._NotAllowNullText = NotAllowNullText;
-            this._NotMatchedText = NotMatchedText;
-            this._LengthText = LengthText;
-            this._ShouldBeUniqueText = ShouldBeUniqueText;
-            this._SeparatorText = SeparatorText;
+            _InvalidFieldText = invalidFieldText;
+            _NotAllowNullText = notAllowNullText;
+            _NotMatchedText = notMatchedText;
+            _LengthText = lengthText;
+            _ShouldBeUniqueText = shouldBeUniqueText;
+            _SeparatorText = separatorText;
 
-            this._SeparatorTextLength = _SeparatorText.Length;
-            
+            _SeparatorTextLength = _SeparatorText.Length;
+
             _ErrorMessages = new Dictionary<string, string>();
         }
 
         public bool ValidateObject(object obj)
         {
-            this.IsValid = true;
-            this._ErrorMessages.Clear();
+            IsValid = true;
+            _ErrorMessages.Clear();
 
-            Type t = obj.GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
+            var t = obj.GetType();
+            var oi = ObjectInfo.GetInstance(t);
             string tn = oi.BaseType.Name;
             bool IsNew = false;
             if (oi.KeyFields.Length > 0)
             {
                 IsNew = oi.IsNewObject(obj);
             }
-            
-            Type StringType = typeof(string);
-            validateCommon(obj, oi, StringType, tn);
+
+            validateCommon(obj, oi, tn);
             validateUnique(obj, t, oi, IsNew);
-            return this.IsValid;
+            return IsValid;
         }
 
-        private void validateCommon(object obj, ObjectInfo oi, Type StringType, string tn)
+        private void validateCommon(object obj, ObjectInfo oi, string tableName)
         {
+            var StringType = typeof(string);
+            var ByteArrayType = typeof(byte[]);
             foreach (MemberHandler fh in oi.Fields)
             {
-                if (fh.FieldType == StringType || (fh.IsLazyLoad && fh.FieldType.GetGenericArguments()[0] == StringType))
+                var realType = fh.IsLazyLoad ? fh.FieldType.GetGenericArguments()[0] : fh.FieldType;
+                if (realType == StringType)
                 {
+                    var ErrMsg = new StringBuilder();
                     string Field = fh.IsLazyLoad ? ((LazyLoadField<string>)fh.GetValue(obj)).Value : (string)fh.GetValue(obj);
-                    StringBuilder ErrMsg = new StringBuilder();
-                    bool isValid = validateField(Field, fh, ErrMsg);
-                    if (ErrMsg.Length > _SeparatorTextLength) { ErrMsg.Length -= _SeparatorTextLength; }
-                    if (!isValid)
-                    {
-                        string n = (IncludeClassName ? tn + "." + fh.Name : fh.Name);
-                        _ErrorMessages[n] = string.Format(_InvalidFieldText, n, ErrMsg);
-                    }
-                    this.IsValid &= isValid;
+                    var isValid = validateStringField(Field, fh, ErrMsg);
+                    setErrorMessage(fh, ErrMsg, isValid, tableName);
+                }
+                else if (realType == ByteArrayType)
+                {
+                    var ErrMsg = new StringBuilder();
+                    byte[] Field = fh.IsLazyLoad ? ((LazyLoadField<byte[]>)fh.GetValue(obj)).Value : (byte[])fh.GetValue(obj);
+                    var isValid = validateByteArrayField(Field, fh, ErrMsg);
+                    setErrorMessage(fh, ErrMsg, isValid, tableName);
                 }
             }
+        }
+
+        private void setErrorMessage(MemberHandler fh, StringBuilder ErrMsg, bool isValid, string tableName)
+        {
+            if (ErrMsg.Length > _SeparatorTextLength) { ErrMsg.Length -= _SeparatorTextLength; }
+            if (!isValid)
+            {
+                string n = (IncludeClassName ? tableName + "." + fh.Name : fh.Name);
+                _ErrorMessages[n] = string.Format(_InvalidFieldText, n, ErrMsg);
+            }
+            IsValid &= isValid;
         }
 
         private void validateUnique(object obj, Type t, ObjectInfo oi, bool IsNew)
@@ -135,11 +149,11 @@ namespace Lephone.Data
                 {
                     if (DbEntry.Context.GetResultCount(t, c && EditCondition) != 0)
                     {
-                        this.IsValid = false;
+                        IsValid = false;
                         string uniqueErrMsg = string.IsNullOrEmpty(mhs[0].UniqueErrorMessage)
                                                   ? _ShouldBeUniqueText
                                                   : mhs[0].UniqueErrorMessage;
-                        _ErrorMessages[n] = _ErrorMessages.ContainsKey(n) 
+                        _ErrorMessages[n] = _ErrorMessages.ContainsKey(n)
                                   ? string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, uniqueErrMsg)
                                   : string.Format(_InvalidFieldText, n, uniqueErrMsg);
                     }
@@ -147,7 +161,30 @@ namespace Lephone.Data
             }
         }
 
-        private bool validateField(string Field, MemberHandler fh, StringBuilder ErrMsg)
+        private bool validateByteArrayField(byte[] Field, MemberHandler fh, StringBuilder ErrMsg)
+        {
+            if (Field == null)
+            {
+                if (fh.AllowNull)
+                {
+                    return true;
+                }
+                ErrMsg.Append(_NotAllowNullText).Append(_SeparatorText);
+                return false;
+            }
+            bool isValid = true;
+            if(fh.MaxLength > 0)
+            {
+                string errorText = string.IsNullOrEmpty(fh.LengthErrorMessage)
+                                          ? _LengthText
+                                          : fh.LengthErrorMessage;
+
+                isValid &= isValidField(Field.Length, fh.MinLength, fh.MaxLength, ErrMsg, errorText);
+            }
+            return isValid;
+        }
+
+        private bool validateStringField(string Field, MemberHandler fh, StringBuilder ErrMsg)
         {
             if (Field == null || (Field == "" && EmptyAsNull))
             {
@@ -162,7 +199,7 @@ namespace Lephone.Data
             Field = Field.Trim();
             if (fh.MaxLength > 0)
             {
-                isValid &= isValidField(Field, fh.MinLength, fh.MaxLength, !fh.IsUnicode, 
+                isValid &= isValidStringField(Field, fh.MinLength, fh.MaxLength, !fh.IsUnicode,
                     string.IsNullOrEmpty(fh.LengthErrorMessage) ? _LengthText : fh.LengthErrorMessage, ErrMsg);
             }
             if (!string.IsNullOrEmpty(fh.Regular))
@@ -170,7 +207,7 @@ namespace Lephone.Data
                 bool iv = Regex.IsMatch(Field, fh.Regular);
                 if (!iv)
                 {
-                    if(string.IsNullOrEmpty(fh.RegularErrorMessage))
+                    if (string.IsNullOrEmpty(fh.RegularErrorMessage))
                     {
                         ErrMsg.Append(_NotMatchedText).Append(_SeparatorText);
                     }
@@ -184,13 +221,17 @@ namespace Lephone.Data
             return isValid;
         }
 
-        private bool isValidField(string Field, int Min, int Max, bool IsAnsi, string ErrorMessage, StringBuilder ErrMsg)
+        private bool isValidStringField(string Field, int Min, int Max, bool IsAnsi, string errorText, StringBuilder ErrMsg)
         {
-            int i = IsAnsi ? StringHelper.GetAnsiLength(Field) : Field.Length;
+            int length = IsAnsi ? StringHelper.GetAnsiLength(Field) : Field.Length;
+            return isValidField(length, Min, Max, ErrMsg, errorText);
+        }
 
-            if (i < Min || i > Max)
+        private bool isValidField(int length, int Min, int Max, StringBuilder ErrMsg, string errorText)
+        {
+            if (length < Min || length > Max)
             {
-                ErrMsg.Append(string.Format(ErrorMessage, Min, Max, i)).Append(_SeparatorText);
+                ErrMsg.Append(string.Format(errorText, Min, Max, length)).Append(_SeparatorText);
                 return false;
             }
             return true;

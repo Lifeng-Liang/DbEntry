@@ -6,7 +6,10 @@ namespace Lephone.Data.Dialect
 {
 	public class SQLite : DbDialect
 	{
-		public SQLite() {}
+		public SQLite()
+		{
+            TypeNames[DataType.Binary] = "blob";
+		}
 
         public override string DbNowString
         {

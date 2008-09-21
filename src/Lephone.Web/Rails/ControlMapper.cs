@@ -13,7 +13,7 @@ namespace Lephone.Web.Rails
 
         public static HtmlBuilder Map(MemberHandler m, string id, string name, object value)
         {
-            ControlMapper c = new ControlMapper(m, id, name, value);
+            var c = new ControlMapper(m, id, name, value);
             return c.b;
         }
 

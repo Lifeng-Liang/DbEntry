@@ -50,7 +50,7 @@ namespace Lephone.UnitTest.Data
 
         public vPeople Init(string name)
         {
-            this.Name = name;
+            Name = name;
             return this;
         }
     }
@@ -63,7 +63,7 @@ namespace Lephone.UnitTest.Data
 
         public vPeople0 Init(string name)
         {
-            this.Name = name;
+            Name = name;
             return this;
         }
     }
@@ -90,7 +90,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            ValidateHandler vh = new ValidateHandler(true);
+            var vh = new ValidateHandler(true);
             Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("123456", null, "a@b.c")));
             Assert.IsTrue(vh.ValidateObject(new vtest("测试1", null, "a@b.c")));
@@ -114,7 +114,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            ValidateHandler vh = new ValidateHandler(false);
+            var vh = new ValidateHandler(false);
             Assert.IsTrue(vh.ValidateObject(new vtest0("12345", null, "a@b.c")));
             Assert.IsTrue(vh.ValidateObject(new vtest0("12345", "", "a@b.c")));
         }
@@ -122,7 +122,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            ValidateHandler vh = new ValidateHandler(false);
+            var vh = new ValidateHandler(false);
             Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")));
             Assert.IsFalse(vh.ValidateObject(new vtest("123456", "", "a@b.c")));
         }
@@ -130,7 +130,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test4()
         {
-            ValidateHandler vh = new ValidateHandler(false, false,"{1}", "", "", "", "", ", ");
+            var vh = new ValidateHandler(false, false,"{1}", "", "", "", "", ", ");
             Assert.IsFalse(vh.ValidateObject(new vtest0("llf", "beijing", "aaa")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("Please input valid email address", vh.ErrorMessages["Email"]);
@@ -139,14 +139,14 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test5()
         {
-            ValidateHandler vh = new ValidateHandler(false);
+            var vh = new ValidateHandler(false);
             Assert.IsTrue(vh.ValidateObject(new vtest0("llf", "beijing", "aaa@bbb.ccc")));
         }
 
         [Test]
         public void Test6()
         {
-            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
+            var vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
             Assert.IsFalse(vh.ValidateObject(new vtest0("lifeng", "beijing", "aaa@bbb.ccc")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("Length limited by 5", vh.ErrorMessages["Name"]);
@@ -155,7 +155,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test7()
         {
-            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
+            var vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
             Assert.IsFalse(vh.ValidateObject(new vtest("lifeng", "beijing", "aaa@bbb.ccc")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("length", vh.ErrorMessages["Name"]);
@@ -164,7 +164,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test8()
         {
-            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ",");
+            var vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ",");
             Assert.IsFalse(vh.ValidateObject(vPeople.New().Init("Tom")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("Already in use, please input another", vh.ErrorMessages["Name"]);
@@ -173,7 +173,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test9()
         {
-            ValidateHandler vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
+            var vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
             Assert.IsFalse(vh.ValidateObject(vPeople0.New().Init("Tom")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("unique", vh.ErrorMessages["Name"]);

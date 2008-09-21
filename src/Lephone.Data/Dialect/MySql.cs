@@ -9,6 +9,7 @@ namespace Lephone.Data.Dialect
 		public MySql()
 		{
             TypeNames[DataType.Guid] = "char(36)";
+            TypeNames[DataType.Binary] = "blob";
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)

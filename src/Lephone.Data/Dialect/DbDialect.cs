@@ -44,6 +44,7 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Binary]  = "binary";
 
             TypeNames[typeof(string)]   = "varchar";
+            TypeNames[typeof(byte[])]   = "binary";
         }
 
         public virtual string DbNowString
@@ -114,9 +115,18 @@ namespace Lephone.Data.Dialect
 
         public virtual string GetTypeName(DataType dt, bool IsUnicode, int Length)
         {
-            object key = (dt == DataType.String && Length > 0) ?
-                typeof(string) :
-                (object)dt;
+            object key = dt;
+            if(Length > 0)
+            {
+                if (dt == DataType.String)
+                {
+                    key = typeof(string);
+                }
+                else if(dt == DataType.Binary)
+                {
+                    key = typeof (byte[]);
+                }
+            }
             var s =(string)TypeNames[key];
             if (IsUnicode)
             {

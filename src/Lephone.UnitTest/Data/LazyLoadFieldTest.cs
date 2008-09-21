@@ -66,7 +66,7 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class LazyLoadFieldTest
     {
-        private DbContext de = new DbContext("SQLite");
+        private readonly DbContext de = new DbContext("SQLite");
 
         #region Init
 
@@ -202,16 +202,16 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestForNotUpdate()
         {
-            lzUser1 u = new lzUser1();
+            var u = new lzUser1();
             u.Name = "tom";
             u.Profile.Value = "test";
             DbEntry.Save(u);
             Assert.AreEqual(1, u.Id);
 
-            lzUser1 u1 = DbEntry.GetObject<lzUser1>(1);
-            DbEntry.Save(u);
+            var u1 = DbEntry.GetObject<lzUser1>(1);
+            DbEntry.Save(u1);
 
-            lzUser1 u2 = DbEntry.GetObject<lzUser1>(1);
+            var u2 = DbEntry.GetObject<lzUser1>(1);
             Assert.AreEqual("tom", u2.Name);
             Assert.AreEqual("test", u2.Profile.Value);
         }
