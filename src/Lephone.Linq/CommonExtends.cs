@@ -177,5 +177,11 @@ public static class CommonExtends
         return ClassHelper.IsChildOf(tf, tc);
     }
 
+    public static string ToBase32String(this Guid guid)
+    {
+        var bs = guid.ToByteArray();
+        return Base32StringCoding.Decode(bs);
+    }
+
 	#endregion
 }

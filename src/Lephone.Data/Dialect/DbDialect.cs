@@ -308,5 +308,10 @@ namespace Lephone.Data.Dialect
         {
             return "'" + theDate + "'";
         }
+
+        public virtual string GenIndexName(string n)
+        {
+            return null;
+        }
     }
 }

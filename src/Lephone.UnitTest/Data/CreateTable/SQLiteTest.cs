@@ -1,6 +1,5 @@
 ﻿using System;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.Objects;
@@ -93,7 +92,7 @@ namespace Lephone.UnitTest.Data.CreateTable
     [TestFixture]
     public class SQLiteTest
     {
-        private readonly DbContext de = new DbContext(EntryConfig.GetDriver("SQLite"));
+        private readonly DbContext de = new DbContext("SQLite");
 
         [SetUp]
         public void SetUp()

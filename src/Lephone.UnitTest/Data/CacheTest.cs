@@ -1,12 +1,11 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using Lephone.Data.Caching;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Linq;
-using Lephone.UnitTest.util.timingTask;
+using Lephone.UnitTest.util;
 using Lephone.Util;
-using Lephone.Util.TimingTask;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -132,16 +131,16 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            MockNowTimeProvider now = (MockNowTimeProvider)NowProvider.Instance;
+            var now = (MockMiscProvider)MiscProvider.Instance;
             now.SetNow(new DateTime(2007, 11, 4, 15, 23, 43));
-            StaticHashCacheProvider c = ClassHelper.CreateInstance<StaticHashCacheProvider>();
+            var c = ClassHelper.CreateInstance<StaticHashCacheProvider>();
 
-            SinglePerson p = new SinglePerson {Id = 15, Name = "tom"};
+            var p = new SinglePerson {Id = 15, Name = "tom"};
 
             string key = KeyGenerator.Instance.GetKey(p.GetType(), p.Id);
             c[key] = ObjectInfo.CloneObject(p);
 
-            SinglePerson act = (SinglePerson)c[key];
+            var act = (SinglePerson)c[key];
 
             Assert.IsNotNull(act);
             Assert.AreEqual(15, act.Id);
@@ -167,7 +166,7 @@ namespace Lephone.UnitTest.Data
         /*
         Hi Lifeng, 
 
-        hereâ€²s my testing code (all used classes are marked cacheable and inherit from LinqObjectModel<T>):
+        here¡äs my testing code (all used classes are marked cacheable and inherit from LinqObjectModel<T>):
 
         Test Case Failures:
         1) Docas.UnitTests.Common.ModelTest.T0300_HRM_JobRoleRelation : System.NullReferenceException : Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.

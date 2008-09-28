@@ -6,14 +6,14 @@ namespace Lephone.Util.TimingTask.Timings
 	{
 		protected int SpanSeconds;
 		protected DateTime LastActiveTime;
-		protected NowProvider NowTimeProvider;
+		protected MiscProvider miscTimeProvider;
 
-        public TimeSpanTiming(TimeSpan Span) : this(Span, NowProvider.Instance) { }
+        public TimeSpanTiming(TimeSpan Span) : this(Span, MiscProvider.Instance) { }
 
-		public TimeSpanTiming(TimeSpan Span, NowProvider NowTimeProvider)
+		public TimeSpanTiming(TimeSpan Span, MiscProvider miscTimeProvider)
 		{
 			this.SpanSeconds = (int)Span.TotalSeconds;
-			this.NowTimeProvider = NowTimeProvider;
+			this.miscTimeProvider = miscTimeProvider;
 			LastActiveTime = DateTime.MinValue;
 		}
 
@@ -26,13 +26,13 @@ namespace Lephone.Util.TimingTask.Timings
 		public virtual TimeSpan TimeSpanFromNowOn()
 		{
 			DateTime dt = GetNextActiveTime();
-			TimeSpan ts = dt.Subtract(NowTimeProvider.Now);
+            TimeSpan ts = dt.Subtract(miscTimeProvider.Now);
 			return ts;
 		}
 
 		public virtual void Reset()
 		{
-			LastActiveTime = NowTimeProvider.Now;
+            LastActiveTime = miscTimeProvider.Now;
 		}
 
 		protected DateTime GetNextActiveTime()

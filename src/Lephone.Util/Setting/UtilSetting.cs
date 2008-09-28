@@ -4,7 +4,7 @@ namespace Lephone.Util.Setting
 {
     public static class UtilSetting
     {
-        public static readonly string NowProvider = "Lephone.Util.TimingTask.NowProvider, Lephone.Util";
+        public static readonly string MiscProvider = "Lephone.Util.MiscProvider, Lephone.Util";
 
         public static readonly string NameMapper = "Lephone.Util.Text.NameMapper, Lephone.Util";
 

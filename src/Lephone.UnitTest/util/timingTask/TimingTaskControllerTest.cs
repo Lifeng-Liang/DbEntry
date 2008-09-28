@@ -11,15 +11,15 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestIt()
 		{
-			MockTask t1 = new MockTask();
-			MockTask t2 = new MockTask();
-			MockNowTimeProvider Now = new MockNowTimeProvider(new DateTime(2005,1,21,0,0,0));
+			var t1 = new MockTask();
+			var t2 = new MockTask();
+			var Now = new MockMiscProvider(new DateTime(2005,1,21,0,0,0));
 			ITiming ti1 = new DayTiming(new TimeOfDayStructure(1,2,3), Now);
 			ITiming ti2 = new DayTiming(new TimeOfDayStructure(1,3,5), Now);
-			TimingTaskCollection ttc = new TimingTaskCollection(new TimingTask(t1, ti1), new TimingTask(t2, ti2));
+			var ttc = new TimingTaskCollection(new TimingTask(t1, ti1), new TimingTask(t2, ti2));
 
-			MockTimer mt = new MockTimer();
-			TimingTaskController Controller = new TimingTaskController(ttc, mt);
+			var mt = new MockTimer();
+			var Controller = new TimingTaskController(ttc, mt);
 			Controller.Start();
 
 			Now.SetNow(new DateTime(2005,1,21,1,2,2));

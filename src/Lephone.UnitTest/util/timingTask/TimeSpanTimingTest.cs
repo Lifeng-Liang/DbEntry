@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Lephone.Util.TimingTask;
 using Lephone.Util.TimingTask.Timings;
 using NUnit.Framework;
@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestForSecends()
 		{
-			MockNowTimeProvider ntp = new MockNowTimeProvider(new DateTime(2004,3,5,10,5,10,0));
+			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
 			ITiming t = new TimeSpanTiming(new TimeSpan(0, 0, 3), ntp);
 
 			Assert.AreEqual(true, t.TimesUp());
@@ -37,7 +37,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestForMinutes()
 		{
-			MockNowTimeProvider ntp = new MockNowTimeProvider(new DateTime(2004,3,5,10,5,10,0));
+			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
 			ITiming t = new TimeSpanTiming(new TimeSpan(0, 5, 0), ntp);
 
 			Assert.AreEqual(true, t.TimesUp());
@@ -69,7 +69,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestForHours()
 		{
-			MockNowTimeProvider ntp = new MockNowTimeProvider(new DateTime(2004,3,5,10,5,10,0));
+			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
 			ITiming t = new TimeSpanTiming(new TimeSpan(6, 0, 0), ntp);
 
 			Assert.AreEqual(true, t.TimesUp());

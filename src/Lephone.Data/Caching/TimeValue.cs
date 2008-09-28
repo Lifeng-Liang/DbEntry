@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using Lephone.Data.Common;
-using Lephone.Util.TimingTask;
+using Lephone.Util;
 
 namespace Lephone.Data.Caching
 {
@@ -17,7 +17,7 @@ namespace Lephone.Data.Caching
 
         public static DateTime GetExpiredOn()
         {
-            return NowProvider.Instance.Now.AddMinutes(DataSetting.CacheMinutes);
+            return MiscProvider.Instance.Now.AddMinutes(DataSetting.CacheMinutes);
         }
 
         public static TimeValue CreateTimeValue(object Value)

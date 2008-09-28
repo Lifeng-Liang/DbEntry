@@ -28,7 +28,7 @@ namespace Lephone.Util.Text
             if (( n % 2 ) == 0 )
             {
                 int m = n / 2;
-                byte[] ret = new byte [m];
+                var ret = new byte [m];
                 unsafe
                 {
                     fixed ( char* p = Src )
@@ -36,7 +36,7 @@ namespace Lephone.Util.Text
                     {
                         for( int i=0, j=0; i<m; i++ )
                         {
-                            byte b1 = (byte)(r[ p[j++] ] << 4 );
+                            var b1 = (byte)(r[ p[j++] ] << 4 );
                             byte b2 = r[ p[j++] ];
                             ret[i] = (byte)(b1 | b2);
                         }
@@ -50,7 +50,7 @@ namespace Lephone.Util.Text
         public static string Decode(byte[] Src)
         {
             int n = Src.Length;
-            string ret = new string((char)0, n + n);
+            var ret = new string((char)0, n + n);
             unsafe
             {
                 fixed (char* p = ret, h = HexChar)

@@ -119,6 +119,11 @@ namespace Lephone.Data.Builder
             {
                 string n = prefix;
                 n += i.IndexName ?? i.Columns[0].Key;
+                string gn = dd.GenIndexName(n);
+                if(gn != null)
+                {
+                    n = "IX_" + gn; 
+                }
                 if (i.UNIQUE)
                 {
                     sb.Append("CREATE UNIQUE ");

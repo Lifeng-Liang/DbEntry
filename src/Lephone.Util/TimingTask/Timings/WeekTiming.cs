@@ -6,12 +6,12 @@ namespace Lephone.Util.TimingTask.Timings
 	{
 		public WeekTiming(TimeOfDayStructure TimeOfDay, DayOfWeek dow) : base(TimeOfDay, (int)dow) {}
 
-		public WeekTiming(TimeOfDayStructure TimeOfDay, DayOfWeek dow, NowProvider NowTimeProvider)
-			: base(TimeOfDay, (int)dow, NowTimeProvider) {}
+		public WeekTiming(TimeOfDayStructure TimeOfDay, DayOfWeek dow, MiscProvider miscTimeProvider)
+			: base(TimeOfDay, (int)dow, miscTimeProvider) {}
 
 		protected override bool IsDayOfRange()
 		{
-			return ((int)NowTimeProvider.Now.DayOfWeek == DayOfRange);
+			return ((int)miscTimeProvider.Now.DayOfWeek == DayOfRange);
 		}
 	}
 }

@@ -2,10 +2,10 @@
 {
 	public class DayTiming : DayOfRangeTimingBase
 	{
-        public DayTiming(TimeOfDayStructure TimeOfDay) : base(TimeOfDay, 0, NowProvider.Instance) { }
+        public DayTiming(TimeOfDayStructure TimeOfDay) : base(TimeOfDay, 0, MiscProvider.Instance) { }
 
-		public DayTiming(TimeOfDayStructure TimeOfDay, NowProvider NowTimeProvider)
-			: base(TimeOfDay, 0, NowTimeProvider) {}
+		public DayTiming(TimeOfDayStructure TimeOfDay, MiscProvider miscTimeProvider)
+			: base(TimeOfDay, 0, miscTimeProvider) {}
 
 		protected override bool IsDayOfRange()
 		{

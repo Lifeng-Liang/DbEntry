@@ -13,7 +13,7 @@
 
     <add key="ObjectHandlerType" value="Emit" />
 
-    <add key="NowProvider" value="Lephone.UnitTest.util.timingTask.MockNowTimeProvider, Lephone.UnitTest" />
+    <add key="MiscProvider" value="Lephone.UnitTest.util.MockMiscProvider, Lephone.UnitTest" />
 
     <add key="AutoCreateTable" value="true" />
     <add key="NameMapper" value="Lephone.Util.Text.UnderlineNameMapper, Lephone.Util" />
