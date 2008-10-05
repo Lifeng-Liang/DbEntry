@@ -252,11 +252,7 @@ namespace Lephone.Data.Common
                     string UnmappedMainTableName = NameMapper.Instance.UnmapName(MainTableName);
                     string UnmappedSlaveTableName = NameMapper.Instance.UnmapName(SlaveTableName);
 
-                    string CrossTableName = UnmappedMainTableName.CompareTo(UnmappedSlaveTableName) > 0
-                                               ?
-                                                   UnmappedSlaveTableName + "_" + UnmappedMainTableName
-                                               : UnmappedMainTableName + "_" + UnmappedSlaveTableName;
-                    CrossTableName = NameMapper.Instance.Prefix + CrossTableName;
+                    string CrossTableName = getCrossTableName(f, UnmappedMainTableName, UnmappedSlaveTableName);
 
                     var fc = new FromClause(
                         new JoinClause(CrossTableName + "." + UnmappedSlaveTableName + "_Id", SlaveTableName + ".Id",
@@ -267,6 +263,24 @@ namespace Lephone.Data.Common
                                          UnmappedSlaveTableName + "_Id");
                 }
             }
+        }
+
+        private static string getCrossTableName(MemberHandler f, string UnmappedMainTableName, string UnmappedSlaveTableName)
+        {
+            string CrossTableName;
+            if(!string.IsNullOrEmpty(f.CrossTableName))
+            {
+                CrossTableName = f.CrossTableName;
+            }
+            else
+            {
+                CrossTableName
+                    = UnmappedMainTableName.CompareTo(UnmappedSlaveTableName) > 0
+                          ? UnmappedSlaveTableName + "_" + UnmappedMainTableName
+                          : UnmappedMainTableName + "_" + UnmappedSlaveTableName;
+            }
+            CrossTableName = NameMapper.Instance.Prefix + CrossTableName;
+            return CrossTableName;
         }
 
         private static bool DisableSqlLog(Type DbObjectType)

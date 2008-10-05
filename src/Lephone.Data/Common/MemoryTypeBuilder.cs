@@ -121,6 +121,9 @@ namespace Lephone.Data.Common
             return FieldType.Normal;
         }
 
+        private static readonly ConstructorInfo CrossTableNameAttributeConstructor
+            = typeof(CrossTableNameAttribute).GetConstructor(new[] { typeof(string) });
+
         private static readonly ConstructorInfo DbColumnAttributeConstructor
             = typeof(DbColumnAttribute).GetConstructor(new[] { typeof(string) });
 
@@ -163,7 +166,7 @@ namespace Lephone.Data.Common
                 new object[] { o.ASC, o.IndexName, o.UNIQUE, o.UniqueErrorMessage });
         }
 
-        private FieldInfo DefineField(string Name, Type PropertyType, FieldType ft, MemberInfo pi)
+        private FieldInfo DefineField(string Name, Type PropertyType, FieldType ft, PropertyInfo pi)
         {
             if (ft == FieldType.Normal)
             {
@@ -179,6 +182,14 @@ namespace Lephone.Data.Common
             else if (ft == FieldType.LazyLoad)
             {
                 fb.SetCustomAttribute(GetDbColumnBuilder(pi.Name));
+            }
+            if (ft == FieldType.HasAndBelongsToMany)
+            {
+                var mm = ClassHelper.GetAttribute<HasAndBelongsToManyAttribute>(pi, false);
+                if(!string.IsNullOrEmpty(mm.CrossTableName))
+                {
+                    fb.SetCustomAttribute(new CustomAttributeBuilder(CrossTableNameAttributeConstructor, new object[] { mm.CrossTableName }));
+                }
             }
             ProcessCustomAttribute<AllowNullAttribute>(pi, o => fb.SetCustomAttribute(GetAllowNullBuilder()));
             ProcessCustomAttribute<LengthAttribute>(pi, o => fb.SetCustomAttribute(GetLengthBuilder(o)));

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
@@ -85,6 +86,60 @@ namespace Lephone.UnitTest.Data.CreateTable
         public byte[] password;
 
         public byte[] image;
+    }
+
+    [DbTable("Books")]
+    public class crxBook : IDbObject
+    {
+        [DbKey] public int Id;
+
+        [Length(20)]
+        public string Name;
+
+        [CrossTableName(Name = "book_and_category")]
+        public HasAndBelongsToMany<crxCategory> Categories;
+
+        public crxBook()
+        {
+            Categories = new HasAndBelongsToMany<crxCategory>(this, "Id");
+        }
+    }
+
+    [DbTable("Categories")]
+    public class crxCategory : IDbObject
+    {
+        [DbKey] public int Id;
+
+        [Length(20)]
+        public string Name;
+
+        [CrossTableName(Name = "book_and_category")]
+        public HasAndBelongsToMany<crxBook> Books;
+
+        public crxCategory()
+        {
+            Books = new HasAndBelongsToMany<crxBook>(this, "Id");
+        }
+    }
+
+    [DbTable("Books")]
+    public abstract class crxBook1 : DbObjectModel<crxBook1>
+    {
+        [Length(20)]
+        public abstract string Name { get; set; }
+
+        [HasAndBelongsToMany(CrossTableName = "book_and_category")]
+        public abstract IList<crxCategory1> Categories { get; set; }
+    }
+
+    [DbTable("Categories")]
+    public abstract class crxCategory1 : DbObjectModel<crxCategory1>
+    {
+        [Length(20)]
+        public abstract string Name { get; set; }
+
+        [HasAndBelongsToMany(CrossTableName = "book_and_category")]
+        public abstract IList<crxBook1> Books { get; set; }
     }
 
     #endregion
@@ -258,6 +313,50 @@ CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC
             o.password = new byte[] {1, 2, 3, 4, 5};
             isValid = vh.ValidateObject(o);
             Assert.IsTrue(isValid);
+        }
+
+        [Test]
+        public void TestDefineCrossTableName()
+        {
+            de.Create(typeof(crxBook));
+            Assert.AreEqual(
+@"CREATE TABLE [Books] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] nvarchar (20) NOT NULL 
+);
+<Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+
+            de.CreateCrossTable(typeof(crxBook), typeof(crxCategory));
+            Assert.AreEqual(
+@"CREATE TABLE [R_book_and_category] (
+    [Books_Id] int NOT NULL ,
+    [Categories_Id] int NOT NULL 
+);
+CREATE INDEX [IX_R_book_and_category_Books_Id] ON [R_book_and_category] ([Books_Id] ASC);
+CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([Categories_Id] ASC);
+<Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestDefineCrossTableName2()
+        {
+            de.Create(typeof(crxBook1));
+            Assert.AreEqual(
+@"CREATE TABLE [Books] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] nvarchar (20) NOT NULL 
+);
+<Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+
+            de.CreateCrossTable(typeof(crxBook1), typeof(crxCategory1));
+            Assert.AreEqual(
+@"CREATE TABLE [R_book_and_category] (
+    [Books_Id] bigint NOT NULL ,
+    [Categories_Id] bigint NOT NULL 
+);
+CREATE INDEX [IX_R_book_and_category_Books_Id] ON [R_book_and_category] ([Books_Id] ASC);
+CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([Categories_Id] ASC);
+<Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
         }
     }
 }

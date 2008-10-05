@@ -131,11 +131,11 @@ namespace Lephone.UnitTest.Data
 
         public SampleData Init(string name, UserRole role, DateTime joinDate, bool enabled, int? nullInt)
         {
-            this.Name = name;
-            this.Role = role;
-            this.JoinDate = joinDate;
-            this.Enabled = enabled;
-            this.NullInt = nullInt;
+            Name = name;
+            Role = role;
+            JoinDate = joinDate;
+            Enabled = enabled;
+            NullInt = nullInt;
             return this;
         }
     }
@@ -179,11 +179,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestAutoCreateTable()
         {
-            MyTestTable o = new MyTestTable();
-            o.Name = "Tom";
-            o.Gender = true;
-            o.Age = 18;
-            o.Birthday = DateTime.Now;
+            var o = new MyTestTable {Name = "Tom", Gender = true, Age = 18, Birthday = DateTime.Now};
             DbEntry.Save(o);
             List<MyTestTable> ls = DbEntry.From<MyTestTable>().Where(WhereCondition.EmptyCondition).Select();
             Assert.AreEqual(1, ls.Count);
@@ -196,12 +192,10 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasOne()
         {
-            ctUser u = new ctUser();
-            u.Name = "Tom";
-            u.info.Value = new ctInfo();
-            u.info.Value.iMsg = "ok";
+            var u = new ctUser { Name = "Tom" };
+            u.info.Value = new ctInfo {iMsg = "ok"};
             DbEntry.Save(u);
-            ctUser o = DbEntry.GetObject<ctUser>(u.Id);
+            var o = DbEntry.GetObject<ctUser>(u.Id);
             Assert.AreEqual("Tom", o.Name);
             Assert.AreEqual("ok", o.info.Value.iMsg);
         }
@@ -209,12 +203,11 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasMany()
         {
-            ctmUser u = new ctmUser();
-            u.Name = "Jerry";
+            var u = new ctmUser {Name = "Jerry"};
             u.infos.Add(new ctmInfo("aha"));
             u.infos.Add(new ctmInfo("let me c"));
             DbEntry.Save(u);
-            ctmUser o = DbEntry.GetObject<ctmUser>(u.Id);
+            var o = DbEntry.GetObject<ctmUser>(u.Id);
             Assert.AreEqual("Jerry", o.Name);
             Assert.AreEqual(2, o.infos.Count);
             Assert.AreEqual("aha", o.infos[0].iMsg);
@@ -224,22 +217,22 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasAndBelongsToMany()
         {
-            cmmReader u = new cmmReader("Tom");
+            var u = new cmmReader("Tom");
             u.arts.Add(new cmmArticle("do"));
             u.arts.Add(new cmmArticle("ok"));
             u.arts.Add(new cmmArticle("go"));
             DbEntry.Save(u);
-            cmmArticle a = DbEntry.GetObject<cmmArticle>(u.arts[2].Id);
+            var a = DbEntry.GetObject<cmmArticle>(u.arts[2].Id);
             a.rads.Add(new cmmReader("Jerry"));
             a.rads[0].arts.Add(new cmmArticle("pp"));
             DbEntry.Save(a);
-            cmmReader o1 = DbEntry.GetObject<cmmReader>(u.Id);
+            var o1 = DbEntry.GetObject<cmmReader>(u.Id);
             Assert.AreEqual("Tom", o1.Name);
             Assert.AreEqual(3, o1.arts.Count);
             Assert.AreEqual("do", o1.arts[0].Title);
             Assert.AreEqual("ok", o1.arts[1].Title);
             Assert.AreEqual("go", o1.arts[2].Title);
-            cmmReader o2 = DbEntry.GetObject<cmmReader>(a.rads[0].Id);
+            var o2 = DbEntry.GetObject<cmmReader>(a.rads[0].Id);
             Assert.AreEqual("Jerry", o2.Name);
             Assert.AreEqual(2, o2.arts.Count);
             Assert.AreEqual("go", o2.arts[0].Title);

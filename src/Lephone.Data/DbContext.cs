@@ -682,6 +682,10 @@ namespace Lephone.Data
             {
                 throw new DataException("They are not many to many relation ship classes!");
             }
+            if(oi1.KeyFields.Length <= 0 || oi2.KeyFields.Length <= 0)
+            {
+                throw new DataException("The relation table must have key column!");
+            }
             CrossTable mt1 = oi1.CrossTables[t2];
             var cts = new CreateTableStatementBuilder(mt1.Name);
             var ls = new List<string> {mt1.ColumeName1, mt1.ColumeName2};

@@ -135,6 +135,7 @@ namespace Lephone.Data.Common
         public readonly bool IsBelongsTo;
         public readonly bool IsHasMany;
         public readonly bool IsHasAndBelongsToMany;
+	    public readonly string CrossTableName;
         public readonly bool IsLazyLoad;
         public readonly bool IsCreatedOn;
         public readonly bool IsUpdatedOn;
@@ -207,6 +208,11 @@ namespace Lephone.Data.Common
                 if (fi.MemberType.GetGenericTypeDefinition() == t2)
                 {
                     IsHasAndBelongsToMany = true;
+                    var ctn = fi.GetAttribute<CrossTableNameAttribute>(false);
+                    if(ctn != null)
+                    {
+                        CrossTableName = ctn.Name;
+                    }
                     if (fn == null)
                     {
                         Type ot1 = fi.MemberType.GetGenericArguments()[0];
