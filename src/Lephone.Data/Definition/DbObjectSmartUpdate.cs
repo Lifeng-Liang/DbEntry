@@ -55,7 +55,7 @@ namespace Lephone.Data.Definition
 
         public void WriteXml(System.Xml.XmlWriter writer)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(GetType());
             foreach (MemberHandler mh in oi.SimpleFields)
             {
                 object o = mh.GetValue(this);
@@ -78,7 +78,7 @@ namespace Lephone.Data.Definition
 
         public virtual ValidateHandler Validate()
         {
-            ValidateHandler v = new ValidateHandler();
+            var v = new ValidateHandler();
             v.ValidateObject(this);
             return v;
         }

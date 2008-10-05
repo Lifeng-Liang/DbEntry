@@ -122,7 +122,6 @@ namespace Lephone.UnitTest.Data.CreateTable
         }
     }
 
-    [DbTable("Books")]
     public abstract class crxBook1 : DbObjectModel<crxBook1>
     {
         [Length(20)]
@@ -132,7 +131,6 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract IList<crxCategory1> Categories { get; set; }
     }
 
-    [DbTable("Categories")]
     public abstract class crxCategory1 : DbObjectModel<crxCategory1>
     {
         [Length(20)]
@@ -342,7 +340,7 @@ CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([C
         {
             de.Create(typeof(crxBook1));
             Assert.AreEqual(
-@"CREATE TABLE [Books] (
+@"CREATE TABLE [crx_Book1] (
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
     [Name] nvarchar (20) NOT NULL 
 );
@@ -351,11 +349,11 @@ CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([C
             de.CreateCrossTable(typeof(crxBook1), typeof(crxCategory1));
             Assert.AreEqual(
 @"CREATE TABLE [R_book_and_category] (
-    [Books_Id] bigint NOT NULL ,
-    [Categories_Id] bigint NOT NULL 
+    [crx_Book1_Id] bigint NOT NULL ,
+    [crx_Category1_Id] bigint NOT NULL 
 );
-CREATE INDEX [IX_R_book_and_category_Books_Id] ON [R_book_and_category] ([Books_Id] ASC);
-CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([Categories_Id] ASC);
+CREATE INDEX [IX_R_book_and_category_crx_Book1_Id] ON [R_book_and_category] ([crx_Book1_Id] ASC);
+CREATE INDEX [IX_R_book_and_category_crx_Category1_Id] ON [R_book_and_category] ([crx_Category1_Id] ASC);
 <Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
         }
     }

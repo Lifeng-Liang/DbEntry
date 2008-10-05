@@ -115,6 +115,12 @@ namespace Lephone.Data
 
         private void validateUnique(object obj, Type t, ObjectInfo oi, bool IsNew)
         {
+            Dictionary<string, object> updatedColumns = null;
+            if(obj is DbObjectSmartUpdate)
+            {
+                updatedColumns = ((DbObjectSmartUpdate)obj).m_UpdateColumns;
+            }
+
             WhereCondition EditCondition = IsNew ? null : !ObjectInfo.GetKeyWhereClause(obj);
             foreach (List<MemberHandler> mhs in oi.UniqueIndexes.Values)
             {
@@ -122,28 +128,31 @@ namespace Lephone.Data
                 string n = "";
                 foreach (MemberHandler h in mhs)
                 {
-                    object v = h.GetValue(obj);
-                    if (h.AllowNull && v == null)
+                    if(updatedColumns == null || updatedColumns.ContainsKey(h.Name))
                     {
-                        c = null;
-                        break;
-                    }
-                    if (v != null)
-                    {
-                        if (v.GetType().IsGenericType)
+                        object v = h.GetValue(obj);
+                        if (h.AllowNull && v == null)
                         {
-                            if (v is IBelongsTo)
+                            c = null;
+                            break;
+                        }
+                        if (v != null)
+                        {
+                            if (v.GetType().IsGenericType)
                             {
-                                v = ((IBelongsTo)v).ForeignKey;
-                            }
-                            else
-                            {
-                                v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
+                                if (v is IBelongsTo)
+                                {
+                                    v = ((IBelongsTo)v).ForeignKey;
+                                }
+                                else
+                                {
+                                    v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
+                                }
                             }
                         }
+                        c &= (CK.K[h.Name] == v);
+                        n += h.Name;
                     }
-                    c &= (CK.K[h.Name] == v);
-                    n += h.Name;
                 }
                 if (c != null)
                 {

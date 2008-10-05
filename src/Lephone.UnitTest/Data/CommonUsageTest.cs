@@ -6,7 +6,9 @@ using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
+using Lephone.UnitTest.Data.CreateTable;
 using Lephone.UnitTest.Data.Objects;
+using Lephone.Util.Logging;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -20,10 +22,10 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("People")]
-    public class UniquePerson : DbObject
+    public abstract class UniquePerson : DbObjectModel<UniquePerson>
     {
         [Index(UNIQUE = true)]
-        public string Name;
+        public abstract string Name { get; set; }
     }
 
     public class CountTable : DbObject
@@ -86,13 +88,12 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            SinglePerson p = new SinglePerson();
-            p.Name = "abc";
+            var p = new SinglePerson {Name = "abc"};
             Assert.AreEqual(0, p.Id);
 
             DbEntry.Save(p);
             Assert.IsTrue(0 != p.Id);
-            SinglePerson p1 = DbEntry.GetObject<SinglePerson>(p.Id);
+            var p1 = DbEntry.GetObject<SinglePerson>(p.Id);
             Assert.AreEqual(p.Name, p1.Name);
 
             p.Name = "xyz";
@@ -256,16 +257,14 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void ToStringTest()
         {
-            ImpPeople p = new ImpPeople();
-            p.Name = "tom";
+            var p = new ImpPeople {Name = "tom"};
             Assert.AreEqual("{ Id = 0, Name = tom }", p.ToString());
 
             DArticle a = DArticle.New();
             a.Name = "long";
             Assert.AreEqual("{ Id = 0, Name = long }", a.ToString());
 
-            ImpPCs c = new ImpPCs();
-            c.Name = "HP";
+            var c = new ImpPCs {Name = "HP"};
             Assert.AreEqual("{ Id = 0, Name = HP, Person_Id = 0 }", c.ToString());
         }
 
@@ -273,8 +272,8 @@ namespace Lephone.UnitTest.Data
         public void TestColumnCompColumn()
         {
             //WhereCondition c = CK.K["Age"] > CK.K["Count"];
-            WhereCondition c = CK.K["Age"].Gt(CK.K["Count"]);
-            DataParamterCollection dpc = new DataParamterCollection();
+            var c = CK.K["Age"].Gt(CK.K["Count"]);
+            var dpc = new DataParamterCollection();
             string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
@@ -283,8 +282,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestColumnCompColumn2()
         {
-            WhereCondition c = CK.K["Age"] > CK.K["Count"];
-            DataParamterCollection dpc = new DataParamterCollection();
+            var c = CK.K["Age"] > CK.K["Count"];
+            var dpc = new DataParamterCollection();
             string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
@@ -293,8 +292,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestColumnCompColumn3()
         {
-            WhereCondition c = CK.K["Age"] > CK.K["Count"] && CK.K["Name"] == CK.K["theName"] || CK.K["Age"] <= CK.K["Num"];
-            DataParamterCollection dpc = new DataParamterCollection();
+            var c = CK.K["Age"] > CK.K["Count"] && CK.K["Name"] == CK.K["theName"] || CK.K["Age"] <= CK.K["Num"];
+            var dpc = new DataParamterCollection();
             string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("(([Age] > [Count]) And ([Name] = [theName])) Or ([Age] <= [Num])", s);
@@ -360,9 +359,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUniqueValidate()
         {
-            UniquePerson u = new UniquePerson();
+            var u = UniquePerson.New();
             u.Name = "test";
-            ValidateHandler vh = new ValidateHandler();
+            var vh = new ValidateHandler();
             vh.ValidateObject(u);
             Assert.IsTrue(vh.IsValid);
 
@@ -371,20 +370,29 @@ namespace Lephone.UnitTest.Data
             vh.ValidateObject(u);
             Assert.IsFalse(vh.IsValid);
             Assert.AreEqual("Invalid Field Name Should be UNIQUED.", vh.ErrorMessages["Name"]);
+
+            // smart validate
+            var p = DbEntry.GetObject<UniquePerson>(1);
+            var n = ConsoleMessageRecorder.Count;
+            Assert.IsTrue(p.IsValid());
+            Assert.AreEqual(n, ConsoleMessageRecorder.Count);
+            p.Name = "Jerry";
+            Assert.IsFalse(p.IsValid());
+            Assert.AreEqual(n + 1, ConsoleMessageRecorder.Count);
         }
 
         [Test]
         public void TestFindOneWithSqlServer2005()
         {
-            DbContext de = new DbContext("SqlServerMock");
-            Person p = de.GetObject<Person>(CK.K["Name"] == "test", null);
+            var de = new DbContext("SqlServerMock");
+            var p = de.GetObject<Person>(CK.K["Name"] == "test", null);
             Assert.IsNull(p);
         }
 
         [Test]
         public void Test2ndPageWithSqlserver2005()
         {
-            DbContext de = new DbContext("SqlServerMock");
+            var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<Person>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
             Assert.AreEqual("select [Id],[Name] from (select [Id],[Name], ROW_NUMBER() OVER ( Order By [Id] ASC) as __rownumber__ From [People]  Where [Age] > @Age_0) as T Where T.__rownumber__ >= 3 and T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
@@ -403,7 +411,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test_CK_Field()
         {
-            DbContext de = new DbContext("SqlServerMock");
+            var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK<PropertyClassWithDbColumn>.Field["TheName"] == "tom").Select();
             Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] = @Name_0;\n<Text><60>(@Name_0=tom:String)", StaticRecorder.LastMessage);
@@ -412,7 +420,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestNull()
         {
-            DbContext de = new DbContext("SqlServerMock");
+            var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] == null).Select();
             Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] Is NULL;\n<Text><60>()", StaticRecorder.LastMessage);
@@ -421,7 +429,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestNotNull()
         {
-            DbContext de = new DbContext("SqlServerMock");
+            var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] != null).Select();
             Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] Is Not NULL;\n<Text><60>()", StaticRecorder.LastMessage);
@@ -430,10 +438,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCountTable()
         {
-            DbContext de = new DbContext("SqlServerMock");
+            var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
-            CountTable ct = new CountTable();
-            ct.Id = 1;
+            var ct = new CountTable {Id = 1};
             de.Save(ct);
             Assert.AreEqual("Update [Count_Table] Set [Count]=[Count]+1  Where [Id] = @Id_0;\n<Text><30>(@Id_0=1:Int64)", StaticRecorder.LastMessage);
         }
@@ -441,7 +448,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCountTable2()
         {
-            DbContext de = new DbContext("SqlServerMock");
+            var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             CountTable2 ct = CountTable2.New();
             ct.Id = 1;
@@ -480,6 +487,25 @@ namespace Lephone.UnitTest.Data
 
             item2.Name = "mike";
             item2.Save();
+        }
+
+        [Test]
+        public void TestDefineCrossTableName3()
+        {
+            var b = crxBook1.New();
+            b.Name = "test";
+
+            var c = crxCategory1.New();
+            c.Name = "math";
+
+            c.Books.Add(b);
+
+            c.Save();
+
+            var c1 = crxCategory1.FindById(c.Id);
+            Assert.AreEqual("math", c1.Name);
+            Assert.AreEqual(1, c1.Books.Count);
+            Assert.AreEqual("test", c1.Books[0].Name);
         }
     }
 }
