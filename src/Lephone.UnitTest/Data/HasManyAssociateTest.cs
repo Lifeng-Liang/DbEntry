@@ -27,7 +27,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany1()
         {
             // A.Select will read B (LazyLoading*)
-            Category c = DbEntry.GetObject<Category>(2);
+            var c = DbEntry.GetObject<Category>(2);
             Assert.IsNotNull(c);
             Assert.IsTrue(3 == c.Books.Count);
 
@@ -44,7 +44,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany1_1()
         {
             // A.Select will read B (LazyLoading*), and set B.a as A
-            Category c = DbEntry.GetObject<Category>(2);
+            var c = DbEntry.GetObject<Category>(2);
             Assert.IsNotNull(c);
             Assert.IsTrue(3 == c.Books.Count);
             Assert.AreEqual("Game", c.Name);
@@ -56,9 +56,9 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany2()
         {
             // A owns 0 or multiple B, so b(b.Value) could be null
-            Category Tech = DbEntry.GetObject<Category>(1);
-            Category Game = DbEntry.GetObject<Category>(2);
-            Category Tour = DbEntry.GetObject<Category>(3);
+            var Tech = DbEntry.GetObject<Category>(1);
+            var Game = DbEntry.GetObject<Category>(2);
+            var Tour = DbEntry.GetObject<Category>(3);
 
             Assert.IsNotNull(Tech);
             Assert.IsTrue(0 == Tech.Books.Count);
@@ -79,10 +79,8 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany3()
         {
             // A.b = new B() will set B.a = A
-            Category c = new Category();
-            c.Name = "Sport";
-            Book b = new Book();
-            b.Name = "Basketball";
+            var c = new Category {Name = "Sport"};
+            var b = new Book {Name = "Basketball"};
             c.Books.Add(b);
             Assert.AreEqual(b.CurCategory.Value, c);
         }
@@ -91,7 +89,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany4_1()
         {
             // A.Save will save B, if is A Update, then save B
-            Category c = DbEntry.GetObject<Category>(1);
+            var c = DbEntry.GetObject<Category>(1);
             Assert.IsNotNull(c);
             Assert.IsTrue(0 == c.Books.Count);
             c.Books.Add(new Book());
@@ -101,7 +99,7 @@ namespace Lephone.UnitTest.Data
             Assert.IsTrue(1 == c.Id);
             Assert.IsTrue(0 != c.Books[0].Id);
 
-            Category c1 = DbEntry.GetObject<Category>(1);
+            var c1 = DbEntry.GetObject<Category>(1);
             Assert.IsNotNull(c1);
             Assert.IsTrue(1 == c1.Books.Count);
             Assert.AreEqual("C#", c1.Books[0].Name);
@@ -111,8 +109,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany4_2()
         {
             // A.Save will save B, if is A Insert, then save A first, then set B.A_id, and then save B
-            Category c = new Category();
-            c.Name = "Sport";
+            var c = new Category {Name = "Sport"};
             c.Books.Add(new Book());
             c.Books[0].Name = "Basketball";
             DbEntry.Save(c);
@@ -120,7 +117,7 @@ namespace Lephone.UnitTest.Data
             Assert.IsTrue(0 != c.Books[0].Id);
             Assert.IsTrue(0 != (long)c.Books[0].CurCategory.ForeignKey);
 
-            Category c1 = DbEntry.GetObject<Category>(c.Id);
+            var c1 = DbEntry.GetObject<Category>(c.Id);
             Assert.AreEqual("Sport", c1.Name);
             Assert.IsTrue(1 == c1.Books.Count);
             Assert.IsNotNull(c1.Books[0]);
@@ -131,7 +128,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany5()
         {
             // A.Delete will delete itself, and delete B *
-            Category c = DbEntry.GetObject<Category>(2);
+            var c = DbEntry.GetObject<Category>(2);
             Assert.IsNotNull(c);
             Assert.IsTrue(3 == c.Books.Count);
             long bid1 = c.Books[0].Id;
@@ -139,7 +136,7 @@ namespace Lephone.UnitTest.Data
             long bid3 = c.Books[2].Id;
             // do delete
             DbEntry.Delete(c);
-            Category c1 = DbEntry.GetObject<Category>(2);
+            var c1 = DbEntry.GetObject<Category>(2);
             Assert.IsNull(c1);
             Assert.IsNull(DbEntry.GetObject<Book>(bid1));
             Assert.IsNull(DbEntry.GetObject<Book>(bid2));
@@ -152,8 +149,8 @@ namespace Lephone.UnitTest.Data
             // B has a foreign key A_id
             // B.a = A will set value of B.A_id
             // B.a = A will set A.a = b ????
-            Category c = DbEntry.GetObject<Category>(3);
-            Book b = new Book();
+            var c = DbEntry.GetObject<Category>(3);
+            var b = new Book();
             b.Name = "Luoyang";
             b.CurCategory.Value = c;
 
@@ -164,10 +161,8 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany7()
         {
             // B.Save will save itself
-            Category c = new Category();
-            c.Name = "Sport";
-            Book b = new Book();
-            b.Name = "Basketball";
+            var c = new Category {Name = "Sport"};
+            var b = new Book {Name = "Basketball"};
             c.Books.Add(b);
 
             DbEntry.Save(b);
@@ -180,7 +175,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany8()
         {
             // B.Delete will delete itself
-            Category c = DbEntry.GetObject<Category>(2);
+            var c = DbEntry.GetObject<Category>(2);
             Assert.IsNotNull(c);
             Assert.IsTrue(3 == c.Books.Count);
             Book b = c.Books[0];
@@ -195,9 +190,8 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany9()
         {
             // If not loading B, and insert a new item in B, then don't loading, when save it, only save which in the memory
-            Category c = DbEntry.GetObject<Category>(2);
-            Book b = new Book();
-            b.Name = "Next";
+            var c = DbEntry.GetObject<Category>(2);
+            var b = new Book {Name = "Next"};
             c.Books.Add(b);
             Assert.AreEqual(1, c.Books.Count);
             DbEntry.Save(c);
@@ -222,7 +216,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany10()
         {
             // B.Select will read A (LazyLoading*)
-            Book c = DbEntry.GetObject<Book>(2);
+            var c = DbEntry.GetObject<Book>(2);
             Assert.IsNotNull(c);
             Assert.IsNotNull(c.CurCategory.Value);
             Assert.AreEqual("Tour", c.CurCategory.Value.Name);
@@ -232,7 +226,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany11()
         {
             // B.Select will read A (LazyLoading*), and B.a.b[x] == B
-            Book c = DbEntry.GetObject<Book>(2);
+            var c = DbEntry.GetObject<Book>(2);
             Assert.IsNotNull(c);
             Assert.AreEqual("Tour", c.CurCategory.Value.Name);
             Assert.AreEqual(2, c.CurCategory.Value.Books.Count);
@@ -246,10 +240,9 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany12()
         {
             // A.Save will save B, if b(b.Value) is null, then don't save B
-            Category c = new Category();
-            c.Name = "Sport";
+            var c = new Category {Name = "Sport"};
             DbEntry.Save(c);
-            Category c1 = DbEntry.GetObject<Category>(c.Id);
+            var c1 = DbEntry.GetObject<Category>(c.Id);
             Assert.IsNotNull(c1);
             Assert.IsTrue(0 == c1.Books.Count);
             Assert.AreEqual(c.Name, c1.Name);
@@ -259,18 +252,17 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany13()
         {
             // DbEntry.Save(c.Books) will save all data in the list,
-            Category c = DbEntry.GetObject<Category>(3);
+            var c = DbEntry.GetObject<Category>(3);
             Assert.AreEqual("Tour", c.Name);
             Assert.AreEqual(2, c.Books.Count);
             c.Name = "Sport";
             c.Books[0].Name = "Hongkong";
             c.Books[1].Name = "Luoyang";
-            Book b = new Book();
-            b.Name = "Pingxiang";
+            var b = new Book {Name = "Pingxiang"};
             c.Books.Add(b);
             DbEntry.Save(c.Books);
 
-            Category c1 = DbEntry.GetObject<Category>(3);
+            var c1 = DbEntry.GetObject<Category>(3);
             Assert.AreEqual("Tour", c1.Name);
             Assert.AreEqual(3, c1.Books.Count);
             Assert.AreEqual("Hongkong", c1.Books[0].Name);
@@ -281,7 +273,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRemoveAnItem()
         {
-            Category c = DbEntry.GetObject<Category>(3);
+            var c = DbEntry.GetObject<Category>(3);
             Assert.AreEqual("Tour", c.Name);
             Assert.AreEqual(2, c.Books.Count);
             Assert.AreEqual("Beijing", c.Books[0].Name);
@@ -299,7 +291,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRemoveAnItem2()
         {
-            Book b = DbEntry.GetObject<Book>(2);
+            var b = DbEntry.GetObject<Book>(2);
             Assert.AreEqual("Beijing", b.Name);
             Assert.IsNotNull(b.CurCategory);
 
@@ -309,6 +301,43 @@ namespace Lephone.UnitTest.Data
             b = DbEntry.GetObject<Book>(2);
             Assert.AreEqual("Beijing", b.Name);
             Assert.IsNull(b.CurCategory.Value);
+        }
+
+        [Test]
+        public void TestListClear()
+        {
+            var c = DbEntry.GetObject<Category>(3);
+            Assert.AreEqual(2, c.Books.Count);
+
+            c.Books.Clear();
+            DbEntry.Save(c);
+
+            var c1 = DbEntry.GetObject<Category>(3);
+            Assert.AreEqual(0, c1.Books.Count);
+        }
+
+        [Test]
+        public void TestListClear2()
+        {
+            var c = DbEntry.GetObject<Category>(3);
+            c.Books.Clear();
+            DbEntry.Save(c);
+
+            var c1 = DbEntry.GetObject<Category>(3);
+            Assert.AreEqual(0, c1.Books.Count);
+        }
+
+        [Test]
+        public void TestListClear3()
+        {
+            var c = DbEntry.GetObject<Category>(3);
+            var b = new Book {Name = "test"};
+            c.Books.Add(b);
+            c.Books.Clear();
+            DbEntry.Save(c);
+
+            var c1 = DbEntry.GetObject<Category>(3);
+            Assert.AreEqual(2, c1.Books.Count);
         }
     }
 }

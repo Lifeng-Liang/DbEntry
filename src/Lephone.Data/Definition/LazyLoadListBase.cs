@@ -149,6 +149,11 @@ namespace Lephone.Data.Definition
 
         public void Clear()
         {
+            ((ILazyLoading)this).Read();
+            foreach (var t in InnerList)
+            {
+                OnRemoveItem(t);
+            }
             InnerList.Clear();
         }
 

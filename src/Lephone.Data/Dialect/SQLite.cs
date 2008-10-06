@@ -4,12 +4,12 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data.Dialect
 {
-	public class SQLite : DbDialect
-	{
-		public SQLite()
-		{
+    public class SQLite : DbDialect
+    {
+        public SQLite()
+        {
             TypeNames[DataType.Binary] = "blob";
-		}
+        }
 
         public override string DbNowString
         {
@@ -33,13 +33,13 @@ namespace Lephone.Data.Dialect
 
         public override DbStructInterface GetDbStructInterface()
         {
-            return new DbStructInterface(null, new[]{null, null, null, "table"}, null, null, null);
+            return new DbStructInterface(null, new[] { null, null, null, "table" }, null, null, null);
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("{0} Limit {1}, {2}", 
+            Sql.SqlCommandText = string.Format("{0} Limit {1}, {2}",
                 Sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
             return Sql;
         }
@@ -70,8 +70,8 @@ namespace Lephone.Data.Dialect
         }
 
         public override string IdentitySelectString
-		{
+        {
             get { return "SELECT last_insert_rowid();\n"; }
-		}
-	}
+        }
+    }
 }
