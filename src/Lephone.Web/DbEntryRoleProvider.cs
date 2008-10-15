@@ -53,7 +53,7 @@ namespace Lephone.Web
 
         public override bool DeleteRole(string roleName, bool throwOnPopulatedRole)
         {
-            DbEntryRole r = DbEntryRole.FindOne(CK.K["Name"] == roleName);
+            var r = DbEntryRole.FindOne(CK.K["Name"] == roleName);
             if (r != null)
             {
                 if (throwOnPopulatedRole && r.Users.Count>0)
@@ -68,10 +68,10 @@ namespace Lephone.Web
 
         public override string[] FindUsersInRole(string roleName, string usernameToMatch)
         {
-            DbEntryRole r = DbEntryRole.FindOne(CK.K["Name"] == roleName);
+            var r = DbEntryRole.FindOne(CK.K["Name"] == roleName);
             if (r != null)
             {
-                List<string> ls = new List<string>();
+                var ls = new List<string>();
                 foreach (DbEntryMembershipUser u in r.Users)
                 {
                     if (u.UserName.IndexOf(usernameToMatch) >= 0)
@@ -86,7 +86,7 @@ namespace Lephone.Web
 
         public override string[] GetAllRoles()
         {
-            List<string> ls = new List<string>();
+            var ls = new List<string>();
             foreach (DbEntryRole r in DbEntryRole.FindAll())
             {
                 ls.Add(r.Name);
@@ -96,8 +96,8 @@ namespace Lephone.Web
 
         public override string[] GetRolesForUser(string username)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
-            List<string> ls = new List<string>();
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
+            var ls = new List<string>();
             foreach (DbEntryRole r in u.Roles)
             {
                 ls.Add(r.Name);
@@ -107,8 +107,8 @@ namespace Lephone.Web
 
         public override string[] GetUsersInRole(string roleName)
         {
-            DbEntryRole r = DbEntryRole.FindOne(CK.K["Name"] == roleName);
-            List<string> ls = new List<string>();
+            var r = DbEntryRole.FindOne(CK.K["Name"] == roleName);
+            var ls = new List<string>();
             foreach (DbEntryMembershipUser u in r.Users)
             {
                 ls.Add(u.UserName);
@@ -118,7 +118,7 @@ namespace Lephone.Web
 
         public override bool IsUserInRole(string username, string roleName)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             foreach (DbEntryRole r in u.Roles)
             {
                 if (r.Name == roleName)
@@ -136,7 +136,7 @@ namespace Lephone.Web
             {
                 c |= CK.K["Name"] == s;
             }
-            List<string> uns = new List<string>(usernames);
+            var uns = new List<string>(usernames);
             DbEntry.UsingTransaction(delegate
             {
                 foreach (DbEntryRole r in DbEntryRole.Find(c))
@@ -155,7 +155,7 @@ namespace Lephone.Web
 
         public override bool RoleExists(string roleName)
         {
-            DbEntryRole r = DbEntryRole.FindOne(CK.K["Name"] == roleName);
+            var r = DbEntryRole.FindOne(CK.K["Name"] == roleName);
             return (r != null);
         }
     }

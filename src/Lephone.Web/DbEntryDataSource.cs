@@ -31,7 +31,7 @@ namespace Lephone.Web
             }
         }
 
-        private DbEntryDataSourceView view = null;
+        private DbEntryDataSourceView view;
 
         protected override DataSourceView GetView(string viewName)
         {
@@ -44,7 +44,7 @@ namespace Lephone.Web
 
         protected override ICollection GetViewNames()
         {
-            return new string[] { "MainView" };
+            return new[] { "MainView" };
         }
 
         private OrderBy m_OrderBy;
@@ -54,7 +54,7 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["DefaultOrderBy"];
+                object o = ViewState["DefaultOrderBy"];
                 if (o != null)
                 {
                     return (string)o;
@@ -63,7 +63,7 @@ namespace Lephone.Web
             }
             set
             {
-                this.ViewState["DefaultOrderBy"] = value;
+                ViewState["DefaultOrderBy"] = value;
             }
         }
 
@@ -72,7 +72,7 @@ namespace Lephone.Web
         {
             get
             {
-                object o = this.ViewState["IsStatic"];
+                object o = ViewState["IsStatic"];
                 if (o != null)
                 {
                     return (bool)o;
@@ -81,7 +81,7 @@ namespace Lephone.Web
             }
             set
             {
-                this.ViewState["IsStatic"] = value;
+                ViewState["IsStatic"] = value;
             }
         }
 
@@ -92,10 +92,6 @@ namespace Lephone.Web
         {
             get { return _Condition; }
             set { _Condition = value; }
-        }
-
-        public DbEntryDataSource()
-        {
         }
 
         IEnumerable IExcuteableDataSource.Select(DataSourceSelectArguments arguments)
@@ -111,7 +107,7 @@ namespace Lephone.Web
                 DefaultOrderBy = se;
                 m_OrderBy = OrderBy.Parse(se);
             }
-            int PageIndex = (arguments.MaximumRows == 0) ? 0 : (int)(arguments.StartRowIndex / arguments.MaximumRows);
+            int PageIndex = (arguments.MaximumRows == 0) ? 0 : arguments.StartRowIndex / arguments.MaximumRows;
             int TotalRowCount = arguments.TotalRowCount;
             List<T> ret = ExecuteSelect(_Condition, m_OrderBy, arguments.MaximumRows, PageIndex, ref TotalRowCount);
             arguments.TotalRowCount = TotalRowCount;
@@ -138,7 +134,7 @@ namespace Lephone.Web
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
         {
             object key = ClassHelper.ChangeType(keys[KeyName], ObjInfo.KeyFields[0].FieldType);
-            T obj = DbEntry.GetObject<T>(key);
+            var obj = DbEntry.GetObject<T>(key);
             int n = ExecuteDelete(obj);
             if (OnObjectDeleted != null)
             {
@@ -151,7 +147,7 @@ namespace Lephone.Web
         {
             if (obj != null)
             {
-                DbObjectSmartUpdate o = obj as DbObjectSmartUpdate;
+                var o = obj as DbObjectSmartUpdate;
                 if (o != null)
                 {
                     o.Delete();
@@ -180,7 +176,7 @@ namespace Lephone.Web
         {
             if (obj != null)
             {
-                DbObjectSmartUpdate o = obj as DbObjectSmartUpdate;
+                var o = obj as DbObjectSmartUpdate;
                 if (o != null)
                 {
                     o.Save();
@@ -209,7 +205,7 @@ namespace Lephone.Web
         {
             if (obj != null)
             {
-                DbObjectSmartUpdate o = obj as DbObjectSmartUpdate;
+                var o = obj as DbObjectSmartUpdate;
                 if (o != null)
                 {
                     o.Save();

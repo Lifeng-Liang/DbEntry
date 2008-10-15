@@ -22,7 +22,7 @@ namespace Lephone.Web
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null && u.Password == oldPassword)
             {
                 u.Password = newPassword;
@@ -34,7 +34,7 @@ namespace Lephone.Web
 
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username && CK.K["Password"] == password);
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username && CK.K["Password"] == password);
             if (u != null)
             {
                 u.PasswordQuestion = newPasswordQuestion;
@@ -49,7 +49,7 @@ namespace Lephone.Web
         {
             try
             {
-                DbEntryMembershipUser u = DbEntryMembershipUser.New().Init(username, password, email, passwordQuestion, passwordAnswer, isApproved, null);
+                var u = DbEntryMembershipUser.New().Init(username, password, email, passwordQuestion, passwordAnswer, isApproved, null);
                 u.Save();
                 status = MembershipCreateStatus.Success;
                 return u.ToMembershipUser();
@@ -67,7 +67,7 @@ namespace Lephone.Web
             {
                 throw new DataException("Not support deleteAllRelatedData");
             }
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null)
             {
                 u.Delete();
@@ -103,12 +103,12 @@ namespace Lephone.Web
 
         private static MembershipUserCollection GetMembershipUserCollection(WhereCondition c, int pageIndex, int pageSize, out int totalRecords)
         {
-            IPagedSelector ps = DbEntry.From<DbEntryMembershipUser>().Where(c)
+            var ps = DbEntry.From<DbEntryMembershipUser>().Where(c)
                 .OrderBy("Id DESC").PageSize(pageSize).GetPagedSelector();
 
             totalRecords = (int)ps.GetResultCount();
 
-            MembershipUserCollection muc = new MembershipUserCollection();
+            var muc = new MembershipUserCollection();
             foreach (DbEntryMembershipUser u in ps.GetCurrentPage(pageIndex))
             {
                 muc.Add(u.ToMembershipUser());
@@ -123,7 +123,7 @@ namespace Lephone.Web
 
         public override string GetPassword(string username, string answer)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null)
             {
                 if (u.PasswordAnswer == answer)
@@ -136,7 +136,7 @@ namespace Lephone.Web
 
         public override MembershipUser GetUser(string username, bool userIsOnline)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null)
             {
                 return u.ToMembershipUser();
@@ -151,7 +151,7 @@ namespace Lephone.Web
 
         public override string GetUserNameByEmail(string email)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["Email"] == email);
+            var u = DbEntryMembershipUser.FindOne(CK.K["Email"] == email);
             if (u != null)
             {
                 return u.UserName;
@@ -201,7 +201,7 @@ namespace Lephone.Web
 
         public override string ResetPassword(string username, string answer)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null)
             {
                 if (u.PasswordAnswer == answer)
@@ -220,7 +220,7 @@ namespace Lephone.Web
 
         public override void UpdateUser(MembershipUser user)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindById((long)user.ProviderUserKey);
+            var u = DbEntryMembershipUser.FindById((long)user.ProviderUserKey);
             if (u != null)
             {
                 u.Email = user.Email;
@@ -233,7 +233,7 @@ namespace Lephone.Web
 
         public override bool ValidateUser(string username, string password)
         {
-            DbEntryMembershipUser u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username && CK.K["Password"] == password);
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username && CK.K["Password"] == password);
             return (u != null);
         }
     }

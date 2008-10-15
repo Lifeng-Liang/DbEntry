@@ -36,7 +36,7 @@ namespace Lephone.Web
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(_BaseUrl);
+            var sb = new StringBuilder(_BaseUrl);
             bool HasParam = (_BaseUrl.IndexOf("?") >= 0);
             sb.Append(HasParam ? "&" : "?");
             foreach (string Key in _Params.Keys)

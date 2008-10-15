@@ -13,7 +13,7 @@ namespace Lephone.Web
     {
         protected PageHandlerFactory factory = ClassHelper.CreateInstance<PageHandlerFactory>();
         internal static Dictionary<string, Type> ctls;
-        private static readonly char[] spliter = new char[] { '/' };
+        private static readonly char[] spliter = new[] { '/' };
 
         static RailsDispatcher()
         {
@@ -26,6 +26,7 @@ namespace Lephone.Web
             ctls["default"] = typeof(DefaultController);
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
+                if(a.FullName == null) { continue; }
                 string s = a.FullName.Split(',')[0];
                 if(!excepted.ContainsKey(s))
                 {
@@ -47,7 +48,7 @@ namespace Lephone.Web
 
         private static Dictionary<string, object> CreateExcepted( params string[] ss)
         {
-            Dictionary<string, object> excepted = new Dictionary<string,object>();
+            var excepted = new Dictionary<string,object>();
             foreach (string s in ss)
             {
                 excepted.Add(s, 0);
@@ -85,7 +86,7 @@ namespace Lephone.Web
         {
             // Invoke Controller
             Type t = ctls[ControllerName];
-            ControllerBase ctl = ClassHelper.CreateInstance(t) as ControllerBase;
+            var ctl = ClassHelper.CreateInstance(t) as ControllerBase;
             if(ctl == null)
             {
                 throw new WebException("The Controller must inherits from ControllerBase");
@@ -103,7 +104,7 @@ namespace Lephone.Web
                 }
 
                 ParameterInfo[] pis = mi.GetParameters();
-                List<object> parameters = new List<object>();
+                var parameters = new List<object>();
                 for (int i = 0; i < pis.Length; i++)
                 {
                     if (i + 2 < ss.Length)

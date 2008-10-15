@@ -21,5 +21,13 @@ namespace Lephone.UnitTest.DotNetFramework
             Type t = typeof(List<int>);
             Assert.AreEqual(typeof(int), t.GetGenericArguments()[0]);
         }
+
+        [Test]
+        public void Test3()
+        {
+            int? x = 3;
+            Assert.IsTrue(x.GetType().IsValueType);
+            Assert.IsTrue(typeof(int?).IsValueType);
+        }
     }
 }

@@ -62,6 +62,8 @@
     <Compile Include="DbEntryDataSource_Binder.cs" />
     <Compile Include="Common\PageHelper.cs" />
     <Compile Include="HtmlBuilder.cs" />
+    <Compile Include="PageLoadAttribute.cs" />
+    <Compile Include="HttpParameterAttribute.cs" />
     <Compile Include="Rails\ControllerHelper.cs" />
     <Compile Include="Rails\ControllerInfo.cs" />
     <Compile Include="Rails\DefaultActionAttribute.cs" />
@@ -78,6 +80,9 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Rails\ControlMapper.cs" />
+    <Compile Include="SmartPageBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UrlBuilder.cs" />
     <Compile Include="WebControlException.cs" />
     <Compile Include="WebException.cs" />

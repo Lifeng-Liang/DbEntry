@@ -15,7 +15,7 @@ namespace Lephone.Web
             string pp = context.Server.MapPath(vp);
             if (File.Exists(pp))
             {
-                Page p = factory.GetHandler(context, context.Request.RequestType, vp, pp) as Page;
+                var p = factory.GetHandler(context, context.Request.RequestType, vp, pp) as Page;
                 if (p != null)
                 {
                     ((IHttpHandler)p).ProcessRequest(context);

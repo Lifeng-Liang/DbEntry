@@ -63,7 +63,7 @@ namespace Lephone.Web.Rails
         {
             string ControllerName = GetControllerName();
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            T obj = (T)oi.NewObject();
+            var obj = (T)oi.NewObject();
             foreach(MemberHandler m in oi.SimpleFields)
             {
                 if (!m.IsDbGenerate && !m.IsAutoSavedValue)
@@ -108,7 +108,7 @@ namespace Lephone.Web.Rails
         {
             string ControllerName = GetControllerName();
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            T obj = (T)oi.NewObject();
+            var obj = (T)oi.NewObject();
             foreach (MemberHandler m in oi.SimpleFields)
             {
                 if (m.IsDbGenerate)
