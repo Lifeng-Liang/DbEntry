@@ -39,11 +39,7 @@ namespace Lephone.Web
             foreach (ParameterInfo pi in pis)
             {
                 var s = Request[pi.Name];
-                if(string.IsNullOrEmpty(s))
-                {
-                    throw new WebException(string.Format("The paramter {0} can' be empty", pi.Name));
-                }
-                object px = ClassHelper.ChangeType(s, pi.ParameterType);
+                object px = GetValue(s, false, pi.Name, pi.ParameterType);
                 parameters.Add(px);
             }
             mi.Invoke(this, parameters.ToArray());
@@ -52,12 +48,33 @@ namespace Lephone.Web
         private void ProcessParamterInit(FieldInfo fi, bool allowEmpty)
         {
             var s = Request[fi.Name];
-            if(string.IsNullOrEmpty(s) && !allowEmpty)
-            {
-                throw new WebException(string.Format("The paramter {0} can' be empty", fi.Name));
-            }
-            object px = ClassHelper.ChangeType(s, fi.FieldType);
+            object px = GetValue(s, allowEmpty, fi.Name, fi.FieldType);
             fi.SetValue(this, px);
+        }
+
+        private static object GetValue(string s, bool allowEmpty, string name, Type type)
+        {
+            object px;
+            if (string.IsNullOrEmpty(s))
+            {
+                if (!allowEmpty)
+                {
+                    throw new WebException(string.Format("The paramter {0} can' be empty", name));
+                }
+                if (type.IsValueType && type.IsGenericType)
+                {
+                    px = null;
+                }
+                else
+                {
+                    px = CommonHelper.GetEmptyValue(type);
+                }
+            }
+            else
+            {
+                px = ClassHelper.ChangeType(s, type);
+            }
+            return px;
         }
     }
 }

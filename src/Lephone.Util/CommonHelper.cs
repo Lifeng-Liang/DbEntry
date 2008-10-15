@@ -126,7 +126,7 @@ namespace Lephone.Util
 
         public static List<T> NewList<T>(params T[] ts)
         {
-            List<T> ret = new List<T>();
+            var ret = new List<T>();
             foreach (T t in ts)
             {
                 ret.Add(t);
