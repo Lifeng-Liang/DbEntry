@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Web.UI;
 using Lephone.Util;
@@ -14,35 +13,13 @@ namespace Lephone.Web
             var flag = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             foreach (var fieldInfo in t.GetFields(flag))
             {
-                var a = ClassHelper.GetAttribute<HttpParameterAttribute>(fieldInfo, false);
-                if (a != null)
+                var attr = ClassHelper.GetAttribute<HttpParameterAttribute>(fieldInfo, false);
+                if (attr != null)
                 {
-                    ProcessParamterInit(fieldInfo, a.AllowEmpty);
-                }
-            }
-            foreach (var methodInfo in t.GetMethods(flag))
-            {
-                var a = ClassHelper.GetAttribute<PageLoadAttribute>(methodInfo, false);
-                if(a != null)
-                {
-                    ProcessPageLoad(methodInfo);
-                    break;
+                    ProcessParamterInit(fieldInfo, attr.AllowEmpty);
                 }
             }
             base.OnLoad(e);
-        }
-
-        private void ProcessPageLoad(MethodInfo mi)
-        {
-            var pis = mi.GetParameters();
-            var parameters = new List<object>();
-            foreach (ParameterInfo pi in pis)
-            {
-                var s = Request[pi.Name];
-                object px = GetValue(s, false, pi.Name, pi.ParameterType);
-                parameters.Add(px);
-            }
-            mi.Invoke(this, parameters.ToArray());
         }
 
         private void ProcessParamterInit(FieldInfo fi, bool allowEmpty)
@@ -59,7 +36,7 @@ namespace Lephone.Web
             {
                 if (!allowEmpty)
                 {
-                    throw new WebException(string.Format("The paramter {0} can' be empty", name));
+                    throw new WebException(string.Format("The paramter {0} can't be empty", name));
                 }
                 if (type.IsValueType && type.IsGenericType)
                 {

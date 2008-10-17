@@ -62,7 +62,6 @@
     <Compile Include="DbEntryDataSource_Binder.cs" />
     <Compile Include="Common\PageHelper.cs" />
     <Compile Include="HtmlBuilder.cs" />
-    <Compile Include="PageLoadAttribute.cs" />
     <Compile Include="HttpParameterAttribute.cs" />
     <Compile Include="Rails\ControllerHelper.cs" />
     <Compile Include="Rails\ControllerInfo.cs" />

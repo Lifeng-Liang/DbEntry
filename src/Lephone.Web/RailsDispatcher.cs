@@ -177,7 +177,7 @@ namespace Lephone.Web
             return GetScaffoldingType(t.BaseType);
         }
 
-        private static void CallAction(MethodInfo mi, ControllerBase c, object[] ps)
+        private static void CallAction(MethodBase mi, ControllerBase c, object[] ps)
         {
             c.OnBeforeAction(mi.Name);
             mi.Invoke(c, ps);

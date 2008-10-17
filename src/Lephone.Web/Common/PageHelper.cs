@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Lephone.Util;
@@ -155,6 +157,24 @@ namespace Lephone.Web.Common
             {
                 return ((DropDownList)c).SelectedValue;
             }
+            if(c is Label)
+            {
+                return ((Label) c).Text;
+            }
+            return GetPropertyInfo(c).GetValue(c, null).ToString();
+        }
+
+        private static PropertyInfo GetPropertyInfo(object c)
+        {
+            var attr = ClassHelper.GetAttribute<DefaultPropertyAttribute>(c.GetType(), false);
+            if (attr != null)
+            {
+                var pi = c.GetType().GetProperty(attr.Name);
+                if (pi != null)
+                {
+                    return pi;
+                }
+            }
             throw new NotSupportedException();
         }
 
@@ -188,7 +208,7 @@ namespace Lephone.Web.Common
             {
                 ((Label)c).Text = (v ?? "").ToString();
             }
-            else throw new NotSupportedException();
+            else GetPropertyInfo(c).SetValue(c, v, null);
         }
 
         public static ListItem[] GetItems(Type EnumType)
