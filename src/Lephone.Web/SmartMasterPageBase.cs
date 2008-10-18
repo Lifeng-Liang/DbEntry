@@ -5,7 +5,7 @@ using Lephone.Util;
 
 namespace Lephone.Web
 {
-    public class SmartPageBase : Page
+    public class SmartMasterPageBase : MasterPage
     {
         protected override void OnLoad(EventArgs e)
         {
@@ -25,28 +25,8 @@ namespace Lephone.Web
         private void ProcessParamterInit(FieldInfo fi, bool allowEmpty)
         {
             var s = Request[fi.Name];
-            object px = GetValue(s, allowEmpty, fi.Name, fi.FieldType);
+            object px = SmartPageBase.GetValue(s, allowEmpty, fi.Name, fi.FieldType);
             fi.SetValue(this, px);
-        }
-
-        internal static object GetValue(string s, bool allowEmpty, string name, Type type)
-        {
-            if (string.IsNullOrEmpty(s))
-            {
-                if (!allowEmpty)
-                {
-                    throw new WebException(string.Format("The paramter {0} can't be empty", name));
-                }
-                if (type.IsValueType)
-                {
-                    if (type.IsGenericType)
-                    {
-                        return null;
-                    }
-                    return CommonHelper.GetEmptyValue(type);
-                }
-            }
-            return ClassHelper.ChangeType(s, type);
         }
     }
 }

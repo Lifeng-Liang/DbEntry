@@ -30,7 +30,10 @@ namespace Lephone.Web
 
         public UrlBuilder Add(string Key, string Value, Encoding encoding)
         {
-            _Params.Add(Key, encoding.GetBytes(Value));
+            if(!string.IsNullOrEmpty(Value))
+            {
+                _Params.Add(Key, encoding.GetBytes(Value));
+            }
             return this;
         }
 

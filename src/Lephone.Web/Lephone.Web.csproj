@@ -79,6 +79,9 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Rails\ControlMapper.cs" />
+    <Compile Include="SmartMasterPageBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="SmartPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

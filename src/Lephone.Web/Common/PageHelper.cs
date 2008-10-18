@@ -120,7 +120,7 @@ namespace Lephone.Web.Common
                             {
                                 h.SetValue(obj, "");
                             }
-                            else if(!h.IsCreatedOn)
+                            else if(!h.IsCreatedOn && !h.IsSavedOn)
                             {
                                 throw new WebControlException(c, string.Format(ParseErrorText, h.Name, ""));
                             }
