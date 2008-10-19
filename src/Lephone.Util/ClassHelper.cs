@@ -31,6 +31,11 @@ namespace Lephone.Util
                 if (value == null) return null;
                 return (Time?)(GetTime(value));
             }
+            if (conversionType.IsValueType && conversionType.IsGenericType)
+            {
+                object o = ChangeType(value, conversionType.GetGenericArguments()[0]);
+                return CreateInstance(conversionType, o);
+            }
             return Convert.ChangeType(value, conversionType);
         }
 
