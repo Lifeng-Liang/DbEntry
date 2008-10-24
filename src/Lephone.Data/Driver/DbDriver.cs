@@ -13,27 +13,20 @@ namespace Lephone.Data.Driver
 	{
         protected static Hashtable SpParamters = Hashtable.Synchronized(new Hashtable());
 
-		protected string m_ConnectionString;
+		public readonly string ConnectionString;
 
-		protected DbDialect m_Dialect;
+		public readonly DbDialect Dialect;
 
         protected DbFactory ProviderFactory;
 
-		public DbDialect Dialect
-		{
-			get { return m_Dialect; }
-		}
+	    public readonly bool AutoCreateTable;
 
-        public string ConnectionString
-        {
-            get { return m_ConnectionString; }
-        }
-
-        public DbDriver(DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
+	    protected DbDriver(DbDialect Dialect, string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
 		{
-            this.m_ConnectionString = ConnectionString;
-            m_Dialect = DialectClass;
-            this.ProviderFactory = CreateDbProviderFactory(DbProviderFactoryName);
+            this.ConnectionString = ConnectionString;
+            this.Dialect = Dialect;
+	        this.AutoCreateTable = AutoCreateTable;
+            ProviderFactory = CreateDbProviderFactory(DbProviderFactoryName);
 		}
 
         private DbFactory CreateDbProviderFactory(string DbProviderFactoryName)
@@ -60,9 +53,9 @@ namespace Lephone.Data.Driver
 
 	    protected abstract DbProviderFactory GetDefaultProviderFactory();
 
-		private ArrayList CloneSpParamters(IList eps)
+		private static ArrayList CloneSpParamters(IList eps)
 		{
-			ArrayList ps = new ArrayList();
+			var ps = new ArrayList();
 			for (int i = 0; i < eps.Count; i++)
 			{
 				ps.Add( ((ICloneable)eps[i]).Clone() );
@@ -70,11 +63,11 @@ namespace Lephone.Data.Driver
 			return ps;
 		}
 
-		private void RemoveReturnParamter(IDataParameterCollection dpc)
+		private static void RemoveReturnParamter(IList dpc)
 		{
 			for ( int i=0; i<dpc.Count; i++ )
 			{
-				IDataParameter dp = (IDataParameter)dpc[i];
+				var dp = (IDataParameter)dpc[i];
 				if ( dp.Direction == ParameterDirection.ReturnValue )
 				{
 					dpc.RemoveAt(i);
@@ -87,7 +80,7 @@ namespace Lephone.Data.Driver
 		{
 			if ( (!Sql.Paramters.UserSetKey) && (e.CommandType == CommandType.StoredProcedure) )
 			{
-				string sKey = Sql.SqlCommandText + ":" + m_ConnectionString;
+				string sKey = Sql.SqlCommandText + ":" + ConnectionString;
 				if ( SpParamters.Contains(sKey) )
 				{
 					ArrayList al = CloneSpParamters( (ArrayList)SpParamters[sKey] );
@@ -125,7 +118,7 @@ namespace Lephone.Data.Driver
 			return c;
 		}
 
-        protected object GetDbValue(object DotNetValue)
+        protected static object GetDbValue(object DotNetValue)
         {
             if (DotNetValue == null)
             {
@@ -162,11 +155,7 @@ namespace Lephone.Data.Driver
             e.CommandText = Sql.SqlCommandText;
 
             // for some database not supports CommandTimeout
-            try
-            {
-                e.CommandTimeout = Sql.SqlTimeOut;
-            }
-            catch { }
+            CommonHelper.IfCatchException(true, () => e.CommandTimeout = Sql.SqlTimeOut);
 
             e.CommandType = Sql.SqlCommandType;
             e.Connection = conn;
@@ -177,7 +166,7 @@ namespace Lephone.Data.Driver
         public virtual IDbConnection GetDbConnection()
         {
             IDbConnection c = ProviderFactory.CreateConnection();
-            c.ConnectionString = this.m_ConnectionString;
+            c.ConnectionString = ConnectionString;
             return c;
         }
 

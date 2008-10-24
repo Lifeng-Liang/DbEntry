@@ -9,7 +9,7 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class FirebirdTest
     {
-        private DbContext de = new DbContext("Firebird");
+        private readonly DbContext de = new DbContext("Firebird");
 
         [SetUp]
         public void SetUp()
@@ -43,12 +43,12 @@ namespace Lephone.UnitTest.Data
         public void TestCreate()
         {
             de.Create(typeof(LephoneEnum));
-            string Exp = "CREATE TABLE \"LEPHONE_ENUM\" (" +
-                "\"ID\" bigint NOT NULL PRIMARY KEY," +
-                "\"TYPE\" int NOT NULL ," +
-                "\"NAME\" varchar (50) NOT NULL ," +
-                "\"VALUE\" int" +
-                ");<Text><30>()";
+            const string Exp = "CREATE TABLE \"LEPHONE_ENUM\" (" +
+                               "\"ID\" bigint NOT NULL PRIMARY KEY," +
+                               "\"TYPE\" int NOT NULL ," +
+                               "\"NAME\" varchar (50) NOT NULL ," +
+                               "\"VALUE\" int" +
+                               ");<Text><30>()";
             Assert.AreEqual(Exp, StaticRecorder.Messages[0]);
             Assert.AreEqual("CREATE GENERATOR GEN_LEPHONE_ENUM_ID;<Text><30>()", StaticRecorder.Messages[1]);
         }

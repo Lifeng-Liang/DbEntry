@@ -6,8 +6,8 @@ namespace Lephone.Data.Driver
 {
     internal class CommonDbDriver : DbDriver
 	{
-        public CommonDbDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName)
-            : base(DialectClass, ConnectionString, DbProviderFactoryName)
+        public CommonDbDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
+            : base(DialectClass, ConnectionString, DbProviderFactoryName, AutoCreateTable)
         {
         }
 
@@ -18,7 +18,7 @@ namespace Lephone.Data.Driver
 
 		protected override void DeriveParameters(IDbCommand e)
 		{
-            SmartDbFactory f = ProviderFactory as SmartDbFactory;
+            var f = ProviderFactory as SmartDbFactory;
 			if ( f != null )
 			{
                 f.DeriveParameters(e);

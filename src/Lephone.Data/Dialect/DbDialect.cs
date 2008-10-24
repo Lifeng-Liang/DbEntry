@@ -144,9 +144,9 @@ namespace Lephone.Data.Dialect
             get { return "n"; }
         }
 
-        public virtual DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName)
+        public virtual DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
         {
-            return new CommonDbDriver(this, ConnectionString, DbProviderFactoryName);
+            return new CommonDbDriver(this, ConnectionString, DbProviderFactoryName, AutoCreateTable);
         }
 
         public virtual string GetConnectionString(string ConnectionString)

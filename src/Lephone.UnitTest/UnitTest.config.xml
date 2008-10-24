@@ -15,11 +15,11 @@
 
     <add key="MiscProvider" value="Lephone.UnitTest.util.MockMiscProvider, Lephone.UnitTest" />
 
-    <add key="AutoCreateTable" value="true" />
     <add key="NameMapper" value="Lephone.Util.Text.UnderlineNameMapper, Lephone.Util" />
     <add key="DefaultContext" value="Development" />
     <add key="CacheEnabled" value="true" />
- 
+
+    <add key="Development.AutoCreateTable" value="true" />
     <add key="Development.DataBase" value="@SQLite : @D:\UnitTest.db" />
     <add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.60.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
 
@@ -35,10 +35,12 @@
     <add key="TheString" value="OK" />
     <add key="TestBool" value="true" />
 
+    <add key="SQLite.AutoCreateTable" value="true" />
     <add key="SQLite.DataBase" value="@SQLite : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
     <add key="SQLite.DbDriver" value="Lephone.Data.Driver.CommonDbDriver, Lephone.Data" />
     <add key="SQLite.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />
 
+    <add key="Firebird.AutoCreateTable" value="true" />
     <add key="Firebird.DataBase" value="@Firebird : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
     <add key="Firebird.DbDriver" value="Lephone.Data.Driver.CommonDbDriver, Lephone.Data" />
     <add key="Firebird.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />

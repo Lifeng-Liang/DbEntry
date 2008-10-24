@@ -28,7 +28,7 @@ namespace Lephone.Data.Driver
 
         private void InitWithAssemblyName(string AssemblyName)
         {
-            Type[] EmptyParam = new Type[] { };
+            var EmptyParam = new Type[] { };
             Assembly asm = Assembly.Load(AssemblyName);
             Type[] ts = asm.GetTypes();
             Type CommandType = null;
@@ -58,7 +58,7 @@ namespace Lephone.Data.Driver
 
         private void TryGetDeriveParametersMethod(Type[] ts, Type CommandType)
         {
-            try
+            CommonHelper.IfCatchException(true, delegate
             {
                 foreach (Type t in ts)
                 {
@@ -66,16 +66,19 @@ namespace Lephone.Data.Driver
                     {
                         //TODO: why left this?
                         //object[] os = new object[] { };
-                        MiCb_DeriveParameters = t.GetMethod("DeriveParameters", ClassHelper.StaticFlag,
-                            null, CallingConventions.Any, new[] { CommandType }, null);
-                        break;
+                        MiCb_DeriveParameters = t.GetMethod("DeriveParameters",
+                                                          ClassHelper.StaticFlag,
+                                                          null,
+                                                          CallingConventions.Any,
+                                                          new[] {CommandType},
+                                                          null);
+                      break;
                     }
                 }
-            }
-            catch { }
+            });
         }
 
-        private bool IsInterfaceOf(Type t, Type it)
+        private static bool IsInterfaceOf(Type t, Type it)
         {
             if (t.GetInterface(it.Name) == null)
             {
@@ -84,7 +87,7 @@ namespace Lephone.Data.Driver
             return true;
         }
 
-        private void AssertConstructorNotNull(params ConstructorInfo[] ts)
+        private static void AssertConstructorNotNull(params ConstructorInfo[] ts)
         {
             foreach (ConstructorInfo t in ts)
             {

@@ -14,8 +14,6 @@ namespace Lephone.Data.Common
 	{
         public static readonly HandlerType ObjectHandlerType = HandlerType.Emit;
 
-        public static readonly bool AutoCreateTable         = false;
-
         public static readonly string DefaultContext        = "";
 
 		public static readonly int SqlTimeOut               = 30;

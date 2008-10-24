@@ -34,7 +34,7 @@ namespace Lephone.Data
 
         private void TryCreateTable(Type DbObjectType)
         {
-            if (DataSetting.AutoCreateTable)
+            if (Driver.AutoCreateTable)
             {
                 if (TableNames == null)
                 {
@@ -635,7 +635,7 @@ namespace Lephone.Data
             var Sql = new SqlStatement(s);
             oi.LogSql(Sql);
             CommonHelper.IfCatchException(CatchException, () => ExecuteNonQuery(Sql));
-            if (DataSetting.AutoCreateTable && TableNames != null)
+            if (Driver.AutoCreateTable && TableNames != null)
             {
                 TableNames.Remove(TableName.ToLower());
             }
@@ -653,7 +653,7 @@ namespace Lephone.Data
             SqlStatement Sql = oi.Composer.GetCreateStatement(Dialect);
             oi.LogSql(Sql);
             ExecuteNonQuery(Sql);
-            if (DataSetting.AutoCreateTable && TableNames != null)
+            if (Driver.AutoCreateTable && TableNames != null)
             {
                 TableNames.Add(oi.From.GetMainTableName().ToLower(), 1);
             }
@@ -668,7 +668,7 @@ namespace Lephone.Data
             SqlStatement Sql = sb.ToSqlStatement(Dialect);
             oi.LogSql(Sql);
             ExecuteNonQuery(Sql);
-            if (DataSetting.AutoCreateTable && TableNames != null)
+            if (Driver.AutoCreateTable && TableNames != null)
             {
                 TableNames.Add(oi.DeleteToTableName.ToLower(), 1);
             }
@@ -699,7 +699,7 @@ namespace Lephone.Data
             SqlStatement Sql = cts.ToSqlStatement(Dialect);
             oi1.LogSql(Sql);
             ExecuteNonQuery(Sql);
-            if (DataSetting.AutoCreateTable && TableNames != null)
+            if (Driver.AutoCreateTable && TableNames != null)
             {
                 TableNames.Add(mt1.Name.ToLower(), 1);
             }
