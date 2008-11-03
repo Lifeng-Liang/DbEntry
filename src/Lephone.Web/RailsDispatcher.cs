@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
@@ -109,7 +110,15 @@ namespace Lephone.Web
                 {
                     if (i + 2 < ss.Length)
                     {
-                        object px = ChangeType(ss[i + 2], pis[i].ParameterType);
+                        object px;
+                        if(pis[i].ParameterType.IsArray)
+                        {
+                            px = GetArray(ss, i + 2);
+                        }
+                        else
+                        {
+                            px = ChangeType(ss[i + 2], pis[i].ParameterType);
+                        }
                         parameters.Add(px);
                     }
                     else
@@ -137,6 +146,16 @@ namespace Lephone.Web
             {
                 ctl.OnException(ex);
             }
+        }
+
+        private static string[] GetArray(string[] ss, int startIndex)
+        {
+            var list = new List<string>();
+            for (int i = startIndex; i < ss.Length; i++)
+            {
+                list.Add(ss[i]);
+            }
+            return list.ToArray();
         }
 
         private PageBase CreatePage(HttpContext context, ControllerInfo ci, Type t, string ControllerName, string ActionName)

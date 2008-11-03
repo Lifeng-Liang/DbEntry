@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lephone.Web.Rails;
 
 namespace DebugLib.Controllers
@@ -25,6 +26,16 @@ namespace DebugLib.Controllers
         public void Say(string s1, string s2)
         {
             bag["item"] = string.Format("<b>{0}, {1}</b>", s1, s2);
+        }
+
+        public void Hello(string[] ss)
+        {
+            string s = "";
+            foreach (var s1 in ss)
+            {
+                s += s1 + "<br />";
+            }
+            bag["item"] = s;
         }
     }
 }
