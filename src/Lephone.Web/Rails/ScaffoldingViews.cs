@@ -83,8 +83,8 @@ namespace Lephone.Web.Rails
                 }
                 b.input.name("commit").type("submit").value("Update").end.enter().end.enter().enter();
 
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Show", null, "show", id, null)).enter();
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", null, null)).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, "Show", null, "show", "", id, null)).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", "", null, null)).enter();
             });
         }
 
@@ -105,7 +105,7 @@ namespace Lephone.Web.Rails
 
                 b.end.enter().enter();
 
-                IEnumerable objlist = bag["list"] as IEnumerable;
+                var objlist = bag["list"] as IEnumerable;
                 if(objlist != null)
                 {
                     foreach (object o in objlist)
@@ -116,22 +116,25 @@ namespace Lephone.Web.Rails
                         {
                             b.td.text(m.GetValue(o) ?? "<NULL>").end.enter();
                         }
-                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Show", null, "show", id, null)).end.enter();
-                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Edit", null, "edit", id, null)).end.enter();
-                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Destroy", null, "destroy", id, "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"")).end.enter();
+                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Show", null, "show", "", id)).end.enter();
+                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Edit", null, "edit", "", id)).end.enter();
+                        b.td.include(
+                            LinkTo(ctx.Request.ApplicationPath, "Destroy", null, "destroy",
+                                "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"",
+                                id)).end.enter();
                         b.end.enter().enter();
                     }
 
                     b.end.enter().enter();
 
-                    int count = (int)(long)bag["list_count"];
-                    int pagesize = (int)bag["list_pagesize"];
+                    var count = (int)(long)bag["list_count"];
+                    var pagesize = (int)bag["list_pagesize"];
                     for (int i = 0, n = 1; i < count; n++, i += pagesize)
                     {
-                        b.include(LinkTo(ctx.Request.ApplicationPath, n.ToString(), null, "list", n.ToString(), null)).enter();
+                        b.include(LinkTo(ctx.Request.ApplicationPath, n.ToString(), null, "list", "", n.ToString())).enter();
                     }
 
-                    b.enter().br.br.include(LinkTo(ctx.Request.ApplicationPath, "New " + cn, null, "new", null, null)).br.enter();
+                    b.enter().br.br.include(LinkTo(ctx.Request.ApplicationPath, "New " + cn, null, "new", "")).br.enter();
                 }
             });
         }
@@ -156,7 +159,7 @@ namespace Lephone.Web.Rails
 
                 b.input.name("commit").type("submit").value("Create").end.enter().end.enter().enter();
 
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", null, null)).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", "")).enter();
             });
         }
 
@@ -176,8 +179,8 @@ namespace Lephone.Web.Rails
 
                 b.enter();
 
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Edit", null, "edit", id, null)).enter();
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", null, null)).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, "Edit", null, "edit", "", id)).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", "")).enter();
             });
         }
 

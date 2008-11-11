@@ -13,10 +13,6 @@ namespace Lephone.Web.Rails
 
         protected FlashBox flash = new FlashBox();
 
-        public PageBase()
-        {
-        }
-
         protected internal void Print(object o)
         {
             Response.Write(o);
@@ -27,52 +23,49 @@ namespace Lephone.Web.Rails
             Response.Write(s);
         }
 
-        protected internal string LinkTo(string Title, string Controller, string Action, object Paramter)
+        protected internal string LinkTo(string title, string controller, string action, string addon, params object[] paramters)
         {
-            return LinkTo(Title, Controller, Action, Paramter, null);
+            return LinkTo(Request.ApplicationPath, title, controller, action, addon, paramters);
         }
 
-        protected internal string LinkTo(string Title, string Controller, string Action, object Paramter, string AddOn)
+        internal string LinkTo(string appPath, string title, string controller, string action, string addon, params object[] paramters)
         {
-            return LinkTo(Request.ApplicationPath, Title, Controller, Action, Paramter, AddOn);
-        }
-
-        internal string LinkTo(string AppPath, string Title, string Controller, string Action, object Paramter, string AddOn)
-        {
-            string ParamterStr = (Paramter == null) ? null : Paramter.ToString();
-            if (string.IsNullOrEmpty(Title))
+            if (string.IsNullOrEmpty(title))
             {
-                throw new DataException("Title can not be null or empty.");
+                throw new DataException("title can not be null or empty.");
             }
             string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
-                UrlTo(AppPath,
-                string.IsNullOrEmpty(Controller) ? ControllerName : Controller,
-                Action, ParamterStr), Title, AddOn == null ? "" : " " + AddOn);
+                UrlTo(appPath, string.IsNullOrEmpty(controller) ? ControllerName : controller, action, paramters),
+                title,
+                addon == null ? "" : " " + addon);
             return ret;
         }
 
-        protected internal string UrlTo(string Action, string Paramter)
+        protected internal string UrlTo(string action, params object[] paramters)
         {
-            return UrlTo(ControllerName, Action, Paramter);
+            return UrlTo(ControllerName, action, paramters);
         }
 
-        protected internal string UrlTo(string Controller, string Action, string Paramter)
+        protected internal string UrlTo(string controller, string action, params object[] paramters)
         {
-            return UrlTo(Request.ApplicationPath, Controller, Action, Paramter);
+            return UrlTo(Request.ApplicationPath, controller, action, paramters);
         }
 
-        internal static string UrlTo(string AppPath, string Controller, string Action, string Paramter)
+        internal static string UrlTo(string appPath, string controller, string action, params object[] paramters)
         {
-            StringBuilder url = new StringBuilder();
-            url.Append(AppPath).Append("/");
-            url.Append(Controller).Append("/");
-            if (!string.IsNullOrEmpty(Action))
+            var url = new StringBuilder();
+            url.Append(appPath).Append("/");
+            url.Append(controller).Append("/");
+            if (!string.IsNullOrEmpty(action))
             {
-                url.Append(Action).Append("/");
+                url.Append(action).Append("/");
             }
-            if (!string.IsNullOrEmpty(Paramter))
+            if (paramters != null)
             {
-                url.Append(Paramter).Append("/");
+                foreach (var o in paramters)
+                {
+                    url.Append(o).Append("/");
+                }
             }
             url.Length--;
             if (WebSettings.UsingAspxPostfix)

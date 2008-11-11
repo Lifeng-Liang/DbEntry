@@ -7,7 +7,7 @@
 <p><b>Name:</b><%= ((SysUser)bag["item"]).Name %></p>
 <p><b>Age:</b><%= ((SysUser)bag["item"]).Age %></p>
 
-<%= LinkTo("Edit", null, "edit", ((SysUser)bag["item"]).Id) %>
+<%= LinkTo("Edit", null, "edit", null, ((SysUser)bag["item"]).Id) %>
 <%= LinkTo("Back", null, "list", null) %>
 
 </asp:Content>

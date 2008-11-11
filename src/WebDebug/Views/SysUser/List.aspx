@@ -8,12 +8,13 @@
 
 <table>
 <tr><th>Id</th><th>Name</th><th>Age</th></tr>
-<% foreach(SysUser u in bag["list"] as IEnumerable) { %>
+<% foreach (SysUser u in (IEnumerable)bag["list"])
+   { %>
 <tr>
   <td><%= u.Id %></td><td><%= u.Name %></td><td><%= u.Age %></td>
-  <td><%= LinkTo("Show", null, "show", u.Id) %></td>
-  <td><%= LinkTo("Edit", null, "edit", u.Id) %></td>
-  <td><%= LinkTo("Destroy", null, "destroy", u.Id, "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"")%></td>
+  <td><%= LinkTo("Show", null, "show", null, u.Id) %></td>
+  <td><%= LinkTo("Edit", null, "edit", null, u.Id) %></td>
+  <td><%= LinkTo("Destroy", null, "destroy", null, u.Id, "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"")%></td>
 </tr>
 <% } %>
 </table>

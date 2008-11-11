@@ -9,7 +9,7 @@
 <input name="commit" type="submit" value="Update" />
 </form>
 
-<%= LinkTo("Show", null, "show", ((SysUser)bag["item"]).Id) %>
+<%= LinkTo("Show", null, "show", null, ((SysUser)bag["item"]).Id) %>
 <%= LinkTo("Back", null, "list", null) %>
 
 </asp:Content>

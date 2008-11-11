@@ -13,10 +13,6 @@ namespace Lephone.Web.Rails
         protected internal HttpContext ctx;
         protected internal Dictionary<string, object> bag = new Dictionary<string, object>();
 
-        public ControllerBase()
-        {
-        }
-
         protected internal virtual void OnBeforeAction(string ActionName)
         {
         }
@@ -41,7 +37,7 @@ namespace Lephone.Web.Rails
         {
             string ParamterStr = (Paramter == null) ? null : Paramter.ToString();
             string ControllerName = string.IsNullOrEmpty(Controller) ? GetControllerName() : Controller;
-            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, ControllerName, Action, ParamterStr);
+            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, ControllerName, Action, new object[] { ParamterStr });
             ctx.Response.Redirect(url);
         }
 
