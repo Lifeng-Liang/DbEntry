@@ -74,11 +74,13 @@
     <Compile Include="DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="Common\DbEntryMembershipUser.cs" />
+    <Compile Include="Rails\LTArgs.cs" />
     <Compile Include="Rails\ScaffoldingAttribute.cs" />
     <Compile Include="Rails\ScaffoldingViews.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Rails\ControlMapper.cs" />
+    <Compile Include="Rails\UTArgs.cs" />
     <Compile Include="SmartMasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

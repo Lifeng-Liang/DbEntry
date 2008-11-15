@@ -23,48 +23,55 @@ namespace Lephone.Web.Rails
             Response.Write(s);
         }
 
-        protected internal string LinkTo(string title, string controller, string action, string addon, params object[] paramters)
+        protected internal string LinkTo(LTArgs args, params object[] paramters)
         {
-            return LinkTo(Request.ApplicationPath, title, controller, action, addon, paramters);
+            return LinkTo(Request.ApplicationPath, args, paramters);
         }
 
-        internal string LinkTo(string appPath, string title, string controller, string action, string addon, params object[] paramters)
+        internal string LinkTo(string appPath, LTArgs args, params object[] paramters)
         {
-            if (string.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(args.Title))
             {
                 throw new DataException("title can not be null or empty.");
             }
             string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
-                UrlTo(appPath, string.IsNullOrEmpty(controller) ? ControllerName : controller, action, paramters),
-                title,
-                addon == null ? "" : " " + addon);
+                UrlTo(appPath, args.ToUTArgs(), paramters),
+                args.Title,
+                args.Addon == null ? "" : " " + args.Addon);
             return ret;
         }
 
-        protected internal string UrlTo(string action, params object[] paramters)
+        protected internal string UrlTo(UTArgs args, params object[] paramters)
         {
-            return UrlTo(ControllerName, action, paramters);
+            return UrlTo(Request.ApplicationPath, args, paramters);
         }
 
-        protected internal string UrlTo(string controller, string action, params object[] paramters)
+        internal string UrlTo(string appPath, UTArgs args, params object[] paramters)
         {
-            return UrlTo(Request.ApplicationPath, controller, action, paramters);
+            if (string.IsNullOrEmpty(args.Controller))
+            {
+                args.Controller = ControllerName;
+            }
+            return UrlTo(appPath, args.Controller, args.Action, paramters);
         }
 
-        internal static string UrlTo(string appPath, string controller, string action, params object[] paramters)
+        internal static string UrlTo(string appPath, string Controller, string Action, params object[] paramters)
         {
             var url = new StringBuilder();
             url.Append(appPath).Append("/");
-            url.Append(controller).Append("/");
-            if (!string.IsNullOrEmpty(action))
+            url.Append(Controller).Append("/");
+            if (!string.IsNullOrEmpty(Action))
             {
-                url.Append(action).Append("/");
+                url.Append(Action).Append("/");
             }
             if (paramters != null)
             {
                 foreach (var o in paramters)
                 {
-                    url.Append(o).Append("/");
+                    if (o != null)
+                    {
+                        url.Append(o).Append("/");
+                    }
                 }
             }
             url.Length--;

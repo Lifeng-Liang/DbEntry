@@ -70,7 +70,9 @@ namespace Lephone.Web.Rails
                 object o = bag["item"];
                 object id = oi.Handler.GetKeyValue(o);
                 b.h1.text(cn + " Edit").end.enter();
-                b.form("post", UrlTo(ctx.Request.ApplicationPath, ControllerName, "update", id.ToString())).enter();
+                b.form("post",
+                       UrlTo(ctx.Request.ApplicationPath, new UTArgs {Controller = ControllerName, Action = "update"},
+                             id.ToString())).enter();
 
                 foreach (MemberHandler m in oi.SimpleFields)
                 {
@@ -83,8 +85,8 @@ namespace Lephone.Web.Rails
                 }
                 b.input.name("commit").type("submit").value("Update").end.enter().end.enter().enter();
 
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Show", null, "show", "", id, null)).enter();
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", "", null, null)).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs{Title = "Show", Action = "show"}, id)).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs{Title = "Back", Action = "list"})).enter();
             });
         }
 
@@ -116,11 +118,11 @@ namespace Lephone.Web.Rails
                         {
                             b.td.text(m.GetValue(o) ?? "<NULL>").end.enter();
                         }
-                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Show", null, "show", "", id)).end.enter();
-                        b.td.include(LinkTo(ctx.Request.ApplicationPath, "Edit", null, "edit", "", id)).end.enter();
+                        b.td.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs {Title = "Show", Action = "show"}, id)).end.enter();
+                        b.td.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs {Title = "Edit", Action = "edit"}, id)).end.enter();
                         b.td.include(
-                            LinkTo(ctx.Request.ApplicationPath, "Destroy", null, "destroy",
-                                "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"",
+                            LinkTo(ctx.Request.ApplicationPath, new LTArgs { Title = "Destroy", Action = "destroy", 
+                                    Addon = "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"" },
                                 id)).end.enter();
                         b.end.enter().enter();
                     }
@@ -131,10 +133,10 @@ namespace Lephone.Web.Rails
                     var pagesize = (int)bag["list_pagesize"];
                     for (int i = 0, n = 1; i < count; n++, i += pagesize)
                     {
-                        b.include(LinkTo(ctx.Request.ApplicationPath, n.ToString(), null, "list", "", n.ToString())).enter();
+                        b.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs{Title = n.ToString(), Action = "list"}, n)).enter();
                     }
 
-                    b.enter().br.br.include(LinkTo(ctx.Request.ApplicationPath, "New " + cn, null, "new", "")).br.enter();
+                    b.enter().br.br.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs {Title = "New " + cn, Action = "new"})).br.enter();
                 }
             });
         }
@@ -145,7 +147,7 @@ namespace Lephone.Web.Rails
             {
                 string cn = oi.BaseType.Name;
                 b.h1.text("New " + cn).end.enter();
-                b.form("post", UrlTo(ctx.Request.ApplicationPath, ControllerName, "create", null)).enter();
+                b.form("post", UrlTo(ctx.Request.ApplicationPath, new UTArgs {Controller = ControllerName, Action = "create"})).enter();
 
                 foreach (MemberHandler m in oi.SimpleFields)
                 {
@@ -159,7 +161,7 @@ namespace Lephone.Web.Rails
 
                 b.input.name("commit").type("submit").value("Create").end.enter().end.enter().enter();
 
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", "")).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs{Title = "Back", Action = "list"})).enter();
             });
         }
 
@@ -179,8 +181,8 @@ namespace Lephone.Web.Rails
 
                 b.enter();
 
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Edit", null, "edit", "", id)).enter();
-                b.include(LinkTo(ctx.Request.ApplicationPath, "Back", null, "list", "")).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs{Title = "Edit", Action = "edit"}, id)).enter();
+                b.include(LinkTo(ctx.Request.ApplicationPath, new LTArgs{Title = "Back", Action = "list"})).enter();
             });
         }
 

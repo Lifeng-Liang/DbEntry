@@ -33,11 +33,13 @@ namespace Lephone.Web.Rails
     {
         protected FlashBox flash = new FlashBox();
 
-        protected void RedirectTo(string Controller, string Action, object Paramter)
+        protected void RedirectTo(UTArgs args, params object[] paramters)
         {
-            string ParamterStr = (Paramter == null) ? null : Paramter.ToString();
-            string ControllerName = string.IsNullOrEmpty(Controller) ? GetControllerName() : Controller;
-            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, ControllerName, Action, new object[] { ParamterStr });
+            if(string.IsNullOrEmpty(args.Controller))
+            {
+                args.Controller = GetControllerName();
+            }
+            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, args.Controller, args.Action, paramters);
             ctx.Response.Redirect(url);
         }
 
@@ -70,7 +72,7 @@ namespace Lephone.Web.Rails
             }
             DbEntry.Save(obj);
             flash["notice"] = string.Format("{0} was successfully created", ControllerName);
-            RedirectTo(null, "list", null);
+            RedirectTo(new UTArgs{Action = "list"});
         }
 
         public virtual void List(int PageIndex)
@@ -119,7 +121,7 @@ namespace Lephone.Web.Rails
             }
             DbEntry.Save(obj);
             flash["notice"] = string.Format("{0} was successfully updated", ControllerName);
-            RedirectTo(null, "show", n);
+            RedirectTo(new UTArgs{Action = "show"}, n);
         }
 
         public virtual void Destroy(int n)
@@ -128,7 +130,7 @@ namespace Lephone.Web.Rails
             if (o != null)
             {
                 DbEntry.Delete(o);
-                RedirectTo(null, "list", null);
+                RedirectTo(new UTArgs{Action = "list"});
             }
         }
     }

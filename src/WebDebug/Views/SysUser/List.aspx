@@ -12,21 +12,21 @@
    { %>
 <tr>
   <td><%= u.Id %></td><td><%= u.Name %></td><td><%= u.Age %></td>
-  <td><%= LinkTo("Show", null, "show", null, u.Id) %></td>
-  <td><%= LinkTo("Edit", null, "edit", null, u.Id) %></td>
-  <td><%= LinkTo("Destroy", null, "destroy", null, u.Id, "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"")%></td>
+  <td><%= LinkTo(new LTArgs{Title = "Show", Action = "show"}, u.Id) %></td>
+  <td><%= LinkTo(new LTArgs{Title = "Edit", Action = "edit"}, u.Id) %></td>
+  <td><%= LinkTo(new LTArgs {Title = "Destroy", Action = "destroy", Addon = "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\""}, u.Id)%></td>
 </tr>
 <% } %>
 </table>
 
-<% int count = (int)(long)bag["list_count"];
-   int pagesize = (int)bag["list_pagesize"];
+<% var count = (int)(long)bag["list_count"];
+   var pagesize = (int)bag["list_pagesize"];
    for (int i = 0, n = 1; i < count; n++, i += pagesize) { %>
-      &nbsp;<%= LinkTo(n.ToString(), null, "list", n.ToString()) %>
+      &nbsp;<%= LinkTo( new LTArgs{Title = n.ToString(), Action = "list"}, n) %>
 <% } %>
 
 <br /><br />
 
-<%= LinkTo("New User", null, "new", null) %><br />
+<%= LinkTo(new LTArgs{Title = "New User", Action = "new"}) %><br />
 
 </asp:Content>
