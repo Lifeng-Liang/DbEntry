@@ -8,9 +8,16 @@ namespace Lephone.Web.Common
     public class NoticeLabel : Label
     {
         private bool isInited;
-        private bool isWarning;
+        private LabelType type;
         private bool isModified;
         private List<string> msgList;
+
+        private enum LabelType
+        {
+            Notice,
+            Warning,
+            Tip,
+        }
 
         protected override void OnLoad(System.EventArgs e)
         {
@@ -56,44 +63,61 @@ namespace Lephone.Web.Common
             }
         }
 
+        [Themeable(false), DefaultValue("Tip")]
+        public string CssTip
+        {
+            get
+            {
+                object o = ViewState["CssTip"];
+                if (o != null)
+                {
+                    return (string)o;
+                }
+                return "Tip";
+            }
+            set
+            {
+                ViewState["CssTip"] = value;
+            }
+        }
+
         public void AddWarning(string text)
         {
-            if (isInited)
-            {
-                if (!isWarning)
-                {
-                    throw new WebException("You add notice before. One process only support one type of text.");
-                }
-            }
-            else
-            {
-                isInited = true;
-                isWarning = true;
-            }
-            isModified = true;
-            Visible = true;
+            CheckType(LabelType.Warning);
             CssClass = CssWarning;
             msgList.Add(text);
         }
 
         public void AddNotice(string text)
         {
+            CheckType(LabelType.Notice);
+            CssClass = CssNotice;
+            msgList.Add(text);
+        }
+
+        public void AddTip(string text)
+        {
+            CheckType(LabelType.Tip);
+            CssClass = CssNotice;
+            msgList.Add(text);
+        }
+
+        private void CheckType(LabelType lt)
+        {
             if (isInited)
             {
-                if(isWarning)
+                if (type != lt)
                 {
-                    throw new WebException("You add warning before. One process only support one type of text.");
+                    throw new WebException("You add other type text before. One process only support one type of text.");
                 }
             }
             else
             {
                 isInited = true;
-                isWarning = false;
+                type = lt;
             }
             isModified = true;
             Visible = true;
-            CssClass = CssNotice;
-            msgList.Add(text);
         }
 
         private string GenerateText()

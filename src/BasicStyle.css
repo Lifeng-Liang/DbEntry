@@ -2,6 +2,7 @@ hr { border: dashed 1px blue; height: 1px; }
 
 .Warning { color: Red; }
 .Notice { color: Green; }
+.Tip { color: Gray; }
 .ErrInput { border:2px solid red; }
 
 .ContentTitle, #ContentTitle { font-size: 18pt; font-weight: bold; }
