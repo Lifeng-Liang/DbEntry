@@ -21,9 +21,15 @@ namespace Lephone.Web.Common
 
         protected override void OnLoad(System.EventArgs e)
         {
+            Reset();
+            base.OnLoad(e);
+        }
+
+        public void Reset()
+        {
+            Text = "";
             isInited = false;
             msgList = new List<string>();
-            base.OnLoad(e);
             Visible = false;
         }
 
@@ -81,8 +87,27 @@ namespace Lephone.Web.Common
             }
         }
 
+        [Themeable(false), DefaultValue(false)]
+        public bool SingleLine
+        {
+            get
+            {
+                object o = ViewState["SingleLine"];
+                if (o != null)
+                {
+                    return (bool)o;
+                }
+                return false;
+            }
+            set
+            {
+                ViewState["SingleLine"] = value;
+            }
+        }
+
         public void AddWarning(string text)
         {
+            if(SingleLine) { Reset(); }
             CheckType(LabelType.Warning);
             CssClass = CssWarning;
             msgList.Add(text);
@@ -90,6 +115,7 @@ namespace Lephone.Web.Common
 
         public void AddNotice(string text)
         {
+            if (SingleLine) { Reset(); }
             CheckType(LabelType.Notice);
             CssClass = CssNotice;
             msgList.Add(text);
@@ -97,8 +123,9 @@ namespace Lephone.Web.Common
 
         public void AddTip(string text)
         {
+            if (SingleLine) { Reset(); }
             CheckType(LabelType.Tip);
-            CssClass = CssNotice;
+            CssClass = CssTip;
             msgList.Add(text);
         }
 
@@ -122,12 +149,23 @@ namespace Lephone.Web.Common
 
         private string GenerateText()
         {
-            HtmlBuilder b = HtmlBuilder.New.ul.enter();
-            foreach (var s in msgList)
+            HtmlBuilder b = HtmlBuilder.New;
+            if(SingleLine)
             {
-                b.li.text(s).end.enter();
+                if(msgList.Count > 0)
+                {
+                    b.text(msgList[0]).enter();
+                }
             }
-            b.end.enter();
+            else
+            {
+                b.ul.enter();
+                foreach (var s in msgList)
+                {
+                    b.li.text(s).end.enter();
+                }
+                b.end.enter();
+            }
             return b.ToString();
         }
 
@@ -149,6 +187,14 @@ namespace Lephone.Web.Common
             set
             {
                 base.Text = value;
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return msgList.Count;
             }
         }
     }

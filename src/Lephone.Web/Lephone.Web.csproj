@@ -63,6 +63,7 @@
     <Compile Include="Common\PageHelper.cs" />
     <Compile Include="HtmlBuilder.cs" />
     <Compile Include="HttpParameterAttribute.cs" />
+    <Compile Include="InMasterAttribute.cs" />
     <Compile Include="Rails\ControllerHelper.cs" />
     <Compile Include="Rails\ControllerInfo.cs" />
     <Compile Include="Rails\DefaultActionAttribute.cs" />
