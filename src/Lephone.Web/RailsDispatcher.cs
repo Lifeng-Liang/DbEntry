@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
@@ -73,6 +72,11 @@ namespace Lephone.Web
             }
 
             string[] ss = url.Split(spliter, StringSplitOptions.RemoveEmptyEntries);
+            for(int i = 0; i < ss.Length; i++)
+            {
+                ss[i] = HttpUtility.UrlDecode(ss[i]);
+            }
+
             string ControllerName = (ss.Length == 0) ? "default" : ss[0].ToLower();
 
             if (ctls.ContainsKey(ControllerName))
@@ -104,28 +108,7 @@ namespace Lephone.Web
                     throw new WebException(string.Format("Action {0} doesn't exist!!!", ActionName));
                 }
 
-                ParameterInfo[] pis = mi.GetParameters();
-                var parameters = new List<object>();
-                for (int i = 0; i < pis.Length; i++)
-                {
-                    if (i + 2 < ss.Length)
-                    {
-                        object px;
-                        if(pis[i].ParameterType.IsArray)
-                        {
-                            px = GetArray(ss, i + 2);
-                        }
-                        else
-                        {
-                            px = ChangeType(ss[i + 2], pis[i].ParameterType);
-                        }
-                        parameters.Add(px);
-                    }
-                    else
-                    {
-                        parameters.Add(null);
-                    }
-                }
+                List<object> parameters = GetParameters(ss, mi);
                 CallAction(mi, ctl, parameters.ToArray());
                 // Invoke Viewer
                 PageBase p = CreatePage(context, ci, t, ControllerName, ActionName);
@@ -146,6 +129,33 @@ namespace Lephone.Web
             {
                 ctl.OnException(ex);
             }
+        }
+
+        private static List<object> GetParameters(string[] ss, MethodInfo mi)
+        {
+            ParameterInfo[] pis = mi.GetParameters();
+            var parameters = new List<object>();
+            for (int i = 0; i < pis.Length; i++)
+            {
+                if (i + 2 < ss.Length)
+                {
+                    object px;
+                    if(pis[i].ParameterType.IsArray)
+                    {
+                        px = GetArray(ss, i + 2);
+                    }
+                    else
+                    {
+                        px = ChangeType(ss[i + 2], pis[i].ParameterType);
+                    }
+                    parameters.Add(px);
+                }
+                else
+                {
+                    parameters.Add(null);
+                }
+            }
+            return parameters;
         }
 
         private static string[] GetArray(string[] ss, int startIndex)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using Lephone.Data;
 
@@ -70,7 +71,7 @@ namespace Lephone.Web.Rails
                 {
                     if (o != null)
                     {
-                        url.Append(o).Append("/");
+                        url.Append(HttpUtility.UrlEncode(o.ToString())).Append("/");
                     }
                 }
             }
