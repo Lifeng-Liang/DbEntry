@@ -1,4 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="User List" %>
+<script runat="server">
+    public IEnumerable list;
+    public long list_count;
+    public int list_pagesize;
+</script>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
@@ -8,7 +13,7 @@
 
 <table>
 <tr><th>Id</th><th>Name</th><th>Age</th></tr>
-<% foreach (SysUser u in (IEnumerable)bag["list"])
+<% foreach (SysUser u in list)
    { %>
 <tr>
   <td><%= u.Id %></td><td><%= u.Name %></td><td><%= u.Age %></td>
@@ -19,8 +24,8 @@
 <% } %>
 </table>
 
-<% var count = (int)(long)bag["list_count"];
-   var pagesize = (int)bag["list_pagesize"];
+<% var count = (int)list_count;
+   var pagesize = list_pagesize;
    for (int i = 0, n = 1; i < count; n++, i += pagesize) { %>
       &nbsp;<%= LinkTo( new LTArgs{Title = n.ToString(), Action = "list"}, n) %>
 <% } %>

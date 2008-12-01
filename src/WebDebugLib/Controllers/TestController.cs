@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Lephone.Web.Rails;
 
 namespace DebugLib.Controllers

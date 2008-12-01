@@ -4,6 +4,7 @@ using System.Web;
 using System.Web.UI;
 using System.Reflection;
 using System.IO;
+using Lephone.Data.Definition;
 using Lephone.Util;
 using Lephone.Web.Rails;
 
@@ -114,9 +115,7 @@ namespace Lephone.Web
                 PageBase p = CreatePage(context, ci, t, ControllerName, ActionName);
                 if (p != null)
                 {
-                    p.bag = ctl.bag;
-                    p.ControllerName = ControllerName;
-                    p.ActionName = ActionName;
+                    InitViewPage(ControllerName, ctl, ActionName, p);
                     ((IHttpHandler)p).ProcessRequest(context);
                     factory.ReleaseHandler(p);
                 }
@@ -128,6 +127,23 @@ namespace Lephone.Web
             catch (WebException ex)
             {
                 ctl.OnException(ex);
+            }
+        }
+
+        private static void InitViewPage(string ControllerName, ControllerBase ctl, string ActionName, PageBase p)
+        {
+            p.bag = ctl.bag;
+            p.ControllerName = ControllerName;
+            p.ActionName = ActionName;
+            // init fields by the bag variables\
+            var infoList = p.GetType().GetFields(ClassHelper.InstancePublic | BindingFlags.DeclaredOnly);
+            foreach (FieldInfo info in infoList)
+            {
+                if (!ClassHelper.HasAttribute<ExcludeAttribute>(info, false))
+                {
+                    object value = p.bag[info.Name];
+                    info.SetValue(p, value);
+                }
             }
         }
 
