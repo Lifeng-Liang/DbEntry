@@ -17,7 +17,7 @@ namespace Lephone.UnitTest.Linq
             public abstract string FirstName { get; set; }
         }
 
-        private DbContext de = new DbContext("SQLite");
+        private readonly DbContext de = new DbContext("SQLite");
 
         [SetUp]
         public void SetUp()
@@ -28,7 +28,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test1()
         {
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.FirstName.StartsWith("T") && (p.Id >= 1 || p.Id == 15) && p.FirstName != null && p.FirstName == p.FirstName)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -39,7 +39,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test2()
         {
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.FirstName.EndsWith("T")).Select();
             Assert.AreEqual("Select [Id],[Name] From [Person] Where [Name] Like @Name_0;\n<Text><60>(@Name_0=%T:String)", StaticRecorder.LastMessage);
         }
@@ -47,7 +47,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test3()
         {
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.FirstName.Contains("T")).Select();
             Assert.AreEqual("Select [Id],[Name] From [Person] Where [Name] Like @Name_0;\n<Text><60>(@Name_0=%T%:String)", StaticRecorder.LastMessage);
         }
@@ -55,7 +55,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test4()
         {
-            var item = de.GetObject<Person>(p => p.FirstName == "Tom");
+            de.GetObject<Person>(p => p.FirstName == "Tom");
             Assert.AreEqual("Select [Id],[Name] From [Person] Where [Name] = @Name_0;\n<Text><60>(@Name_0=Tom:String)", StaticRecorder.LastMessage);
         }
 
@@ -76,10 +76,10 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test7()
         {
-            int id1 = 1;
-            int id2 = 15;
+            const int id1 = 1;
+            const int id2 = 15;
 
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.FirstName.StartsWith("T") && (p.Id >= id1 || p.Id == id2) && p.FirstName != null && p.FirstName == p.FirstName)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -96,7 +96,7 @@ namespace Lephone.UnitTest.Linq
 
         private void TestMember(int id1, int id2)
         {
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.FirstName.StartsWith("T") && (p.Id >= id1 || p.Id == id2) && p.FirstName != null && p.FirstName == p.FirstName)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -111,7 +111,7 @@ namespace Lephone.UnitTest.Linq
 
         private void TestMember2(int id1, int id2)
         {
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.Id >= id1 + 2)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -126,7 +126,7 @@ namespace Lephone.UnitTest.Linq
 
         private static void TestMember3(DbContext de, int id1, int id2)
         {
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.Id >= id1)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -141,7 +141,7 @@ namespace Lephone.UnitTest.Linq
 
         private static void TestMember4(DbContext de, CommonTest tt, int id1)
         {
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.Id >= tt.nnn - id1)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -150,9 +150,9 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test12()
         {
-            string name1 = "tom";
+            const string name1 = "tom";
 
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.FirstName.StartsWith(name1))
                 .OrderBy(p => p.Id)
                 .Select();
@@ -163,9 +163,9 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test13()
         {
-            string name1 = "tom";
+            const string name1 = "tom";
 
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.FirstName != name1)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -176,9 +176,9 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test14()
         {
-            string name1 = "tom";
+            const string name1 = "tom";
 
-            var list = de.From<Person>()
+            de.From<Person>()
                 .Where(p => p.FirstName != name1 + " cat")
                 .OrderBy(p => p.Id)
                 .Select();

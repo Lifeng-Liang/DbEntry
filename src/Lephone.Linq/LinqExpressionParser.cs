@@ -48,6 +48,8 @@ namespace Lephone.Linq
                         (Expression<Func<T, bool>>)((UnaryExpression)expr.Arguments[1]).Operand
                         );
                     break;
+                case "Select":
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -55,7 +57,7 @@ namespace Lephone.Linq
 
         private void AddOrderBy(LambdaExpression expr, bool IsAsc)
         {
-            MemberExpression e = expr.Body as MemberExpression;
+            var e = expr.Body as MemberExpression;
             if (e != null)
             {
                 string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
