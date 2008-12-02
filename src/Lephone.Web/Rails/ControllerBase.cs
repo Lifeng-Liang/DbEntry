@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Web;
 using Lephone.Data;
 using Lephone.Data.Common;
@@ -62,12 +63,22 @@ namespace Lephone.Web.Rails
             string ControllerName = GetControllerName();
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             var obj = (T)oi.NewObject();
-            foreach(MemberHandler m in oi.SimpleFields)
+            foreach(MemberHandler m in oi.Fields)
             {
-                if (!m.IsDbGenerate && !m.IsAutoSavedValue)
+                if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                 {
-                    string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
-                    m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
+                    string s = ctx.Request.Form[ControllerName + "[" + m.Name.ToLower() + "]"];
+                    if (m.IsLazyLoad)
+                    {
+                        object ll = m.MemberInfo.GetValue(obj);
+                        PropertyInfo pi = m.MemberInfo.MemberType.GetProperty("Value");
+                        object v = ControllerHelper.ChangeType(s, m.FieldType.GetGenericArguments()[0]);
+                        pi.SetValue(ll, v, null);
+                    }
+                    else
+                    {
+                        m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
+                    }
                 }
             }
             DbEntry.Save(obj);
@@ -106,17 +117,26 @@ namespace Lephone.Web.Rails
         {
             string ControllerName = GetControllerName();
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            var obj = (T)oi.NewObject();
-            foreach (MemberHandler m in oi.SimpleFields)
+            var obj = DbEntry.Context.GetObject(typeof (T), n);
+            foreach (MemberHandler m in oi.Fields)
             {
-                if (m.IsDbGenerate)
+                if (m.IsRelationField) { continue; }
+                if (!m.IsAutoSavedValue && !m.IsDbGenerate)
                 {
-                    m.SetValue(obj, ClassHelper.ChangeType(n, m.FieldType));
-                }
-                else if (!m.IsAutoSavedValue)
-                {
-                    string s = ctx.Request.Form[ControllerName + "[" + m.MemberInfo.Name.ToLower() + "]"];
-                    m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
+                    string s = ctx.Request.Form[ControllerName + "[" + m.Name.ToLower() + "]"];
+                    if (m.IsLazyLoad)
+                    {
+                        object ll = m.MemberInfo.GetValue(obj);
+                        PropertyInfo pi = m.MemberInfo.MemberType.GetProperty("Value");
+                        object v = ControllerHelper.ChangeType(s, m.FieldType.GetGenericArguments()[0]);
+                        pi.SetValue(ll, v, null);
+                        // TODO: get rid of use such method.
+                        typeof (T).GetMethod("m_ColumnUpdated", ClassHelper.AllFlag).Invoke(obj, new object[] {m.Name});
+                    }
+                    else
+                    {
+                        m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
+                    }
                 }
             }
             DbEntry.Save(obj);

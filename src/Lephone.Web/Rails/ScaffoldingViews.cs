@@ -74,13 +74,18 @@ namespace Lephone.Web.Rails
                        UrlTo(ctx.Request.ApplicationPath, new UTArgs {Controller = ControllerName, Action = "update"},
                              id.ToString())).enter();
 
-                foreach (MemberHandler m in oi.SimpleFields)
+                foreach (MemberHandler m in oi.Fields)
                 {
-                    if (!m.IsDbGenerate && !m.IsAutoSavedValue)
+                    if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                     {
                         string n = cn + "_" + m.Name;
                         string n1 = cn + "[" + m.Name + "]";
-                        b.p.label.attr("for", n).text(m.Name).end.br.include(ControlMapper.Map(m, n, n1, m.GetValue(o))).end.enter();
+                        object v = m.GetValue(o);
+                        if(m.IsLazyLoad)
+                        {
+                            v = m.FieldType.GetProperty("Value").GetValue(v, null);
+                        }
+                        b.p.label.attr("for", n).text(m.Name).end.br.include(ControlMapper.Map(m, n, n1, v)).end.enter();
                     }
                 }
                 b.input.name("commit").type("submit").value("Update").end.enter().end.enter().enter();
@@ -149,9 +154,9 @@ namespace Lephone.Web.Rails
                 b.h1.text("New " + cn).end.enter();
                 b.form("post", UrlTo(ctx.Request.ApplicationPath, new UTArgs {Controller = ControllerName, Action = "create"})).enter();
 
-                foreach (MemberHandler m in oi.SimpleFields)
+                foreach (MemberHandler m in oi.Fields)
                 {
-                    if (!m.IsDbGenerate && !m.IsAutoSavedValue)
+                    if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                     {
                         string n = cn + "_" + m.Name;
                         string n1 = cn + "[" + m.Name + "]";
@@ -174,9 +179,17 @@ namespace Lephone.Web.Rails
 
                 b.p.style("color: Green").text(flash["notice"]).end.enter().enter();
 
-                foreach (MemberHandler m in oi.SimpleFields)
+                foreach (MemberHandler m in oi.Fields)
                 {
-                    b.p.tag("b").text(m.Name + ":").end.include(" ").text(m.GetValue(o) ?? "<NULL>").end.enter();
+                    if(!m.IsRelationField)
+                    {
+                        object v = m.GetValue(o);
+                        if(m.IsLazyLoad)
+                        {
+                            v = m.FieldType.GetProperty("Value").GetValue(v, null);
+                        }
+                        b.p.tag("b").text(m.Name + ":").end.include(" ").text(v ?? "<NULL>").end.enter();
+                    }
                 }
 
                 b.enter();

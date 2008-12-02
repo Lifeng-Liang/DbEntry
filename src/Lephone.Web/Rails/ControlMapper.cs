@@ -8,7 +8,6 @@ namespace Lephone.Web.Rails
     {
         private readonly string id;
         private readonly string name;
-        // private object value;
         private readonly HtmlBuilder b;
 
         public static HtmlBuilder Map(MemberHandler m, string id, string name, object value)
@@ -21,35 +20,46 @@ namespace Lephone.Web.Rails
         {
             this.id = id;
             this.name = name;
-            // this.value = value;
 
             b = HtmlBuilder.New;
 
-            if (m.FieldType.IsEnum)
+            if(m.IsLazyLoad)
+            {
+                ProcessField(m.FieldType.GetGenericArguments()[0], m, value);
+            }
+            else
+            {
+                ProcessField(m.FieldType, m, value);
+            }
+        }
+
+        private void ProcessField(Type FieldType, MemberHandler m, object value)
+        {
+            if (FieldType.IsEnum)
             {
                 ProcessEnum(m, value);
             }
-            else if (m.FieldType == typeof(bool))
+            else if (FieldType == typeof(bool))
             {
                 ProcessBoolean(value);
             }
-            else if (m.FieldType == typeof(string))
+            else if (FieldType == typeof(string))
             {
                 ProcessString(m, value);
             }
-            else if (m.FieldType == typeof(DateTime))
+            else if (FieldType == typeof(DateTime))
             {
                 ProcessDateTime(m, value);
             }
-            else if (m.FieldType == typeof(Date))
+            else if (FieldType == typeof(Date))
             {
                 ProcessDateTime(m, value);
             }
-            else if (m.FieldType == typeof(Time))
+            else if (FieldType == typeof(Time))
             {
                 ProcessDateTime(m, value);
             }
-            else if (m.FieldType.IsValueType)
+            else if (FieldType.IsValueType)
             {
                 ProcessValueType(value);
             }
@@ -94,10 +104,11 @@ namespace Lephone.Web.Rails
 
         private void ProcessString(MemberHandler m, object value)
         {
-            if (m.MaxLength < 50 && m.MaxLength > 0)
+            if (m.MaxLength < 256 && m.MaxLength > 0)
             {
                 b.input.id(id).name(name).type("text");
-                b.attr("maxlength", m.MaxLength).attr("size", m.MaxLength);
+                int size = m.MaxLength > 100 ? 100 : m.MaxLength;
+                b.attr("maxlength", m.MaxLength).attr("size", size);
                 if (value != null)
                 {
                     b.value(value);

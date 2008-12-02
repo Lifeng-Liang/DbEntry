@@ -8,7 +8,7 @@
         protected bool m_IsLoaded;
         protected T m_Value;
 
-        public LazyLoadOneBase(object owner)
+        protected LazyLoadOneBase(object owner)
         {
             this.owner = owner;
             DoSetOwner();

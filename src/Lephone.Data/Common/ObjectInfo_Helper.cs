@@ -54,13 +54,13 @@ namespace Lephone.Data.Common
             var sifs = new List<MemberHandler>();
             foreach (MemberHandler mh in ret)
             {
-                if (mh.IsHasOne || mh.IsHasMany || mh.IsHasAndBelongsToMany || mh.IsBelongsTo || mh.IsLazyLoad)
+                if(mh.IsSimpleField)
                 {
-                    rlfs.Add(mh);
+                    sifs.Add(mh);
                 }
                 else
                 {
-                    sifs.Add(mh);
+                    rlfs.Add(mh);
                 }
             }
             var fields = new List<MemberHandler>(sifs);

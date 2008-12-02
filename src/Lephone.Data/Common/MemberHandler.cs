@@ -143,6 +143,8 @@ namespace Lephone.Data.Common
         public readonly bool IsLockVersion;
         public readonly bool IsCount;
         public readonly bool IsAutoSavedValue;
+	    public readonly bool IsSimpleField;
+	    public readonly bool IsRelationField;
         public readonly string OrderByString;
 	    public readonly string UniqueErrorMessage;
 
@@ -293,7 +295,7 @@ namespace Lephone.Data.Common
                 {
                     throw new DataException("Only CreatedOn and UpdatedOn are supported as special name.");
                 }
-                if (IsCreatedOn || IsUpdatedOn || IsSavedOn || IsCount)
+                if (IsCreatedOn || IsUpdatedOn || IsSavedOn || IsCount || IsLockVersion)
                 {
                     IsAutoSavedValue = true;
                 }
@@ -342,6 +344,8 @@ namespace Lephone.Data.Common
                     break;
                 }
             }
+            IsRelationField = (IsHasOne || IsHasMany || IsHasAndBelongsToMany || IsBelongsTo);
+            IsSimpleField = !(IsRelationField || IsLazyLoad);
         }
 
         internal MemberHandler(MemberAdapter fi, FieldType ft, PropertyInfo pi)
@@ -359,6 +363,8 @@ namespace Lephone.Data.Common
             {
                 OrderByString = obs[0].OrderBy;
             }
+            IsRelationField = (IsHasOne || IsHasMany || IsHasAndBelongsToMany || IsBelongsTo);
+            IsSimpleField = !(IsRelationField || IsLazyLoad);
         }
 
         public void SetValue(object obj, object value)
