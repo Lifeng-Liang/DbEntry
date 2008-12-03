@@ -26,12 +26,14 @@ namespace Lephone.Web.Rails
             ControllerName = cn.ToLower();
         }
 
-        protected internal virtual void OnBeforeAction(string ActionName)
+        protected internal virtual string OnBeforeAction(string ActionName)
         {
+            return null;
         }
 
-        protected internal virtual void OnAfterAction(string ActionName)
+        protected internal virtual string OnAfterAction(string ActionName)
         {
+            return null;
         }
 
         protected internal virtual void OnException(Exception ex)

@@ -231,9 +231,11 @@ namespace Lephone.Web
 
         private static object CallAction(MethodBase mi, ControllerBase c, object[] ps)
         {
-            c.OnBeforeAction(mi.Name);
-            object o = mi.Invoke(c, ps);
-            c.OnAfterAction(mi.Name);
+            object o = c.OnBeforeAction(mi.Name);
+            if (o != null) return o;
+            o = mi.Invoke(c, ps);
+            if (o != null) return o;
+            o = c.OnAfterAction(mi.Name);
             return o;
         }
 

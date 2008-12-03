@@ -56,7 +56,7 @@ namespace Lephone.Web.Rails
             return UrlTo(appPath, args.Controller, args.Action, paramters);
         }
 
-        internal static string UrlTo(string appPath, string Controller, string Action, params object[] paramters)
+        public static string UrlTo(string appPath, string Controller, string Action, params object[] paramters)
         {
             var url = new StringBuilder();
             url.Append(appPath).Append("/");
