@@ -12,7 +12,9 @@ namespace Lephone.Web.Rails
         protected internal string ControllerName;
         protected internal string ActionName;
 
-        protected FlashBox flash = new FlashBox();
+        protected FlashBox Flash = new FlashBox();
+
+        protected new SessionBox Session = new SessionBox();
 
         protected internal void Print(object o)
         {

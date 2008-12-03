@@ -7,7 +7,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
-<p style="color: Green"><%= flash["notice"] %></p>
+<p style="color: Green"><%= Flash["notice"] %></p>
 
 <h1>Listing users</h1>
 

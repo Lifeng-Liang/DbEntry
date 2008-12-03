@@ -14,7 +14,8 @@ namespace Lephone.Web.Rails
         protected internal HttpContext ctx;
         protected internal Dictionary<string, object> bag = new Dictionary<string, object>();
         protected readonly string ControllerName;
-        protected FlashBox flash = new FlashBox();
+        protected FlashBox Flash = new FlashBox();
+        protected SessionBox Session = new SessionBox();
 
         protected ControllerBase()
         {
@@ -93,7 +94,7 @@ namespace Lephone.Web.Rails
                 }
             }
             DbEntry.Save(obj);
-            flash["notice"] = string.Format("{0} was successfully created", ControllerName);
+            Flash["notice"] = string.Format("{0} was successfully created", ControllerName);
             RedirectTo(new UTArgs{Action = "list"});
         }
 
@@ -150,7 +151,7 @@ namespace Lephone.Web.Rails
                 }
             }
             DbEntry.Save(obj);
-            flash["notice"] = string.Format("{0} was successfully updated", ControllerName);
+            Flash["notice"] = string.Format("{0} was successfully updated", ControllerName);
             RedirectTo(new UTArgs{Action = "show"}, n);
         }
 

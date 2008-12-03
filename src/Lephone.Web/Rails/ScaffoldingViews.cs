@@ -100,7 +100,7 @@ namespace Lephone.Web.Rails
             Process(delegate(HtmlBuilder b)
             {
                 string cn = oi.BaseType.Name;
-                b.p.style("color: Green").text(flash["notice"]).end.enter().enter();
+                b.p.style("color: Green").text(Flash["notice"]).end.enter().enter();
                 b.h1.text("Listing " + Inflector.Pluralize(cn)).end.enter().enter();
 
                 b.table.tr.enter();
@@ -177,7 +177,7 @@ namespace Lephone.Web.Rails
                 object o = bag["item"];
                 object id = oi.Handler.GetKeyValue(o);
 
-                b.p.style("color: Green").text(flash["notice"]).end.enter().enter();
+                b.p.style("color: Green").text(Flash["notice"]).end.enter().enter();
 
                 foreach (MemberHandler m in oi.Fields)
                 {

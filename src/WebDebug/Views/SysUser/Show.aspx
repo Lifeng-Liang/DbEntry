@@ -4,7 +4,7 @@
 </script>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
-<p style="color: Green"><%= flash["notice"] %></p>
+<p style="color: Green"><%= Flash["notice"] %></p>
 
 <p><b>Id:</b><%= item.Id %></p>
 <p><b>Name:</b><%= item.Name %></p>
