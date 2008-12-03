@@ -9,10 +9,22 @@ using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
-    public class ControllerBase
+    public abstract class ControllerBase
     {
         protected internal HttpContext ctx;
         protected internal Dictionary<string, object> bag = new Dictionary<string, object>();
+        protected readonly string ControllerName;
+        protected FlashBox flash = new FlashBox();
+
+        protected ControllerBase()
+        {
+            string cn = GetType().Name;
+            if (cn.EndsWith("Controller"))
+            {
+                cn = cn.Substring(0, cn.Length - 10);
+            }
+            ControllerName = cn.ToLower();
+        }
 
         protected internal virtual void OnBeforeAction(string ActionName)
         {
@@ -27,40 +39,37 @@ namespace Lephone.Web.Rails
             Exception e = ex.InnerException ?? ex;
             ctx.Response.Write(string.Format("<h1>{0}<h1>", ctx.Server.HtmlEncode(e.Message)));
         }
-    }
-
-    [Scaffolding]
-    public class ControllerBase<T> : ControllerBase where T : class, IDbObject
-    {
-        protected FlashBox flash = new FlashBox();
 
         protected void RedirectTo(UTArgs args, params object[] paramters)
         {
-            if(string.IsNullOrEmpty(args.Controller))
-            {
-                args.Controller = GetControllerName();
-            }
-            string url = PageBase.UrlTo(ctx.Request.ApplicationPath, args.Controller, args.Action, paramters);
+            string url = UrlTo(args, paramters);
             ctx.Response.Redirect(url);
         }
 
-        private string GetControllerName()
+        protected string UrlTo(UTArgs args, params object[] paramters)
         {
-            string ControllerName = GetType().Name;
-            if (ControllerName.EndsWith("Controller"))
-            {
-                ControllerName = ControllerName.Substring(0, ControllerName.Length - 10);
-            }
-            return ControllerName.ToLower();
+            return UrlTo(ctx.Request.ApplicationPath, args, paramters);
         }
 
+        internal string UrlTo(string appPath, UTArgs args, params object[] paramters)
+        {
+            if (string.IsNullOrEmpty(args.Controller))
+            {
+                args.Controller = ControllerName;
+            }
+            return PageBase.UrlTo(appPath, args.Controller, args.Action, paramters);
+        }
+    }
+
+    [Scaffolding]
+    public abstract class ControllerBase<T> : ControllerBase where T : class, IDbObject
+    {
         public virtual void New()
         {
         }
 
         public virtual void Create()
         {
-            string ControllerName = GetControllerName();
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             var obj = (T)oi.NewObject();
             foreach(MemberHandler m in oi.Fields)
@@ -115,7 +124,6 @@ namespace Lephone.Web.Rails
 
         public virtual void Update(int n)
         {
-            string ControllerName = GetControllerName();
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             var obj = DbEntry.Context.GetObject(typeof (T), n);
             foreach (MemberHandler m in oi.Fields)

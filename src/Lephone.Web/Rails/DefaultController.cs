@@ -8,10 +8,11 @@ namespace Lephone.Web.Rails
 
         public void List()
         {
-            var b = new HtmlBuilder();
+            var b = HtmlBuilder.New;
             foreach (string s in RailsDispatcher.ctls.Keys)
             {
-                b = b.li.a(PageBase.UrlTo(ctx.Request.ApplicationPath, s, null)).text(s).end.end;
+                string url = UrlTo(new UTArgs {Controller = s});
+                b = b.li.a(url).text(s).end.end;
             }
             ctx.Response.Write(string.Format(template, b));
         }

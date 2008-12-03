@@ -110,14 +110,21 @@ namespace Lephone.Web
                 }
 
                 List<object> parameters = GetParameters(ss, mi);
-                CallAction(mi, ctl, parameters.ToArray());
-                // Invoke Viewer
-                PageBase p = CreatePage(context, ci, t, ControllerName, ActionName);
-                if (p != null)
+                object ret = CallAction(mi, ctl, parameters.ToArray()) ?? "";
+                if(string.IsNullOrEmpty(ret.ToString()))
                 {
-                    InitViewPage(ControllerName, ctl, ActionName, p);
-                    ((IHttpHandler)p).ProcessRequest(context);
-                    factory.ReleaseHandler(p);
+                    // Invoke Viewer
+                    PageBase p = CreatePage(context, ci, t, ControllerName, ActionName);
+                    if (p != null)
+                    {
+                        InitViewPage(ControllerName, ctl, ActionName, p);
+                        ((IHttpHandler)p).ProcessRequest(context);
+                        factory.ReleaseHandler(p);
+                    }
+                }
+                else
+                {
+                    context.Response.Redirect(ret.ToString());
                 }
             }
             catch (TargetInvocationException ex)
@@ -222,11 +229,12 @@ namespace Lephone.Web
             return GetScaffoldingType(t.BaseType);
         }
 
-        private static void CallAction(MethodBase mi, ControllerBase c, object[] ps)
+        private static object CallAction(MethodBase mi, ControllerBase c, object[] ps)
         {
             c.OnBeforeAction(mi.Name);
-            mi.Invoke(c, ps);
+            object o = mi.Invoke(c, ps);
             c.OnAfterAction(mi.Name);
+            return o;
         }
 
         private static object ChangeType(string s, Type t)
