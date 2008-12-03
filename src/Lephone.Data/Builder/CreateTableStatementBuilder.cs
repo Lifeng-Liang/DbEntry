@@ -54,16 +54,13 @@ namespace Lephone.Data.Builder
                         sql.Append(NullDefine);
                         keys += dd.QuoteForColumnName(ci.Key) + ", ";
                     }
-                    else if (ci.ValueType == typeof(Guid))
+                    else if (ci.ValueType == typeof(Guid) || !dd.IdentityIncludePKString)
                     {
-                        sql.Append(" PRIMARY KEY");
-                    }
-                    else
-                    {
-                        if (!dd.IdentityIncludePKString)
+                        if(!ci.IsDbGenerate)
                         {
-                            sql.Append(" PRIMARY KEY");
+                            sql.Append(NullDefine);
                         }
+                        sql.Append(" PRIMARY KEY");
                     }
                 }
                 else

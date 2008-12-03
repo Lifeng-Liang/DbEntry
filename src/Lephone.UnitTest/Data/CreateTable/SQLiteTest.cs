@@ -248,7 +248,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         {
             de.Create(typeof(GuidKey));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("CREATE TABLE [Guid_Key] (\n\t[Id] uniqueidentifier PRIMARY KEY,\n\t[Name] ntext NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [Guid_Key] (\n\t[Id] uniqueidentifier NOT NULL  PRIMARY KEY,\n\t[Name] ntext NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
