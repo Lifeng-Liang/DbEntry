@@ -12,10 +12,10 @@ namespace Lephone.Web.Rails
     public abstract class ControllerBase
     {
         protected internal HttpContext ctx;
-        protected internal Dictionary<string, object> bag = new Dictionary<string, object>();
-        protected readonly string ControllerName;
-        protected FlashBox Flash = new FlashBox();
-        protected SessionBox Session = new SessionBox();
+        public readonly Dictionary<string, object> bag = new Dictionary<string, object>();
+        public readonly string ControllerName;
+        public readonly FlashBox Flash = new FlashBox();
+        public readonly SessionBox Session = new SessionBox();
 
         protected ControllerBase()
         {
@@ -43,24 +43,19 @@ namespace Lephone.Web.Rails
             ctx.Response.Write(string.Format("<h1>{0}<h1>", ctx.Server.HtmlEncode(e.Message)));
         }
 
-        protected void RedirectTo(UTArgs args, params object[] paramters)
+        public void RedirectTo(UTArgs args, params object[] paramters)
         {
             string url = UrlTo(args, paramters);
             ctx.Response.Redirect(url);
         }
 
-        protected string UrlTo(UTArgs args, params object[] paramters)
-        {
-            return UrlTo(ctx.Request.ApplicationPath, args, paramters);
-        }
-
-        internal string UrlTo(string appPath, UTArgs args, params object[] paramters)
+        public string UrlTo(UTArgs args, params object[] paramters)
         {
             if (string.IsNullOrEmpty(args.Controller))
             {
                 args.Controller = ControllerName;
             }
-            return PageBase.UrlTo(appPath, args.Controller, args.Action, paramters);
+            return MasterPageBase.UrlTo(args.Controller, args.Action, paramters);
         }
     }
 

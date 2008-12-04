@@ -4,7 +4,6 @@ using System.Web;
 using System.Web.UI;
 using System.Reflection;
 using System.IO;
-using Lephone.Data.Definition;
 using Lephone.Util;
 using Lephone.Web.Rails;
 
@@ -103,7 +102,7 @@ namespace Lephone.Web
             {
                 ControllerInfo ci = ControllerInfo.GetInstance(t);
                 string ActionName = ss.Length > 1 ? ss[1] : ci.DefaultAction;
-                MethodInfo mi = t.GetMethod(ActionName, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
+                MethodInfo mi = GetMethodInfo(t, ActionName);
                 if (mi == null)
                 {
                     throw new WebException(string.Format("Action {0} doesn't exist!!!", ActionName));
@@ -137,21 +136,19 @@ namespace Lephone.Web
             }
         }
 
+        private static MethodInfo GetMethodInfo(Type t, string ActionName)
+        {
+            MethodInfo mi = t.GetMethod(ActionName, ClassHelper.InstancePublic | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
+            if (mi != null) return mi;
+            return t.GetMethod(ActionName, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
+        }
+
         private static void InitViewPage(string ControllerName, ControllerBase ctl, string ActionName, PageBase p)
         {
             p.bag = ctl.bag;
             p.ControllerName = ControllerName;
             p.ActionName = ActionName;
-            // init fields by the bag variables\
-            var infoList = p.GetType().GetFields(ClassHelper.InstancePublic | BindingFlags.DeclaredOnly);
-            foreach (FieldInfo info in infoList)
-            {
-                if (!ClassHelper.HasAttribute<ExcludeAttribute>(info, false))
-                {
-                    object value = p.bag[info.Name];
-                    info.SetValue(p, value);
-                }
-            }
+            p.InitFields();
         }
 
         private static List<object> GetParameters(string[] ss, MethodInfo mi)

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Text;
-using System.Web;
+using System.Reflection;
 using System.Web.UI;
-using Lephone.Data;
+using Lephone.Data.Definition;
+using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
@@ -16,6 +16,29 @@ namespace Lephone.Web.Rails
 
         protected new SessionBox Session = new SessionBox();
 
+        protected override void OnInit(System.EventArgs e)
+        {
+            base.OnInit(e);
+            if (Master != null && Master is MasterPageBase)
+            {
+                ((MasterPageBase)Master).bag = bag;
+                ((MasterPageBase)Master).InitFields();
+            }
+        }
+
+        internal void InitFields()
+        {
+            var infoList = GetType().GetFields(ClassHelper.InstancePublic | BindingFlags.DeclaredOnly);
+            foreach (FieldInfo info in infoList)
+            {
+                if (!ClassHelper.HasAttribute<ExcludeAttribute>(info, false))
+                {
+                    object value = bag[info.Name];
+                    info.SetValue(this, value);
+                }
+            }
+        }
+
         protected internal void Print(object o)
         {
             Response.Write(o);
@@ -28,61 +51,21 @@ namespace Lephone.Web.Rails
 
         protected internal string LinkTo(LTArgs args, params object[] paramters)
         {
-            return LinkTo(Request.ApplicationPath, args, paramters);
-        }
-
-        internal string LinkTo(string appPath, LTArgs args, params object[] paramters)
-        {
-            if (string.IsNullOrEmpty(args.Title))
+            if (string.IsNullOrEmpty(args.Controller))
             {
-                throw new DataException("title can not be null or empty.");
+                args.Controller = ControllerName;
             }
-            string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
-                UrlTo(appPath, args.ToUTArgs(), paramters),
-                args.Title,
-                args.Addon == null ? "" : " " + args.Addon);
-            return ret;
+            return MasterPageBase.LinkTo(args, paramters);
         }
 
         protected internal string UrlTo(UTArgs args, params object[] paramters)
-        {
-            return UrlTo(Request.ApplicationPath, args, paramters);
-        }
-
-        internal string UrlTo(string appPath, UTArgs args, params object[] paramters)
         {
             if (string.IsNullOrEmpty(args.Controller))
             {
                 args.Controller = ControllerName;
             }
-            return UrlTo(appPath, args.Controller, args.Action, paramters);
+            return MasterPageBase.UrlTo(args.Controller, args.Action, paramters);
         }
 
-        public static string UrlTo(string appPath, string Controller, string Action, params object[] paramters)
-        {
-            var url = new StringBuilder();
-            url.Append(appPath).Append("/");
-            url.Append(Controller).Append("/");
-            if (!string.IsNullOrEmpty(Action))
-            {
-                url.Append(Action).Append("/");
-            }
-            if (paramters != null)
-            {
-                foreach (var o in paramters)
-                {
-                    if (o != null)
-                    {
-                        url.Append(HttpUtility.UrlEncode(o.ToString())).Append("/");
-                    }
-                }
-            }
-            url.Length--;
-            if (WebSettings.UsingAspxPostfix)
-            {
-                url.Append(".aspx");
-            }
-            return url.ToString();
-        }
     }
 }
