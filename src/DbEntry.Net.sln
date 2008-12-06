@@ -69,6 +69,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debug Projects", "Debug Pro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest Projects", "UnitTest Projects", "{A0CF8258-917F-4756-BF94-7C3F7E254352}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.CodeGen", "Lephone.CodeGen\Lephone.CodeGen.csproj", "{B36CF407-9408-428D-A2B7-0245E58CDE17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -179,6 +181,16 @@ Global
 		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Release|.NET.ActiveCfg = Release|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
