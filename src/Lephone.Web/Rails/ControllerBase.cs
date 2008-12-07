@@ -93,19 +93,20 @@ namespace Lephone.Web.Rails
             RedirectTo(new UTArgs{Action = "list"});
         }
 
-        public virtual void List(int PageIndex)
+        public virtual void List(int pageIndex, int? pageSize)
         {
-            if (PageIndex < 0)
+            if (pageIndex < 0)
             {
-                throw new DataException("The PageIndex out of supported range.");
+                throw new DataException("The pageIndex out of supported range.");
             }
-            if (PageIndex != 0)
+            if (pageIndex != 0)
             {
-                PageIndex--;
+                pageIndex--;
             }
+            int psize = pageSize ?? WebSettings.DefaultPageSize;
             IPagedSelector ps = DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy("Id DESC")
-                .PageSize(WebSettings.DefaultPageSize).GetPagedSelector();
-            bag["list"] = ps.GetCurrentPage(PageIndex);
+                .PageSize(psize).GetPagedSelector();
+            bag["list"] = ps.GetCurrentPage(pageIndex);
             bag["list_count"] = ps.GetResultCount();
             bag["list_pagesize"] = WebSettings.DefaultPageSize;
         }
@@ -123,7 +124,7 @@ namespace Lephone.Web.Rails
         public virtual void Update(int n)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            var obj = DbEntry.Context.GetObject(typeof (T), n);
+            var obj = DbEntry.GetObject<T>(n);
             foreach (MemberHandler m in oi.Fields)
             {
                 if (m.IsRelationField) { continue; }

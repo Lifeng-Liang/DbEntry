@@ -14,8 +14,6 @@ namespace Lephone.Data
 
         public abstract bool SubClauseNotEmpty { get; }
 
-        protected WhereCondition() { }
-
         public static bool operator true(WhereCondition kv)
         {
             return false;

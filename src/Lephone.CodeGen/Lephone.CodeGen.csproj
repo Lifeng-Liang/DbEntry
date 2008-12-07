@@ -45,9 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgsErrorException.cs" />
     <Compile Include="AspNetGenerator.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RailsActionGenerator.cs" />
     <Compile Include="TypeComparer.cs" />
   </ItemGroup>
   <ItemGroup>
