@@ -4,7 +4,7 @@ using Lephone.Util.Text;
 
 namespace Lephone.Web.Rails
 {
-    internal class ControlMapper
+    public class ControlMapper
     {
         private readonly string id;
         private readonly string name;
@@ -77,6 +77,10 @@ namespace Lephone.Web.Rails
         private void ProcessEnum(MemberHandler m, object value)
         {
             string v = (value == null) ? "" : value.ToString();
+            if(value != null && value.GetType() == typeof(string))
+            {
+                v = "";
+            }
             b.tag("select").id(id).name(name);
             foreach (string s in Enum.GetNames(m.FieldType))
             {
@@ -89,6 +93,14 @@ namespace Lephone.Web.Rails
                 b.text(StringHelper.EnumToString(e)).end.over();
             }
             b.end.over();
+            if (value != null && value.GetType() == typeof(string))
+            {
+                b.include("<script type=\"text/javascript\">document.getElementById(\"")
+                    .include(id)
+                    .include("\").value = '")
+                    .include(value.ToString())
+                    .include("';</script>");
+            }
         }
 
         private void ProcessBoolean(object value)
@@ -96,8 +108,19 @@ namespace Lephone.Web.Rails
             b.input.id(id).name(name).type("checkbox");
             if (value != null)
             {
-                if((bool)value)
-                    b.attr("checked", null);
+                if(value.GetType() == typeof(string))
+                {
+                    var s = (string)value;
+                    s = s.Substring(0, s.Length - 2) + "? \"checked\" : \"\" " + s.Substring(s.Length - 2);
+                    b.attr(s, null);
+                }
+                else
+                {
+                    if ((bool)value)
+                    {
+                        b.attr("checked", null);
+                    }
+                }
             }
             b.end.over();
         }

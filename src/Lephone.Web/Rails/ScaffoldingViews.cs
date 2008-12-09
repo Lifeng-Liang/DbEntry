@@ -70,9 +70,7 @@ namespace Lephone.Web.Rails
                 object o = bag["item"];
                 object id = oi.Handler.GetKeyValue(o);
                 b.h1.text(cn + " Edit").end.enter();
-                b.form("post",
-                       UrlTo(new UTArgs {Controller = ControllerName, Action = "update"},
-                             id.ToString())).enter();
+                b.form("post", UrlTo(new UTArgs {Action = "update"}, id)).enter();
 
                 foreach (MemberHandler m in oi.Fields)
                 {

@@ -36,7 +36,7 @@ namespace Lephone.CodeGen
                 return false;
             }
             s = s.ToLower();
-            return (s == "a" || s == "ra");
+            return (s == "a" || s == "ra" || s == "rv");
         }
 
         private static void Process(string[] args)
@@ -72,6 +72,18 @@ namespace Lephone.CodeGen
                     else
                     {
                         throw new ArgsErrorException(3, "Need class name and action name.");
+                    }
+                    break;
+                case "rv":
+                    if (args.Length >= 4)
+                    {
+                        var gen = new RailsViewGenerator(args[1], args[2], args[3]);
+                        string s = gen.ToString();
+                        Console.WriteLine(s);
+                    }
+                    else
+                    {
+                        throw new ArgsErrorException(4, "Need class name and view name.");
                     }
                     break;
             }
