@@ -88,7 +88,14 @@ namespace Lephone.Web.Rails
                     }
                 }
             }
-            DbEntry.Save(obj);
+            if(obj is DbObjectSmartUpdate)
+            {
+                (obj as DbObjectSmartUpdate).Save();
+            }
+            else
+            {
+                DbEntry.Save(obj);
+            }
             Flash["notice"] = string.Format("{0} was successfully created", ControllerName);
             RedirectTo(new UTArgs{Action = "list"});
         }
@@ -146,7 +153,14 @@ namespace Lephone.Web.Rails
                     }
                 }
             }
-            DbEntry.Save(obj);
+            if (obj is DbObjectSmartUpdate)
+            {
+                (obj as DbObjectSmartUpdate).Save();
+            }
+            else
+            {
+                DbEntry.Save(obj);
+            }
             Flash["notice"] = string.Format("{0} was successfully updated", ControllerName);
             RedirectTo(new UTArgs{Action = "show"}, n);
         }
@@ -156,7 +170,14 @@ namespace Lephone.Web.Rails
             object o = DbEntry.GetObject<T>(n);
             if (o != null)
             {
-                DbEntry.Delete(o);
+                if (o is DbObjectSmartUpdate)
+                {
+                    (o as DbObjectSmartUpdate).Delete();
+                }
+                else
+                {
+                    DbEntry.Save(o);
+                }
                 RedirectTo(new UTArgs{Action = "list"});
             }
         }

@@ -31,7 +31,7 @@ namespace Lephone.Web.Rails
         {
             ClearExpires();
             HttpContext ctx = HttpContext.Current;
-            HttpCookie c = ctx.Request.Cookies["flash_id"];
+            HttpCookie c = ctx.Request.Cookies["lf_session_id"];
             if (c != null)
             {
                 Dictionary<string, object> bag = BagSet[c.Value];
@@ -39,7 +39,7 @@ namespace Lephone.Web.Rails
                 return bag;
             }
             string fid = Guid.NewGuid().ToString();
-            HttpCookie rpc = ctx.Response.Cookies["flash_id"];
+            HttpCookie rpc = ctx.Response.Cookies["lf_session_id"];
             if (rpc != null)
             {
                 rpc.Value = fid;

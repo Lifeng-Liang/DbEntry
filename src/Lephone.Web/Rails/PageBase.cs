@@ -12,9 +12,9 @@ namespace Lephone.Web.Rails
         protected internal string ControllerName;
         protected internal string ActionName;
 
-        protected FlashBox Flash = new FlashBox();
+        public FlashBox Flash = new FlashBox();
 
-        protected new SessionBox Session = new SessionBox();
+        public new SessionBox Session = new SessionBox();
 
         protected override void OnInit(System.EventArgs e)
         {

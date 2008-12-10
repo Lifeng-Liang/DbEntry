@@ -1,4 +1,6 @@
-﻿namespace Lephone.Web.Rails
+﻿using System.Collections.Generic;
+
+namespace Lephone.Web.Rails
 {
     public class FlashBox : SessionBox
     {
@@ -6,10 +8,11 @@
         {
             get
             {
-                object o = base[Name];
-                if(o != null)
+                Dictionary<string, object> bag = GetCurrentBag();
+                if (bag.ContainsKey(Name))
                 {
-                    BagSet.Remove(Name);
+                    object o = bag[Name];
+                    bag.Remove(Name);
                     return o;
                 }
                 return string.Empty;
