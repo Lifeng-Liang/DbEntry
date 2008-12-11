@@ -137,6 +137,7 @@
     <Compile Include="util\XmlSerializerTest.cs" />
     <Compile Include="Web\CommonTest.cs" />
     <Compile Include="Web\HtmlBuilderTest.cs" />
+    <Compile Include="Web\RailsTest.cs" />
     <Compile Include="Web\UrlBuilderTest.cs" />
     <Compile Include="Web\XmlBuilderTest.cs" />
   </ItemGroup>

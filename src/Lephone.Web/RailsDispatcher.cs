@@ -159,15 +159,12 @@ namespace Lephone.Web
             {
                 if (i + 2 < ss.Length)
                 {
-                    object px;
                     if(pis[i].ParameterType.IsArray)
                     {
-                        px = GetArray(ss, i + 2);
+                        ProcessArray(parameters, ss, i + 2, pis, i);
+                        break;
                     }
-                    else
-                    {
-                        px = ChangeType(ss[i + 2], pis[i].ParameterType);
-                    }
+                    object px = ChangeType(ss[i + 2], pis[i].ParameterType);
                     parameters.Add(px);
                 }
                 else
@@ -178,14 +175,30 @@ namespace Lephone.Web
             return parameters;
         }
 
-        private static string[] GetArray(string[] ss, int startIndex)
+        public static void ProcessArray(List<object> paramters, string[] ss, int startIndex, ParameterInfo[] pis, int curIndex)
         {
             var list = new List<string>();
-            for (int i = startIndex; i < ss.Length; i++)
+            int valuesCount = pis.Length - curIndex - 1;
+            for (int i = startIndex; i < ss.Length - valuesCount; i++)
             {
                 list.Add(ss[i]);
             }
-            return list.ToArray();
+
+            var values = new List<object>();
+            int nIndex = ss.Length - valuesCount;
+            for (int i = 0; i < valuesCount; i++)
+            {
+                Type t = pis[i + curIndex + 1].ParameterType;
+                if(!t.IsValueType)
+                {
+                    throw new WebException("Only value type could after string array paramter");
+                }
+                object px = ChangeType(ss[nIndex + i], t);
+                values.Add(px);
+            }
+
+            paramters.Add(list.ToArray());
+            paramters.AddRange(values);
         }
 
         private PageBase CreatePage(HttpContext context, ControllerInfo ci, Type t, string ControllerName, string ActionName)

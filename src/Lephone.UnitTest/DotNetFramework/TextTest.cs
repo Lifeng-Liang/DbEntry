@@ -51,5 +51,20 @@ namespace Lephone.UnitTest.DotNetFramework
             var b = (bool) Convert.ChangeType("true", typeof (bool));
             Assert.AreEqual(true, b);
         }
+
+        [Test]
+        public void TestValueTypeConvert()
+        {
+            const string text = "18";
+            object o = Convert.ChangeType(text, typeof (int));
+            Assert.AreEqual(18, o);
+        }
+
+        [Test, ExpectedException(typeof(FormatException))]
+        public void TestValueTypeConvert2()
+        {
+            const string ss = "text";
+            Convert.ChangeType(ss, typeof(int));
+        }
     }
 }
