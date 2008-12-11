@@ -34,9 +34,12 @@ namespace Lephone.Web.Rails
             HttpCookie c = ctx.Request.Cookies["lf_session_id"];
             if (c != null)
             {
-                Dictionary<string, object> bag = BagSet[c.Value];
-                bag["ExpireTime"] = DateTime.Now.AddMinutes(WebSettings.SessionExpire);
-                return bag;
+                if(BagSet.ContainsKey(c.Value))
+                {
+                    Dictionary<string, object> bag = BagSet[c.Value];
+                    bag["ExpireTime"] = DateTime.Now.AddMinutes(WebSettings.SessionExpire);
+                    return bag;
+                }
             }
             string fid = Guid.NewGuid().ToString();
             HttpCookie rpc = ctx.Response.Cookies["lf_session_id"];

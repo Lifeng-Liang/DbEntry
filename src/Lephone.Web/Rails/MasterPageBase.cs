@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Web;
@@ -107,7 +108,7 @@ namespace Lephone.Web.Rails
                 {
                     if (o != null)
                     {
-                        url.Append(HttpUtility.UrlEncode(o.ToString())).Append("/");
+                        AppendParamter(url, o);
                     }
                 }
             }
@@ -117,6 +118,21 @@ namespace Lephone.Web.Rails
                 url.Append(".aspx");
             }
             return url.ToString();
+        }
+
+        private static void AppendParamter(StringBuilder url, object o)
+        {
+            if(o is IEnumerable && !(o is string))
+            {
+                foreach (var obj in (IEnumerable)o)
+                {
+                    AppendParamter(url, obj);
+                }
+            }
+            else
+            {
+                url.Append(HttpUtility.UrlEncode(o.ToString())).Append("/");
+            }
         }
     }
 }
