@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using Lephone.Data;
@@ -181,6 +182,96 @@ public static class CommonExtends
     {
         var bs = guid.ToByteArray();
         return Base32StringCoding.Decode(bs);
+    }
+
+    public static string First(this string[] array)
+    {
+        if(array == null || array.Length == 0)
+        {
+            return null;
+        }
+        return array[0];
+    }
+
+    public static string Last(this string[] array)
+    {
+        if (array == null || array.Length == 0)
+        {
+            return null;
+        }
+        return array[array.Length - 1];
+    }
+
+    public static string[] RemoveFirst(this string[] array)
+    {
+        if(array == null)
+        {
+            return null;
+        }
+        if(array.Length == 0)
+        {
+            return array;
+        }
+        return new List<string>(array).RemoveFirst().ToArray();
+    }
+
+    public static string[] RemoveLast(this string[] array)
+    {
+        if (array == null)
+        {
+            return null;
+        }
+        if (array.Length == 0)
+        {
+            return array;
+        }
+        return new List<string>(array).RemoveLast().ToArray();
+    }
+
+    public static T First<T>(this List<T> list)
+    {
+        if (list == null || list.Count == 0)
+        {
+            return default(T);
+        }
+        return list[0];
+    }
+
+    public static T Last<T>(this List<T> list)
+    {
+        if (list == null || list.Count == 0)
+        {
+            return default(T);
+        }
+        return list[list.Count - 1];
+    }
+
+    public static List<T> RemoveFirst<T>(this List<T> list)
+    {
+        if(list == null)
+        {
+            return null;
+        }
+        if(list.Count == 0)
+        {
+            return list;
+        }
+        list.RemoveAt(0);
+        return list;
+    }
+
+    public static List<T> RemoveLast<T>(this List<T> list)
+    {
+        if (list == null)
+        {
+            return null;
+        }
+        if (list.Count == 0)
+        {
+            return list;
+        }
+        list.RemoveAt(list.Count - 1);
+        return list;
     }
 
 	#endregion

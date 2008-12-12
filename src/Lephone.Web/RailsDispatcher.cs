@@ -17,22 +17,18 @@ namespace Lephone.Web
 
         static RailsDispatcher()
         {
-            Dictionary<string, object> excepted = CreateExcepted(
-                "Lephone.Data", "Lephone.Util", "Lephone.Web",
-                "mscorlib", "System", "System.Data", "System.Web", "System.Xml",
-                "System.Web.Mobile", "System.resources", "System.configuration");
-
             ctls = new Dictionary<string, Type>();
             ctls["default"] = typeof(DefaultController);
+            Type cbType = typeof(ControllerBase);
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
                 if(a.FullName == null) { continue; }
                 string s = a.FullName.Split(',')[0];
-                if(!excepted.ContainsKey(s))
+                if (!s.StartsWith("System.") && CouldBeControllerAssemebly(s))
                 {
                     foreach (Type t in a.GetTypes())
                     {
-                        if (t.IsSubclassOf(typeof(ControllerBase)))
+                        if (t.IsSubclassOf(cbType))
                         {
                             string tn = t.Name;
                             if (tn.EndsWith("Controller"))
@@ -46,14 +42,19 @@ namespace Lephone.Web
             }
         }
 
-        private static Dictionary<string, object> CreateExcepted( params string[] ss)
+        private static bool CouldBeControllerAssemebly(string s)
         {
-            var excepted = new Dictionary<string,object>();
-            foreach (string s in ss)
+            switch(s)
             {
-                excepted.Add(s, 0);
+                case "Lephone.Data":
+                case "Lephone.Util":
+                case "Lephone.Web":
+                case "mscorlib":
+                case "System":
+                    return false;
+                default:
+                    return true;
             }
-            return excepted;
         }
 
         public bool IsReusable
@@ -189,10 +190,6 @@ namespace Lephone.Web
             for (int i = 0; i < valuesCount; i++)
             {
                 Type t = pis[i + curIndex + 1].ParameterType;
-                if(!t.IsValueType)
-                {
-                    throw new WebException("Only value type could after string array paramter");
-                }
                 object px = ChangeType(ss[nIndex + i], t);
                 values.Add(px);
             }

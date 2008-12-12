@@ -1,4 +1,5 @@
-﻿using Lephone.Data;
+﻿using System.Collections.Generic;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Linq;
 using Lephone.MockSql.Recorder;
@@ -184,6 +185,54 @@ namespace Lephone.UnitTest.Linq
                 .Select();
 
             Assert.AreEqual("Select [Id],[Name] From [Person] Where [Name] <> @Name_0 Order By [Id] ASC;\n<Text><60>(@Name_0=tom cat:String)", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void Test15()
+        {
+            string[] ss = null;
+            string s = ss.First();
+            Assert.IsNull(s);
+
+            s = ss.Last();
+            Assert.IsNull(s);
+
+            ss = new[]{"1st", "2nd", "3rd"};
+            Assert.AreEqual("1st", ss.First());
+            Assert.AreEqual("3rd", ss.Last());
+
+            ss = ss.RemoveFirst();
+            Assert.AreEqual(2, ss.Length);
+            Assert.AreEqual("2nd", ss[0]);
+            Assert.AreEqual("3rd", ss[1]);
+
+            ss = ss.RemoveLast();
+            Assert.AreEqual(1, ss.Length);
+            Assert.AreEqual("2nd", ss[0]);
+        }
+
+        [Test]
+        public void Test16()
+        {
+            List<string> list = null;
+            string s = list.Last();
+            Assert.IsNull(s);
+
+            s = list.First();
+            Assert.IsNull(s);
+
+            list = new List<string> {"1st", "2nd", "3rd"};
+            Assert.AreEqual("1st", list.First());
+            Assert.AreEqual("3rd", list.Last());
+
+            list.RemoveFirst();
+            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual("2nd", list[0]);
+            Assert.AreEqual("3rd", list[1]);
+
+            list.RemoveLast();
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual("2nd", list[0]);
         }
     }
 }
