@@ -22,5 +22,41 @@ namespace Lephone.Web.Rails
                 base[Name] = value;
             }
         }
+
+        public string Tip
+        {
+            get
+            {
+                return (string)this["tip"];
+            }
+            set
+            {
+                this["tip"] = value;
+            }
+        }
+
+        public string Notice
+        {
+            get
+            {
+                return (string)this["notice"];
+            }
+            set
+            {
+                this["notice"] = value;
+            }
+        }
+
+        public string Warning
+        {
+            get
+            {
+                return (string)this["warning"];
+            }
+            set
+            {
+                this["warning"] = value;
+            }
+        }
     }
 }
