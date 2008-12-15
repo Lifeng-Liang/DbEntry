@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Reflection;
+using Lephone.Util;
 
 namespace Lephone.Data.SqlEntry
 {
@@ -28,12 +29,17 @@ namespace Lephone.Data.SqlEntry
         public DbColumnInfo(DataRow dr)
         {
             Type t = typeof(DbColumnInfo);
-            foreach (FieldInfo fi in t.GetFields())
+            var fis = t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
+            foreach (FieldInfo fi in fis)
             {
                 object o = dr[fi.Name];
                 if( o == DBNull.Value)
                 {
                     o = null;
+                }
+                if(o != null && fi.FieldType != typeof(Type) && o.GetType() != fi.FieldType)
+                {
+                    o = ClassHelper.ChangeType(o, fi.FieldType);
                 }
                 fi.SetValue(this, o);
             }

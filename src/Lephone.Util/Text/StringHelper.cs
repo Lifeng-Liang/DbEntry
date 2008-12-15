@@ -20,7 +20,7 @@ namespace Lephone.Util.Text
             {
                 return ss;
             }
-            List<string> l = new List<string>(ss);
+            var l = new List<string>(ss);
             for (int i = ss.Length; i < count; i++)
             {
                 l.Add("");
@@ -54,7 +54,7 @@ namespace Lephone.Util.Text
 
 		public static string MultiLineAddPrefix(string Source, string Prefix, char SplitBy)
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			string[] ss = Source.Split(SplitBy);
 			foreach ( string s in ss )
 			{
@@ -91,7 +91,7 @@ namespace Lephone.Util.Text
 
 		public static byte[] GetBytesByLength(byte[] bs, int length)
 		{
-			MemoryStream ms = new MemoryStream(bs, 0, length);
+			var ms = new MemoryStream(bs, 0, length);
 			return ms.ToArray();
 		}
 
@@ -138,7 +138,7 @@ namespace Lephone.Util.Text
 
         public static string EnumToString(Type EnumType, string Name)
         {
-            ShowStringAttribute[] os = (ShowStringAttribute[])EnumType.GetField(Name)
+            var os = (ShowStringAttribute[])EnumType.GetField(Name)
                 .GetCustomAttributes(typeof(ShowStringAttribute), false);
             if (os != null && os.Length == 1)
             {
