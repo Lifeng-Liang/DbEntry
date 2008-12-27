@@ -32,12 +32,14 @@ Example:
 ----------------------------------------------------------------------------
 
 Usage for Rails views:
-    Lephone.CodeGen rv FileName [ClassPath ViewName]
+    Lephone.CodeGen rv FileName [ClassPath ViewName [MasterPage]]
 
 FileName:   The assembly file name who has the model classes.
 ClassPath:  The class you want to generate template code
             If don't input it, the generator will show all the classes name.
 ViewName:   One of the following: New, List, Show, Edit
+MasterPage: Master page link like "~/Master.master", if this argument exist,
+            the output code will be master page mode.
 
 Example:
-    Lephone.CodeGen rv Models.dll Models.User New
+    Lephone.CodeGen rv Models.dll Models.User New ~/Master.master

@@ -47,5 +47,13 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual(1, list.ToArray().Length);
             Assert.AreEqual("Tom", list.ToArray()[0].FirstName);
         }
+
+        [Test]
+        public void Test3()
+        {
+            var list = Person.Find(p => p.FirstName.Contains("T"));
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual("Tom", list[0].FirstName);
+        }
     }
 }

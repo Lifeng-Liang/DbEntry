@@ -77,7 +77,8 @@ namespace Lephone.CodeGen
                 case "rv":
                     if (args.Length >= 4)
                     {
-                        var gen = new RailsViewGenerator(args[1], args[2], args[3]);
+                        string mpn = args.Length >= 5 ? args[4] : null;
+                        var gen = new RailsViewGenerator(args[1], args[2], args[3], mpn);
                         string s = gen.ToString();
                         Console.WriteLine(s);
                     }

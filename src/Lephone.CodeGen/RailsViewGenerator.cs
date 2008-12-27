@@ -24,6 +24,14 @@ namespace Lephone.CodeGen
 
 ";
 
+        private const string mHeader = @"<%@ Page Title="""" Language=""C#"" MasterPageFile=""{1}"" %>
+{0}
+<asp:Content ID=""Content1"" ContentPlaceHolderID=""head"" Runat=""Server"">
+</asp:Content>
+<asp:Content ID=""Content2"" ContentPlaceHolderID=""ContentPlaceHolder1"" Runat=""Server"">
+
+";
+
         private const string tScript = @"
 <script runat=""server"">{0}</script>
 ";
@@ -32,10 +40,14 @@ namespace Lephone.CodeGen
 </body>
 </html>";
 
+        private const string mFooter = @"
+</asp:Content>";
+
         private Type ClassType;
         private readonly string ViewName;
+        private readonly string MasterPageName;
 
-        public RailsViewGenerator(string fileName, string className, string viewName)
+        public RailsViewGenerator(string fileName, string className, string viewName, string MasterPageName)
         {
             Helper.EnumTypes(fileName, t =>
             {
@@ -47,6 +59,7 @@ namespace Lephone.CodeGen
                 return true;
             });
             ViewName = viewName;
+            this.MasterPageName = MasterPageName;
         }
 
         public override string ToString()
@@ -65,11 +78,18 @@ namespace Lephone.CodeGen
             throw new ArgsErrorException(6, "View name invalid.");
         }
 
-        private static void Process(StringBuilder sb, string vars, CallbackObjectHandler<HtmlBuilder> callback)
+        private void Process(StringBuilder sb, string vars, CallbackObjectHandler<HtmlBuilder> callback)
         {
             string vs = string.IsNullOrEmpty(vars) ? "" : string.Format(tScript, vars);
 
-            sb.Append(string.Format(tHeader, vs));
+            if(string.IsNullOrEmpty(MasterPageName))
+            {
+                sb.Append(string.Format(tHeader, vs));
+            }
+            else
+            {
+                sb.Append(string.Format(mHeader, vs, MasterPageName));
+            }
 
             var b = HtmlBuilder.New;
 
@@ -77,7 +97,14 @@ namespace Lephone.CodeGen
 
             sb.Append(b);
 
-            sb.Append(tFooter);
+            if(string.IsNullOrEmpty(MasterPageName))
+            {
+                sb.Append(tFooter);
+            }
+            else
+            {
+                sb.Append(mFooter);
+            }
         }
 
 
