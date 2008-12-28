@@ -47,6 +47,20 @@ namespace Lephone.Linq
             {
                 return ParseMethodCall((MethodCallExpression)expr);
             }
+            if(expr is UnaryExpression)
+            {
+                return ParseUnary((UnaryExpression)expr);
+            }
+            throw new LinqException("Not supported operation!");
+        }
+
+        private static WhereCondition ParseUnary(UnaryExpression expr)
+        {
+            switch (expr.NodeType)
+            {
+                case ExpressionType.Not:
+                    return !Parse(expr.Operand);
+            }
             throw new LinqException("Not supported operation!");
         }
 
