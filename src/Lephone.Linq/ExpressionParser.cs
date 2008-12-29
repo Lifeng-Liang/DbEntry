@@ -18,7 +18,12 @@ namespace Lephone.Linq
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             foreach (MemberHandler m in oi.Fields)
             {
-                dic.Add(m.MemberInfo.Name, m.Name);
+                string key = m.MemberInfo.Name;
+                if(key.StartsWith("$"))
+                {
+                    key = key.Substring(1);
+                }
+                dic.Add(key, m.Name);
             }
         }
 
@@ -122,7 +127,12 @@ namespace Lephone.Linq
             {
                 var left = (MemberExpression)l;
                 string pn = left.Expression.ToString();
-                string key = GetColumnName(left.Member.Name);
+                string mn = left.Member.Name;
+                if(left.Expression is MemberExpression && mn == "Id")
+                {
+                    mn = ((MemberExpression)left.Expression).Member.Name;
+                }
+                string key = GetColumnName(mn);
 
                 if (e.Right.NodeType == ExpressionType.MemberAccess)
                 {
