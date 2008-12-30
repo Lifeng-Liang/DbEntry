@@ -12,7 +12,7 @@ namespace Lephone.Util
             {
                 return dic[t];
             }
-            TValue v = ClassHelper.CreateInstance<TValue>();
+            var v = ClassHelper.CreateInstance<TValue>();
             v.Init(t);
             lock (dic)
             {

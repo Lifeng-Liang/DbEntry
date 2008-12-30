@@ -15,6 +15,8 @@ namespace Lephone.UnitTest.Data
         [StringColumn(Regular=CommonRegular.EmailRegular)]
         public string Email;
 
+        public vtest() {}
+
         public vtest(string Name, string Address, string Email)
         {
             this.Name = Name;
@@ -33,6 +35,8 @@ namespace Lephone.UnitTest.Data
 
         [StringColumn(Regular = CommonRegular.EmailRegular, ErrorMessage = "Please input valid email address")]
         public string Email;
+
+        public vtest0() {}
 
         public vtest0(string Name, string Address, string Email)
         {

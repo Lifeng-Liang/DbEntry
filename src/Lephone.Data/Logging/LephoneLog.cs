@@ -15,6 +15,8 @@ namespace Lephone.Data.Logging
 		[DbColumn("Exception")] public string eException;
         [SpecialName] public DateTime CreatedOn;
 
+        public LephoneLog() {}
+
         public LephoneLog(LogType Type, string Source, string Name, string Message, Exception eException)
 		{
 			this.Type = Type;
@@ -25,12 +27,12 @@ namespace Lephone.Data.Logging
 			this.eException = (eException == null) ? "" : eException.ToString();
 		}
 
-		private string GetThreadInfo()
+		private static string GetThreadInfo()
 		{
 			return GetThreadInfo(System.Threading.Thread.CurrentThread);
 		}
 
-		private string GetThreadInfo(System.Threading.Thread t)
+		private static string GetThreadInfo(System.Threading.Thread t)
 		{
 			return string.Format("<{0}>{1},{2},{3},{4}",
 				t.Name,

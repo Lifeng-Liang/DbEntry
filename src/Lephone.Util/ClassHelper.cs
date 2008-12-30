@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
@@ -55,6 +56,26 @@ namespace Lephone.Util
                 return Time.Parse((string)value);
             }
             return new Time(Convert.ToDateTime(value));
+        }
+
+        public static ConstructorInfo GetArgumentlessConstructor(Type t)
+        {
+            var c = t.GetConstructor(InstancePublic, null, new Type[] { }, null);
+            return c;
+        }
+
+        public static ConstructorInfo[] GetPublicOrProtectedConstructors(Type t)
+        {
+            var cs = t.GetConstructors(InstanceFlag);
+            var list = new List<ConstructorInfo>();
+            foreach(ConstructorInfo info in cs)
+            {
+                if(info.IsPublic || info.IsFamily)
+                {
+                    list.Add(info);
+                }
+            }
+            return list.ToArray();
         }
 
         public static T CreateInstance<T>()

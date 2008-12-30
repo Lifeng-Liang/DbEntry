@@ -21,8 +21,8 @@ namespace Lephone.Data.Common
         public MemoryAssembly(string AssemblyName)
         {
             this.AssemblyName = AssemblyName;
-            AssemblyName an = new AssemblyName(AssemblyName);
-            byte[] bs = ResourceHelper.ReadAll(this.GetType(), "dynamic.snk");
+            var an = new AssemblyName(AssemblyName);
+            byte[] bs = ResourceHelper.ReadAll(GetType(), "dynamic.snk");
             an.KeyPair = new StrongNameKeyPair(bs);
             //InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
             //    an, AssemblyBuilderAccess.RunAndSave, @"c:\x.dll");
@@ -38,7 +38,7 @@ namespace Lephone.Data.Common
 
         public MemoryTypeBuilder DefineType(TypeAttributes attr, Type InheritsFrom, Type[] Interfaces, CustomAttributeBuilder[] attributes)
         {
-            string TypeName = "T" + index;
+            string TypeName = MemoryTypeBuilder.MemberPrifix + index;
             index++;
             return DefineType(TypeName, attr, InheritsFrom, Interfaces, attributes);
         }
@@ -58,7 +58,7 @@ namespace Lephone.Data.Common
 
         public void ResetModule()
         {
-            InnerModule = InnerAssembly.DefineDynamicModule(this.AssemblyName);
+            InnerModule = InnerAssembly.DefineDynamicModule(AssemblyName);
         }
 
         public void Save()

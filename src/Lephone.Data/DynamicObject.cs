@@ -529,7 +529,7 @@ namespace Lephone.Data
         {
             Type t = SourceType;
             ConstructorInfo[] ret;
-            while((ret = t.GetConstructors()).Length == 0)
+            while((ret = ClassHelper.GetPublicOrProtectedConstructors(t)).Length == 0)
             {
                 t = t.BaseType;
             }

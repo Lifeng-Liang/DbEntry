@@ -25,7 +25,7 @@ namespace Lephone.Data.Common
         private const MethodAttributes OverrideFlag = MethodAttributes.Public |
             MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Virtual;
 
-        public static readonly string FieldPrifix = "$";
+        public static readonly string MemberPrifix = "$";
 
         private readonly TypeBuilder InnerType;
 
@@ -247,7 +247,7 @@ namespace Lephone.Data.Common
             string SetPropertyName = "set_" + PropertyName;
 
             FieldType ft = GetFieldType(pi);
-            FieldInfo fi = DefineField(FieldPrifix + PropertyName, PropertyType, ft, pi);
+            FieldInfo fi = DefineField(MemberPrifix + PropertyName, PropertyType, ft, pi);
 
             OverrideMethod(OverrideFlag, GetPropertyName, OriginType, PropertyType, null, delegate(ILBuilder il)
             {

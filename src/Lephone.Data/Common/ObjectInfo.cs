@@ -41,6 +41,17 @@ namespace Lephone.Data.Common
 
         protected override void Init(Type t)
         {
+            var c = ClassHelper.GetArgumentlessConstructor(t);
+            if(c == null)
+            {
+                string typeName = t.Name;
+                if(typeName.StartsWith(MemoryTypeBuilder.MemberPrifix))
+                {
+                    typeName = t.BaseType.Name;
+                }
+                throw new DataException("class {0} need a public/protected(DbObjectModel) argumentless constructor", typeName);
+            }
+
             InitBySimpleMode(t);
             // binding QueryComposer
             if (!string.IsNullOrEmpty(SoftDeleteColumnName))

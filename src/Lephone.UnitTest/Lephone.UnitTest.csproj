@@ -94,9 +94,11 @@
     <Compile Include="Data\SoftDeleteTest.cs" />
     <Compile Include="Data\TableSchemaTest.cs" />
     <Compile Include="Data\UnsignedNumberTest.cs" />
+    <Compile Include="Data\UserIssueTest.cs" />
     <Compile Include="Data\ValidateHandlerTest.cs" />
     <Compile Include="Data\VBHelperTest.cs" />
     <Compile Include="DotNetFramework\NullabelTest.cs" />
+    <Compile Include="DotNetFramework\ReflectionTest.cs" />
     <Compile Include="DotNetFramework\TextTest.cs" />
     <Compile Include="InitHelper.cs" />
     <Compile Include="Data\Inner\DataTester.cs" />
