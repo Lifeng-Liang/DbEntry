@@ -26,7 +26,7 @@ namespace Lephone.Data.Builder
             string keys = "";
             var sql = new StringBuilder();
             sql.Append("CREATE TABLE ");
-            sql.Append(dd.QuoteForLimitTableName(TableName));
+            sql.Append(dd.QuoteForTableName(TableName));
             sql.Append(" (");
 
             foreach (ColumnInfo ci in _Columns)

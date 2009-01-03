@@ -264,7 +264,12 @@ namespace Lephone.Data.Dialect
 
 		protected virtual string Quote( string name )
 		{
-            string[] ss = name.Split('.');
+		    return Quote(name, '.');
+		}
+
+        protected virtual string Quote(string name, char splitter)
+        {
+            string[] ss = name.Split(splitter);
             var ret = new StringBuilder();
             foreach (string s in ss)
             {
@@ -276,7 +281,7 @@ namespace Lephone.Data.Dialect
                 ret.Length--;
             }
             return ret.ToString();
-		}
+        }
 
         protected virtual string QuoteSingle(string name)
         {
@@ -296,7 +301,7 @@ namespace Lephone.Data.Dialect
 		public virtual string QuoteForTableName( string tableName )
 		{
             string[] ss = tableName.Split('.');
-            return QuoteSingle(ss[0]);
+            return Quote(ss[0], ':');
 		}
 
         public virtual string QuoteForLimitTableName(string tableName)

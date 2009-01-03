@@ -140,6 +140,13 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract IList<crxBook1> Books { get; set; }
     }
 
+    [DbTable("tom:test_table")]
+    public abstract class compTableName : DbObjectModel<compTableName>
+    {
+        public abstract string Name { get; set; }
+    }
+
+
     #endregion
 
     [TestFixture]
@@ -355,6 +362,42 @@ CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([C
 CREATE INDEX [IX_R_book_and_category_crx_Book1_Id] ON [R_book_and_category] ([crx_Book1_Id] ASC);
 CREATE INDEX [IX_R_book_and_category_crx_Category1_Id] ON [R_book_and_category] ([crx_Category1_Id] ASC);
 <Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestTableName()
+        {
+            de.Create(typeof(compTableName));
+            Assert.AreEqual(
+@"CREATE TABLE [tom].[test_table] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] ntext NOT NULL 
+);
+<Text><30>()".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestTableNameForCRUD()
+        {
+            de.From<compTableName>().Where(p => p.Name == "tom").Select();
+            Assert.AreEqual(@"Select [Id],[Name] From [tom].[test_table] Where [Name] = @Name_0;
+<Text><60>(@Name_0=tom:String)".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+
+            var c = compTableName.New();
+            c.Name = "tom";
+            de.Insert(c);
+            Assert.AreEqual(@"Insert Into [tom].[test_table] ([Name]) Values (@Name_0);
+SELECT last_insert_rowid();
+<Text><30>(@Name_0=tom:String)".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+
+            c.Id = 2;
+            de.Update(c);
+            Assert.AreEqual(@"Update [tom].[test_table] Set [Name]=@Name_0  Where [Id] = @Id_1;
+<Text><30>(@Name_0=tom:String,@Id_1=2:Int64)".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+
+            de.Delete(c);
+            Assert.AreEqual(@"Delete From [tom].[test_table] Where [Id] = @Id_0;
+<Text><30>(@Id_0=2:Int64)".Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
         }
     }
 }
