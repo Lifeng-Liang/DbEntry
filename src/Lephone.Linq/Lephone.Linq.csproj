@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E93B9148-B6FB-4340-9981-6CBB407CC6F8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -46,6 +46,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +67,10 @@
     <ProjectReference Include="..\Lephone.Util\Lephone.Util.csproj">
       <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
       <Name>Lephone.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lephone.Web\Lephone.Web.csproj">
+      <Project>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</Project>
+      <Name>Lephone.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

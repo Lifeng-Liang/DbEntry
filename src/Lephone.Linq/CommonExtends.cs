@@ -8,6 +8,7 @@ using Lephone.Data.Definition;
 using Lephone.Linq;
 using Lephone.Util;
 using Lephone.Util.Text;
+using Lephone.Web;
 
 public static class CommonExtends
 {
@@ -76,6 +77,16 @@ public static class CommonExtends
     }
 
 	#endregion
+
+    #region Web
+
+    public static void AddAndCondition<T>(this DbEntryDataSource<T> ds, Expression<Func<T, bool>> condition) where T : class, IDbObject
+    {
+        var c = ExpressionParser<T>.Parse(condition);
+        ds.Condition &= c;
+    }
+
+    #endregion
 
     #region String
 

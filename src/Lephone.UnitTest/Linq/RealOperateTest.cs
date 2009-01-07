@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Linq;
 using Lephone.MockSql.Recorder;
@@ -29,6 +30,20 @@ namespace Lephone.UnitTest.Linq
         {
             public abstract string Name { get; set; }
             [BelongsTo, DbColumn("Category_Id")] public abstract lCategory Category { get; set; }
+        }
+
+        [DbTable("People")]
+        public class MyTable : IDbObject
+        {
+            [DbKey] public long Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        [DbTable("People")]
+        public class MyTable2 : IDbObject
+        {
+            [DbKey] public long Id;
+            public string Name;
         }
 
         #region Init
@@ -95,6 +110,22 @@ namespace Lephone.UnitTest.Linq
             var list = Person.Find(p => p.FirstName == "Tom");
             Assert.AreEqual(1, list.Count);
             Assert.AreEqual("Tom", list[0].FirstName);
+        }
+
+        [Test]
+        public void TestIDbObject()
+        {
+            var list = DbEntry.From<MyTable>().Where(p => p.Name == "Mike").Select();
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(3, list[0].Id);
+        }
+
+        [Test]
+        public void TestIDbObject2()
+        {
+            var list = DbEntry.From<MyTable2>().Where(p => p.Name == "Mike").Select();
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(3, list[0].Id);
         }
     }
 }
