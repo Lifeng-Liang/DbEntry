@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
@@ -169,6 +170,14 @@ namespace Lephone.Util.Text
         public static string Capitalize(string s)
         {
             return s[0].ToString().ToUpper() + s.Substring(1);
+        }
+
+        private static readonly SHA512 hash = SHA512.Create();
+
+        public static byte[] Hash(string s)
+        {
+            byte[] input = Encoding.Unicode.GetBytes(s);
+            return hash.ComputeHash(input);
         }
 	}
 }

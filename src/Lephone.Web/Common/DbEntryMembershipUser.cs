@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Security;
 using Lephone.Data.Definition;
+using Lephone.Util.Text;
 
 namespace Lephone.Web.Common
 {
@@ -10,8 +11,8 @@ namespace Lephone.Web.Common
         [Length(1, 30), Index(UNIQUE = true)]
         public abstract string UserName { get; set; }
 
-        [Length(1, 30), Index(UNIQUE = true)]
-        public abstract string Password { get; set; }
+        [Length(64), Index(UNIQUE = true)]
+        public abstract byte[] Password { get; set; }
 
         [Length(1, 50), Index(UNIQUE = true)]
         public abstract string Email { get; set; }
@@ -19,8 +20,8 @@ namespace Lephone.Web.Common
         [Length(50)]
         public abstract string PasswordQuestion { get; set; }
 
-        [Length(50)]
-        public abstract string PasswordAnswer { get; set; }
+        [Length(64)]
+        public abstract byte[] PasswordAnswer { get; set; }
 
         public abstract bool IsApproved { get; set; }
 
@@ -37,10 +38,10 @@ namespace Lephone.Web.Common
             string passwordQuestion, string passwordAnswer, bool isApproved, string comment)
         {
             this.UserName = userName;
-            this.Password = password;
+            this.Password = StringHelper.Hash(password);
             this.Email = email;
             this.PasswordQuestion = passwordQuestion;
-            this.PasswordAnswer = passwordAnswer;
+            this.PasswordAnswer = StringHelper.Hash(passwordAnswer);
             this.IsApproved = isApproved;
             this.Comment = comment;
             return this;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Reflection;
@@ -10,6 +11,7 @@ namespace Lephone.Util
 	{
 		private static string _ExeFileName;
         private static string _BaseDirectory;
+	    private static string _TempDirectory;
 
         public static string ExeFileName
         {
@@ -21,6 +23,11 @@ namespace Lephone.Util
             get { return _BaseDirectory; }
         }
 
+	    public static string TempDirectory
+	    {
+            get { return _TempDirectory; }
+	    }
+
 		static SystemHelper()
 		{
             CommonHelper.CatchAll(delegate
@@ -28,6 +35,7 @@ namespace Lephone.Util
                 AppDomainSetup s = AppDomain.CurrentDomain.SetupInformation;
                 _ExeFileName = s.ApplicationName;
                 _BaseDirectory = s.ApplicationBase;
+                _TempDirectory = Path.GetTempPath();
             });
 		}
 

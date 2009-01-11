@@ -25,6 +25,24 @@ namespace Lephone.Util
             }
         }
 
+        public static bool AreEqual(object o1, object o2)
+        {
+            if(o1 == null && o2 == null) { return true; }
+            if (o1 == null || o2 == null) { return false; }
+            if(o1 is IList && o2 is IList)
+            {
+                var l1 = (IList)o1;
+                var l2 = (IList)o2;
+                if (l1.Count != l2.Count) { return false; }
+                for(int i = 0; i < l1.Count; i++)
+                {
+                    if (!l1[i].Equals(l2[i])) { return false; }
+                }
+                return true;
+            }
+            return o1.Equals(o2);
+        }
+
         public static int main(string[] args, int minArgCount, string Usage, CallbackVoidHandler Callback)
         {
             if (args.Length >= minArgCount)

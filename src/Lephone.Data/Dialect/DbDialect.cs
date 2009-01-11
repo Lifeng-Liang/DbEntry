@@ -158,6 +158,7 @@ namespace Lephone.Data.Dialect
         {
             string s = ConnectionString.Trim();
             s = s.Replace("{BaseDirectory}", SystemHelper.BaseDirectory);
+            s = s.Replace("{TempDirectory}", SystemHelper.TempDirectory);
             if (s.StartsWith("@"))
             {
                 s = s.Replace("~", SystemHelper.BaseDirectory);

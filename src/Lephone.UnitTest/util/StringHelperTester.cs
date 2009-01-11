@@ -1,4 +1,5 @@
 ﻿using System;
+using Lephone.Util;
 using Lephone.Util.Text;
 using NUnit.Framework;
 
@@ -9,19 +10,19 @@ namespace Lephone.UnitTest.util
 	{
         [Test, ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void Test()
-		{
-			string s = "";
-			s = StringHelper.GetStringLeft(s);
-		}
+        {
+            const string s = "";
+            StringHelper.GetStringLeft(s);
+        }
 
-        [Test, ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    [Test, ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void Test1()
-		{
-			string s = "abc";
-			s = StringHelper.GetStringLeft(s, 3);
-		}
+	    {
+	        const string s = "abc";
+	        StringHelper.GetStringLeft(s, 3);
+	    }
 
-		[Test]
+	    [Test]
 		public void Test2()
 		{
 			string s = "abc";
@@ -40,7 +41,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test4()
 		{
-			string s = "_abc";
+			const string s = "_abc";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(true, b);
 		}
@@ -48,7 +49,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test5()
 		{
-			string s = "_ab123c";
+			const string s = "_ab123c";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(true, b);
 		}
@@ -56,7 +57,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test6()
 		{
-			string s = "ab123c";
+			const string s = "ab123c";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(true, b);
 		}
@@ -64,7 +65,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test7()
 		{
-			string s = "__abc12";
+			const string s = "__abc12";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(true, b);
 		}
@@ -72,7 +73,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test8()
 		{
-			string s = "a";
+			const string s = "a";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(true, b);
 		}
@@ -80,7 +81,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test9()
 		{
-			string s = "_";
+			const string s = "_";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -88,7 +89,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test10()
 		{
-			string s = "1abc12";
+			const string s = "1abc12";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -96,7 +97,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test11()
 		{
-			string s = "1";
+			const string s = "1";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -104,7 +105,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test12()
 		{
-			string s = "%";
+			const string s = "%";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -112,7 +113,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test13()
 		{
-			string s = "ab%";
+			const string s = "ab%";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -120,7 +121,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test14()
 		{
-			string s = "";
+			const string s = "";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -128,7 +129,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test15()
 		{
-			string s = "ab\ncd";
+			const string s = "ab\ncd";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -136,7 +137,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test16()
 		{
-			string s = "ab\tcd";
+			const string s = "ab\tcd";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -144,7 +145,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test17()
 		{
-			string s = "ab cd";
+			const string s = "ab cd";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(false, b);
 		}
@@ -152,7 +153,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test18()
 		{
-			string s = " abcd ";
+			const string s = " abcd ";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(true, b);
 		}
@@ -160,7 +161,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test19()
 		{
-			string s = "\t abcd";
+			const string s = "\t abcd";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(true, b);
 		}
@@ -168,7 +169,7 @@ namespace Lephone.UnitTest.util
 		[Test]
 		public void Test20()
 		{
-			string s = "abcd\t";
+			const string s = "abcd\t";
 			bool b = StringHelper.IsIndentityName(s);
 			Assert.AreEqual(true, b);
 		}
@@ -176,7 +177,7 @@ namespace Lephone.UnitTest.util
         [Test]
         public void Test21()
         {
-            string s = "aaaa";
+            const string s = "aaaa";
             string[] ss = StringHelper.Split(s, ':', 2);
             Assert.AreEqual(2, ss.Length);
             Assert.AreEqual("aaaa", ss[0]);
@@ -186,11 +187,31 @@ namespace Lephone.UnitTest.util
         [Test]
         public void Test22()
         {
-            string s = "aa:a:a";
+            const string s = "aa:a:a";
             string[] ss = StringHelper.Split(s, ':', 2);
             Assert.AreEqual(2, ss.Length);
             Assert.AreEqual("aa", ss[0]);
             Assert.AreEqual("a:a", ss[1]);
         }
+
+        [Test]
+        public void TestByteArray()
+        {
+            var b1 = new byte[] { 1, 2, 3, 4 };
+            var b2 = new byte[] { 1, 2, 3, 4 };
+            Assert.IsFalse(b1 == b2);
+        }
+
+        [Test]
+        public void TestAreEqual()
+        {
+            var b1 = new byte[] { 1, 2, 3, 4 };
+            var b2 = new byte[] { 1, 2, 3, 4 };
+            var ret = CommonHelper.AreEqual(b1, b2);
+            Assert.IsTrue(ret);
+            var b3 = new byte[] { 1, 2, 3, 5 };
+            Assert.IsFalse(CommonHelper.AreEqual(b1, b3));
+        }
+
     }
 }

@@ -285,5 +285,10 @@ public static class CommonExtends
         return list;
     }
 
+    public static bool IsNullOrEmpty(this string s)
+    {
+        return string.IsNullOrEmpty(s);
+    }
+
 	#endregion
 }

@@ -2,6 +2,7 @@
 using System.Web.Security;
 using Lephone.Data;
 using Lephone.Util;
+using Lephone.Util.Text;
 using Lephone.Web.Common;
 
 namespace Lephone.Web
@@ -23,9 +24,9 @@ namespace Lephone.Web
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
             var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
-            if (u != null && u.Password == oldPassword)
+            if (u != null && CommonHelper.AreEqual(u.Password, StringHelper.Hash(oldPassword)))
             {
-                u.Password = newPassword;
+                u.Password = StringHelper.Hash(newPassword);
                 u.Save();
                 return true;
             }
@@ -38,7 +39,7 @@ namespace Lephone.Web
             if (u != null)
             {
                 u.PasswordQuestion = newPasswordQuestion;
-                u.PasswordAnswer = newPasswordAnswer;
+                u.PasswordAnswer = StringHelper.Hash(newPasswordAnswer);
                 u.Save();
                 return true;
             }
@@ -126,9 +127,9 @@ namespace Lephone.Web
             var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null)
             {
-                if (u.PasswordAnswer == answer)
+                if (CommonHelper.AreEqual(u.PasswordAnswer, StringHelper.Hash(answer)))
                 {
-                    return u.Password;
+                    return "";
                 }
             }
             return null;
@@ -181,7 +182,7 @@ namespace Lephone.Web
 
         public override MembershipPasswordFormat PasswordFormat
         {
-            get { return MembershipPasswordFormat.Clear; }
+            get { return MembershipPasswordFormat.Hashed; }
         }
 
         public override string PasswordStrengthRegularExpression
@@ -204,10 +205,11 @@ namespace Lephone.Web
             var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null)
             {
-                if (u.PasswordAnswer == answer)
+                if (CommonHelper.AreEqual(u.PasswordAnswer, StringHelper.Hash(answer)))
                 {
-                    u.Password = Rand.Next(10000000, 2147483647).ToString();
-                    return u.Password;
+                    var p = Rand.Next(10000000, 2147483647).ToString();
+                    u.Password = StringHelper.Hash(p);
+                    return p;
                 }
             }
             return null;
