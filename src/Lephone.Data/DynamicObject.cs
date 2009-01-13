@@ -400,7 +400,7 @@ namespace Lephone.Data
             else
             {
                 OverrideSetValuesDirect("SetValuesForUpdateDirect", tb, srcType, Fields,
-                                        m => m.IsCreatedOn,
+                                        m => m.IsCreatedOn || m.IsKey,
                                         m => m.IsUpdatedOn || m.IsSavedOn || m.IsCount);
             }
 
@@ -424,7 +424,7 @@ namespace Lephone.Data
                 {
                     if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                     {
-                        if (f.IsUpdatedOn || f.IsSavedOn || !f.IsCreatedOn || f.IsCount)
+                        if (!f.IsKey && (f.IsUpdatedOn || f.IsSavedOn || !f.IsCreatedOn || f.IsCount))
                         {
                             if (f.IsUpdatedOn || f.IsSavedOn || f.IsCount)
                             {

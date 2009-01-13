@@ -48,46 +48,12 @@ namespace Lephone.Data.Common
             }
         }
 
-        //TODO: why left this?
-        //private void SetValue(MemberHandler f, object o, object v)
-        //{
-        //    if (v.GetType() == typeof(decimal))
-        //    {
-        //        if (f.FieldType == typeof(decimal))
-        //        {
-        //            f.SetValue(o, v);
-        //        }
-        //        else
-        //        {
-        //            if (f.FieldType.IsEnum)
-        //            {
-        //                f.SetValue(o, Convert.ToInt32(v));
-        //            }
-        //            else
-        //            {
-        //                if (f.FieldType.IsGenericType)
-        //                {
-        //                    f.SetValue(o, ClassHelper.ChangeType(v, f.FieldType.GetGenericArguments()[0]));
-        //                }
-        //                else
-        //                {
-        //                    f.SetValue(o, ClassHelper.ChangeType(v, f.FieldType));
-        //                }
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        f.SetValue(o, v);
-        //    }
-        //}
-
         public void LoadRelationValues(DbContext driver, object o, bool UseIndex, IDataReader dr)
         {
             int n = oi.SimpleFields.Length;
             foreach (MemberHandler f in oi.RelationFields)
             {
-                ILazyLoading ho = (ILazyLoading)f.GetValue(o);
+                var ho = (ILazyLoading)f.GetValue(o);
                 if (f.IsLazyLoad)
                 {
                     ho.Init(driver, f.Name);
@@ -124,22 +90,15 @@ namespace Lephone.Data.Common
                 }
                 else if (f.IsBelongsTo) // TODO: IsHasAndBelongsToMany
                 {
-                    IBelongsTo hbo = (IBelongsTo)ho;
-                    if (UseIndex)
-                    {
-                        hbo.ForeignKey = dr[n++];
-                    }
-                    else
-                    {
-                        hbo.ForeignKey = dr[f.Name];
-                    }
+                    var hbo = (IBelongsTo)ho;
+                    hbo.ForeignKey = UseIndex ? dr[n++] : dr[f.Name];
                 }
             }
         }
 
         public Dictionary<string, object> GetKeyValues(object o)
         {
-            Dictionary<string, object> dic = new Dictionary<string,object>();
+            var dic = new Dictionary<string,object>();
             foreach (MemberHandler mh in oi.KeyFields)
             {
                 dic.Add(mh.Name, mh.GetValue(o));
@@ -172,18 +131,18 @@ namespace Lephone.Data.Common
             object value = fi.GetValue(obj);
             if (fi.IsBelongsTo)
             {
-                IBelongsTo ll = value as IBelongsTo;
+                var ll = (IBelongsTo)value;
                 Type fkt = (ll.ForeignKey != null) ? ll.ForeignKey.GetType() : typeof(int);
-                KeyValue kv = new KeyValue(fi.Name, ll.ForeignKey, fkt);
+                var kv = new KeyValue(fi.Name, ll.ForeignKey, fkt);
                 isv.Values.Add(kv);
             }
             else if (fi.IsLazyLoad)
             {
-                ILazyLoading ll = (ILazyLoading)value;
+                var ll = (ILazyLoading)value;
                 ll.IsLoaded = true;
                 object ov = ll.Read();
                 Type t = fi.FieldType.GetGenericArguments()[0];
-                KeyValue kv = new KeyValue(fi.Name, ov, t);
+                var kv = new KeyValue(fi.Name, ov, t);
                 isv.Values.Add(kv);
             }
             else if (fi.IsAutoSavedValue)
@@ -192,15 +151,13 @@ namespace Lephone.Data.Common
             }
             else
             {
-                KeyValue kv = new KeyValue(fi.Name, value, fi.FieldType);
+                var kv = new KeyValue(fi.Name, value, fi.FieldType);
                 isv.Values.Add(kv);
             }
         }
 
         public void SetValuesForInsert(ISqlValues isv, object obj)
         {
-            //TODO: why left this?
-            //Type t = obj.GetType();
             foreach (MemberHandler fi in oi.Fields)
             {
                 if (!fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany && !fi.IsUpdatedOn)
@@ -212,16 +169,17 @@ namespace Lephone.Data.Common
 
         public void SetValuesForUpdate(ISqlValues isv, object obj)
         {
-            //TODO: why left this?
-            //Type t = obj.GetType();
-            DbObjectSmartUpdate to = obj as DbObjectSmartUpdate;
+            var to = obj as DbObjectSmartUpdate;
             if (to != null && to.m_UpdateColumns != null)
             {
                 foreach (MemberHandler fi in oi.Fields)
                 {
-                    if (fi.IsUpdatedOn || fi.IsSavedOn || (!fi.IsCreatedOn && to.m_UpdateColumns.ContainsKey(fi.Name)))
+                    if(!fi.IsKey)
                     {
-                        AddKeyValue(isv, fi, obj);
+                        if (fi.IsUpdatedOn || fi.IsSavedOn || (!fi.IsCreatedOn && to.m_UpdateColumns.ContainsKey(fi.Name)))
+                        {
+                            AddKeyValue(isv, fi, obj);
+                        }
                     }
                 }
             }
@@ -229,9 +187,12 @@ namespace Lephone.Data.Common
             {
                 foreach (MemberHandler fi in oi.Fields)
                 {
-                    if (fi.IsUpdatedOn || fi.IsSavedOn || (!fi.IsCreatedOn && !fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany))
+                    if(!fi.IsKey)
                     {
-                        AddKeyValue(isv, fi, obj);
+                        if (fi.IsUpdatedOn || fi.IsSavedOn || (!fi.IsCreatedOn && !fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany))
+                        {
+                            AddKeyValue(isv, fi, obj);
+                        }
                     }
                 }
             }

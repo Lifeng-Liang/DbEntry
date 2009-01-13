@@ -41,7 +41,7 @@ namespace Lephone.Data.Common
 
         public void Init(ObjectInfo oi)
         {
-            List<KeyValue> ret = new List<KeyValue>();
+            var ret = new List<KeyValue>();
             foreach (MemberHandler fi in oi.Fields)
             {
                 if (!fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany)
@@ -58,18 +58,18 @@ namespace Lephone.Data.Common
             {
                 Type t = fi.FieldType.GetGenericArguments()[0];
                 MemberHandler h = ObjectInfo.GetKeyField(t);
-                KeyValue kv = new KeyValue(fi.Name, null, h.FieldType);
+                var kv = new KeyValue(fi.Name, null, h.FieldType);
                 return kv;
             }
             if (fi.IsLazyLoad)
             {
                 Type t = fi.FieldType.GetGenericArguments()[0];
-                KeyValue kv = new KeyValue(fi.Name, null, t);
+                var kv = new KeyValue(fi.Name, null, t);
                 return kv;
             }
             else
             {
-                KeyValue kv = new KeyValue(fi.Name, null, fi.FieldType);
+                var kv = new KeyValue(fi.Name, null, fi.FieldType);
                 return kv;
             }
         }
@@ -108,7 +108,7 @@ namespace Lephone.Data.Common
 
         public Dictionary<string, object> GetKeyValues(object o)
         {
-            Dictionary<string, object> dic = new Dictionary<string, object>();
+            var dic = new Dictionary<string, object>();
             GetKeyValuesDirect(dic, o);
             return dic;
         }

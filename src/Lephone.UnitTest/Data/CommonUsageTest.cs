@@ -63,6 +63,17 @@ namespace Lephone.UnitTest.Data
         public abstract int LockVersion { get; set; }
     }
 
+    public class MKEY : IDbObject
+    {
+        [DbKey(IsDbGenerate = false)]
+        public string FirstName;
+
+        [DbKey(IsDbGenerate = false)]
+        public string LastName;
+
+        public int Age;
+    }
+
     #endregion
 
     [TestFixture]
@@ -506,6 +517,34 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("math", c1.Name);
             Assert.AreEqual(1, c1.Books.Count);
             Assert.AreEqual("test", c1.Books[0].Name);
+        }
+
+        [Test]
+        public void TestMKEY()
+        {
+            DbEntry.Context.Create(typeof(MKEY));
+
+            var p1 = new MKEY {FirstName = "test", LastName = "next", Age = 11};
+            DbEntry.Insert(p1);
+
+            var p2 = DbEntry.From<MKEY>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
+            Assert.AreEqual(11, p2.Age);
+
+            p2.Age = 18;
+            DbEntry.Update(p2);
+
+            var p3 = DbEntry.From<MKEY>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
+            Assert.AreEqual(18, p3.Age);
+        }
+
+        [Test]
+        public void TestMKEYForUpdate()
+        {
+            var de = new DbContext("SQLite");
+            var p = new MKEY { FirstName = "test", LastName = "next", Age = 11 };
+            de.Update(p);
+            Assert.AreEqual(@"Update [MKEY] Set [Age]=@Age_0  Where ([FirstName] = @FirstName_1) And ([LastName] = @LastName_2);
+<Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)".Replace("\r\n", "\n"), StaticRecorder.LastMessage);
         }
     }
 }
