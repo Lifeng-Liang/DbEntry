@@ -139,7 +139,7 @@ namespace Lephone.Data.Common
             else if (fi.IsLazyLoad)
             {
                 var ll = (ILazyLoading)value;
-                ll.IsLoaded = true;
+                //ll.IsLoaded = true;
                 object ov = ll.Read();
                 Type t = fi.FieldType.GetGenericArguments()[0];
                 var kv = new KeyValue(fi.Name, ov, t);
@@ -147,7 +147,7 @@ namespace Lephone.Data.Common
             }
             else if (fi.IsAutoSavedValue)
             {
-                isv.Values.Add(new KeyValue(fi.Name, fi.IsCount ? AutoValue.Count : AutoValue.DbNow));
+                isv.Values.Add(new KeyValue(fi.Name, fi.IsCount || fi.IsLockVersion ? AutoValue.Count : AutoValue.DbNow));
             }
             else
             {
@@ -176,7 +176,7 @@ namespace Lephone.Data.Common
                 {
                     if(!fi.IsKey)
                     {
-                        if (fi.IsUpdatedOn || fi.IsSavedOn || (!fi.IsCreatedOn && to.m_UpdateColumns.ContainsKey(fi.Name)))
+                        if (fi.IsUpdatedOn || fi.IsSavedOn || fi.IsCount || (!fi.IsLockVersion && !fi.IsCreatedOn && to.m_UpdateColumns.ContainsKey(fi.Name)))
                         {
                             AddKeyValue(isv, fi, obj);
                         }
@@ -189,7 +189,7 @@ namespace Lephone.Data.Common
                 {
                     if(!fi.IsKey)
                     {
-                        if (fi.IsUpdatedOn || fi.IsSavedOn || (!fi.IsCreatedOn && !fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany))
+                        if (fi.IsUpdatedOn || fi.IsSavedOn || fi.IsCount || (!fi.IsLockVersion && !fi.IsCreatedOn && !fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany))
                         {
                             AddKeyValue(isv, fi, obj);
                         }

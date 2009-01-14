@@ -13,7 +13,7 @@ namespace Lephone.Data.SqlEntry
 		{
 			get
 			{
-				return ( Value == null ) ? DBNull.Value : Value;
+				return Value ?? DBNull.Value;
 			}
 		}
 

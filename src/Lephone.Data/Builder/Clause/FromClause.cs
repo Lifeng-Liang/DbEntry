@@ -52,7 +52,7 @@ namespace Lephone.Data.Builder.Clause
                 return (string)FromStrings[dd];
             }
 
-            StringDictionary sd = new StringDictionary();
+            var sd = new StringDictionary();
             string ret = dd.QuoteForTableName(jcs[0].Key1);
             sd.Add(ret, "");
             for (int i = 0; i < jcs.Length; i++)

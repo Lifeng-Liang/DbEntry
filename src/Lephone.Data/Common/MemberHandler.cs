@@ -89,11 +89,11 @@ namespace Lephone.Data.Common
             {
                 if (value != null)
                 {
-                    if (NullableField.PropertyType == typeof(Date) && value.GetType() != typeof(DateTime))
+                    if (NullableField.PropertyType == typeof(Date) && value.GetType() == typeof(DateTime))
                     {
                         value = (Date) (DateTime) value;
                     }
-                    else if (NullableField.PropertyType == typeof(Time) && value.GetType() != typeof(DateTime))
+                    else if (NullableField.PropertyType == typeof(Time) && value.GetType() == typeof(DateTime))
                     {
                         value = (Time) (DateTime) value;
                     }

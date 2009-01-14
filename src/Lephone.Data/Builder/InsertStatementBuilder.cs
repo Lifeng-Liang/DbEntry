@@ -18,9 +18,9 @@ namespace Lephone.Data.Builder
 
 		public SqlStatement ToSqlStatement(DbDialect dd)
 		{
-			DataParamterCollection dpc = new DataParamterCollection();
+			var dpc = new DataParamterCollection();
 			string SqlString = string.Format(StatementTemplate, dd.QuoteForTableName(TableName), _ValuesOptions.ToSqlText(dpc, dd));
-			SqlStatement Sql = new SqlStatement(CommandType.Text, SqlString, dpc);
+			var Sql = new SqlStatement(CommandType.Text, SqlString, dpc);
 			return Sql;
 		}
 

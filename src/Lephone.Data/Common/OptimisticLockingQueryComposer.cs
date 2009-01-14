@@ -18,9 +18,9 @@ namespace Lephone.Data.Common
 
         public override SqlStatement GetUpdateStatement(DbDialect Dialect, object obj, WhereCondition iwc)
         {
-            UpdateStatementBuilder sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
+            var sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
             oi.Handler.SetValuesForUpdate(sb, obj);
-            int lv = (int)oi.LockVersion.GetValue(obj);
+            var lv = (int)oi.LockVersion.GetValue(obj);
             sb.Where.Conditions = iwc && (CK.K[oi.LockVersion.Name] == lv);
             bool find = false;
             foreach (KeyValue kv in sb.Values)

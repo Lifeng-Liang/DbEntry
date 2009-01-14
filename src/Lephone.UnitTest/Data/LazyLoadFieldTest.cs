@@ -38,7 +38,7 @@ namespace Lephone.UnitTest.Data
             }
         }
 
-        public lzUser()
+        protected lzUser()
         {
             _Profile = new LazyLoadField<string>(this);
         }

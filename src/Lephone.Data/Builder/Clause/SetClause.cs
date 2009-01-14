@@ -14,7 +14,7 @@ namespace Lephone.Data.Builder.Clause
 
 		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
-			StringBuilder sb = new StringBuilder("Set ");
+			var sb = new StringBuilder("Set ");
 			foreach ( KeyValue kv in this )
 			{
 				string dpStr;
@@ -37,7 +37,7 @@ namespace Lephone.Data.Builder.Clause
                     if (DataSetting.UsingParamter)
                     {
                         dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", DataParamter.LegalKey(kv.Key), dpc.Count);
-                        DataParamter dp = new DataParamter(dpStr, kv.Value, kv.ValueType);
+                        var dp = new DataParamter(dpStr, kv.Value, kv.ValueType);
                         dpc.Add(dp);
                     }
                     else

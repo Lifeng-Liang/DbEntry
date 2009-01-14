@@ -16,21 +16,28 @@ namespace Lephone.Data.Builder.Clause
 
 		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
-			StringBuilder sb1 = new StringBuilder();
-			StringBuilder sb2 = new StringBuilder();
+			var sb1 = new StringBuilder();
+			var sb2 = new StringBuilder();
 			foreach ( KeyValue kv in this )
 			{
 				string dpStr;
                 if (kv.ValueType == typeof(AutoValue))
                 {
-                    dpStr = dd.DbNowString;
+                    if (AutoValue.DbNow == (AutoValue)kv.Value)
+                    {
+                        dpStr = dd.DbNowString;
+                    }
+                    else
+                    {
+                        dpStr = "0";
+                    }
                 }
                 else
                 {
                     if (DataSetting.UsingParamter)
                     {
                         dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", DataParamter.LegalKey(kv.Key), dpc.Count);
-                        DataParamter dp = new DataParamter(dpStr, kv.NullableValue, kv.ValueType);
+                        var dp = new DataParamter(dpStr, kv.NullableValue, kv.ValueType);
                         dpc.Add(dp);
                     }
                     else

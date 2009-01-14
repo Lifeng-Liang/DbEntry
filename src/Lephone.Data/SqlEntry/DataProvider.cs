@@ -55,9 +55,9 @@ namespace Lephone.Data.SqlEntry
 
         public List<DbColumnInfo> GetDbColumnInfoList(string TableName)
         {
-            string SqlStr = "select * from " + this.Dialect.QuoteForTableName(TableName) + " where 1<>1";
-            SqlStatement sql = new SqlStatement(CommandType.Text, SqlStr);
-            List<DbColumnInfo> ret = new List<DbColumnInfo>();
+            string SqlStr = "select * from " + Dialect.QuoteForTableName(TableName) + " where 1<>1";
+            var sql = new SqlStatement(CommandType.Text, SqlStr);
+            var ret = new List<DbColumnInfo>();
             ExecuteDataReader(sql, CommandBehavior.KeyInfo | CommandBehavior.SchemaOnly, delegate(IDataReader dr)
             {
                 DataTable dt = dr.GetSchemaTable();
@@ -71,12 +71,12 @@ namespace Lephone.Data.SqlEntry
 
         public List<string> GetTableNames()
         {
-            List<string> ret = new List<string>();
+            var ret = new List<string>();
             DbStructInterface si = Dialect.GetDbStructInterface();
             string UserId = Dialect.GetUserId(Driver.ConnectionString);
             NewConnection(delegate
             {
-                DbConnection c = (DbConnection)ConProvider.Connection;
+                var c = (DbConnection)ConProvider.Connection;
                 foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
                 {
                     if (si.FiltrateDatabaseName)
@@ -100,7 +100,7 @@ namespace Lephone.Data.SqlEntry
             {
                 if (Scope<ConnectionContext>.Current != null)
                 {
-                    SqlConnection c = (SqlConnection)Scope<ConnectionContext>.Current.Connection;
+                    var c = (SqlConnection)Scope<ConnectionContext>.Current.Connection;
                     return new SqlServerBulkCopy(c);
                 }
                 throw new DataException("It must have current connection.");
@@ -114,14 +114,14 @@ namespace Lephone.Data.SqlEntry
 
         public DataSet ExecuteDataset(SqlStatement Sql, Type ReturnType)
 		{
-			DataSet ds = (DataSet)ClassHelper.CreateInstance(ReturnType);
+			var ds = (DataSet)ClassHelper.CreateInstance(ReturnType);
 			ExecuteDataset(Sql, ds);
 			return ds;
 		}
 
 		public DataSet ExecuteDataset(SqlStatement Sql)
 		{
-			DataSet ds = new DataSet();
+			var ds = new DataSet();
 			ExecuteDataset(Sql, ds);
 			return ds;
 		}
@@ -295,10 +295,10 @@ namespace Lephone.Data.SqlEntry
 
         private List<string> split(string cText)
         {
-            List<string> ret = new List<string>();
-            using (StreamReader sr = new StreamReader(new MemoryStream(Encoding.Unicode.GetBytes(cText)), Encoding.Unicode))
+            var ret = new List<string>();
+            using (var sr = new StreamReader(new MemoryStream(Encoding.Unicode.GetBytes(cText)), Encoding.Unicode))
             {
-                StringBuilder statement = new StringBuilder();
+                var statement = new StringBuilder();
                 string s;
                 while ((s = sr.ReadLine()) != null)
                 {
@@ -309,7 +309,7 @@ namespace Lephone.Data.SqlEntry
                         if (s[s.Length - 1] == ';')
                         {
                             statement.Append(s.Substring(0, s.Length));
-                            if (this.Dialect.NotSupportPostFix) { statement.Length--; }
+                            if (Dialect.NotSupportPostFix) { statement.Length--; }
                             if (statement.Length != 0)
                             {
                                 ret.Add(statement.ToString());
@@ -343,9 +343,9 @@ namespace Lephone.Data.SqlEntry
             {
                 return new SqlStatement(ct, SqlStr, os);
             }
-            DataParamterCollection dpc = new DataParamterCollection();
+            var dpc = new DataParamterCollection();
             int start = 0, n = 0;
-            StringBuilder sql = new StringBuilder();
+            var sql = new StringBuilder();
             string pp = Dialect.ParamterPrefix + "p";
             foreach (Match m in reg.Matches(SqlStr))
             {
@@ -355,7 +355,7 @@ namespace Lephone.Data.SqlEntry
                     sql.Append(SqlStr.Substring(start, m.Index - start));
                     sql.Append(pn);
                     start = m.Index + 1;
-                    DataParamter dp = new DataParamter(pn, os[n]);
+                    var dp = new DataParamter(pn, os[n]);
                     dpc.Add(dp);
                     n++;
                 }
@@ -364,7 +364,7 @@ namespace Lephone.Data.SqlEntry
             {
                 sql.Append(SqlStr.Substring(start));
             }
-            SqlStatement ret = new SqlStatement(ct, sql.ToString(), dpc);
+            var ret = new SqlStatement(ct, sql.ToString(), dpc);
             return ret;
         }
 
@@ -458,7 +458,7 @@ namespace Lephone.Data.SqlEntry
 
         public void NewConnection(CallbackVoidHandler callback)
         {
-            using (ConnectionContext cc = new ConnectionContext(m_Driver))
+            using (var cc = new ConnectionContext(m_Driver))
             {
                 using (new Scope<ConnectionContext>(cc))
                 {

@@ -43,6 +43,18 @@ namespace Lephone.Util
             return o1.Equals(o2);
         }
 
+        public static bool AreEqual(byte[] o1, byte[] o2)
+        {
+            if (o1 == null && o2 == null) { return true; }
+            if (o1 == null || o2 == null) { return false; }
+            if (o1.Length != o2.Length) { return false; }
+            for (int i = 0; i < o1.Length; i++)
+            {
+                if (o1[i] != o2[i]) { return false; }
+            }
+            return true;
+        }
+
         public static int main(string[] args, int minArgCount, string Usage, CallbackVoidHandler Callback)
         {
             if (args.Length >= minArgCount)
