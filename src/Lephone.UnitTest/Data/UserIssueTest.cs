@@ -1,5 +1,4 @@
 ﻿using Lephone.Data.Definition;
-using Lephone.MockSql.Recorder;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -39,25 +38,8 @@ namespace Lephone.UnitTest.Data
     }
 
     [TestFixture]
-    public class UserIssueTest
+    public class UserIssueTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-            StaticRecorder.ClearMessages();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void Test1()
         {

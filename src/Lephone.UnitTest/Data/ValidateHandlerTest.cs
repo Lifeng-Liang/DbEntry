@@ -73,24 +73,8 @@ namespace Lephone.UnitTest.Data
     }
 
     [TestFixture]
-    public class ValidateHandlerTest
+    public class ValidateHandlerTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void Test1()
         {

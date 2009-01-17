@@ -12,25 +12,8 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [TestFixture]
-    public class BulkCopyTest
+    public class BulkCopyTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-            StaticRecorder.ClearMessages();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
 #if SqlServerActive
         [Test]
         public void TestGetTheRightCopier3()
@@ -81,8 +64,8 @@ namespace Lephone.UnitTest.Data
         [Test, ExpectedException(typeof(InvalidCastException))]
         public void TestGetTheRightCopier2()
         {
-            DbContext dc = new DbContext("SqlServerMock");
-            dc.NewTransaction(delegate()
+            var dc = new DbContext("SqlServerMock");
+            dc.NewTransaction(delegate
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy(); // exception
                 Assert.IsNotNull(c);
@@ -93,21 +76,18 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopy()
         {
-            DbContext dc = new DbContext("SQLite");
-            SqlStatement sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
-            List<long> rcs = new List<long>();
+            var dc = new DbContext("SQLite");
+            var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
+            var rcs = new List<long>();
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.NewConnection(delegate()
+                dc.NewConnection(delegate
                 {
                     IDbBulkCopy c = dc.GetDbBulkCopy();
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
-                    c.SqlRowsCopied += new SqlRowsCopiedEventHandler(delegate(object sender, SqlRowsCopiedEventArgs e)
-                    {
-                        rcs.Add(e.RowsCopied);
-                    });
+                    c.SqlRowsCopied += ((sender, e) => rcs.Add(e.RowsCopied));
                     c.WriteToServer(dr);
                 });
             });
@@ -126,20 +106,17 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopyWithTable()
         {
-            DbContext dc = new DbContext("SQLite");
-            SqlStatement sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
-            List<long> rcs = new List<long>();
+            var dc = new DbContext("SQLite");
+            var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
+            var rcs = new List<long>();
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
-            dc.NewConnection(delegate()
+            dc.NewConnection(delegate
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy();
                 c.BatchSize = 2;
                 c.DestinationTableName = "test";
                 c.NotifyAfter = 3;
-                c.SqlRowsCopied += new SqlRowsCopiedEventHandler(delegate(object sender, SqlRowsCopiedEventArgs e)
-                {
-                    rcs.Add(e.RowsCopied);
-                });
+                c.SqlRowsCopied += ((sender, e) => rcs.Add(e.RowsCopied));
                 c.WriteToServer(ds.Tables[0]);
             });
             Assert.AreEqual(1, rcs.Count);
@@ -157,20 +134,17 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopyWithRowArray()
         {
-            DbContext dc = new DbContext("SQLite");
-            SqlStatement sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
-            List<long> rcs = new List<long>();
+            var dc = new DbContext("SQLite");
+            var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
+            var rcs = new List<long>();
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
-            dc.NewConnection(delegate()
+            dc.NewConnection(delegate
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy();
                 c.BatchSize = 2;
                 c.DestinationTableName = "test";
                 c.NotifyAfter = 2;
-                c.SqlRowsCopied += new SqlRowsCopiedEventHandler(delegate(object sender, SqlRowsCopiedEventArgs e)
-                {
-                    rcs.Add(e.RowsCopied);
-                });
+                c.SqlRowsCopied += ((sender, e) => rcs.Add(e.RowsCopied));
                 c.WriteToServer((DataRow[])new ArrayList(ds.Tables[0].Rows).ToArray(typeof(DataRow)));
             });
             Assert.AreEqual(2, rcs.Count);
@@ -189,20 +163,20 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopyAbort()
         {
-            DbContext dc = new DbContext("SQLite");
-            SqlStatement sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
+            var dc = new DbContext("SQLite");
+            var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.NewConnection(delegate()
+                dc.NewConnection(delegate
                 {
                     IDbBulkCopy c = dc.GetDbBulkCopy();
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
-                    c.SqlRowsCopied += new SqlRowsCopiedEventHandler(delegate(object sender, SqlRowsCopiedEventArgs e)
-                    {
-                        e.Abort = true;
-                    });
+                    c.SqlRowsCopied += delegate(object sender, SqlRowsCopiedEventArgs e)
+                                       {
+                                           e.Abort = true;
+                                       };
                     c.WriteToServer(dr);
                 });
             });
@@ -216,11 +190,11 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestBulkCopyWithNullValue()
         {
-            DbContext dc = new DbContext("SQLite");
-            SqlStatement sql = new SqlStatement("select [Id],[Name],[MyInt],[MyBool] from [NullTest] order by [Id]");
+            var dc = new DbContext("SQLite");
+            var sql = new SqlStatement("select [Id],[Name],[MyInt],[MyBool] from [NullTest] order by [Id]");
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.NewConnection(delegate()
+                dc.NewConnection(delegate
                 {
                     IDbBulkCopy c = dc.GetDbBulkCopy();
                     c.BatchSize = 2;

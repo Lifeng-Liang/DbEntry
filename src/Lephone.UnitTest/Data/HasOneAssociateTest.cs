@@ -5,29 +5,13 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [TestFixture]
-    public class HasOneAssociateTest
+    public class HasOneAssociateTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void TestHasOne1()
         {
             // A.Select will read B (LazyLoading*)
-            Person p = DbEntry.GetObject<Person>(2);
+            var p = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(p);
             Assert.IsNotNull(p.PC.Value);
 
@@ -40,7 +24,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne1_1()
         {
             // A.Select will read B (LazyLoading*), and set B.a as a
-            Person p = DbEntry.GetObject<Person>(2);
+            var p = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(p);
             Assert.IsNotNull(p.PC.Value);
             Assert.AreEqual("Jerry", p.Name);
@@ -52,9 +36,9 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne2()
         {
             // A owns 0 or 1 B, so b(b.Value) could be null;
-            Person Tom = DbEntry.GetObject<Person>(1);
-            Person Jerry = DbEntry.GetObject<Person>(2);
-            Person Mike = DbEntry.GetObject<Person>(3);
+            var Tom = DbEntry.GetObject<Person>(1);
+            var Jerry = DbEntry.GetObject<Person>(2);
+            var Mike = DbEntry.GetObject<Person>(3);
 
             Assert.IsNotNull(Tom);
             Assert.IsNotNull(Jerry);
@@ -76,10 +60,8 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne3()
         {
             // A.b = new B() will set B.a = A;
-            Person p = new Person();
-            p.Name = "NewPerson";
-            PersonalComputer pc = new PersonalComputer();
-            pc.Name = "NewPC";
+            var p = new Person {Name = "NewPerson"};
+            var pc = new PersonalComputer {Name = "NewPC"};
             p.PC.Value = pc;
             Assert.AreEqual(pc.Owner.Value, p);
         }
@@ -88,17 +70,16 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne4_1()
         {
             // A.Save will save B, if A is Update, then save B
-            Person p = DbEntry.GetObject<Person>(1);
+            var p = DbEntry.GetObject<Person>(1);
             Assert.IsNotNull(p);
             Assert.IsNull(p.PC.Value);
-            p.PC.Value = new PersonalComputer();
-            p.PC.Value.Name = "NewPC";
+            p.PC.Value = new PersonalComputer {Name = "NewPC"};
             Assert.AreEqual(0, p.PC.Value.Id);
             DbEntry.Save(p);
             Assert.IsTrue(1 == p.Id);
             Assert.IsTrue(0 != p.PC.Value.Id);
 
-            Person p1 = DbEntry.GetObject<Person>(1);
+            var p1 = DbEntry.GetObject<Person>(1);
             Assert.IsNotNull(p1);
             Assert.IsNotNull(p1.PC.Value);
             Assert.AreEqual("NewPC", p1.PC.Value.Name);
@@ -108,7 +89,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne4_2()
         {
             // A.Save will save B, if A is Insert, then save A first, and then set B.A_id, and save B
-            Person p = new Person();
+            var p = new Person();
             p.Name = "NewPerson";
             p.PC.Value = new PersonalComputer();
             p.PC.Value.Name = "NewPC";
@@ -117,7 +98,7 @@ namespace Lephone.UnitTest.Data
             Assert.IsTrue(0 != p.PC.Value.Id);
             Assert.IsTrue(0 != (long)p.PC.Value.Owner.ForeignKey);
 
-            Person p1 = DbEntry.GetObject<Person>(p.Id);
+            var p1 = DbEntry.GetObject<Person>(p.Id);
             Assert.AreEqual("NewPerson", p1.Name);
             Assert.IsNotNull(p1.PC.Value);
             Assert.AreEqual("NewPC", p1.PC.Value.Name);
@@ -127,15 +108,15 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne5()
         {
             // A.Delete will delete itself, and delete B *
-            Person p = DbEntry.GetObject<Person>(2);
+            var p = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(p);
             Assert.IsNotNull(p.PC.Value);
             long pcid = p.PC.Value.Id;
             // do delete
             DbEntry.Delete(p);
-            Person p1 = DbEntry.GetObject<Person>(2);
+            var p1 = DbEntry.GetObject<Person>(2);
             Assert.IsNull(p1);
-            PersonalComputer pc = DbEntry.GetObject<PersonalComputer>(pcid);
+            var pc = DbEntry.GetObject<PersonalComputer>(pcid);
             Assert.IsNull(pc);
         }
 
@@ -145,8 +126,8 @@ namespace Lephone.UnitTest.Data
             // B has a foreign key  A_id
             // B.a = A will set the value of B.A_id
             // B.a = A will set A.a = b ????
-            Person p = DbEntry.GetObject<Person>(3);
-            PersonalComputer pc = new PersonalComputer();
+            var p = DbEntry.GetObject<Person>(3);
+            var pc = new PersonalComputer();
             pc.Name = "NewPC";
             pc.Owner.Value = p;
 
@@ -157,9 +138,8 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne7()
         {
             // B.Save will save itself
-            Person p = new Person();
-            p.Name = "NewPerson";
-            PersonalComputer pc = new PersonalComputer();
+            var p = new Person {Name = "NewPerson"};
+            var pc = new PersonalComputer();
             pc.Name = "NewPC";
             p.PC.Value = pc;
 
@@ -173,7 +153,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne8()
         {
             // B.Delete will delete itself
-            Person p = DbEntry.GetObject<Person>(2);
+            var p = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(p);
             Assert.IsNotNull(p.PC.Value);
             DbEntry.Delete(p.PC.Value);
@@ -186,7 +166,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne10()
         {
             // B.Select will read A (LazyLoading*)
-            PersonalComputer pc = DbEntry.GetObject<PersonalComputer>(2);
+            var pc = DbEntry.GetObject<PersonalComputer>(2);
             Assert.IsNotNull(pc);
             Assert.IsNotNull(pc.Owner.Value);
             Assert.AreEqual("Mike", pc.Owner.Value.Name);
@@ -196,7 +176,7 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne11()
         {
             // B.Select will read A (LazyLoading*), and set A.b as B
-            PersonalComputer pc = DbEntry.GetObject<PersonalComputer>(2);
+            var pc = DbEntry.GetObject<PersonalComputer>(2);
             Assert.IsNotNull(pc);
             Assert.IsNotNull(pc.Owner.Value);
             Assert.AreEqual("Mike", pc.Owner.Value.Name);
@@ -208,10 +188,9 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne12()
         {
             // A.Save will save B, if B(B.Value) is null, then don't save B (if there is data B in the database, it will still there)
-            Person p = new Person();
-            p.Name = "Ghost";
+            var p = new Person {Name = "Ghost"};
             DbEntry.Save(p);
-            Person p1 = DbEntry.GetObject<Person>(p.Id);
+            var p1 = DbEntry.GetObject<Person>(p.Id);
             Assert.IsNotNull(p1);
             Assert.AreEqual("Ghost", p1.Name);
             Assert.AreEqual(p.Id, p1.Id);
@@ -222,11 +201,11 @@ namespace Lephone.UnitTest.Data
         public void TestHasOne13()
         {
             // For readed A, A.Save will save B, if B(B.Value) is null, then don't save B (if there is data B in the database, it will still there)
-            Person p = DbEntry.GetObject<Person>(1);
+            var p = DbEntry.GetObject<Person>(1);
             Assert.IsNotNull(p);
             Assert.IsNull(p.PC.Value);
             DbEntry.Save(p);
-            Person p1 = DbEntry.GetObject<Person>(p.Id);
+            var p1 = DbEntry.GetObject<Person>(p.Id);
             Assert.IsNotNull(p1);
             Assert.AreEqual(p.Name, p1.Name);
             Assert.AreEqual(p.Id, p1.Id);
@@ -236,7 +215,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRemoveRelation()
         {
-            Person Jerry = DbEntry.GetObject<Person>(2);
+            var Jerry = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(Jerry);
             Assert.AreEqual("Jerry", Jerry.Name);
             Assert.IsNotNull(Jerry.PC.Value);
@@ -253,7 +232,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRemoveRelation2()
         {
-            PersonalComputer pc = DbEntry.GetObject<PersonalComputer>(1);
+            var pc = DbEntry.GetObject<PersonalComputer>(1);
             Assert.IsNotNull(pc);
             Assert.IsNotNull(pc.Owner.Value);
 

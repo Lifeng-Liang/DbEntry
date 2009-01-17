@@ -14,24 +14,8 @@ namespace Lephone.UnitTest.Data
     }
 
     [TestFixture]
-    public class DbObjectListTest
+    public class DbObjectListTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void TestToDataTable()
         {

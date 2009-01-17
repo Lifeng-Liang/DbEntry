@@ -64,24 +64,16 @@ namespace Lephone.UnitTest.Data
     }
 
     [TestFixture]
-    public class LazyLoadFieldTest
+    public class LazyLoadFieldTest : DataTestBase
     {
         private readonly DbContext de = new DbContext("SQLite");
 
         #region Init
 
-        [SetUp]
-        public void SetUp()
+        protected override void OnSetUp()
         {
-            InitHelper.Init();
-            StaticRecorder.ClearMessages();
+            base.OnSetUp();
             ClassHelper.SetValue(DbEntry.Context, "TableNames", null);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
         }
 
         #endregion

@@ -7,28 +7,12 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [TestFixture]
-    public class ComplexDynamicObjectTest
+    public class ComplexDynamicObjectTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void TestCross()
         {
-            DbContext de = new DbContext(EntryConfig.GetDriver("SQLite"));
+            var de = new DbContext(EntryConfig.GetDriver("SQLite"));
             de.From<ImpPeople>().Where(WhereCondition.EmptyCondition).Select();
             StaticRecorder.ClearMessages();
 

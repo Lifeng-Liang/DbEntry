@@ -22,24 +22,8 @@ namespace Lephone.UnitTest.Data
     }
 
     [TestFixture]
-    public class ActsAsTreeTest
+    public class ActsAsTreeTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void TestRead()
         {

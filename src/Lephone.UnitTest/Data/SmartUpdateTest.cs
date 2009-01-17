@@ -166,11 +166,11 @@ namespace Lephone.UnitTest.Data
             return this.m_UpdateColumns;
         }
 
-        public asUser()
+        protected asUser()
         {
         }
 
-        public asUser(string Name, int Age)
+        protected asUser(string Name, int Age)
         {
             this.Name = Name;
             this.Age = Age;
@@ -184,7 +184,7 @@ namespace Lephone.UnitTest.Data
     {
         #region init
 
-        private DbContext de = new DbContext(EntryConfig.GetDriver("SQLite"));
+        private readonly DbContext de = new DbContext(EntryConfig.GetDriver("SQLite"));
 
         public SmartUpdateTest()
         {
@@ -201,18 +201,12 @@ namespace Lephone.UnitTest.Data
             StaticRecorder.ClearMessages();
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
         #endregion
 
         [Test]
         public void TestDropManyToManyMedi()
         {
-            de.DropTable(typeof(Lephone.UnitTest.Data.Objects.DArticle));
+            de.DropTable(typeof(Objects.DArticle));
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
             Assert.AreEqual("Drop Table [Article]<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("Drop Table [R_Article_Reader]<Text><30>()", StaticRecorder.Messages[1]);
@@ -221,8 +215,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDontUpdateIfNotSetValue()
         {
-            sUser u = new sUser("Tom", 18);
-            u.Id = 1; // Make it looks like read from database
+            var u = new sUser("Tom", 18) {Id = 1};
             de.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
@@ -231,9 +224,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPartialUpdateThatSetValue()
         {
-            sUser u = new sUser("Tom", 18);
-            u.Id = 1; // Make it looks like read from database
-            u.Name = "Tom";
+            var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
@@ -242,11 +233,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPartialUpdateThatSetValueByTransaction()
         {
-            de.NewTransaction(delegate()
+            de.NewTransaction(delegate
             {
-                sUser u = new sUser("Tom", 18);
-                u.Id = 1; // Make it looks like read from database
-                u.Name = "Tom";
+                var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
                 de.Save(u);
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
@@ -258,11 +247,9 @@ namespace Lephone.UnitTest.Data
         {
             try
             {
-                de.NewTransaction(delegate()
+                de.NewTransaction(delegate
                 {
-                    sUser u = new sUser("Tom", 18);
-                    u.Id = 1; // Make it looks like read from database
-                    u.Name = "Tom";
+                    var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
                     de.Save(u);
                     throw new Exception(); // emulate exception
                 });
@@ -276,12 +263,9 @@ namespace Lephone.UnitTest.Data
         public void TestSmartUpdateForComplexObject()
         {
             // relationship objects, one not update, one insert, one partial update.
-            rUser u = new rUser("tom", 18);
-            u.Id = 1; // Make it looks like read from database
+            var u = new rUser("tom", 18) {Id = 1};
             u.Articles.Add(new rArticle("sos", 199));
-            rArticle a = new rArticle("haha", 299);
-            a.Id = 1;
-            a.Price = 180;
+            var a = new rArticle("haha", 299) {Id = 1, Price = 180};
             u.Articles.Add(a);
             de.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
@@ -325,9 +309,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject4()
         {
-            DbEntry.NewTransaction(delegate()
+            DbEntry.NewTransaction(delegate
             {
-                de.NewTransaction(delegate()
+                de.NewTransaction(delegate
                 {
                     asUser u = asUser.New("Tom", 18);
                     u.Id = 1; // Make it looks like read from database

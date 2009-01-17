@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTestBase.cs" />
     <Compile Include="Data\ActsAsTreeTest.cs" />
     <Compile Include="Data\AutoCreateTableTest.cs" />
     <Compile Include="Data\BelongsMoreTest.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Data\LazyLoadFieldTest.cs" />
     <Compile Include="Data\LogicalOperatorTest.cs" />
     <Compile Include="Data\ManyMoreTest.cs" />
+    <Compile Include="Data\MultipleRelationsTest.cs" />
     <Compile Include="Data\NullTest.cs" />
     <Compile Include="Data\Objects\AbstractClasses.cs" />
     <Compile Include="Data\DynamicObjectAbstractClassTest.cs" />
@@ -100,7 +102,6 @@
     <Compile Include="DotNetFramework\NullabelTest.cs" />
     <Compile Include="DotNetFramework\ReflectionTest.cs" />
     <Compile Include="DotNetFramework\TextTest.cs" />
-    <Compile Include="InitHelper.cs" />
     <Compile Include="Data\Inner\DataTester.cs" />
     <Compile Include="Data\Inner\DateParamterTest.cs" />
     <Compile Include="Data\Inner\TesterHelper.cs" />

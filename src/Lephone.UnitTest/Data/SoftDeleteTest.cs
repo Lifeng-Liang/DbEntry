@@ -43,25 +43,8 @@ namespace Lephone.UnitTest.Data
     #endregion
 
     [TestFixture]
-    public class SoftDeleteTest
+    public class SoftDeleteTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-            StaticRecorder.ClearMessages();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void TestInsert()
         {

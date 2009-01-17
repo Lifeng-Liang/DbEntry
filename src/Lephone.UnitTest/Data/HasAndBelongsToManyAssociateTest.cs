@@ -31,24 +31,8 @@ namespace Lephone.UnitTest.Data
     #endregion
 
     [TestFixture]
-    public class HasAndBelongsToManyAssociateTest
+    public class HasAndBelongsToManyAssociateTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void Test1()
         {

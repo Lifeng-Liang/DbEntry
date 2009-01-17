@@ -41,24 +41,8 @@ namespace Lephone.UnitTest.Data
     #endregion
 
     [TestFixture]
-    public class ManyMoreTest
+    public class ManyMoreTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void Test1()
         {

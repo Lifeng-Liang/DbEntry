@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Linq
 {
     [TestFixture]
-    public class RealOperateTest
+    public class RealOperateTest : DataTestBase
     {
         [DbTable("People")]
         public abstract class Person : LinqObjectModel<Person>
@@ -45,23 +45,6 @@ namespace Lephone.UnitTest.Linq
             [DbKey] public long Id;
             public string Name;
         }
-
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-            StaticRecorder.ClearMessages();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
 
         [Test]
         public void Test15()

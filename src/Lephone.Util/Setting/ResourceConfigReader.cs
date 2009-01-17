@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -19,6 +20,7 @@ namespace Lephone.Util.Setting
             {
                 InitAllXmlConfigFiles();
             }
+            Debug.Assert(XmlConfigs != null);
             if (XmlConfigs.ContainsKey(sectionName))
             {
                 return XmlConfigs[sectionName];
@@ -29,7 +31,7 @@ namespace Lephone.Util.Setting
         private void InitAllXmlConfigFiles()
         {
             XmlConfigs = new Dictionary<string, NameValueCollection>();
-            Assembly[] ass = AppDomain.CurrentDomain.GetAssemblies();
+            var ass = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly a in ass)
             {
                 if (!a.GlobalAssemblyCache)
@@ -60,14 +62,14 @@ namespace Lephone.Util.Setting
 
         private void ParseConfig(string s)
         {
-            NameValueSectionHandler h = new NameValueSectionHandler();
-            using (MemoryStream ms = new MemoryStream())
+            var h = new NameValueSectionHandler();
+            using (var ms = new MemoryStream())
             {
                 byte[] bs = Encoding.Default.GetBytes(s);
                 ms.Write(bs, 0, bs.Length);
                 ms.Flush();
                 ms.Position = 0;
-                XmlDocument xd = new XmlDocument();
+                var xd = new XmlDocument();
                 xd.Load(ms);
 
                 XmlElement node  = xd["configuration"];
@@ -80,7 +82,7 @@ namespace Lephone.Util.Setting
                 {
                     if (n.Name != "configSections")
                     {
-                        NameValueCollection l = (NameValueCollection)h.Create(null, null, n);
+                        var l = (NameValueCollection)h.Create(null, null, n);
                         lock (XmlConfigs)
                         {
                             XmlConfigs[n.Name] = l;

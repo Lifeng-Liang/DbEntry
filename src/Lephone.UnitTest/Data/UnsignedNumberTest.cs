@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Lephone.Data;
+﻿using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
@@ -21,28 +20,12 @@ namespace Lephone.UnitTest.Data
     }
 
     [TestFixture]
-    public class UnsignedNumberTest
+    public class UnsignedNumberTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void Test1()
         {
-            UnsignedPC o = UnsignedPC.FindById(1);
+            var o = UnsignedPC.FindById(1);
             Assert.AreEqual("IBM", o.Name);
             Assert.AreEqual(2, o.Person_Id);
         }
@@ -50,7 +33,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            UnsignedPCReal o = DbEntry.GetObject<UnsignedPCReal>(1);
+            var o = DbEntry.GetObject<UnsignedPCReal>(1);
             Assert.AreEqual("IBM", o.Name);
             Assert.AreEqual(2, o.Person_Id);
         }
@@ -58,7 +41,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            List<UnsignedPC> ls = DbEntry.Context.ExecuteList<UnsignedPC>("select * from PCs where [Id] = 1");
+            var ls = DbEntry.Context.ExecuteList<UnsignedPC>("select * from PCs where [Id] = 1");
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("IBM", ls[0].Name);
             Assert.AreEqual(2, ls[0].Person_Id);

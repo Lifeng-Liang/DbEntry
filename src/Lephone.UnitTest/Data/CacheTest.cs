@@ -11,9 +11,9 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [TestFixture]
-    public class CacheTest
+    public class CacheTest : DataTestBase
     {
-        #region Init & models
+        #region models
 
         [DbTable("DCS_USERS"), Cacheable]
         public abstract class User : LinqObjectModel<User>
@@ -112,18 +112,6 @@ namespace Lephone.UnitTest.Data
         public enum JobRoleRelationType
         {
             Manager,
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
         }
 
         #endregion

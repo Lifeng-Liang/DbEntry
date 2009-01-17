@@ -21,24 +21,8 @@ namespace Lephone.UnitTest.Data
     }
 
     [TestFixture]
-    public class DateTimeTest
+    public class DateTimeTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void TestSelect1()
         {

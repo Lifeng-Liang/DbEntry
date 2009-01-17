@@ -5,24 +5,8 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [TestFixture]
-    public class HasManyAssociateTest
+    public class HasManyAssociateTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void TestHasMany1()
         {

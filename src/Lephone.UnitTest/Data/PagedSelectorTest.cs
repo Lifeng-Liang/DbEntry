@@ -6,30 +6,14 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [TestFixture]
-    public class PagedSelectorTest
+    public class PagedSelectorTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void TestPagedSelecor()
         {
-            PagedSelector<SinglePerson> ps = new PagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 2, DbEntry.Context);
+            var ps = new PagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 2, DbEntry.Context);
             Assert.AreEqual(3, ps.GetResultCount());
-            List<SinglePerson> ls = (List<SinglePerson>)ps.GetCurrentPage(0);
+            var ls = (List<SinglePerson>)ps.GetCurrentPage(0);
             Assert.AreEqual(2, ls.Count);
             Assert.AreEqual("Mike", ls[0].Name);
             Assert.AreEqual("Jerry", ls[1].Name);
@@ -41,9 +25,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPagedSelecor2()
         {
-            PagedSelector<SinglePerson> ps = new PagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 3, DbEntry.Context);
+            var ps = new PagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 3, DbEntry.Context);
             Assert.AreEqual(3, ps.GetResultCount());
-            List<SinglePerson> ls = (List<SinglePerson>)ps.GetCurrentPage(0);
+            var ls = (List<SinglePerson>)ps.GetCurrentPage(0);
             Assert.AreEqual(3, ls.Count);
             Assert.AreEqual("Mike", ls[0].Name);
             Assert.AreEqual("Jerry", ls[1].Name);
@@ -53,9 +37,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestStaticPagedSelecor()
         {
-            StaticPagedSelector<SinglePerson> ps = new StaticPagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 2, DbEntry.Context);
+            var ps = new StaticPagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 2, DbEntry.Context);
             Assert.AreEqual(3, ps.GetResultCount());
-            List<SinglePerson> ls = (List<SinglePerson>)ps.GetCurrentPage(1);
+            var ls = (List<SinglePerson>)ps.GetCurrentPage(1);
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("Mike", ls[0].Name);
             ls = (List<SinglePerson>)ps.GetCurrentPage(0);
@@ -69,7 +53,7 @@ namespace Lephone.UnitTest.Data
         {
             IPagedSelector ps = DbEntry.From<SinglePerson>().Where(WhereCondition.EmptyCondition).OrderBy((DESC)"Id").PageSize(3).GetStaticPagedSelector();
             Assert.AreEqual(3, ps.GetResultCount());
-            List<SinglePerson> ls = (List<SinglePerson>)ps.GetCurrentPage(0);
+            var ls = (List<SinglePerson>)ps.GetCurrentPage(0);
             Assert.AreEqual(3, ls.Count);
             Assert.AreEqual("Mike", ls[0].Name);
             Assert.AreEqual("Jerry", ls[1].Name);

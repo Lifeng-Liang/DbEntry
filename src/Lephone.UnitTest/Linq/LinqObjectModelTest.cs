@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Linq
 {
     [TestFixture]
-    public class LinqObjectModelTest
+    public class LinqObjectModelTest : DataTestBase
     {
         [DbTable("Books")]
         public abstract class Book : LinqObjectModel<Book>
@@ -14,22 +14,6 @@ namespace Lephone.UnitTest.Linq
             public abstract string Name { get; set; }
             public abstract int Category_Id { get; set; }
         }
-
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
 
         [Test]
         public void Test1()
@@ -111,9 +95,9 @@ namespace Lephone.UnitTest.Linq
         public void Test10()
         {
             var list = from p in Book.Table where p.Name == "Pal95" select p;
-            foreach (object o in list)
+            foreach (Book o in list)
             {
-                Assert.AreEqual(4, ((Book)o).Id);
+                Assert.AreEqual(4, o.Id);
             }
         }
 

@@ -1,6 +1,5 @@
 ﻿using Lephone.Data;
 using Lephone.Data.Definition;
-using Lephone.MockSql.Recorder;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -15,7 +14,7 @@ namespace Lephone.UnitTest.Data
 
         public LockBook Init(string name)
         {
-            this.Name = name;
+            Name = name;
             return this;
         }
     }
@@ -30,29 +29,12 @@ namespace Lephone.UnitTest.Data
     }
 
     [TestFixture]
-    public class OptimisticLockingTest
+    public class OptimisticLockingTest : DataTestBase
     {
-        #region Init
-
-        [SetUp]
-        public void SetUp()
-        {
-            InitHelper.Init();
-            StaticRecorder.ClearMessages();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            InitHelper.Clear();
-        }
-
-        #endregion
-
         [Test]
         public void Test1()
         {
-            LockBook b = LockBook.New().Init("locker");
+            var b = LockBook.New().Init("locker");
             b.Save();
             long id = b.Id;
 
@@ -73,7 +55,7 @@ namespace Lephone.UnitTest.Data
         [Test, ExpectedException(typeof(DataException))]
         public void Test2()
         {
-            LockBook b = LockBook.New().Init("locker");
+            var b = LockBook.New().Init("locker");
             b.Save();
             long id = b.Id;
 
