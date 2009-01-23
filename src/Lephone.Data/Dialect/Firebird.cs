@@ -1,8 +1,6 @@
 ﻿using Lephone.Data.SqlEntry;
-using Lephone.Util;
 using Lephone.Util.Logging;
 using Lephone.Data.Common;
-using Lephone.Util.Text;
 
 namespace Lephone.Data.Dialect
 {
@@ -88,13 +86,7 @@ namespace Lephone.Data.Dialect
 
         public override string GenIndexName(string n)
         {
-            if(string.IsNullOrEmpty(n) || n.Length > 31)
-            {
-                var bytes = MiscProvider.Instance.NewGuid().ToByteArray();
-                var s = Base32StringCoding.Decode(bytes);
-                return s;
-            }
-            return null;
+            return GenIndexName(n, 31);
         }
     }
 }

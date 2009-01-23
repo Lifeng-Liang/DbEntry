@@ -128,5 +128,10 @@ namespace Lephone.Data.Dialect
         {
             get { return ':'; }
         }
+
+        public override string GenIndexName(string n)
+        {
+            return GenIndexName(n, 30);
+        }
     }
 }

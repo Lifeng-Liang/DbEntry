@@ -7,6 +7,7 @@ using Lephone.Data.SqlEntry;
 using Lephone.Data.Driver;
 using Lephone.Data.Builder;
 using Lephone.Util;
+using Lephone.Util.Text;
 
 namespace Lephone.Data.Dialect
 {
@@ -317,6 +318,17 @@ namespace Lephone.Data.Dialect
 
         public virtual string GenIndexName(string n)
         {
+            return null;
+        }
+
+        protected static string GenIndexName(string n, int maxLength)
+        {
+            if (string.IsNullOrEmpty(n) || n.Length > maxLength)
+            {
+                var bytes = MiscProvider.Instance.NewGuid().ToByteArray();
+                var s = Base32StringCoding.Decode(bytes);
+                return s;
+            }
             return null;
         }
     }
