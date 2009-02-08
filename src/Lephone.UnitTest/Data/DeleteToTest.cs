@@ -15,12 +15,12 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class DeleteToTest
     {
-        private static readonly DbContext de = new DbContext("SQLite");
+        private static readonly DbContext sqlite = new DbContext("SQLite");
 
         [TearDown]
         public void TearDown()
         {
-            ClassHelper.SetValue(de, "TableNames", null);
+            ClassHelper.SetValue(sqlite, "TableNames", null);
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace Lephone.UnitTest.Data
             DeleteToUser o = DeleteToUser.New();
             o.Id = 2;
             o.Name = "tom";
-            de.Delete(o);
+            sqlite.Delete(o);
             // TODO: why all is _0 ?
             Assert.AreEqual("Delete From [Delete_To_User] Where [Id] = @Id_0;\nInsert Into [UnregUser] ([Name],[DeletedOn]) Values (@Name_0,datetime(current_timestamp, 'localtime'));\n<Text><30>(@Id_0=2:Int64,@Name_0=tom:String)", StaticRecorder.LastMessage);
         }
@@ -37,7 +37,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreate()
         {
-            de.CreateDeleteToTable(typeof(DeleteToUser));
+            sqlite.CreateDeleteToTable(typeof(DeleteToUser));
             Assert.AreEqual("CREATE TABLE [UnregUser] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[DeletedOn] datetime NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
     }

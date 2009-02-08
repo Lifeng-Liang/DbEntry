@@ -1,32 +1,24 @@
 ﻿using System.IO;
-using Lephone.MockSql.Recorder;
 using Lephone.Util;
-using NUnit.Framework;
 
 namespace Lephone.UnitTest
 {
-    public class DataTestBase
+    public class DataTestBase : SqlTestBase
     {
         private const string FileName = "UnitTest.db";
         private static readonly string TestFilePath = SystemHelper.TempDirectory + FileName;
         private static readonly byte[] TestFileBuffer = ResourceHelper.ReadAll(typeof(DataTestBase), FileName);
 
-        [SetUp]
-        public void SetUp()
+        protected override void OnSetUp()
         {
             File.Delete(TestFilePath);
             using (Stream s = new FileStream(TestFilePath, FileMode.Create))
             {
                 s.Write(TestFileBuffer, 0, TestFileBuffer.Length);
             }
-            StaticRecorder.ClearMessages();
-            OnSetUp();
         }
 
-        protected virtual void OnSetUp() { }
-
-        [TearDown]
-        public void TearDown()
+        protected override void OnTearDown()
         {
             File.Delete(TestFilePath);
         }

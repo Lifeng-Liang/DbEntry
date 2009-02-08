@@ -96,21 +96,41 @@ namespace Lephone.Linq
 
         private static WhereCondition ParseMethodCall(MethodCallExpression e)
         {
-            if (e.Arguments.Count == 1 && e.Object is MemberExpression)
+            if (e.Arguments.Count == 1)
             {
-                string key = GetColumnName(((MemberExpression)e.Object).Member.Name);
+                bool lower;
+                string key = GetMemberName(e.Object, out lower);
                 object value = GetRightValue(e.Arguments[0]);
                 if (value != null && value.GetType() == typeof(string))
                 {
                     switch (e.Method.Name)
                     {
                         case "StartsWith":
-                            return new KeyValueClause(key, value + "%", CompareOpration.Like);
+                            return new KeyValueClause(key, value + "%", CompareOpration.Like, lower);
                         case "EndsWith":
-                            return new KeyValueClause(key, "%" + value, CompareOpration.Like);
+                            return new KeyValueClause(key, "%" + value, CompareOpration.Like, lower);
                         case "Contains":
-                            return new KeyValueClause(key, "%" + value + "%", CompareOpration.Like);
+                            return new KeyValueClause(key, "%" + value + "%", CompareOpration.Like, lower);
                     }
+                }
+            }
+            throw new LinqException("'Like' clause only supported one paramter and the paramter should be string and not allow NULL.");
+        }
+
+        private static string GetMemberName(Expression expr, out bool lower)
+        {
+            if(expr is MemberExpression)
+            {
+                lower = false;
+                return GetColumnName(((MemberExpression)expr).Member.Name);
+            }
+            if(expr is MethodCallExpression)
+            {
+                var e = (MethodCallExpression) expr;
+                if(e.Method.Name == "ToLower" && e.Object is MemberExpression)
+                {
+                    lower = true;
+                    return GetColumnName(((MemberExpression)e.Object).Member.Name);
                 }
             }
             throw new LinqException("'Like' clause only supported one paramter and the paramter should be string and not allow NULL.");
@@ -122,6 +142,16 @@ namespace Lephone.Linq
             if (l.NodeType == ExpressionType.Convert)
             {
                 l = ((UnaryExpression)l).Operand;
+            }
+            bool lower = false;
+            if(l is MethodCallExpression)
+            {
+                var x = (MethodCallExpression) l;
+                if(x.Method.Name == "ToLower")
+                {
+                    l = x.Object;
+                    lower = true;
+                }
             }
             if (l.NodeType == ExpressionType.MemberAccess)
             {
@@ -150,15 +180,15 @@ namespace Lephone.Linq
                 {
                     if (co == CompareOpration.Equal)
                     {
-                        return new KeyValueClause(key, null, CompareOpration.Is);
+                        return new KeyValueClause(key, null, CompareOpration.Is, false);
                     }
                     if (co == CompareOpration.NotEqual)
                     {
-                        return new KeyValueClause(key, null, CompareOpration.IsNot);
+                        return new KeyValueClause(key, null, CompareOpration.IsNot, false);
                     }
                     throw new LinqException("NULL value only supported Equal and NotEqual!");
                 }
-                return new KeyValueClause(key, value, co);
+                return new KeyValueClause(key, value, co, lower);
             }
             throw new LinqException("The expression must be 'Column op const' or 'Column op Column'");
         }

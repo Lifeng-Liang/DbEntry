@@ -28,12 +28,12 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class FullTypesTest
     {
-        private static DbContext de = new DbContext("SQLite");
-        private static Guid guid = Guid.NewGuid();
+        private static readonly DbContext sqlite = new DbContext("SQLite");
+        private static readonly Guid guid = Guid.NewGuid();
 
         static FullTypesTest()
         {
-            ClassHelper.CallFunction(de, "TryCreateTable", typeof(FullType));
+            ClassHelper.CallFunction(sqlite, "TryCreateTable", typeof(FullType));
         }
 
         [SetUp]
@@ -75,7 +75,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            List<FullType> ls = de.From<FullType>().Where(WhereCondition.EmptyCondition).Select();
+            List<FullType> ls = sqlite.From<FullType>().Where(WhereCondition.EmptyCondition).Select();
             Assert.AreEqual(1, ls.Count);
             FullType o = ls[0];
             Assert.IsNotNull(o);

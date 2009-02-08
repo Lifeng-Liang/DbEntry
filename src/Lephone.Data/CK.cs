@@ -57,6 +57,7 @@ namespace Lephone.Data
             get { return _Col; }
         }
 
+	    private bool lower;
         public readonly string ColumnName;
 
         public CK(string ColumnName)
@@ -68,47 +69,47 @@ namespace Lephone.Data
 
         public static KeyValueClause operator > (CK Key, object Value)
 		{
-			return new KeyValueClause(Key.ColumnName, Value, CompareOpration.GreatThan);
+			return new KeyValueClause(Key.ColumnName, Value, CompareOpration.GreatThan, Key.lower);
 		}
 
         public KeyValueClause Gt(object Value)
         {
-            return new KeyValueClause(this.ColumnName, Value, CompareOpration.GreatThan);
+            return new KeyValueClause(ColumnName, Value, CompareOpration.GreatThan, lower);
         }
 
 		public static KeyValueClause operator < (CK Key, object Value)
 		{
-			return new KeyValueClause(Key.ColumnName, Value, CompareOpration.LessThan);
+            return new KeyValueClause(Key.ColumnName, Value, CompareOpration.LessThan, Key.lower);
 		}
 
         public KeyValueClause Lt(object Value)
         {
-            return new KeyValueClause(this.ColumnName, Value, CompareOpration.LessThan);
+            return new KeyValueClause(ColumnName, Value, CompareOpration.LessThan, lower);
         }
 
         public static KeyValueClause operator >=(CK Key, object Value)
 		{
-			return new KeyValueClause(Key.ColumnName, Value, CompareOpration.GreatOrEqual);
+            return new KeyValueClause(Key.ColumnName, Value, CompareOpration.GreatOrEqual, Key.lower);
 		}
 
         public KeyValueClause Ge(object Value)
         {
-            return new KeyValueClause(this.ColumnName, Value, CompareOpration.GreatOrEqual);
+            return new KeyValueClause(ColumnName, Value, CompareOpration.GreatOrEqual, lower);
         }
 
         public static KeyValueClause operator <=(CK Key, object Value)
 		{
-			return new KeyValueClause(Key.ColumnName, Value, CompareOpration.LessOrEqual);
+            return new KeyValueClause(Key.ColumnName, Value, CompareOpration.LessOrEqual, Key.lower);
 		}
 
         public KeyValueClause Le(object Value)
         {
-            return new KeyValueClause(this.ColumnName, Value, CompareOpration.LessOrEqual);
+            return new KeyValueClause(ColumnName, Value, CompareOpration.LessOrEqual, lower);
         }
 
         public static KeyValueClause operator ==(CK Key, object Value)
 		{
-            return new KeyValueClause(Key.ColumnName, Value, CompareOpration.Equal);
+            return new KeyValueClause(Key.ColumnName, Value, CompareOpration.Equal, Key.lower);
 		}
 
         public KeyValueClause Eq(object Value)
@@ -118,7 +119,7 @@ namespace Lephone.Data
 
         public static KeyValueClause operator !=(CK Key, object Value)
 		{
-            return new KeyValueClause(Key.ColumnName, Value, CompareOpration.NotEqual);
+            return new KeyValueClause(Key.ColumnName, Value, CompareOpration.NotEqual, Key.lower);
 		}
 
         public KeyValueClause Ne(object Value)
@@ -128,22 +129,22 @@ namespace Lephone.Data
 
         public KeyValueClause Like(string Value)
         {
-            return new KeyValueClause(this.ColumnName, (Value), CompareOpration.Like);
+            return new KeyValueClause(ColumnName, (Value), CompareOpration.Like, lower);
         }
 
         public KeyValueClause MiddleLike(string Value)
         {
-            return new KeyValueClause(this.ColumnName, ("%" + Value + "%"), CompareOpration.Like);
+            return new KeyValueClause(ColumnName, ("%" + Value + "%"), CompareOpration.Like, lower);
         }
 
         public KeyValueClause LeftLike(string Value)
         {
-            return new KeyValueClause(this.ColumnName, (Value + "%"), CompareOpration.Like);
+            return new KeyValueClause(ColumnName, (Value + "%"), CompareOpration.Like, lower);
         }
 
         public KeyValueClause RightLike(string Value)
         {
-            return new KeyValueClause(this.ColumnName, ("%" + Value), CompareOpration.Like);
+            return new KeyValueClause(ColumnName, ("%" + Value), CompareOpration.Like, lower);
         }
 
         #endregion
@@ -162,12 +163,12 @@ namespace Lephone.Data
 
         public KeyKeyClause Gt(CK Key2)
         {
-            return new KeyKeyClause(this.ColumnName, Key2.ColumnName, CompareOpration.GreatThan);
+            return new KeyKeyClause(ColumnName, Key2.ColumnName, CompareOpration.GreatThan);
         }
 
         public KeyKeyClause Lt(CK Key2)
         {
-            return new KeyKeyClause(this.ColumnName, Key2.ColumnName, CompareOpration.LessThan);
+            return new KeyKeyClause(ColumnName, Key2.ColumnName, CompareOpration.LessThan);
         }
 
         public static KeyKeyClause operator >=(CK Key, CK Key2)
@@ -182,12 +183,12 @@ namespace Lephone.Data
 
         public KeyKeyClause Ge(CK Key2)
         {
-            return new KeyKeyClause(this.ColumnName, Key2.ColumnName, CompareOpration.GreatOrEqual);
+            return new KeyKeyClause(ColumnName, Key2.ColumnName, CompareOpration.GreatOrEqual);
         }
 
         public KeyKeyClause Le(CK Key2)
         {
-            return new KeyKeyClause(this.ColumnName, Key2.ColumnName, CompareOpration.LessOrEqual);
+            return new KeyKeyClause(ColumnName, Key2.ColumnName, CompareOpration.LessOrEqual);
         }
 
         public static KeyKeyClause operator ==(CK Key, CK Key2)
@@ -212,7 +213,7 @@ namespace Lephone.Data
 
         public KeyKeyClause Like(CK Key2)
         {
-            return new KeyKeyClause(this.ColumnName, Key2.ColumnName, CompareOpration.Like);
+            return new KeyKeyClause(ColumnName, Key2.ColumnName, CompareOpration.Like);
         }
 
         #endregion
@@ -230,5 +231,11 @@ namespace Lephone.Data
 		}
 
         #endregion
-    }
+
+	    public CK ToLower()
+	    {
+	        lower = true;
+	        return this;
+	    }
+	}
 }

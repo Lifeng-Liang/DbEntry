@@ -523,11 +523,26 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMKEYForUpdate()
         {
-            var de = new DbContext("SQLite");
             var p = new MKEY { FirstName = "test", LastName = "next", Age = 11 };
-            de.Update(p);
-            Assert.AreEqual(@"Update [MKEY] Set [Age]=@Age_0  Where ([FirstName] = @FirstName_1) And ([LastName] = @LastName_2);
-<Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)".Replace("\r\n", "\n"), StaticRecorder.LastMessage);
+            sqlite.Update(p);
+            AssertSql(@"Update [MKEY] Set [Age]=@Age_0  Where ([FirstName] = @FirstName_1) And ([LastName] = @LastName_2);
+<Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)");
+        }
+
+        [Test]
+        public void TestLowerFunction()
+        {
+            sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower() == "tom").Select();
+            AssertSql(@"Select [Id],[Name] From [People] Where lower([Name]) = @Name_0;
+<Text><60>(@Name_0=tom:String)");
+        }
+
+        [Test]
+        public void TestLowerForLike()
+        {
+            sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower().Like("%tom%")).Select();
+            AssertSql(@"Select [Id],[Name] From [People] Where lower([Name]) Like @Name_0;
+<Text><60>(@Name_0=%tom%:String)");
         }
     }
 }

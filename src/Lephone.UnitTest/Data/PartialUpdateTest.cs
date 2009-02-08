@@ -14,7 +14,7 @@ namespace Lephone.UnitTest.Data
             public abstract int Age { get; set; }
         }
 
-        public static readonly DbContext de = new DbContext("SQLite");
+        public static readonly DbContext sqlite = new DbContext("SQLite");
 
         [SetUp]
         public void SetUp()
@@ -28,7 +28,7 @@ namespace Lephone.UnitTest.Data
             User u = User.New();
             u.Id = 1;
             u.Name = "tom";
-            de.Save(u);
+            sqlite.Save(u);
             Assert.AreEqual("Update [User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
@@ -38,7 +38,7 @@ namespace Lephone.UnitTest.Data
             User u = User.New();
             u.Id = 1;
             u.Age = 19;
-            de.Save(u);
+            sqlite.Save(u);
             Assert.AreEqual("Update [User] Set [Age]=@Age_0  Where [Id] = @Id_1;\n<Text><30>(@Age_0=19:Int32,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
     }

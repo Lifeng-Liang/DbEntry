@@ -110,6 +110,7 @@
     <Compile Include="Linq\LinqObjectModelTest.cs" />
     <Compile Include="Linq\RealOperateTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlTestBase.cs" />
     <Compile Include="util\Base32StringCodingTest.cs" />
     <Compile Include="util\DateAndTimeTest.cs" />
     <Compile Include="util\InflectorTest.cs" />

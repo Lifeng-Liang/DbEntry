@@ -43,31 +43,31 @@ namespace Lephone.Data.SqlEntry
 
         protected void SetTypeByObject(object o)
 		{
-			this.Type = DataTypeParser.Parse(o);
+			Type = DataTypeParser.Parse(o);
             // TODO: temp solution for time
-            if (this.Type == DataType.Date && this.Value != null && this.Value.GetType() != typeof(DBNull))
+            if (Type == DataType.Date && Value != null && Value.GetType() != typeof(DBNull))
             {
-                this.Value = ((IConvertible)this.Value).ToDateTime(null);
+                Value = ((IConvertible)Value).ToDateTime(null);
             }
             // TODO: temp solution for time
-            if (this.Type == DataType.Time && this.Value != null && this.Value.GetType() != typeof(DBNull))
+            if (Type == DataType.Time && Value != null && Value.GetType() != typeof(DBNull))
             {
-                this.Value = ((IConvertible)this.Value).ToDateTime(null);
+                Value = ((IConvertible)Value).ToDateTime(null);
             }
 		}
 
         protected void SetTypeByObject(Type t)
 		{
-			this.Type = DataTypeParser.Parse(t);
+			Type = DataTypeParser.Parse(t);
             // TODO: temp solution for time
-            if (this.Type == DataType.Date && this.Value != null && this.Value.GetType() != typeof(DBNull))
+            if (Type == DataType.Date && Value != null && Value.GetType() != typeof(DBNull))
             {
-                this.Value = ((IConvertible)this.Value).ToDateTime(null);
+                Value = ((IConvertible)Value).ToDateTime(null);
             }
             // TODO: temp solution for time
-            if (this.Type == DataType.Time && this.Value != null && this.Value.GetType() != typeof(DBNull))
+            if (Type == DataType.Time && Value != null && Value.GetType() != typeof(DBNull))
             {
-                this.Value = ((IConvertible)this.Value).ToDateTime(null);
+                Value = ((IConvertible)Value).ToDateTime(null);
             }
         }
 
@@ -80,16 +80,16 @@ namespace Lephone.Data.SqlEntry
 
 		public override bool Equals(object obj)
 		{
-			DataParamter dp = (DataParamter)obj;
-			bool b = (this.Key == dp.Key)
-				&& (this.Value == dp.Value)
-				&& (this.Type == dp.Type);
+			var dp = (DataParamter)obj;
+			bool b = (Key == dp.Key)
+				&& (Value == dp.Value)
+				&& (Type == dp.Type);
 			return b;
 		}
 
 		public override int GetHashCode()
 		{
-			return this.ToString().GetHashCode();
+			return ToString().GetHashCode();
 		}
 
 		public override string ToString()

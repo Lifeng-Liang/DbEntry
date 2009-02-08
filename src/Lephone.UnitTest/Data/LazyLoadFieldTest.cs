@@ -66,8 +66,6 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class LazyLoadFieldTest : DataTestBase
     {
-        private readonly DbContext de = new DbContext("SQLite");
-
         #region Init
 
         protected override void OnSetUp()
@@ -81,14 +79,14 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreate()
         {
-            de.Create(typeof(lzUser));
+            sqlite.Create(typeof(lzUser));
             Assert.AreEqual("CREATE TABLE [lz_User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[Profile] ntext NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestCreate1()
         {
-            de.Create(typeof(lzpUser1));
+            sqlite.Create(typeof(lzpUser1));
             Assert.AreEqual("CREATE TABLE [User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] ntext NOT NULL ,\n\t[MyTest] varchar (10) NULL \n);\nCREATE UNIQUE INDEX [IX_User_test] ON [User] ([MyTest] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
@@ -107,7 +105,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRead()
         {
-            de.GetObject<lzUser>(1);
+            sqlite.GetObject<lzUser>(1);
             Assert.AreEqual("Select [Id],[Name] From [lz_User] Where [Id] = @Id_0;\n<Text><60>(@Id_0=1:Int32)", StaticRecorder.LastMessage);
         }
 
@@ -117,7 +115,7 @@ namespace Lephone.UnitTest.Data
             lzUser u = lzUser.New();
             u.Name = "tom";
             u.Profile = "test";
-            de.Insert(u);
+            sqlite.Insert(u);
             Assert.AreEqual("Insert Into [lz_User] ([Name],[Profile]) Values (@Name_0,@Profile_1);\nSELECT last_insert_rowid();\n<Text><30>(@Name_0=tom:String,@Profile_1=test:String)", StaticRecorder.LastMessage);
         }
 

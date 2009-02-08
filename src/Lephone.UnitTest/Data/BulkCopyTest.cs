@@ -76,14 +76,13 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopy()
         {
-            var dc = new DbContext("SQLite");
             var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
             var rcs = new List<long>();
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.NewConnection(delegate
+                sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = dc.GetDbBulkCopy();
+                    IDbBulkCopy c = sqlite.GetDbBulkCopy();
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
@@ -106,13 +105,12 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopyWithTable()
         {
-            var dc = new DbContext("SQLite");
             var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
             var rcs = new List<long>();
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
-            dc.NewConnection(delegate
+            sqlite.NewConnection(delegate
             {
-                IDbBulkCopy c = dc.GetDbBulkCopy();
+                IDbBulkCopy c = sqlite.GetDbBulkCopy();
                 c.BatchSize = 2;
                 c.DestinationTableName = "test";
                 c.NotifyAfter = 3;
@@ -134,13 +132,12 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopyWithRowArray()
         {
-            var dc = new DbContext("SQLite");
             var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
             var rcs = new List<long>();
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
-            dc.NewConnection(delegate
+            sqlite.NewConnection(delegate
             {
-                IDbBulkCopy c = dc.GetDbBulkCopy();
+                IDbBulkCopy c = sqlite.GetDbBulkCopy();
                 c.BatchSize = 2;
                 c.DestinationTableName = "test";
                 c.NotifyAfter = 2;
@@ -163,13 +160,12 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopyAbort()
         {
-            var dc = new DbContext("SQLite");
             var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.NewConnection(delegate
+                sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = dc.GetDbBulkCopy();
+                    IDbBulkCopy c = sqlite.GetDbBulkCopy();
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
@@ -190,13 +186,12 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestBulkCopyWithNullValue()
         {
-            var dc = new DbContext("SQLite");
             var sql = new SqlStatement("select [Id],[Name],[MyInt],[MyBool] from [NullTest] order by [Id]");
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                dc.NewConnection(delegate
+                sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = dc.GetDbBulkCopy();
+                    IDbBulkCopy c = sqlite.GetDbBulkCopy();
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;

@@ -1,4 +1,5 @@
 ﻿using System;
+using Lephone.Data.Definition;
 
 namespace Lephone.Data.Builder.Clause
 {
@@ -13,7 +14,7 @@ namespace Lephone.Data.Builder.Clause
 		{
 			foreach ( object o in values )
 			{
-				Add( new KeyValueClause(Key, o) );
+				Add(new KeyValueClause(Key, o, CompareOpration.Equal, false));
 			}
 		}
 	}

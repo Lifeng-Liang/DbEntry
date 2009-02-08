@@ -12,15 +12,12 @@ namespace Lephone.Data.Builder.Clause
 	{
 		protected KeyValue KV;
 		protected string Comp;
+	    protected bool ToLower;
 
-		public KeyValueClause(string Key, object Value)
-			: this(Key, Value, CompareOpration.Equal)
-		{
-		}
-
-		public KeyValueClause(string Key, object Value, CompareOpration co)
+		public KeyValueClause(string Key, object Value, CompareOpration co, bool ToLower)
 			: this(new KeyValue(Key, Value), co)
 		{
+		    this.ToLower = ToLower;
 		}
 
 		public KeyValueClause(KeyValue kv, CompareOpration co)
@@ -47,7 +44,12 @@ namespace Lephone.Data.Builder.Clause
                 = KV.Value == null 
                 ? "NULL" 
                 : GetValueString(dpc, dd);
-            return string.Format("{0} {2} {1}", dd.QuoteForColumnName(KV.Key), dpStr, Comp);
+            string dkStr = dd.QuoteForColumnName(KV.Key);
+            if(ToLower)
+            {
+                dkStr = string.Format("lower({0})", dkStr);
+            }
+            return string.Format("{0} {2} {1}", dkStr, dpStr, Comp);
         }
 
 	    protected virtual string GetValueString(DataParamterCollection dpc, DbDialect dd)
@@ -56,7 +58,7 @@ namespace Lephone.Data.Builder.Clause
             if (DataSetting.UsingParamter)
             {
                 dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", DataParamter.LegalKey(KV.Key), dpc.Count);
-                DataParamter dp = new DataParamter(dpStr, KV.NullableValue, KV.ValueType);
+                var dp = new DataParamter(dpStr, KV.NullableValue, KV.ValueType);
                 dpc.Add(dp);
             }
             else

@@ -112,8 +112,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGroupBy()
         {
-            var de = new DbContext("SQLite");
-            de.From<SoftDelete>().Where(WhereCondition.EmptyCondition).GroupBy<string>("tom");
+            var dc = new DbContext("SQLite");
+            dc.From<SoftDelete>().Where(WhereCondition.EmptyCondition).GroupBy<string>("tom");
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] ntext NOT NULL ,\n	[IsDeleted] bool NOT NULL \n);\n<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("Select [tom],Count([tom]) As it__count__ From [SoftDelete] Where [IsDeleted] = @IsDeleted_0 Group By [tom];\n<Text><60>(@IsDeleted_0=False:Boolean)", StaticRecorder.LastMessage);
         }
@@ -121,8 +121,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateTable()
         {
-            var de = new DbContext("SQLite");
-            de.Create(typeof(SoftDelete));
+            var dc = new DbContext("SQLite");
+            dc.Create(typeof(SoftDelete));
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] ntext NOT NULL ,\n	[IsDeleted] bool NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
