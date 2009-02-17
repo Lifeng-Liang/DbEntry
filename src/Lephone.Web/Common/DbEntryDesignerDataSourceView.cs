@@ -58,7 +58,7 @@ namespace Lephone.Web.Common
         {
             isSampleData = true;
 
-            List<object> list = new List<object>();
+            var list = new List<object>();
 
             for (int i = 0; i < minimumRows; i++)
             {
@@ -110,17 +110,17 @@ namespace Lephone.Web.Common
             }
             if (FieldType == typeof(DateTime))
             {
-                DateTime dt = new DateTime(2008, 3, 6, 12, 24, 35);
+                var dt = new DateTime(2008, 3, 6, 12, 24, 35);
                 return dt.AddDays(n);
             }
             if (FieldType == typeof(Date))
             {
-                Date d = new Date(2008, 3, 17);
+                var d = new Date(2008, 3, 17);
                 return d.AddDays(n);
             }
             if (FieldType == typeof(Time))
             {
-                Time t = new Time(12, 24, 35);
+                var t = new Time(12, 24, 35);
                 return t.AddMinutes(n);
             }
             if (FieldType == typeof(Guid))

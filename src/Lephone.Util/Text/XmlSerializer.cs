@@ -21,10 +21,10 @@ namespace Lephone.Util.Text
         private XmlRootAttribute GetXmlRootAttribute()
         {
             Type t = typeof(T);
-            XmlTypeAttribute xt = ClassHelper.GetAttribute<XmlTypeAttribute>(t, false);
+            var xt = ClassHelper.GetAttribute<XmlTypeAttribute>(t, false);
             if (xt == null)
             {
-                XmlRootAttribute xr = ClassHelper.GetAttribute<XmlRootAttribute>(t, false);
+                var xr = ClassHelper.GetAttribute<XmlRootAttribute>(t, false);
                 if (xr == null)
                 {
                     string rn = (string.IsNullOrEmpty(RootName)) ? t.Name : RootName;
@@ -39,8 +39,8 @@ namespace Lephone.Util.Text
         {
             Type t = typeof(T);
             XmlRootAttribute xr = GetXmlRootAttribute();
-            XmlSerializer ois = new XmlSerializer(t, xr);
-            using (MemoryStream ms = new MemoryStream())
+            var ois = new XmlSerializer(t, xr);
+            using (var ms = new MemoryStream())
             {
                 ois.Serialize(ms, obj);
                 byte[] bs = ms.ToArray();
@@ -53,8 +53,8 @@ namespace Lephone.Util.Text
         {
             Type t = typeof(T);
             XmlRootAttribute xr = GetXmlRootAttribute();
-            XmlSerializer ois = new XmlSerializer(t, xr);
-            using (MemoryStream ms = new MemoryStream())
+            var ois = new XmlSerializer(t, xr);
+            using (var ms = new MemoryStream())
             {
                 byte[] bs = Encoding.UTF8.GetBytes(Source);
                 ms.Write(bs, 0, bs.Length);

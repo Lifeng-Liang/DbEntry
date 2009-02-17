@@ -20,11 +20,11 @@ namespace Lephone.Web.Common
 
         public IDataSourceFieldSchema[] GetFields()
         {
-            List<DbEntryDataSourceFieldSchema> list = new List<DbEntryDataSourceFieldSchema>();
+            var list = new List<DbEntryDataSourceFieldSchema>();
             foreach (MemberHandler mh in oi.SimpleFields)
             {
-                DbEntryDataSourceFieldSchema s = new DbEntryDataSourceFieldSchema(
-                    mh.Name,
+                var s = new DbEntryDataSourceFieldSchema(
+                    mh.MemberInfo.Name,
                     mh.FieldType,
                     mh.IsDbGenerate,
                     mh.IsKey,

@@ -105,7 +105,7 @@ namespace Lephone.Web
             if (!string.IsNullOrEmpty(se))
             {
                 DefaultOrderBy = se;
-                m_OrderBy = OrderBy.Parse(se);
+                m_OrderBy = OrderBy.Parse(se, typeof(T));
             }
             int PageIndex = (arguments.MaximumRows == 0) ? 0 : arguments.StartRowIndex / arguments.MaximumRows;
             int TotalRowCount = arguments.TotalRowCount;
