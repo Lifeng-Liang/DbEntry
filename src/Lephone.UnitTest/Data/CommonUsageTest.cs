@@ -5,6 +5,7 @@ using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
+using Lephone.Linq;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.CreateTable;
 using Lephone.UnitTest.Data.Objects;
@@ -14,6 +15,15 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     #region Objects
+
+    public abstract class t_user : LinqObjectModel<t_user>
+    {
+        [Length(40)]
+        public abstract string mc { get; set; }
+
+        [SpecialName, LazyLoad]
+        public abstract DateTime CreatedOn { get; set; }
+    }
 
     [DbTable("People")]
     class SinglePerson : DbObject
@@ -518,6 +528,14 @@ namespace Lephone.UnitTest.Data
 
             var p3 = DbEntry.From<MKEY>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
             Assert.AreEqual(18, p3.Age);
+        }
+
+        [Test]
+        public void TestLazyLoadSpecialName()
+        {
+            var d = t_user.New();
+            d.mc = "张三";
+            d.Save();
         }
 
         [Test]

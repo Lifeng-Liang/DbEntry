@@ -35,7 +35,7 @@ namespace Lephone.Web
 
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
         {
-            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username && CK.K["Password"] == password);
+            var u = FindUser(username, password);
             if (u != null)
             {
                 u.PasswordQuestion = newPasswordQuestion;
@@ -235,8 +235,18 @@ namespace Lephone.Web
 
         public override bool ValidateUser(string username, string password)
         {
-            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username && CK.K["Password"] == password);
+            var u = FindUser(username, password);
             return (u != null);
+        }
+
+        private static DbEntryMembershipUser FindUser(string username, string password)
+        {
+            var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
+            if(u != null && CommonHelper.AreEqual(u.Password, StringHelper.Hash(password)))
+            {
+                return u;
+            }
+            return null;
         }
     }
 }
