@@ -4,6 +4,21 @@ using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
+    [DbTable("Books"), Cacheable]
+    public abstract class CachedLockBook : DbObjectModel<CachedLockBook>
+    {
+        public abstract string Name { get; set; }
+
+        [DbColumn("Category_Id"), SpecialName]
+        public abstract int LockVersion { get; set; }
+
+        public CachedLockBook Init(string name)
+        {
+            Name = name;
+            return this;
+        }
+    }
+
     [DbTable("Books")]
     public abstract class LockBook : DbObjectModel<LockBook>
     {
@@ -105,6 +120,17 @@ namespace Lephone.UnitTest.Data
             b.Save();
             b.Name = "bb";
             b.Save(); // should not throw exception
+        }
+
+        [Test]
+        public void TestCachedLockVersion()
+        {
+            var b = CachedLockBook.New().Init("abc");
+            b.Save();
+            b.Name = "aaa";
+            b.Save();
+            var b1 = CachedLockBook.FindById(b.Id);
+            Assert.AreEqual(1, b1.LockVersion);
         }
     }
 }

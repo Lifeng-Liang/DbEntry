@@ -478,15 +478,16 @@ namespace Lephone.Data
             {
                 throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
             }
-            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
-            {
-                SetCachedObject(obj);
-            }
             if(obj is DbObjectSmartUpdate)
             {
                 ((DbObjectSmartUpdate)obj).m_UpdateColumns = new Dictionary<string, object>();
             }
             oi.Composer.ProcessAfterSave(obj);
+
+            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
+            {
+                SetCachedObject(obj);
+            }
         }
 
         public void Insert(object obj)
