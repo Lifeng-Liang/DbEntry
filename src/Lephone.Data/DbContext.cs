@@ -482,6 +482,11 @@ namespace Lephone.Data
             {
                 SetCachedObject(obj);
             }
+            if(obj is DbObjectSmartUpdate)
+            {
+                ((DbObjectSmartUpdate)obj).m_UpdateColumns = new Dictionary<string, object>();
+            }
+            oi.Composer.ProcessAfterSave(obj);
         }
 
         public void Insert(object obj)

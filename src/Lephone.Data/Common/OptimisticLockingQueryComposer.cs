@@ -38,5 +38,12 @@ namespace Lephone.Data.Common
             }
             return sb.ToSqlStatement(Dialect);
         }
+
+        public override void ProcessAfterSave(object obj)
+        {
+            var lv = (int)oi.LockVersion.GetValue(obj);
+            lv++;
+            oi.LockVersion.SetValue(obj, lv);
+        }
     }
 }

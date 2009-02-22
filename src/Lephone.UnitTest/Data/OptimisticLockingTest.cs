@@ -85,5 +85,26 @@ namespace Lephone.UnitTest.Data
             b = DbEntry.GetObject<LBook>(n);
             Assert.AreEqual(2, b.LockVersion);
         }
+
+        [Test]
+        public void TestResave()
+        {
+            var b1 = LockBook.New().Init("test");
+            b1.Save();
+            var b = LockBook.FindById(b1.Id);
+            b.Name = "aa";
+            b.Save();
+            b.Name = "bb";
+            b.Save(); // should not throw exception
+        }
+
+        [Test]
+        public void TestUpdateAfterInsert()
+        {
+            var b = LockBook.New().Init("test");
+            b.Save();
+            b.Name = "bb";
+            b.Save(); // should not throw exception
+        }
     }
 }

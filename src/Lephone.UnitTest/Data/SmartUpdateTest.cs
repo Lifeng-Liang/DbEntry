@@ -322,5 +322,35 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n<Text><30>(@theName_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
+
+        [Test]
+        public void TestUpdateFieldAfterSave()
+        {
+            var u = asUser.New("Tom", 18);
+            u.Id = 1;
+            u.Name = "jerry";
+            de.Save(u);
+            u.Age = 25;
+            de.Save(u);
+            Assert.AreEqual(2, StaticRecorder.Messages.Count);
+            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n<Text><30>(@theName_0=jerry:String,@Id_1=1:Int64)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("Update [as_User] Set [Age]=@Age_0  Where [Id] = @Id_1;\n<Text><30>(@Age_0=25:Int32,@Id_1=1:Int64)", StaticRecorder.Messages[1]);
+        }
+
+        [Test]
+        public void TestUpdateFieldAfterInsert()
+        {
+            var u = asUser.New("Tom", 18);
+            de.Save(u);
+            u.Age = 25;
+            de.Save(u);
+            Assert.AreEqual(2, StaticRecorder.Messages.Count);
+            Assert.AreEqual("Insert Into [as_User] ([theName],[Age]) Values (@theName_0,@Age_1);\nSELECT last_insert_rowid();\n<Text><30>(@theName_0=Tom:String,@Age_1=18:Int32)", StaticRecorder.Messages[0]);
+            string exp =
+                string.Format(
+                    "Update [as_User] Set [Age]=@Age_0  Where [Id] = @Id_1;\n<Text><30>(@Age_0=25:Int32,@Id_1={0}:Int64)",
+                    u.Id);
+            Assert.AreEqual(exp, StaticRecorder.LastMessage);
+        }
     }
 }

@@ -100,5 +100,7 @@ namespace Lephone.Data.Common
             }
             return cts;
         }
+
+        public virtual void ProcessAfterSave(object obj) {}
     }
 }

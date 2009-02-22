@@ -531,7 +531,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestLazyLoadSpecialName()
+        public void TestLazyLoadCreatedOn()
         {
             var d = t_user.New();
             d.mc = "张三";
