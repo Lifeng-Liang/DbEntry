@@ -533,9 +533,16 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLazyLoadCreatedOn()
         {
-            var d = t_user.New();
-            d.mc = "张三";
-            d.Save();
+            try
+            {
+                var d = t_user.New();
+                d.mc = "张三";
+                d.Save();
+            }
+            catch(Exception ex)
+            {
+                Assert.AreEqual("SpecialName colomn could not be LazyLoad", ex.Message);
+            }
         }
 
         [Test]

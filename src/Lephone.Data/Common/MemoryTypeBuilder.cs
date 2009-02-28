@@ -247,6 +247,13 @@ namespace Lephone.Data.Common
             string SetPropertyName = "set_" + PropertyName;
 
             FieldType ft = GetFieldType(pi);
+            if(ft == FieldType.LazyLoad)
+            {
+                if(ClassHelper.HasAttribute<SpecialNameAttribute>(pi, true))
+                {
+                    throw new DataException("SpecialName colomn could not be LazyLoad");
+                }
+            }
             FieldInfo fi = DefineField(MemberPrifix + PropertyName, PropertyType, ft, pi);
 
             OverrideMethod(OverrideFlag, GetPropertyName, OriginType, PropertyType, null, delegate(ILBuilder il)
