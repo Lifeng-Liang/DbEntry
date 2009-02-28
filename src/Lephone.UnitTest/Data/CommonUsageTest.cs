@@ -539,7 +539,7 @@ namespace Lephone.UnitTest.Data
                 d.mc = "张三";
                 d.Save();
             }
-            catch(Exception ex)
+            catch(DataException ex)
             {
                 Assert.AreEqual("SpecialName colomn could not be LazyLoad", ex.Message);
             }

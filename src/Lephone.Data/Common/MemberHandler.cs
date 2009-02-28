@@ -236,6 +236,10 @@ namespace Lephone.Data.Common
 
             if (fi.GetAttribute<SpecialNameAttribute>(false) != null)
             {
+                if (IsLazyLoad)
+                {
+                    throw new DataException("SpecialName colomn could not be LazyLoad");
+                }
                 if (fi.Name == "CreatedOn")
                 {
                     if (fi.MemberType == typeof(DateTime))

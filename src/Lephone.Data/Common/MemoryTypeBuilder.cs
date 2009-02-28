@@ -128,10 +128,13 @@ namespace Lephone.Data.Common
             = typeof(DbColumnAttribute).GetConstructor(new[] { typeof(string) });
 
         private static readonly ConstructorInfo AllowNullAttributeConstructor
-            = typeof(AllowNullAttribute).GetConstructor(new Type[] { });
+            = typeof(AllowNullAttribute).GetConstructor(new Type[] {});
 
         private static readonly ConstructorInfo LengthAttributeConstructor
             = typeof(LengthAttribute).GetConstructor(new[] { typeof(int), typeof(int) });
+
+        private static readonly ConstructorInfo SpecialNameAttributeConstructor
+            = typeof(SpecialNameAttribute).GetConstructor(new Type[] {});
 
         private static CustomAttributeBuilder GetDbColumnBuilder(string Name)
         {
@@ -166,6 +169,11 @@ namespace Lephone.Data.Common
                 new object[] { o.ASC, o.IndexName, o.UNIQUE, o.UniqueErrorMessage });
         }
 
+        private static CustomAttributeBuilder GetSpecialNameBuilder()
+        {
+            return new CustomAttributeBuilder(SpecialNameAttributeConstructor, new object[] { });
+        }
+
         private FieldInfo DefineField(string Name, Type PropertyType, FieldType ft, PropertyInfo pi)
         {
             if (ft == FieldType.Normal)
@@ -195,6 +203,13 @@ namespace Lephone.Data.Common
             ProcessCustomAttribute<LengthAttribute>(pi, o => fb.SetCustomAttribute(GetLengthBuilder(o)));
             ProcessCustomAttribute<StringColumnAttribute>(pi, o => fb.SetCustomAttribute(GetStringColumnBuilder(o)));
             ProcessCustomAttribute<IndexAttribute>(pi, o => fb.SetCustomAttribute(GetIndexBuilder(o)));
+            if (ft == FieldType.LazyLoad)
+            {
+                if (ClassHelper.HasAttribute<SpecialNameAttribute>(pi, true))
+                {
+                    ProcessCustomAttribute<SpecialNameAttribute>(pi, o => fb.SetCustomAttribute(GetSpecialNameBuilder()));
+                }
+            }
             return fb;
         }
 
@@ -247,13 +262,6 @@ namespace Lephone.Data.Common
             string SetPropertyName = "set_" + PropertyName;
 
             FieldType ft = GetFieldType(pi);
-            if(ft == FieldType.LazyLoad)
-            {
-                if(ClassHelper.HasAttribute<SpecialNameAttribute>(pi, true))
-                {
-                    throw new DataException("SpecialName colomn could not be LazyLoad");
-                }
-            }
             FieldInfo fi = DefineField(MemberPrifix + PropertyName, PropertyType, ft, pi);
 
             OverrideMethod(OverrideFlag, GetPropertyName, OriginType, PropertyType, null, delegate(ILBuilder il)
