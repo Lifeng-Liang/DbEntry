@@ -1,11 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Linq;
 using Lephone.MockSql.Recorder;
-using Lephone.UnitTest.util;
-using Lephone.Util;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data.CreateTable
@@ -34,15 +31,7 @@ namespace Lephone.UnitTest.Data.CreateTable
             string s = getIndexName();
             Debug.Assert(s != null);
             Assert.AreEqual(29, s.Length);
-            Assert.AreEqual("IX_00000000000000000000000000", s);
-
-            var guid = new Guid(0xa3459f3a, 0x1dbc, 0x981, 0x56, 0xaa, 0x8a, 0xac, 0x9, 0x12, 0x3f, 0xdd);
-            ((MockMiscProvider)MiscProvider.Instance).SetGuid(guid);
-            de.Create(typeof(fbLongName));
-            s = getIndexName();
-            Debug.Assert(s != null);
-            Assert.AreEqual(29, s.Length);
-            Assert.AreEqual("IX_1QJT2Q7F0TG44LDAKALG4H4FUT", s);
+            Assert.AreEqual("IX_1QCVK84BPESSPIBHJ1ND74RDE7", s);
         }
 
         private static string getIndexName()

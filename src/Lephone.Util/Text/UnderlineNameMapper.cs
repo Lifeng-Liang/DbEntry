@@ -6,7 +6,7 @@ namespace Lephone.Util.Text
     {
         public override string MapName(string Name)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             bool BeforeIsSmall = false;
             foreach (char c in Name)
             {

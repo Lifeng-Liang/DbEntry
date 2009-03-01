@@ -179,5 +179,14 @@ namespace Lephone.Util.Text
             byte[] input = Encoding.Unicode.GetBytes(s);
             return hash.ComputeHash(input);
         }
+
+        private static readonly MD5 md5 = MD5.Create();
+
+        public static byte[] HashMD5(string s)
+        {
+            byte[] input = Encoding.Unicode.GetBytes(s);
+            return md5.ComputeHash(input);
+        }
+
 	}
 }

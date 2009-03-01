@@ -323,9 +323,24 @@ namespace Lephone.Data.Dialect
 
         protected static string GenIndexName(string n, int maxLength)
         {
-            if (string.IsNullOrEmpty(n) || n.Length > maxLength)
+            if (string.IsNullOrEmpty(n))
             {
                 var bytes = MiscProvider.Instance.NewGuid().ToByteArray();
+                var s = Base32StringCoding.Decode(bytes);
+                return s;
+            }
+            return GenIdentityName(n, maxLength);
+        }
+
+        protected static string GenIdentityName(string n, int maxLength)
+        {
+            if(string.IsNullOrEmpty(n))
+            {
+                throw new DataException("Identity name could not be null or empty");
+            }
+            if(n.Length > maxLength)
+            {
+                var bytes = StringHelper.HashMD5(n);
                 var s = Base32StringCoding.Decode(bytes);
                 return s;
             }
