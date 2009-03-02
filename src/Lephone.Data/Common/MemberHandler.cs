@@ -229,7 +229,15 @@ namespace Lephone.Data.Common
                 }
             }
 
-            if (fi.GetAttribute<AllowNullAttribute>(false) != null || NullableHelper.IsNullableType(fi.MemberType))
+            if (fi.GetAttribute<AllowNullAttribute>(false) != null)
+            {
+                if(fi.MemberType.IsValueType)
+                {
+                    throw new DataException("Don't set AllowNull to a value type field, instead of to use nullable");
+                }
+                AllowNull = true;
+            }
+            if (NullableHelper.IsNullableType(fi.MemberType))
             {
                 AllowNull = true;
             }

@@ -14,6 +14,10 @@ namespace Lephone.Data.Common
 
         public new static ObjectInfo GetInstance(Type DbObjectType)
         {
+            if (DbObjectType.IsNotPublic)
+            {
+                throw new DataException("The model class should be public");
+            }
             Type t = (DbObjectType.IsAbstract) ? DynamicObject.GetImplType(DbObjectType) : DbObjectType;
             ObjectInfo oi = FlyweightBase<Type, ObjectInfo>.GetInstance(t);
             if (oi.BaseType == null)

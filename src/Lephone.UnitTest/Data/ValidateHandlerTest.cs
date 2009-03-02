@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
-    class vtest : IDbObject
+    public class vtest : IDbObject
     {
         [Length(1, 5), StringColumn(IsUnicode=false)]
         public string Name;
@@ -25,7 +25,7 @@ namespace Lephone.UnitTest.Data
         }
     }
 
-    class vtest0 : IDbObject
+    public class vtest0 : IDbObject
     {
         [Length(5, ErrorMessage = "Length limited by 5"), StringColumn(IsUnicode = false)]
         public string Name;

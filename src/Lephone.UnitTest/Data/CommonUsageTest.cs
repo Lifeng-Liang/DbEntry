@@ -16,6 +16,12 @@ namespace Lephone.UnitTest.Data
 {
     #region Objects
 
+    public abstract class AllowNullOnValueType : DbObjectModel<AllowNullOnValueType>
+    {
+        [AllowNull]
+        public abstract int Age { get; set; }
+    }
+
     public abstract class t_user : LinqObjectModel<t_user>
     {
         [Length(40)]
@@ -26,7 +32,7 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("People")]
-    class SinglePerson : DbObject
+    public class SinglePerson : DbObject
     {
         public string Name;
     }
@@ -568,6 +574,19 @@ namespace Lephone.UnitTest.Data
             sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower().Like("%tom%")).Select();
             AssertSql(@"Select [Id],[Name] From [People] Where lower([Name]) Like @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
+        }
+
+        [Test]
+        public void TestAllowNowOnValueType()
+        {
+            try
+            {
+                ObjectInfo.GetInstance(typeof (AllowNullOnValueType));
+            }
+            catch (DataException ex)
+            {
+                Assert.AreEqual("Don't set AllowNull to a value type field, instead of to use nullable", ex.Message);
+            }
         }
     }
 }

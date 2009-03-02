@@ -10,9 +10,9 @@ namespace Lephone.UnitTest.Data.CreateTable
 {
     #region objects
 
-    class CCC1 : DbObjectModel<IndexTestClass> {}
+    public class CCC1 : DbObjectModel<IndexTestClass> {}
 
-    abstract class IndexTestClass : DbObjectModel<IndexTestClass>
+    public abstract class IndexTestClass : DbObjectModel<IndexTestClass>
     {
         [BelongsTo, DbColumn("CCCId"), Index(IndexName = "xxx1", UNIQUE = true), Index(IndexName = "ccc1", UNIQUE = true)]
         public abstract CCC1 CCC { get; set; }
@@ -24,7 +24,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract string UUUs { get; set; }
     }
 
-    class MyTest1 : IDbObject
+    public class MyTest1 : IDbObject
     {
         [DbKey]
         public long Id;
@@ -33,7 +33,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name;
     }
 
-    class MyTest2 : IDbObject
+    public class MyTest2 : IDbObject
     {
         [DbKey]
         public long Id;
@@ -42,7 +42,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name;
     }
 
-    class MyTest3 : IDbObject
+    public class MyTest3 : IDbObject
     {
         [DbKey]
         public long Id;
@@ -55,7 +55,7 @@ namespace Lephone.UnitTest.Data.CreateTable
     }
 
     [DbTable("MyTest")]
-    class MyTest8 : IDbObject
+    public class MyTest8 : IDbObject
     {
         [DbKey(IsDbGenerate = false)]
         public long Id;

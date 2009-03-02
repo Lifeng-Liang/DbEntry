@@ -13,6 +13,11 @@ namespace Lephone.UnitTest.Data.Inner
 {
     #region objects
 
+    class NotPublic : DbObject
+    {
+        public string Name;
+    }
+
     [Serializable]
     public abstract class TableA : LinqObjectModel<TableA>
     {
@@ -153,6 +158,21 @@ namespace Lephone.UnitTest.Data.Inner
             t3.TB = t2;
             t3.Validate();
             t3.Save();
+        }
+
+        [Test]
+        public void TestNotPublicClass()
+        {
+            try
+            {
+                var obj = new NotPublic();
+                DbEntry.Context.Insert(obj);
+                Assert.IsTrue(false);
+            }
+            catch (DataException ex)
+            {
+                Assert.AreEqual("The model class should be public", ex.Message);
+            }
         }
     }
 }

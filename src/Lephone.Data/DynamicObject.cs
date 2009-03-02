@@ -464,6 +464,7 @@ namespace Lephone.Data
             {
                 return (Type)types[SourceType];
             }
+
             TypeAttributes ta = DynamicObjectTypeAttr;
             Type[] interfaces = null;
             if ( SourceType.IsSerializable )
