@@ -16,6 +16,11 @@ namespace Lephone.UnitTest.Data
 {
     #region Objects
 
+    public abstract class NotDefineRelation : DbObjectModel<NotDefineRelation>
+    {
+        public abstract AllowNullOnValueType Relation { get; set; }
+    }
+
     public abstract class AllowNullOnValueType : DbObjectModel<AllowNullOnValueType>
     {
         [AllowNull]
@@ -582,11 +587,27 @@ namespace Lephone.UnitTest.Data
             try
             {
                 ObjectInfo.GetInstance(typeof (AllowNullOnValueType));
+                Assert.IsTrue(false);
             }
             catch (DataException ex)
             {
                 Assert.AreEqual("Don't set AllowNull to a value type field, instead of to use nullable", ex.Message);
             }
+        }
+
+        [Test]
+        public void TestNotDefineRelation()
+        {
+            try
+            {
+                ObjectInfo.GetInstance(typeof(NotDefineRelation));
+                Assert.IsTrue(false);
+            }
+            catch (DataException ex)
+            {
+                Assert.AreEqual("The property 'Relation' should define as relation field and can not set lazy load attribute", ex.Message);
+            }
+
         }
     }
 }

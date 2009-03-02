@@ -10,6 +10,7 @@ using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
 using Lephone.Util;
 using Lephone.Util.Text;
+using PropertyAttributes=System.Reflection.PropertyAttributes;
 
 namespace Lephone.Data
 {
@@ -473,13 +474,11 @@ namespace Lephone.Data
                 interfaces = new[] { typeof(ISerializable) };
             }
 
-            MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
-                ta, SourceType, interfaces, GetCustomAttributes(SourceType));
-
             MethodInfo minit = SourceType.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag);
             MethodInfo mupdate = SourceType.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag);
 
             PropertyInfo[] pis = SourceType.GetProperties();
+            var plist = new List<PropertyInfo>();
             var impRelations = new List<MemberHandler>();
             foreach (PropertyInfo pi in pis)
             {
@@ -487,12 +486,28 @@ namespace Lephone.Data
                 {
                     if (pi.GetGetMethod().IsAbstract)
                     {
-                        MemberHandler h = tb.ImplProperty(pi.Name, pi.PropertyType, SourceType, mupdate, pi);
-                        if (h != null)
+                        if(!pi.PropertyType.IsValueType && !pi.PropertyType.IsArray && pi.PropertyType != typeof(string))
                         {
-                            impRelations.Add(h);
+                            var ft = MemoryTypeBuilder.GetFieldType(pi);
+                            if(ft == FieldType.Normal || ft == FieldType.LazyLoad)
+                            {
+                                throw new DataException("The property '{0}' should define as relation field and can not set lazy load attribute", pi.Name);
+                            }
                         }
+                        plist.Add(pi);
                     }
+                }
+            }
+
+            MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
+                ta, SourceType, interfaces, GetCustomAttributes(SourceType));
+
+            foreach (PropertyInfo pi in plist)
+            {
+                MemberHandler h = tb.ImplProperty(pi.Name, pi.PropertyType, SourceType, mupdate, pi);
+                if (h != null)
+                {
+                    impRelations.Add(h);
                 }
             }
 

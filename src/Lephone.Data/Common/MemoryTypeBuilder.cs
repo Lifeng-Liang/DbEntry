@@ -93,7 +93,7 @@ namespace Lephone.Data.Common
             return InnerType.CreateType();
         }
 
-        public FieldType GetFieldType(PropertyInfo pi)
+        public static FieldType GetFieldType(PropertyInfo pi)
         {
             foreach (Attribute a in pi.GetCustomAttributes(true))
             {
