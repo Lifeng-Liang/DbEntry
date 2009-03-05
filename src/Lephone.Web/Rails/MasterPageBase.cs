@@ -23,7 +23,7 @@ namespace Lephone.Web.Rails
             set
             {
                 _bag = value;
-                if(Master != null && Master is MasterPageBase)
+                if (Master != null && Master is MasterPageBase)
                 {
                     ((MasterPageBase)Master).bag = _bag;
                 }
@@ -96,7 +96,11 @@ namespace Lephone.Web.Rails
         {
             string appPath = HttpContext.Current.Request.ApplicationPath;
             var url = new StringBuilder();
-            url.Append(appPath).Append("/");
+            url.Append(appPath);
+            if (!string.IsNullOrEmpty(appPath) && !appPath.EndsWith("/"))
+            {
+                url.Append("/");
+            }
             url.Append(Controller).Append("/");
             if (!string.IsNullOrEmpty(Action))
             {
@@ -122,7 +126,7 @@ namespace Lephone.Web.Rails
 
         private static void AppendParamter(StringBuilder url, object o)
         {
-            if(o is IEnumerable && !(o is string))
+            if (o is IEnumerable && !(o is string))
             {
                 foreach (var obj in (IEnumerable)o)
                 {
