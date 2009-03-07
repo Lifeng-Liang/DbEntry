@@ -252,7 +252,8 @@ namespace Lephone.Web
                         {
                             mo = !mh.AllowNull ? "" : null;
                         }
-                        if (!(mh.GetValue(obj).Equals(mo)))
+                        object ho = mh.GetValue(obj);
+                        if(!CommonHelper.AreEqual(ho, mo))
                         {
                             mh.SetValue(obj, mo);
                         }

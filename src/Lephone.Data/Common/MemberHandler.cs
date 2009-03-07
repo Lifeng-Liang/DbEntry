@@ -101,9 +101,13 @@ namespace Lephone.Data.Common
                     {
                         value = new Guid(value.ToString());
                     }
+                    object oo = ci.Invoke(new[] { value });
+                    MemberInfo.SetValue(obj, oo);
                 }
-                object oo = ci.Invoke(new[] { value });
-                MemberInfo.SetValue(obj, oo);
+                else
+                {
+                    MemberInfo.SetValue(obj, null);
+                }
             }
 
             public override object GetValue(object obj)
