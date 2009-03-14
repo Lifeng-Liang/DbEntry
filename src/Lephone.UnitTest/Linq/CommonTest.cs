@@ -242,5 +242,21 @@ namespace Lephone.UnitTest.Linq
             AssertSql(@"Select [Id],[Name] From [Person] Where lower([Name]) Like @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
+
+        [Test]
+        public void TestUpperFunction()
+        {
+            sqlite.From<Person>().Where(p => p.FirstName.ToUpper() == "tom").Select();
+            AssertSql(@"Select [Id],[Name] From [Person] Where upper([Name]) = @Name_0;
+<Text><60>(@Name_0=tom:String)");
+        }
+
+        [Test]
+        public void TestUpperForLike()
+        {
+            sqlite.From<Person>().Where(p => p.FirstName.ToUpper().Contains("tom")).Select();
+            AssertSql(@"Select [Id],[Name] From [Person] Where upper([Name]) Like @Name_0;
+<Text><60>(@Name_0=%tom%:String)");
+        }
     }
 }

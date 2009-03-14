@@ -12,12 +12,12 @@ namespace Lephone.Data.Builder.Clause
 	{
 		protected KeyValue KV;
 		protected string Comp;
-	    protected bool ToLower;
+	    protected ColumnFunction function;
 
-		public KeyValueClause(string Key, object Value, CompareOpration co, bool ToLower)
+        public KeyValueClause(string Key, object Value, CompareOpration co, ColumnFunction function)
 			: this(new KeyValue(Key, Value), co)
 		{
-		    this.ToLower = ToLower;
+            this.function = function;
 		}
 
 		public KeyValueClause(KeyValue kv, CompareOpration co)
@@ -45,9 +45,14 @@ namespace Lephone.Data.Builder.Clause
                 ? "NULL" 
                 : GetValueString(dpc, dd);
             string dkStr = dd.QuoteForColumnName(KV.Key);
-            if(ToLower)
+            switch (function)
             {
-                dkStr = string.Format("lower({0})", dkStr);
+                case ColumnFunction.ToLower:
+                    dkStr = string.Format("lower({0})", dkStr);
+                    break;
+                case ColumnFunction.ToUpper:
+                    dkStr = string.Format("upper({0})", dkStr);
+                    break;
             }
             return string.Format("{0} {2} {1}", dkStr, dpStr, Comp);
         }

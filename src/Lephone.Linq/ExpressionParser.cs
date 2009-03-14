@@ -98,30 +98,30 @@ namespace Lephone.Linq
         {
             if (e.Arguments.Count == 1)
             {
-                bool lower;
-                string key = GetMemberName(e.Object, out lower);
+                ColumnFunction function;
+                string key = GetMemberName(e.Object, out function);
                 object value = GetRightValue(e.Arguments[0]);
                 if (value != null && value.GetType() == typeof(string))
                 {
                     switch (e.Method.Name)
                     {
                         case "StartsWith":
-                            return new KeyValueClause(key, value + "%", CompareOpration.Like, lower);
+                            return new KeyValueClause(key, value + "%", CompareOpration.Like, function);
                         case "EndsWith":
-                            return new KeyValueClause(key, "%" + value, CompareOpration.Like, lower);
+                            return new KeyValueClause(key, "%" + value, CompareOpration.Like, function);
                         case "Contains":
-                            return new KeyValueClause(key, "%" + value + "%", CompareOpration.Like, lower);
+                            return new KeyValueClause(key, "%" + value + "%", CompareOpration.Like, function);
                     }
                 }
             }
             throw new LinqException("'Like' clause only supported one paramter and the paramter should be string and not allow NULL.");
         }
 
-        private static string GetMemberName(Expression expr, out bool lower)
+        private static string GetMemberName(Expression expr, out ColumnFunction function)
         {
             if(expr is MemberExpression)
             {
-                lower = false;
+                function = ColumnFunction.None;
                 return GetColumnName(((MemberExpression)expr).Member.Name);
             }
             if(expr is MethodCallExpression)
@@ -129,7 +129,12 @@ namespace Lephone.Linq
                 var e = (MethodCallExpression) expr;
                 if(e.Method.Name == "ToLower" && e.Object is MemberExpression)
                 {
-                    lower = true;
+                    function = ColumnFunction.ToLower;
+                    return GetColumnName(((MemberExpression)e.Object).Member.Name);
+                }
+                if (e.Method.Name == "ToUpper" && e.Object is MemberExpression)
+                {
+                    function = ColumnFunction.ToUpper;
                     return GetColumnName(((MemberExpression)e.Object).Member.Name);
                 }
             }
@@ -143,14 +148,19 @@ namespace Lephone.Linq
             {
                 l = ((UnaryExpression)l).Operand;
             }
-            bool lower = false;
+            ColumnFunction function = ColumnFunction.None;
             if(l is MethodCallExpression)
             {
                 var x = (MethodCallExpression) l;
                 if(x.Method.Name == "ToLower")
                 {
                     l = x.Object;
-                    lower = true;
+                    function = ColumnFunction.ToLower;
+                }
+                else if (x.Method.Name == "ToUpper")
+                {
+                    l = x.Object;
+                    function = ColumnFunction.ToUpper;
                 }
             }
             if (l.NodeType == ExpressionType.MemberAccess)
@@ -180,15 +190,15 @@ namespace Lephone.Linq
                 {
                     if (co == CompareOpration.Equal)
                     {
-                        return new KeyValueClause(key, null, CompareOpration.Is, false);
+                        return new KeyValueClause(key, null, CompareOpration.Is, ColumnFunction.None);
                     }
                     if (co == CompareOpration.NotEqual)
                     {
-                        return new KeyValueClause(key, null, CompareOpration.IsNot, false);
+                        return new KeyValueClause(key, null, CompareOpration.IsNot, ColumnFunction.None);
                     }
                     throw new LinqException("NULL value only supported Equal and NotEqual!");
                 }
-                return new KeyValueClause(key, value, co, lower);
+                return new KeyValueClause(key, value, co, function);
             }
             throw new LinqException("The expression must be 'Column op const' or 'Column op Column'");
         }

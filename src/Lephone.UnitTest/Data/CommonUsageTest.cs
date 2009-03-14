@@ -582,6 +582,22 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
+        public void TestUpperFunction()
+        {
+            sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper() == "tom").Select();
+            AssertSql(@"Select [Id],[Name] From [People] Where upper([Name]) = @Name_0;
+<Text><60>(@Name_0=tom:String)");
+        }
+
+        [Test]
+        public void TestUpperForLike()
+        {
+            sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper().Like("%tom%")).Select();
+            AssertSql(@"Select [Id],[Name] From [People] Where upper([Name]) Like @Name_0;
+<Text><60>(@Name_0=%tom%:String)");
+        }
+
+        [Test]
         public void TestAllowNowOnValueType()
         {
             try

@@ -112,6 +112,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\AccessDataReader.cs" />
     <Compile Include="Common\BulkCopyProcessor.cs" />
     <Compile Include="Common\CachedListInserter.cs" />
+    <Compile Include="Common\ColumnFunction.cs" />
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DeleteToQueryComposer.cs" />
     <Compile Include="Common\LephoneSetting.cs" />

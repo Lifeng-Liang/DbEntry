@@ -60,7 +60,7 @@ namespace Lephone.UnitTest.Data.Inner
             var ssb = new SelectStatementBuilder("UserTable", null, new Range(1, 10));
             ssb.Keys.Add("a");
             ssb.Where.Conditions = new OrClause("ID", 5, 3, 2);
-			ssb.Where.Conditions = new AndClause(ssb.Where.Conditions, new KeyValueClause("UserName", "l'lf", CompareOpration.Equal, false));
+			ssb.Where.Conditions = new AndClause(ssb.Where.Conditions, new KeyValueClause("UserName", "l'lf", CompareOpration.Equal, ColumnFunction.None));
 			const string s = "Select Top 10 [a] From [UserTable] Where (([ID] = @ID_0) Or ([ID] = @ID_1) Or ([ID] = @ID_2)) And ([UserName] = @UserName_3);\n<Text><60>(@ID_0=5:Int32,@ID_1=3:Int32,@ID_2=2:Int32,@UserName_3=l'lf:String)";
 			TesterHelper.AssertSqlSentenceEqual(s, ssb.ToSqlStatement(dd).ToString());
 		}
