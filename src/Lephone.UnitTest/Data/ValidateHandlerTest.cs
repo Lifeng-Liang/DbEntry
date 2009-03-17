@@ -1,5 +1,6 @@
 ﻿using Lephone.Data;
 using Lephone.Data.Definition;
+using Lephone.Util.Text;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -66,6 +67,18 @@ namespace Lephone.UnitTest.Data
         public abstract string Name { get; set; }
 
         public vPeople0 Init(string name)
+        {
+            Name = name;
+            return this;
+        }
+    }
+
+    public abstract class vPeople1 : DbObjectModel<vPeople1>
+    {
+        [ShowString("测试")]
+        public abstract string Name { get; set; }
+
+        public vPeople1 Init(string name)
         {
             Name = name;
             return this;
@@ -165,6 +178,15 @@ namespace Lephone.UnitTest.Data
             Assert.IsFalse(vh.ValidateObject(vPeople0.New().Init("Tom")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("unique", vh.ErrorMessages["Name"]);
+        }
+
+        [Test]
+        public void Test10()
+        {
+            var vh = new ValidateHandler(true);
+            vh.ValidateObject(vPeople1.New().Init(""));
+            Assert.AreEqual(false, vh.IsValid);
+            Assert.AreEqual("Invalid Field 测试 Not Allow Null.", vh.ErrorMessages["Name"]);
         }
     }
 }

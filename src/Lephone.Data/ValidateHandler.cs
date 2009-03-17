@@ -107,8 +107,8 @@ namespace Lephone.Data
             if (ErrMsg.Length > _SeparatorTextLength) { ErrMsg.Length -= _SeparatorTextLength; }
             if (!isValid)
             {
-                string n = (IncludeClassName ? tableName + "." + fh.Name : fh.Name);
-                _ErrorMessages[n] = string.Format(_InvalidFieldText, n, ErrMsg);
+                string n = (IncludeClassName ? tableName + "." + fh.ShowString : fh.ShowString);
+                _ErrorMessages[fh.Name] = string.Format(_InvalidFieldText, n, ErrMsg);
             }
             IsValid &= isValid;
         }
@@ -126,6 +126,7 @@ namespace Lephone.Data
             {
                 WhereCondition c = null;
                 string n = "";
+                var sn = new StringBuilder();
                 foreach (MemberHandler h in mhs)
                 {
                     if(updatedColumns == null || updatedColumns.ContainsKey(h.Name))
@@ -152,19 +153,21 @@ namespace Lephone.Data
                         }
                         c &= (CK.K[h.Name] == v);
                         n += h.Name;
+                        sn.Append(h.ShowString).Append(_SeparatorText);
                     }
                 }
                 if (c != null)
                 {
                     if (DbEntry.Context.GetResultCount(t, c && EditCondition) != 0)
                     {
+                        sn.Length -= _SeparatorTextLength;
                         IsValid = false;
                         string uniqueErrMsg = string.IsNullOrEmpty(mhs[0].UniqueErrorMessage)
                                                   ? _ShouldBeUniqueText
                                                   : mhs[0].UniqueErrorMessage;
                         _ErrorMessages[n] = _ErrorMessages.ContainsKey(n)
                                   ? string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, uniqueErrMsg)
-                                  : string.Format(_InvalidFieldText, n, uniqueErrMsg);
+                                  : string.Format(_InvalidFieldText, sn, uniqueErrMsg);
                     }
                 }
             }

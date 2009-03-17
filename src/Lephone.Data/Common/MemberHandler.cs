@@ -151,6 +151,7 @@ namespace Lephone.Data.Common
 	    public readonly bool IsRelationField;
         public readonly string OrderByString;
 	    public readonly string UniqueErrorMessage;
+	    public readonly string ShowString;
 
         public Type FieldType
         {
@@ -362,6 +363,9 @@ namespace Lephone.Data.Common
             }
             IsRelationField = (IsHasOne || IsHasMany || IsHasAndBelongsToMany || IsBelongsTo);
             IsSimpleField = !(IsRelationField || IsLazyLoad);
+
+            var ss = fi.GetAttribute<ShowStringAttribute>(false);
+            ShowString = ss != null ? ss.ShowString : Name;
         }
 
         internal MemberHandler(MemberAdapter fi, FieldType ft, PropertyInfo pi)
