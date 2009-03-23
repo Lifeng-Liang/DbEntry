@@ -71,10 +71,10 @@
     <Compile Include="RailsDispatcher.cs" />
     <Compile Include="DbEntryDataSource.cs" />
     <Compile Include="DbEntryMembershipProvider.cs" />
-    <Compile Include="Common\DbEntryRole.cs" />
+    <Compile Include="DbEntryRole.cs" />
     <Compile Include="DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
-    <Compile Include="Common\DbEntryMembershipUser.cs" />
+    <Compile Include="DbEntryMembershipUser.cs" />
     <Compile Include="Rails\LTArgs.cs" />
     <Compile Include="Rails\MasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>

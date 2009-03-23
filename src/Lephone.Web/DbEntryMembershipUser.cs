@@ -4,7 +4,7 @@ using System.Web.Security;
 using Lephone.Data.Definition;
 using Lephone.Util.Text;
 
-namespace Lephone.Web.Common
+namespace Lephone.Web
 {
     public abstract class DbEntryMembershipUser : DbObjectModel<DbEntryMembershipUser>
     {

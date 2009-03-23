@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Lephone.Data.Definition;
 
-namespace Lephone.Web.Common
+namespace Lephone.Web
 {
     public abstract class DbEntryRole : DbObjectModel<DbEntryRole>
     {
