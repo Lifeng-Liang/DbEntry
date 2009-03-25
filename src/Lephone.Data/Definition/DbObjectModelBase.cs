@@ -87,6 +87,21 @@ namespace Lephone.Data.Definition
             return DbEntry.From<T>().Where(con).GetCount();
         }
 
+        public static decimal? GetMax(WhereCondition con, string columnName)
+        {
+            return DbEntry.From<T>().Where(con).GetMax(columnName);
+        }
+
+        public static decimal? GetMin(WhereCondition con, string columnName)
+        {
+            return DbEntry.From<T>().Where(con).GetMin(columnName);
+        }
+
+        public static decimal? GetSum(WhereCondition con, string columnName)
+        {
+            return DbEntry.From<T>().Where(con).GetSum(columnName);
+        }
+
         public static T New()
         {
             return DynamicObject.NewObject<T>();

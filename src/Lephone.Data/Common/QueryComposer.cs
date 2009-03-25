@@ -14,6 +14,30 @@ namespace Lephone.Data.Common
             this.oi = oi;
         }
 
+        public virtual SqlStatement GetMaxStatement(DbDialect Dialect, WhereCondition iwc, string columnName)
+        {
+            var sb = new SelectStatementBuilder(oi.From, null, null);
+            sb.Where.Conditions = iwc;
+            sb.SetMaxColumn(columnName);
+            return sb.ToSqlStatement(Dialect);
+        }
+
+        public virtual SqlStatement GetMinStatement(DbDialect Dialect, WhereCondition iwc, string columnName)
+        {
+            var sb = new SelectStatementBuilder(oi.From, null, null);
+            sb.Where.Conditions = iwc;
+            sb.SetMinColumn(columnName);
+            return sb.ToSqlStatement(Dialect);
+        }
+
+        public virtual SqlStatement GetSumStatement(DbDialect Dialect, WhereCondition iwc, string columnName)
+        {
+            var sb = new SelectStatementBuilder(oi.From, null, null);
+            sb.Where.Conditions = iwc;
+            sb.SetSumColumn(columnName);
+            return sb.ToSqlStatement(Dialect);
+        }
+
         public virtual SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc)
         {
             var sb = new SelectStatementBuilder(oi.From, null, null);

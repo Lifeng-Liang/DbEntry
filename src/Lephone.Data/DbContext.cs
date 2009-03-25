@@ -155,6 +155,48 @@ namespace Lephone.Data
             return Convert.ToInt64(ro);
         }
 
+        public decimal? GetMax(Type DbObjectType, WhereCondition iwc, string columnName)
+        {
+            TryCreateTable(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
+            SqlStatement Sql = oi.Composer.GetMaxStatement(Dialect, iwc, columnName);
+            oi.LogSql(Sql);
+            object ro = ExecuteScalar(Sql);
+            if(ro == DBNull.Value)
+            {
+                return null;
+            }
+            return Convert.ToDecimal(ro);
+        }
+
+        public decimal? GetMin(Type DbObjectType, WhereCondition iwc, string columnName)
+        {
+            TryCreateTable(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
+            SqlStatement Sql = oi.Composer.GetMinStatement(Dialect, iwc, columnName);
+            oi.LogSql(Sql);
+            object ro = ExecuteScalar(Sql);
+            if (ro == DBNull.Value)
+            {
+                return null;
+            }
+            return Convert.ToDecimal(ro);
+        }
+
+        public decimal? GetSum(Type DbObjectType, WhereCondition iwc, string columnName)
+        {
+            TryCreateTable(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
+            SqlStatement Sql = oi.Composer.GetSumStatement(Dialect, iwc, columnName);
+            oi.LogSql(Sql);
+            object ro = ExecuteScalar(Sql);
+            if (ro == DBNull.Value)
+            {
+                return null;
+            }
+            return Convert.ToDecimal(ro);
+        }
+
         public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type DbObjectType, WhereCondition iwc, OrderBy order, string ColumnName)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);

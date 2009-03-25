@@ -598,6 +598,48 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
+        public void TestMax()
+        {
+            sqlite.From<SinglePerson>().Where(null).GetMax("Id");
+            AssertSql(@"Select Max([Id]) As [Id] From [People];
+<Text><60>()");
+
+            var n = DbEntry.From<SinglePerson>().Where(null).GetMax("Id");
+            Assert.AreEqual(3, n);
+
+            n = FieldPerson.GetMax(null, "Id");
+            Assert.AreEqual(3, n);
+        }
+
+        [Test]
+        public void TestMin()
+        {
+            sqlite.From<SinglePerson>().Where(null).GetMin("Id");
+            AssertSql(@"Select Min([Id]) As [Id] From [People];
+<Text><60>()");
+
+            var n = DbEntry.From<SinglePerson>().Where(null).GetMin("Id");
+            Assert.AreEqual(1, n);
+
+            n = FieldPerson.GetMin(null, "Id");
+            Assert.AreEqual(1, n);
+        }
+
+        [Test]
+        public void TestSum()
+        {
+            sqlite.From<SinglePerson>().Where(null).GetSum("Id");
+            AssertSql(@"Select Sum([Id]) As [Id] From [People];
+<Text><60>()");
+
+            var n = DbEntry.From<SinglePerson>().Where(null).GetSum("Id");
+            Assert.AreEqual(6, n);
+
+            n = FieldPerson.GetSum(null, "Id");
+            Assert.AreEqual(6, n);
+        }
+
+        [Test]
         public void TestAllowNowOnValueType()
         {
             try

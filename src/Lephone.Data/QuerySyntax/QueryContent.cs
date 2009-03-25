@@ -69,7 +69,7 @@ namespace Lephone.Data.QuerySyntax
 
         public DbObjectList<T> Select()
         {
-            DbObjectList<T> ret = new DbObjectList<T>();
+            var ret = new DbObjectList<T>();
             m_entry.FillCollection(ret, typeof(T), m_where, m_order, m_range);
             return ret;
         }
@@ -87,6 +87,21 @@ namespace Lephone.Data.QuerySyntax
         public long GetCount()
         {
             return m_entry.GetResultCount(typeof(T), m_where);
+        }
+
+        public decimal? GetMax(string columnName)
+        {
+            return m_entry.GetMax(typeof(T), m_where, columnName);
+        }
+
+        public decimal? GetMin(string columnName)
+        {
+            return m_entry.GetMin(typeof(T), m_where, columnName);
+        }
+
+        public decimal? GetSum(string columnName)
+        {
+            return m_entry.GetSum(typeof(T), m_where, columnName);
         }
 
         public DbObjectList<GroupByObject<T1>> GroupBy<T1>(string ColumnName)

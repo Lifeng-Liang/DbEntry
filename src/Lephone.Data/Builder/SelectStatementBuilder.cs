@@ -16,7 +16,8 @@ namespace Lephone.Data.Builder
 
         private readonly List<string> keys = new List<string>();
 
-        internal string CountCol;
+        internal string FunctionCol;
+        internal string FunctionName;
 
         internal bool IsGroupBy;
 
@@ -38,7 +39,28 @@ namespace Lephone.Data.Builder
 
         public void SetCountColumn(string ColumnName)
         {
-            CountCol = ColumnName;
+            SetFunctionColumn("Count", ColumnName);
+        }
+
+        public void SetMaxColumn(string ColumnName)
+        {
+            SetFunctionColumn("Max", ColumnName);
+        }
+
+        public void SetMinColumn(string ColumnName)
+        {
+            SetFunctionColumn("Min", ColumnName);
+        }
+
+        public void SetSumColumn(string ColumnName)
+        {
+            SetFunctionColumn("Sum", ColumnName);
+        }
+
+        private void SetFunctionColumn(string FunctionName, string ColumnName)
+        {
+            this.FunctionName = FunctionName;
+            FunctionCol = ColumnName;
         }
 
         public void SetAsGroupBy(string ColumnName)
@@ -64,23 +86,26 @@ namespace Lephone.Data.Builder
 
         internal string GetColumns(DbDialect dd)
 		{
-			StringBuilder Columns = new StringBuilder();
+			var Columns = new StringBuilder();
 			foreach ( string k in keys )
 			{
 				Columns.Append(dd.QuoteForColumnName(k));
                 Columns.Append(",");
 			}
-            if (CountCol != null)
+            if (FunctionCol != null)
             {
-                if (CountCol == "*")
+                Columns.Append(FunctionName);
+                if (FunctionCol == "*")
                 {
-                    Columns.Append("Count(*) As ").Append(DbEntry.CountColumn).Append(",");
+                    Columns.Append("(*) As ").Append(DbEntry.CountColumn).Append(",");
                 }
                 else
                 {
-                    Columns.Append("Count(")
-                        .Append(dd.QuoteForColumnName(CountCol))
-                        .Append(") As ").Append(DbEntry.CountColumn).Append(",");
+                    string fn = dd.QuoteForColumnName(FunctionCol);
+                    string gfn = FunctionName == "Count" ? DbEntry.CountColumn : fn;
+                    Columns.Append("(")
+                        .Append(fn)
+                        .Append(") As ").Append(gfn).Append(",");
                 }
             }
             if (Columns.Length > 0)

@@ -32,6 +32,9 @@ namespace Lephone.Data.QuerySyntax
         IRangeable<T> OrderBy(params ASC[] os);
         IRangeable<T> OrderBy(OrderBy order);
         long GetCount();
+        decimal? GetMax(string columnName);
+        decimal? GetMin(string columnName);
+        decimal? GetSum(string columnName);
     }
 
     public interface IWhere<T> where T : class, IDbObject

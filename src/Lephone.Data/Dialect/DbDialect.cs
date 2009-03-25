@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections;
 using System.Data;
@@ -188,7 +188,7 @@ namespace Lephone.Data.Dialect
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),
-                ssb.IsGroupBy ? " Group By " + QuoteForColumnName(ssb.CountCol) : "",
+                ssb.IsGroupBy ? " Group By " + QuoteForColumnName(ssb.FunctionCol) : "",
                 (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this)
                 );
             return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);

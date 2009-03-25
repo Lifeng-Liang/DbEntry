@@ -17,7 +17,10 @@ public static class CommonExtends
     public static IAfterWhere<T> Where<T>(this IWhere<T> t, Expression<Func<T, bool>> expr) where T : class, IDbObject
     {
         var me = (QueryContent<T>)t;
-        me.m_where = ExpressionParser<T>.Parse(expr);
+        if (expr != null)
+        {
+            me.m_where = ExpressionParser<T>.Parse(expr);
+        }
         return me;
     }
 
@@ -41,20 +44,15 @@ public static class CommonExtends
         return AddOrderBy((QueryContent<T>)t, expr, false);
     }
 
-    private static IRangeable<T> AddOrderBy<T>(QueryContent<T> me, LambdaExpression expr, bool isAsc) where T : class, IDbObject
+    private static IRangeable<T> AddOrderBy<T>(QueryContent<T> me, Expression<Func<T, object>> expr, bool isAsc) where T : class, IDbObject
     {
-        MemberExpression e = expr.GetMemberExpression();
-        if (e != null)
+        string n = GetColumnName(expr);
+        if (me.m_order == null)
         {
-            string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
-            if (me.m_order == null)
-            {
-                me.m_order = new OrderBy();
-            }
-            me.m_order.OrderItems.Add(isAsc ? new ASC(n) : new DESC(n));
-            return me;
+            me.m_order = new OrderBy();
         }
-        throw new LinqException("OrderBy error!");
+        me.m_order.OrderItems.Add(isAsc ? new ASC(n) : new DESC(n));
+        return me;
     }
 
     internal static MemberExpression GetMemberExpression(this LambdaExpression expr)
@@ -68,6 +66,35 @@ public static class CommonExtends
             return (MemberExpression)((UnaryExpression)expr.Body).Operand;
         }
         return null;
+    }
+
+    public static decimal? GetMax<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
+    {
+        string n = GetColumnName(expr);
+        return ((QueryContent<T>)t).GetMax(n);
+    }
+
+    public static decimal? GetMin<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
+    {
+        string n = GetColumnName(expr);
+        return ((QueryContent<T>)t).GetMin(n);
+    }
+
+    public static decimal? GetSum<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
+    {
+        string n = GetColumnName(expr);
+        return ((QueryContent<T>)t).GetSum(n);
+    }
+
+    private static string GetColumnName<T>(Expression<Func<T, object>> expr) where T : class, IDbObject
+    {
+        MemberExpression e = expr.GetMemberExpression();
+        if (e != null)
+        {
+            string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
+            return n;
+        }
+        throw new LinqException("get column name error!");
     }
 
     public static T GetObject<T>(this DbContext c, Expression<Func<T, bool>> expr) where T : class, IDbObject

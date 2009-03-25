@@ -53,6 +53,21 @@ namespace Lephone.Linq
         {
             return DbEntry.From<T>().Where(condition).GetCount();
         }
+
+        public static decimal? GetMax(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
+        {
+            return DbEntry.From<T>().Where(condition).GetMax(column);
+        }
+
+        public static decimal? GetMin(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
+        {
+            return DbEntry.From<T>().Where(condition).GetMin(column);
+        }
+
+        public static decimal? GetSum(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
+        {
+            return DbEntry.From<T>().Where(condition).GetSum(column);
+        }
     }
 
     [Serializable]
