@@ -10,13 +10,13 @@ namespace Lephone.Data.Dialect
 	{
 		public SqlServer2000()
 		{
-            TypeNames[DataType.Boolean] = "bit";
-            TypeNames[DataType.Date]    = "smalldatetime";
+            TypeNames[DataType.Boolean] = "BIT";
+            TypeNames[DataType.Date]    = "SMALLDATETIME";
         }
 
         public override string DbNowString
         {
-            get { return "getdate()"; }
+            get { return "GETDATE()"; }
         }
 
         public override DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
@@ -37,7 +37,7 @@ namespace Lephone.Data.Dialect
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             var dpc = new DataParamterCollection();
-            string SqlString = string.Format("Select Top {4} {0} From {1}{2}{3}",
+            string SqlString = string.Format("SELECT TOP {4} {0} FROM {1}{2}{3}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),
@@ -49,7 +49,7 @@ namespace Lephone.Data.Dialect
         
 		public override string IdentitySelectString
 		{
-			get { return "select SCOPE_IDENTITY();\n"; }
+			get { return "SELECT SCOPE_IDENTITY();\n"; }
 		}
 
 		public override string IdentityColumnString

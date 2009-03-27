@@ -2,8 +2,6 @@
 {
 	public class Excel : Access
 	{
-		public Excel() {}
-
         public override string GetConnectionString(string ConnectionString)
         {
             string s = ProcessConnectionnString(ConnectionString);

@@ -22,7 +22,7 @@ namespace Lephone.Data.Dialect
 
         public override string IdentitySelectString
         {
-            get { return "select @@identity;\n"; }
+            get { return "SELECT @@IDENTITY;\n"; }
         }
 
         public override string IdentityColumnString

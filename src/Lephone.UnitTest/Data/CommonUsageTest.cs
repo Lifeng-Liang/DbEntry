@@ -311,14 +311,14 @@ namespace Lephone.UnitTest.Data
             var dpc = new DataParamterCollection();
             string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
-            Assert.AreEqual("(([Age] > [Count]) And ([Name] = [theName])) Or ([Age] <= [Num])", s);
+            Assert.AreEqual("(([Age] > [Count]) AND ([Name] = [theName])) OR ([Age] <= [Num])", s);
         }
 
         [Test]
         public void TestGetSqlStetement()
         {
-            SqlStatement sql = DbEntry.Context.GetSqlStatement("select * from User where Age > ? And Age < ?", 18, 23);
-            Assert.AreEqual("select * from User where Age > @p0 And Age < @p1", sql.SqlCommandText);
+            SqlStatement sql = DbEntry.Context.GetSqlStatement("SELECT * FROM User WHERE Age > ? AND Age < ?", 18, 23);
+            Assert.AreEqual("SELECT * FROM User WHERE Age > @p0 AND Age < @p1", sql.SqlCommandText);
             Assert.AreEqual("@p0", sql.Paramters[0].Key);
             Assert.AreEqual(18, sql.Paramters[0].Value);
             Assert.AreEqual("@p1", sql.Paramters[1].Key);
@@ -328,8 +328,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGetSqlStetement2()
         {
-            SqlStatement sql = DbEntry.Context.GetSqlStatement("Select * from User where Id = ? Name Like '%?%' Age > ? And Age < ? ", 1, 18, 23);
-            Assert.AreEqual("Select * from User where Id = @p0 Name Like '%?%' Age > @p1 And Age < @p2 ", sql.SqlCommandText);
+            SqlStatement sql = DbEntry.Context.GetSqlStatement("SELECT * FROM User WHERE Id = ? Name LIKE '%?%' Age > ? AND Age < ? ", 1, 18, 23);
+            Assert.AreEqual("SELECT * FROM User WHERE Id = @p0 Name LIKE '%?%' Age > @p1 AND Age < @p2 ", sql.SqlCommandText);
             Assert.AreEqual("@p0", sql.Paramters[0].Key);
             Assert.AreEqual(1, sql.Paramters[0].Value);
             Assert.AreEqual("@p1", sql.Paramters[1].Key);
@@ -341,7 +341,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGetSqlStetementByExecuteList()
         {
-            List<Person> ls = DbEntry.Context.ExecuteList<Person>("select * from [People] where Id > ? And Id < ?", 1, 3);
+            List<Person> ls = DbEntry.Context.ExecuteList<Person>("SELECT * FROM [People] WHERE Id > ? AND Id < ?", 1, 3);
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("Jerry", ls[0].Name);
         }
@@ -410,7 +410,7 @@ namespace Lephone.UnitTest.Data
             var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<Person>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
-            Assert.AreEqual("select [Id],[Name] from (select [Id],[Name], ROW_NUMBER() OVER ( Order By [Id] ASC) as __rownumber__ From [People]  Where [Age] > @Age_0) as T Where T.__rownumber__ >= 3 and T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[Name] FROM (SELECT [Id],[Name], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -429,7 +429,7 @@ namespace Lephone.UnitTest.Data
             var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK<PropertyClassWithDbColumn>.Field["TheName"] == "tom").Select();
-            Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] = @Name_0;\n<Text><60>(@Name_0=tom:String)", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[Name] FROM [People] WHERE [Name] = @Name_0;\n<Text><60>(@Name_0=tom:String)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -438,7 +438,7 @@ namespace Lephone.UnitTest.Data
             var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] == null).Select();
-            Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] Is NULL;\n<Text><60>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[Name] FROM [People] WHERE [Name] IS NULL;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -447,7 +447,7 @@ namespace Lephone.UnitTest.Data
             var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] != null).Select();
-            Assert.AreEqual("Select [Id],[Name] From [People] Where [Name] Is Not NULL;\n<Text><60>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[Name] FROM [People] WHERE [Name] IS NOT NULL;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -457,7 +457,7 @@ namespace Lephone.UnitTest.Data
             StaticRecorder.ClearMessages();
             var ct = new CountTable {Id = 1};
             de.Save(ct);
-            Assert.AreEqual("Update [Count_Table] Set [Count]=[Count]+1  Where [Id] = @Id_0;\n<Text><30>(@Id_0=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [Count_Table] SET [Count]=[Count]+1  WHERE [Id] = @Id_0;\n<Text><30>(@Id_0=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -469,7 +469,7 @@ namespace Lephone.UnitTest.Data
             ct.Id = 1;
             ct.Name = "tom";
             de.Save(ct);
-            Assert.AreEqual("Update [Count_Table2] Set [Name]=@Name_0,[Count]=[Count]+1  Where [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [Count_Table2] SET [Name]=@Name_0,[Count]=[Count]+1  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -561,7 +561,7 @@ namespace Lephone.UnitTest.Data
         {
             var p = new MKEY { FirstName = "test", LastName = "next", Age = 11 };
             sqlite.Update(p);
-            AssertSql(@"Update [MKEY] Set [Age]=@Age_0  Where ([FirstName] = @FirstName_1) And ([LastName] = @LastName_2);
+            AssertSql(@"UPDATE [MKEY] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
 <Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)");
         }
 
@@ -569,7 +569,7 @@ namespace Lephone.UnitTest.Data
         public void TestLowerFunction()
         {
             sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower() == "tom").Select();
-            AssertSql(@"Select [Id],[Name] From [People] Where lower([Name]) = @Name_0;
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE LOWER([Name]) = @Name_0;
 <Text><60>(@Name_0=tom:String)");
         }
 
@@ -577,7 +577,7 @@ namespace Lephone.UnitTest.Data
         public void TestLowerForLike()
         {
             sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower().Like("%tom%")).Select();
-            AssertSql(@"Select [Id],[Name] From [People] Where lower([Name]) Like @Name_0;
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE LOWER([Name]) LIKE @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
 
@@ -585,7 +585,7 @@ namespace Lephone.UnitTest.Data
         public void TestUpperFunction()
         {
             sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper() == "tom").Select();
-            AssertSql(@"Select [Id],[Name] From [People] Where upper([Name]) = @Name_0;
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE UPPER([Name]) = @Name_0;
 <Text><60>(@Name_0=tom:String)");
         }
 
@@ -593,7 +593,7 @@ namespace Lephone.UnitTest.Data
         public void TestUpperForLike()
         {
             sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper().Like("%tom%")).Select();
-            AssertSql(@"Select [Id],[Name] From [People] Where upper([Name]) Like @Name_0;
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE UPPER([Name]) LIKE @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
 
@@ -601,7 +601,7 @@ namespace Lephone.UnitTest.Data
         public void TestMax()
         {
             sqlite.From<SinglePerson>().Where(null).GetMax("Id");
-            AssertSql(@"Select Max([Id]) As [Id] From [People];
+            AssertSql(@"SELECT MAX([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
             var n = DbEntry.From<SinglePerson>().Where(null).GetMax("Id");
@@ -615,7 +615,7 @@ namespace Lephone.UnitTest.Data
         public void TestMin()
         {
             sqlite.From<SinglePerson>().Where(null).GetMin("Id");
-            AssertSql(@"Select Min([Id]) As [Id] From [People];
+            AssertSql(@"SELECT MIN([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
             var n = DbEntry.From<SinglePerson>().Where(null).GetMin("Id");
@@ -629,7 +629,7 @@ namespace Lephone.UnitTest.Data
         public void TestSum()
         {
             sqlite.From<SinglePerson>().Where(null).GetSum("Id");
-            AssertSql(@"Select Sum([Id]) As [Id] From [People];
+            AssertSql(@"SELECT SUM([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
             var n = DbEntry.From<SinglePerson>().Where(null).GetSum("Id");

@@ -8,7 +8,7 @@ namespace Lephone.Web
         [Length(1, 30), Index(UNIQUE = true)]
         public abstract string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
+        [HasAndBelongsToMany(OrderBy = "Id", CrossTableName = "DbEntryMembershipUser_Role")]
         public abstract IList<DbEntryMembershipUser> Users { get; set; }
 
         public DbEntryRole Init(string name)

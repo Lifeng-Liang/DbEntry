@@ -10,9 +10,7 @@ namespace Lephone.Data.Builder.Clause
 	[Serializable]
 	public class ValuesClause : KeyValueCollection, IClause
 	{
-		private const string StatementTemplate = "({0}) Values ({1})";
-
-		public ValuesClause() {}
+		private const string StatementTemplate = "({0}) VALUES ({1})";
 
 		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
@@ -23,14 +21,7 @@ namespace Lephone.Data.Builder.Clause
 				string dpStr;
                 if (kv.ValueType == typeof(AutoValue))
                 {
-                    if (AutoValue.DbNow == (AutoValue)kv.Value)
-                    {
-                        dpStr = dd.DbNowString;
-                    }
-                    else
-                    {
-                        dpStr = "0";
-                    }
+                    dpStr = AutoValue.DbNow == (AutoValue)kv.Value ? dd.DbNowString : "0";
                 }
                 else
                 {

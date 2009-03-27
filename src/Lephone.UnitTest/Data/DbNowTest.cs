@@ -71,16 +71,16 @@ namespace Lephone.UnitTest.Data
             var sb = new InsertStatementBuilder("user");
             sb.Values.Add(new KeyValue("CreatedOn", AutoValue.DbNow));
             SqlStatement sql = sb.ToSqlStatement(sqlite.Dialect);
-            Assert.AreEqual("Insert Into [user] ([CreatedOn]) Values (datetime(current_timestamp, 'localtime'));\n", sql.SqlCommandText);
+            Assert.AreEqual("INSERT INTO [user] ([CreatedOn]) VALUES (DATETIME(CURRENT_TIMESTAMP, 'localtime'));\n", sql.SqlCommandText);
         }
 
         [Test]
         public void TestUpdatedOn()
         {
-            UpdateStatementBuilder sb = new UpdateStatementBuilder("user");
+            var sb = new UpdateStatementBuilder("user");
             sb.Values.Add(new KeyValue("UpdatedOn", AutoValue.DbNow));
             SqlStatement sql = sb.ToSqlStatement(sqlite.Dialect);
-            Assert.AreEqual("Update [user] Set [UpdatedOn]=datetime(current_timestamp, 'localtime') ;\n", sql.SqlCommandText);
+            Assert.AreEqual("UPDATE [user] SET [UpdatedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime') ;\n", sql.SqlCommandText);
         }
 
         [Test]
@@ -89,7 +89,7 @@ namespace Lephone.UnitTest.Data
             DateTable o = DateTable.New();
             o.Name = "tom";
             sqlite.Insert(o);
-            Assert.AreEqual("Insert Into [DateTable] ([CreatedOn],[Name]) Values (datetime(current_timestamp, 'localtime'),@Name_0);\nSELECT last_insert_rowid();\n<Text><30>(@Name_0=tom:String)", StaticRecorder.LastMessage);
+            Assert.AreEqual("INSERT INTO [DateTable] ([CreatedOn],[Name]) VALUES (DATETIME(CURRENT_TIMESTAMP, 'localtime'),@Name_0);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -99,17 +99,15 @@ namespace Lephone.UnitTest.Data
             o.Name = "tom";
             o.Id = 1;
             sqlite.Update(o);
-            Assert.AreEqual("Update [DateTable] Set [UpdatedOn]=datetime(current_timestamp, 'localtime'),[Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [DateTable] SET [UpdatedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestUpdatedOnWithoutPartialUpdate()
         {
-            DateTable2 o = new DateTable2();
-            o.Name = "tom";
-            o.Id = 1;
+            var o = new DateTable2 {Name = "tom", Id = 1};
             sqlite.Update(o);
-            Assert.AreEqual("Update [DateTable] Set [UpdatedOn]=datetime(current_timestamp, 'localtime'),[Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [DateTable] SET [UpdatedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -123,20 +121,17 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSavedOn()
         {
-            DateTable3 o = new DateTable3();
-            o.Name = "tom";
+            var o = new DateTable3 {Name = "tom"};
             sqlite.Insert(o);
-            Assert.AreEqual("Insert Into [DateTable] ([SavedOn],[Name]) Values (datetime(current_timestamp, 'localtime'),@Name_0);\nSELECT last_insert_rowid();\n<Text><30>(@Name_0=tom:String)", StaticRecorder.LastMessage);
+            Assert.AreEqual("INSERT INTO [DateTable] ([SavedOn],[Name]) VALUES (DATETIME(CURRENT_TIMESTAMP, 'localtime'),@Name_0);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestSavedOnForUpdate()
         {
-            DateTable3 o = new DateTable3();
-            o.Name = "tom";
-            o.Id = 1;
+            var o = new DateTable3 {Name = "tom", Id = 1};
             sqlite.Update(o);
-            Assert.AreEqual("Update [DateTable] Set [SavedOn]=datetime(current_timestamp, 'localtime'),[Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [DateTable] SET [SavedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -146,7 +141,7 @@ namespace Lephone.UnitTest.Data
             o.Name = "tom";
             o.Id = 1;
             sqlite.Update(o);
-            Assert.AreEqual("Update [DateTable] Set [SavedOn]=datetime(current_timestamp, 'localtime'),[Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [DateTable] SET [SavedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
     }
 }

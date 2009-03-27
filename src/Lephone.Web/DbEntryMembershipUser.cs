@@ -11,7 +11,7 @@ namespace Lephone.Web
         [Length(1, 30), Index(UNIQUE = true)]
         public abstract string UserName { get; set; }
 
-        [Length(64), Index(UNIQUE = true)]
+        [Length(64)]
         public abstract byte[] Password { get; set; }
 
         [Length(1, 50), Index(UNIQUE = true)]
@@ -31,7 +31,7 @@ namespace Lephone.Web
         [SpecialName]
         public abstract DateTime CreatedOn { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
+        [HasAndBelongsToMany(OrderBy = "Id", CrossTableName = "DbEntryMembershipUser_Role")]
         public abstract IList<DbEntryRole> Roles { get; set; }
 
         public DbEntryMembershipUser Init(string userName, string password, string email, 

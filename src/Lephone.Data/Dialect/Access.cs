@@ -10,8 +10,8 @@ namespace Lephone.Data.Dialect
 	{
         public Access()
         {
-            TypeNames[DataType.Int64] = "Decimal";
-            TypeNames[DataType.UInt64] = "Decimal";
+            TypeNames[DataType.Int64] = "DECIMAL";
+            TypeNames[DataType.UInt64] = "DECIMAL";
         }
 
         public override IDataReader GetDataReader(IDataReader dr, Type ReturnType)
@@ -41,7 +41,7 @@ namespace Lephone.Data.Dialect
 
 		public override string IdentitySelectString
 		{
-			get { return "select @@identity;\n"; }
+			get { return "SELECT @@IDENTITY;\n"; }
 		}
 
         public override string IdentityColumnString
@@ -51,7 +51,7 @@ namespace Lephone.Data.Dialect
 
         public override string IdentityTypeString
         {
-            get { return "counter"; }
+            get { return "COUNTER"; }
         }
 
 		public override bool ExecuteEachLine

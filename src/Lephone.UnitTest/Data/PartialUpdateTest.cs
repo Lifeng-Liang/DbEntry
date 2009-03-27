@@ -29,7 +29,7 @@ namespace Lephone.UnitTest.Data
             u.Id = 1;
             u.Name = "tom";
             sqlite.Save(u);
-            Assert.AreEqual("Update [User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [User] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace Lephone.UnitTest.Data
             u.Id = 1;
             u.Age = 19;
             sqlite.Save(u);
-            Assert.AreEqual("Update [User] Set [Age]=@Age_0  Where [Id] = @Id_1;\n<Text><30>(@Age_0=19:Int32,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [User] SET [Age]=@Age_0  WHERE [Id] = @Id_1;\n<Text><30>(@Age_0=19:Int32,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
     }
 }

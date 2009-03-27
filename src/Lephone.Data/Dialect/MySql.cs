@@ -8,21 +8,21 @@ namespace Lephone.Data.Dialect
 	{
 		public MySql()
 		{
-            TypeNames[DataType.Guid] = "char(36)";
-            TypeNames[DataType.Binary] = "blob";
+            TypeNames[DataType.Guid] = "CHAR(36)";
+            TypeNames[DataType.Binary] = "BLOB";
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("{0} Limit {1}, {2}",
+            Sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
                 Sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
             return Sql;
         }
 
-        public override string UnicodeTypePrefix
+        public override string GetUnicodeTypeString(string AsciiTypeString)
         {
-            get { return ""; }
+            return AsciiTypeString;
         }
 
         public override DbStructInterface GetDbStructInterface()

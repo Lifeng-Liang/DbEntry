@@ -26,7 +26,7 @@ namespace Lephone.Data
 		{
             if (OrderItems != null && OrderItems.Count > 0)
             {
-                var sb = new StringBuilder(" Order By ");
+                var sb = new StringBuilder(" ORDER BY ");
                 foreach (ASC oi in OrderItems)
                 {
                     sb.Append(oi.ToString(dd));

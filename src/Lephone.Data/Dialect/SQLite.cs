@@ -8,12 +8,12 @@ namespace Lephone.Data.Dialect
     {
         public SQLite()
         {
-            TypeNames[DataType.Binary] = "blob";
+            TypeNames[DataType.Binary] = "BLOB";
         }
 
         public override string DbNowString
         {
-            get { return "datetime(current_timestamp, 'localtime')"; }
+            get { return "DATETIME(CURRENT_TIMESTAMP, 'localtime')"; }
         }
 
         public override string GetConnectionString(string ConnectionString)
@@ -39,7 +39,7 @@ namespace Lephone.Data.Dialect
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("{0} Limit {1}, {2}",
+            Sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
                 Sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
             return Sql;
         }
@@ -71,7 +71,7 @@ namespace Lephone.Data.Dialect
 
         public override string IdentitySelectString
         {
-            get { return "SELECT last_insert_rowid();\n"; }
+            get { return "SELECT LAST_INSERT_ROWID();\n"; }
         }
     }
 }

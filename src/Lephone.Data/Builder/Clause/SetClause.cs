@@ -10,11 +10,9 @@ namespace Lephone.Data.Builder.Clause
 	[Serializable]
 	public class SetClause : KeyValueCollection, IClause
 	{
-		public SetClause() {}
-
 		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
-			var sb = new StringBuilder("Set ");
+			var sb = new StringBuilder("SET ");
 			foreach ( KeyValue kv in this )
 			{
 				string dpStr;

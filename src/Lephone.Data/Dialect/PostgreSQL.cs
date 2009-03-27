@@ -8,7 +8,7 @@ namespace Lephone.Data.Dialect
     {
         public PostgreSQL()
         {
-            TypeNames[DataType.DateTime] = "timestamp";
+            TypeNames[DataType.DateTime] = "TIMESTAMP";
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
@@ -21,14 +21,14 @@ namespace Lephone.Data.Dialect
             return new DbStructInterface(null, new[] { null, null, null, "BASE TABLE" }, null, null, null);
         }
 
-        public override string UnicodeTypePrefix
+        public override string GetUnicodeTypeString(string AsciiTypeString)
         {
-            get { return ""; }
+            return AsciiTypeString;
         }
 
         public override string IdentitySelectString
         {
-            get { return "select lastval();\n"; }
+            get { return "SELECT LASTVAL();\n"; }
         }
 
         public override string IdentityColumnString
@@ -38,7 +38,7 @@ namespace Lephone.Data.Dialect
 
         public override string IdentityTypeString
         {
-            get { return "bigserial"; }
+            get { return "BIGSERIAL"; }
         }
     }
 }

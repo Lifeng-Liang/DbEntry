@@ -10,7 +10,7 @@ namespace Lephone.Data.Dialect
         protected override object ExecuteInsertIntKey(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
         {
             string seqStr = GetSelectSequenceSql(oi.From.GetMainTableName());
-            SqlStatement seq = new SqlStatement(CommandType.Text, seqStr);
+            var seq = new SqlStatement(CommandType.Text, seqStr);
             oi.LogSql(seq);
             object key = dp.ExecuteScalar(seq);
             sb.Values.Add(new KeyValue(oi.KeyFields[0].Name, key));

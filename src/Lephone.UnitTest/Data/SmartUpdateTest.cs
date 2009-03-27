@@ -208,8 +208,8 @@ namespace Lephone.UnitTest.Data
         {
             de.DropTable(typeof(Objects.DArticle));
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Drop Table [Article]<Text><30>()", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Drop Table [R_Article_Reader]<Text><30>()", StaticRecorder.Messages[1]);
+            Assert.AreEqual("DROP TABLE [Article]<Text><30>()", StaticRecorder.Messages[0]);
+            Assert.AreEqual("DROP TABLE [R_Article_Reader]<Text><30>()", StaticRecorder.Messages[1]);
         }
 
         [Test]
@@ -227,7 +227,7 @@ namespace Lephone.UnitTest.Data
             var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [s_User] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -239,7 +239,7 @@ namespace Lephone.UnitTest.Data
                 de.Save(u);
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [s_User] Set [Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [s_User] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -269,8 +269,8 @@ namespace Lephone.UnitTest.Data
             u.Articles.Add(a);
             de.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Insert Into [r_Article] ([Name],[thePrice],[Reader_Id]) Values (@Name_0,@thePrice_1,@Reader_Id_2);\nSELECT last_insert_rowid();\n<Text><30>(@Name_0=sos:String,@thePrice_1=199:Int32,@Reader_Id_2=1:Int64)", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Update [r_Article] Set [thePrice]=@thePrice_0,[Reader_Id]=@Reader_Id_1  Where [Id] = @Id_2;\n<Text><30>(@thePrice_0=180:Int32,@Reader_Id_1=1:Int64,@Id_2=1:Int64)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("INSERT INTO [r_Article] ([Name],[thePrice],[Reader_Id]) VALUES (@Name_0,@thePrice_1,@Reader_Id_2);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=sos:String,@thePrice_1=199:Int32,@Reader_Id_2=1:Int64)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("UPDATE [r_Article] SET [thePrice]=@thePrice_0,[Reader_Id]=@Reader_Id_1  WHERE [Id] = @Id_2;\n<Text><30>(@thePrice_0=180:Int32,@Reader_Id_1=1:Int64,@Id_2=1:Int64)", StaticRecorder.Messages[1]);
         }
 
         [Test]
@@ -291,7 +291,7 @@ namespace Lephone.UnitTest.Data
             u.Name = "Tom";
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n<Text><30>(@theName_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [as_User] SET [theName]=@theName_0  WHERE [Id] = @Id_1;\n<Text><30>(@theName_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -303,7 +303,7 @@ namespace Lephone.UnitTest.Data
             u.Age = 25;
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0,[Age]=@Age_1  Where [Id] = @Id_2;\n<Text><30>(@theName_0=Jerry:String,@Age_1=25:Int32,@Id_2=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [as_User] SET [theName]=@theName_0,[Age]=@Age_1  WHERE [Id] = @Id_2;\n<Text><30>(@theName_0=Jerry:String,@Age_1=25:Int32,@Id_2=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -320,7 +320,7 @@ namespace Lephone.UnitTest.Data
                 });
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n<Text><30>(@theName_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [as_User] SET [theName]=@theName_0  WHERE [Id] = @Id_1;\n<Text><30>(@theName_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -333,8 +333,8 @@ namespace Lephone.UnitTest.Data
             u.Age = 25;
             de.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [as_User] Set [theName]=@theName_0  Where [Id] = @Id_1;\n<Text><30>(@theName_0=jerry:String,@Id_1=1:Int64)", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Update [as_User] Set [Age]=@Age_0  Where [Id] = @Id_1;\n<Text><30>(@Age_0=25:Int32,@Id_1=1:Int64)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("UPDATE [as_User] SET [theName]=@theName_0  WHERE [Id] = @Id_1;\n<Text><30>(@theName_0=jerry:String,@Id_1=1:Int64)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("UPDATE [as_User] SET [Age]=@Age_0  WHERE [Id] = @Id_1;\n<Text><30>(@Age_0=25:Int32,@Id_1=1:Int64)", StaticRecorder.Messages[1]);
         }
 
         [Test]
@@ -345,10 +345,10 @@ namespace Lephone.UnitTest.Data
             u.Age = 25;
             de.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Insert Into [as_User] ([theName],[Age]) Values (@theName_0,@Age_1);\nSELECT last_insert_rowid();\n<Text><30>(@theName_0=Tom:String,@Age_1=18:Int32)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("INSERT INTO [as_User] ([theName],[Age]) VALUES (@theName_0,@Age_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@theName_0=Tom:String,@Age_1=18:Int32)", StaticRecorder.Messages[0]);
             string exp =
                 string.Format(
-                    "Update [as_User] Set [Age]=@Age_0  Where [Id] = @Id_1;\n<Text><30>(@Age_0=25:Int32,@Id_1={0}:Int64)",
+                    "UPDATE [as_User] SET [Age]=@Age_0  WHERE [Id] = @Id_1;\n<Text><30>(@Age_0=25:Int32,@Id_1={0}:Int64)",
                     u.Id);
             Assert.AreEqual(exp, StaticRecorder.LastMessage);
         }

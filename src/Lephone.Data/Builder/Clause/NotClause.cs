@@ -30,7 +30,7 @@ namespace Lephone.Data.Builder.Clause
 		{
             if (_ic.SubClauseNotEmpty)
             {
-                return string.Format("( Not ({0}) )", _ic.ToSqlText(dpc, dd));
+                return string.Format("( NOT ({0}) )", _ic.ToSqlText(dpc, dd));
             }
             return "";
 		}

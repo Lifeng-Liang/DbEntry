@@ -22,35 +22,35 @@ namespace Lephone.Data.Dialect
 
 		public DbDialect()
         {
-            TypeNames[DataType.String]  = "text";
-            TypeNames[DataType.DateTime]    = "datetime";
-            TypeNames[DataType.Date]    = "date";
-            TypeNames[DataType.Time]    = "datetime";
-            TypeNames[DataType.Boolean] = "bool";
+            TypeNames[DataType.String]  = "TEXT";
+            TypeNames[DataType.DateTime]    = "DATETIME";
+            TypeNames[DataType.Date]    = "DATE";
+            TypeNames[DataType.Time]    = "DATETIME";
+            TypeNames[DataType.Boolean] = "BOOL";
 
-            TypeNames[DataType.Byte]    = "tinyint";
+            TypeNames[DataType.Byte]    = "TINYINT";
             TypeNames[DataType.SByte]   = "";
-            TypeNames[DataType.Decimal] = "decimal";
-            TypeNames[DataType.Double]  = "float";
-            TypeNames[DataType.Single]  = "real";
+            TypeNames[DataType.Decimal] = "DECIMAL";
+            TypeNames[DataType.Double]  = "FLOAT";
+            TypeNames[DataType.Single]  = "REAL";
 
-            TypeNames[DataType.Int32]   = "int";
-            TypeNames[DataType.UInt32]  = "int";
-            TypeNames[DataType.Int64]   = "bigint";
-            TypeNames[DataType.UInt64]  = "bigint";
-            TypeNames[DataType.Int16]   = "smallint";
-            TypeNames[DataType.UInt16]  = "smallint";
+            TypeNames[DataType.Int32]   = "INT";
+            TypeNames[DataType.UInt32]  = "INT";
+            TypeNames[DataType.Int64]   = "BIGINT";
+            TypeNames[DataType.UInt64]  = "BIGINT";
+            TypeNames[DataType.Int16]   = "SMALLINT";
+            TypeNames[DataType.UInt16]  = "SMALLINT";
 
-            TypeNames[DataType.Guid]    = "uniqueidentifier";
-            TypeNames[DataType.Binary]  = "binary";
+            TypeNames[DataType.Guid]    = "UNIQUEIDENTIFIER";
+            TypeNames[DataType.Binary]  = "BINARY";
 
-            TypeNames[typeof(string)]   = "varchar";
-            TypeNames[typeof(byte[])]   = "binary";
+            TypeNames[typeof(string)]   = "VARCHAR";
+            TypeNames[typeof(byte[])]   = "BINARY";
         }
 
         public virtual string DbNowString
         {
-            get { return "now()"; }
+            get { return "NOW()"; }
         }
 
         public virtual string GetUserId(string ConnectionString)
@@ -129,20 +129,32 @@ namespace Lephone.Data.Dialect
                 }
             }
             var s =(string)TypeNames[key];
-            if (IsUnicode)
-            {
-                s = UnicodeTypePrefix + s;
-            }
             if (Length > 0)
             {
-                return s + " (" + Length + ")";
+                if(dt == DataType.Binary)
+                {
+                    s += GetLengthStringForBlob(Length);
+                }
+                else
+                {
+                    s += " (" + Length + ")";
+                }
+            }
+            if (IsUnicode)
+            {
+                s = GetUnicodeTypeString(s);
             }
             return s;
         }
 
-        public virtual string UnicodeTypePrefix
+        protected virtual string GetLengthStringForBlob(int Length)
         {
-            get { return "n"; }
+            return " (" + Length + ")";
+        }
+
+        public virtual string GetUnicodeTypeString(string AsciiTypeString)
+        {
+            return "N" + AsciiTypeString;
         }
 
         public virtual DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
@@ -184,11 +196,11 @@ namespace Lephone.Data.Dialect
         protected virtual SqlStatement GetNormalSelectSqlStatement(SelectStatementBuilder ssb)
         {
             var dpc = new DataParamterCollection();
-            string SqlString = string.Format("Select {0} From {1}{2}{3}{4}",
+            string SqlString = string.Format("SELECT {0} FROM {1}{2}{3}{4}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),
-                ssb.IsGroupBy ? " Group By " + QuoteForColumnName(ssb.FunctionCol) : "",
+                ssb.IsGroupBy ? " GROUP BY " + QuoteForColumnName(ssb.FunctionCol) : "",
                 (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this)
                 );
             return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);

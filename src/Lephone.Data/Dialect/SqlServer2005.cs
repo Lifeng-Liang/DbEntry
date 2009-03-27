@@ -19,9 +19,9 @@ namespace Lephone.Data.Dialect
             }
 
             const string PosName = "__rownumber__";
-            DataParamterCollection dpc = new DataParamterCollection();
+            var dpc = new DataParamterCollection();
             string SqlString = string.Format(
-                "select {0} from (select {0}, ROW_NUMBER() OVER ({3}) as {6} From {1} {2}) as T Where T.{6} >= {4} and T.{6} <= {5}",
+                "SELECT {0} FROM (SELECT {0}, ROW_NUMBER() OVER ({3}) AS {6} FROM {1} {2}) AS T WHERE T.{6} >= {4} AND T.{6} <= {5}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),

@@ -23,7 +23,7 @@ namespace Lephone.UnitTest.Data
             p.Name = "abc";
             de.Save(p);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("Update [People] Set [Name]=@Name_0  Where [Id] = @Id_1;\n<Text><30>(@Name_0=abc:String,@Id_1=1:Int64)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("UPDATE [People] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=abc:String,@Id_1=1:Int64)", StaticRecorder.Messages[0]);
         }
 
         [Test]

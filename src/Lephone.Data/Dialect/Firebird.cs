@@ -8,10 +8,11 @@ namespace Lephone.Data.Dialect
     {
         public Firebird()
         {
-            TypeNames[DataType.Boolean] = "smallint";
-            TypeNames[DataType.DateTime] = "timestamp";
+            TypeNames[DataType.Boolean] = "SMALLINT";
+            TypeNames[DataType.DateTime] = "TIMESTAMP";
             TypeNames[DataType.String] = "BLOB SUB_TYPE 1";
             TypeNames[DataType.Binary] = "BLOB SUB_TYPE 0";
+            TypeNames[typeof(byte[])] = "BLOB";
         }
 
         public override string DbNowString
@@ -26,7 +27,7 @@ namespace Lephone.Data.Dialect
 
         protected override string GetSelectSequenceSql(string TableName)
         {
-            return string.Format("select gen_id(GEN_{0}_ID, 1) from RDB$DATABASE", TableName.ToUpper());
+            return string.Format("SELECT GEN_ID(GEN_{0}_ID, 1) FROM RDB$DATABASE", TableName.ToUpper());
         }
 
         public override bool NeedCommitCreateFirst
@@ -39,9 +40,9 @@ namespace Lephone.Data.Dialect
             get { return false; }
         }
 
-        public override string UnicodeTypePrefix
+        public override string GetUnicodeTypeString(string AsciiTypeString)
         {
-            get { return ""; }
+            return AsciiTypeString + " CHARACTER SET UNICODE_FSS";
         }
 
         public override string IdentityColumnString
@@ -79,7 +80,7 @@ namespace Lephone.Data.Dialect
         protected override SqlStatement GetPagedSelectSqlStatement(Builder.SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("{0} Rows {1} to {2}",
+            Sql.SqlCommandText = string.Format("{0} ROWS {1} TO {2}",
                 Sql.SqlCommandText, ssb.Range.StartIndex, ssb.Range.EndIndex);
             return Sql;
         }
@@ -87,6 +88,15 @@ namespace Lephone.Data.Dialect
         public override string GenIndexName(string n)
         {
             return GenIndexName(n, 31);
+        }
+
+        protected override string GetLengthStringForBlob(int Length)
+        {
+            if(Length < 80)
+            {
+                return base.GetLengthStringForBlob(Length);
+            }
+            return "";
         }
     }
 }

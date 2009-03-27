@@ -37,7 +37,7 @@ namespace Lephone.Data.Dialect
 
         public override string DbNowString
         {
-            get { return "sysdate"; }
+            get { return "SYSDATE"; }
         }
 
         public override string GetUserId(string ConnectionString)
@@ -66,7 +66,7 @@ namespace Lephone.Data.Dialect
 
         protected override string GetSelectSequenceSql(string TableName)
         {
-            return string.Format("select {0}_SEQ.nextval from dual", TableName.ToUpper());
+            return string.Format("SELECT {0}_SEQ.NEXTVAL FROM DUAL", TableName.ToUpper());
         }
 
         public override bool NeedCommitCreateFirst
@@ -77,11 +77,6 @@ namespace Lephone.Data.Dialect
         public override bool SupportDirctionOfEachColumnInIndex
         {
             get { return false; }
-        }
-
-        public override string UnicodeTypePrefix
-        {
-            get { return "N"; }
         }
 
         public override string IdentityColumnString
@@ -119,7 +114,7 @@ namespace Lephone.Data.Dialect
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("select * from ( select row_.*, rownum rownum_ from ( {0} ) row_ where rownum <= {1} ) where rownum_ >= {2}",
+            Sql.SqlCommandText = string.Format("SELECT * FROM ( SELECT ROW_.*, ROWNUM ROWNUM_ FROM ( {0} ) ROW_ WHERE ROWNUM <= {1} ) WHERE ROWNUM_ >= {2}",
                 Sql.SqlCommandText, ssb.Range.EndIndex, ssb.Range.StartIndex);
             return Sql;
         }

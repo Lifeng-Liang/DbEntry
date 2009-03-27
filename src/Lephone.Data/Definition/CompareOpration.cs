@@ -12,8 +12,8 @@ namespace Lephone.Data.Definition
 		[ShowString(">=")]		GreatOrEqual,
 		[ShowString("<=")]		LessOrEqual,
 		[ShowString("<>")]		NotEqual,
-		[ShowString("Like")]	Like,
-		[ShowString("Is")]		Is,
-        [ShowString("Is Not")]  IsNot
+		[ShowString("LIKE")]	Like,
+		[ShowString("IS")]		Is,
+        [ShowString("IS NOT")]  IsNot
 	}
 }

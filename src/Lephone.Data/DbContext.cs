@@ -679,7 +679,7 @@ namespace Lephone.Data
 
         private void DropTable(string TableName, bool CatchException, ObjectInfo oi)
         {
-            string s = "Drop Table " + Dialect.QuoteForTableName(TableName);
+            string s = "DROP TABLE " + Dialect.QuoteForTableName(TableName);
             var Sql = new SqlStatement(s);
             oi.LogSql(Sql);
             CommonHelper.IfCatchException(CatchException, () => ExecuteNonQuery(Sql));

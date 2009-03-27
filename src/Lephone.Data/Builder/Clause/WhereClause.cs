@@ -31,7 +31,7 @@ namespace Lephone.Data.Builder.Clause
 				string s = _ic.ToSqlText(dpc, dd);
                 if (s != null)
                 {
-                    return (s.Length > 0) ? " Where " + s : "";
+                    return (s.Length > 0) ? " WHERE " + s : "";
                 }
 			}
 			return "";

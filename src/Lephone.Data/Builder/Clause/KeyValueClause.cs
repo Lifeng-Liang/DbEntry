@@ -48,10 +48,10 @@ namespace Lephone.Data.Builder.Clause
             switch (function)
             {
                 case ColumnFunction.ToLower:
-                    dkStr = string.Format("lower({0})", dkStr);
+                    dkStr = string.Format("LOWER({0})", dkStr);
                     break;
                 case ColumnFunction.ToUpper:
-                    dkStr = string.Format("upper({0})", dkStr);
+                    dkStr = string.Format("UPPER({0})", dkStr);
                     break;
             }
             return string.Format("{0} {2} {1}", dkStr, dpStr, Comp);

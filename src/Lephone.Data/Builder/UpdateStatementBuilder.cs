@@ -7,7 +7,7 @@ namespace Lephone.Data.Builder
 {
 	public class UpdateStatementBuilder : ISqlStatementBuilder, ISqlValues, ISqlWhere
 	{
-		private const string StatementTemplate = "Update {0} {1} {2};\n";
+		private const string StatementTemplate = "UPDATE {0} {1} {2};\n";
 		private readonly string TableName;
         private readonly WhereClause _WhereOptions = new WhereClause();
 		private readonly SetClause _SetOptions = new SetClause();

@@ -7,7 +7,7 @@ namespace Lephone.Data.Builder
 {
 	public class DeleteStatementBuilder : ISqlStatementBuilder, ISqlWhere
 	{
-		private const string StatementTemplate = "Delete From {0}{1};\n";
+		private const string StatementTemplate = "DELETE FROM {0}{1};\n";
 		private readonly string TableName;
         private readonly WhereClause _WhereOptions = new WhereClause();
 

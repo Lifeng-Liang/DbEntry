@@ -39,22 +39,22 @@ namespace Lephone.Data.Builder
 
         public void SetCountColumn(string ColumnName)
         {
-            SetFunctionColumn("Count", ColumnName);
+            SetFunctionColumn("COUNT", ColumnName);
         }
 
         public void SetMaxColumn(string ColumnName)
         {
-            SetFunctionColumn("Max", ColumnName);
+            SetFunctionColumn("MAX", ColumnName);
         }
 
         public void SetMinColumn(string ColumnName)
         {
-            SetFunctionColumn("Min", ColumnName);
+            SetFunctionColumn("MIN", ColumnName);
         }
 
         public void SetSumColumn(string ColumnName)
         {
-            SetFunctionColumn("Sum", ColumnName);
+            SetFunctionColumn("SUM", ColumnName);
         }
 
         private void SetFunctionColumn(string FunctionName, string ColumnName)
@@ -97,15 +97,15 @@ namespace Lephone.Data.Builder
                 Columns.Append(FunctionName);
                 if (FunctionCol == "*")
                 {
-                    Columns.Append("(*) As ").Append(DbEntry.CountColumn).Append(",");
+                    Columns.Append("(*) AS ").Append(DbEntry.CountColumn).Append(",");
                 }
                 else
                 {
                     string fn = dd.QuoteForColumnName(FunctionCol);
-                    string gfn = FunctionName == "Count" ? DbEntry.CountColumn : fn;
+                    string gfn = FunctionName == "COUNT" ? DbEntry.CountColumn : fn;
                     Columns.Append("(")
                         .Append(fn)
-                        .Append(") As ").Append(gfn).Append(",");
+                        .Append(") AS ").Append(gfn).Append(",");
                 }
             }
             if (Columns.Length > 0)

@@ -64,7 +64,7 @@ namespace Lephone.Data.Builder.Clause
                 string tn = dd.QuoteForTableName(jcs[i].Key2);
                 if (sd.ContainsKey(tn)) { tn = dd.QuoteForTableName(jcs[i].Key1); }
                 sd.Add(tn, "");
-                ret = string.Format("{0} {3} Join {1} On {2}",
+                ret = string.Format("{0} {3} JOIN {1} On {2}",
                                     ret,
                                     tn,
                                     jcs[i].ToSqlText(dpc, dd),

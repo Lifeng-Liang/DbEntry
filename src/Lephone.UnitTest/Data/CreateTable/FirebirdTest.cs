@@ -20,6 +20,23 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract string Name { get; set; }
     }
 
+    public abstract class fbBlob : LinqObjectModel<fbBlob>
+    {
+        [Length(64)]
+        public abstract byte[] Blob1 { get; set; }
+
+        [Length(85)]
+        public abstract byte[] Blob2 { get; set; }
+
+        public abstract byte[] Blob3 { get; set; }
+
+        [Length(30)]
+        public abstract string Name { get; set; }
+
+        public abstract string Name2 { get; set; }
+    }
+
+
     [TestFixture]
     public class FirebirdTest
     {
@@ -39,6 +56,7 @@ namespace Lephone.UnitTest.Data.CreateTable
             string s = StaticRecorder.LastMessage.Substring(@"CREATE INDEX """.Length);
             int n = s.IndexOf("\"");
             s = s.Substring(0, n);
+            StaticRecorder.ClearMessages();
             return s;
         }
 
@@ -50,6 +68,22 @@ namespace Lephone.UnitTest.Data.CreateTable
             string s = getIndexName();
             Debug.Assert(s != null);
             Assert.AreEqual("IX_FB_LONG_NAME2_NAME", s);
+        }
+
+        [Test]
+        public void TestBlob()
+        {
+            var de = new DbContext("Firebird");
+            de.Create(typeof(fbBlob));
+            Assert.AreEqual(@"CREATE TABLE ""FB_BLOB"" (
+    ""ID"" BIGINT NOT NULL PRIMARY KEY,
+    ""BLOB1"" BLOB (64) NOT NULL ,
+    ""BLOB2"" BLOB NOT NULL ,
+    ""BLOB3"" BLOB SUB_TYPE 0 NOT NULL ,
+    ""NAME"" VARCHAR (30) CHARACTER SET UNICODE_FSS NOT NULL ,
+    ""NAME2"" BLOB SUB_TYPE 1 CHARACTER SET UNICODE_FSS NOT NULL
+);
+<Text><30>()".Replace("\r\n", "").Replace("    ", ""), StaticRecorder.Messages[0]);
         }
     }
 }

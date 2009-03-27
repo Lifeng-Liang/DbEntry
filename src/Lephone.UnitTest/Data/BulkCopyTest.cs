@@ -76,7 +76,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCommonBulkCopy()
         {
-            var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
+            var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             var rcs = new List<long>();
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
@@ -95,17 +95,17 @@ namespace Lephone.UnitTest.Data
 
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
 
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
         }
 
         [Test]
         public void TestCommonBulkCopyWithTable()
         {
-            var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
+            var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             var rcs = new List<long>();
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
             sqlite.NewConnection(delegate
@@ -122,17 +122,17 @@ namespace Lephone.UnitTest.Data
 
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
 
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
         }
 
         [Test]
         public void TestCommonBulkCopyWithRowArray()
         {
-            var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
+            var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             var rcs = new List<long>();
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
             sqlite.NewConnection(delegate
@@ -150,17 +150,17 @@ namespace Lephone.UnitTest.Data
 
             Assert.AreEqual(5, StaticRecorder.Messages.Count);
 
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=4:Int64,@Name_1=Pal95:String)", StaticRecorder.Messages[3]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=5:Int64,@Name_1=Wow:String)", StaticRecorder.Messages[4]);
         }
 
         [Test]
         public void TestCommonBulkCopyAbort()
         {
-            var sql = new SqlStatement("select [Id],[Name] from [Books] order by [Id]");
+            var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
                 sqlite.NewConnection(delegate
@@ -178,15 +178,15 @@ namespace Lephone.UnitTest.Data
             });
             Assert.AreEqual(3, StaticRecorder.Messages.Count);
 
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name]) Values (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=1:Int64,@Name_1=Diablo:String)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=2:Int64,@Name_1=Beijing:String)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name]) VALUES (@Id_0,@Name_1);\n<Text><30>(@Id_0=3:Int64,@Name_1=Shanghai:String)", StaticRecorder.Messages[2]);
         }
 
         [Test]
         public void TestBulkCopyWithNullValue()
         {
-            var sql = new SqlStatement("select [Id],[Name],[MyInt],[MyBool] from [NullTest] order by [Id]");
+            var sql = new SqlStatement("SELECT [Id],[Name],[MyInt],[MyBool] FROM [NullTest] ORDER BY [Id]");
             DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
                 sqlite.NewConnection(delegate
@@ -201,10 +201,10 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(4, StaticRecorder.Messages.Count);
 
             // TODO: why null value is single type ?
-            Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=1:Int64,@Name_1=tom:String,@MyInt_2=<NULL>:Single,@MyBool_3=True:Boolean)", StaticRecorder.Messages[0]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=2:Int64,@Name_1=<NULL>:Single,@MyInt_2=1:Int32,@MyBool_3=False:Boolean)", StaticRecorder.Messages[1]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=3:Int64,@Name_1=<NULL>:Single,@MyInt_2=<NULL>:Single,@MyBool_3=<NULL>:Single)", StaticRecorder.Messages[2]);
-            Assert.AreEqual("Insert Into [test] ([Id],[Name],[MyInt],[MyBool]) Values (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=4:Int64,@Name_1=tom:String,@MyInt_2=1:Int32,@MyBool_3=True:Boolean)", StaticRecorder.Messages[3]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name],[MyInt],[MyBool]) VALUES (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=1:Int64,@Name_1=tom:String,@MyInt_2=<NULL>:Single,@MyBool_3=True:Boolean)", StaticRecorder.Messages[0]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name],[MyInt],[MyBool]) VALUES (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=2:Int64,@Name_1=<NULL>:Single,@MyInt_2=1:Int32,@MyBool_3=False:Boolean)", StaticRecorder.Messages[1]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name],[MyInt],[MyBool]) VALUES (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=3:Int64,@Name_1=<NULL>:Single,@MyInt_2=<NULL>:Single,@MyBool_3=<NULL>:Single)", StaticRecorder.Messages[2]);
+            Assert.AreEqual("INSERT INTO [test] ([Id],[Name],[MyInt],[MyBool]) VALUES (@Id_0,@Name_1,@MyInt_2,@MyBool_3);\n<Text><30>(@Id_0=4:Int64,@Name_1=tom:String,@MyInt_2=1:Int32,@MyBool_3=True:Boolean)", StaticRecorder.Messages[3]);
         }
     }
 }

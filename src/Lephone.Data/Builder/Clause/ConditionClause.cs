@@ -12,12 +12,12 @@ namespace Lephone.Data.Builder.Clause
 		private readonly string Condition;
 		private readonly ArrayList List = new ArrayList();
 
-		public ConditionClause(string Condition)
+	    protected ConditionClause(string Condition)
 		{
 			this.Condition = Condition;
 		}
 
-		public ConditionClause(string Condition, params WhereCondition[] ics) : this(Condition)
+	    protected ConditionClause(string Condition, params WhereCondition[] ics) : this(Condition)
 		{
 			foreach ( WhereCondition ic in ics )
 			{
@@ -56,7 +56,7 @@ namespace Lephone.Data.Builder.Clause
 
 		public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			foreach ( WhereCondition ic in List )
 			{
                 if (ic.SubClauseNotEmpty)
