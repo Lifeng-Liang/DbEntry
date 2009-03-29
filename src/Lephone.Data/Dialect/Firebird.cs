@@ -13,6 +13,7 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.String] = "BLOB SUB_TYPE 1";
             TypeNames[DataType.Binary] = "BLOB SUB_TYPE 0";
             TypeNames[typeof(byte[])] = "BLOB";
+            TypeNames[DataType.Double] = "DOUBLE PRECISION";
         }
 
         public override string DbNowString

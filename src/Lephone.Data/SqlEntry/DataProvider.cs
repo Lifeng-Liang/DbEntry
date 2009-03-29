@@ -154,6 +154,16 @@ namespace Lephone.Data.SqlEntry
 
 		public int UpdateDataset(SqlStatement Sql, DataSet ds)
 		{
+            return UpdateDataset(Sql, ds, 1, false);
+        }
+
+        public int UpdateDataset(SqlStatement Sql, DataSet ds, int UpdateBatchSize)
+        {
+            return UpdateDataset(Sql, ds, UpdateBatchSize, true);
+        }
+
+        public int UpdateDataset(SqlStatement Sql, DataSet ds, int UpdateBatchSize, bool throwException)
+        {
             int ret = 0;
             UsingConnection(delegate
             {
@@ -161,13 +171,21 @@ namespace Lephone.Data.SqlEntry
                 using (IDbCommand e = GetDbCommand(Sql))
                 {
                     IDbDataAdapter d = m_Driver.GetUpdateDbAdapter(e);
+                    if (d is DbDataAdapter)
+                    {
+                        ((DbDataAdapter) d).UpdateBatchSize = UpdateBatchSize;
+                    }
+                    else if(throwException)
+                    {
+                        throw new DataException("The DbDataAdapter doesn't support UpdateBatchSize feature.");
+                    }
                     ret = d.Update(ds);
                 }
             });
             return ret;
         }
 
-		public object ExecuteScalar(SqlStatement Sql)
+        public object ExecuteScalar(SqlStatement Sql)
 		{
             object obj = null;
             UsingConnection(delegate
