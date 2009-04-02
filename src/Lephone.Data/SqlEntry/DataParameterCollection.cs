@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections;
 
 namespace Lephone.Data.SqlEntry
 {
 	[Serializable]
-	public class DataParamterCollection : CollectionBase
+	public class DataParameterCollection : CollectionBase
 	{
         private bool _ParamsNameUserSet;
 
@@ -14,19 +14,19 @@ namespace Lephone.Data.SqlEntry
 			get { return _ParamsNameUserSet; }
 		}
 
-		public DataParamterCollection() {}
+		public DataParameterCollection() {}
 
-		public DataParamterCollection(params object[] Values)
+		public DataParameterCollection(params object[] Values)
 		{
 			Add(Values);
 		}
 
-		public DataParamterCollection(params DataParamter[] dps)
+		public DataParameterCollection(params DataParameter[] dps)
 		{
 			Add(dps);
 		}
 
-		public void Add(DataParamter dp)
+		public void Add(DataParameter dp)
 		{
 			bool UserSet = !string.IsNullOrEmpty(dp.Key);
 			if ( List.Count == 0 )
@@ -37,15 +37,15 @@ namespace Lephone.Data.SqlEntry
 			{
 				if ( _ParamsNameUserSet != UserSet )
 				{
-					throw new ArgumentException("DataParamters's key must all set or all not set.");
+					throw new ArgumentException("DataParameters's key must all set or all not set.");
 				}
 			}
 			List.Add(dp);
 		}
 
-		public void Add(params DataParamter[] dps)
+		public void Add(params DataParameter[] dps)
 		{
-			foreach ( DataParamter dp in dps )
+			foreach ( DataParameter dp in dps )
 			{
 				Add(dp);
 			}
@@ -55,27 +55,27 @@ namespace Lephone.Data.SqlEntry
 		{
 			foreach ( object o in Values )
 			{
-				Add( new DataParamter( o ) );
+				Add( new DataParameter( o ) );
 			}
 		}
 
-		public void Add(DataParamterCollection dpc)
+		public void Add(DataParameterCollection dpc)
 		{
-			foreach ( DataParamter dp in dpc )
+			foreach ( DataParameter dp in dpc )
 			{
 				Add(dp);
 			}
 		}
 
-		public DataParamter this[int index]
+		public DataParameter this[int index]
 		{
-			get { return (DataParamter)List[index]; }
+			get { return (DataParameter)List[index]; }
 			set { List[index] = value; }
 		}
 
 		public override bool Equals(object obj)
 		{
-			DataParamterCollection dpc = (DataParamterCollection)obj;
+			DataParameterCollection dpc = (DataParameterCollection)obj;
 			for ( int i=0; i<List.Count; i++ )
 			{
 				if ( !this[i].Equals(dpc[i]) )
@@ -94,7 +94,7 @@ namespace Lephone.Data.SqlEntry
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
-			foreach ( DataParamter dp in List )
+			foreach ( DataParameter dp in List )
 			{
 				sb.Append(dp.ToString());
 				sb.Append(",");

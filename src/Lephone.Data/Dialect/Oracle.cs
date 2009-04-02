@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
@@ -119,7 +119,7 @@ namespace Lephone.Data.Dialect
             return Sql;
         }
 
-        public override char ParamterPrefix
+        public override char ParameterPrefix
         {
             get { return ':'; }
         }

@@ -22,8 +22,8 @@ namespace Lephone.Data.Common
 
         public static readonly int MaxRecords               = 0;
 
-        [ShowString("Orm.UsingParamter")]
-        public static readonly bool UsingParamter           = true;
+        [ShowString("Orm.UsingParameter")]
+        public static readonly bool UsingParameter           = true;
 
         public static readonly string CacheKeyGenerator     = "Lephone.Data.Caching.KeyGenerator, Lephone.Data";
 

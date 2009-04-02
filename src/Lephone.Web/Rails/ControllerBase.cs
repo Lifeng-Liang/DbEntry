@@ -43,19 +43,19 @@ namespace Lephone.Web.Rails
             ctx.Response.Write(string.Format("<h1>{0}<h1>", ctx.Server.HtmlEncode(e.Message)));
         }
 
-        public void RedirectTo(UTArgs args, params object[] paramters)
+        public void RedirectTo(UTArgs args, params object[] Parameters)
         {
-            string url = UrlTo(args, paramters);
+            string url = UrlTo(args, Parameters);
             ctx.Response.Redirect(url);
         }
 
-        public string UrlTo(UTArgs args, params object[] paramters)
+        public string UrlTo(UTArgs args, params object[] Parameters)
         {
             if (string.IsNullOrEmpty(args.Controller))
             {
                 args.Controller = ControllerName;
             }
-            return MasterPageBase.UrlTo(args.Controller, args.Action, paramters);
+            return MasterPageBase.UrlTo(args.Controller, args.Action, Parameters);
         }
     }
 

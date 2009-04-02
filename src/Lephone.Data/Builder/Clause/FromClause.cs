@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Specialized;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
@@ -40,7 +40,7 @@ namespace Lephone.Data.Builder.Clause
             return TableNameMain;
         }
 
-        public string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd)
+        public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd)
         {
             if (TableNameMain != null)
             {

@@ -176,7 +176,7 @@ namespace Lephone.Web
             return parameters;
         }
 
-        public static void ProcessArray(List<object> paramters, string[] ss, int startIndex, ParameterInfo[] pis, int curIndex)
+        public static void ProcessArray(List<object> Parameters, string[] ss, int startIndex, ParameterInfo[] pis, int curIndex)
         {
             var list = new List<string>();
             int valuesCount = pis.Length - curIndex - 1;
@@ -194,8 +194,8 @@ namespace Lephone.Web
                 values.Add(px);
             }
 
-            paramters.Add(list.ToArray());
-            paramters.AddRange(values);
+            Parameters.Add(list.ToArray());
+            Parameters.AddRange(values);
         }
 
         private PageBase CreatePage(HttpContext context, ControllerInfo ci, Type t, string ControllerName, string ActionName)

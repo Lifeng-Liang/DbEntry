@@ -11,7 +11,7 @@ namespace Lephone.Data.Driver
 {
 	public abstract class DbDriver
 	{
-        protected static Hashtable SpParamters = Hashtable.Synchronized(new Hashtable());
+        protected static Hashtable SpParameters = Hashtable.Synchronized(new Hashtable());
 
 		public readonly string ConnectionString;
 
@@ -53,7 +53,7 @@ namespace Lephone.Data.Driver
 
 	    protected abstract DbProviderFactory GetDefaultProviderFactory();
 
-		private static ArrayList CloneSpParamters(IList eps)
+		private static ArrayList CloneSpParameters(IList eps)
 		{
 			var ps = new ArrayList();
 			for (int i = 0; i < eps.Count; i++)
@@ -63,7 +63,7 @@ namespace Lephone.Data.Driver
 			return ps;
 		}
 
-		private static void RemoveReturnParamter(IList dpc)
+		private static void RemoveReturnParameter(IList dpc)
 		{
 			for ( int i=0; i<dpc.Count; i++ )
 			{
@@ -78,12 +78,12 @@ namespace Lephone.Data.Driver
 
 		protected void FillDbParameters(SqlStatement Sql, IDbCommand e)
 		{
-			if ( (!Sql.Paramters.UserSetKey) && (e.CommandType == CommandType.StoredProcedure) )
+			if ( (!Sql.Parameters.UserSetKey) && (e.CommandType == CommandType.StoredProcedure) )
 			{
 				string sKey = Sql.SqlCommandText + ":" + ConnectionString;
-				if ( SpParamters.Contains(sKey) )
+				if ( SpParameters.Contains(sKey) )
 				{
-					ArrayList al = CloneSpParamters( (ArrayList)SpParamters[sKey] );
+					ArrayList al = CloneSpParameters( (ArrayList)SpParameters[sKey] );
 					foreach ( IDataParameter ip in al )
 					{
 						e.Parameters.Add( ip );
@@ -92,20 +92,20 @@ namespace Lephone.Data.Driver
 				else
 				{
 					DeriveParameters(e);
-					RemoveReturnParamter(e.Parameters);
-					ArrayList ps = CloneSpParamters(e.Parameters);
-                    SpParamters[sKey] = ps;
+					RemoveReturnParameter(e.Parameters);
+					ArrayList ps = CloneSpParameters(e.Parameters);
+                    SpParameters[sKey] = ps;
 				}
 
 				for ( int i=0; i<e.Parameters.Count; i++ )
 				{
-					((IDataParameter)e.Parameters[i]).Value = Sql.Paramters[i].Value;
+					((IDataParameter)e.Parameters[i]).Value = Sql.Parameters[i].Value;
 				}
 			}
 			else
 			{
-				// TODO: parse SqlCommandText and fill it to paramters.
-				foreach ( DataParamter dp in Sql.Paramters )
+				// TODO: parse SqlCommandText and fill it to Parameters.
+				foreach ( DataParameter dp in Sql.Parameters )
 				{
 					e.Parameters.Add(GetDbParameter(dp));
 				}
@@ -140,12 +140,9 @@ namespace Lephone.Data.Driver
             return d;
         }
 
-        public virtual IDbDataAdapter GetUpdateDbAdapter(IDbCommand command)
+        public virtual IDbDataAdapter GetDbAdapter()
         {
-            // DbCommand c = (DbCommand)(command is LinesDbCommand ? ((LinesDbCommand)command).InternalCommand : command);
-            IDbCommand c = command;
             IDbDataAdapter d = ProviderFactory.CreateDataAdapter();
-            d.UpdateCommand = c;
             return d;
         }
 
@@ -170,14 +167,28 @@ namespace Lephone.Data.Driver
             return c;
         }
 
-        protected virtual IDbDataParameter GetDbParameter(DataParamter dp)
+        public virtual IDbDataParameter GetDbParameter(DataParameter dp)
+        {
+            return GetDbParameter(dp, false);
+        }
+
+        public virtual IDbDataParameter GetDbParameter(DataParameter dp, bool includeSourceColumn)
         {
             IDbDataParameter odp = ProviderFactory.CreateParameter();
             odp.ParameterName = dp.Key;
             odp.Value = GetDbValue(dp.Value);
             odp.DbType = (DbType)dp.Type;
             odp.Direction = dp.Direction;
+            if (includeSourceColumn)
+            {
+                odp.SourceColumn = dp.Key[0] == Dialect.ParameterPrefix ? dp.Key.Substring(1) : dp.Key;
+            }
             return odp;
+        }
+
+        public virtual DbCommandBuilder GetCommandBuilder()
+        {
+            return ProviderFactory.CreateCommandBuilder();
         }
 
         protected virtual void DeriveParameters(IDbCommand e)

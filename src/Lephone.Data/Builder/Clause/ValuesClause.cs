@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using Lephone.Util.Text;
 using Lephone.Data.Common;
@@ -12,7 +12,7 @@ namespace Lephone.Data.Builder.Clause
 	{
 		private const string StatementTemplate = "({0}) VALUES ({1})";
 
-		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
+		public string ToSqlText(DataParameterCollection dpc, DbDialect dd)
 		{
 			var sb1 = new StringBuilder();
 			var sb2 = new StringBuilder();
@@ -25,10 +25,10 @@ namespace Lephone.Data.Builder.Clause
                 }
                 else
                 {
-                    if (DataSetting.UsingParamter)
+                    if (DataSetting.UsingParameter)
                     {
-                        dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", DataParamter.LegalKey(kv.Key), dpc.Count);
-                        var dp = new DataParamter(dpStr, kv.NullableValue, kv.ValueType);
+                        dpStr = string.Format(dd.ParameterPrefix + "{0}_{1}", DataParameter.LegalKey(kv.Key), dpc.Count);
+                        var dp = new DataParameter(dpStr, kv.NullableValue, kv.ValueType);
                         dpc.Add(dp);
                     }
                     else

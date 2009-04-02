@@ -74,25 +74,25 @@ namespace Lephone.Web.Rails
             Response.Write(s);
         }
 
-        protected static internal string LinkTo(LTArgs args, params object[] paramters)
+        protected static internal string LinkTo(LTArgs args, params object[] Parameters)
         {
             if (string.IsNullOrEmpty(args.Title))
             {
                 throw new DataException("title can not be null or empty.");
             }
             string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
-                UrlTo(args.ToUTArgs(), paramters),
+                UrlTo(args.ToUTArgs(), Parameters),
                 args.Title,
                 args.Addon == null ? "" : " " + args.Addon);
             return ret;
         }
 
-        protected internal static string UrlTo(UTArgs args, params object[] paramters)
+        protected internal static string UrlTo(UTArgs args, params object[] Parameters)
         {
-            return UrlTo(args.Controller, args.Action, paramters);
+            return UrlTo(args.Controller, args.Action, Parameters);
         }
 
-        public static string UrlTo(string Controller, string Action, params object[] paramters)
+        public static string UrlTo(string Controller, string Action, params object[] Parameters)
         {
             string appPath = HttpContext.Current.Request.ApplicationPath;
             var url = new StringBuilder();
@@ -106,13 +106,13 @@ namespace Lephone.Web.Rails
             {
                 url.Append(Action).Append("/");
             }
-            if (paramters != null)
+            if (Parameters != null)
             {
-                foreach (var o in paramters)
+                foreach (var o in Parameters)
                 {
                     if (o != null)
                     {
-                        AppendParamter(url, o);
+                        AppendParameter(url, o);
                     }
                 }
             }
@@ -124,13 +124,13 @@ namespace Lephone.Web.Rails
             return url.ToString();
         }
 
-        private static void AppendParamter(StringBuilder url, object o)
+        private static void AppendParameter(StringBuilder url, object o)
         {
             if (o is IEnumerable && !(o is string))
             {
                 foreach (var obj in (IEnumerable)o)
                 {
-                    AppendParamter(url, obj);
+                    AppendParameter(url, obj);
                 }
             }
             else

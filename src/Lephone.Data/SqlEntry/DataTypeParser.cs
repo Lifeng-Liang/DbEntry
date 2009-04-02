@@ -86,7 +86,7 @@ namespace Lephone.Data.SqlEntry
 		    }
 		    if (typeof(byte[]) == ot)
 		    {
-		        throw new ApplicationException("Sql without paramter can not support blob, please using paramter mode.");
+		        throw new ApplicationException("Sql without Parameter can not support blob, please using Parameter mode.");
 		    }
 		    {
 				return o.ToString();

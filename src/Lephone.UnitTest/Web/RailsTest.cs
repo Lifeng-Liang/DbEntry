@@ -12,19 +12,19 @@ namespace Lephone.UnitTest.Web
         [Test]
         public void Test1()
         {
-            var paramters = new List<object>();
+            var Parameters = new List<object>();
             var ss = new[] {"controller", "action", "test", "ok", "3rd", "18", "30"};
             MethodInfo mi = typeof (RailsTest).GetMethod("testHelper", ClassHelper.AllFlag);
             var pis = mi.GetParameters();
-            RailsDispatcher.ProcessArray(paramters, ss, 2, pis, 0);
+            RailsDispatcher.ProcessArray(Parameters, ss, 2, pis, 0);
 
-            Assert.AreEqual(3, paramters.Count);
-            Assert.AreEqual(typeof(string[]), paramters[0].GetType());
-            Assert.AreEqual("test", ((string[])paramters[0])[0]);
-            Assert.AreEqual("ok", ((string[])paramters[0])[1]);
-            Assert.AreEqual("3rd", ((string[])paramters[0])[2]);
-            Assert.AreEqual(18, paramters[1]);
-            Assert.AreEqual(30, paramters[2]);
+            Assert.AreEqual(3, Parameters.Count);
+            Assert.AreEqual(typeof(string[]), Parameters[0].GetType());
+            Assert.AreEqual("test", ((string[])Parameters[0])[0]);
+            Assert.AreEqual("ok", ((string[])Parameters[0])[1]);
+            Assert.AreEqual("3rd", ((string[])Parameters[0])[2]);
+            Assert.AreEqual(18, Parameters[1]);
+            Assert.AreEqual(30, Parameters[2]);
         }
 
         private void testHelper(string[] ss, int i1, int i2) {}
@@ -32,19 +32,19 @@ namespace Lephone.UnitTest.Web
         [Test]
         public void Test2()
         {
-            var paramters = new List<object>();
+            var Parameters = new List<object>();
             var ss = new[] { "controller", "action", "test", "ok", "3rd", "18", "30" };
             MethodInfo mi = typeof(RailsTest).GetMethod("test2Helper", ClassHelper.AllFlag);
             var pis = mi.GetParameters();
-            RailsDispatcher.ProcessArray(paramters, ss, 2, pis, 0);
+            RailsDispatcher.ProcessArray(Parameters, ss, 2, pis, 0);
 
-            Assert.AreEqual(3, paramters.Count);
-            Assert.AreEqual(typeof(string[]), paramters[0].GetType());
-            Assert.AreEqual("test", ((string[])paramters[0])[0]);
-            Assert.AreEqual("ok", ((string[])paramters[0])[1]);
-            Assert.AreEqual("3rd", ((string[])paramters[0])[2]);
-            Assert.AreEqual("18", paramters[1]);
-            Assert.AreEqual("30", paramters[2]);
+            Assert.AreEqual(3, Parameters.Count);
+            Assert.AreEqual(typeof(string[]), Parameters[0].GetType());
+            Assert.AreEqual("test", ((string[])Parameters[0])[0]);
+            Assert.AreEqual("ok", ((string[])Parameters[0])[1]);
+            Assert.AreEqual("3rd", ((string[])Parameters[0])[2]);
+            Assert.AreEqual("18", Parameters[1]);
+            Assert.AreEqual("30", Parameters[2]);
         }
 
         private void test2Helper(string[] ss, string s1, string s2) {}

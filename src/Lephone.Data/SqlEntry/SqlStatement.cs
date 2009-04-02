@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using Lephone.Data.Common;
 using Lephone.Util.Text;
@@ -9,7 +9,7 @@ namespace Lephone.Data.SqlEntry
 	public class SqlStatement
 	{
 		public string SqlCommandText;
-		public DataParamterCollection Paramters;
+		public DataParameterCollection Parameters;
 		public int SqlTimeOut = DataSetting.SqlTimeOut;
 		public CommandType SqlCommandType;
         internal int StartIndex;
@@ -33,7 +33,7 @@ namespace Lephone.Data.SqlEntry
 		{
 			this.SqlCommandType = SqlCommandType;
 			this.SqlCommandText = SqlCommandText;
-			Paramters = new DataParamterCollection();
+			Parameters = new DataParameterCollection();
 		}
 
 		public SqlStatement(string SqlCommandText, params object[] os)
@@ -44,29 +44,29 @@ namespace Lephone.Data.SqlEntry
 		public SqlStatement(CommandType SqlCommandType, string SqlCommandText, params object[] os)
 			: this(SqlCommandType, SqlCommandText)
 		{
-			Paramters.Add(os);
+			Parameters.Add(os);
 		}
 
-		public SqlStatement(string SqlCommandText, params DataParamter[] dps)
+		public SqlStatement(string SqlCommandText, params DataParameter[] dps)
 			: this( GetCommandType(SqlCommandText), SqlCommandText, dps )
 		{
 		}
 
-		public SqlStatement(CommandType SqlCommandType, string SqlCommandText, params DataParamter[] dps)
+		public SqlStatement(CommandType SqlCommandType, string SqlCommandText, params DataParameter[] dps)
 			: this(SqlCommandType, SqlCommandText)
 		{
-			Paramters.Add(dps);
+			Parameters.Add(dps);
 		}
 
-		public SqlStatement(string SqlCommandText, DataParamterCollection dpc)
+		public SqlStatement(string SqlCommandText, DataParameterCollection dpc)
 			: this( GetCommandType(SqlCommandText), SqlCommandText, dpc )
 		{
 		}
 
-		public SqlStatement(CommandType SqlCommandType, string SqlCommandText, DataParamterCollection dpc)
+		public SqlStatement(CommandType SqlCommandType, string SqlCommandText, DataParameterCollection dpc)
 			: this(SqlCommandType, SqlCommandText)
 		{
-			Paramters.Add(dpc);
+			Parameters.Add(dpc);
 		}
 
 		public override bool Equals(object obj)
@@ -74,7 +74,7 @@ namespace Lephone.Data.SqlEntry
 			SqlStatement Sql = (SqlStatement)obj;
 			bool b = (this.SqlCommandText == Sql.SqlCommandText)
 				&& (this.SqlTimeOut == Sql.SqlTimeOut)
-				&& (this.Paramters.Equals(Sql.Paramters)
+				&& (this.Parameters.Equals(Sql.Parameters)
 				&& (this.SqlCommandType == Sql.SqlCommandType));
 			return b;
 		}
@@ -86,7 +86,7 @@ namespace Lephone.Data.SqlEntry
 
 		public override string ToString()
 		{
-			return string.Format("{0}<{1}><{2}>({3})", SqlCommandText, SqlCommandType, SqlTimeOut, Paramters);
+			return string.Format("{0}<{1}><{2}>({3})", SqlCommandText, SqlCommandType, SqlTimeOut, Parameters);
 		}
     }
 }

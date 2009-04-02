@@ -270,10 +270,10 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="DataException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SqlEntry\DataParamter.cs">
+    <Compile Include="SqlEntry\DataParameter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SqlEntry\DataParamterCollection.cs">
+    <Compile Include="SqlEntry\DataParameterCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\DataSetting.cs">

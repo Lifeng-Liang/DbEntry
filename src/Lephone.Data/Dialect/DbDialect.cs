@@ -195,7 +195,7 @@ namespace Lephone.Data.Dialect
 
         protected virtual SqlStatement GetNormalSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            var dpc = new DataParamterCollection();
+            var dpc = new DataParameterCollection();
             string SqlString = string.Format("SELECT {0} FROM {1}{2}{3}{4}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
@@ -271,7 +271,7 @@ namespace Lephone.Data.Dialect
 			get { return '"'; }
 		}
 
-		public virtual char ParamterPrefix
+		public virtual char ParameterPrefix
 		{
 			get { return '@'; }
 		}

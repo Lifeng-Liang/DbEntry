@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Lephone.Data;
@@ -288,7 +288,7 @@ namespace Lephone.UnitTest.Data
         {
             //WhereCondition c = CK.K["Age"] > CK.K["Count"];
             var c = CK.K["Age"].Gt(CK.K["Count"]);
-            var dpc = new DataParamterCollection();
+            var dpc = new DataParameterCollection();
             string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
@@ -298,7 +298,7 @@ namespace Lephone.UnitTest.Data
         public void TestColumnCompColumn2()
         {
             var c = CK.K["Age"] > CK.K["Count"];
-            var dpc = new DataParamterCollection();
+            var dpc = new DataParameterCollection();
             string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
@@ -308,7 +308,7 @@ namespace Lephone.UnitTest.Data
         public void TestColumnCompColumn3()
         {
             var c = CK.K["Age"] > CK.K["Count"] && CK.K["Name"] == CK.K["theName"] || CK.K["Age"] <= CK.K["Num"];
-            var dpc = new DataParamterCollection();
+            var dpc = new DataParameterCollection();
             string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("(([Age] > [Count]) AND ([Name] = [theName])) OR ([Age] <= [Num])", s);
@@ -319,10 +319,10 @@ namespace Lephone.UnitTest.Data
         {
             SqlStatement sql = DbEntry.Context.GetSqlStatement("SELECT * FROM User WHERE Age > ? AND Age < ?", 18, 23);
             Assert.AreEqual("SELECT * FROM User WHERE Age > @p0 AND Age < @p1", sql.SqlCommandText);
-            Assert.AreEqual("@p0", sql.Paramters[0].Key);
-            Assert.AreEqual(18, sql.Paramters[0].Value);
-            Assert.AreEqual("@p1", sql.Paramters[1].Key);
-            Assert.AreEqual(23, sql.Paramters[1].Value);
+            Assert.AreEqual("@p0", sql.Parameters[0].Key);
+            Assert.AreEqual(18, sql.Parameters[0].Value);
+            Assert.AreEqual("@p1", sql.Parameters[1].Key);
+            Assert.AreEqual(23, sql.Parameters[1].Value);
         }
 
         [Test]
@@ -330,12 +330,12 @@ namespace Lephone.UnitTest.Data
         {
             SqlStatement sql = DbEntry.Context.GetSqlStatement("SELECT * FROM User WHERE Id = ? Name LIKE '%?%' Age > ? AND Age < ? ", 1, 18, 23);
             Assert.AreEqual("SELECT * FROM User WHERE Id = @p0 Name LIKE '%?%' Age > @p1 AND Age < @p2 ", sql.SqlCommandText);
-            Assert.AreEqual("@p0", sql.Paramters[0].Key);
-            Assert.AreEqual(1, sql.Paramters[0].Value);
-            Assert.AreEqual("@p1", sql.Paramters[1].Key);
-            Assert.AreEqual(18, sql.Paramters[1].Value);
-            Assert.AreEqual("@p2", sql.Paramters[2].Key);
-            Assert.AreEqual(23, sql.Paramters[2].Value);
+            Assert.AreEqual("@p0", sql.Parameters[0].Key);
+            Assert.AreEqual(1, sql.Parameters[0].Value);
+            Assert.AreEqual("@p1", sql.Parameters[1].Key);
+            Assert.AreEqual(18, sql.Parameters[1].Value);
+            Assert.AreEqual("@p2", sql.Parameters[2].Key);
+            Assert.AreEqual(23, sql.Parameters[2].Value);
         }
 
         [Test]
@@ -547,7 +547,7 @@ namespace Lephone.UnitTest.Data
             try
             {
                 var d = t_user.New();
-                d.mc = "å¼ ä¸‰";
+                d.mc = "ÕÅÈý";
                 d.Save();
             }
             catch(DataException ex)

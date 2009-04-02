@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using Lephone.Util.Text;
 using Lephone.Data.Common;
@@ -10,7 +10,7 @@ namespace Lephone.Data.Builder.Clause
 	[Serializable]
 	public class SetClause : KeyValueCollection, IClause
 	{
-		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
+		public string ToSqlText(DataParameterCollection dpc, DbDialect dd)
 		{
 			var sb = new StringBuilder("SET ");
 			foreach ( KeyValue kv in this )
@@ -32,10 +32,10 @@ namespace Lephone.Data.Builder.Clause
                 }
                 else
                 {
-                    if (DataSetting.UsingParamter)
+                    if (DataSetting.UsingParameter)
                     {
-                        dpStr = string.Format(dd.ParamterPrefix + "{0}_{1}", DataParamter.LegalKey(kv.Key), dpc.Count);
-                        var dp = new DataParamter(dpStr, kv.Value, kv.ValueType);
+                        dpStr = string.Format(dd.ParameterPrefix + "{0}_{1}", DataParameter.LegalKey(kv.Key), dpc.Count);
+                        var dp = new DataParameter(dpStr, kv.Value, kv.ValueType);
                         dpc.Add(dp);
                     }
                     else

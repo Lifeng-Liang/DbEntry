@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 using Lephone.Data;
 using Lephone.Data.Common;
@@ -82,7 +82,7 @@ namespace Lephone.UnitTest.Data.Inner
             const string s = "Id desc, Name";
             var Exp = new OrderBy((DESC)"Id", (ASC)"Name");
             var Dst = OrderBy.Parse(s);
-            var ds = new DataParamterCollection();
+            var ds = new DataParameterCollection();
             string ExpStr = Exp.ToSqlText(ds, DbEntry.Context.Dialect);
             string DstStr = Dst.ToSqlText(ds, DbEntry.Context.Dialect);
             Assert.AreEqual(ExpStr, DstStr);

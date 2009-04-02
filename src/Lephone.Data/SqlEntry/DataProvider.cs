@@ -152,37 +152,78 @@ namespace Lephone.Data.SqlEntry
             });
         }
 
-		public int UpdateDataset(SqlStatement Sql, DataSet ds)
-		{
-            return UpdateDataset(Sql, ds, 1, false);
-        }
-
-        public int UpdateDataset(SqlStatement Sql, DataSet ds, int UpdateBatchSize)
+        public int UpdateDataset(SqlStatement selectSql, DataSet ds)
         {
-            return UpdateDataset(Sql, ds, UpdateBatchSize, true);
+            return UpdateDataset(selectSql, ds, 1);
         }
 
-        public int UpdateDataset(SqlStatement Sql, DataSet ds, int UpdateBatchSize, bool throwException)
+        public int UpdateDataset(SqlStatement selectSql, DataSet ds, int UpdateBatchSize)
         {
             int ret = 0;
             UsingConnection(delegate
             {
-                Sql.SqlCommandType = CommandType.Text;
-                using (IDbCommand e = GetDbCommand(Sql))
-                {
-                    IDbDataAdapter d = m_Driver.GetUpdateDbAdapter(e);
-                    if (d is DbDataAdapter)
-                    {
-                        ((DbDataAdapter) d).UpdateBatchSize = UpdateBatchSize;
-                    }
-                    else if(throwException)
-                    {
-                        throw new DataException("The DbDataAdapter doesn't support UpdateBatchSize feature.");
-                    }
-                    ret = d.Update(ds);
-                }
+                var d = (DbDataAdapter)m_Driver.GetDbAdapter(GetDbCommand(selectSql));
+                var cb = m_Driver.GetCommandBuilder();
+                cb.QuotePrefix = Dialect.OpenQuote.ToString();
+                cb.QuoteSuffix = Dialect.CloseQuote.ToString();
+                cb.DataAdapter = d;
+                d.UpdateBatchSize = UpdateBatchSize;
+                ret = d.Update(ds);
+                ds.AcceptChanges();
             });
             return ret;
+        }
+
+        public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds)
+		{
+            return UpdateDataset(insertSql, updateSql, deleteSql, ds, 1, false);
+        }
+
+        public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int UpdateBatchSize)
+        {
+            return UpdateDataset(insertSql, updateSql, deleteSql, ds, UpdateBatchSize, true);
+        }
+
+        private int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int UpdateBatchSize, bool throwException)
+        {
+            int ret = 0;
+            UsingConnection(delegate
+            {
+                IDbDataAdapter d = m_Driver.GetDbAdapter();
+                if(insertSql != null)
+                {
+                    d.InsertCommand = GetDbCommandForUpdate(insertSql);
+                }
+                if(updateSql != null)
+                {
+                    d.UpdateCommand = GetDbCommandForUpdate(updateSql);
+                }
+                if(deleteSql != null)
+                {
+                    d.DeleteCommand = GetDbCommandForUpdate(deleteSql);
+                }
+                if (d is DbDataAdapter)
+                {
+                    ((DbDataAdapter) d).UpdateBatchSize = UpdateBatchSize;
+                }
+                else if(throwException)
+                {
+                    throw new DataException("The DbDataAdapter doesn't support UpdateBatchSize feature.");
+                }
+                ret = d.Update(ds);
+                ds.AcceptChanges();
+            });
+            return ret;
+        }
+
+        private IDbCommand GetDbCommandForUpdate(SqlStatement Sql)
+        {
+            IDbCommand c = GetDbCommand(Sql);
+            foreach(IDataParameter p in c.Parameters)
+            {
+                p.SourceColumn = p.ParameterName[0] == Dialect.ParameterPrefix ? p.ParameterName.Substring(1) : p.ParameterName;
+            }
+            return c;
         }
 
         public object ExecuteScalar(SqlStatement Sql)
@@ -268,7 +309,7 @@ namespace Lephone.Data.SqlEntry
             });
         }
 
-        protected IDbCommand GetDbCommand(SqlStatement Sql)
+        public IDbCommand GetDbCommand(SqlStatement Sql)
         {
             ConnectionContext et = ConProvider;
             IDbCommand e = m_Driver.GetDbCommand(Sql, et.Connection);
@@ -281,11 +322,11 @@ namespace Lephone.Data.SqlEntry
 
         protected void PopulateOutParams(SqlStatement Sql, IDbCommand e)
         {
-            if (Sql.Paramters.UserSetKey && (Sql.SqlCommandType == CommandType.StoredProcedure))
+            if (Sql.Parameters.UserSetKey && (Sql.SqlCommandType == CommandType.StoredProcedure))
             {
-                for (int i = 0; i < Sql.Paramters.Count; i++)
+                for (int i = 0; i < Sql.Parameters.Count; i++)
                 {
-                    DataParamter p = Sql.Paramters[i];
+                    DataParameter p = Sql.Parameters[i];
                     if (p.Direction != ParameterDirection.Input)
                     {
                         p.Value = ((IDbDataParameter)e.Parameters[i]).Value;
@@ -361,10 +402,10 @@ namespace Lephone.Data.SqlEntry
             {
                 return new SqlStatement(ct, SqlStr, os);
             }
-            var dpc = new DataParamterCollection();
+            var dpc = new DataParameterCollection();
             int start = 0, n = 0;
             var sql = new StringBuilder();
-            string pp = Dialect.ParamterPrefix + "p";
+            string pp = Dialect.ParameterPrefix + "p";
             foreach (Match m in reg.Matches(SqlStr))
             {
                 if (m.Length == 1)
@@ -373,7 +414,7 @@ namespace Lephone.Data.SqlEntry
                     sql.Append(SqlStr.Substring(start, m.Index - start));
                     sql.Append(pn);
                     start = m.Index + 1;
-                    var dp = new DataParamter(pn, os[n]);
+                    var dp = new DataParameter(pn, os[n]);
                     dpc.Add(dp);
                     n++;
                 }

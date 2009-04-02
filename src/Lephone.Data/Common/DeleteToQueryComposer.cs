@@ -1,4 +1,4 @@
-﻿using Lephone.Data.Dialect;
+using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
 
@@ -18,7 +18,7 @@ namespace Lephone.Data.Common
             sb.TableName = oi.DeleteToTableName;
             SqlStatement isql = sb.ToSqlStatement(Dialect);
             sql.SqlCommandText += isql.SqlCommandText;
-            sql.Paramters.Add(isql.Paramters);
+            sql.Parameters.Add(isql.Parameters);
             return sql;
         }
 

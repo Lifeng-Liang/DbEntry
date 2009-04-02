@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using Lephone.Data.Common;
 
@@ -27,22 +27,22 @@ namespace Lephone.Data.SqlEntry
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(CommandType SqlCommandType, string SqlCommandText, params DataParamter[] dps) : base(SqlCommandType, SqlCommandText, dps)
+		public TimeConsumingSqlStatement(CommandType SqlCommandType, string SqlCommandText, params DataParameter[] dps) : base(SqlCommandType, SqlCommandText, dps)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(string SqlCommandText, params DataParamter[] dps) : base(SqlCommandText, dps)
+		public TimeConsumingSqlStatement(string SqlCommandText, params DataParameter[] dps) : base(SqlCommandText, dps)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(CommandType SqlCommandType, string SqlCommandText, DataParamterCollection dpc) : base(SqlCommandType, SqlCommandText, dpc)
+		public TimeConsumingSqlStatement(CommandType SqlCommandType, string SqlCommandText, DataParameterCollection dpc) : base(SqlCommandType, SqlCommandText, dpc)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(string SqlCommandText, DataParamterCollection dpc) : base(SqlCommandText, dpc)
+		public TimeConsumingSqlStatement(string SqlCommandText, DataParameterCollection dpc) : base(SqlCommandText, dpc)
 		{
 			InitSqlTimeOut();
 		}

@@ -33,5 +33,10 @@ namespace Lephone.Data.Driver
         {
             return InnerFactory.CreateParameter();
         }
+
+        public virtual DbCommandBuilder CreateCommandBuilder()
+        {
+            return InnerFactory.CreateCommandBuilder();
+        }
     }
 }

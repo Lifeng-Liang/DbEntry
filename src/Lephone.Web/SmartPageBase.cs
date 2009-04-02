@@ -16,7 +16,7 @@ namespace Lephone.Web
                 var attr = ClassHelper.GetAttribute<HttpParameterAttribute>(fieldInfo, false);
                 if (attr != null)
                 {
-                    ProcessParamterInit(fieldInfo, attr.AllowEmpty);
+                    ProcessParameterInit(fieldInfo, attr.AllowEmpty);
                 }
                 var inMaster = ClassHelper.GetAttribute<InMasterAttribute>(fieldInfo, false);
                 if(inMaster != null)
@@ -27,7 +27,7 @@ namespace Lephone.Web
             base.OnLoad(e);
         }
 
-        private void ProcessParamterInit(FieldInfo fi, bool allowEmpty)
+        private void ProcessParameterInit(FieldInfo fi, bool allowEmpty)
         {
             var s = Request[fi.Name];
             object px = GetValue(s, allowEmpty, fi.Name, fi.FieldType);
@@ -52,7 +52,7 @@ namespace Lephone.Web
             {
                 if (!allowEmpty)
                 {
-                    throw new WebException(string.Format("The paramter {0} can't be empty", name));
+                    throw new WebException(string.Format("The Parameter {0} can't be empty", name));
                 }
                 if (type.IsValueType)
                 {

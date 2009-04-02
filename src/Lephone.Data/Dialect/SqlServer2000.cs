@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
@@ -36,7 +36,7 @@ namespace Lephone.Data.Dialect
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            var dpc = new DataParamterCollection();
+            var dpc = new DataParameterCollection();
             string SqlString = string.Format("SELECT TOP {4} {0} FROM {1}{2}{3}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),

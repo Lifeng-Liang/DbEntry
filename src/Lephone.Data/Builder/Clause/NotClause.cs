@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
@@ -26,7 +26,7 @@ namespace Lephone.Data.Builder.Clause
             }
         }
 
-        public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
+        public override string ToSqlText(DataParameterCollection dpc, DbDialect dd)
 		{
             if (_ic.SubClauseNotEmpty)
             {

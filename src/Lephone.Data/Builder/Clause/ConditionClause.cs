@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Text;
 using Lephone.Data.Dialect;
@@ -54,7 +54,7 @@ namespace Lephone.Data.Builder.Clause
 			set { List[index] = value; }
 		}
 
-		public override string ToSqlText(DataParamterCollection dpc, DbDialect dd)
+		public override string ToSqlText(DataParameterCollection dpc, DbDialect dd)
 		{
 			var sb = new StringBuilder();
 			foreach ( WhereCondition ic in List )

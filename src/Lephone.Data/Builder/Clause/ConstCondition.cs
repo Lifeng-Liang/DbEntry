@@ -1,4 +1,4 @@
-﻿namespace Lephone.Data.Builder.Clause
+namespace Lephone.Data.Builder.Clause
 {
     public class ConstCondition : WhereCondition
     {
@@ -14,7 +14,7 @@
             get { return true; }
         }
 
-        public override string ToSqlText(SqlEntry.DataParamterCollection dpc, Dialect.DbDialect dd)
+        public override string ToSqlText(SqlEntry.DataParameterCollection dpc, Dialect.DbDialect dd)
         {
             return Condition;
         }

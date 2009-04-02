@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.Common;
 using System.Reflection;
 using Lephone.Util;
 
@@ -12,14 +13,13 @@ namespace Lephone.Data.Driver
         private ConstructorInfo CiConnection;
         private ConstructorInfo CiDataAdapter;
         private ConstructorInfo CiParameter;
+        private ConstructorInfo CiCommandBuilder;
         private MethodInfo MiCb_DeriveParameters;
 
         public bool DeriveParametersIsValid
         {
             get { return MiCb_DeriveParameters != null; }
         }
-
-        public SmartDbFactory() { }
 
         public void Init(string AssemblyName)
         {
@@ -50,6 +50,10 @@ namespace Lephone.Data.Driver
                 if (CiParameter == null && IsInterfaceOf(t, typeof(IDbDataParameter)))
                 {
                     CiParameter = t.GetConstructor(EmptyParam);
+                }
+                if(CiCommandBuilder == null && IsInterfaceOf(t, typeof(DbCommandBuilder)))
+                {
+                    CiCommandBuilder = t.GetConstructor(EmptyParam);
                 }
             }
             AssertConstructorNotNull(CiCommand, CiConnection, CiDataAdapter, CiParameter);
@@ -116,6 +120,15 @@ namespace Lephone.Data.Driver
         public override IDbDataParameter CreateParameter()
         {
             return (IDbDataParameter)CiParameter.Invoke(CiParam);
+        }
+
+        public override DbCommandBuilder CreateCommandBuilder()
+        {
+            if(CiCommandBuilder != null)
+            {
+                return (DbCommandBuilder)CiCommandBuilder.Invoke(CiParam);
+            }
+            return null;
         }
 
         public void DeriveParameters(IDbCommand Command)

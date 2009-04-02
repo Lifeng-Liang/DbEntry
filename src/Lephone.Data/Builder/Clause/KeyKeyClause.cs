@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
@@ -18,7 +18,7 @@ namespace Lephone.Data.Builder.Clause
 		{
         }
 
-        protected override string GetValueString(DataParamterCollection dpc, DbDialect dd)
+        protected override string GetValueString(DataParameterCollection dpc, DbDialect dd)
         {
             return dd.QuoteForColumnName((string)KV.Value);
         }

@@ -1,4 +1,4 @@
-﻿using Lephone.Data.Builder;
+using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Common;
 
@@ -50,7 +50,7 @@ namespace Lephone.Data.Dialect
 			get { return '`'; }
 		}
 
-        public override char ParamterPrefix
+        public override char ParameterPrefix
         {
             get { return '?'; }
         }

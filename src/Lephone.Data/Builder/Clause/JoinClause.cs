@@ -1,4 +1,4 @@
-﻿using Lephone.Util.Text;
+using Lephone.Util.Text;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
 
@@ -19,7 +19,7 @@ namespace Lephone.Data.Builder.Clause
             this.mode = mode;
         }
 
-        public string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd)
+        public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd)
         {
             return string.Format("{0} {2} {1}",
                 dd.QuoteForColumnName(Key1),

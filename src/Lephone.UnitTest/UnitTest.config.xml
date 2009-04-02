@@ -25,7 +25,7 @@
 
     <add key="1.DataBase" value="@Access : @~test.mdb" />
 
-    <add key="SqlServer.DataBase" value="@SqlServer2005 : data source=LEPHONE\SQLEXPRESS;initial catalog=testdb;user id=sa;password=123" />
+    <add key="SqlServer.DataBase" value="@SqlServer2005 : data source=localhost\SQLEXPRESS;initial catalog=test;user id=sa;password=123" />
 
     <add key="SqlServerMock.DataBase" value="@SqlServer2005 : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
     <add key="SqlServerMock.DbDriver" value="Lephone.Data.Driver.SqlServerDriver, Lephone.Data" />

@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Data;
 
 namespace Lephone.Data.SqlEntry
 {
 	[Serializable]
-	public class DataParamter : KeyValue
+	public class DataParameter : KeyValue
 	{
 		public DataType Type;
         public ParameterDirection Direction = ParameterDirection.Input;
@@ -18,23 +18,23 @@ namespace Lephone.Data.SqlEntry
             return null;
         }
 
-		public DataParamter(object Value) : this(null, Value)
+		public DataParameter(object Value) : this(null, Value)
 		{
 			SetTypeByObject(Value);
 		}
 
-		public DataParamter(string Key, object Value) : base(LegalKey(Key), Value)
+		public DataParameter(string Key, object Value) : base(LegalKey(Key), Value)
 		{
 			SetTypeByObject(Value);
 		}
 
-        public DataParamter(string Key, object Value, Type ValueType)
+        public DataParameter(string Key, object Value, Type ValueType)
             : base(LegalKey(Key), Value, ValueType)
 		{
             SetTypeByObject(ValueType);
 		}
 
-        public DataParamter(string Key, object Value, Type ValueType, ParameterDirection Direction)
+        public DataParameter(string Key, object Value, Type ValueType, ParameterDirection Direction)
             : base(LegalKey(Key), Value, ValueType)
         {
             SetTypeByObject(ValueType);
@@ -72,7 +72,7 @@ namespace Lephone.Data.SqlEntry
         }
 
         /*
-		public DataParamter(string Key, object Value, DataType Type) : this(Key, Value)
+		public DataParameter(string Key, object Value, DataType Type) : this(Key, Value)
 		{
 			this.Type = Type;
 		}
@@ -80,7 +80,7 @@ namespace Lephone.Data.SqlEntry
 
 		public override bool Equals(object obj)
 		{
-			var dp = (DataParamter)obj;
+			var dp = (DataParameter)obj;
 			bool b = (Key == dp.Key)
 				&& (Value == dp.Value)
 				&& (Type == dp.Type);

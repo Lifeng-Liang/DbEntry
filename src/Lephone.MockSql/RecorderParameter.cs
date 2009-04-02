@@ -5,34 +5,9 @@ namespace Lephone.MockSql
 {
     public class RecorderParameter : DbParameter
     {
-        private string _ParameterName;
-        private object _Value;
-        private System.Data.DbType _DbType;
-        private System.Data.ParameterDirection _Direction;
+        public override System.Data.DbType DbType { get; set; }
 
-        public override System.Data.DbType DbType
-        {
-            get
-            {
-                return _DbType;
-            }
-            set
-            {
-                _DbType = value;
-            }
-        }
-
-        public override System.Data.ParameterDirection Direction
-        {
-            get
-            {
-                return _Direction;
-            }
-            set
-            {
-                _Direction = value;
-            }
-        }
+        public override System.Data.ParameterDirection Direction { get; set; }
 
         public override bool IsNullable
         {
@@ -46,17 +21,7 @@ namespace Lephone.MockSql
             }
         }
 
-        public override string ParameterName
-        {
-            get
-            {
-                return _ParameterName;
-            }
-            set
-            {
-                _ParameterName = value;
-            }
-        }
+        public override string ParameterName { get; set; }
 
         public override void ResetDbType()
         {
@@ -87,6 +52,7 @@ namespace Lephone.MockSql
             }
         }
 
+
         public override bool SourceColumnNullMapping
         {
             get
@@ -111,17 +77,7 @@ namespace Lephone.MockSql
             }
         }
 
-        public override object Value
-        {
-            get
-            {
-                return _Value;
-            }
-            set
-            {
-                _Value = value;
-            }
-        }
+        public override object Value { get; set; }
 
         public override string ToString()
         {

@@ -114,7 +114,7 @@ namespace Lephone.Linq
                     }
                 }
             }
-            throw new LinqException("'Like' clause only supported one paramter and the paramter should be string and not allow NULL.");
+            throw new LinqException("'Like' clause only supported one Parameter and the Parameter should be string and not allow NULL.");
         }
 
         private static string GetMemberName(Expression expr, out ColumnFunction function)
@@ -138,7 +138,7 @@ namespace Lephone.Linq
                     return GetColumnName(((MemberExpression)e.Object).Member.Name);
                 }
             }
-            throw new LinqException("'Like' clause only supported one paramter and the paramter should be string and not allow NULL.");
+            throw new LinqException("'Like' clause only supported one Parameter and the Parameter should be string and not allow NULL.");
         }
 
         private static WhereCondition GetClause(BinaryExpression e, CompareOpration co)

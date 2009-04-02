@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Lephone.Data.Builder;
@@ -22,7 +22,7 @@ namespace Lephone.Data
 			this.OrderItems = new List<ASC>(OrderItems);
 		}
 
-        public string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd)
+        public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd)
 		{
             if (OrderItems != null && OrderItems.Count > 0)
             {

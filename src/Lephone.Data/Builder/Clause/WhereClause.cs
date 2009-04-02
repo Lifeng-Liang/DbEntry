@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
@@ -24,7 +24,7 @@ namespace Lephone.Data.Builder.Clause
 			get { return _ic; }
 		}
 
-		public string ToSqlText(DataParamterCollection dpc, DbDialect dd)
+		public string ToSqlText(DataParameterCollection dpc, DbDialect dd)
 		{
 			if ( _ic != null )
 			{

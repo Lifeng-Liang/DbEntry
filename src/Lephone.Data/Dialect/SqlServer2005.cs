@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 
@@ -19,7 +19,7 @@ namespace Lephone.Data.Dialect
             }
 
             const string PosName = "__rownumber__";
-            var dpc = new DataParamterCollection();
+            var dpc = new DataParameterCollection();
             string SqlString = string.Format(
                 "SELECT {0} FROM (SELECT {0}, ROW_NUMBER() OVER ({3}) AS {6} FROM {1} {2}) AS T WHERE T.{6} >= {4} AND T.{6} <= {5}",
                 ssb.GetColumns(this),

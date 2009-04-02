@@ -49,22 +49,22 @@ namespace Lephone.Web.Rails
             Response.Write(s);
         }
 
-        protected internal string LinkTo(LTArgs args, params object[] paramters)
+        protected internal string LinkTo(LTArgs args, params object[] Parameters)
         {
             if (string.IsNullOrEmpty(args.Controller))
             {
                 args.Controller = ControllerName;
             }
-            return MasterPageBase.LinkTo(args, paramters);
+            return MasterPageBase.LinkTo(args, Parameters);
         }
 
-        protected internal string UrlTo(UTArgs args, params object[] paramters)
+        protected internal string UrlTo(UTArgs args, params object[] Parameters)
         {
             if (string.IsNullOrEmpty(args.Controller))
             {
                 args.Controller = ControllerName;
             }
-            return MasterPageBase.UrlTo(args.Controller, args.Action, paramters);
+            return MasterPageBase.UrlTo(args.Controller, args.Action, Parameters);
         }
 
     }

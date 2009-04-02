@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder.Clause;
@@ -84,6 +84,6 @@ namespace Lephone.Data
             return (Condition == null || (Condition is Common.EmptyCondition));
         }
 
-        public abstract string ToSqlText(DataParamterCollection dpc, Dialect.DbDialect dd);
+        public abstract string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd);
 	}
 }
