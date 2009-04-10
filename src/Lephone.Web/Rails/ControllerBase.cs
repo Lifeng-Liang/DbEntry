@@ -11,6 +11,8 @@ namespace Lephone.Web.Rails
 {
     public abstract class ControllerBase
     {
+        private static readonly string errorTemplate = ResourceHelper.ReadToEnd(typeof(ControllerBase), "Rails.Error.htm");
+
         protected internal HttpContext ctx;
         public readonly Dictionary<string, object> bag = new Dictionary<string, object>();
         public readonly string ControllerName;
@@ -40,7 +42,10 @@ namespace Lephone.Web.Rails
         protected internal virtual void OnException(Exception ex)
         {
             Exception e = ex.InnerException ?? ex;
-            ctx.Response.Write(string.Format("<h1>{0}<h1>", ctx.Server.HtmlEncode(e.Message)));
+            string title = ctx.Server.HtmlEncode(e.Message);
+            string text = e.ToString();
+            string result = string.Format(errorTemplate, title, text);
+            ctx.Response.Write(result);
         }
 
         public void RedirectTo(UTArgs args, params object[] Parameters)
