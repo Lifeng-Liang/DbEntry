@@ -9,13 +9,20 @@ namespace Lephone.Data.Common
         protected OrderBy oc;
         internal int _PageSize;
         protected DbContext Entry;
+        internal bool isDistinct;
 
         public PagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds)
+            : this(iwc, oc, PageSize, ds, false)
+        {
+        }
+
+        public PagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds, bool isDistinct)
         {
             this.iwc = iwc;
             this.oc = oc;
             this._PageSize = PageSize;
             this.Entry = ds;
+            this.isDistinct = isDistinct;
         }
 
         int IPagedSelector.PageSize
@@ -25,15 +32,19 @@ namespace Lephone.Data.Common
 
         public long GetResultCount()
         {
-            return Entry.GetResultCount(typeof(T), iwc);
+            return Entry.GetResultCount(typeof(T), iwc, isDistinct);
         }
 
         public virtual IList GetCurrentPage(int PageIndex)
         {
             int StartWith = _PageSize * PageIndex;
             int tn = StartWith + _PageSize;
-            IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(StartWith + 1, tn).Select();
-            return ret;
+            var query = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(StartWith + 1, tn);
+            if(isDistinct)
+            {
+                return query.SelectDistinct();
+            }
+            return query.Select();
         }
     }
 }

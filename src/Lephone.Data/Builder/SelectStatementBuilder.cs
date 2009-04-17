@@ -106,7 +106,7 @@ namespace Lephone.Data.Builder
                 }
                 else
                 {
-                    string fn = dd.QuoteForColumnName(FunctionCol);
+                    string fn = FunctionCol.StartsWith("DISTINCT ") ? FunctionCol : dd.QuoteForColumnName(FunctionCol);
                     string gfn = FunctionName == "COUNT" ? DbEntry.CountColumn : fn;
                     Columns.Append("(")
                         .Append(fn)

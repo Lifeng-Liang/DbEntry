@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common
@@ -11,15 +10,20 @@ namespace Lephone.Data.Common
         {
         }
 
+        public StaticPagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds, bool isDistinct)
+            : base(iwc, oc, PageSize, ds, isDistinct)
+        {
+        }
+
         public override IList GetCurrentPage(int PageIndex)
         {
             long rc = GetResultCount();
-            int firstPageSize = (int)(rc % _PageSize);
+            var firstPageSize = (int)(rc % _PageSize);
             if (firstPageSize == 0)
             {
                 firstPageSize = _PageSize;
             }
-            int pages = (int)((rc - firstPageSize) / _PageSize);
+            var pages = (int)((rc - firstPageSize) / _PageSize);
             PageIndex = pages - PageIndex;
             if (PageIndex <= 0)
             {

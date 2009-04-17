@@ -86,9 +86,19 @@ namespace Lephone.Data.QuerySyntax
             return new PagedSelector<T>(m_where, m_order, m_pagesize, m_entry);
         }
 
+        public IPagedSelector GetDistinctPagedSelector()
+        {
+            return new PagedSelector<T>(m_where, m_order, m_pagesize, m_entry, true);
+        }
+
         public IPagedSelector GetStaticPagedSelector()
         {
             return new StaticPagedSelector<T>(m_where, m_order, m_pagesize, m_entry);
+        }
+
+        public IPagedSelector GetDistinctStaticPagedSelector()
+        {
+            return new StaticPagedSelector<T>(m_where, m_order, m_pagesize, m_entry, true);
         }
 
         public long GetCount()

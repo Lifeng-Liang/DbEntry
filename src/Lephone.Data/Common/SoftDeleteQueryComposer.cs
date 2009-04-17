@@ -49,9 +49,9 @@ namespace Lephone.Data.Common
             return sb;
         }
 
-        public override SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc)
+        public override SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc, bool isDistinct)
         {
-            return base.GetResultCountStatement(Dialect, iwc && colExp);
+            return base.GetResultCountStatement(Dialect, iwc && colExp, isDistinct);
         }
 
         public override SqlStatement GetSelectStatement(DbDialect Dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)

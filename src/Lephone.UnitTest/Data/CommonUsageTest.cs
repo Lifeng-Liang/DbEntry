@@ -685,5 +685,19 @@ namespace Lephone.UnitTest.Data
                 Assert.AreEqual(exps[i], list[i].n);
             }
         }
+
+        [Test]
+        public void TestDistinctPagedSelector()
+        {
+            var query = DbEntry.From<DistinctTest>().Where(null).OrderBy(p => p.n).PageSize(3).GetDistinctPagedSelector();
+            Assert.AreEqual(9, query.GetResultCount());
+            var list = (List<DistinctTest>)query.GetCurrentPage(1);
+            Assert.AreEqual(3, list.Count);
+            var exps = new[] { 3, 4, 9 };
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.AreEqual(exps[i], list[i].n);
+            }
+        }
     }
 }

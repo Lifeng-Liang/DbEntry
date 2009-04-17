@@ -12,7 +12,9 @@ namespace Lephone.Data.QuerySyntax
     public interface IGetPagedSelector
     {
         IPagedSelector GetPagedSelector();
+        IPagedSelector GetDistinctPagedSelector();
         IPagedSelector GetStaticPagedSelector();
+        IPagedSelector GetDistinctStaticPagedSelector();
     }
 
     public interface IGroupByable

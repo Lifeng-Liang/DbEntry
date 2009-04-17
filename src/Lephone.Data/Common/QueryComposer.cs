@@ -38,11 +38,27 @@ namespace Lephone.Data.Common
             return sb.ToSqlStatement(Dialect);
         }
 
-        public virtual SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc)
+        public SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc)
         {
-            var sb = new SelectStatementBuilder(oi.From, null, null);
+            return GetResultCountStatement(Dialect, iwc, false);
+        }
+
+        public virtual SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc, bool isDistinct)
+        {
+            var sb = new SelectStatementBuilder(oi.From, null, null) {IsDistinct = isDistinct};
             sb.Where.Conditions = iwc;
-            sb.SetCountColumn("*");
+            if(isDistinct)
+            {
+                oi.Handler.SetValuesForSelect(sb);
+                string cs = sb.GetColumns(Dialect);
+                sb.SetCountColumn(cs);
+                sb.IsDistinct = false;
+                sb.Keys.Clear();
+            }
+            else
+            {
+                sb.SetCountColumn("*");
+            }
             return sb.ToSqlStatement(Dialect);
         }
 

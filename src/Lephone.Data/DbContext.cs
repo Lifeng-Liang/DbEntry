@@ -147,9 +147,14 @@ namespace Lephone.Data
 
         public long GetResultCount(Type DbObjectType, WhereCondition iwc)
         {
+            return GetResultCount(DbObjectType, iwc, false);
+        }
+
+        public long GetResultCount(Type DbObjectType, WhereCondition iwc, bool isDistinct)
+        {
             TryCreateTable(DbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetResultCountStatement(Dialect, iwc);
+            SqlStatement Sql = oi.Composer.GetResultCountStatement(Dialect, iwc, isDistinct);
             oi.LogSql(Sql);
             object ro = ExecuteScalar(Sql);
             return Convert.ToInt64(ro);
