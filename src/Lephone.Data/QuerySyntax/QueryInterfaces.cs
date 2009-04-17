@@ -6,6 +6,7 @@ namespace Lephone.Data.QuerySyntax
     public interface ISelectable<T> where T : class, IDbObject
     {
         DbObjectList<T> Select();
+        DbObjectList<T> SelectDistinct();
     }
 
     public interface IGetPagedSelector

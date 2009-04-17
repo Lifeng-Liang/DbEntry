@@ -55,9 +55,9 @@ namespace Lephone.Data.Common
             return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetSelectStatement(DbDialect Dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
+        public virtual SqlStatement GetSelectStatement(DbDialect Dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
-            var sb = new SelectStatementBuilder(from ?? oi.From, oc, lc);
+            var sb = new SelectStatementBuilder(from ?? oi.From, oc, lc) {IsDistinct = isDistinct};
             sb.Where.Conditions = iwc;
             oi.Handler.SetValuesForSelect(sb);
             // DataBase Process

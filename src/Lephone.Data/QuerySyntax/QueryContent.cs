@@ -74,6 +74,13 @@ namespace Lephone.Data.QuerySyntax
             return ret;
         }
 
+        public DbObjectList<T> SelectDistinct()
+        {
+            var ret = new DbObjectList<T>();
+            m_entry.FillCollection(ret, typeof(T), m_where, m_order, m_range, true);
+            return ret;
+        }
+
         public IPagedSelector GetPagedSelector()
         {
             return new PagedSelector<T>(m_where, m_order, m_pagesize, m_entry);

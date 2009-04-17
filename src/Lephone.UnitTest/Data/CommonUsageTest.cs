@@ -16,6 +16,12 @@ namespace Lephone.UnitTest.Data
 {
     #region Objects
 
+    [DbTable("File")]
+    public class DistinctTest : IDbObject
+    {
+        [DbColumn("BelongsTo_Id")] public int n;
+    }
+
     public abstract class NotDefineRelation : DbObjectModel<NotDefineRelation>
     {
         public abstract AllowNullOnValueType Relation { get; set; }
@@ -666,6 +672,18 @@ namespace Lephone.UnitTest.Data
                 Assert.AreEqual("The property 'Relation' should define as relation field and can not set lazy load attribute", ex.Message);
             }
 
+        }
+
+        [Test]
+        public void TestDistinct()
+        {
+            var list = DbEntry.From<DistinctTest>().Where(null).OrderBy(p => p.n).SelectDistinct();
+            Assert.AreEqual(9, list.Count);
+            var exps = new[] {0, 1, 2, 3, 4, 9, 11, 15, 16};
+            for(int i = 0; i < 9; i++)
+            {
+                Assert.AreEqual(exps[i], list[i].n);
+            }
         }
     }
 }

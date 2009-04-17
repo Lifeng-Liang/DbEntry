@@ -20,6 +20,7 @@ namespace Lephone.Data.Builder
         internal string FunctionName;
 
         internal bool IsGroupBy;
+        internal bool IsDistinct;
 
 		public SelectStatementBuilder(string TableName) : this(TableName, null, null)
 		{
@@ -87,6 +88,10 @@ namespace Lephone.Data.Builder
         internal string GetColumns(DbDialect dd)
 		{
 			var Columns = new StringBuilder();
+            if(IsDistinct)
+            {
+                Columns.Append("DISTINCT ");
+            }
 			foreach ( string k in keys )
 			{
 				Columns.Append(dd.QuoteForColumnName(k));
