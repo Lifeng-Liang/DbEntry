@@ -699,5 +699,13 @@ namespace Lephone.UnitTest.Data
                 Assert.AreEqual(exps[i], list[i].n);
             }
         }
+
+        [Test]
+        public void TestWhereFunctionOfDbObjectModel()
+        {
+            var list = UniquePerson.Where(CK.K["Name"] == "Tom").Select();
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(1, list[0].Id);
+        }
     }
 }

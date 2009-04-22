@@ -1,5 +1,6 @@
 ﻿using System;
 using Lephone.Data.Common;
+using Lephone.Data.QuerySyntax;
 
 namespace Lephone.Data.Definition
 {
@@ -74,6 +75,11 @@ namespace Lephone.Data.Definition
         public static T FindOne(WhereCondition con, string orderBy)
         {
             return DbEntry.GetObject<T>(con, OrderBy.Parse(orderBy));
+        }
+
+        public static IAfterWhere<T> Where(WhereCondition con)
+        {
+            return new QueryContent<T>(DbEntry.Context).Where(con);
         }
 
         public static DbObjectList<T> FindRecent(int Count)
