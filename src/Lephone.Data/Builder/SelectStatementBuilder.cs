@@ -16,7 +16,7 @@ namespace Lephone.Data.Builder
 
         private readonly List<string> keys = new List<string>();
 
-        internal string FunctionCol;
+        internal List<string> FunctionArgs = new List<string>();
         internal string FunctionName;
 
         internal bool IsGroupBy;
@@ -61,7 +61,7 @@ namespace Lephone.Data.Builder
         private void SetFunctionColumn(string FunctionName, string ColumnName)
         {
             this.FunctionName = FunctionName;
-            FunctionCol = ColumnName;
+            FunctionArgs.Add(ColumnName);
         }
 
         public void SetAsGroupBy(string ColumnName)
@@ -97,16 +97,17 @@ namespace Lephone.Data.Builder
 				Columns.Append(dd.QuoteForColumnName(k));
                 Columns.Append(",");
 			}
-            if (FunctionCol != null)
+            if (FunctionArgs.Count != 0)
             {
                 Columns.Append(FunctionName);
-                if (FunctionCol == "*")
+                if (FunctionArgs[0] == "*" || FunctionArgs.Count > 1)
                 {
                     Columns.Append("(*) AS ").Append(DbEntry.CountColumn).Append(",");
                 }
                 else
                 {
-                    string fn = FunctionCol.StartsWith("DISTINCT ") ? FunctionCol : dd.QuoteForColumnName(FunctionCol);
+                    string fa = FunctionArgs[0];
+                    string fn = fa.StartsWith("DISTINCT ") ? fa : dd.QuoteForColumnName(fa);
                     string gfn = FunctionName == "COUNT" ? DbEntry.CountColumn : fn;
                     Columns.Append("(")
                         .Append(fn)

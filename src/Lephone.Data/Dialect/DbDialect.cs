@@ -200,10 +200,25 @@ namespace Lephone.Data.Dialect
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),
-                ssb.IsGroupBy ? " GROUP BY " + QuoteForColumnName(ssb.FunctionCol) : "",
+                ssb.IsGroupBy ? " GROUP BY " + GetFunctionArgs(ssb) : "",
                 (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this)
                 );
             return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
+        }
+
+        private string GetFunctionArgs(SelectStatementBuilder ssb)
+        {
+            var ret = new StringBuilder();
+            foreach (string s in ssb.FunctionArgs)
+            {
+                ret.Append(QuoteForColumnName(s));
+                ret.Append(",");
+            }
+            if(ret.Length > 1)
+            {
+                ret.Length--;
+            }
+            return ret.ToString();
         }
 
         protected virtual SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)

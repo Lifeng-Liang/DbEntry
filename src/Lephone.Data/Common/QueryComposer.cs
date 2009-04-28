@@ -66,8 +66,12 @@ namespace Lephone.Data.Common
         {
             var sb = new SelectStatementBuilder(oi.From, order, null);
             sb.Where.Conditions = iwc;
-            sb.Keys.Add(columnName);
-            sb.SetAsGroupBy(columnName);
+            var list = columnName.Split(',');
+            foreach (string s in list)
+            {
+                sb.Keys.Add(s);
+                sb.SetAsGroupBy(s);
+            }
             return sb.ToSqlStatement(dialect);
         }
 

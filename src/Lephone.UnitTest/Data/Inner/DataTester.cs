@@ -20,10 +20,15 @@ namespace Lephone.UnitTest.Data.Inner
             ssb.SetCountColumn("*");
 			string s = "SELECT COUNT(*) AS it__count__ FROM [UserTable];\n";
 			Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
+
+            ssb = new SelectStatementBuilder("UserTable");
             ssb.SetCountColumn("abc");
             s = "SELECT COUNT([abc]) AS it__count__ FROM [UserTable];\n";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
+
+            ssb = new SelectStatementBuilder("UserTable");
             ssb.Keys.Add("zzz");
+            ssb.SetCountColumn("abc");
             s = "SELECT [zzz],COUNT([abc]) AS it__count__ FROM [UserTable];\n";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
         }
@@ -36,7 +41,7 @@ namespace Lephone.UnitTest.Data.Inner
 		}
 
         [Test]
-        public void TestSelectSentenceBuilder1a()
+        public void TestSelectSentenceBuilder1A()
         {
             var ssb = new SelectStatementBuilder("UserTable", null, new Range(1, 10));
             ssb.Keys.Add("a");
