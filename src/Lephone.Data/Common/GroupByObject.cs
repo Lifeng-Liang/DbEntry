@@ -12,10 +12,10 @@ namespace Lephone.Data.Common
 
         public GroupByObject() { }
 
-        public GroupByObject(T Column, long Count)
+        public GroupByObject(T column, long count)
         {
-            this.Column = Column;
-            this.Count = Count;
+            Column = column;
+            Count = count;
         }
     }
 }

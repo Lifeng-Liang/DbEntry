@@ -20,6 +20,19 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [SoftDelete]
+    public abstract class SoftDeleteIndex : DbObjectModel<SoftDeleteIndex>
+    {
+        [Index(UNIQUE = true)]
+        public abstract string Name { get; set; }
+
+        public SoftDeleteIndex Init(string name)
+        {
+            this.Name = name;
+            return this;
+        }
+    }
+
     [DbTable("SoftDelete")]
     public abstract class SoftDeleteFull : DbObjectModel<SoftDeleteFull>
     {
@@ -144,6 +157,18 @@ namespace Lephone.UnitTest.Data
             t = Test.FindById(2);
             Assert.IsNotNull(t);
             Assert.AreEqual("myName2", t.Nome);
+        }
+
+        [Test]
+        public void TestVerify()
+        {
+            var x = SoftDeleteIndex.New().Init("a");
+            x.Save();
+            x.Delete();
+
+            var y = SoftDeleteIndex.New().Init("a");
+            bool b = y.Validate().IsValid;
+            Assert.IsFalse(b);
         }
     }
 }

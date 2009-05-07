@@ -4,6 +4,7 @@ namespace Lephone.Data.Definition
 {
     public interface IDataReaderInitalize
     {
-        void Initalize(IDataReader dr);
+        IDataReaderInitalize Initalize(IDataReader dr, int startIndex);
+        int FieldCount { get; }
     }
 }

@@ -5,6 +5,7 @@ using System.Reflection;
 using Lephone.Data.Builder;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
+using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
@@ -27,28 +28,47 @@ namespace Lephone.Data.Common
             return Creator.Invoke(os);
         }
 
-        public void LoadSimpleValues(object o, bool UseIndex, IDataReader dr)
+        public void LoadSimpleValues(object o, bool useIndex, IDataReader dr)
         {
-            if (UseIndex)
+            if (useIndex)
             {
                 int i = 0;
                 foreach (MemberHandler f in oi.SimpleFields)
                 {
-                    //SetValue(f, o, dr[i++]);
-                    f.SetValue(o, dr[i++]);
+                    if(f.IsDataReaderInitalize)
+                    {
+                        var d = (IDataReaderInitalize)ClassHelper.CreateInstance(f.FieldType);
+                        d.Initalize(dr, i);
+                        f.SetValue(o, d);
+                        i += f.DataReaderInitalizeFieldCount;
+                    }
+                    else
+                    {
+                        //SetValue(f, o, dr[i++]);
+                        f.SetValue(o, dr[i++]);
+                    }
                 }
             }
             else
             {
                 foreach (MemberHandler f in oi.SimpleFields)
                 {
-                    //SetValue(f, o, dr[f.Name]);
-                    f.SetValue(o, dr[f.Name]);
+                    if (f.IsDataReaderInitalize)
+                    {
+                        var d = (IDataReaderInitalize)ClassHelper.CreateInstance(f.FieldType);
+                        d.Initalize(dr, -1);
+                        f.SetValue(o, d);
+                    }
+                    else
+                    {
+                        //SetValue(f, o, dr[f.Name]);
+                        f.SetValue(o, dr[f.Name]);
+                    }
                 }
             }
         }
 
-        public void LoadRelationValues(DbContext driver, object o, bool UseIndex, IDataReader dr)
+        public void LoadRelationValues(DbContext driver, object o, bool useIndex, IDataReader dr)
         {
             int n = oi.SimpleFields.Length;
             foreach (MemberHandler f in oi.RelationFields)
@@ -91,7 +111,7 @@ namespace Lephone.Data.Common
                 else if (f.IsBelongsTo) // TODO: IsHasAndBelongsToMany
                 {
                     var hbo = (IBelongsTo)ho;
-                    hbo.ForeignKey = UseIndex ? dr[n++] : dr[f.Name];
+                    hbo.ForeignKey = useIndex ? dr[n++] : dr[f.Name];
                 }
             }
         }

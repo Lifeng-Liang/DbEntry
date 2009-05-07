@@ -10,18 +10,17 @@ using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
 using Lephone.Util;
 using Lephone.Util.Text;
-using PropertyAttributes=System.Reflection.PropertyAttributes;
 
 namespace Lephone.Data
 {
     internal class DataReaderEmitHelper
     {
-        readonly Dictionary<Type, string> dic;
+        readonly Dictionary<Type, string> Dic;
 
         public DataReaderEmitHelper()
         {
             // process chars etc.
-            dic = new Dictionary<Type, string>
+            Dic = new Dictionary<Type, string>
                       {
                           {typeof (long), "GetInt64"},
                           {typeof (int), "GetInt32"},
@@ -45,9 +44,9 @@ namespace Lephone.Data
         public MethodInfo GetMethodInfo(Type t)
         {
             Type drt = typeof(IDataRecord);
-            if (dic.ContainsKey(t))
+            if (Dic.ContainsKey(t))
             {
-                string n = dic[t];
+                string n = Dic[t];
                 MethodInfo mi = drt.GetMethod(n);
                 return mi;
             }
@@ -63,9 +62,9 @@ namespace Lephone.Data
             return GetMethodInfo(false);
         }
 
-        public MethodInfo GetMethodInfo(bool IsInt)
+        public MethodInfo GetMethodInfo(bool isInt)
         {
-            if (IsInt)
+            if (isInt)
             {
                 return typeof(IDataRecord).GetMethod("get_Item", new[] { typeof(int) });
             }
@@ -87,23 +86,23 @@ namespace Lephone.Data
         private const MethodAttributes OverrideFlag = MethodAttributes.Family | MethodAttributes.HideBySig |
             MethodAttributes.Virtual;
 
-        private static readonly Type objType = typeof(object);
+        private static readonly Type ObjType = typeof(object);
 
-        private static readonly Hashtable types = Hashtable.Synchronized(new Hashtable());
-        private static readonly Type[] emptyTypes = new Type[] { };
+        private static readonly Hashtable Types = Hashtable.Synchronized(new Hashtable());
+        private static readonly Type[] EmptyTypes = new Type[] { };
 
         public static T NewObject<T>(params object[] os)
         {
             if (os.Length > 0)
             {
-                Type ImplType = GetImplType(typeof(T));
-                return (T)ClassHelper.CreateInstance(ImplType, os);
+                Type implType = GetImplType(typeof(T));
+                return (T)ClassHelper.CreateInstance(implType, os);
             }
             return (T)ObjectInfo.GetInstance(typeof(T)).NewObject();
         }
 
-        private static readonly Type vhBaseType = typeof(EmitObjectHandlerBase);
-        private static readonly DataReaderEmitHelper helper = new DataReaderEmitHelper();
+        private static readonly Type VhBaseType = typeof(EmitObjectHandlerBase);
+        private static readonly DataReaderEmitHelper Helper = new DataReaderEmitHelper();
 
         internal static IDbObjectHandler CreateDbObjectHandler(Type srcType, ObjectInfo oi)
         {
@@ -118,11 +117,11 @@ namespace Lephone.Data
             // TODO: process null value, nullable
             ConstructorInfo ci = GetConstructor(srcType);
             MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
-                DynamicObjectTypeAttr, vhBaseType, new[] { typeof(IDbObjectHandler) });
+                DynamicObjectTypeAttr, VhBaseType, new[] { typeof(IDbObjectHandler) });
             tb.DefineDefaultConstructor(MethodAttributes.Public);
             // implements CreateInstance
-            tb.OverrideMethodDirect(OverridePublicFlag, "CreateInstance", vhBaseType,
-                objType, emptyTypes, il => il.NewObj(ci));
+            tb.OverrideMethodDirect(OverridePublicFlag, "CreateInstance", VhBaseType,
+                ObjType, EmptyTypes, il => il.NewObj(ci));
             // implements others
             OverrideLoadSimpleValuesByIndex(tb, srcType, oi.SimpleFields);
             OverrideLoadSimpleValuesByName(tb, srcType, oi.SimpleFields);
@@ -137,55 +136,69 @@ namespace Lephone.Data
             return t;
         }
 
-        private static void OverrideLoadSimpleValuesByIndex(MemoryTypeBuilder tb, Type srcType, MemberHandler[] SimpleFields)
+        private static void OverrideLoadSimpleValuesByIndex(MemoryTypeBuilder tb, Type srcType, MemberHandler[] simpleFields)
         {
-            MethodInfo mi = helper.GetMethodInfo(true);
-            MethodInfo miGetNullable = vhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
-            tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByIndex", vhBaseType, null,
+            MethodInfo mi = Helper.GetMethodInfo(true);
+            MethodInfo miGetNullable = VhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
+            tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByIndex", VhBaseType, null,
                 new[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(1).Cast(srcType).SetLoc(0);
                 // set values
                 int n = 0;
-                foreach (MemberHandler f in SimpleFields)
+                foreach (MemberHandler f in simpleFields)
                 {
                     il.LoadLoc(0);
-                    if (f.AllowNull) { il.LoadArg(0); }
-                    il.LoadArg(2).LoadInt(n);
-                    MethodInfo mi1 = helper.GetMethodInfo(f.FieldType);
-                    if(f.AllowNull || mi1 == null)
+                    if (f.IsDataReaderInitalize)
                     {
-                        il.CallVirtual(mi);
-                        if (f.AllowNull)
-                        {
-                            Set2ndArgForGetNullable(f, il);
-                            il.Call(miGetNullable);
-                        }
-                        // cast or unbox
-                        il.CastOrUnbox(f.FieldType);
+                        il.NewObj(f.FieldType);
+                        il.LoadArg(2);
+                        il.LoadInt(n);
+                        MethodInfo miInit = f.FieldType.GetMethod("Initalize");
+                        il.Call(miInit);
+                        il.Cast(f.FieldType);
+                        f.MemberInfo.EmitSet(il);
+                        n += f.DataReaderInitalizeFieldCount;
                     }
                     else
                     {
-                        il.CallVirtual(mi1);
+                        if (f.AllowNull) { il.LoadArg(0); }
+                        il.LoadArg(2).LoadInt(n);
+                        MethodInfo mi1 = Helper.GetMethodInfo(f.FieldType);
+                        if (f.AllowNull || mi1 == null)
+                        {
+                            il.CallVirtual(mi);
+                            if (f.AllowNull)
+                            {
+                                Set2ndArgForGetNullable(f, il);
+                                il.Call(miGetNullable);
+                            }
+                            // cast or unbox
+                            il.CastOrUnbox(f.FieldType);
+                        }
+                        else
+                        {
+                            il.CallVirtual(mi1);
+                        }
+                        f.MemberInfo.EmitSet(il);
+                        n++;
                     }
-                    f.MemberInfo.EmitSet(il);
-                    n++;
                 }
             });
         }
 
-        private static void OverrideLoadSimpleValuesByName(MemoryTypeBuilder tb, Type srcType, MemberHandler[] SimpleFields)
+        private static void OverrideLoadSimpleValuesByName(MemoryTypeBuilder tb, Type srcType, MemberHandler[] simpleFields)
         {
-            MethodInfo mi = helper.GetMethodInfo();
-            MethodInfo miGetNullable = vhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
-            tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByName", vhBaseType, null,
+            MethodInfo mi = Helper.GetMethodInfo();
+            MethodInfo miGetNullable = VhBaseType.GetMethod("GetNullable", BindingFlags.NonPublic | BindingFlags.Instance);
+            tb.OverrideMethodDirect(OverrideFlag, "LoadSimpleValuesByName", VhBaseType, null,
                 new[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(1).Cast(srcType).SetLoc(0);
                 // set values
-                foreach (MemberHandler f in SimpleFields)
+                foreach (MemberHandler f in simpleFields)
                 {
                     // get value
                     il.LoadLoc(0);
@@ -221,17 +234,17 @@ namespace Lephone.Data
         }
 
         private static void OverrideLoadRelationValues(MemoryTypeBuilder tb, Type srcType,
-            MemberHandler[] RelationFields, int Index, bool UseIndex)
+            MemberHandler[] relationFields, int index, bool useIndex)
         {
-            string MethodName = UseIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
-            tb.OverrideMethodDirect(OverrideFlag, MethodName, vhBaseType, null,
+            string methodName = useIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
+            tb.OverrideMethodDirect(OverrideFlag, methodName, VhBaseType, null,
                 new[] { typeof(DbContext), typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
                 // set values
                 MethodInfo mi = typeof(ILazyLoading).GetMethod("Init");
-                foreach (MemberHandler f in RelationFields)
+                foreach (MemberHandler f in relationFields)
                 {
                     il.LoadLoc(0);
                     f.MemberInfo.EmitGet(il);
@@ -262,13 +275,13 @@ namespace Lephone.Data
                     else if (f.IsBelongsTo)
                     {
                         il.LoadArg(3);
-                        if (UseIndex)
+                        if (useIndex)
                         {
-                            il.LoadInt(Index++).CallVirtual(helper.GetMethodInfo(true));
+                            il.LoadInt(index++).CallVirtual(Helper.GetMethodInfo(true));
                         }
                         else
                         {
-                            il.LoadString(f.Name).CallVirtual(helper.GetMethodInfo());
+                            il.LoadString(f.Name).CallVirtual(Helper.GetMethodInfo());
                         }
                         il.CallVirtual(typeof(IBelongsTo).GetMethod("set_ForeignKey"));
                     }
@@ -276,17 +289,17 @@ namespace Lephone.Data
             });
         }
 
-        private static void OverrideGetKeyValues(MemoryTypeBuilder tb, Type srcType, MemberHandler[] KeyFields)
+        private static void OverrideGetKeyValues(MemoryTypeBuilder tb, Type srcType, MemberHandler[] keyFields)
         {
             Type t = typeof(Dictionary<string, object>);
             MethodInfo mi = t.GetMethod("Add", new[] { typeof(string), typeof(object) });
-            tb.OverrideMethodDirect(OverrideFlag, "GetKeyValuesDirect", vhBaseType, null,
+            tb.OverrideMethodDirect(OverrideFlag, "GetKeyValuesDirect", VhBaseType, null,
                 new[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
                 // set values
-                foreach (MemberHandler f in KeyFields)
+                foreach (MemberHandler f in keyFields)
                 {
                     il.LoadArg(1).LoadString(f.Name).LoadLoc(0);
                     f.MemberInfo.EmitGet(il);
@@ -295,14 +308,14 @@ namespace Lephone.Data
             });
         }
 
-        private static void OverrideGetKeyValue(MemoryTypeBuilder tb, Type srcType, MemberHandler[] KeyFields)
+        private static void OverrideGetKeyValue(MemoryTypeBuilder tb, Type srcType, MemberHandler[] keyFields)
         {
-            tb.OverrideMethodDirect(OverrideFlag, "GetKeyValueDirect", vhBaseType, typeof(object),
+            tb.OverrideMethodDirect(OverrideFlag, "GetKeyValueDirect", VhBaseType, typeof(object),
                 new[] { typeof(object) }, delegate(ILBuilder il)
             {
-                if (KeyFields.Length == 1)
+                if (keyFields.Length == 1)
                 {
-                    MemberHandler h = KeyFields[0];
+                    MemberHandler h = keyFields[0];
                     il.LoadArg(1).Cast(srcType);
                     h.MemberInfo.EmitGet(il);
                     il.Box(h.FieldType);
@@ -314,14 +327,14 @@ namespace Lephone.Data
             });
         }
 
-        private static void OverrideSetValuesForSelect(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        private static void OverrideSetValuesForSelect(MemoryTypeBuilder tb, Type srcType, MemberHandler[] fields)
         {
             Type t = typeof(List<string>);
             MethodInfo mi = t.GetMethod("Add", new[] { typeof(string) });
-            tb.OverrideMethodDirect(OverrideFlag, "SetValuesForSelectDirect", vhBaseType, null,
+            tb.OverrideMethodDirect(OverrideFlag, "SetValuesForSelectDirect", VhBaseType, null,
                 new[] { t }, delegate(ILBuilder il)
             {
-                foreach (MemberHandler f in Fields)
+                foreach (MemberHandler f in fields)
                 {
                     if (!f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany && !f.IsLazyLoad)
                     {
@@ -331,22 +344,22 @@ namespace Lephone.Data
             });
         }
 
-        private static void OverrideSetValuesDirect(string Name, MemoryTypeBuilder tb, Type srcType,
-            MemberHandler[] Fields, CallbackHandler<MemberHandler, bool> cb1, CallbackHandler<MemberHandler, bool> cb2)
+        private static void OverrideSetValuesDirect(string name, MemoryTypeBuilder tb, Type srcType,
+            MemberHandler[] fields, CallbackHandler<MemberHandler, bool> cb1, CallbackHandler<MemberHandler, bool> cb2)
         {
             Type t = typeof(KeyValueCollection);
             MethodInfo addmi = t.GetMethod("Add", new[] { typeof(KeyValue) });
-            MethodInfo nkvmi = vhBaseType.GetMethod("NewKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
-            MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo nkvmi = VhBaseType.GetMethod("NewKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo nkvdmi = VhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
 
-            tb.OverrideMethodDirect(OverrideFlag, Name, vhBaseType, null,
+            tb.OverrideMethodDirect(OverrideFlag, name, VhBaseType, null,
                 new[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
                 // set values
                 int n = 0;
-                foreach (MemberHandler f in Fields)
+                foreach (MemberHandler f in fields)
                 {
                     if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                     {
@@ -385,43 +398,43 @@ namespace Lephone.Data
             });
         }
 
-        private static void OverrideSetValuesForInsert(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        private static void OverrideSetValuesForInsert(MemoryTypeBuilder tb, Type srcType, MemberHandler[] fields)
         {
-            OverrideSetValuesDirect("SetValuesForInsertDirect", tb, srcType, Fields,
+            OverrideSetValuesDirect("SetValuesForInsertDirect", tb, srcType, fields,
                                     m => m.IsUpdatedOn,
                                     m => m.IsCreatedOn || m.IsSavedOn || m.IsCount);
         }
 
-        private static void OverrideSetValuesForUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        private static void OverrideSetValuesForUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] fields)
         {
             if (srcType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
-                OverrideSetValuesForPartialUpdate(tb, srcType, Fields);
+                OverrideSetValuesForPartialUpdate(tb, srcType, fields);
             }
             else
             {
-                OverrideSetValuesDirect("SetValuesForUpdateDirect", tb, srcType, Fields,
+                OverrideSetValuesDirect("SetValuesForUpdateDirect", tb, srcType, fields,
                                         m => m.IsCreatedOn || m.IsKey,
                                         m => m.IsUpdatedOn || m.IsSavedOn || m.IsCount);
             }
 
         }
 
-        private static void OverrideSetValuesForPartialUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] Fields)
+        private static void OverrideSetValuesForPartialUpdate(MemoryTypeBuilder tb, Type srcType, MemberHandler[] fields)
         {
             Type t = typeof(KeyValueCollection);
-            MethodInfo akvmi = vhBaseType.GetMethod("AddKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo akvmi = VhBaseType.GetMethod("AddKeyValue", BindingFlags.NonPublic | BindingFlags.Instance);
             MethodInfo addmi = t.GetMethod("Add", new[] { typeof(KeyValue) });
-            MethodInfo nkvdmi = vhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo nkvdmi = VhBaseType.GetMethod("NewKeyValueDirect", BindingFlags.NonPublic | BindingFlags.Instance);
 
-            tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", vhBaseType, null,
+            tb.OverrideMethodDirect(OverrideFlag, "SetValuesForUpdateDirect", VhBaseType, null,
                 new[] { t, typeof(object) }, delegate(ILBuilder il)
             {
                 // User u = (User)o;
                 il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
                 // set values
                 int n = 0;
-                foreach (MemberHandler f in Fields)
+                foreach (MemberHandler f in fields)
                 {
                     if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                     {
@@ -459,25 +472,25 @@ namespace Lephone.Data
             });
         }
 
-        public static Type GetImplType(Type SourceType)
+        public static Type GetImplType(Type sourceType)
         {
-            if (types.Contains(SourceType))
+            if (Types.Contains(sourceType))
             {
-                return (Type)types[SourceType];
+                return (Type)Types[sourceType];
             }
 
             TypeAttributes ta = DynamicObjectTypeAttr;
             Type[] interfaces = null;
-            if ( SourceType.IsSerializable )
+            if ( sourceType.IsSerializable )
             {
                 ta |= TypeAttributes.Serializable;
                 interfaces = new[] { typeof(ISerializable) };
             }
 
-            MethodInfo minit = SourceType.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag);
-            MethodInfo mupdate = SourceType.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag);
+            MethodInfo minit = sourceType.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag);
+            MethodInfo mupdate = sourceType.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag);
 
-            PropertyInfo[] pis = SourceType.GetProperties();
+            PropertyInfo[] pis = sourceType.GetProperties();
             var plist = new List<PropertyInfo>();
             var impRelations = new List<MemberHandler>();
             foreach (PropertyInfo pi in pis)
@@ -500,18 +513,18 @@ namespace Lephone.Data
             }
 
             MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
-                ta, SourceType, interfaces, GetCustomAttributes(SourceType));
+                ta, sourceType, interfaces, GetCustomAttributes(sourceType));
 
             foreach (PropertyInfo pi in plist)
             {
-                MemberHandler h = tb.ImplProperty(pi.Name, pi.PropertyType, SourceType, mupdate, pi);
+                MemberHandler h = tb.ImplProperty(pi.Name, pi.PropertyType, sourceType, mupdate, pi);
                 if (h != null)
                 {
                     impRelations.Add(h);
                 }
             }
 
-            if (SourceType.IsSerializable)
+            if (sourceType.IsSerializable)
             {
                 MethodInfo mi = typeof(DynamicObjectReference).GetMethod("SerializeObject", ClassHelper.StaticFlag);
                 tb.OverrideMethod(ImplFlag, "GetObjectData", typeof(ISerializable), null,
@@ -519,31 +532,31 @@ namespace Lephone.Data
                                   il => il.LoadArg(1).LoadArg(2).Call(mi));
             }
 
-            ConstructorInfo[] cis = GetConstructorInfos(SourceType);
+            ConstructorInfo[] cis = GetConstructorInfos(sourceType);
             foreach (ConstructorInfo ci in cis)
             {
                 tb.DefineConstructor(MethodAttributes.Public, ci, minit, impRelations);
             }
 
             Type t = tb.CreateType();
-            types.Add(SourceType, t);
+            Types.Add(sourceType, t);
             return t;
         }
 
-        private static ConstructorInfo GetConstructor(Type SourceType)
+        private static ConstructorInfo GetConstructor(Type sourceType)
         {
-            Type t = SourceType;
+            Type t = sourceType;
             ConstructorInfo ret;
-            while ((ret = t.GetConstructor(emptyTypes)) == null)
+            while ((ret = t.GetConstructor(EmptyTypes)) == null)
             {
                 t = t.BaseType;
             }
             return ret;
         }
 
-        private static ConstructorInfo[] GetConstructorInfos(Type SourceType)
+        private static ConstructorInfo[] GetConstructorInfos(Type sourceType)
         {
-            Type t = SourceType;
+            Type t = sourceType;
             ConstructorInfo[] ret;
             while((ret = ClassHelper.GetPublicOrProtectedConstructors(t)).Length == 0)
             {
@@ -552,19 +565,19 @@ namespace Lephone.Data
             return ret;
         }
 
-        private static CustomAttributeBuilder[] GetCustomAttributes(Type SourceType)
+        private static CustomAttributeBuilder[] GetCustomAttributes(Type sourceType)
         {
-            object[] os = SourceType.GetCustomAttributes(false);
+            object[] os = sourceType.GetCustomAttributes(false);
             var al = new ArrayList();
             bool hasAttr = false;
             hasAttr |= PopulateDbTableAttribute(al, os);
             hasAttr |= PopulateJoinOnAttribute(al, os);
             if (!hasAttr)
             {
-                string DefaultName = NameMapper.Instance.MapName(SourceType.Name);
+                string defaultName = NameMapper.Instance.MapName(sourceType.Name);
                 al.Add(new CustomAttributeBuilder(
                     typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
-                    new object[] { DefaultName }));
+                    new object[] { defaultName }));
             }
             return (CustomAttributeBuilder[])al.ToArray(typeof(CustomAttributeBuilder));
         }

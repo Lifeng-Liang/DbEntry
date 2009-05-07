@@ -27,14 +27,14 @@ namespace Lephone.Data.Common
             return new KeyValue(kv.Key, v, v.GetType());
         }
 
-        protected void AddKeyValue(KeyValueCollection Values, DbObjectSmartUpdate o, string Key, int n, object v)
+        protected void AddKeyValue(KeyValueCollection values, DbObjectSmartUpdate o, string Key, int n, object v)
         {
             Dictionary<string, object> kd = o.m_UpdateColumns;
             if (kd != null)
             {
                 if (kd.ContainsKey(Key))
                 {
-                    Values.Add(NewKeyValue(n, v));
+                    values.Add(NewKeyValue(n, v));
                 }
             }
         }
@@ -76,9 +76,9 @@ namespace Lephone.Data.Common
 
         public abstract object CreateInstance();
 
-        public void LoadSimpleValues(object o, bool UseIndex, IDataReader dr)
+        public void LoadSimpleValues(object o, bool useIndex, IDataReader dr)
         {
-            if (UseIndex)
+            if (useIndex)
             {
                 LoadSimpleValuesByIndex(o, dr);
             }
@@ -91,9 +91,15 @@ namespace Lephone.Data.Common
         protected abstract void LoadSimpleValuesByIndex(object o, IDataReader dr);
         protected abstract void LoadSimpleValuesByName(object o, IDataReader dr);
 
-        public void LoadRelationValues(DbContext driver, object o, bool UseIndex, IDataReader dr)
+        protected void InitDataReaderInitalize(object o, IDataReader dr, MemberHandler f, IDataReaderInitalize d, int index)
         {
-            if (UseIndex)
+            d.Initalize(dr, index);
+            f.SetValue(o, d);
+        }
+
+        public void LoadRelationValues(DbContext driver, object o, bool useIndex, IDataReader dr)
+        {
+            if (useIndex)
             {
                 LoadRelationValuesByIndex(driver, o, dr);
             }
@@ -132,21 +138,21 @@ namespace Lephone.Data.Common
             SetValuesForSelectDirect(isv.Keys);
         }
 
-        protected abstract void SetValuesForSelectDirect(List<string> Keys);
+        protected abstract void SetValuesForSelectDirect(List<string> keys);
 
         public void SetValuesForInsert(ISqlValues isv, object obj)
         {
             SetValuesForInsertDirect(isv.Values, obj);
         }
 
-        protected abstract void SetValuesForInsertDirect(KeyValueCollection Values, object obj);
+        protected abstract void SetValuesForInsertDirect(KeyValueCollection values, object obj);
 
         public void SetValuesForUpdate(ISqlValues isv, object obj)
         {
             SetValuesForUpdateDirect(isv.Values, obj);
         }
 
-        protected abstract void SetValuesForUpdateDirect(KeyValueCollection Values, object obj);
+        protected abstract void SetValuesForUpdateDirect(KeyValueCollection values, object obj);
 
         protected object GetNullable(object o, int objType)
         {

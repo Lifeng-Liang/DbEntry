@@ -299,20 +299,20 @@ namespace Lephone.Data
         private void DataLoadDirect(IProcessor ip, Type ReturnType, Type DbObjectType, SqlStatement Sql, bool UseIndex)
         {
             TryCreateTable(DbObjectType);
-            int StartIndex = Sql.StartIndex;
-            int EndIndex = Sql.EndIndex;
-            if (Dialect.SupportsRangeStartIndex && EndIndex > 0)
+            int startIndex = Sql.StartIndex;
+            int endIndex = Sql.EndIndex;
+            if (Dialect.SupportsRangeStartIndex && endIndex > 0)
             {
-                EndIndex = EndIndex - StartIndex + 1;
-                StartIndex = 1;
+                endIndex = endIndex - startIndex + 1;
+                startIndex = 1;
             }
             ExecuteDataReader(Sql, ReturnType, delegate(IDataReader dr)
             {
-                int Count = 0;
+                int count = 0;
                 while (dr.Read())
                 {
-                    Count++;
-                    if (Count >= StartIndex)
+                    count++;
+                    if (count >= startIndex)
                     {
                         object di = ObjectInfo.CreateObject(this, ReturnType, dr, UseIndex);
                         if (!ip.Process(di))
@@ -320,7 +320,7 @@ namespace Lephone.Data
                             break;
                         }
                     }
-                    if (EndIndex > 0 && Count >= EndIndex)
+                    if (endIndex > 0 && count >= endIndex)
                     {
                         break;
                     }
