@@ -1,4 +1,5 @@
-﻿using Lephone.Data.Common;
+﻿using System;
+using Lephone.Data.Common;
 using Lephone.Data.Definition;
 
 namespace Lephone.Data.QuerySyntax
@@ -37,6 +38,8 @@ namespace Lephone.Data.QuerySyntax
         long GetCount();
         decimal? GetMax(string columnName);
         decimal? GetMin(string columnName);
+        DateTime? GetMaxDate(string columnName);
+        DateTime? GetMinDate(string columnName);
         decimal? GetSum(string columnName);
     }
 

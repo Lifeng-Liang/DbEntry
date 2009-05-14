@@ -116,6 +116,16 @@ namespace Lephone.Data.QuerySyntax
             return m_entry.GetMin(typeof(T), m_where, columnName);
         }
 
+        public DateTime? GetMaxDate(string columnName)
+        {
+            return m_entry.GetMaxDate(typeof(T), m_where, columnName);
+        }
+
+        public DateTime? GetMinDate(string columnName)
+        {
+            return m_entry.GetMinDate(typeof(T), m_where, columnName);
+        }
+
         public decimal? GetSum(string columnName)
         {
             return m_entry.GetSum(typeof(T), m_where, columnName);

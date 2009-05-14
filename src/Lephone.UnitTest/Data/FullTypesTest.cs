@@ -54,22 +54,13 @@ namespace Lephone.UnitTest.Data
             ft.c15 = new byte[] { 1, 2, 3, 4, 5 };
             // get infos.
             PropertyInfo[] pis = typeof(FullType).GetProperties();
-            List<string> rowNumes = new List<string>();
-            List<Type> rowTypes = new List<Type>();
-            List<object> row = new List<object>();
-            rowNumes.Add("Id");
-            rowTypes.Add(typeof(long));
-            row.Add(1L);
+            StaticRecorder.CurRow.Clear();
+            StaticRecorder.CurRow.Add(new RowInfo("Id", typeof(long), 1L));
             foreach (PropertyInfo pi in pis)
             {
-                rowNumes.Add(pi.Name);
-                rowTypes.Add(pi.PropertyType);
                 object o = pi.GetValue(ft, null);
-                row.Add(o);
+                StaticRecorder.CurRow.Add(new RowInfo(pi.Name, pi.PropertyType, o));
             }
-            StaticRecorder.CurRow = row;
-            StaticRecorder.CurRowNames = rowNumes;
-            StaticRecorder.CurRowTypes = rowTypes;
         }
 
         [Test]

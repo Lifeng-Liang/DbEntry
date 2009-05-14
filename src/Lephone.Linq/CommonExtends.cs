@@ -74,10 +74,22 @@ public static class CommonExtends
         return ((QueryContent<T>)t).GetMax(n);
     }
 
+    public static DateTime? GetMaxDate<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
+    {
+        string n = GetColumnName(expr);
+        return ((QueryContent<T>)t).GetMaxDate(n);
+    }
+
     public static decimal? GetMin<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
     {
         string n = GetColumnName(expr);
         return ((QueryContent<T>)t).GetMin(n);
+    }
+
+    public static DateTime? GetMinDate<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
+    {
+        string n = GetColumnName(expr);
+        return ((QueryContent<T>)t).GetMinDate(n);
     }
 
     public static decimal? GetSum<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject

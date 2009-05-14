@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Linq;
 using Lephone.MockSql.Recorder;
+using Lephone.UnitTest.Data;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Linq
@@ -283,6 +285,32 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual(1, n);
 
             var x = Person.GetMin(p => p.Id > 100, p => p.Id);
+            Assert.IsNull(x);
+        }
+
+        [Test]
+        public void TestMaxDate()
+        {
+            var n = DbEntry.From<DateAndTime>().Where(null).GetMaxDate(p => p.dtValue);
+            Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
+
+            n = DateAndTime.GetMaxDate(null, p => p.dtValue);
+            Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
+
+            var x = DateAndTime.GetMaxDate(p => p.Id > 100, p => p.dtValue);
+            Assert.IsNull(x);
+        }
+
+        [Test]
+        public void TestMinDate()
+        {
+            var n = DbEntry.From<DateAndTime>().Where(null).GetMinDate(p => p.dtValue);
+            Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
+
+            n = DateAndTime.GetMinDate(null, p => p.dtValue);
+            Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
+
+            var x = DateAndTime.GetMinDate(p => p.Id > 100, p => p.dtValue);
             Assert.IsNull(x);
         }
 

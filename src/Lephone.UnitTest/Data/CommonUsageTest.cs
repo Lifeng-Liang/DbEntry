@@ -632,6 +632,36 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
+        public void TestMaxDate()
+        {
+            StaticRecorder.CurRow.Add(new RowInfo(new DateTime()));
+            sqlite.From<DateAndTime>().Where(null).GetMaxDate("dtValue");
+            AssertSql(@"SELECT MAX([dtValue]) AS [dtValue] FROM [DateAndTime];
+<Text><60>()");
+
+            var n = DbEntry.From<DateAndTime>().Where(null).GetMaxDate("dtValue");
+            Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
+
+            n = DateAndTime.GetMaxDate(null, "dtValue");
+            Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
+        }
+
+        [Test]
+        public void TestMinDate()
+        {
+            StaticRecorder.CurRow.Add(new RowInfo(new DateTime()));
+            sqlite.From<DateAndTime>().Where(null).GetMinDate("dtValue");
+            AssertSql(@"SELECT MIN([dtValue]) AS [dtValue] FROM [DateAndTime];
+<Text><60>()");
+
+            var n = DbEntry.From<DateAndTime>().Where(null).GetMinDate("dtValue");
+            Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
+
+            n = DateAndTime.GetMinDate(null, "dtValue");
+            Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
+        }
+
+        [Test]
         public void TestSum()
         {
             sqlite.From<SinglePerson>().Where(null).GetSum("Id");

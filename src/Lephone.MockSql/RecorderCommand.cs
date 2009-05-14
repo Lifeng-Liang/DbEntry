@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using Lephone.MockSql.Recorder;
 
 namespace Lephone.MockSql
 {
@@ -115,6 +116,12 @@ namespace Lephone.MockSql
         public override object ExecuteScalar()
         {
             Record();
+            if(StaticRecorder.CurRow.Count > 0)
+            {
+                object o = StaticRecorder.CurRow[0].Value;
+                StaticRecorder.CurRow.Clear();
+                return o;
+            }
             return serial++;
         }
 

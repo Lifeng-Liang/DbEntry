@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Lephone.MockSql.Recorder
 {
     public class StaticRecorder : IRecorder
     {
-        public static List<string> CurRowNames;
-        public static List<Type> CurRowTypes;
-        public static List<object> CurRow;
+        public static readonly List<RowInfo> CurRow = new List<RowInfo>();
 
         private static string _LastMessage = "";
 
@@ -29,9 +26,9 @@ namespace Lephone.MockSql.Recorder
             _Messages.Clear();
         }
 
-        public void Write(string Msg, params object[] os)
+        public void Write(string msg, params object[] os)
         {
-            _LastMessage = string.Format(Msg, os);
+            _LastMessage = string.Format(msg, os);
             _Messages.Add(_LastMessage);
         }
     }

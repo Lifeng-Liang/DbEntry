@@ -98,9 +98,19 @@ namespace Lephone.Data.Definition
             return DbEntry.From<T>().Where(con).GetMax(columnName);
         }
 
+        public static DateTime? GetMaxDate(WhereCondition con, string columnName)
+        {
+            return DbEntry.From<T>().Where(con).GetMaxDate(columnName);
+        }
+
         public static decimal? GetMin(WhereCondition con, string columnName)
         {
             return DbEntry.From<T>().Where(con).GetMin(columnName);
+        }
+
+        public static DateTime? GetMinDate(WhereCondition con, string columnName)
+        {
+            return DbEntry.From<T>().Where(con).GetMinDate(columnName);
         }
 
         public static decimal? GetSum(WhereCondition con, string columnName)

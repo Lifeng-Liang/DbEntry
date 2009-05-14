@@ -7,31 +7,16 @@ namespace Lephone.MockSql
 {
     public class RecorderReader : DbDataReader
     {
-        public List<string> CurRowNames
-        {
-            get { return StaticRecorder.CurRowNames; }
-            set { StaticRecorder.CurRowNames = value; }
-        }
-
-        public List<object> CurRow
+        public List<RowInfo> CurRow
         {
             get { return StaticRecorder.CurRow; }
-            set { StaticRecorder.CurRow = value; }
-        }
-
-        public List<Type> CurRowTypes
-        {
-            get { return StaticRecorder.CurRowTypes; }
-            set { StaticRecorder.CurRowTypes = value; }
         }
 
         private bool IsClose;
 
         public override void Close()
         {
-            CurRow = null;
-            CurRowNames = null;
-            CurRowTypes = null;
+            CurRow.Clear();
             IsClose = true;
         }
 
@@ -44,7 +29,7 @@ namespace Lephone.MockSql
         {
             get
             {
-                if (CurRow != null) return CurRow.Count;
+                if (CurRow.Count > 0) return CurRow.Count;
                 throw new MockDbException("CurRow is null.");
             }
         }
@@ -101,7 +86,7 @@ namespace Lephone.MockSql
 
         public override Type GetFieldType(int ordinal)
         {
-            if (CurRowTypes != null) return CurRowTypes[ordinal];
+            if (CurRow.Count > 0) return CurRow[ordinal].Type;
             throw new MockDbException("CurRowTypes is null.");
         }
 
@@ -132,17 +117,14 @@ namespace Lephone.MockSql
 
         public override string GetName(int ordinal)
         {
-            if (CurRowNames != null) return CurRowNames[ordinal];
+            if (CurRow.Count > 0) return CurRow[ordinal].Name;
             throw new MockDbException("CurRowNames is null.");
         }
 
         public override int GetOrdinal(string name)
         {
-            if (CurRowNames != null)
-                return CurRowNames.FindIndex(delegate(string s)
-                {
-                    return (name == s);
-                });
+            if (CurRow.Count > 0)
+                return CurRow.FindIndex(s => (name == s.Name));
             throw new MockDbException("CurRowNames is null.");
         }
 
@@ -158,14 +140,14 @@ namespace Lephone.MockSql
 
         public override object GetValue(int ordinal)
         {
-            if (CurRow != null)
+            if (CurRow.Count > 0)
             {
-                object o = CurRow[ordinal];
-                if (o == null)
+                var o = CurRow[ordinal];
+                if (o.Value == null)
                 {
                     return DBNull.Value;
                 }
-                return o;
+                return o.Value;
             }
             throw new MockDbException("type error.");
         }
@@ -177,7 +159,7 @@ namespace Lephone.MockSql
 
         public override bool HasRows
         {
-            get { return (CurRow != null); }
+            get { return (CurRow.Count > 0); }
         }
 
         public override bool IsClosed
@@ -195,17 +177,15 @@ namespace Lephone.MockSql
             throw new Exception("The method or operation is not implemented.");
         }
 
-        private int index;
+        private int Index;
 
         public override bool Read()
         {
-            if (index++ == 0)
+            if (Index++ == 0)
             {
-                return (CurRow != null);
+                return (CurRow.Count > 0);
             }
-            CurRow = null;
-            CurRowNames = null;
-            CurRowTypes = null;
+            CurRow.Clear();
             return false;
         }
 

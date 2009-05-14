@@ -1,11 +1,12 @@
 ﻿using System;
 using Lephone.Data.Definition;
+using Lephone.Linq;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
     [DbTable("DateAndTime")]
-    public abstract class DateAndTime : DbObjectModel<DateAndTime>
+    public abstract class DateAndTime : LinqObjectModel<DateAndTime>
     {
         public abstract DateTime dtValue { get; set; }
 

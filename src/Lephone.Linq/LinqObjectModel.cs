@@ -59,9 +59,19 @@ namespace Lephone.Linq
             return DbEntry.From<T>().Where(condition).GetMax(column);
         }
 
+        public static DateTime? GetMaxDate(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
+        {
+            return DbEntry.From<T>().Where(condition).GetMaxDate(column);
+        }
+
         public static decimal? GetMin(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
         {
             return DbEntry.From<T>().Where(condition).GetMin(column);
+        }
+
+        public static DateTime? GetMinDate(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
+        {
+            return DbEntry.From<T>().Where(condition).GetMinDate(column);
         }
 
         public static decimal? GetSum(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)

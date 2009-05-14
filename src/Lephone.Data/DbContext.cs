@@ -162,19 +162,47 @@ namespace Lephone.Data
 
         public decimal? GetMax(Type DbObjectType, WhereCondition iwc, string columnName)
         {
+            object o = GetMaxObject(DbObjectType, iwc, columnName);
+            if (o == null) return null;
+            return Convert.ToDecimal(o);
+        }
+
+        public DateTime? GetMaxDate(Type DbObjectType, WhereCondition iwc, string columnName)
+        {
+            object o = GetMaxObject(DbObjectType, iwc, columnName);
+            if (o == null) return null;
+            return Convert.ToDateTime(o);
+        }
+
+        public object GetMaxObject(Type DbObjectType, WhereCondition iwc, string columnName)
+        {
             TryCreateTable(DbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
             SqlStatement Sql = oi.Composer.GetMaxStatement(Dialect, iwc, columnName);
             oi.LogSql(Sql);
             object ro = ExecuteScalar(Sql);
-            if(ro == DBNull.Value)
+            if (ro == DBNull.Value)
             {
                 return null;
             }
-            return Convert.ToDecimal(ro);
+            return ro;
         }
 
         public decimal? GetMin(Type DbObjectType, WhereCondition iwc, string columnName)
+        {
+            object o = GetMinObject(DbObjectType, iwc, columnName);
+            if (o == null) return null;
+            return Convert.ToDecimal(o);
+        }
+
+        public DateTime? GetMinDate(Type DbObjectType, WhereCondition iwc, string columnName)
+        {
+            object o = GetMinObject(DbObjectType, iwc, columnName);
+            if (o == null) return null;
+            return Convert.ToDateTime(o);
+        }
+
+        public object GetMinObject(Type DbObjectType, WhereCondition iwc, string columnName)
         {
             TryCreateTable(DbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
@@ -185,7 +213,7 @@ namespace Lephone.Data
             {
                 return null;
             }
-            return Convert.ToDecimal(ro);
+            return ro;
         }
 
         public decimal? GetSum(Type DbObjectType, WhereCondition iwc, string columnName)
