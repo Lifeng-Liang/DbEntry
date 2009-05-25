@@ -22,10 +22,10 @@ namespace Lephone.Util.Setting
 
             foreach (FieldInfo fi in fis)
             {
-                ShowStringAttribute[] ss = (ShowStringAttribute[])fi.GetCustomAttributes(typeof(ShowStringAttribute), false);
-                string Name = (ss != null && ss.Length == 1) ? ss[0].ShowString : fi.Name;
+                var ss = (ShowStringAttribute[])fi.GetCustomAttributes(typeof(ShowStringAttribute), false);
+                string name = (ss != null && ss.Length == 1) ? ss[0].ShowString : fi.Name;
                 object o = fi.GetValue(obj);
-                o = (o == null) ? GetValue(Name, fi.FieldType) : GetValue(Name, o);
+                o = (o == null) ? GetValue(name, fi.FieldType) : GetValue(name, o);
                 fi.SetValue(obj, o);
             }
         }

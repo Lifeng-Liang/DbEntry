@@ -1,14 +1,28 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Web.Security;
 using Lephone.Data;
 using Lephone.Util;
+using Lephone.Util.Setting;
 using Lephone.Util.Text;
-using Lephone.Web.Common;
 
 namespace Lephone.Web
 {
     public class DbEntryMembershipProvider : MembershipProvider
     {
+        private bool _requiresQuestionAndAnswer = true;
+
+        public override void Initialize(string name, NameValueCollection config)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                name = "DbEntryMembershipProvider";
+            }
+            base.Initialize(name, config);
+            var reader = new CollectionConfigHelper(config);
+            _requiresQuestionAndAnswer = reader.GetValue("requiresQuestionAndAnswer", true);
+        }
+
         public override string ApplicationName
         {
             get
@@ -192,7 +206,7 @@ namespace Lephone.Web
 
         public override bool RequiresQuestionAndAnswer
         {
-            get { return true; }
+            get { return _requiresQuestionAndAnswer; }
         }
 
         public override bool RequiresUniqueEmail
@@ -205,7 +219,7 @@ namespace Lephone.Web
             var u = DbEntryMembershipUser.FindOne(CK.K["UserName"] == username);
             if (u != null)
             {
-                if (CommonHelper.AreEqual(u.PasswordAnswer, StringHelper.Hash(answer)))
+                if (!RequiresQuestionAndAnswer || CommonHelper.AreEqual(u.PasswordAnswer, StringHelper.Hash(answer)))
                 {
                     var p = Rand.Next(10000000, 2147483647).ToString();
                     u.Password = StringHelper.Hash(p);

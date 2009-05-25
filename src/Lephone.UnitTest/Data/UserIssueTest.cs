@@ -1,4 +1,6 @@
-﻿using Lephone.Data.Definition;
+﻿using System;
+using Lephone.Data.Definition;
+using Lephone.Linq;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -37,6 +39,30 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [Serializable]
+    public abstract class BaoXiuRS : LinqObjectModel<BaoXiuRS>
+    {
+        [AllowNull, Length(50)]
+        public abstract string UserId { get; set; }// ID 
+        [AllowNull, Length(50)]
+        public abstract string UserName { get; set; }//  
+        [AllowNull, Length(50)]
+        public abstract string ADDR { get; set; }//班级或办公室名称
+        [AllowNull, Length(50)]
+        public abstract string Fenlei { get; set; }// 分类 
+        [AllowNull, Length(500)]
+        public abstract string Content { get; set; }//故障内容
+        public abstract Date? DT1 { get; set; }// 维修日期
+        public abstract Date? DT { get; set; }// 报修日期
+        [AllowNull, Length(50)]
+        public abstract string People { get; set; }//PEOPLE 使用人
+        [AllowNull, Length(50)]
+        public abstract string Tel { get; set; }//
+
+        [AllowNull, Length(50)]
+        public abstract string Weixiu { get; set; }//维修记录
+    }
+
     [TestFixture]
     public class UserIssueTest : DataTestBase
     {
@@ -59,5 +85,26 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(1, u1.GrpMnu.Count);
             Assert.AreEqual("menu", u1.GrpMnu[0].CodigoMenu);
         }
+
+        [Test]
+        public void Test2()
+        {
+            var o = BaoXiuRS.New();
+            o.DT1 = new Date(2009, 5, 20);
+            o.DT = new Date(2009, 5, 22);
+            o.Save();
+
+            var o1 = BaoXiuRS.FindById(o.Id);
+            Assert.AreEqual(new Date(2009, 5, 20), o1.DT1);
+            Assert.AreEqual(new Date(2009, 5, 22), o1.DT);
+
+            o1.DT = new Date(1998, 12, 22);
+            o1.Save();
+
+            var o2 = BaoXiuRS.FindById(o1.Id);
+            Assert.AreEqual(new Date(2009, 5, 20), o1.DT1);
+            Assert.AreEqual(new Date(1998, 12, 22), o1.DT);
+        }
     }
+
 }

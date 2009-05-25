@@ -113,6 +113,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Scope.cs" />
+    <Compile Include="Setting\CollectionConfigHelper.cs" />
     <Compile Include="Setting\ConfigReader.cs" />
     <Compile Include="Setting\ConfigReaderProxy.cs" />
     <Compile Include="Setting\ResourceConfigReader.cs" />
