@@ -25,9 +25,9 @@ namespace Lephone.Data.Definition
                     if (f.IsHasOne || f.IsHasMany)
                     {
                         object obj = f.GetValue(this);
-                        if (obj == null)
+                        if (obj != null)
                         {
-                            IRenew ll = (IRenew)obj;
+                            var ll = (IRenew)obj;
                             ll.SetAsNew();
                         }
                     }
@@ -38,7 +38,7 @@ namespace Lephone.Data.Definition
         public override string ToString()
         {
             ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
-            StringBuilder sb = new StringBuilder("{ ");
+            var sb = new StringBuilder("{ ");
             foreach (MemberHandler m in oi.Fields)
             {
                 if (!(m.IsHasMany || m.IsHasAndBelongsToMany || m.IsHasOne))
@@ -47,7 +47,7 @@ namespace Lephone.Data.Definition
                     object o = m.GetValue(this);
                     if (m.IsBelongsTo)
                     {
-                        o = (o as IBelongsTo).ForeignKey;
+                        o = ((IBelongsTo)o).ForeignKey;
                     }
                     sb.Append(o == null ? "<NULL>" : o.ToString());
                     sb.Append(", ");

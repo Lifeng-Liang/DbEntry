@@ -67,6 +67,7 @@
     <Compile Include="Data\CommonUsageTest.cs" />
     <Compile Include="Data\ComplexDynamicObjectTest.cs" />
     <Compile Include="Data\CreateTable\FirebirdTest.cs" />
+    <Compile Include="Data\CreateTable\JoinClassTest.cs" />
     <Compile Include="Data\CreateTable\SQLiteTest.cs" />
     <Compile Include="Data\DatasetTest.cs" />
     <Compile Include="Data\DateTimeTest.cs" />

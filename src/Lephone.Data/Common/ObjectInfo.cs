@@ -12,34 +12,34 @@ namespace Lephone.Data.Common
     {
         #region GetInstance
 
-        public new static ObjectInfo GetInstance(Type DbObjectType)
+        public new static ObjectInfo GetInstance(Type dbObjectType)
         {
-            if (DbObjectType.IsNotPublic)
+            if (dbObjectType.IsNotPublic)
             {
                 throw new DataException("The model class should be public");
             }
-            Type t = (DbObjectType.IsAbstract) ? DynamicObject.GetImplType(DbObjectType) : DbObjectType;
+            Type t = (dbObjectType.IsAbstract) ? DynamicObject.GetImplType(dbObjectType) : dbObjectType;
             ObjectInfo oi = FlyweightBase<Type, ObjectInfo>.GetInstance(t);
             if (oi.BaseType == null)
             {
-                oi._BaseType = DbObjectType;
-                if (ClassHelper.HasAttribute<CacheableAttribute>(DbObjectType, false))
+                oi._baseType = dbObjectType;
+                if (ClassHelper.HasAttribute<CacheableAttribute>(dbObjectType, false))
                 {
-                    oi._Cacheable = true;
+                    oi._cacheable = true;
                 }
             }
             return oi;
         }
 
-        internal static ObjectInfo GetSimpleInstance(Type DbObjectType)
+        internal static ObjectInfo GetSimpleInstance(Type dbObjectType)
         {
-            Type t = (DbObjectType.IsAbstract) ? DynamicObject.GetImplType(DbObjectType) : DbObjectType;
+            Type t = (dbObjectType.IsAbstract) ? DynamicObject.GetImplType(dbObjectType) : dbObjectType;
             if (dic.ContainsKey(t))
             {
                 return dic[t];
             }
             var oi = new ObjectInfo();
-            oi.InitBySimpleMode(t);
+            oi.InitObjectInfoBySimpleMode(t);
             return oi;
         }
 
@@ -56,122 +56,125 @@ namespace Lephone.Data.Common
                 throw new DataException("class {0} need a public/protected(DbObjectModel) argumentless constructor", typeName);
             }
 
-            InitBySimpleMode(t);
+            InitObjectInfoBySimpleMode(t);
             // binding QueryComposer
             if (!string.IsNullOrEmpty(SoftDeleteColumnName))
             {
-                _Composer = new SoftDeleteQueryComposer(this, SoftDeleteColumnName);
+                _composer = new SoftDeleteQueryComposer(this, SoftDeleteColumnName);
             }
             else if (!string.IsNullOrEmpty(DeleteToTableName))
             {
-                _Composer = new DeleteToQueryComposer(this);
+                _composer = new DeleteToQueryComposer(this);
             }
             else if (LockVersion != null)
             {
-                _Composer = new OptimisticLockingQueryComposer(this);
+                _composer = new OptimisticLockingQueryComposer(this);
             }
             else
             {
-                _Composer = new QueryComposer(this);
+                _composer = new QueryComposer(this);
             }
             // binding DbObjectHandler
             if (DataSetting.ObjectHandlerType == HandlerType.Emit
                 || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
             {
-                _Handler = DynamicObject.CreateDbObjectHandler(t, this);
+                _handler = DynamicObject.CreateDbObjectHandler(t, this);
             }
             else
             {
-                _Handler = new ReflectionDbObjectHandler(t, this);
+                _handler = new ReflectionDbObjectHandler(t, this);
             }
-        }
-
-        private void InitBySimpleMode(Type t)
-        {
-            InitObjectInfoBySimpleMode(t);
+            // get create talbes
+            var ct = ClassHelper.GetAttribute<CreateTableListAttribute>(t, false);
+            if(ct != null)
+            {
+                _createTables = ct.Types;
+            }
         }
 
         #endregion
 
         #region properties
 
-        private IDbObjectHandler _Handler;
-        private QueryComposer _Composer;
+        private IDbObjectHandler _handler;
+        private QueryComposer _composer;
 
-        private bool _Cacheable;
-        private Type _BaseType;
-        private Type _HandleType;
-        private FromClause _From;
-        private bool _HasSystemKey;
-        private bool _HasAssociate;
-        private bool _IsAssociateObject;
-        private bool _AllowSqlLog = true;
-        private bool _HasOnePremarykey;
+        private bool _cacheable;
+        private Type _baseType;
+        private Type _handleType;
+        private FromClause _from;
+        private bool _hasSystemKey;
+        private bool _hasAssociate;
+        private bool _isAssociateObject;
+        private bool _allowSqlLog = true;
+        private bool _hasOnePremarykey;
         internal string _DeleteToTableName;
         internal string _SoftDeleteColumnName;
-        private MemberHandler _LockVersion;
-        private MemberHandler[] _KeyFields;
-        private MemberHandler[] _Fields;
+        private MemberHandler _lockVersion;
+        private MemberHandler[] _keyFields;
+        private MemberHandler[] _fields;
         internal MemberHandler[] _SimpleFields;
         internal MemberHandler[] _RelationFields;
 
-        private readonly Dictionary<string, List<ASC>> _Indexes = new Dictionary<string, List<ASC>>();
-        private readonly Dictionary<string, List<MemberHandler>> _UniqueIndexes = new Dictionary<string, List<MemberHandler>>();
-        private readonly Dictionary<Type, CrossTable> _CrossTables = new Dictionary<Type, CrossTable>();
+        private readonly Dictionary<string, List<ASC>> _indexes = new Dictionary<string, List<ASC>>();
+        private readonly Dictionary<string, List<MemberHandler>> _uniqueIndexes = new Dictionary<string, List<MemberHandler>>();
+        private readonly Dictionary<Type, CrossTable> _crossTables = new Dictionary<Type, CrossTable>();
+
+        private Type[] _createTables;
 
         public IDbObjectHandler Handler
         {
-            get { return _Handler; }
+            get { return _handler; }
         }
 
         internal QueryComposer Composer
         {
-            get { return _Composer; }
+            get { return _composer; }
         }
 
         public bool Cacheable
         {
-            get { return _Cacheable; }
+            get { return _cacheable; }
         }
 
         public Type BaseType
         {
-            get { return _BaseType; }
+            get { return _baseType; }
         }
 
         public Type HandleType
         {
-            get { return _HandleType; }
+            get { return _handleType; }
         }
 
         public FromClause From
         {
-            get { return _From; }
+            get { return _from; }
         }
 
         public bool HasSystemKey
         {
-            get { return _HasSystemKey; }
+            get { return _hasSystemKey; }
         }
 
         public bool HasAssociate
         {
-            get { return _HasAssociate; }
+            get { return _hasAssociate; }
         }
 
         public bool IsAssociateObject
         {
-            get { return _IsAssociateObject; }
+            get { return _isAssociateObject; }
         }
 
         public bool AllowSqlLog
         {
-            get { return _AllowSqlLog; }
+            get { return _allowSqlLog; }
         }
 
         public bool HasOnePremarykey
         {
-            get { return _HasOnePremarykey; }
+            get { return _hasOnePremarykey; }
         }
 
         public string DeleteToTableName
@@ -186,17 +189,17 @@ namespace Lephone.Data.Common
 
         public MemberHandler LockVersion
         {
-            get { return _LockVersion; }
+            get { return _lockVersion; }
         }
 
         public MemberHandler[] KeyFields
         {
-            get { return _KeyFields; }
+            get { return _keyFields; }
         }
 
         public MemberHandler[] Fields
         {
-            get { return _Fields; }
+            get { return _fields; }
         }
 
         public MemberHandler[] SimpleFields
@@ -211,17 +214,22 @@ namespace Lephone.Data.Common
 
         public Dictionary<string, List<ASC>> Indexes
         {
-            get { return _Indexes; }
+            get { return _indexes; }
         }
 
         public Dictionary<string, List<MemberHandler>> UniqueIndexes
         {
-            get { return _UniqueIndexes; }
+            get { return _uniqueIndexes; }
         }
 
         public Dictionary<Type, CrossTable> CrossTables
         {
-            get { return _CrossTables; }
+            get { return _crossTables; }
+        }
+
+        public Type[] CreateTables
+        {
+            get { return _createTables; }
         }
 
         #endregion
@@ -230,43 +238,43 @@ namespace Lephone.Data.Common
 
         internal ObjectInfo() { }
 
-        internal ObjectInfo(Type HandleType, FromClause From, MemberHandler[] KeyFields, MemberHandler[] Fields, bool DisableSqlLog)
+        internal ObjectInfo(Type handleType, FromClause from, MemberHandler[] keyFields, MemberHandler[] fields, bool disableSqlLog)
         {
-            Init(HandleType, From, KeyFields, Fields, DisableSqlLog);
+            Init(handleType, from, keyFields, fields, disableSqlLog);
         }
 
-        internal void Init(Type handleType, FromClause fromClause, MemberHandler[] keyFields, MemberHandler[] fields, bool DisableSqlLog)
+        internal void Init(Type handleType, FromClause fromClause, MemberHandler[] keyFields, MemberHandler[] fields, bool disableSqlLog)
         {
-            _HandleType = handleType;
-            _From = fromClause;
-            _KeyFields = keyFields;
-            _Fields = fields;
-            _AllowSqlLog = !DisableSqlLog;
+            _handleType = handleType;
+            _from = fromClause;
+            _keyFields = keyFields;
+            _fields = fields;
+            _allowSqlLog = !disableSqlLog;
 
-            _HasSystemKey = ((keyFields != null && keyFields.Length == 1) && (keyFields[0].IsDbGenerate || keyFields[0].FieldType == typeof(Guid)));
+            _hasSystemKey = ((keyFields != null && keyFields.Length == 1) && (keyFields[0].IsDbGenerate || keyFields[0].FieldType == typeof(Guid)));
 
             foreach (MemberHandler f in fields)
             {
                 if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany)
                 {
-                    _HasAssociate = true;
-                    _IsAssociateObject = true;
+                    _hasAssociate = true;
+                    _isAssociateObject = true;
                 }
                 if (f.IsLazyLoad)
                 {
-                    _IsAssociateObject = true;
+                    _isAssociateObject = true;
                 }
                 if (f.IsBelongsTo || f.IsHasAndBelongsToMany) // TODO: no problem ?
                 {
-                    _IsAssociateObject = true;
+                    _isAssociateObject = true;
                 }
                 if (f.IsLockVersion)
                 {
-                    _LockVersion = f;
+                    _lockVersion = f;
                 }
             }
 
-            _HasOnePremarykey = (keyFields != null && keyFields.Length == 1);
+            _hasOnePremarykey = (keyFields != null && keyFields.Length == 1);
         }
 
         #endregion
@@ -331,11 +339,11 @@ namespace Lephone.Data.Common
             return CommonHelper.GetEmptyValue(KeyFields[0].FieldType, false, "only supported int long guid as primary key.");
         }
 
-        public void LogSql(SqlStatement Sql)
+        public void LogSql(SqlStatement sql)
         {
             if (AllowSqlLog)
             {
-                Logger.SQL.Trace(Sql);
+                Logger.SQL.Trace(sql);
             }
         }
 

@@ -21,7 +21,7 @@ namespace Lephone.Data
         // for remoting only
         public DbContext() : this(EntryConfig.Default) { }
 
-        public DbContext(string Prefix) : this(EntryConfig.GetDriver(Prefix)) { }
+        public DbContext(string prefix) : this(EntryConfig.GetDriver(prefix)) { }
 
         public DbContext(DbDriver driver) : base(driver) { }
 
@@ -32,7 +32,7 @@ namespace Lephone.Data
             return dt;
         }
 
-        private void TryCreateTable(Type DbObjectType)
+        private void TryCreateTable(Type dbObjectType)
         {
             if (Driver.AutoCreateTable)
             {
@@ -40,35 +40,51 @@ namespace Lephone.Data
                 {
                     InitTableNames();
                 }
-                ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-                string Name = oi.From.GetMainTableName();
                 Debug.Assert(TableNames != null);
-                if (!TableNames.ContainsKey(Name.ToLower()))
+                ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+                if(oi.CreateTables != null)
                 {
-                    IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
+                    foreach(var type in oi.CreateTables)
                     {
-                        Create(DbObjectType);
-                        if (!string.IsNullOrEmpty(oi.DeleteToTableName))
+                        ObjectInfo oi1 = ObjectInfo.GetInstance(type);
+                        InnerTryCreateTable(type, oi1);
+                    }
+                }
+                else
+                {
+                    InnerTryCreateTable(dbObjectType, oi);
+                }
+            }
+        }
+
+        private void InnerTryCreateTable(Type dbObjectType, ObjectInfo oi)
+        {
+            string name = oi.From.GetMainTableName();
+            if (!TableNames.ContainsKey(name.ToLower()))
+            {
+                IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
+                {
+                    Create(dbObjectType);
+                    if (!string.IsNullOrEmpty(oi.DeleteToTableName))
+                    {
+                        CreateDeleteToTable(dbObjectType);
+                    }
+                    foreach (CrossTable mt in oi.CrossTables.Values)
+                    {
+                        if (!TableNames.ContainsKey(mt.Name.ToLower()))
                         {
-                            CreateDeleteToTable(DbObjectType);
-                        }
-                        foreach (CrossTable mt in oi.CrossTables.Values)
-                        {
-                            if (!TableNames.ContainsKey(mt.Name.ToLower()))
+                            Debug.Assert(dbObjectType.Assembly.FullName != null);
+                            if (dbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
                             {
-                                Debug.Assert(DbObjectType.Assembly.FullName != null);
-                                if (DbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
-                                {
-                                    CreateCrossTable(DbObjectType.BaseType, mt.HandleType);
-                                }
-                                else
-                                {
-                                    CreateCrossTable(DbObjectType, mt.HandleType);
-                                }
+                                CreateCrossTable(dbObjectType.BaseType, mt.HandleType);
+                            }
+                            else
+                            {
+                                CreateCrossTable(dbObjectType, mt.HandleType);
                             }
                         }
-                    });
-                }
+                    }
+                });
             }
         }
 
@@ -100,8 +116,8 @@ namespace Lephone.Data
                 }
                 else
                 {
-                    List<string> KeyList = TransLists.Pop();
-                    foreach (string key in KeyList)
+                    List<string> keyList = TransLists.Pop();
+                    foreach (string key in keyList)
                     {
                         CacheProvider.Instance.Remove(key);
                     }
@@ -119,9 +135,9 @@ namespace Lephone.Data
             }
         }
 
-        private void IfUsingTransaction(bool IsUsing, CallbackVoidHandler callback)
+        private void IfUsingTransaction(bool isUsing, CallbackVoidHandler callback)
         {
-            if (IsUsing)
+            if (isUsing)
             {
                 NewTransaction(callback);
             }
@@ -563,7 +579,7 @@ namespace Lephone.Data
             {
                 throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
             }
-            if(obj is DbObjectSmartUpdate)
+            if (obj is DbObjectSmartUpdate)
             {
                 ((DbObjectSmartUpdate)obj).m_UpdateColumns = new Dictionary<string, object>();
             }
@@ -587,7 +603,7 @@ namespace Lephone.Data
                 {
                     object Key = dp.Dialect.ExecuteInsert(dp, sb, oi);
                     ObjectInfo.SetKey(obj, Key);
-                    foreach(Type t2 in oi.CrossTables.Keys)
+                    foreach (Type t2 in oi.CrossTables.Keys)
                     {
                         SetManyToManyRelation(oi, t2, Key, Scope<object>.Current);
                     }
@@ -611,7 +627,7 @@ namespace Lephone.Data
 
         private void SetManyToManyRelation(ObjectInfo oi, Type t, object Key1, object Key2)
         {
-            if(oi.CrossTables.ContainsKey(t) && Key1 != null && Key2 != null)
+            if (oi.CrossTables.ContainsKey(t) && Key1 != null && Key2 != null)
             {
                 CrossTable mt = oi.CrossTables[t];
                 var sb = new InsertStatementBuilder(mt.Name);
@@ -663,7 +679,7 @@ namespace Lephone.Data
             ProcessRelation(oi, false, obj, delegate(DataProvider dp)
             {
                 ret += dp.ExecuteNonQuery(Sql);
-                if(DataSetting.CacheEnabled && oi.Cacheable)
+                if (DataSetting.CacheEnabled && oi.Cacheable)
                 {
                     CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
                 }
@@ -773,13 +789,13 @@ namespace Lephone.Data
             {
                 throw new DataException("They are not many to many relation ship classes!");
             }
-            if(oi1.KeyFields.Length <= 0 || oi2.KeyFields.Length <= 0)
+            if (oi1.KeyFields.Length <= 0 || oi2.KeyFields.Length <= 0)
             {
                 throw new DataException("The relation table must have key column!");
             }
             CrossTable mt1 = oi1.CrossTables[t2];
             var cts = new CreateTableStatementBuilder(mt1.Name);
-            var ls = new List<string> {mt1.ColumeName1, mt1.ColumeName2};
+            var ls = new List<string> { mt1.ColumeName1, mt1.ColumeName2 };
             ls.Sort();
             cts.Columns.Add(new ColumnInfo(ls[0], oi1.KeyFields[0].FieldType, false, false, false, false, 0));
             cts.Columns.Add(new ColumnInfo(ls[1], oi2.KeyFields[0].FieldType, false, false, false, false, 0));
