@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Lephone.Data;
 using Lephone.Data.Definition;
@@ -44,6 +45,17 @@ namespace Lephone.UnitTest.Linq
         {
             [DbKey] public long Id;
             public string Name;
+        }
+
+        public abstract class Tst : LinqObjectModel<Tst>
+        {
+            public abstract DateTime Dt { get; set; }
+        }
+
+        [Test]
+        public void TestDateTime()
+        {
+            var t = Tst.Find(p => p.Dt <= DateTime.Now);
         }
 
         [Test]

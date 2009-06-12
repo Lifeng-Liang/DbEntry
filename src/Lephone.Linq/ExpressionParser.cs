@@ -177,7 +177,7 @@ namespace Lephone.Linq
                 if (e.Right.NodeType == ExpressionType.MemberAccess)
                 {
                     var right = (MemberExpression)e.Right;
-                    if (right.Expression.ToString() == pn)
+                    if (right.Expression != null && right.Expression.ToString() == pn)
                     {
                         string key2 = GetColumnName(right.Member.Name);
                         return new KeyKeyClause(key, key2, co);
