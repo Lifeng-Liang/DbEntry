@@ -31,12 +31,12 @@ namespace Lephone.Data.Definition
 
         public XmlSchema GetSchema()
         {
-            //ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
+            //ObjectInfo Info = ObjectInfo.GetInstance(this.GetType());
             //XmlSchema xs = new XmlSchema();
             //XmlSchemaComplexType xct = new XmlSchemaComplexType();
             //xct.Name = "DbObject";
             //XmlSchemaSequence xss = new XmlSchemaSequence();
-            //foreach (MemberHandler mh in oi.SimpleFields)
+            //foreach (MemberHandler mh in Info.SimpleFields)
             //{
             //    XmlSchemaElement xe = new XmlSchemaElement();
             //    xe.Name = mh.MemberInfo.Name;

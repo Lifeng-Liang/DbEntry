@@ -10,22 +10,22 @@ namespace Lephone.Data.Common
 
         //public override SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
         //{
-        //    DeleteStatementBuilder sb = new DeleteStatementBuilder(oi.From.GetMainTableName());
+        //    DeleteStatementBuilder sb = new DeleteStatementBuilder(Info.From.GetMainTableName());
         //    sb.Where.Conditions = DbObjectHelper.GetKeyWhereClause(obj)
-        //        && (CK.K[oi.LockVersion.Name] == oi.LockVersion.GetValue(obj));
+        //        && (CK.K[Info.LockVersion.Name] == Info.LockVersion.GetValue(obj));
         //    return sb.ToSqlStatement(Dialect);
         //}
 
-        public override SqlStatement GetUpdateStatement(DbDialect Dialect, object obj, WhereCondition iwc)
+        public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, WhereCondition iwc)
         {
-            var sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
-            oi.Handler.SetValuesForUpdate(sb, obj);
-            var lv = (int)oi.LockVersion.GetValue(obj);
-            sb.Where.Conditions = iwc && (CK.K[oi.LockVersion.Name] == lv);
+            var sb = new UpdateStatementBuilder(Info.From.GetMainTableName());
+            Info.Handler.SetValuesForUpdate(sb, obj);
+            var lv = (int)Info.LockVersion.GetValue(obj);
+            sb.Where.Conditions = iwc && (CK.K[Info.LockVersion.Name] == lv);
             bool find = false;
             foreach (KeyValue kv in sb.Values)
             {
-                if (kv.Key == oi.LockVersion.Name)
+                if (kv.Key == Info.LockVersion.Name)
                 {
                     kv.Value = lv + 1;
                     find = true;
@@ -34,16 +34,16 @@ namespace Lephone.Data.Common
             }
             if (!find)
             {
-                sb.Values.Add(new KeyValue(oi.LockVersion.Name, lv + 1));
+                sb.Values.Add(new KeyValue(Info.LockVersion.Name, lv + 1));
             }
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
         public override void ProcessAfterSave(object obj)
         {
-            var lv = (int)oi.LockVersion.GetValue(obj);
+            var lv = (int)Info.LockVersion.GetValue(obj);
             lv++;
-            oi.LockVersion.SetValue(obj, lv);
+            Info.LockVersion.SetValue(obj, lv);
         }
     }
 }

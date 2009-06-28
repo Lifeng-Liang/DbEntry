@@ -327,5 +327,11 @@ namespace Lephone.UnitTest.Linq
             Assert.IsNull(x);
         }
 
+        [Test]
+        public void TestDelete()
+        {
+            sqlite.Delete<Person>(p => p.FirstName.EndsWith("T"));
+            Assert.AreEqual("DELETE FROM [People] WHERE [Name] LIKE @Name_0;\n<Text><30>(@Name_0=%T:String)", StaticRecorder.LastMessage);
+        }
     }
 }

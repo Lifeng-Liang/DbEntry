@@ -24,17 +24,17 @@ namespace Lephone.Data.Common
             return cts;
         }
 
-        public override SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
+        public override SqlStatement GetDeleteStatement(DbDialect dialect, object obj)
         {
-            var sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
+            var sb = new UpdateStatementBuilder(Info.From.GetMainTableName());
             sb.Values.Add(new KeyValue(ColumnName, true));
             sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj) && colExp;
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
-        public override SqlStatement GetDeleteStatement(DbDialect Dialect, WhereCondition iwc)
+        public override SqlStatement GetDeleteStatement(DbDialect dialect, WhereCondition iwc)
         {
-            return base.GetDeleteStatement(Dialect, iwc && colExp);
+            return base.GetDeleteStatement(dialect, iwc && colExp);
         }
 
         public override SqlStatement GetGroupByStatement(DbDialect dialect, WhereCondition iwc, OrderBy order, string columnName)
@@ -49,19 +49,19 @@ namespace Lephone.Data.Common
             return sb;
         }
 
-        public override SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc, bool isDistinct)
+        public override SqlStatement GetResultCountStatement(DbDialect dialect, WhereCondition iwc, bool isDistinct)
         {
-            return base.GetResultCountStatement(Dialect, iwc && colExp, isDistinct);
+            return base.GetResultCountStatement(dialect, iwc && colExp, isDistinct);
         }
 
-        public override SqlStatement GetSelectStatement(DbDialect Dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public override SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
-            return base.GetSelectStatement(Dialect, from, iwc && colExp, oc, lc, isDistinct);
+            return base.GetSelectStatement(dialect, from, iwc && colExp, oc, lc, isDistinct);
         }
 
-        public override SqlStatement GetUpdateStatement(DbDialect Dialect, object obj, WhereCondition iwc)
+        public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, WhereCondition iwc)
         {
-            return base.GetUpdateStatement(Dialect, obj, iwc && colExp);
+            return base.GetUpdateStatement(dialect, obj, iwc && colExp);
         }
     }
 }

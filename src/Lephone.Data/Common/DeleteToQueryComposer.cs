@@ -10,19 +10,19 @@ namespace Lephone.Data.Common
         {
         }
 
-        public override SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
+        public override SqlStatement GetDeleteStatement(DbDialect dialect, object obj)
         {
-            SqlStatement sql = base.GetDeleteStatement(Dialect, obj);
+            SqlStatement sql = base.GetDeleteStatement(dialect, obj);
             InsertStatementBuilder sb = GetInsertStatementBuilder(obj);
             sb.Values.Add(new KeyValue("DeletedOn", AutoValue.DbNow));
-            sb.TableName = oi.DeleteToTableName;
-            SqlStatement isql = sb.ToSqlStatement(Dialect);
+            sb.TableName = Info.DeleteToTableName;
+            SqlStatement isql = sb.ToSqlStatement(dialect);
             sql.SqlCommandText += isql.SqlCommandText;
             sql.Parameters.Add(isql.Parameters);
             return sql;
         }
 
-        public override SqlStatement GetDeleteStatement(DbDialect Dialect, WhereCondition iwc)
+        public override SqlStatement GetDeleteStatement(DbDialect dialect, WhereCondition iwc)
         {
             throw new DataException("DeleteTo class doesn't support delete by WhereCondition.");
         }

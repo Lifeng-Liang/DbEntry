@@ -115,7 +115,13 @@ public static class CommonExtends
         return c.GetObject<T>(wc);
     }
 
-	#endregion
+    public static int Delete<T>(this DbContext c, Expression<Func<T, bool>> expr) where T : class, IDbObject
+    {
+        var wc = ExpressionParser<T>.Parse(expr);
+        return c.Delete<T>(wc);
+    }
+
+    #endregion
 
     #region Web
 

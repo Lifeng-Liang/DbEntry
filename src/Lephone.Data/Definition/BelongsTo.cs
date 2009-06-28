@@ -25,7 +25,7 @@ namespace Lephone.Data.Definition
             ForeignKeyName = mh.Name;
             ObjectInfo oi1 = ObjectInfo.GetInstance(typeof(T));
             _ForeignKey = oi1.GetPrimaryKeyDefaultValue();
-            //_ForeignKey = oi.GetPrimaryKeyDefaultValue();
+            //_ForeignKey = Info.GetPrimaryKeyDefaultValue();
             DbObjectSmartUpdate o = owner as DbObjectSmartUpdate;
             if (o != null)
             {
@@ -118,10 +118,10 @@ namespace Lephone.Data.Definition
         //TODO: why left this?
         //private string GetKeyName()
         //{
-        //    ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-        //    if (oi.KeyFields != null & oi.KeyFields.Length == 1)
+        //    ObjectInfo Info = ObjectInfo.GetInstance(typeof(T));
+        //    if (Info.KeyFields != null & Info.KeyFields.Length == 1)
         //    {
-        //        return oi.KeyFields[0].Name;
+        //        return Info.KeyFields[0].Name;
         //    }
         //    throw new DataException("The object must have one primary key.");
         //}

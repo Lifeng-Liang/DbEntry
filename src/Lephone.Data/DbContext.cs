@@ -17,7 +17,7 @@ namespace Lephone.Data
 {
     public class DbContext : DataProvider
     {
-        private Dictionary<string, int> TableNames;
+        private Dictionary<string, int> _tableNames;
         // for remoting only
         public DbContext() : this(EntryConfig.Default) { }
 
@@ -36,11 +36,11 @@ namespace Lephone.Data
         {
             if (Driver.AutoCreateTable)
             {
-                if (TableNames == null)
+                if (_tableNames == null)
                 {
                     InitTableNames();
                 }
-                Debug.Assert(TableNames != null);
+                Debug.Assert(_tableNames != null);
                 ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
                 if(oi.CreateTables != null)
                 {
@@ -60,7 +60,7 @@ namespace Lephone.Data
         private void InnerTryCreateTable(Type dbObjectType, ObjectInfo oi)
         {
             string name = oi.From.GetMainTableName();
-            if (!TableNames.ContainsKey(name.ToLower()))
+            if (!_tableNames.ContainsKey(name.ToLower()))
             {
                 IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
                 {
@@ -71,7 +71,7 @@ namespace Lephone.Data
                     }
                     foreach (CrossTable mt in oi.CrossTables.Values)
                     {
-                        if (!TableNames.ContainsKey(mt.Name.ToLower()))
+                        if (!_tableNames.ContainsKey(mt.Name.ToLower()))
                         {
                             Debug.Assert(dbObjectType.Assembly.FullName != null);
                             if (dbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
@@ -149,10 +149,10 @@ namespace Lephone.Data
 
         private void InitTableNames()
         {
-            TableNames = new Dictionary<string, int>();
+            _tableNames = new Dictionary<string, int>();
             foreach (string s in GetTableNames())
             {
-                TableNames.Add(s.ToLower(), 1);
+                _tableNames.Add(s.ToLower(), 1);
             }
         }
 
@@ -161,42 +161,42 @@ namespace Lephone.Data
             return new QueryContent<T>(this);
         }
 
-        public long GetResultCount(Type DbObjectType, WhereCondition iwc)
+        public long GetResultCount(Type dbObjectType, WhereCondition iwc)
         {
-            return GetResultCount(DbObjectType, iwc, false);
+            return GetResultCount(dbObjectType, iwc, false);
         }
 
-        public long GetResultCount(Type DbObjectType, WhereCondition iwc, bool isDistinct)
+        public long GetResultCount(Type dbObjectType, WhereCondition iwc, bool isDistinct)
         {
-            TryCreateTable(DbObjectType);
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetResultCountStatement(Dialect, iwc, isDistinct);
-            oi.LogSql(Sql);
-            object ro = ExecuteScalar(Sql);
+            TryCreateTable(dbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetResultCountStatement(Dialect, iwc, isDistinct);
+            oi.LogSql(sql);
+            object ro = ExecuteScalar(sql);
             return Convert.ToInt64(ro);
         }
 
-        public decimal? GetMax(Type DbObjectType, WhereCondition iwc, string columnName)
+        public decimal? GetMax(Type dbObjectType, WhereCondition iwc, string columnName)
         {
-            object o = GetMaxObject(DbObjectType, iwc, columnName);
+            object o = GetMaxObject(dbObjectType, iwc, columnName);
             if (o == null) return null;
             return Convert.ToDecimal(o);
         }
 
-        public DateTime? GetMaxDate(Type DbObjectType, WhereCondition iwc, string columnName)
+        public DateTime? GetMaxDate(Type dbObjectType, WhereCondition iwc, string columnName)
         {
-            object o = GetMaxObject(DbObjectType, iwc, columnName);
+            object o = GetMaxObject(dbObjectType, iwc, columnName);
             if (o == null) return null;
             return Convert.ToDateTime(o);
         }
 
-        public object GetMaxObject(Type DbObjectType, WhereCondition iwc, string columnName)
+        public object GetMaxObject(Type dbObjectType, WhereCondition iwc, string columnName)
         {
-            TryCreateTable(DbObjectType);
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetMaxStatement(Dialect, iwc, columnName);
-            oi.LogSql(Sql);
-            object ro = ExecuteScalar(Sql);
+            TryCreateTable(dbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetMaxStatement(Dialect, iwc, columnName);
+            oi.LogSql(sql);
+            object ro = ExecuteScalar(sql);
             if (ro == DBNull.Value)
             {
                 return null;
@@ -204,27 +204,27 @@ namespace Lephone.Data
             return ro;
         }
 
-        public decimal? GetMin(Type DbObjectType, WhereCondition iwc, string columnName)
+        public decimal? GetMin(Type dbObjectType, WhereCondition iwc, string columnName)
         {
-            object o = GetMinObject(DbObjectType, iwc, columnName);
+            object o = GetMinObject(dbObjectType, iwc, columnName);
             if (o == null) return null;
             return Convert.ToDecimal(o);
         }
 
-        public DateTime? GetMinDate(Type DbObjectType, WhereCondition iwc, string columnName)
+        public DateTime? GetMinDate(Type dbObjectType, WhereCondition iwc, string columnName)
         {
-            object o = GetMinObject(DbObjectType, iwc, columnName);
+            object o = GetMinObject(dbObjectType, iwc, columnName);
             if (o == null) return null;
             return Convert.ToDateTime(o);
         }
 
-        public object GetMinObject(Type DbObjectType, WhereCondition iwc, string columnName)
+        public object GetMinObject(Type dbObjectType, WhereCondition iwc, string columnName)
         {
-            TryCreateTable(DbObjectType);
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetMinStatement(Dialect, iwc, columnName);
-            oi.LogSql(Sql);
-            object ro = ExecuteScalar(Sql);
+            TryCreateTable(dbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetMinStatement(Dialect, iwc, columnName);
+            oi.LogSql(sql);
+            object ro = ExecuteScalar(sql);
             if (ro == DBNull.Value)
             {
                 return null;
@@ -232,13 +232,13 @@ namespace Lephone.Data
             return ro;
         }
 
-        public decimal? GetSum(Type DbObjectType, WhereCondition iwc, string columnName)
+        public decimal? GetSum(Type dbObjectType, WhereCondition iwc, string columnName)
         {
-            TryCreateTable(DbObjectType);
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetSumStatement(Dialect, iwc, columnName);
-            oi.LogSql(Sql);
-            object ro = ExecuteScalar(Sql);
+            TryCreateTable(dbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetSumStatement(Dialect, iwc, columnName);
+            oi.LogSql(sql);
+            object ro = ExecuteScalar(sql);
             if (ro == DBNull.Value)
             {
                 return null;
@@ -246,31 +246,31 @@ namespace Lephone.Data
             return Convert.ToDecimal(ro);
         }
 
-        public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type DbObjectType, WhereCondition iwc, OrderBy order, string ColumnName)
+        public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type dbObjectType, WhereCondition iwc, OrderBy order, string columnName)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetGroupByStatement(Dialect, iwc, order, ColumnName);
-            oi.LogSql(Sql);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetGroupByStatement(Dialect, iwc, order, columnName);
+            oi.LogSql(sql);
             var list = new DbObjectList<GroupByObject<T1>>();
-            IProcessor ip = GetListProcessor(list, DbObjectType);
-            DataLoadDirect(ip, typeof(GroupByObject<T1>), DbObjectType, Sql, true);
+            IProcessor ip = GetListProcessor(list, dbObjectType);
+            DataLoadDirect(ip, typeof(GroupByObject<T1>), dbObjectType, sql, true);
             return list;
         }
 
-        public DbObjectList<T> ExecuteList<T>(string SqlStr) where T : class, IDbObject
+        public DbObjectList<T> ExecuteList<T>(string sqlStr) where T : class, IDbObject
         {
-            return ExecuteList<T>(new SqlStatement(SqlStr));
+            return ExecuteList<T>(new SqlStatement(sqlStr));
         }
 
-        public DbObjectList<T> ExecuteList<T>(string SqlStr, params object[] os) where T : class, IDbObject
+        public DbObjectList<T> ExecuteList<T>(string sqlStr, params object[] os) where T : class, IDbObject
         {
-            return ExecuteList<T>(GetSqlStatement(SqlStr, os));
+            return ExecuteList<T>(GetSqlStatement(sqlStr, os));
         }
 
-        public DbObjectList<T> ExecuteList<T>(SqlStatement Sql) where T : class, IDbObject
+        public DbObjectList<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
         {
             var ret = new DbObjectList<T>();
-            FillCollection(ret, typeof(T), Sql);
+            FillCollection(ret, typeof(T), sql);
             return ret;
         }
 
@@ -287,70 +287,70 @@ namespace Lephone.Data
             return new LimitedListInserter(il);
         }
 
-        public void FillCollection(IList list, Type DbObjectType, SqlStatement Sql)
+        public void FillCollection(IList list, Type dbObjectType, SqlStatement sql)
         {
-            IProcessor ip = GetListProcessor(list, DbObjectType);
-            DataLoad(ip, DbObjectType, Sql);
+            IProcessor ip = GetListProcessor(list, dbObjectType);
+            DataLoad(ip, dbObjectType, sql);
         }
 
-        public void FillCollection(IList list, Type DbObjectType, WhereCondition iwc, OrderBy oc, Range lc)
+        public void FillCollection(IList list, Type dbObjectType, WhereCondition iwc, OrderBy oc, Range lc)
         {
-            FillCollection(list, DbObjectType, iwc, oc, lc, false);
+            FillCollection(list, dbObjectType, iwc, oc, lc, false);
         }
 
-        public void FillCollection(IList list, Type DbObjectType, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void FillCollection(IList list, Type dbObjectType, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
-            IProcessor ip = GetListProcessor(list, DbObjectType);
-            DataLoad(ip, DbObjectType, null, iwc, oc, lc, isDistinct);
+            IProcessor ip = GetListProcessor(list, dbObjectType);
+            DataLoad(ip, dbObjectType, null, iwc, oc, lc, isDistinct);
         }
 
-        public void FillCollection(IList list, Type DbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
+        public void FillCollection(IList list, Type dbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
         {
-            FillCollection(list, DbObjectType, from, iwc, oc, lc, false);
+            FillCollection(list, dbObjectType, from, iwc, oc, lc, false);
         }
 
-        public void FillCollection(IList list, Type DbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void FillCollection(IList list, Type dbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
-            IProcessor ip = GetListProcessor(list, DbObjectType);
-            DataLoad(ip, DbObjectType, from, iwc, oc, lc, isDistinct);
+            IProcessor ip = GetListProcessor(list, dbObjectType);
+            DataLoad(ip, dbObjectType, from, iwc, oc, lc, isDistinct);
         }
 
-        public void DataLoad(IProcessor ip, Type DbObjectType, SqlStatement Sql)
+        public void DataLoad(IProcessor ip, Type dbObjectType, SqlStatement sql)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            oi.LogSql(Sql);
-            DataLoadDirect(ip, DbObjectType, Sql, false);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            oi.LogSql(sql);
+            DataLoadDirect(ip, dbObjectType, sql, false);
         }
 
-        public void DataLoad(IProcessor ip, Type DbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void DataLoad(IProcessor ip, Type dbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct);
-            oi.LogSql(Sql);
-            DataLoadDirect(ip, DbObjectType, Sql);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct);
+            oi.LogSql(sql);
+            DataLoadDirect(ip, dbObjectType, sql);
         }
 
-        private void DataLoadDirect(IProcessor ip, Type DbObjectType, SqlStatement Sql)
+        private void DataLoadDirect(IProcessor ip, Type dbObjectType, SqlStatement sql)
         {
-            DataLoadDirect(ip, DbObjectType, Sql, true);
+            DataLoadDirect(ip, dbObjectType, sql, true);
         }
 
-        private void DataLoadDirect(IProcessor ip, Type DbObjectType, SqlStatement Sql, bool UseIndex)
+        private void DataLoadDirect(IProcessor ip, Type dbObjectType, SqlStatement sql, bool useIndex)
         {
-            DataLoadDirect(ip, DbObjectType, DbObjectType, Sql, UseIndex);
+            DataLoadDirect(ip, dbObjectType, dbObjectType, sql, useIndex);
         }
 
-        private void DataLoadDirect(IProcessor ip, Type ReturnType, Type DbObjectType, SqlStatement Sql, bool UseIndex)
+        private void DataLoadDirect(IProcessor ip, Type returnType, Type dbObjectType, SqlStatement sql, bool useIndex)
         {
-            TryCreateTable(DbObjectType);
-            int startIndex = Sql.StartIndex;
-            int endIndex = Sql.EndIndex;
+            TryCreateTable(dbObjectType);
+            int startIndex = sql.StartIndex;
+            int endIndex = sql.EndIndex;
             if (Dialect.SupportsRangeStartIndex && endIndex > 0)
             {
                 endIndex = endIndex - startIndex + 1;
                 startIndex = 1;
             }
-            ExecuteDataReader(Sql, ReturnType, delegate(IDataReader dr)
+            ExecuteDataReader(sql, returnType, delegate(IDataReader dr)
             {
                 int count = 0;
                 while (dr.Read())
@@ -358,7 +358,7 @@ namespace Lephone.Data
                     count++;
                     if (count >= startIndex)
                     {
-                        object di = ObjectInfo.CreateObject(this, ReturnType, dr, UseIndex);
+                        object di = ObjectInfo.CreateObject(this, returnType, dr, useIndex);
                         if (!ip.Process(di))
                         {
                             break;
@@ -461,9 +461,9 @@ namespace Lephone.Data
             }
         }
 
-        private void InnerSave(bool IsInsert, object obj)
+        private void InnerSave(bool isInsert, object obj)
         {
-            if (IsInsert)
+            if (isInsert)
             {
                 Insert(obj);
             }
@@ -473,14 +473,14 @@ namespace Lephone.Data
             }
         }
 
-        private void ProcessRelation(ObjectInfo oi, bool ParentFirst, object obj,
+        private void ProcessRelation(ObjectInfo oi, bool parentFirst, object obj,
             CallbackObjectHandler<DataProvider> e1, CallbackObjectHandler<object> e2)
         {
             if (oi.HasAssociate)
             {
                 UsingTransaction(delegate
                 {
-                    if (ParentFirst) { e1(this); }
+                    if (parentFirst) { e1(this); }
                     object mkey = oi.Handler.GetKeyValue(obj);
                     using (new Scope<object>(mkey))
                     {
@@ -488,7 +488,7 @@ namespace Lephone.Data
                         {
                             var ho = (ILazyLoading)f.GetValue(obj);
                             ho.IsLoaded = true;
-                            if (f.IsHasOne || f.IsHasMany || (f.IsHasAndBelongsToMany && ParentFirst))
+                            if (f.IsHasOne || f.IsHasMany || (f.IsHasAndBelongsToMany && parentFirst))
                             {
                                 object llo = ho.Read();
                                 if (llo == null)
@@ -529,7 +529,7 @@ namespace Lephone.Data
                                 }
                             }
                         }
-                        if (!ParentFirst) { e1(this); }
+                        if (!parentFirst) { e1(this); }
                     }
                 });
             }
@@ -572,9 +572,9 @@ namespace Lephone.Data
 
         private void InnerUpdate(object obj, WhereCondition iwc, ObjectInfo oi, DataProvider dp)
         {
-            SqlStatement Sql = oi.Composer.GetUpdateStatement(Dialect, obj, iwc);
-            oi.LogSql(Sql);
-            int n = dp.ExecuteNonQuery(Sql);
+            SqlStatement sql = oi.Composer.GetUpdateStatement(Dialect, obj, iwc);
+            oi.LogSql(sql);
+            int n = dp.ExecuteNonQuery(sql);
             if (n == 0)
             {
                 throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
@@ -601,11 +601,11 @@ namespace Lephone.Data
             {
                 ProcessRelation(oi, true, obj, delegate(DataProvider dp)
                 {
-                    object Key = dp.Dialect.ExecuteInsert(dp, sb, oi);
-                    ObjectInfo.SetKey(obj, Key);
+                    object key = dp.Dialect.ExecuteInsert(dp, sb, oi);
+                    ObjectInfo.SetKey(obj, key);
                     foreach (Type t2 in oi.CrossTables.Keys)
                     {
-                        SetManyToManyRelation(oi, t2, Key, Scope<object>.Current);
+                        SetManyToManyRelation(oi, t2, key, Scope<object>.Current);
                     }
                 }, delegate(object o)
                 {
@@ -615,9 +615,9 @@ namespace Lephone.Data
             }
             else
             {
-                SqlStatement Sql = sb.ToSqlStatement(Dialect);
-                oi.LogSql(Sql);
-                ExecuteNonQuery(Sql);
+                SqlStatement sql = sb.ToSqlStatement(Dialect);
+                oi.LogSql(sql);
+                ExecuteNonQuery(sql);
             }
             if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
             {
@@ -625,36 +625,36 @@ namespace Lephone.Data
             }
         }
 
-        private void SetManyToManyRelation(ObjectInfo oi, Type t, object Key1, object Key2)
+        private void SetManyToManyRelation(ObjectInfo oi, Type t, object key1, object key2)
         {
-            if (oi.CrossTables.ContainsKey(t) && Key1 != null && Key2 != null)
+            if (oi.CrossTables.ContainsKey(t) && key1 != null && key2 != null)
             {
                 CrossTable mt = oi.CrossTables[t];
                 var sb = new InsertStatementBuilder(mt.Name);
-                sb.Values.Add(new KeyValue(mt.ColumeName1, Key1));
-                sb.Values.Add(new KeyValue(mt.ColumeName2, Key2));
-                SqlStatement Sql = sb.ToSqlStatement(Dialect);
-                oi.LogSql(Sql);
-                ExecuteNonQuery(Sql);
+                sb.Values.Add(new KeyValue(mt.ColumeName1, key1));
+                sb.Values.Add(new KeyValue(mt.ColumeName2, key2));
+                SqlStatement sql = sb.ToSqlStatement(Dialect);
+                oi.LogSql(sql);
+                ExecuteNonQuery(sql);
             }
         }
 
-        private void RemoveManyToManyRelation(ObjectInfo oi, Type t, object Key1, object Key2)
+        private void RemoveManyToManyRelation(ObjectInfo oi, Type t, object key1, object key2)
         {
-            if (oi.CrossTables.ContainsKey(t) && Key1 != null && Key2 != null)
+            if (oi.CrossTables.ContainsKey(t) && key1 != null && key2 != null)
             {
                 CrossTable mt = oi.CrossTables[t];
                 var sb = new DeleteStatementBuilder(mt.Name);
-                WhereCondition c = CK.K[mt.ColumeName1] == Key1;
-                c &= CK.K[mt.ColumeName2] == Key2;
+                WhereCondition c = CK.K[mt.ColumeName1] == key1;
+                c &= CK.K[mt.ColumeName2] == key2;
                 sb.Where.Conditions = c;
-                SqlStatement Sql = sb.ToSqlStatement(Dialect);
-                oi.LogSql(Sql);
-                ExecuteNonQuery(Sql);
+                SqlStatement sql = sb.ToSqlStatement(Dialect);
+                oi.LogSql(sql);
+                ExecuteNonQuery(sql);
             }
         }
 
-        private static void SetBelongsToForeignKey(object obj, object subobj, object ForeignKey)
+        private static void SetBelongsToForeignKey(object obj, object subobj, object foreignKey)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(subobj.GetType());
             MemberHandler mh = oi.GetBelongsTo(obj.GetType());
@@ -663,7 +663,7 @@ namespace Lephone.Data
                 var ho = mh.GetValue(subobj) as IBelongsTo;
                 if (ho != null)
                 {
-                    ho.ForeignKey = ForeignKey;
+                    ho.ForeignKey = foreignKey;
                 }
             }
         }
@@ -673,12 +673,12 @@ namespace Lephone.Data
             Type t = obj.GetType();
             TryCreateTable(t);
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            SqlStatement Sql = oi.Composer.GetDeleteStatement(Dialect, obj);
-            oi.LogSql(Sql);
+            SqlStatement sql = oi.Composer.GetDeleteStatement(Dialect, obj);
+            oi.LogSql(sql);
             int ret = 0;
             ProcessRelation(oi, false, obj, delegate(DataProvider dp)
             {
-                ret += dp.ExecuteNonQuery(Sql);
+                ret += dp.ExecuteNonQuery(sql);
                 if (DataSetting.CacheEnabled && oi.Cacheable)
                 {
                     CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
@@ -699,9 +699,9 @@ namespace Lephone.Data
             {
                 var sb = new DeleteStatementBuilder(mt.Name);
                 sb.Where.Conditions = CK.K[mt.ColumeName1] == oi.Handler.GetKeyValue(obj);
-                SqlStatement Sql = sb.ToSqlStatement(Dialect);
-                oi.LogSql(Sql);
-                ret += ExecuteNonQuery(Sql);
+                SqlStatement sql = sb.ToSqlStatement(Dialect);
+                oi.LogSql(sql);
+                ret += ExecuteNonQuery(sql);
             }
             return ret;
         }
@@ -711,73 +711,73 @@ namespace Lephone.Data
             Type t = typeof(T);
             TryCreateTable(t);
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            SqlStatement Sql = oi.Composer.GetDeleteStatement(Dialect, iwc);
-            oi.LogSql(Sql);
-            return ExecuteNonQuery(Sql);
+            SqlStatement sql = oi.Composer.GetDeleteStatement(Dialect, iwc);
+            oi.LogSql(sql);
+            return ExecuteNonQuery(sql);
         }
 
-        public void DropTable(Type DbObjectType)
+        public void DropTable(Type dbObjectType)
         {
-            DropTable(DbObjectType, true);
+            DropTable(dbObjectType, true);
         }
 
-        public void DropTable(Type DbObjectType, bool CatchException)
+        public void DropTable(Type dbObjectType, bool catchException)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             string tn = oi.From.GetMainTableName();
-            DropTable(tn, CatchException, oi);
+            DropTable(tn, catchException, oi);
             if (oi.HasSystemKey)
             {
                 CommonHelper.IfCatchException(true, () => Dialect.ExecuteDropSequence(this, tn));
             }
             foreach (CrossTable mt in oi.CrossTables.Values)
             {
-                DropTable(mt.Name, CatchException, oi);
+                DropTable(mt.Name, catchException, oi);
             }
         }
 
-        private void DropTable(string TableName, bool CatchException, ObjectInfo oi)
+        private void DropTable(string tableName, bool catchException, ObjectInfo oi)
         {
-            string s = "DROP TABLE " + Dialect.QuoteForTableName(TableName);
-            var Sql = new SqlStatement(s);
-            oi.LogSql(Sql);
-            CommonHelper.IfCatchException(CatchException, () => ExecuteNonQuery(Sql));
-            if (Driver.AutoCreateTable && TableNames != null)
+            string s = "DROP TABLE " + Dialect.QuoteForTableName(tableName);
+            var sql = new SqlStatement(s);
+            oi.LogSql(sql);
+            CommonHelper.IfCatchException(catchException, () => ExecuteNonQuery(sql));
+            if (Driver.AutoCreateTable && _tableNames != null)
             {
-                TableNames.Remove(TableName.ToLower());
+                _tableNames.Remove(tableName.ToLower());
             }
         }
 
-        public void DropAndCreate(Type DbObjectType)
+        public void DropAndCreate(Type dbObjectType)
         {
-            DropTable(DbObjectType, true);
-            Create(DbObjectType);
+            DropTable(dbObjectType, true);
+            Create(dbObjectType);
         }
 
-        public void Create(Type DbObjectType)
+        public void Create(Type dbObjectType)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
-            SqlStatement Sql = oi.Composer.GetCreateStatement(Dialect);
-            oi.LogSql(Sql);
-            ExecuteNonQuery(Sql);
-            if (Driver.AutoCreateTable && TableNames != null)
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetCreateStatement(Dialect);
+            oi.LogSql(sql);
+            ExecuteNonQuery(sql);
+            if (Driver.AutoCreateTable && _tableNames != null)
             {
-                TableNames.Add(oi.From.GetMainTableName().ToLower(), 1);
+                _tableNames.Add(oi.From.GetMainTableName().ToLower(), 1);
             }
         }
 
-        public void CreateDeleteToTable(Type DbObjectType)
+        public void CreateDeleteToTable(Type dbObjectType)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(DbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             CreateTableStatementBuilder sb = oi.Composer.GetCreateTableStatementBuilder();
             sb.TableName = oi.DeleteToTableName;
             sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0));
-            SqlStatement Sql = sb.ToSqlStatement(Dialect);
-            oi.LogSql(Sql);
-            ExecuteNonQuery(Sql);
-            if (Driver.AutoCreateTable && TableNames != null)
+            SqlStatement sql = sb.ToSqlStatement(Dialect);
+            oi.LogSql(sql);
+            ExecuteNonQuery(sql);
+            if (Driver.AutoCreateTable && _tableNames != null)
             {
-                TableNames.Add(oi.DeleteToTableName.ToLower(), 1);
+                _tableNames.Add(oi.DeleteToTableName.ToLower(), 1);
             }
         }
 
@@ -803,12 +803,12 @@ namespace Lephone.Data
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName1));
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName2));
             // execute
-            SqlStatement Sql = cts.ToSqlStatement(Dialect);
-            oi1.LogSql(Sql);
-            ExecuteNonQuery(Sql);
-            if (Driver.AutoCreateTable && TableNames != null)
+            SqlStatement sql = cts.ToSqlStatement(Dialect);
+            oi1.LogSql(sql);
+            ExecuteNonQuery(sql);
+            if (Driver.AutoCreateTable && _tableNames != null)
             {
-                TableNames.Add(mt1.Name.ToLower(), 1);
+                _tableNames.Add(mt1.Name.ToLower(), 1);
             }
         }
     }

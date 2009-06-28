@@ -20,7 +20,7 @@ namespace Lephone.UnitTest.Data
         [TearDown]
         public void TearDown()
         {
-            ClassHelper.SetValue(sqlite, "TableNames", null);
+            ClassHelper.SetValue(sqlite, "_tableNames", null);
         }
 
         [Test]

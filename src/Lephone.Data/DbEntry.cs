@@ -82,14 +82,14 @@ namespace Lephone.Data
             _Instance.Insert(obj);
 		}
 
-        public static void Delete(object obj)
+        public static int Delete(object obj)
 		{
-            _Instance.Delete(obj);
+            return _Instance.Delete(obj);
 		}
 
-        public static void Delete<T>(WhereCondition iwc) where T : class, IDbObject
+        public static int Delete<T>(WhereCondition iwc) where T : class, IDbObject
         {
-            _Instance.Delete<T>(iwc);
+            return _Instance.Delete<T>(iwc);
         }
 
         #endregion

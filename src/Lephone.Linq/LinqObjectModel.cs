@@ -78,6 +78,11 @@ namespace Lephone.Linq
         {
             return DbEntry.From<T>().Where(condition).GetSum(column);
         }
+
+        public static int DeleteAll(Expression<Func<T, bool>> condition)
+        {
+            return DbEntry.Delete<T>(ExpressionParser<T>.Parse(condition));
+        }
     }
 
     [Serializable]

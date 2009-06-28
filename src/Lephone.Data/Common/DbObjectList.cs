@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Data;
-using Lephone.Data.Common;
 
 namespace Lephone.Data.Common
 {
@@ -18,7 +17,7 @@ namespace Lephone.Data.Common
             {
                 return (DbObjectList<Tout>)((object)this);
             }
-            DbObjectList<Tout> ret = new DbObjectList<Tout>();
+            var ret = new DbObjectList<Tout>();
             foreach (Tout i in (IEnumerable)this)
             {
                 ret.Add(i);
@@ -40,10 +39,10 @@ namespace Lephone.Data.Common
         {
             Type t = typeof(T);
             //TODO: why left this?
-            //ObjectInfo oi = ObjectInfo.GetInstance(t);
+            //ObjectInfo Info = ObjectInfo.GetInstance(t);
             foreach (object or in this)
             {
-                IXmlSerializable o = or as IXmlSerializable;
+                var o = (IXmlSerializable)or;
                 writer.WriteStartElement(t.Name);
                 //TODO: how to handle this may null?
                 o.WriteXml(writer);
@@ -54,7 +53,7 @@ namespace Lephone.Data.Common
         public DataTable ToDataTable()
         {
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            DataTable dt = new DataTable(oi.From.GetMainTableName());
+            var dt = new DataTable(oi.From.GetMainTableName());
             foreach (MemberHandler m in oi.SimpleFields)
             {
                 DataColumn dc 

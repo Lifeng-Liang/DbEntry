@@ -7,50 +7,50 @@ namespace Lephone.Data.Common
 {
     internal class QueryComposer
     {
-        protected ObjectInfo oi;
+        protected ObjectInfo Info;
 
         public QueryComposer(ObjectInfo oi)
         {
-            this.oi = oi;
+            Info = oi;
         }
 
-        public virtual SqlStatement GetMaxStatement(DbDialect Dialect, WhereCondition iwc, string columnName)
+        public virtual SqlStatement GetMaxStatement(DbDialect dialect, WhereCondition iwc, string columnName)
         {
-            var sb = new SelectStatementBuilder(oi.From, null, null);
+            var sb = new SelectStatementBuilder(Info.From, null, null);
             sb.Where.Conditions = iwc;
             sb.SetMaxColumn(columnName);
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetMinStatement(DbDialect Dialect, WhereCondition iwc, string columnName)
+        public virtual SqlStatement GetMinStatement(DbDialect dialect, WhereCondition iwc, string columnName)
         {
-            var sb = new SelectStatementBuilder(oi.From, null, null);
+            var sb = new SelectStatementBuilder(Info.From, null, null);
             sb.Where.Conditions = iwc;
             sb.SetMinColumn(columnName);
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetSumStatement(DbDialect Dialect, WhereCondition iwc, string columnName)
+        public virtual SqlStatement GetSumStatement(DbDialect dialect, WhereCondition iwc, string columnName)
         {
-            var sb = new SelectStatementBuilder(oi.From, null, null);
+            var sb = new SelectStatementBuilder(Info.From, null, null);
             sb.Where.Conditions = iwc;
             sb.SetSumColumn(columnName);
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
-        public SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc)
+        public SqlStatement GetResultCountStatement(DbDialect dialect, WhereCondition iwc)
         {
-            return GetResultCountStatement(Dialect, iwc, false);
+            return GetResultCountStatement(dialect, iwc, false);
         }
 
-        public virtual SqlStatement GetResultCountStatement(DbDialect Dialect, WhereCondition iwc, bool isDistinct)
+        public virtual SqlStatement GetResultCountStatement(DbDialect dialect, WhereCondition iwc, bool isDistinct)
         {
-            var sb = new SelectStatementBuilder(oi.From, null, null) {IsDistinct = isDistinct};
+            var sb = new SelectStatementBuilder(Info.From, null, null) {IsDistinct = isDistinct};
             sb.Where.Conditions = iwc;
             if(isDistinct)
             {
-                oi.Handler.SetValuesForSelect(sb);
-                string cs = sb.GetColumns(Dialect);
+                Info.Handler.SetValuesForSelect(sb);
+                string cs = sb.GetColumns(dialect);
                 sb.SetCountColumn(cs);
                 sb.IsDistinct = false;
                 sb.Keys.Clear();
@@ -59,12 +59,12 @@ namespace Lephone.Data.Common
             {
                 sb.SetCountColumn("*");
             }
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
         public virtual SqlStatement GetGroupByStatement(DbDialect dialect, WhereCondition iwc, OrderBy order, string columnName)
         {
-            var sb = new SelectStatementBuilder(oi.From, order, null);
+            var sb = new SelectStatementBuilder(Info.From, order, null);
             sb.Where.Conditions = iwc;
             var list = columnName.Split(',');
             foreach (string s in list)
@@ -75,61 +75,61 @@ namespace Lephone.Data.Common
             return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetSelectStatement(DbDialect Dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public virtual SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
-            var sb = new SelectStatementBuilder(from ?? oi.From, oc, lc) {IsDistinct = isDistinct};
+            var sb = new SelectStatementBuilder(from ?? Info.From, oc, lc) {IsDistinct = isDistinct};
             sb.Where.Conditions = iwc;
-            oi.Handler.SetValuesForSelect(sb);
+            Info.Handler.SetValuesForSelect(sb);
             // DataBase Process
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetInsertStatement(DbDialect Dialect, object obj)
+        public virtual SqlStatement GetInsertStatement(DbDialect dialect, object obj)
         {
             InsertStatementBuilder sb = GetInsertStatementBuilder(obj);
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
         public virtual InsertStatementBuilder GetInsertStatementBuilder(object obj)
         {
-            var sb = new InsertStatementBuilder(oi.From.GetMainTableName());
-            oi.Handler.SetValuesForInsert(sb, obj);
+            var sb = new InsertStatementBuilder(Info.From.GetMainTableName());
+            Info.Handler.SetValuesForInsert(sb, obj);
             return sb;
         }
 
-        public virtual SqlStatement GetUpdateStatement(DbDialect Dialect, object obj, WhereCondition iwc)
+        public virtual SqlStatement GetUpdateStatement(DbDialect dialect, object obj, WhereCondition iwc)
         {
-            var sb = new UpdateStatementBuilder(oi.From.GetMainTableName());
-            oi.Handler.SetValuesForUpdate(sb, obj);
+            var sb = new UpdateStatementBuilder(Info.From.GetMainTableName());
+            Info.Handler.SetValuesForUpdate(sb, obj);
             sb.Where.Conditions = iwc;
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
+        public virtual SqlStatement GetDeleteStatement(DbDialect dialect, object obj)
         {
-            var sb = new DeleteStatementBuilder(oi.From.GetMainTableName());
+            var sb = new DeleteStatementBuilder(Info.From.GetMainTableName());
             sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj);
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetDeleteStatement(DbDialect Dialect, WhereCondition iwc)
+        public virtual SqlStatement GetDeleteStatement(DbDialect dialect, WhereCondition iwc)
         {
-            var sb = new DeleteStatementBuilder(oi.From.GetMainTableName());
+            var sb = new DeleteStatementBuilder(Info.From.GetMainTableName());
             sb.Where.Conditions = iwc;
-            return sb.ToSqlStatement(Dialect);
+            return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetCreateStatement(DbDialect Dialect)
+        public virtual SqlStatement GetCreateStatement(DbDialect dialect)
         {
             CreateTableStatementBuilder cts = GetCreateTableStatementBuilder();
-            return cts.ToSqlStatement(Dialect);
+            return cts.ToSqlStatement(dialect);
         }
 
         public virtual CreateTableStatementBuilder GetCreateTableStatementBuilder()
         {
-            string tname = oi.From.GetMainTableName();
+            string tname = Info.From.GetMainTableName();
             var cts = new CreateTableStatementBuilder(tname);
-            foreach (MemberHandler fh in oi.Fields)
+            foreach (MemberHandler fh in Info.Fields)
             {
                 if (!fh.IsHasMany && !fh.IsHasOne && !fh.IsHasAndBelongsToMany)
                 {
@@ -137,10 +137,10 @@ namespace Lephone.Data.Common
                     cts.Columns.Add(ci);
                 }
             }
-            foreach (string s in oi.Indexes.Keys)
+            foreach (string s in Info.Indexes.Keys)
             {
-                bool u = oi.UniqueIndexes.ContainsKey(s) ? true : false;
-                cts.Indexes.Add(new DbIndex(s, u, oi.Indexes[s].ToArray()));
+                bool u = Info.UniqueIndexes.ContainsKey(s) ? true : false;
+                cts.Indexes.Add(new DbIndex(s, u, Info.Indexes[s].ToArray()));
             }
             return cts;
         }

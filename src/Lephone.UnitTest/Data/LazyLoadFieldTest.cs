@@ -71,7 +71,7 @@ namespace Lephone.UnitTest.Data
         protected override void OnSetUp()
         {
             base.OnSetUp();
-            ClassHelper.SetValue(DbEntry.Context, "TableNames", null);
+            ClassHelper.SetValue(DbEntry.Context, "_tableNames", null);
         }
 
         #endregion
