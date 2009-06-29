@@ -112,15 +112,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasManyAndHasOne1()
         {
-            mrUser u = mrUser.New().Init("user");
-            mrProject p = mrProject.New().Init("project");
+            mrUser u = mrUser.New.Init("user");
+            mrProject p = mrProject.New.Init("project");
             u.Projects.Add(p);
             Assert.AreEqual("user", p.Owner.Name);
-            mrSubject s = mrSubject.New().Init("subject");
+            mrSubject s = mrSubject.New.Init("subject");
             p.Subjects.Add(s);
-            mrAttribute a = mrAttribute.New().Init("attribute");
+            mrAttribute a = mrAttribute.New.Init("attribute");
             s.Attributes.Add(a);
-            mrTitle t = mrTitle.New().Init("title");
+            mrTitle t = mrTitle.New.Init("title");
             a.Title = t;
 
             u.Save();
@@ -138,15 +138,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasManyAndHasOne2()
         {
-            mrUser u = mrUser.New().Init("user");
-            mrProject p = mrProject.New().Init("project");
+            mrUser u = mrUser.New.Init("user");
+            mrProject p = mrProject.New.Init("project");
             u.Projects.Add(p);
             Assert.AreEqual("user", p.Owner.Name);
-            mrSubject s = mrSubject.New().Init("subject");
+            mrSubject s = mrSubject.New.Init("subject");
             p.Subjects.Add(s);
-            mrAttribute a = mrAttribute.New().Init("attribute");
+            mrAttribute a = mrAttribute.New.Init("attribute");
             s.Attributes.Add(a);
-            mrTitle t = mrTitle.New().Init("title");
+            mrTitle t = mrTitle.New.Init("title");
             a.Title = t;
 
             u.Save();
@@ -163,12 +163,12 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasAndBelongsToMany1()
         {
-            mrBook b = mrBook.New().Init("book");
-            mrCategory c = mrCategory.New().Init("category");
+            mrBook b = mrBook.New.Init("book");
+            mrCategory c = mrCategory.New.Init("category");
             b.Categories.Add(c);
-            mrCateTitle t = mrCateTitle.New().Init("title");
+            mrCateTitle t = mrCateTitle.New.Init("title");
             c.Title = t;
-            mrCateTitleName n = mrCateTitleName.New().Init("name");
+            mrCateTitleName n = mrCateTitleName.New.Init("name");
             t.Names.Add(n);
 
             b.Save();
@@ -184,13 +184,13 @@ namespace Lephone.UnitTest.Data
         [Test, Ignore("need to be fixed")]
         public void TestHasAndBelongsToMany2()
         {
-            mrBook b = mrBook.New().Init("book");
-            mrCategory c = mrCategory.New().Init("category");
+            mrBook b = mrBook.New.Init("book");
+            mrCategory c = mrCategory.New.Init("category");
             b.Categories.Add(c);
             Assert.AreEqual(1, c.Books.Count);
-            mrCateTitle t = mrCateTitle.New().Init("title");
+            mrCateTitle t = mrCateTitle.New.Init("title");
             c.Title = t;
-            mrCateTitleName n = mrCateTitleName.New().Init("name");
+            mrCateTitleName n = mrCateTitleName.New.Init("name");
             t.Names.Add(n);
 
             c.Save();
@@ -206,9 +206,9 @@ namespace Lephone.UnitTest.Data
         [Test, Ignore("need to be fixed")]
         public void TestSimulateManyToMany()
         {
-            mrReader r = mrReader.New().Init("reader");
-            mrArticle a = mrArticle.New().Init("article");
-            mrReaderAndArticle ra = mrReaderAndArticle.New().Init("x");
+            mrReader r = mrReader.New.Init("reader");
+            mrArticle a = mrArticle.New.Init("article");
+            mrReaderAndArticle ra = mrReaderAndArticle.New.Init("x");
             r.xTable.Add(ra);
             a.xTable.Add(ra);
 

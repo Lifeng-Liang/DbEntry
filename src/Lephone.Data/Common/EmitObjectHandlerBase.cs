@@ -258,7 +258,7 @@ namespace Lephone.Data.Common
 
         public override object CreateInstance()
         {
-            return User.New();
+            return User.New;
         }
 
         protected override void SetValuesForSelectDirect(List<string> Keys)

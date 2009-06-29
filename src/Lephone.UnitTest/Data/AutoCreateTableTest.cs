@@ -227,7 +227,7 @@ namespace Lephone.UnitTest.Data
         public void TestSmartUpdateForDynamicObject5()
         {
             // read from database, the updateColumns is empty
-            asUser u = asUser.New("Tom", 18);
+            asUser u = DynamicObject.NewObject<asUser>("Tom", 18);
             u.Save();
             asUser u1 = asUser.FindById(u.Id);
             Assert.AreEqual(0, u1.GetUpdateColumns().Count);
@@ -242,7 +242,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestEnum()
         {
-            EnumTest u = EnumTest.New();
+            EnumTest u = EnumTest.New;
             u.Name = "test";
             u.MyType = MyEnum.Manager;
             u.MyDate = new DateTime(2000, 1, 1);
@@ -261,9 +261,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSampleData()
         {
-            SampleData.New().Init("angel", UserRole.Worker, new DateTime(2004, 2, 27, 15, 10, 23), true, null).Save();
-            SampleData.New().Init("tom", UserRole.Manager, new DateTime(2001, 3, 17, 7, 12, 4), false, null).Save();
-            SampleData.New().Init("jerry", UserRole.Client, new DateTime(1999, 1, 31, 21, 22, 55), true, 10).Save();
+            SampleData.New.Init("angel", UserRole.Worker, new DateTime(2004, 2, 27, 15, 10, 23), true, null).Save();
+            SampleData.New.Init("tom", UserRole.Manager, new DateTime(2001, 3, 17, 7, 12, 4), false, null).Save();
+            SampleData.New.Init("jerry", UserRole.Client, new DateTime(1999, 1, 31, 21, 22, 55), true, 10).Save();
             List<SampleData> ls1 = SampleData.Find(CK.K["Id"] > 1, new OrderBy("Id"));
             Assert.AreEqual(2, ls1.Count);
         }

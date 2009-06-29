@@ -256,8 +256,11 @@ namespace Lephone.Data.Common
             }
         }
 
-        public MemberHandler ImplProperty(string PropertyName, Type PropertyType, Type OriginType, MethodInfo mupdate, PropertyInfo pi)
+        public MemberHandler ImplProperty(Type OriginType, MethodInfo mupdate, PropertyInfo pi)
         {
+            string PropertyName = pi.Name;
+            Type PropertyType = pi.PropertyType;
+
             string GetPropertyName = "get_" + PropertyName;
             string SetPropertyName = "set_" + PropertyName;
 
@@ -305,7 +308,7 @@ namespace Lephone.Data.Common
         public void OverrideMethod(MethodAttributes flag, string MethodName, Type OriginType, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
             MethodBuilder mb = DefineMethod(flag, MethodName, returnType, paramTypes, emitCode);
-            MethodInfo mi = OriginType.GetMethod(MethodName);
+            MethodInfo mi = (paramTypes == null) ? OriginType.GetMethod(MethodName) : OriginType.GetMethod(MethodName, paramTypes);
             InnerType.DefineMethodOverride(mb, mi);
         }
 
@@ -332,6 +335,44 @@ namespace Lephone.Data.Common
             emitCode(il);
             il.Return();
             return mb;
+        }
+
+        public void ImplInitialize(Type type, MethodInfo info)
+        {
+            var ptypes = new List<Type>();
+            var pis = info.GetParameters();
+            foreach (var parameter in pis)
+            {
+                ptypes.Add(parameter.ParameterType);
+            }
+
+            OverrideMethod(OverrideFlag, info.Name, type, info.ReturnType, ptypes.ToArray(),
+               delegate(ILBuilder il)
+               {
+                   if(ptypes.Count == 1 && ptypes[0] == info.ReturnType)
+                   {
+                       var ps = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                       for (int i = 0; i < ps.Length; i++)
+                       {
+                           var pi = ps[i];
+                           il.LoadArg(0);
+                           il.LoadArg(1);
+                           il.CallVirtual(pi.GetGetMethod());
+                           il.CallVirtual(pi.GetSetMethod());
+                       }
+                   }
+                   else
+                   {
+                       for (int i = 0; i < pis.Length; i++)
+                       {
+                           var pi = type.GetProperty(pis[i].Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+                           il.LoadArg(0);
+                           il.LoadArg(i + 1);
+                           il.CallVirtual(pi.GetSetMethod());
+                       }
+                   }
+                   il.Return();
+               });
         }
     }
 }

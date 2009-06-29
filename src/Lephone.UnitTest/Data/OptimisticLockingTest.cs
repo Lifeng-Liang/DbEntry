@@ -49,7 +49,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var b = LockBook.New().Init("locker");
+            var b = LockBook.New.Init("locker");
             b.Save();
             long id = b.Id;
 
@@ -70,7 +70,7 @@ namespace Lephone.UnitTest.Data
         [Test, ExpectedException(typeof(DataException))]
         public void Test2()
         {
-            var b = LockBook.New().Init("locker");
+            var b = LockBook.New.Init("locker");
             b.Save();
             long id = b.Id;
 
@@ -104,7 +104,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestResave()
         {
-            var b1 = LockBook.New().Init("test");
+            var b1 = LockBook.New.Init("test");
             b1.Save();
             var b = LockBook.FindById(b1.Id);
             b.Name = "aa";
@@ -116,7 +116,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateAfterInsert()
         {
-            var b = LockBook.New().Init("test");
+            var b = LockBook.New.Init("test");
             b.Save();
             b.Name = "bb";
             b.Save(); // should not throw exception
@@ -125,7 +125,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCachedLockVersion()
         {
-            var b = CachedLockBook.New().Init("abc");
+            var b = CachedLockBook.New.Init("abc");
             b.Save();
             b.Name = "aaa";
             b.Save();

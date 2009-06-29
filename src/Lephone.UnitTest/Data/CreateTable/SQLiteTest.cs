@@ -375,7 +375,7 @@ CREATE INDEX [IX_R_book_and_category_crx_Category1_Id] ON [R_book_and_category] 
             AssertSql(@"SELECT [Id],[Name] FROM [tom].[test_table] WHERE [Name] = @Name_0;
 <Text><60>(@Name_0=tom:String)");
 
-            var c = compTableName.New();
+            var c = compTableName.New;
             c.Name = "tom";
             sqlite.Insert(c);
             AssertSql(@"INSERT INTO [tom].[test_table] ([Name]) VALUES (@Name_0);

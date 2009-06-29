@@ -93,7 +93,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestValidate()
         {
-            lzpUser1 u = lzpUser1.New();
+            lzpUser1 u = lzpUser1.New;
             u.Name = "tom";
             u.Profile = "xxx";
             Assert.IsFalse(u.IsValid());
@@ -112,7 +112,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsert()
         {
-            lzUser u = lzUser.New();
+            lzUser u = lzUser.New;
             u.Name = "tom";
             u.Profile = "test";
             sqlite.Insert(u);
@@ -122,7 +122,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCRUD()
         {
-            lzUser u = lzUser.New();
+            lzUser u = lzUser.New;
             u.Name = "tom";
             u.Profile = "test";
             u.Save();
@@ -148,7 +148,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCRUDforDynamicObject()
         {
-            lzpUser u = lzpUser.New();
+            lzpUser u = lzpUser.New;
             u.Name = "tom";
             u.Profile = "test";
             u.Save();
@@ -174,7 +174,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestForNotUpdateWithDynamicObject()
         {
-            lzpUser u = lzpUser.New();
+            lzpUser u = lzpUser.New;
             u.Name = "tom";
             u.Profile = "test";
             u.Save();

@@ -101,6 +101,42 @@ namespace Lephone.UnitTest.Data
         public int Age;
     }
 
+    public abstract class InitTest : DbObjectModel<InitTest>
+    {
+        public abstract string Name { get; set; }
+        public abstract int Age { get; set; }
+
+        public abstract InitTest Init(string name, int age); // Ignore case
+    }
+
+    public abstract class InitTest2 : DbObjectModel<InitTest2>
+    {
+        public abstract string Name { get; set; }
+        public abstract string FirstName { get; set; }
+        public abstract string LastName { get; set; }
+
+        public abstract InitTest2 Init(string Name, string FirstName, string LastName);
+    }
+
+    public abstract class InitTest3 : DbObjectModel<InitTest3>
+    {
+        public abstract string Name { get; set; }
+        public abstract string FirstName { get; set; }
+        public abstract string LastName { get; set; }
+
+        public abstract InitTest3 Init(string Name, string LastName, string FirstName);
+    }
+
+    public abstract class InitTest4 : DbObjectModel<InitTest4>
+    {
+        public abstract string Name { get; set; }
+        public abstract bool Gender { get; set; }
+        public abstract int? Age { get; set; }
+
+        public abstract InitTest4 Initialize(string Name, bool Gender, int? Age);
+        public abstract InitTest4 Initialize(InitTest4 obj);
+    }
+
     #endregion
 
     [TestFixture]
@@ -254,7 +290,7 @@ namespace Lephone.UnitTest.Data
             p1 = PeopleModel.FindById(2);
             Assert.IsNull(p1);
 
-            p = PeopleModel.New();
+            p = PeopleModel.New;
             p.Name = "123456";
             Assert.IsFalse(p.IsValid());
 
@@ -281,7 +317,7 @@ namespace Lephone.UnitTest.Data
             var p = new ImpPeople {Name = "tom"};
             Assert.AreEqual("{ Id = 0, Name = tom }", p.ToString());
 
-            DArticle a = DArticle.New();
+            DArticle a = DArticle.New;
             a.Name = "long";
             Assert.AreEqual("{ Id = 0, Name = long }", a.ToString());
 
@@ -355,7 +391,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGuidKey()
         {
-            GuidKey o = GuidKey.New();
+            GuidKey o = GuidKey.New;
             Assert.IsTrue(Guid.Empty == o.Id);
 
             o.Name = "guid";
@@ -380,7 +416,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUniqueValidate()
         {
-            var u = UniquePerson.New();
+            var u = UniquePerson.New;
             u.Name = "test";
             var vh = new ValidateHandler();
             vh.ValidateObject(u);
@@ -471,7 +507,7 @@ namespace Lephone.UnitTest.Data
         {
             var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
-            CountTable2 ct = CountTable2.New();
+            CountTable2 ct = CountTable2.New;
             ct.Id = 1;
             ct.Name = "tom";
             de.Save(ct);
@@ -513,10 +549,10 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDefineCrossTableName3()
         {
-            var b = crxBook1.New();
+            var b = crxBook1.New;
             b.Name = "test";
 
-            var c = crxCategory1.New();
+            var c = crxCategory1.New;
             c.Name = "math";
 
             c.Books.Add(b);
@@ -552,7 +588,7 @@ namespace Lephone.UnitTest.Data
         {
             try
             {
-                var d = t_user.New();
+                var d = t_user.New;
                 d.mc = "ÕÅÈý";
                 d.Save();
             }
@@ -736,6 +772,40 @@ namespace Lephone.UnitTest.Data
             var list = UniquePerson.Where(CK.K["Name"] == "Tom").Select();
             Assert.AreEqual(1, list.Count);
             Assert.AreEqual(1, list[0].Id);
+        }
+
+        [Test]
+        public void TestInitialize()
+        {
+            var o = InitTest.New.Init("tom", 17);
+            Assert.AreEqual(0, o.Id);
+            Assert.AreEqual("tom", o.Name);
+            Assert.AreEqual(17, o.Age);
+
+            var o2 = InitTest2.New.Init("1", "2", "3");
+            Assert.AreEqual("1", o2.Name);
+            Assert.AreEqual("2", o2.FirstName);
+            Assert.AreEqual("3", o2.LastName);
+
+            var o3 = InitTest3.New.Init("1", "2", "3");
+            Assert.AreEqual("1", o3.Name);
+            Assert.AreEqual("2", o3.LastName);
+            Assert.AreEqual("3", o3.FirstName);
+
+            var o4 = InitTest4.New.Initialize("1", true, 18);
+            Assert.AreEqual("1", o4.Name);
+            Assert.AreEqual(true, o4.Gender);
+            Assert.AreEqual(18, o4.Age);
+
+            o4 = InitTest4.New.Initialize("1", true, null);
+            Assert.AreEqual("1", o4.Name);
+            Assert.AreEqual(true, o4.Gender);
+            Assert.IsNull(o4.Age);
+
+            var ox = InitTest4.New.Initialize(o4);
+            Assert.AreEqual("1", ox.Name);
+            Assert.AreEqual(true, ox.Gender);
+            Assert.IsNull(ox.Age);
         }
     }
 }

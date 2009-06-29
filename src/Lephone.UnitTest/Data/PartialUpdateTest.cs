@@ -25,7 +25,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            User u = User.New();
+            User u = User.New;
             u.Id = 1;
             u.Name = "tom";
             sqlite.Save(u);
@@ -35,7 +35,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            User u = User.New();
+            User u = User.New;
             u.Id = 1;
             u.Age = 19;
             sqlite.Save(u);

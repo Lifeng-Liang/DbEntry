@@ -20,7 +20,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateAndInsert()
         {
-            PeopleModel o = PeopleModel.New();
+            PeopleModel o = PeopleModel.New;
             o.Name = "tom";
             de.Save(o);
 

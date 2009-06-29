@@ -118,14 +118,12 @@ namespace Lephone.Data.Definition
             return DbEntry.From<T>().Where(con).GetSum(columnName);
         }
 
-        public static T New()
+        public static T New
         {
-            return DynamicObject.NewObject<T>();
-        }
-
-        public static T New(params object[] os)
-        {
-            return DynamicObject.NewObject<T>(os);
+            get
+            {
+                return DynamicObject.NewObject<T>();
+            }
         }
 
         public static void DeleteAll()

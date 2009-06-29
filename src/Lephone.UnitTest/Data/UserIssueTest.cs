@@ -30,13 +30,7 @@ namespace Lephone.UnitTest.Data
         [Length(50), AllowNull]
         public abstract string Atts { get; set; }
 
-        protected AppGrupoUsrMnu() {}
-
-        protected AppGrupoUsrMnu(string CodigoMenu, string Atts)
-        {
-            this.CodigoMenu = CodigoMenu;
-            this.Atts = Atts;
-        }
+        public abstract AppGrupoUsrMnu Init(string CodigoMenu, string Atts);
     }
 
     [Serializable]
@@ -69,10 +63,10 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var u = AppGrupoUsr.New();
+            var u = AppGrupoUsr.New;
             u.Codigo = "codigo";
             u.Nombre = "test";
-            var g = AppGrupoUsrMnu.New("menu", "atts");
+            var g = AppGrupoUsrMnu.New.Init("menu", "atts");
             u.GrpMnu.Add(g);
             u.Save();
 
@@ -89,7 +83,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            var o = BaoXiuRS.New();
+            var o = BaoXiuRS.New;
             o.DT1 = new Date(2009, 5, 20);
             o.DT = new Date(2009, 5, 22);
             o.Save();

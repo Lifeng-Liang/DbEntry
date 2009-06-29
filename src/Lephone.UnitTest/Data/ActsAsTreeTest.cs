@@ -82,7 +82,7 @@ namespace Lephone.UnitTest.Data
         {
             File f = File.FindById(16);
             Assert.AreEqual(2, f.Children.Count);
-            File nf = File.New();
+            File nf = File.New;
             nf.Name = "gbk.tbl";
             f.Children.Add(nf);
             f.Save();
@@ -152,7 +152,7 @@ namespace Lephone.UnitTest.Data
         {
             TheFile f = TheFile.FindById(16);
             Assert.AreEqual(2, f.Children.Count);
-            TheFile nf = TheFile.New();
+            TheFile nf = TheFile.New;
             nf.Name = "gbk.tbl";
             f.Children.Add(nf);
             f.Save();

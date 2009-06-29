@@ -46,7 +46,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            ManyMore o = ManyMore.New();
+            ManyMore o = ManyMore.New;
             o.Name = "tom";
             o.Save();
             o = ManyMore.FindById(o.Id);
@@ -55,14 +55,14 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(0, o.m1.Count);
             Assert.AreEqual(0, o.m2.Count);
 
-            ManyMore1 o1 = ManyMore1.New();
+            ManyMore1 o1 = ManyMore1.New;
             o1.Name = "jerry";
             o1.Save();
             o1 = ManyMore1.FindById(o1.Id);
             Assert.AreEqual("jerry", o1.Name);
             Assert.AreEqual(0, o1.m.Count);
 
-            ManyMore2 o2 = ManyMore2.New();
+            ManyMore2 o2 = ManyMore2.New;
             o2.Name = "mike";
             o2.Save();
             o2 = ManyMore2.FindById(o2.Id);
@@ -71,16 +71,16 @@ namespace Lephone.UnitTest.Data
 
             //======================
 
-            o = ManyMore.New();
+            o = ManyMore.New;
             o.Name = "tom";
             o.Save();
             o = ManyMore.FindById(o.Id);
 
-            o1 = ManyMore1.New();
+            o1 = ManyMore1.New;
             o1.Name = "jerry";
             o.m1.Add(o1);
 
-            o2 = ManyMore2.New();
+            o2 = ManyMore2.New;
             o2.Name = "mike";
             o.m2.Add(o2);
 
@@ -93,7 +93,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("jerry", o.m1[0].Name);
             Assert.AreEqual("mike", o.m2[0].Name);
 
-            ManyMore1 o1a = ManyMore1.New();
+            ManyMore1 o1a = ManyMore1.New;
             o1a.Name = "allen";
             o.m1.Add(o1a);
 

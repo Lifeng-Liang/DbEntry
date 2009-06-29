@@ -179,7 +179,7 @@ namespace Lephone.UnitTest.Data
             Assert.IsNotNull(emp);
 
             // create employee job role relation
-            EmployeeRoleRelation rel1 = EmployeeRoleRelation.New();
+            EmployeeRoleRelation rel1 = EmployeeRoleRelation.New;
             rel1.CreatedBy = u.Id;
             rel1.Active = true;
             rel1.Start = DateTime.Now;
@@ -187,14 +187,14 @@ namespace Lephone.UnitTest.Data
             rel1.Save();
 
             // create job role relation
-            JobRoleRelation rel = JobRoleRelation.New();
+            JobRoleRelation rel = JobRoleRelation.New;
             rel.CreatedBy = u.Id;
             rel.Active = true;
             rel.Type = JobRoleRelationType.Manager;
             rel.OrganisationalUnit = ou;
             rel.Save();
 
-            JobRole jr = JobRole.New();
+            JobRole jr = JobRole.New;
             jr.CreatedBy = u.Id;
             jr.Code = "CEO";
             jr.Name = "CEO";

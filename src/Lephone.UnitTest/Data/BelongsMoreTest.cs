@@ -112,7 +112,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsert()
         {
-            bReader r = bReader.New();
+            bReader r = bReader.New;
             r.Name = "test";
             r.Save();
 
@@ -124,8 +124,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsertRelations()
         {
-            bReader r = bReader.New().Init("test");
-            BelongsMore b = BelongsMore.New().Init("b");
+            bReader r = bReader.New.Init("test");
+            BelongsMore b = BelongsMore.New.Init("b");
             r.bms.Add(b);
             r.Save();
 
@@ -141,9 +141,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsertRelations2()
         {
-            bReader r = bReader.New().Init("test");
-            bArticle a = bArticle.New().Init("art");
-            BelongsMore b = BelongsMore.New().Init("b");
+            bReader r = bReader.New.Init("test");
+            bArticle a = bArticle.New.Init("art");
+            BelongsMore b = BelongsMore.New.Init("b");
             r.bms.Add(b);
             a.bms.Add(b);
             r.Save();
@@ -249,7 +249,7 @@ namespace Lephone.UnitTest.Data
             bArticle a = bArticle.FindById(1);
             Assert.AreEqual(0, a.bms.Count);
 
-            a.bms.Add(BelongsMore.New().Init("mytest"));
+            a.bms.Add(BelongsMore.New.Init("mytest"));
             a.Save();
 
             a = bArticle.FindById(1);

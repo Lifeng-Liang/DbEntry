@@ -86,7 +86,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreatedOnWithTable()
         {
-            DateTable o = DateTable.New();
+            DateTable o = DateTable.New;
             o.Name = "tom";
             sqlite.Insert(o);
             Assert.AreEqual("INSERT INTO [DateTable] ([CreatedOn],[Name]) VALUES (DATETIME(CURRENT_TIMESTAMP, 'localtime'),@Name_0);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String)", StaticRecorder.LastMessage);
@@ -95,7 +95,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdatedOnWithTable()
         {
-            DateTable o = DateTable.New();
+            DateTable o = DateTable.New;
             o.Name = "tom";
             o.Id = 1;
             sqlite.Update(o);
@@ -137,7 +137,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSavedOnForPartialUpdate()
         {
-            DateTable4 o = DateTable4.New();
+            DateTable4 o = DateTable4.New;
             o.Name = "tom";
             o.Id = 1;
             sqlite.Update(o);

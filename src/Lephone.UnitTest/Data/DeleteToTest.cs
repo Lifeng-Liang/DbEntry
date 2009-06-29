@@ -26,7 +26,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            DeleteToUser o = DeleteToUser.New();
+            DeleteToUser o = DeleteToUser.New;
             o.Id = 2;
             o.Name = "tom";
             sqlite.Delete(o);

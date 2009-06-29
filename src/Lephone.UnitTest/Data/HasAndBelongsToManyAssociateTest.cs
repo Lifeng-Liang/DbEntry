@@ -51,7 +51,7 @@ namespace Lephone.UnitTest.Data
             // A.Select 将会载入 A, 如果 A.B 被修改，则不再 Loading B
             var a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
-            a.Readers.Add(Reader.New().Init("ruby"));
+            a.Readers.Add(Reader.New.Init("ruby"));
             Assert.AreEqual(1, a.Readers.Count);
             Assert.AreEqual("ruby", a.Readers[0].Name);
         }
@@ -62,7 +62,7 @@ namespace Lephone.UnitTest.Data
             // A.Save 将会保存 A, 如果 A.B 中有新元素，则插入 B，插入 A_B
             var a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
-            a.Readers.Add(Reader.New().Init("ruby"));
+            a.Readers.Add(Reader.New.Init("ruby"));
             DbEntry.Save(a);
             var a1 = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
@@ -106,8 +106,8 @@ namespace Lephone.UnitTest.Data
         public void Test6()
         {
             // 如果 A 为 Insert, A.Save 将会保存 A, 如果 A.B 中有新元素，则插入 B，插入 A_B
-            Article a = Article.New().Init("Call from hell");
-            a.Readers.Add(Reader.New().Init("ruby"));
+            Article a = Article.New.Init("Call from hell");
+            a.Readers.Add(Reader.New.Init("ruby"));
             DbEntry.Save(a);
             var a1 = DbEntry.GetObject<Article>(a.Id);
             Assert.IsNotNull(a);
@@ -215,11 +215,11 @@ namespace Lephone.UnitTest.Data
             de.DropAndCreate(typeof(TableD));
             de.CreateCrossTable(typeof(TableC), typeof(TableD));
 
-            var t1 = TableC.New();
+            var t1 = TableC.New;
             t1.Title = "Article1";
             t1.Save();
 
-            var t3 = TableD.New();
+            var t3 = TableD.New;
             t3.Name = "Tag1";
             t3.Save();
 

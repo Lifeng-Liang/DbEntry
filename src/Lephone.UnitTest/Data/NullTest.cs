@@ -132,7 +132,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCRUD()
         {
-            NullableTable o = NullableTable.New();
+            NullableTable o = NullableTable.New;
             o.Name = null;
             o.MyInt = null;
             o.MyBool = null;

@@ -48,7 +48,7 @@ namespace Lephone.Web
 
         public override void CreateRole(string roleName)
         {
-            DbEntryRole.New().Init(roleName).Save();
+            DbEntryRole.New.Init(roleName).Save();
         }
 
         public override bool DeleteRole(string roleName, bool throwOnPopulatedRole)

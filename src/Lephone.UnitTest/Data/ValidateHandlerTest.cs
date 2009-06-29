@@ -166,7 +166,7 @@ namespace Lephone.UnitTest.Data
         public void Test8()
         {
             var vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ",");
-            Assert.IsFalse(vh.ValidateObject(vPeople.New().Init("Tom")));
+            Assert.IsFalse(vh.ValidateObject(vPeople.New.Init("Tom")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("Already in use, please input another", vh.ErrorMessages["Name"]);
         }
@@ -175,7 +175,7 @@ namespace Lephone.UnitTest.Data
         public void Test9()
         {
             var vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
-            Assert.IsFalse(vh.ValidateObject(vPeople0.New().Init("Tom")));
+            Assert.IsFalse(vh.ValidateObject(vPeople0.New.Init("Tom")));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("unique", vh.ErrorMessages["Name"]);
         }
@@ -184,7 +184,7 @@ namespace Lephone.UnitTest.Data
         public void Test10()
         {
             var vh = new ValidateHandler(true);
-            vh.ValidateObject(vPeople1.New().Init(""));
+            vh.ValidateObject(vPeople1.New.Init(""));
             Assert.AreEqual(false, vh.IsValid);
             Assert.AreEqual("Invalid Field 测试 Not Allow Null.", vh.ErrorMessages["Name"]);
         }

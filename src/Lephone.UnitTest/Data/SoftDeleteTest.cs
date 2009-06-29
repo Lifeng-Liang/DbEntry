@@ -61,7 +61,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsert()
         {
-            SoftDelete o = SoftDelete.New().Init("test");
+            SoftDelete o = SoftDelete.New.Init("test");
             o.Save();
 
             SoftDeleteFull o1 = SoftDeleteFull.FindById(o.Id);
@@ -144,9 +144,9 @@ namespace Lephone.UnitTest.Data
         {
             DbEntry.Context.DropAndCreate(typeof(Test));
 
-            var t = Test.New().Init("myName");
+            var t = Test.New.Init("myName");
             t.Save();
-            t = Test.New().Init("myName2");
+            t = Test.New.Init("myName2");
             t.Save();
             t = Test.FindById(1);
             t.Delete();
@@ -162,11 +162,11 @@ namespace Lephone.UnitTest.Data
         [Test, Ignore("for now")]
         public void TestVerify()
         {
-            var x = SoftDeleteIndex.New().Init("a");
+            var x = SoftDeleteIndex.New.Init("a");
             x.Save();
             x.Delete();
 
-            var y = SoftDeleteIndex.New().Init("a");
+            var y = SoftDeleteIndex.New.Init("a");
             bool b = y.Validate().IsValid;
             Assert.IsFalse(b);
         }

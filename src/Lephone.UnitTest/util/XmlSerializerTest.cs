@@ -54,7 +54,7 @@ namespace Lephone.UnitTest.util
         [Test, Ignore("waiting for a full supported ReadXml function, Maybe include GetSchema")]
         public void Test3()
         {
-            Sitex s = Sitex.New();
+            Sitex s = Sitex.New;
             s.Url = "ddd";
             string c2 = XmlSerializer<Sitex>.Xml.Serialize(s);
             Assert.AreEqual(@"<?xml version=""1.0""?>

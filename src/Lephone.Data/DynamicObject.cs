@@ -517,10 +517,24 @@ namespace Lephone.Data
 
             foreach (PropertyInfo pi in plist)
             {
-                MemberHandler h = tb.ImplProperty(pi.Name, pi.PropertyType, sourceType, mupdate, pi);
+                MemberHandler h = tb.ImplProperty(sourceType, mupdate, pi);
                 if (h != null)
                 {
                     impRelations.Add(h);
+                }
+            }
+
+            foreach (MethodInfo info in sourceType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
+            {
+                if(info.IsAbstract)
+                {
+                    if (info.Name == "Init" || info.Name == "Initialize")
+                    {
+                        if(info.ReturnType == sourceType)
+                        {
+                            tb.ImplInitialize(sourceType, info);
+                        }
+                    }
                 }
             }
 

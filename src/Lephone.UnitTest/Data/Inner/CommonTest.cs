@@ -91,10 +91,10 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void TestCloneObject()
         {
-            var p = People.New();
+            var p = People.New;
             p.Id = 10;
             p.Name = "abc";
-            PCs pc = PCs.New();
+            PCs pc = PCs.New;
             pc.Name = "uuu";
             p.pc = pc;
 
@@ -114,7 +114,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void TestBaseType2()
         {
-            Type t = People.New().GetType();
+            Type t = People.New.GetType();
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             Assert.AreEqual("People", oi.BaseType.Name);
         }
@@ -148,12 +148,12 @@ namespace Lephone.UnitTest.Data.Inner
             de.DropAndCreate(typeof(TableA));
             de.DropAndCreate(typeof(TableB));
 
-            var t1 = TableA.New();
+            var t1 = TableA.New;
             t1.Name = "TestName1";
             t1.Save();
 
             var t2 = TableA.FindById(1);
-            var t3 = TableB.New();
+            var t3 = TableB.New;
             t3.Url = "TestUrl1";
             t3.TB = t2;
             t3.Validate();

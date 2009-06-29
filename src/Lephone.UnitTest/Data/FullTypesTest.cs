@@ -39,7 +39,7 @@ namespace Lephone.UnitTest.Data
         [SetUp]
         public void SetUp()
         {
-            FullType ft = FullType.New();
+            FullType ft = FullType.New;
             ft.c1 = "tom";
             ft.c2 = 2;
             ft.c3 = 3;
