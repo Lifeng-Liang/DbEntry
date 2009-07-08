@@ -456,6 +456,15 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
+        public void Test2ndPageWithSqlserver2005WithAlias()
+        {
+            var de = new DbContext("SqlServerMock");
+            StaticRecorder.ClearMessages();
+            de.From<FieldPerson>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
+            Assert.AreEqual("SELECT [Id],[theName] FROM (SELECT [Id],[Name] AS [theName], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
+        }
+
+        [Test]
         public void TestTableNameMapOfConfig()
         {
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(Lephone.Data.Logging.LephoneLog));
@@ -471,7 +480,7 @@ namespace Lephone.UnitTest.Data
             var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK<PropertyClassWithDbColumn>.Field["TheName"] == "tom").Select();
-            Assert.AreEqual("SELECT [Id],[Name] FROM [People] WHERE [Name] = @Name_0;\n<Text><60>(@Name_0=tom:String)", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[Name] AS [TheName] FROM [People] WHERE [Name] = @Name_0;\n<Text><60>(@Name_0=tom:String)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -480,7 +489,7 @@ namespace Lephone.UnitTest.Data
             var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] == null).Select();
-            Assert.AreEqual("SELECT [Id],[Name] FROM [People] WHERE [Name] IS NULL;\n<Text><60>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[Name] AS [TheName] FROM [People] WHERE [Name] IS NULL;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -489,7 +498,7 @@ namespace Lephone.UnitTest.Data
             var de = new DbContext("SqlServerMock");
             StaticRecorder.ClearMessages();
             de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] != null).Select();
-            Assert.AreEqual("SELECT [Id],[Name] FROM [People] WHERE [Name] IS NOT NULL;\n<Text><60>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[Name] AS [TheName] FROM [People] WHERE [Name] IS NOT NULL;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
         [Test]

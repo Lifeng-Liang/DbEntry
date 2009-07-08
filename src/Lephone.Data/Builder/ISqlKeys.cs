@@ -4,6 +4,6 @@ namespace Lephone.Data.Builder
 {
     public interface ISqlKeys
     {
-        List<string> Keys { get; }
+        List<KeyValuePair<string, string>> Keys { get; }
     }
 }

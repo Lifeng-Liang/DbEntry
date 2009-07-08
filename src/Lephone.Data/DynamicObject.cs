@@ -329,8 +329,9 @@ namespace Lephone.Data
 
         private static void OverrideSetValuesForSelect(MemoryTypeBuilder tb, Type srcType, MemberHandler[] fields)
         {
-            Type t = typeof(List<string>);
-            MethodInfo mi = t.GetMethod("Add", new[] { typeof(string) });
+            Type t = typeof(List<KeyValuePair<string, string>>);
+            MethodInfo mi = t.GetMethod("Add", new[] { typeof(KeyValuePair<string, string>) });
+            ConstructorInfo ci = typeof (KeyValuePair<string, string>).GetConstructor(new []{typeof(string), typeof(string)});
             tb.OverrideMethodDirect(OverrideFlag, "SetValuesForSelectDirect", VhBaseType, null,
                 new[] { t }, delegate(ILBuilder il)
             {
@@ -338,7 +339,20 @@ namespace Lephone.Data
                 {
                     if (!f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany && !f.IsLazyLoad)
                     {
-                        il.LoadArg(1).LoadString(f.Name).CallVirtual(mi);
+                        il.LoadArg(1);
+
+                        il.LoadString(f.Name);
+                        if (f.Name != f.MemberInfo.Name)
+                        {
+                            il.LoadString(f.MemberInfo.Name);
+                        }
+                        else
+                        {
+                            il.LoadNull();
+                        }
+                        il.NewObj(ci);
+
+                        il.CallVirtual(mi);
                     }
                 }
             });

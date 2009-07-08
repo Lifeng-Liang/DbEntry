@@ -1,4 +1,5 @@
-﻿using Lephone.Data;
+﻿using System.Collections.Generic;
+using Lephone.Data;
 using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
@@ -27,7 +28,7 @@ namespace Lephone.UnitTest.Data.Inner
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
 
             ssb = new SelectStatementBuilder("UserTable");
-            ssb.Keys.Add("zzz");
+            ssb.Keys.Add(new KeyValuePair<string, string>("zzz", null));
             ssb.SetCountColumn("abc");
             s = "SELECT [zzz],COUNT([abc]) AS it__count__ FROM [UserTable];\n";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).SqlCommandText);
@@ -44,7 +45,7 @@ namespace Lephone.UnitTest.Data.Inner
         public void TestSelectSentenceBuilder1A()
         {
             var ssb = new SelectStatementBuilder("UserTable", null, new Range(1, 10));
-            ssb.Keys.Add("a");
+            ssb.Keys.Add(new KeyValuePair<string, string>("a", null));
             const string s = "SELECT TOP 10 [a] FROM [UserTable];\n<Text><60>()";
             Assert.AreEqual(s, ssb.ToSqlStatement(dd).ToString());
         }
@@ -53,7 +54,7 @@ namespace Lephone.UnitTest.Data.Inner
 		public void TestSelectSentenceBuilder2()
 		{
             var ssb = new SelectStatementBuilder("UserTable", null, new Range(1, 10));
-            ssb.Keys.Add("a");
+            ssb.Keys.Add(new KeyValuePair<string, string>("a", null));
             ssb.Where.Conditions = new OrClause("ID", 5, 3, 2);
 			const string s = "SELECT TOP 10 [a] FROM [UserTable] WHERE ([ID] = @ID_0) OR ([ID] = @ID_1) OR ([ID] = @ID_2);\n<Text><60>(@ID_0=5:Int32,@ID_1=3:Int32,@ID_2=2:Int32)";
 			TesterHelper.AssertSqlSentenceEqual(s, ssb.ToSqlStatement(dd).ToString());
@@ -63,7 +64,7 @@ namespace Lephone.UnitTest.Data.Inner
 		public void TestSelectSentenceBuilder3()
 		{
             var ssb = new SelectStatementBuilder("UserTable", null, new Range(1, 10));
-            ssb.Keys.Add("a");
+            ssb.Keys.Add(new KeyValuePair<string, string>("a", null));
             ssb.Where.Conditions = new OrClause("ID", 5, 3, 2);
 			ssb.Where.Conditions = new AndClause(ssb.Where.Conditions, new KeyValueClause("UserName", "l'lf", CompareOpration.Equal, ColumnFunction.None));
 			const string s = "SELECT TOP 10 [a] FROM [UserTable] WHERE (([ID] = @ID_0) OR ([ID] = @ID_1) OR ([ID] = @ID_2)) AND ([UserName] = @UserName_3);\n<Text><60>(@ID_0=5:Int32,@ID_1=3:Int32,@ID_2=2:Int32,@UserName_3=l'lf:String)";

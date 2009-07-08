@@ -138,7 +138,7 @@ namespace Lephone.Data.Common
             SetValuesForSelectDirect(isv.Keys);
         }
 
-        protected abstract void SetValuesForSelectDirect(List<string> keys);
+        protected abstract void SetValuesForSelectDirect(List<KeyValuePair<string, string>> keys);
 
         public void SetValuesForInsert(ISqlValues isv, object obj)
         {

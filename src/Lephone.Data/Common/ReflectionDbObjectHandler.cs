@@ -141,7 +141,12 @@ namespace Lephone.Data.Common
             {
                 if (!fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany && !fi.IsLazyLoad)
                 {
-                    isv.Keys.Add(fi.Name);
+                    string value = null;
+                    if(fi.Name != fi.MemberInfo.Name)
+                    {
+                        value = fi.MemberInfo.Name;
+                    }
+                    isv.Keys.Add(new KeyValuePair<string, string>(fi.Name, value));
                 }
             }
         }

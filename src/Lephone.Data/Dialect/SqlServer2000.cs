@@ -37,14 +37,14 @@ namespace Lephone.Data.Dialect
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             var dpc = new DataParameterCollection();
-            string SqlString = string.Format("SELECT TOP {4} {0} FROM {1}{2}{3}",
+            string sqlString = string.Format("SELECT TOP {4} {0} FROM {1}{2}{3}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),
                 (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this),
                 ssb.Range.EndIndex
                 );
-            return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
+            return new TimeConsumingSqlStatement(CommandType.Text, sqlString, dpc);
         }
         
 		public override string IdentitySelectString

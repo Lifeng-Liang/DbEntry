@@ -1,4 +1,5 @@
-﻿using Lephone.Data.Builder;
+﻿using System.Collections.Generic;
+using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
@@ -50,7 +51,7 @@ namespace Lephone.Data.Common
             if(isDistinct)
             {
                 Info.Handler.SetValuesForSelect(sb);
-                string cs = sb.GetColumns(dialect);
+                string cs = sb.GetColumns(dialect, true, false);
                 sb.SetCountColumn(cs);
                 sb.IsDistinct = false;
                 sb.Keys.Clear();
@@ -69,7 +70,7 @@ namespace Lephone.Data.Common
             var list = columnName.Split(',');
             foreach (string s in list)
             {
-                sb.Keys.Add(s);
+                sb.Keys.Add(new KeyValuePair<string, string>(s, null));
                 sb.SetAsGroupBy(s);
             }
             return sb.ToSqlStatement(dialect);

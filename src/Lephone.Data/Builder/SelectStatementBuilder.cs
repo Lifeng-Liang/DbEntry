@@ -14,7 +14,7 @@ namespace Lephone.Data.Builder
         private readonly FromClause _From;
         private readonly WhereClause _WhereOptions = new WhereClause();
 
-        private readonly List<string> keys = new List<string>();
+        private readonly List<KeyValuePair<string, string>> keys = new List<KeyValuePair<string, string>>();
 
         internal List<string> FunctionArgs = new List<string>();
         internal string FunctionName;
@@ -76,49 +76,69 @@ namespace Lephone.Data.Builder
             {
                 throw new DataException("When Values is empty, It means Get Count, Limit must be null.");
             }
-            SqlStatement Sql = dd.GetSelectSqlStatement(this);
+            SqlStatement sql = dd.GetSelectSqlStatement(this);
             if (_Limit != null)
             {
-                Sql.StartIndex = _Limit.StartIndex;
-                Sql.EndIndex = _Limit.EndIndex;
+                sql.StartIndex = _Limit.StartIndex;
+                sql.EndIndex = _Limit.EndIndex;
             }
-            return Sql;
+            return sql;
 		}
 
         internal string GetColumns(DbDialect dd)
+        {
+            return GetColumns(dd, true, true);
+        }
+
+        internal string GetColumns(DbDialect dd, bool includeOrigin, bool includeAlias)
 		{
-			var Columns = new StringBuilder();
+			var columns = new StringBuilder();
             if(IsDistinct)
             {
-                Columns.Append("DISTINCT ");
+                columns.Append("DISTINCT ");
             }
-			foreach ( string k in keys )
+			foreach ( var k in keys )
 			{
-				Columns.Append(dd.QuoteForColumnName(k));
-                Columns.Append(",");
+                if (includeOrigin)
+                {
+                    columns.Append(dd.QuoteForColumnName(k.Key));
+                    if (includeAlias && k.Value != null) { columns.Append(" AS "); }
+                }
+                if (includeAlias)
+                {
+                    if (k.Value != null)
+                    {
+                        columns.Append(dd.QuoteForColumnName(k.Value));
+                    }
+                    else if (!includeOrigin)
+                    {
+                        columns.Append(dd.QuoteForColumnName(k.Key));
+                    }
+                }
+                columns.Append(",");
 			}
             if (FunctionArgs.Count != 0)
             {
-                Columns.Append(FunctionName);
+                columns.Append(FunctionName);
                 if (FunctionArgs[0] == "*" || FunctionArgs.Count > 1)
                 {
-                    Columns.Append("(*) AS ").Append(DbEntry.CountColumn).Append(",");
+                    columns.Append("(*) AS ").Append(DbEntry.CountColumn).Append(",");
                 }
                 else
                 {
                     string fa = FunctionArgs[0];
                     string fn = fa.StartsWith("DISTINCT ") ? fa : dd.QuoteForColumnName(fa);
                     string gfn = FunctionName == "COUNT" ? DbEntry.CountColumn : fn;
-                    Columns.Append("(")
+                    columns.Append("(")
                         .Append(fn)
                         .Append(") AS ").Append(gfn).Append(",");
                 }
             }
-            if (Columns.Length > 0)
+            if (columns.Length > 0)
             {
-                Columns.Length--;
+                columns.Length--;
             }
-            return Columns.ToString();
+            return columns.ToString();
 		}
 
         public Range Range
@@ -136,7 +156,7 @@ namespace Lephone.Data.Builder
             get { return _From; }
         }
 
-        public List<string> Keys
+        public List<KeyValuePair<string, string>> Keys
 		{
 			get { return keys; }
 		}

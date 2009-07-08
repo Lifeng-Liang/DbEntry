@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lephone.Data.Common;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
@@ -19,7 +20,7 @@ namespace Lephone.Data.Definition
             object key = oi.KeyFields[0].GetValue(owner);
             var sb = new SelectStatementBuilder(oi.From, null, null);
             sb.Where.Conditions = CK.K[kn] == key;
-            sb.Keys.Add(RelationName);
+            sb.Keys.Add(new KeyValuePair<string, string>(RelationName, null));
             SqlStatement sql = sb.ToSqlStatement(context.Dialect);
             oi.LogSql(sql);
             object o = context.ExecuteScalar(sql);

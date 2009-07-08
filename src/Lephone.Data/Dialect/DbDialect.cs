@@ -186,24 +186,24 @@ namespace Lephone.Data.Dialect
 
         public virtual SqlStatement GetSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            SqlStatement Sql = (ssb.Range == null) ?
+            SqlStatement sql = (ssb.Range == null) ?
                 GetNormalSelectSqlStatement(ssb) :
                 GetPagedSelectSqlStatement(ssb);
-            Sql.SqlCommandText += ";\n";
-            return Sql;
+            sql.SqlCommandText += ";\n";
+            return sql;
         }
 
         protected virtual SqlStatement GetNormalSelectSqlStatement(SelectStatementBuilder ssb)
         {
             var dpc = new DataParameterCollection();
-            string SqlString = string.Format("SELECT {0} FROM {1}{2}{3}{4}",
+            string sqlString = string.Format("SELECT {0} FROM {1}{2}{3}{4}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),
                 ssb.IsGroupBy ? " GROUP BY " + GetFunctionArgs(ssb) : "",
                 (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this)
                 );
-            return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
+            return new TimeConsumingSqlStatement(CommandType.Text, sqlString, dpc);
         }
 
         private string GetFunctionArgs(SelectStatementBuilder ssb)

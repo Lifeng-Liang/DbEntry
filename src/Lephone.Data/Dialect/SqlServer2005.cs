@@ -18,19 +18,20 @@ namespace Lephone.Data.Dialect
                 throw PagedMustHaveOrder;
             }
 
-            const string PosName = "__rownumber__";
+            const string posName = "__rownumber__";
             var dpc = new DataParameterCollection();
-            string SqlString = string.Format(
-                "SELECT {0} FROM (SELECT {0}, ROW_NUMBER() OVER ({3}) AS {6} FROM {1} {2}) AS T WHERE T.{6} >= {4} AND T.{6} <= {5}",
+            string sqlString = string.Format(
+                "SELECT {7} FROM (SELECT {0}, ROW_NUMBER() OVER ({3}) AS {6} FROM {1} {2}) AS T WHERE T.{6} >= {4} AND T.{6} <= {5}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this),
                 ssb.Order.ToSqlText(dpc, this),
                 ssb.Range.StartIndex,
                 ssb.Range.EndIndex,
-                PosName
+                posName,
+                ssb.GetColumns(this, false, true)
                 );
-            return new TimeConsumingSqlStatement(CommandType.Text, SqlString, dpc);
+            return new TimeConsumingSqlStatement(CommandType.Text, sqlString, dpc);
         }
     }
 }
