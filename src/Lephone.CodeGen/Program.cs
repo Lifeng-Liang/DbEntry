@@ -41,6 +41,19 @@ namespace Lephone.CodeGen
 
         private static void Process(string[] args)
         {
+            if(args.Length > 0 && args[0] == "m")
+            {
+                if(args.Length == 1)
+                {
+                    ShowTableList();
+                }
+                else
+                {
+                    GenerateModelFromDatabase(args[1]);
+                }
+                return;
+            }
+
             if (args.Length < 2 || !ActionMatch(args[0]))
             {
                 throw new ArgsErrorException(0, null);
@@ -111,6 +124,21 @@ namespace Lephone.CodeGen
                 Console.WriteLine(t.FullName);
                 return true;
             });
+        }
+
+        private static void ShowTableList()
+        {
+            var g = new ModelsGenerator();
+            foreach (var table in g.GetTableList())
+            {
+                Console.WriteLine(table);
+            }
+        }
+
+        private static void GenerateModelFromDatabase(string tableName)
+        {
+            var g = new ModelsGenerator();
+            Console.WriteLine(g.GenerateModelFromDatabase(tableName));
         }
 
         private static void ShowHelp()

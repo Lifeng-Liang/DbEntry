@@ -24,4 +24,11 @@ namespace Lephone.UnitTest.Data.Objects
     {
         public abstract string Name { get; set; }
     }
+
+    public abstract class GuidColumn : DbObjectModel<GuidColumn>
+    {
+        public abstract Guid TheGuid { get; set; }
+
+        public abstract GuidColumn Init(Guid theGuid);
+    }
 }

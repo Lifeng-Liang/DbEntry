@@ -414,6 +414,27 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
+        public void TestGuidColumn()
+        {
+            var g = Guid.NewGuid();
+            var o = GuidColumn.New.Init(g);
+            o.Save();
+
+            var o1 = GuidColumn.FindById(o.Id);
+            Assert.IsNotNull(o1);
+            Assert.AreEqual(g, o1.TheGuid);
+
+            var g1 = Guid.NewGuid();
+            o1.TheGuid = g1;
+            o1.Save();
+
+            Assert.IsFalse(g == g1);
+
+            var o2 = GuidColumn.FindById(o.Id);
+            Assert.IsTrue(g1 == o2.TheGuid);
+        }
+
+        [Test]
         public void TestUniqueValidate()
         {
             var u = UniquePerson.New;
