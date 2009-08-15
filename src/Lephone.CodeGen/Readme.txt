@@ -49,9 +49,9 @@ Example:
 Usage for models from database:
     Lephone.CodeGen m [TableName]
 
-TableName:	Table name in database, and it will be the model class name too.
-			If the name is "*All*", it will generater all models by tables.
-			If don't input it, the generater will show all the tables.
+TableName:  Table name in database, and it will be the model class name too.
+            If the name is "*", it will generater all models by tables.
+            If don't input it, the generater will show all the tables.
 
 Example:
     Lephone.CodeGen m User
