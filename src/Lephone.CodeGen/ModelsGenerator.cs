@@ -11,11 +11,19 @@ namespace Lephone.CodeGen
         public class ModelBuilder
         {
             private readonly Dictionary<Type, string> _types;
+            protected string TableName;
+            protected List<DbColumnInfo> InfoList;
             protected StringBuilder Result;
+            protected StringBuilder InitDefine;
 
-            public ModelBuilder()
+            public ModelBuilder(string tableName, List<DbColumnInfo> list)
             {
+                TableName = tableName;
+                InfoList = list;
+
                 Result = new StringBuilder();
+                InitDefine = new StringBuilder();
+
                 _types = new Dictionary<Type, string>
                              {
                                  {typeof (string), "string"},
@@ -38,58 +46,35 @@ namespace Lephone.CodeGen
                 return t.ToString();
             }
 
-            public string Build(string tableName)
+            public virtual string Build()
             {
-                var list = DbEntry.Context.GetDbColumnInfoList(tableName);
-                return Build(tableName, list);
-            }
-
-            protected virtual string Build(string tableName, IEnumerable<DbColumnInfo> list)
-            {
-                Result.Append("public").Append(GetAbstract()).Append("class ").Append(tableName);
-                AppendBaseType(tableName);
-                var sb = new StringBuilder();
-                foreach (var info in list)
+                Result.Append("public").Append(GetAbstract()).Append("class ").Append(TableName);
+                AppendBaseType(TableName);
+                foreach (var info in InfoList)
                 {
-                    if (IsDbModel() && info.IsKey && info.IsAutoIncrement && info.ColumnName.ToLower() != "id")
-                    {
-                        return GetObjectModelBuilderResult(tableName, list);
-                    }
                     if(info.IsKey)
                     {
                         BuildKeyColomn(info);
+                        ProcessKeyColumn(info);
                     }
                     else
                     {
                         BuildColumn(info);
-                        sb.Append(GetTypeName(info.DataType));
-                        sb.Append(" ");
-                        sb.Append(info.ColumnName);
-                        sb.Append(", ");
+                        ProcessColumn(info);
                     }
                 }
-                if(sb.Length > 2)
+                if (InitDefine.Length > 2)
                 {
-                    sb.Length -= 2;
-                    Result.Append("\tpublic").Append(GetAbstract()).Append(tableName).Append(" ");
+                    InitDefine.Length -= 2;
+                    Result.Append("\tpublic").Append(GetAbstract()).Append(TableName).Append(" ");
                     Result.Append("Initialize(");
-                    Result.Append(sb);
+                    Result.Append(InitDefine);
                     Result.Append(")");
                     AppendInitMethodBody();
 
                 }
                 Result.Append("}\r\n");
                 return Result.ToString();
-            }
-
-            protected virtual bool IsDbModel()
-            {
-                return true;
-            }
-
-            protected virtual string GetObjectModelBuilderResult(string tableName, IEnumerable<DbColumnInfo> list)
-            {
-                return new ObjectModelBuilder().Build(tableName, list);
             }
 
             protected virtual string GetAbstract()
@@ -117,11 +102,23 @@ namespace Lephone.CodeGen
                 Result.Append(GetTypeName(info.DataType));
                 Result.Append(" ");
                 Result.Append(info.ColumnName);
-                Result.Append(GetProperty());
+                Result.Append(GetColumnBody());
                 Result.Append("\r\n");
             }
 
-            protected virtual string GetProperty()
+            protected virtual void ProcessKeyColumn(DbColumnInfo info)
+            {
+            }
+
+            protected virtual void ProcessColumn(DbColumnInfo info)
+            {
+                InitDefine.Append(GetTypeName(info.DataType));
+                InitDefine.Append(" ");
+                InitDefine.Append(info.ColumnName);
+                InitDefine.Append(", ");
+            }
+
+            protected virtual string GetColumnBody()
             {
                 return " { get; set; }";
             }
@@ -131,14 +128,13 @@ namespace Lephone.CodeGen
         {
             protected StringBuilder InitMethodBody = new StringBuilder();
 
+            public ObjectModelBuilder(string tableName, List<DbColumnInfo> list) : base(tableName, list)
+            {
+            }
+
             protected override string GetAbstract()
             {
                 return " ";
-            }
-
-            protected override bool IsDbModel()
-            {
-                return false;
             }
 
             protected override void AppendInitMethodBody()
@@ -170,27 +166,28 @@ namespace Lephone.CodeGen
                 BuildColumn(info);
             }
 
-            protected override void BuildColumn(DbColumnInfo info)
+            protected override void ProcessKeyColumn(DbColumnInfo info)
             {
-                base.BuildColumn(info);
-                if(!info.IsKey)
+                if(!info.IsAutoIncrement)
                 {
-                    InitMethodBody.Append("\t\tthis.");
-                    InitMethodBody.Append(info.ColumnName);
-                    InitMethodBody.Append(" = ");
-                    InitMethodBody.Append(info.ColumnName);
-                    InitMethodBody.Append(";\r\n");
+                    ProcessColumn(info);
                 }
             }
 
-            protected override string GetProperty()
+            protected override void ProcessColumn(DbColumnInfo info)
             {
-                return ";";
+                base.ProcessColumn(info);
+
+                InitMethodBody.Append("\t\tthis.");
+                InitMethodBody.Append(info.ColumnName);
+                InitMethodBody.Append(" = ");
+                InitMethodBody.Append(info.ColumnName);
+                InitMethodBody.Append(";\r\n");
             }
 
-            protected override string GetObjectModelBuilderResult(string tableName, IEnumerable<DbColumnInfo> list)
+            protected override string GetColumnBody()
             {
-                return "";
+                return ";";
             }
         }
 
@@ -206,13 +203,26 @@ namespace Lephone.CodeGen
                 var sb = new StringBuilder();
                 foreach (var table in GetTableList())
                 {
-                    string s = new ModelBuilder().Build(table);
+                    string s = GetModel(table);
                     sb.Append(s);
                     sb.Append("\r\n");
                 }
                 return sb.ToString();
             }
-            return new ModelBuilder().Build(tableName);
+            return GetModel(tableName);
+        }
+
+        private static string GetModel(string tableName)
+        {
+            var list = DbEntry.Context.GetDbColumnInfoList(tableName);
+            foreach (var info in list)
+            {
+                if (info.IsKey && info.IsAutoIncrement && info.ColumnName.ToLower() == "id")
+                {
+                    return new ModelBuilder(tableName, list).Build();
+                }
+            }
+            return new ObjectModelBuilder(tableName, list).Build();
         }
     }
 }
