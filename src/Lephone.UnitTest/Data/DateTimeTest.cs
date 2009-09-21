@@ -21,6 +21,15 @@ namespace Lephone.UnitTest.Data
         public abstract Time? tnValue { get; set; }
     }
 
+    public abstract class DateAndTime2 : LinqObjectModel<DateAndTime2>
+    {
+        public abstract Date StartDate { get; set; }
+        public abstract Time StartTime { get; set; }
+
+        public abstract DateAndTime2 Init(Date startDate, Time startTime);
+    }
+
+
     [TestFixture]
     public class DateTimeTest : DataTestBase
     {
@@ -48,6 +57,18 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), o.dtnValue.Value);
             Assert.AreEqual(Date.Parse("2004-8-19"), o.dnValue.Value);
             Assert.AreEqual(Time.Parse("18:51:06"), o.tnValue.Value);
+        }
+
+        [Test]
+        public void Test3()
+        {
+            var dt = DateAndTime2.New.Init(new Date(2008, 7, 22), new Time(12, 30, 50));
+            dt.Save();
+
+            var n = DateAndTime2.FindById(dt.Id);
+            Assert.IsNotNull(n);
+            Assert.AreEqual(new Date(2008, 7, 22), n.StartDate);
+            Assert.AreEqual(new Time(12, 30, 50), n.StartTime);
         }
     }
 }

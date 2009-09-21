@@ -116,6 +116,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DeleteToQueryComposer.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
+    <Compile Include="Common\TimeSpanLessDataReader.cs" />
     <Compile Include="Definition\CacheableAttribute.cs" />
     <Compile Include="Common\DynamicObjectReference.cs" />
     <Compile Include="Common\EmitObjectHandlerBase.cs" />
@@ -170,6 +171,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Dialect\PostgreSQL.cs" />
     <Compile Include="Dialect\SequencedDialect.cs" />
     <Compile Include="Dialect\SqlCE.cs" />
+    <Compile Include="Dialect\SqlServer2008.cs" />
     <Compile Include="Driver\DbFactory.cs" />
     <Compile Include="Driver\SmartDbFactory.cs" />
     <Compile Include="DynamicObject.cs" />
