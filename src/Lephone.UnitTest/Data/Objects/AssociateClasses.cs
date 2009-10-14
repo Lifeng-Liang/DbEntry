@@ -59,6 +59,22 @@ namespace Lephone.UnitTest.Data.Objects
         }
     }
 
+    [DbTable("Categories")]
+    public abstract class Acategory : DbObjectModel<Acategory>
+    {
+        public abstract string Name { get; set; }
+        [HasMany]
+        public abstract IList<Abook> Books { get; set; }
+    }
+
+    [DbTable("Books")]
+    public abstract class Abook : DbObjectModel<Abook>
+    {
+        public abstract string Name { get; set; }
+        [BelongsTo, DbColumn("Category_Id")]
+        public abstract Acategory CurCategory { get; set; }
+    }
+
     public abstract class Article : DbObjectModel<Article>
     {
         public abstract string Name { get; set; }

@@ -323,5 +323,18 @@ namespace Lephone.UnitTest.Data
             var c1 = DbEntry.GetObject<Category>(3);
             Assert.AreEqual(2, c1.Books.Count);
         }
+
+        [Test]
+        public void TestRemoveSubItem()
+        {
+            var c = DbEntry.GetObject<Acategory>(2);
+            Assert.AreEqual(3, c.Books.Count);
+
+            c.Books.RemoveAt(1);
+            DbEntry.Save(c);
+
+            var c2 = DbEntry.GetObject<Acategory>(2);
+            Assert.AreEqual(2, c2.Books.Count);
+        }
     }
 }

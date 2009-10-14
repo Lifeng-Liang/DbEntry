@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Util;
 
@@ -43,7 +42,7 @@ namespace Lephone.Data.Definition
             MemberHandler mh = oi.GetBelongsTo(owner.GetType());
             if (mh != null)
             {
-                ILazyLoading ll = (ILazyLoading)mh.GetValue(item);
+                var ll = (ILazyLoading)mh.GetValue(item);
                 ll.Write(owner, IsLoad);
             }
         }
@@ -67,8 +66,9 @@ namespace Lephone.Data.Definition
             {
                 Type ot = owner.GetType();
                 MemberHandler mh = oi.GetBelongsTo(ot);
-                IBelongsTo o = mh.GetValue(item) as IBelongsTo;
+                var o = (IBelongsTo)mh.GetValue(item);
                 o.ForeignKey = CommonHelper.GetEmptyValue(o.ForeignKey.GetType());
+                o.ForeignKeyChanged();
                 _RemovedValues.Add(item);
             }
         }

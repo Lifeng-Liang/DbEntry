@@ -8,7 +8,7 @@ namespace Lephone.Data.Definition
     public class BelongsTo<T> : IBelongsTo where T : class, IDbObject
     {
         private readonly object owner;
-        private string ForeignKeyName;
+        private string _ForeignKeyName;
         private object _ForeignKey;
 
         private DbContext context;
@@ -22,14 +22,22 @@ namespace Lephone.Data.Definition
             this.owner = owner;
             ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
             MemberHandler mh = oi.GetBelongsTo(typeof(T));
-            ForeignKeyName = mh.Name;
+            _ForeignKeyName = mh.Name;
             ObjectInfo oi1 = ObjectInfo.GetInstance(typeof(T));
             _ForeignKey = oi1.GetPrimaryKeyDefaultValue();
             //_ForeignKey = Info.GetPrimaryKeyDefaultValue();
-            DbObjectSmartUpdate o = owner as DbObjectSmartUpdate;
+            var o = owner as DbObjectSmartUpdate;
             if (o != null)
             {
                 ValueChanged += o.m_ColumnUpdated;
+            }
+        }
+
+        public void ForeignKeyChanged()
+        {
+            if (ValueChanged != null)
+            {
+                ValueChanged(_ForeignKeyName);
             }
         }
 
@@ -67,7 +75,7 @@ namespace Lephone.Data.Definition
                 context = null;
                 if (ValueChanged != null && !IsLoad)
                 {
-                    ValueChanged(ForeignKeyName);
+                    ValueChanged(_ForeignKeyName);
                 }
             }
             else
@@ -91,7 +99,7 @@ namespace Lephone.Data.Definition
         void ILazyLoading.Init(DbContext driver, string ForeignKeyName)
         {
             this.context = driver;
-            this.ForeignKeyName = ForeignKeyName;
+            this._ForeignKeyName = ForeignKeyName;
         }
 
         void ILazyLoading.Load()
@@ -107,7 +115,7 @@ namespace Lephone.Data.Definition
                         Type t = f.FieldType.GetGenericArguments()[0];
                         if (t == owner.GetType())
                         {
-                            ILazyLoading ll = (ILazyLoading)f.GetValue(_Value);
+                            var ll = (ILazyLoading)f.GetValue(_Value);
                             ll.Write(owner, true);
                         }
                     }

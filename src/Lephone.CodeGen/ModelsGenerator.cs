@@ -35,6 +35,7 @@ namespace Lephone.CodeGen
                                  {typeof (DateTime), "DateTime"},
                                  {typeof (bool), "bool"},
                                  {typeof (TimeSpan), "Time"},
+                                 {typeof (byte[]), "byte[]"},
                              };
             }
 
@@ -77,7 +78,7 @@ namespace Lephone.CodeGen
                 if (InitDefine.Length > 2)
                 {
                     InitDefine.Length -= 2;
-                    Result.Append("\tpublic").Append(GetAbstract()).Append(TableName).Append(" ");
+                    Result.Append("\n\tpublic").Append(GetAbstract()).Append(TableName).Append(" ");
                     Result.Append("Initialize(");
                     Result.Append(InitDefine);
                     Result.Append(")");
@@ -113,6 +114,17 @@ namespace Lephone.CodeGen
                 if(info.AllowDBNull && !info.DataType.IsValueType)
                 {
                     Result.Append("[AllowNull] ");
+                }
+                if(info.DataType == typeof(string) || info.DataType == typeof(byte[]))
+                {
+                    if (info.ColumnSize < 32768)
+                    {
+                        Result.Append("[Length(").Append(info.ColumnSize).Append(")] ");
+                    }
+                }
+                if(info.IsUnique)
+                {
+                    Result.Append("[Index(UNIQUE = true)] ");
                 }
                 Result.Append("public").Append(GetAbstract());
                 Result.Append(GetNullableTypeName(info));
