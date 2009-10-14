@@ -34,6 +34,7 @@ namespace Lephone.CodeGen
                                  {typeof (double), "double"},
                                  {typeof (DateTime), "DateTime"},
                                  {typeof (bool), "bool"},
+                                 {typeof (TimeSpan), "Time"},
                              };
             }
 
@@ -44,6 +45,16 @@ namespace Lephone.CodeGen
                     return _types[t];
                 }
                 return t.ToString();
+            }
+
+            protected string GetNullableTypeName(DbColumnInfo info)
+            {
+                string s = GetTypeName(info.DataType);
+                if(info.AllowDBNull && info.DataType.IsValueType)
+                {
+                    s += "?";
+                }
+                return s;
             }
 
             public virtual string Build()
@@ -98,8 +109,13 @@ namespace Lephone.CodeGen
 
             protected virtual void BuildColumn(DbColumnInfo info)
             {
-                Result.Append("\tpublic").Append(GetAbstract());
-                Result.Append(GetTypeName(info.DataType));
+                Result.Append("\t");
+                if(info.AllowDBNull && !info.DataType.IsValueType)
+                {
+                    Result.Append("[AllowNull] ");
+                }
+                Result.Append("public").Append(GetAbstract());
+                Result.Append(GetNullableTypeName(info));
                 Result.Append(" ");
                 Result.Append(info.ColumnName);
                 Result.Append(GetColumnBody());
@@ -112,7 +128,7 @@ namespace Lephone.CodeGen
 
             protected virtual void ProcessColumn(DbColumnInfo info)
             {
-                InitDefine.Append(GetTypeName(info.DataType));
+                InitDefine.Append(GetNullableTypeName(info));
                 InitDefine.Append(" ");
                 InitDefine.Append(info.ColumnName);
                 InitDefine.Append(", ");
