@@ -12,13 +12,17 @@ namespace Lephone.Util
             {
                 return dic[t];
             }
-            var v = ClassHelper.CreateInstance<TValue>();
-            v.Init(t);
             lock (dic)
             {
+                if (dic.ContainsKey(t))
+                {
+                    return dic[t];
+                }
+                var v = ClassHelper.CreateInstance<TValue>();
+                v.Init(t);
                 dic[t] = v;
+                return v;
             }
-            return v;
         }
 
         protected abstract void Init(TKey t);
