@@ -117,6 +117,7 @@
     <Compile Include="SqlTestBase.cs" />
     <Compile Include="util\Base32StringCodingTest.cs" />
     <Compile Include="util\DateAndTimeTest.cs" />
+    <Compile Include="util\FlyweightTest.cs" />
     <Compile Include="util\InflectorTest.cs" />
     <Compile Include="util\IocTest.cs" />
     <Compile Include="util\NameMapperTest.cs" />
