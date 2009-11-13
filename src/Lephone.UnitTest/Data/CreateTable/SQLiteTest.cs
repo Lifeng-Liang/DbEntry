@@ -24,6 +24,14 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract string UUUs { get; set; }
     }
 
+    public class TableWithNonDbGenId : IDbObject
+    {
+        [DbKey(IsDbGenerate = false)]
+        public int Id;
+
+        public string Name;
+    }
+
     public class MyTest1 : IDbObject
     {
         [DbKey]
@@ -390,6 +398,17 @@ SELECT LAST_INSERT_ROWID();
             sqlite.Delete(c);
             AssertSql(@"DELETE FROM [tom].[test_table] WHERE [Id] = @Id_0;
 <Text><30>(@Id_0=2:Int64)");
+        }
+
+        [Test]
+        public void TestTableWithNonDbGenId()
+        {
+            sqlite.Create(typeof(TableWithNonDbGenId));
+            AssertSql(@"CREATE TABLE [Table_With_Non_Db_Gen_Id] (
+    [Id] INT NOT NULL  PRIMARY KEY,
+    [Name] NTEXT NOT NULL 
+);
+<Text><30>()");
         }
     }
 }

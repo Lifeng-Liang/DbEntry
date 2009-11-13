@@ -10,14 +10,14 @@ namespace Lephone.Data.Builder
     public class CreateTableStatementBuilder : ISqlStatementBuilder
     {
         internal string TableName;
-        private readonly List<ColumnInfo> _Columns;
-        private readonly List<DbIndex> _Indexes;
+        private readonly List<ColumnInfo> _columns;
+        private readonly List<DbIndex> _indexes;
 
-        public CreateTableStatementBuilder(string TableName)
+        public CreateTableStatementBuilder(string tableName)
         {
-            this.TableName = TableName;
-            _Columns = new List<ColumnInfo>();
-            _Indexes = new List<DbIndex>();
+            TableName = tableName;
+            _columns = new List<ColumnInfo>();
+            _indexes = new List<DbIndex>();
         }
 
         public SqlStatement ToSqlStatement(DbDialect dd)
@@ -29,9 +29,9 @@ namespace Lephone.Data.Builder
             sql.Append(dd.QuoteForTableName(TableName));
             sql.Append(" (");
 
-            foreach (ColumnInfo ci in _Columns)
+            foreach (ColumnInfo ci in _columns)
             {
-                string NullDefine = ci.AllowNull ? dd.NullString : dd.NotNullString;
+                string nullDefine = ci.AllowNull ? dd.NullString : dd.NotNullString;
                 sql.Append("\n\t");
                 sql.Append(dd.QuoteForColumnName(ci.Key));
                 sql.Append(" ");
@@ -51,25 +51,28 @@ namespace Lephone.Data.Builder
                 {
                     if (isMutiKey)
                     {
-                        sql.Append(NullDefine);
+                        sql.Append(nullDefine);
                         keys += dd.QuoteForColumnName(ci.Key) + ", ";
                     }
-                    else if (ci.ValueType == typeof(Guid) || !dd.IdentityIncludePKString)
+                    else
                     {
-                        if(!ci.IsDbGenerate)
+                        if (ci.ValueType == typeof(Guid) || !dd.IdentityIncludePKString || !ci.IsDbGenerate)
                         {
-                            sql.Append(NullDefine);
+                            if (!ci.IsDbGenerate)
+                            {
+                                sql.Append(nullDefine);
+                            }
+                            sql.Append(" PRIMARY KEY");
                         }
-                        sql.Append(" PRIMARY KEY");
                     }
                 }
                 else
                 {
-                    sql.Append(NullDefine);
+                    sql.Append(nullDefine);
                 }
                 sql.Append(",");
             }
-            if (_Columns.Count != 0)
+            if (_columns.Count != 0)
             {
                 if (isMutiKey)
                 {
@@ -93,7 +96,7 @@ namespace Lephone.Data.Builder
         private bool IsMutiKey()
         {
             int n = 0;
-            foreach (ColumnInfo ci in _Columns)
+            foreach (ColumnInfo ci in _columns)
             {
                 if (ci.IsKey) { n++; }
             }
@@ -102,7 +105,7 @@ namespace Lephone.Data.Builder
 
         private bool HasOneDbGenKey()
         {
-            foreach (ColumnInfo ci in _Columns)
+            foreach (ColumnInfo ci in _columns)
             {
                 if (ci.IsKey && ci.IsDbGenerate) { return true; }
             }
@@ -112,7 +115,7 @@ namespace Lephone.Data.Builder
         private void AddCreateIndexStatement(StringBuilder sb, DbDialect dd)
         {
             string prefix = "IX_" + TableName.Replace('.', '_') + "_";
-            foreach (DbIndex i in _Indexes)
+            foreach (DbIndex i in _indexes)
             {
                 string n = prefix;
                 n += i.IndexName ?? i.Columns[0].Key;
@@ -163,12 +166,12 @@ namespace Lephone.Data.Builder
 
         public List<ColumnInfo> Columns
         {
-            get { return _Columns; }
+            get { return _columns; }
         }
 
         public List<DbIndex> Indexes
         {
-            get { return _Indexes; }
+            get { return _indexes; }
         }
     }
 }
