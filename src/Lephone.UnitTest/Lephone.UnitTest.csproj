@@ -96,6 +96,7 @@
     <Compile Include="Data\PagedSelectorTest.cs" />
     <Compile Include="Data\PartialUpdateTest.cs" />
     <Compile Include="Data\PropertyClassTest.cs" />
+    <Compile Include="Data\SerializeTest.cs" />
     <Compile Include="Data\SmartUpdateTest.cs" />
     <Compile Include="Data\SoftDeleteTest.cs" />
     <Compile Include="Data\TableSchemaTest.cs" />

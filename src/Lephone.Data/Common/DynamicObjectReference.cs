@@ -23,8 +23,8 @@ namespace Lephone.Data.Common
 
         protected DynamicObjectReference(SerializationInfo info, StreamingContext context)
         {
-            Type BaseType = (Type)info.GetValue("#", typeof(Type));
-            Type t = DynamicObject.GetImplType(BaseType);
+            var baseType = (Type)info.GetValue("#", typeof(Type));
+            Type t = DynamicObject.GetImplType(baseType);
             object o = ClassHelper.CreateInstance(t);
             foreach (FieldInfo fi in t.GetFields(ClassHelper.InstanceFlag))
             {
