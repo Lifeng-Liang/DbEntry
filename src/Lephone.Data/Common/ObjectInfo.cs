@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;

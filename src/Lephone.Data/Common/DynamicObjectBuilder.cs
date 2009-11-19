@@ -30,7 +30,7 @@ namespace Lephone.Data.Common
 
         private static readonly Type ObjType = typeof(object);
 
-        private static readonly Hashtable Types = Hashtable.Synchronized(new Hashtable());
+        private static Dictionary<Type, Type> _dic = new Dictionary<Type, Type>();
         private static readonly Type[] EmptyTypes = new Type[] { };
 
         private static readonly Type VhBaseType = typeof(EmitObjectHandlerBase);
@@ -434,14 +434,20 @@ namespace Lephone.Data.Common
 
         public Type GetImplType(Type sourceType)
         {
-            if (Types.Contains(sourceType))
+            if (_dic.ContainsKey(sourceType))
             {
-                return (Type)Types[sourceType];
+                return _dic[sourceType];
             }
-
-            Type t = GenerateType(sourceType);
-            Types.Add(sourceType, t);
-            return t;
+            lock (_dic)
+            {
+                if (_dic.ContainsKey(sourceType))
+                {
+                    return _dic[sourceType];
+                }
+                Type t = GenerateType(sourceType);
+                _dic[sourceType] = t;
+                return t;
+            }
         }
 
         protected virtual Type GenerateType(Type sourceType)
