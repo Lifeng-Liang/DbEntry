@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;
@@ -78,7 +79,7 @@ namespace Lephone.Data.Common
             if (DataSetting.ObjectHandlerType == HandlerType.Emit
                 || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
             {
-                _handler = DynamicObject.CreateDbObjectHandler(t, this);
+                _handler = DynamicObjectBuilder.Instance.CreateDbObjectHandler(t, this);
             }
             else
             {
@@ -236,7 +237,7 @@ namespace Lephone.Data.Common
 
         #region ctor
 
-        internal ObjectInfo() { }
+        protected ObjectInfo() { }
 
         internal ObjectInfo(Type handleType, FromClause from, MemberHandler[] keyFields, MemberHandler[] fields, bool disableSqlLog)
         {
