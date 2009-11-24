@@ -63,5 +63,13 @@ namespace Lephone.Data.Dialect
         {
             return "#" + theDate + "#";
         }
+
+        public override string DbNowString
+        {
+            get
+            {
+                return "Now()";
+            }
+        }
 	}
 }
