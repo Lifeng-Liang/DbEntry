@@ -257,6 +257,17 @@ namespace Lephone.Data
             return list;
         }
 
+        public DbObjectList<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Type dbObjectType, WhereCondition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
+        {
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetGroupBySumStatement(Dialect, iwc, order, groupbyColumnName, sumColumnName);
+            oi.LogSql(sql);
+            var list = new DbObjectList<GroupBySumObject<T1, T2>>();
+            IProcessor ip = GetListProcessor(list, dbObjectType);
+            DataLoadDirect(ip, typeof(GroupBySumObject<T1, T2>), dbObjectType, sql, true);
+            return list;
+        }
+
         public DbObjectList<T> ExecuteList<T>(string sqlStr) where T : class, IDbObject
         {
             return ExecuteList<T>(new SqlStatement(sqlStr));

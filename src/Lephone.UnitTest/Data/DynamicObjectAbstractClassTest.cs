@@ -1,5 +1,5 @@
 ﻿using System;
-using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
@@ -12,7 +12,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateAbstractClass()
         {
-            AbstractClass c = DynamicObject.NewObject<AbstractClass>();
+            var c = DynamicObjectBuilder.Instance.NewObject<AbstractClass>();
             Assert.IsNotNull(c);
             c.Name = "Tom";
             Assert.AreEqual("Tom", c.Name);
@@ -21,7 +21,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateInheritedAbstractClass()
         {
-            AbstractClassOfAge c = DynamicObject.NewObject<AbstractClassOfAge>();
+            var c = DynamicObjectBuilder.Instance.NewObject<AbstractClassOfAge>();
             Assert.IsNotNull(c);
             c.Name = "Tom";
             c.Age = 18;
@@ -32,7 +32,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateInheritsedAbstractClassWithImplProperty()
         {
-            AbstractClassWithOneImplProperty c = DynamicObject.NewObject<AbstractClassWithOneImplProperty>();
+            var c = DynamicObjectBuilder.Instance.NewObject<AbstractClassWithOneImplProperty>();
             Assert.IsNotNull(c);
             c.Name = "Tom";
             c.Age = 18;
@@ -46,27 +46,27 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestTwoTimesAsTheSameType()
         {
-            Type t1 = DynamicObject.GetImplType(typeof(AbstractClassWithOneImplProperty));
-            Type t2 = DynamicObject.GetImplType(typeof(AbstractClassWithOneImplProperty));
+            Type t1 = AssemblyHandler.Instance.GetImplType(typeof(AbstractClassWithOneImplProperty));
+            Type t2 = AssemblyHandler.Instance.GetImplType(typeof(AbstractClassWithOneImplProperty));
             Assert.AreEqual(t1, t2);
         }
 
         [Test]
         public void TestForObjectAttribute()
         {
-            Type t = DynamicObject.GetImplType(typeof(AbstractClass));
+            Type t = AssemblyHandler.Instance.GetImplType(typeof(AbstractClass));
 
             object[] ats = t.GetCustomAttributes(false);
             Assert.AreEqual(1, ats.Length);
             Assert.IsTrue(ats[0] is DbTableAttribute);
-            DbTableAttribute da = (DbTableAttribute)ats[0];
+            var da = (DbTableAttribute)ats[0];
             Assert.AreEqual("Abstract_Class", da.TableName);
         }
 
         [Test]
         public void TestCreateObjectByParams()
         {
-            AbstractClass c = DynamicObject.NewObject<AbstractClass>("abs");
+            var c = DynamicObjectBuilder.Instance.NewObject<AbstractClass>("abs");
             Assert.IsNotNull(c);
             Assert.AreEqual("abs", c.Name);
         }
@@ -75,7 +75,7 @@ namespace Lephone.UnitTest.Data
         public void TestCreateObjectByMutilParams()
         {
             DateTime dt = DateTime.Now;
-            ConstructorBase c = DynamicObject.NewObject<ConstructorBase>("a1", 11, "a2", 22, true, dt);
+            var c = DynamicObjectBuilder.Instance.NewObject<ConstructorBase>("a1", 11, "a2", 22, true, dt);
             Assert.IsNotNull(c);
             Assert.AreEqual("a1", c.p1);
             Assert.AreEqual(11, c.p2);
@@ -88,13 +88,13 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestNamedClass()
         {
-            Type t = DynamicObject.GetImplType(typeof(NamedClass));
+            Type t = AssemblyHandler.Instance.GetImplType(typeof(NamedClass));
 
             object[] ats = t.GetCustomAttributes(false);
             Assert.IsNotNull(ats);
             Assert.AreEqual(1, ats.Length);
             Assert.IsTrue(ats[0] is DbTableAttribute);
-            DbTableAttribute da = (DbTableAttribute)ats[0];
+            var da = (DbTableAttribute)ats[0];
             Assert.IsNull(da.LinkNames);
             Assert.AreEqual("abc", da.TableName);
         }
@@ -102,13 +102,13 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestJoinByDbTableClass()
         {
-            Type t = DynamicObject.GetImplType(typeof(JoinByDbTableClass));
+            Type t = AssemblyHandler.Instance.GetImplType(typeof(JoinByDbTableClass));
 
             object[] ats = t.GetCustomAttributes(false);
             Assert.IsNotNull(ats);
             Assert.AreEqual(1, ats.Length);
             Assert.IsTrue(ats[0] is DbTableAttribute);
-            DbTableAttribute da = (DbTableAttribute)ats[0];
+            var da = (DbTableAttribute)ats[0];
             Assert.IsNull(da.TableName);
             Assert.AreEqual(2, da.LinkNames.Length);
             Assert.AreEqual("abc", da.LinkNames[0]);
@@ -118,7 +118,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSerializableClass()
         {
-            Type t = DynamicObject.GetImplType(typeof(SerializableClass));
+            Type t = AssemblyHandler.Instance.GetImplType(typeof(SerializableClass));
 
             object[] ats = t.GetCustomAttributes(false);
             Assert.IsNotNull(ats);
@@ -129,10 +129,10 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestJoinClass()
         {
-            Type t = DynamicObject.GetImplType(typeof(JoinClass));
+            Type t = AssemblyHandler.Instance.GetImplType(typeof(JoinClass));
             object[] js = t.GetCustomAttributes(false);
             Assert.AreEqual(2, js.Length);
-            JoinOnAttribute j = (JoinOnAttribute)js[0];
+            var j = (JoinOnAttribute)js[0];
             int a1 = 0;
             int a2 = 1;
             if (j.Index == 2)

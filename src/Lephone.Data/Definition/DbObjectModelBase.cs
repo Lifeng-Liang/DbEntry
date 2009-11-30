@@ -122,7 +122,7 @@ namespace Lephone.Data.Definition
         {
             get
             {
-                return DynamicObject.NewObject<T>();
+                return (T)ObjectInfo.GetInstance(typeof(T)).Handler.CreateInstance();
             }
         }
 

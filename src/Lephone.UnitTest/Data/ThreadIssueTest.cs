@@ -47,15 +47,15 @@ namespace Lephone.UnitTest.Data
 
         //=============================================================
 
-        public class FakeDynamicObjectBuilder : DynamicObjectBuilder
+        public class FakeDynamicAssemblyHandler : AssemblyHandler.DynamicAssemblyHandler
         {
-            public static new FakeDynamicObjectBuilder Instance = new FakeDynamicObjectBuilder();
+            public static new FakeDynamicAssemblyHandler Instance = new FakeDynamicAssemblyHandler();
 
             public static Exception Exception;
 
-            protected override Type GenerateType(Type sourceType)
+            public override Type GetImplementedType(Type sourceType)
             {
-                Type t = base.GenerateType(sourceType);
+                Type t = base.GetImplementedType(sourceType);
                 Thread.Sleep(1000);
                 return t;
             }
@@ -77,9 +77,9 @@ namespace Lephone.UnitTest.Data
 
             Thread.Sleep(2000);
 
-            if(FakeDynamicObjectBuilder.Exception != null)
+            if (FakeDynamicAssemblyHandler.Exception != null)
             {
-                throw FakeDynamicObjectBuilder.Exception;
+                throw FakeDynamicAssemblyHandler.Exception;
             }
         }
 
@@ -87,11 +87,11 @@ namespace Lephone.UnitTest.Data
         {
             try
             {
-                FakeDynamicObjectBuilder.Instance.GetImplType(typeof(User2));
+                FakeDynamicAssemblyHandler.Instance.GetImplType(typeof(User2));
             }
             catch (Exception ex)
             {
-                FakeDynamicObjectBuilder.Exception = ex;
+                FakeDynamicAssemblyHandler.Exception = ex;
             }
         }
     }

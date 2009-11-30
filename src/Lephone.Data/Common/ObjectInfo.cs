@@ -18,7 +18,8 @@ namespace Lephone.Data.Common
             {
                 throw new DataException("The model class should be public");
             }
-            Type t = (dbObjectType.IsAbstract) ? DynamicObject.GetImplType(dbObjectType) : dbObjectType;
+            Type t = (dbObjectType.IsAbstract) ? AssemblyHandler.Instance.GetImplType(dbObjectType) : dbObjectType;
+            // should only one TKey here, so use "new" keyword here
             ObjectInfo oi = FlyweightBase<Type, ObjectInfo>.GetInstance(t);
             if (oi.BaseType == null)
             {
@@ -33,7 +34,7 @@ namespace Lephone.Data.Common
 
         internal static ObjectInfo GetSimpleInstance(Type dbObjectType)
         {
-            Type t = (dbObjectType.IsAbstract) ? DynamicObject.GetImplType(dbObjectType) : dbObjectType;
+            Type t = (dbObjectType.IsAbstract) ? AssemblyHandler.Instance.GetImplType(dbObjectType) : dbObjectType;
             if (dic.ContainsKey(t))
             {
                 return dic[t];
@@ -78,7 +79,7 @@ namespace Lephone.Data.Common
             if (DataSetting.ObjectHandlerType == HandlerType.Emit
                 || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
             {
-                _handler = DynamicObjectBuilder.Instance.CreateDbObjectHandler(t, this);
+                _handler =  AssemblyHandler.Instance.CreateDbObjectHandler(t, this);
             }
             else
             {
@@ -288,7 +289,7 @@ namespace Lephone.Data.Common
 
         internal MemberHandler GetBelongsTo(Type t)
         {
-            Type mt = t.IsAbstract ? DynamicObject.GetImplType(t) : t;
+            Type mt = t.IsAbstract ? AssemblyHandler.Instance.GetImplType(t) : t;
             foreach (MemberHandler mh in RelationFields)
             {
                 if (mh.IsBelongsTo)
@@ -296,7 +297,7 @@ namespace Lephone.Data.Common
                     Type st = mh.FieldType.GetGenericArguments()[0];
                     if (st.IsAbstract)
                     {
-                        st = DynamicObject.GetImplType(st);
+                        st = AssemblyHandler.Instance.GetImplType(st);
                     }
                     if (st == mt)
                     {
@@ -310,7 +311,7 @@ namespace Lephone.Data.Common
 
         internal MemberHandler GetHasAndBelongsToMany(Type t)
         {
-            Type mt = t.IsAbstract ? DynamicObject.GetImplType(t) : t;
+            Type mt = t.IsAbstract ? AssemblyHandler.Instance.GetImplType(t) : t;
             foreach (MemberHandler mh in RelationFields)
             {
                 if (mh.IsHasAndBelongsToMany)
@@ -318,7 +319,7 @@ namespace Lephone.Data.Common
                     Type st = mh.FieldType.GetGenericArguments()[0];
                     if (st.IsAbstract)
                     {
-                        st = DynamicObject.GetImplType(st);
+                        st = AssemblyHandler.Instance.GetImplType(st);
                     }
                     if (st == mt)
                     {

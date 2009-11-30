@@ -30,7 +30,6 @@ namespace Lephone.Data.Common
 
         private static readonly Type ObjType = typeof(object);
 
-        private static Dictionary<Type, Type> _dic = new Dictionary<Type, Type>();
         private static readonly Type[] EmptyTypes = new Type[] { };
 
         private static readonly Type VhBaseType = typeof(EmitObjectHandlerBase);
@@ -44,26 +43,22 @@ namespace Lephone.Data.Common
         {
             if (os.Length > 0)
             {
-                Type implType = GetImplType(typeof(T));
+                Type implType = AssemblyHandler.Instance.GetImplType(typeof(T));
                 return (T)ClassHelper.CreateInstance(implType, os);
             }
             return (T)ObjectInfo.GetInstance(typeof(T)).NewObject();
-        }
-
-        internal IDbObjectHandler CreateDbObjectHandler(Type srcType, ObjectInfo oi)
-        {
-            Type t = GetDbObjectHandler(srcType, oi);
-            var o = (EmitObjectHandlerBase)ClassHelper.CreateInstance(t);
-            o.Init(oi);
-            return o;
         }
 
         internal Type GetDbObjectHandler(Type srcType, ObjectInfo oi)
         {
             // TODO: process null value, nullable
             ConstructorInfo ci = GetConstructor(srcType);
+
             MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
-                DynamicObjectTypeAttr, VhBaseType, new[] { typeof(IDbObjectHandler) });
+                DynamicObjectTypeAttr, VhBaseType, new[] { typeof(IDbObjectHandler) },
+                new[]{new CustomAttributeBuilder(typeof(ForTypeAttribute).GetConstructor(new[] { typeof(Type) }),
+                            new object[] { srcType }) });
+
             tb.DefineDefaultConstructor(MethodAttributes.Public);
             // implements CreateInstance
             tb.OverrideMethodDirect(OverridePublicFlag, "CreateInstance", VhBaseType,
@@ -432,25 +427,7 @@ namespace Lephone.Data.Common
                 });
         }
 
-        public Type GetImplType(Type sourceType)
-        {
-            if (_dic.ContainsKey(sourceType))
-            {
-                return _dic[sourceType];
-            }
-            lock (_dic)
-            {
-                if (_dic.ContainsKey(sourceType))
-                {
-                    return _dic[sourceType];
-                }
-                Type t = GenerateType(sourceType);
-                _dic[sourceType] = t;
-                return t;
-            }
-        }
-
-        protected virtual Type GenerateType(Type sourceType)
+        public virtual Type GenerateType(Type sourceType)
         {
             TypeAttributes ta = DynamicObjectTypeAttr;
             Type[] interfaces = null;

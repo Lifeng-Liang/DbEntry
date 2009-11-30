@@ -8,7 +8,7 @@ using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common
 {
-    internal enum FieldType
+    public enum FieldType
     {
         Normal,
         HasOne,
@@ -18,7 +18,7 @@ namespace Lephone.Data.Common
         LazyLoad
     }
 
-    internal class MemoryTypeBuilder
+    public class MemoryTypeBuilder
     {
         public delegate void EmitCode(ILBuilder il);
 

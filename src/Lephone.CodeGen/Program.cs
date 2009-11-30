@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
+using Lephone.Data.Common;
+using Lephone.Data.Logging;
 using Lephone.Util;
+using Lephone.Web;
 
 namespace Lephone.CodeGen
 {
@@ -41,7 +44,7 @@ namespace Lephone.CodeGen
 
         private static void Process(string[] args)
         {
-            if(args.Length > 0 && args[0] == "m")
+            if(args.Length > 0 && args[0].ToLower() == "m")
             {
                 if(args.Length == 1)
                 {
@@ -51,6 +54,13 @@ namespace Lephone.CodeGen
                 {
                     GenerateModelFromDatabase(args[1]);
                 }
+                return;
+            }
+
+            if (args.Length == 2 && args[0].ToLower() == "dll")
+            {
+                GenerateAssembly(args[1]);
+                Console.WriteLine("Assembly saved!");
                 return;
             }
 
@@ -101,6 +111,21 @@ namespace Lephone.CodeGen
                     }
                     break;
             }
+        }
+
+        private static void GenerateAssembly(string fileName)
+        {
+            ObjectInfo.GetInstance(typeof (LephoneEnum));
+            ObjectInfo.GetInstance(typeof (LephoneLog));
+            ObjectInfo.GetInstance(typeof (DbEntryMembershipUser));
+            ObjectInfo.GetInstance(typeof (DbEntryRole));
+            ObjectInfo.GetInstance(typeof (LephoneSetting));
+            Helper.EnumTypes(fileName, t =>
+            {
+                ObjectInfo.GetInstance(t);
+                return true;
+            });
+            MemoryAssembly.Instance.Save();
         }
 
         private static void GenerateAspNetTemplate(string fileName, string className)

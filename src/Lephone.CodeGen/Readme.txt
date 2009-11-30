@@ -55,3 +55,13 @@ TableName:  Table name in database, and it will be the model class name too.
 
 Example:
     Lephone.CodeGen m User
+
+----------------------------------------------------------------------------
+
+Usage for generate assembly dll:
+    Lephone.CodeGen dll FileName
+
+FileName:   The assembly file name who has the model classes.
+
+Example:
+    Lephone.CodeGen dll Models.dll

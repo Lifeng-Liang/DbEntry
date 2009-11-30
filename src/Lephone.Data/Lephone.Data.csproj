@@ -116,6 +116,9 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DeleteToQueryComposer.cs" />
     <Compile Include="Common\DynamicObjectBuilder.cs" />
+    <Compile Include="Common\ForTypeAttribute.cs" />
+    <Compile Include="Common\GroupBySumObject.cs" />
+    <Compile Include="Common\AssemblyHandler.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
     <Compile Include="Common\TimeSpanLessDataReader.cs" />
     <Compile Include="DataReaderEmitHelper.cs" />
@@ -176,7 +179,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Dialect\SqlServer2008.cs" />
     <Compile Include="Driver\DbFactory.cs" />
     <Compile Include="Driver\SmartDbFactory.cs" />
-    <Compile Include="DynamicObject.cs" />
     <Compile Include="QuerySyntax\QueryInterfaces.cs" />
     <Compile Include="SqlEntry\ColumnInfo.cs" />
     <Compile Include="Logging\DatabaseLogRecorder.cs" />

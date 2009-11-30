@@ -76,6 +76,19 @@ namespace Lephone.Data.Common
             return sb.ToSqlStatement(dialect);
         }
 
+        public virtual SqlStatement GetGroupBySumStatement(DbDialect dialect, WhereCondition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
+        {
+            var sb = new SelectStatementBuilder(Info.From, order, null);
+            sb.Where.Conditions = iwc;
+            var list = groupbyColumnName.Split(',');
+            foreach (string s in list)
+            {
+                sb.Keys.Add(new KeyValuePair<string, string>(s, null));
+                sb.SetAsGroupBySum(groupbyColumnName, sumColumnName);
+            }
+            return sb.ToSqlStatement(dialect);
+        }
+
         public virtual SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
             var sb = new SelectStatementBuilder(from ?? Info.From, oc, lc) {IsDistinct = isDistinct};

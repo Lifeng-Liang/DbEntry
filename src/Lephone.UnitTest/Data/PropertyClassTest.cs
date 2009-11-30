@@ -1,4 +1,5 @@
 ﻿using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
 
@@ -26,7 +27,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPropertyClassBaseCRUD()
         {
-            var o = DynamicObject.NewObject<PropertyClassBase>("OK");
+            var o = DynamicObjectBuilder.Instance.NewObject<PropertyClassBase>("OK");
             // create
             DbEntry.Save(o);
             // read
@@ -44,7 +45,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPropertyClassWithDbColumn()
         {
-            var o = DynamicObject.NewObject<PropertyClassWithDbColumn>("OK");
+            var o = DynamicObjectBuilder.Instance.NewObject<PropertyClassWithDbColumn>("OK");
             // create
             DbEntry.Save(o);
             // read

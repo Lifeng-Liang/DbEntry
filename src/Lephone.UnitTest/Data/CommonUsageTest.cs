@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
@@ -836,6 +837,23 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("1", ox.Name);
             Assert.AreEqual(true, ox.Gender);
             Assert.IsNull(ox.Age);
+        }
+
+        [Test]
+        public void TestGroupbySum()
+        {
+            sqlite.From<SinglePerson>().Where(null).GroupBySum<string, long>("Name", "Id");
+            AssertSql(@"SELECT [Name],SUM([Id]) AS [Id] FROM [People] GROUP BY [Name];
+<Text><60>()");
+
+            var list = DbEntry.From<Book>().Where(null).GroupBySum<long, long>("Category_Id", "Id");
+            var sorted = (from o in list orderby o.Column select o).ToList();
+
+            Assert.AreEqual(2, sorted[0].Column);
+            Assert.AreEqual(10, sorted[0].Sum);
+
+            Assert.AreEqual(3, sorted[1].Column);
+            Assert.AreEqual(5, sorted[1].Sum);
         }
     }
 }

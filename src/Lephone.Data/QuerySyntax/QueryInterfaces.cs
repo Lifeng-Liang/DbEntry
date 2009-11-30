@@ -20,14 +20,15 @@ namespace Lephone.Data.QuerySyntax
 
     public interface IGroupByable
     {
-        DbObjectList<GroupByObject<T1>> GroupBy<T1>(string ColumnName);
+        DbObjectList<GroupByObject<T1>> GroupBy<T1>(string columnName);
+        DbObjectList<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName);
     }
 
     public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : class, IDbObject
     {
-        ISelectable<T> Range(int StartIndex, int EndIndex);
+        ISelectable<T> Range(int startIndex, int endIndex);
         ISelectable<T> Range(Range r);
-        IGetPagedSelector PageSize(int PageSize);
+        IGetPagedSelector PageSize(int pageSize);
     }
 
     public interface IAfterWhere<T> : ISelectable<T>, IGroupByable where T : class, IDbObject

@@ -209,7 +209,7 @@ namespace Lephone.Data.Dialect
         private string GetFunctionArgs(SelectStatementBuilder ssb)
         {
             var ret = new StringBuilder();
-            foreach (string s in ssb.FunctionArgs)
+            foreach (string s in ssb.GroupbyArgs)
             {
                 ret.Append(QuoteForColumnName(s));
                 ret.Append(",");

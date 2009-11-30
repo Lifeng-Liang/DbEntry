@@ -276,7 +276,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject()
         {
-            var u = DynamicObject.NewObject<asUser>("Tom", 18);
+            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
             u.Id = 1; // Make it looks like read from database
             de.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
@@ -286,7 +286,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject2()
         {
-            var u = DynamicObject.NewObject<asUser>("Tom", 18);
+            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
             u.Id = 1; // Make it looks like read from database
             u.Name = "Tom";
             de.Save(u);
@@ -297,7 +297,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject3()
         {
-            var u = DynamicObject.NewObject<asUser>("Tom", 18);
+            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
             u.Id = 1; // Make it looks like read from database
             u.Name = "Jerry";
             u.Age = 25;
@@ -313,7 +313,7 @@ namespace Lephone.UnitTest.Data
             {
                 de.NewTransaction(delegate
                 {
-                    var u = DynamicObject.NewObject<asUser>("Tom", 18);
+                    var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
                     u.Id = 1; // Make it looks like read from database
                     u.Name = "Tom";
                     de.Save(u);
@@ -326,7 +326,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateFieldAfterSave()
         {
-            var u = DynamicObject.NewObject<asUser>("Tom", 18);
+            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
             u.Id = 1;
             u.Name = "jerry";
             de.Save(u);
@@ -340,7 +340,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateFieldAfterInsert()
         {
-            var u = DynamicObject.NewObject<asUser>("Tom", 18);
+            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
             de.Save(u);
             u.Age = 25;
             de.Save(u);

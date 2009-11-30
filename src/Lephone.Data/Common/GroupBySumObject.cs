@@ -2,20 +2,20 @@
 
 namespace Lephone.Data.Common
 {
-    public class GroupByObject<T> : IDbObject
+    public class GroupBySumObject<T1, T2> : IDbObject
     {
         // set it to key to make it looks like the first column
         [DbKey(IsDbGenerate = false)]
-        public T Column;
+        public T1 Column;
 
-        public long Count;
+        public T2 Sum;
 
-        public GroupByObject() { }
+        public GroupBySumObject() { }
 
-        public GroupByObject(T column, long count)
+        public GroupBySumObject(T1 column, T2 sum)
         {
             Column = column;
-            Count = count;
+            Sum = sum;
         }
     }
 }

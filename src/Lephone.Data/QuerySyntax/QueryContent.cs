@@ -15,23 +15,23 @@ namespace Lephone.Data.QuerySyntax
 
         public QueryContent(DbContext entry)
         {
-            this.m_entry = entry;
+            m_entry = entry;
         }
 
         protected internal QueryContent(QueryContent<T> content)
         {
             if (content != null)
             {
-                this.m_where = content.m_where;
-                this.m_order = content.m_order;
-                this.m_range = content.m_range;
-                this.m_entry = content.m_entry;
+                m_where = content.m_where;
+                m_order = content.m_order;
+                m_range = content.m_range;
+                m_entry = content.m_entry;
             }
         }
 
         public IAfterWhere<T> Where(WhereCondition where)
         {
-            this.m_where = where;
+            m_where = where;
             return this;
         }
 
@@ -42,19 +42,19 @@ namespace Lephone.Data.QuerySyntax
 
         public IRangeable<T> OrderBy(params ASC[] os)
         {
-            this.m_order = new OrderBy(os);
+            m_order = new OrderBy(os);
             return this;
         }
 
         public IRangeable<T> OrderBy(OrderBy order)
         {
-            this.m_order = order;
+            m_order = order;
             return this;
         }
 
-        public ISelectable<T> Range(int StartIndex, int EndIndex)
+        public ISelectable<T> Range(int startIndex, int endIndex)
         {
-            this.m_range = new Range(StartIndex, EndIndex);
+            m_range = new Range(startIndex, endIndex);
             return this;
         }
 
@@ -62,7 +62,7 @@ namespace Lephone.Data.QuerySyntax
         {
             if (r != null)
             {
-                this.m_range = r;
+                m_range = r;
             }
             return this;
         }
@@ -131,14 +131,19 @@ namespace Lephone.Data.QuerySyntax
             return m_entry.GetSum(typeof(T), m_where, columnName);
         }
 
-        public DbObjectList<GroupByObject<T1>> GroupBy<T1>(string ColumnName)
+        public DbObjectList<GroupByObject<T1>> GroupBy<T1>(string columnName)
         {
-            return m_entry.GetGroupBy<T1>(typeof(T), m_where, m_order, ColumnName);
+            return m_entry.GetGroupBy<T1>(typeof(T), m_where, m_order, columnName);
         }
 
-        public IGetPagedSelector PageSize(int PageSize)
+        public DbObjectList<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName)
         {
-            this.m_pagesize = PageSize;
+            return m_entry.GetGroupBySum<T1, T2>(typeof(T), m_where, m_order, groupbyColumnName, sumColumnName);
+        }
+
+        public IGetPagedSelector PageSize(int pageSize)
+        {
+            m_pagesize = pageSize;
             return this;
         }
     }

@@ -1,4 +1,4 @@
-﻿using Lephone.Data;
+﻿using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
@@ -27,7 +27,7 @@ namespace Lephone.UnitTest.DotNetFramework
         [Test]
         public void Test2()
         {
-            test2 o = DynamicObject.NewObject<test2>();
+            var o = DynamicObjectBuilder.Instance.NewObject<test2>();
             Assert.IsFalse(o.n.HasValue);
         }
 

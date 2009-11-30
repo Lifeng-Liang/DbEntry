@@ -19,10 +19,16 @@ namespace Lephone.Util
                     return dic[t];
                 }
                 var v = ClassHelper.CreateInstance<TValue>();
-                v.Init(t);
+                TKey x = v.CheckKey(t);
+                v.Init(x);
                 dic[t] = v;
                 return v;
             }
+        }
+
+        protected virtual  TKey CheckKey(TKey t)
+        {
+            return t;
         }
 
         protected abstract void Init(TKey t);

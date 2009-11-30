@@ -5,7 +5,7 @@ using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
-    internal class MemoryAssembly
+    public class MemoryAssembly
     {
         public const string DefaultAssemblyName = "DbEntry_MemoryAssembly";
         public static readonly MemoryAssembly Instance = new MemoryAssembly();
@@ -24,10 +24,8 @@ namespace Lephone.Data.Common
             var an = new AssemblyName(AssemblyName);
             byte[] bs = ResourceHelper.ReadAll(GetType(), "dynamic.snk");
             an.KeyPair = new StrongNameKeyPair(bs);
-            //InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
-            //    an, AssemblyBuilderAccess.RunAndSave, @"c:\x.dll");
             InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                an, AssemblyBuilderAccess.Run);
+                an, AssemblyBuilderAccess.RunAndSave);
             ResetModule();
         }
 
@@ -58,12 +56,12 @@ namespace Lephone.Data.Common
 
         public void ResetModule()
         {
-            InnerModule = InnerAssembly.DefineDynamicModule(AssemblyName);
+            InnerModule = InnerAssembly.DefineDynamicModule(AssemblyName, @"DbEntry_MemoryAssembly.dll");
         }
 
         public void Save()
         {
-            InnerAssembly.Save(@"c:\x.dll");
+            InnerAssembly.Save(@"DbEntry_MemoryAssembly.dll");
         }
     }
 }
