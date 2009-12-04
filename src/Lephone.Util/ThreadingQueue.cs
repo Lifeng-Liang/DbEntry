@@ -10,45 +10,45 @@ namespace Lephone.Util
 	{
 		public event OutputEventHandler Output;
 
-		private readonly Queue ShareQueue = new Queue();
-		private readonly ArrayList Threads = new ArrayList();
-		private bool Running = true;
-		private readonly AutoResetEvent HasIncoming = new AutoResetEvent(false);
-		private readonly ManualResetEvent ItsTimeToDispose = new ManualResetEvent(false);
+		private readonly Queue _shareQueue = new Queue();
+		private readonly ArrayList _threads = new ArrayList();
+		private bool _running = true;
+		private readonly AutoResetEvent _hasIncoming = new AutoResetEvent(false);
+		private readonly ManualResetEvent _itsTimeToDispose = new ManualResetEvent(false);
 
-		public ThreadingQueue(int ThreadNo)
+		public ThreadingQueue(int threadNo)
 		{
-			for ( int i = 0; i < ThreadNo; i++ )
+			for ( int i = 0; i < threadNo; i++ )
 			{
-				Thread t = new Thread(OutputThread);
-				Threads.Add(t);
+				var t = new Thread(OutputThread);
+				_threads.Add(t);
 				t.Start();
 			}
 		}
 
 		public void Input(object o)
 		{
-			if ( Running )
+			if ( _running )
 			{
-				lock(ShareQueue)
+				lock(_shareQueue)
 				{
-					ShareQueue.Enqueue(o);
+					_shareQueue.Enqueue(o);
 				}
-				HasIncoming.Set();
+				_hasIncoming.Set();
 			}
 		}
 
 		private void OutputThread()
 		{
-			WaitHandle[] hs = new WaitHandle[] {ItsTimeToDispose, HasIncoming};
+			var hs = new WaitHandle[] {_itsTimeToDispose, _hasIncoming};
 			while(true)
 			{
 				object o = null;
-				lock(ShareQueue)
+				lock(_shareQueue)
 				{
-					if ( ShareQueue.Count > 0 )
+					if ( _shareQueue.Count > 0 )
 					{
-						o = ShareQueue.Dequeue();
+						o = _shareQueue.Dequeue();
 					}
 				}
 				if (o != null)
@@ -67,11 +67,11 @@ namespace Lephone.Util
 
 		public void Dispose()
 		{
-			if ( Running )
+			if ( _running )
 			{
-				Running = false;
-				ItsTimeToDispose.Set();
-				foreach ( Thread t in Threads )
+				_running = false;
+				_itsTimeToDispose.Set();
+				foreach ( Thread t in _threads )
 				{
 					while ( t.IsAlive )
 					{

@@ -4,6 +4,7 @@ using Lephone.Data.Caching;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Linq;
+using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.util;
 using Lephone.Util;
 using NUnit.Framework;
@@ -14,6 +15,18 @@ namespace Lephone.UnitTest.Data
     public class CacheTest : DataTestBase
     {
         #region models
+
+        [Cacheable, DbTable("PCs")]
+        public abstract class Lazyable : DbObjectModel<Lazyable>
+        {
+            [LazyLoad, DbColumn("Name")]
+            public abstract string Content { get; set; }
+
+            [DbColumn("Person_Id")]
+            public abstract int TestColumn { get; set; }
+
+            public abstract Lazyable Init(string content, int testColumn);
+        }
 
         [DbTable("DCS_USERS"), Cacheable]
         public abstract class User : LinqObjectModel<User>
@@ -310,5 +323,48 @@ namespace Lephone.UnitTest.Data
         select [Id],[DC],[UC],[DM],[UM],[NAME_FIRST],[NAME_LAST],[NAME_MIDDLE],[NAME_PREFIX],[NAME_POSTFIX],[GENDER],[DOB],[DOD],[EMPLOYEE_ID] from (select [Id],[DC],[UC],[DM],[UM],[NAME_FIRST],[NAME_LAST],[NAME_MIDDLE],[NAME_PREFIX],[NAME_POSTFIX],[GENDER],[DOB],[DOD],[EMPLOYEE_ID], ROW_NUMBER() OVER ( Order By [Id] ASC) as __rownumber__ From [DCS_PERSONS] Where [EMPLOYEE_ID] = @EMPLOYEE_ID_0) as T Where T.__rownumber__ >= 1 and T.__rownumber__ <= 1;
         <Text><60>(@EMPLOYEE_ID_0=1:Int64)
         */
+
+
+        [Test]
+        public void TestLazyLoadColumn()
+        {
+            var o = Lazyable.FindById(1);
+            Assert.AreEqual(2, o.TestColumn);
+
+            var o1 = Lazyable.FindById(1);
+            Assert.AreEqual(2, o1.TestColumn);
+            Assert.AreEqual("IBM", o1.Content);
+
+            var o2 = Lazyable.FindById(1);
+            Assert.AreEqual(2, o2.TestColumn);
+            Assert.AreEqual("IBM", o2.Content);
+        }
+
+        [Test]
+        public void TestLazyLoadColumn2()
+        {
+            ClassHelper.CallFunction(sqlite, "TryCreateTable", typeof (Lazyable));
+            StaticRecorder.ClearMessages();
+            StaticRecorder.CurRow.Clear();
+            StaticRecorder.CurRow.Add(new RowInfo("Id", typeof(long), 2L));
+            StaticRecorder.CurRow.Add(new RowInfo("Person_Id", typeof(int), 2));
+
+            var o1 = sqlite.GetObject<Lazyable>(2);
+            Assert.AreEqual(2, o1.TestColumn);
+
+            var o2 = sqlite.GetObject<Lazyable>(2);
+            Assert.AreEqual(2, o2.TestColumn);
+            StaticRecorder.CurRow.Clear();
+            StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));
+            Assert.AreEqual("IBM", o2.Content);
+
+            var o3 = sqlite.GetObject<Lazyable>(2);
+            Assert.AreEqual(2, o3.TestColumn);
+            StaticRecorder.CurRow.Clear();
+            StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));
+            Assert.AreEqual("IBM", o3.Content);
+            
+            Assert.AreEqual(3, StaticRecorder.Messages.Count);
+        }
     }
 }

@@ -17,6 +17,12 @@ namespace Lephone.Data.Definition
             get { return CK<T>.Field; }
         }
 
+        public new virtual T Save()
+        {
+            DbEntry.Save(this);
+            return (T)this;
+        }
+
         public static T FindById(TKey Id)
         {
             return DbEntry.GetObject<T>(Id);

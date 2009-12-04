@@ -47,7 +47,7 @@ namespace Lephone.Util
 
                 if (_ownsInstance)
                 {
-                    IDisposable disposable = _instance as IDisposable;
+                    var disposable = _instance as IDisposable;
                     if (disposable != null) disposable.Dispose();
                 }
             }

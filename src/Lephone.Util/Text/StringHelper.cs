@@ -14,6 +14,24 @@ namespace Lephone.Util.Text
 			return Regex.IsMatch(s, "^[ \t]*(_*)([a-zA-Z]+)([a-zA-Z0-9_]*)[ \t]*$", RegexOptions.Compiled);
 		}
 
+        public static bool IsSpName(string s)
+        {
+            var i = s.IndexOf('.');
+            if(i > 0)
+            {
+                string s1 = s.Substring(0, i);
+                string s2 = s.Substring(i + 1);
+                char c1 = s1[s1.Length - 1];
+                char c2 = s2[0];
+                if(c1 == ' ' || c1 == '\t' || c2 == ' ' || c2 == '\t')
+                {
+                    return false;
+                }
+                return IsIndentityName(s1) && IsIndentityName(s2);
+            }
+            return IsIndentityName(s);
+        }
+
         public static string[] Split(string s, char c, int count)
         {
             string[] ss = s.Split(new[] { c }, count);
@@ -43,25 +61,25 @@ namespace Lephone.Util.Text
 			return s;
 		}
 
-		public static string MultiLineAddPrefix(string Source)
+		public static string MultiLineAddPrefix(string source)
 		{
-			return MultiLineAddPrefix(Source, "\t");
+			return MultiLineAddPrefix(source, "\t");
 		}
 
-		public static string MultiLineAddPrefix(string Source, string Prefix)
+		public static string MultiLineAddPrefix(string source, string prefix)
 		{
-			return MultiLineAddPrefix(Source, Prefix, '\n');
+			return MultiLineAddPrefix(source, prefix, '\n');
 		}
 
-		public static string MultiLineAddPrefix(string Source, string Prefix, char SplitBy)
+		public static string MultiLineAddPrefix(string source, string prefix, char splitBy)
 		{
 			var sb = new StringBuilder();
-			string[] ss = Source.Split(SplitBy);
+			string[] ss = source.Split(splitBy);
 			foreach ( string s in ss )
 			{
-				sb.Append(Prefix);
+				sb.Append(prefix);
 				sb.Append(s);
-				sb.Append(SplitBy);
+				sb.Append(splitBy);
 			}
 			return sb.ToString();
 		}
@@ -101,7 +119,7 @@ namespace Lephone.Util.Text
             return EncodingEx.Default.GetByteCount(s);
         }
 
-		public static string GetMultiByteSubString(string s, int Count)
+		public static string GetMultiByteSubString(string s, int count)
 		{
 			char[] cs = s.ToCharArray();
 			int n = 0;
@@ -120,11 +138,11 @@ namespace Lephone.Util.Text
 				{
 					return s.Substring(0, i);
 				}
-				if ( n == Count )
+				if ( n == count )
 				{
 					return s.Substring(0, i + 1);
 				}
-			    if ( n > Count )
+			    if ( n > count )
 			    {
 			        return s.Substring(0, i);
 			    }
@@ -137,15 +155,15 @@ namespace Lephone.Util.Text
             return EnumToString(o.GetType(), o.ToString());
 		}
 
-        public static string EnumToString(Type EnumType, string Name)
+        public static string EnumToString(Type enumType, string name)
         {
-            var os = (ShowStringAttribute[])EnumType.GetField(Name)
+            var os = (ShowStringAttribute[])enumType.GetField(name)
                 .GetCustomAttributes(typeof(ShowStringAttribute), false);
             if (os != null && os.Length == 1)
             {
                 return os[0].ShowString;
             }
-            return Name;
+            return name;
         }
 
 		public static string StreamReadToEnd(Stream s)
@@ -153,9 +171,9 @@ namespace Lephone.Util.Text
 			return StreamReadToEnd( new StreamReader(s) );
 		}
 
-        public static string StreamReadToEnd(Stream s, long Position)
+        public static string StreamReadToEnd(Stream s, long position)
         {
-            s.Position = Position;
+            s.Position = position;
             return StreamReadToEnd(new StreamReader(s));
         }
 

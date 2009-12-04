@@ -7,18 +7,18 @@ namespace Lephone.Data.SqlEntry
 	[Serializable]
 	public class DataParameterCollection : CollectionBase
 	{
-        private bool _ParamsNameUserSet;
+        private bool _paramsNameUserSet;
 
 		internal bool UserSetKey
 		{
-			get { return _ParamsNameUserSet; }
+			get { return _paramsNameUserSet; }
 		}
 
 		public DataParameterCollection() {}
 
-		public DataParameterCollection(params object[] Values)
+		public DataParameterCollection(params object[] values)
 		{
-			Add(Values);
+			Add(values);
 		}
 
 		public DataParameterCollection(params DataParameter[] dps)
@@ -28,14 +28,14 @@ namespace Lephone.Data.SqlEntry
 
 		public void Add(DataParameter dp)
 		{
-			bool UserSet = !string.IsNullOrEmpty(dp.Key);
+			bool userSet = !string.IsNullOrEmpty(dp.Key);
 			if ( List.Count == 0 )
 			{
-				_ParamsNameUserSet = UserSet;
+				_paramsNameUserSet = userSet;
 			}
 			else
 			{
-				if ( _ParamsNameUserSet != UserSet )
+				if ( _paramsNameUserSet != userSet )
 				{
 					throw new ArgumentException("DataParameters's key must all set or all not set.");
 				}
@@ -51,9 +51,9 @@ namespace Lephone.Data.SqlEntry
 			}
 		}
 
-		public void Add(params object[] Values)
+		public void Add(params object[] values)
 		{
-			foreach ( object o in Values )
+			foreach ( object o in values )
 			{
 				Add( new DataParameter( o ) );
 			}
@@ -75,7 +75,7 @@ namespace Lephone.Data.SqlEntry
 
 		public override bool Equals(object obj)
 		{
-			DataParameterCollection dpc = (DataParameterCollection)obj;
+			var dpc = (DataParameterCollection)obj;
 			for ( int i=0; i<List.Count; i++ )
 			{
 				if ( !this[i].Equals(dpc[i]) )
@@ -93,7 +93,7 @@ namespace Lephone.Data.SqlEntry
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			foreach ( DataParameter dp in List )
 			{
 				sb.Append(dp.ToString());

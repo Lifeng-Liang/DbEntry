@@ -15,63 +15,63 @@ namespace Lephone.Data.SqlEntry
         internal int StartIndex;
         internal int EndIndex;
 
-		internal protected static CommandType GetCommandType(string SqlCommandText)
+		internal protected static CommandType GetCommandType(string sqlCommandText)
 		{
-		    if ( StringHelper.IsIndentityName(SqlCommandText) )
+		    if ( StringHelper.IsSpName(sqlCommandText) )
 			{
 				return CommandType.StoredProcedure;
 			}
 		    return CommandType.Text;
 		}
 
-	    public SqlStatement(string SqlCommandText)
-			: this( GetCommandType(SqlCommandText), SqlCommandText )
+	    public SqlStatement(string sqlCommandText)
+			: this( GetCommandType(sqlCommandText), sqlCommandText )
 		{
 		}
 
-		public SqlStatement(CommandType SqlCommandType, string SqlCommandText)
+		public SqlStatement(CommandType sqlCommandType, string sqlCommandText)
 		{
-			this.SqlCommandType = SqlCommandType;
-			this.SqlCommandText = SqlCommandText;
+			this.SqlCommandType = sqlCommandType;
+			this.SqlCommandText = sqlCommandText;
 			Parameters = new DataParameterCollection();
 		}
 
-		public SqlStatement(string SqlCommandText, params object[] os)
-			: this( GetCommandType(SqlCommandText), SqlCommandText, os )
+		public SqlStatement(string sqlCommandText, params object[] os)
+			: this( GetCommandType(sqlCommandText), sqlCommandText, os )
 		{
 		}
 
-		public SqlStatement(CommandType SqlCommandType, string SqlCommandText, params object[] os)
-			: this(SqlCommandType, SqlCommandText)
+		public SqlStatement(CommandType sqlCommandType, string sqlCommandText, params object[] os)
+			: this(sqlCommandType, sqlCommandText)
 		{
 			Parameters.Add(os);
 		}
 
-		public SqlStatement(string SqlCommandText, params DataParameter[] dps)
-			: this( GetCommandType(SqlCommandText), SqlCommandText, dps )
+		public SqlStatement(string sqlCommandText, params DataParameter[] dps)
+			: this( GetCommandType(sqlCommandText), sqlCommandText, dps )
 		{
 		}
 
-		public SqlStatement(CommandType SqlCommandType, string SqlCommandText, params DataParameter[] dps)
-			: this(SqlCommandType, SqlCommandText)
+		public SqlStatement(CommandType sqlCommandType, string sqlCommandText, params DataParameter[] dps)
+			: this(sqlCommandType, sqlCommandText)
 		{
 			Parameters.Add(dps);
 		}
 
-		public SqlStatement(string SqlCommandText, DataParameterCollection dpc)
-			: this( GetCommandType(SqlCommandText), SqlCommandText, dpc )
+		public SqlStatement(string sqlCommandText, DataParameterCollection dpc)
+			: this( GetCommandType(sqlCommandText), sqlCommandText, dpc )
 		{
 		}
 
-		public SqlStatement(CommandType SqlCommandType, string SqlCommandText, DataParameterCollection dpc)
-			: this(SqlCommandType, SqlCommandText)
+		public SqlStatement(CommandType sqlCommandType, string sqlCommandText, DataParameterCollection dpc)
+			: this(sqlCommandType, sqlCommandText)
 		{
 			Parameters.Add(dpc);
 		}
 
 		public override bool Equals(object obj)
 		{
-			SqlStatement Sql = (SqlStatement)obj;
+			var Sql = (SqlStatement)obj;
 			bool b = (this.SqlCommandText == Sql.SqlCommandText)
 				&& (this.SqlTimeOut == Sql.SqlTimeOut)
 				&& (this.Parameters.Equals(Sql.Parameters)

@@ -97,7 +97,7 @@ namespace Lephone.Data.Driver
                     SpParameters[sKey] = ps;
 				}
 
-				for ( int i=0; i<e.Parameters.Count; i++ )
+				for ( int i=0; i<Sql.Parameters.Count; i++ )
 				{
 					((IDataParameter)e.Parameters[i]).Value = Sql.Parameters[i].Value;
 				}

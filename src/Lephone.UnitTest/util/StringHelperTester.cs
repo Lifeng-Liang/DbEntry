@@ -213,5 +213,26 @@ namespace Lephone.UnitTest.util
             Assert.IsFalse(CommonHelper.AreEqual(b1, b3));
         }
 
+        [Test]
+        public void TestIsSpName()
+        {
+            Assert.IsTrue(StringHelper.IsSpName("abc"));
+            Assert.IsTrue(StringHelper.IsSpName("_abc_"));
+            Assert.IsTrue(StringHelper.IsSpName("_abc_._zzz_"));
+            Assert.IsTrue(StringHelper.IsSpName("abc.zzz"));
+            Assert.IsTrue(StringHelper.IsSpName(" abc "));
+            Assert.IsTrue(StringHelper.IsSpName(" _abc_ "));
+            Assert.IsTrue(StringHelper.IsSpName(" abc.abc "));
+            Assert.IsTrue(StringHelper.IsSpName(" a11.z99 "));
+            Assert.IsTrue(StringHelper.IsSpName(" Z09.a48 "));
+            Assert.IsTrue(StringHelper.IsSpName(" _Z09_._a48_ "));
+
+            Assert.IsFalse(StringHelper.IsSpName(" a11.111 "));
+            Assert.IsFalse(StringHelper.IsSpName(" 11a.abc "));
+            Assert.IsFalse(StringHelper.IsSpName(" _1abc._abc "));
+            Assert.IsFalse(StringHelper.IsSpName(" _abc.#abc "));
+            Assert.IsFalse(StringHelper.IsSpName(" _abc. abc "));
+            Assert.IsFalse(StringHelper.IsSpName(" abc.abc.abc "));
+        }
     }
 }
