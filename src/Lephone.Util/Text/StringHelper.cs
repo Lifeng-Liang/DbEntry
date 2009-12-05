@@ -206,5 +206,33 @@ namespace Lephone.Util.Text
             return md5.ComputeHash(input);
         }
 
+        public static string ProcessSymbol(string text, string left, string right,
+            CallbackHandler<string, string> callback)
+        {
+            var ret = new StringBuilder();
+            int last = 0;
+            while (true)
+            {
+                int m = text.IndexOf(left, last);
+                if (m >= last)
+                {
+                    int n = text.IndexOf(right, m);
+                    if (n > m)
+                    {
+                        ret.Append(text.Substring(last, m - last));
+                        if (callback != null)
+                        {
+                            var inner = text.Substring(m + left.Length, n - m - left.Length);
+                            ret.Append(callback(inner));
+                        }
+                        last = n + right.Length;
+                        continue;
+                    }
+                }
+                ret.Append(text.Substring(last));
+                break;
+            }
+            return ret.ToString();
+        }
 	}
 }

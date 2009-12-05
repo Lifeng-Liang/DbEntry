@@ -141,6 +141,31 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [JoinOn(0, "People.Id", "PCs.Id")]
+    public class JoinTableNoCreate : IDbObject
+    {
+        [DbColumn("People.Id")]
+        public long Id;
+
+        [DbColumn("People.Name")]
+        public string Name;
+
+        [DbColumn("PCs.Name")]
+        public string PcName;
+    }
+
+    [DbTable("People.Id", "PCs.Id")]
+    public class JoinTableNoCreate2 : IDbObject
+    {
+        [DbColumn("People.Id")]
+        public long Id;
+
+        [DbColumn("People.Name")]
+        public string Name;
+
+        [DbColumn("PCs.Name")]
+        public string PcName;
+    }
 
     #endregion
 
@@ -267,6 +292,13 @@ namespace Lephone.UnitTest.Data
             SampleData.New.Init("jerry", UserRole.Client, new DateTime(1999, 1, 31, 21, 22, 55), true, 10).Save();
             List<SampleData> ls1 = SampleData.Find(CK.K["Id"] > 1, new OrderBy("Id"));
             Assert.AreEqual(2, ls1.Count);
+        }
+
+        [Test]
+        public void TestJoinTableNoCreate()
+        {
+            DbEntry.From<JoinTableNoCreate>().Where(null).Select();
+            DbEntry.From<JoinTableNoCreate2>().Where(null).Select();
         }
     }
 }

@@ -234,5 +234,18 @@ namespace Lephone.UnitTest.util
             Assert.IsFalse(StringHelper.IsSpName(" _abc. abc "));
             Assert.IsFalse(StringHelper.IsSpName(" abc.abc.abc "));
         }
+
+        [Test]
+        public void TestProcessSymbol()
+        {
+            var result = StringHelper.ProcessSymbol("[[abc)", "[[", ")", text => text);
+            Assert.AreEqual("abc", result);
+
+            result = StringHelper.ProcessSymbol("1111[[[[abc)2222", "[[[[", ")", text => text);
+            Assert.AreEqual("1111abc2222", result);
+
+            result = StringHelper.ProcessSymbol("1111(abc]]]]2222", "(", "]]]]", text => text);
+            Assert.AreEqual("1111abc2222", result);
+        }
     }
 }

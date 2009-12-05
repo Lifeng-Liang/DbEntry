@@ -60,7 +60,7 @@ namespace Lephone.Data
         private void InnerTryCreateTable(Type dbObjectType, ObjectInfo oi)
         {
             string name = oi.From.GetMainTableName();
-            if (!_tableNames.ContainsKey(name.ToLower()))
+            if (name != null && !_tableNames.ContainsKey(name.ToLower()))
             {
                 IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
                 {

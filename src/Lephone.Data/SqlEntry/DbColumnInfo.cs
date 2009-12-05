@@ -32,16 +32,20 @@ namespace Lephone.Data.SqlEntry
             var fis = t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
             foreach (FieldInfo fi in fis)
             {
-                object o = dr[fi.Name];
-                if( o == DBNull.Value)
-                {
-                    o = null;
-                }
-                if(o != null && fi.FieldType != typeof(Type) && o.GetType() != fi.FieldType)
-                {
-                    o = ClassHelper.ChangeType(o, fi.FieldType);
-                }
-                fi.SetValue(this, o);
+                CommonHelper.IfCatchException(true,
+                    delegate
+                    {
+                        object o = dr[fi.Name];
+                        if (o == DBNull.Value)
+                        {
+                            o = null;
+                        }
+                        if (o != null && fi.FieldType != typeof(Type) && o.GetType() != fi.FieldType)
+                        {
+                            o = ClassHelper.ChangeType(o, fi.FieldType);
+                        }
+                        fi.SetValue(this, o);
+                    });
             }
         }
     }
