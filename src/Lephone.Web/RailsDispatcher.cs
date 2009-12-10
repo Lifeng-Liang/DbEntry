@@ -88,10 +88,10 @@ namespace Lephone.Web
             context.Response.StatusCode = 404;
         }
 
-        protected virtual void InvokeAction(HttpContext context, string ControllerName, string[] ss)
+        protected virtual void InvokeAction(HttpContext context, string controllerName, string[] ss)
         {
             // Invoke Controller
-            Type t = ctls[ControllerName];
+            Type t = ctls[controllerName];
             var ctl = ClassHelper.CreateInstance(t) as ControllerBase;
             if(ctl == null)
             {
@@ -114,10 +114,10 @@ namespace Lephone.Web
                 if(string.IsNullOrEmpty(ret.ToString()))
                 {
                     // Invoke Viewer
-                    PageBase p = CreatePage(context, ci, t, ControllerName, ActionName);
+                    PageBase p = CreatePage(context, ci, t, controllerName, ActionName);
                     if (p != null)
                     {
-                        InitViewPage(ControllerName, ctl, ActionName, p);
+                        InitViewPage(controllerName, ctl, ActionName, p);
                         ((IHttpHandler)p).ProcessRequest(context);
                         factory.ReleaseHandler(p);
                     }
@@ -137,18 +137,18 @@ namespace Lephone.Web
             }
         }
 
-        private static MethodInfo GetMethodInfo(Type t, string ActionName)
+        private static MethodInfo GetMethodInfo(Type t, string actionName)
         {
-            MethodInfo mi = t.GetMethod(ActionName, ClassHelper.InstancePublic | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
+            MethodInfo mi = t.GetMethod(actionName, ClassHelper.InstancePublic | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
             if (mi != null) return mi;
-            return t.GetMethod(ActionName, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
+            return t.GetMethod(actionName, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
         }
 
-        private static void InitViewPage(string ControllerName, ControllerBase ctl, string ActionName, PageBase p)
+        private static void InitViewPage(string controllerName, ControllerBase ctl, string actionName, PageBase p)
         {
             p.bag = ctl.bag;
-            p.ControllerName = ControllerName;
-            p.ActionName = ActionName;
+            p.ControllerName = controllerName;
+            p.ActionName = actionName;
             p.InitFields();
         }
 
@@ -176,7 +176,7 @@ namespace Lephone.Web
             return parameters;
         }
 
-        public static void ProcessArray(List<object> Parameters, string[] ss, int startIndex, ParameterInfo[] pis, int curIndex)
+        public static void ProcessArray(List<object> parameters, string[] ss, int startIndex, ParameterInfo[] pis, int curIndex)
         {
             var list = new List<string>();
             int valuesCount = pis.Length - curIndex - 1;
@@ -194,13 +194,13 @@ namespace Lephone.Web
                 values.Add(px);
             }
 
-            Parameters.Add(list.ToArray());
-            Parameters.AddRange(values);
+            parameters.Add(list.ToArray());
+            parameters.AddRange(values);
         }
 
-        private PageBase CreatePage(HttpContext context, ControllerInfo ci, Type t, string ControllerName, string ActionName)
+        private PageBase CreatePage(HttpContext context, ControllerInfo ci, Type t, string controllerName, string actionName)
         {
-            string vp = context.Request.ApplicationPath + "/Views/" + ControllerName + "/" + ActionName + ".aspx";
+            string vp = context.Request.ApplicationPath + "/Views/" + controllerName + "/" + actionName + ".aspx";
             string pp = context.Server.MapPath(vp);
             if (File.Exists(pp))
             {
@@ -220,7 +220,7 @@ namespace Lephone.Web
             {
                 return null;
             }
-            throw new WebException(string.Format("The action {0} don't have view file!!!", ActionName));
+            throw new WebException(string.Format("The action {0} don't have view file!!!", actionName));
         }
 
         private static Type GetScaffoldingType(Type t)

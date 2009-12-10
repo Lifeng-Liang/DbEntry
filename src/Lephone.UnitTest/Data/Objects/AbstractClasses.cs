@@ -89,13 +89,8 @@ namespace Lephone.UnitTest.Data.Objects
         public abstract string Title { get; set; }
     }
 
-    [DbTable("abc", "xyz")]
-    public abstract class JoinByDbTableClass : AbstractClass
-    {
-    }
-
-    [JoinOn(1, "a1", "a2", CompareOpration.LessOrEqual, JoinMode.Left)]
-    [JoinOn(2, "b1", "b2", CompareOpration.Like, JoinMode.Right)]
+    [JoinOn(1, typeof(NamedClass), "a1", typeof(AbstractClassOfAge), "a2", CompareOpration.LessOrEqual, JoinMode.Left)]
+    [JoinOn(2, typeof(NamedClass), "b1", typeof(SerializableClass), "b2", CompareOpration.Like, JoinMode.Right)]
     public abstract class JoinClass : AbstractClass
     {
     }

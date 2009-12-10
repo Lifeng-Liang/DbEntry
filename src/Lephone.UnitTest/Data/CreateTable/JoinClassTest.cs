@@ -17,8 +17,7 @@ namespace Lephone.UnitTest.Data.CreateTable
             public int Age;
         }
 
-        [JoinOn(0, "Test_Class1.Id", "Test_Class2.Id", CompareOpration.Equal, JoinMode.Inner)]
-        [CreateTableList(typeof(TestClass1), typeof(TestClass2))]
+        [JoinOn(0, typeof(TestClass1), "Id", typeof(TestClass2), "Id", CompareOpration.Equal, JoinMode.Inner)]
         public class JoinClass : IDbObject
         {
             public string Name;

@@ -6,16 +6,10 @@ namespace Lephone.Data.Definition
 	public class DbTableAttribute : Attribute
 	{
         public string TableName;
-        public string[] LinkNames;
 
-		public DbTableAttribute(string TableName)
+		public DbTableAttribute(string tableName)
 		{
-            this.TableName = TableName;
+            this.TableName = tableName;
 		}
-
-        public DbTableAttribute(params string[] LinkNames)
-        {
-            this.LinkNames = LinkNames;
-        }
     }
 }

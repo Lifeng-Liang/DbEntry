@@ -11,9 +11,9 @@ namespace Lephone.Data.Definition
         {
         }
 
-        public CrossTableNameAttribute(string Name)
+        public CrossTableNameAttribute(string name)
         {
-            this.Name = Name;
+            this.Name = name;
         }
     }
 }

@@ -95,24 +95,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(1, ats.Length);
             Assert.IsTrue(ats[0] is DbTableAttribute);
             var da = (DbTableAttribute)ats[0];
-            Assert.IsNull(da.LinkNames);
             Assert.AreEqual("abc", da.TableName);
-        }
-
-        [Test]
-        public void TestJoinByDbTableClass()
-        {
-            Type t = AssemblyHandler.Instance.GetImplType(typeof(JoinByDbTableClass));
-
-            object[] ats = t.GetCustomAttributes(false);
-            Assert.IsNotNull(ats);
-            Assert.AreEqual(1, ats.Length);
-            Assert.IsTrue(ats[0] is DbTableAttribute);
-            var da = (DbTableAttribute)ats[0];
-            Assert.IsNull(da.TableName);
-            Assert.AreEqual(2, da.LinkNames.Length);
-            Assert.AreEqual("abc", da.LinkNames[0]);
-            Assert.AreEqual("xyz", da.LinkNames[1]);
         }
 
         [Test]
@@ -142,17 +125,21 @@ namespace Lephone.UnitTest.Data
             }
             j = (JoinOnAttribute)js[a1];
             Assert.AreEqual(1, j.Index);
-            Assert.AreEqual("a1", j.joinner.Key1);
-            Assert.AreEqual("a2", j.joinner.Key2);
-            Assert.AreEqual(CompareOpration.LessOrEqual, j.joinner.comp);
-            Assert.AreEqual(JoinMode.Left, j.joinner.mode);
+            Assert.AreEqual("abc", j.Joinner.Table1);
+            Assert.AreEqual("a1", j.Joinner.Key1);
+            Assert.AreEqual("Abstract_Class_Of_Age", j.Joinner.Table2);
+            Assert.AreEqual("a2", j.Joinner.Key2);
+            Assert.AreEqual(CompareOpration.LessOrEqual, j.Joinner.Comp);
+            Assert.AreEqual(JoinMode.Left, j.Joinner.Mode);
 
             j = (JoinOnAttribute)js[a2];
             Assert.AreEqual(2, j.Index);
-            Assert.AreEqual("b1", j.joinner.Key1);
-            Assert.AreEqual("b2", j.joinner.Key2);
-            Assert.AreEqual(CompareOpration.Like, j.joinner.comp);
-            Assert.AreEqual(JoinMode.Right, j.joinner.mode);
+            Assert.AreEqual("abc", j.Joinner.Table1);
+            Assert.AreEqual("b1", j.Joinner.Key1);
+            Assert.AreEqual("Serializable_Class", j.Joinner.Table2);
+            Assert.AreEqual("b2", j.Joinner.Key2);
+            Assert.AreEqual(CompareOpration.Like, j.Joinner.Comp);
+            Assert.AreEqual(JoinMode.Right, j.Joinner.Mode);
         }
     }
 }

@@ -17,25 +17,19 @@ namespace Lephone.Data.Definition
             get { return CK<T>.Field; }
         }
 
-        public new virtual T Save()
+        public static T FindById(TKey id)
         {
-            DbEntry.Save(this);
-            return (T)this;
+            return DbEntry.GetObject<T>(id);
         }
 
-        public static T FindById(TKey Id)
+        public static DbObjectList<T> FindBySql(string sqlStr)
         {
-            return DbEntry.GetObject<T>(Id);
+            return DbEntry.Context.ExecuteList<T>(sqlStr);
         }
 
-        public static DbObjectList<T> FindBySql(string SqlStr)
+        public static DbObjectList<T> FindBySql(SqlEntry.SqlStatement sql)
         {
-            return DbEntry.Context.ExecuteList<T>(SqlStr);
-        }
-
-        public static DbObjectList<T> FindBySql(SqlEntry.SqlStatement Sql)
-        {
-            return DbEntry.Context.ExecuteList<T>(Sql);
+            return DbEntry.Context.ExecuteList<T>(sql);
         }
 
         public static DbObjectList<T> FindAll()
@@ -88,10 +82,10 @@ namespace Lephone.Data.Definition
             return new QueryContent<T>(DbEntry.Context).Where(con);
         }
 
-        public static DbObjectList<T> FindRecent(int Count)
+        public static DbObjectList<T> FindRecent(int count)
         {
             string Id = ObjectInfo.GetKeyField(typeof(T)).Name;
-            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy((DESC)Id).Range(1, Count).Select();
+            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy((DESC)Id).Range(1, count).Select();
         }
 
         public static long GetCount(WhereCondition con)

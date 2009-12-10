@@ -255,7 +255,7 @@ namespace Lephone.Data.Common
                     string CrossTableName = getCrossTableName(f, UnmappedMainTableName, UnmappedSlaveTableName);
 
                     var fc = new FromClause(
-                        new JoinClause(CrossTableName + "." + UnmappedSlaveTableName + "_Id", SlaveTableName + ".Id",
+                        new JoinClause(CrossTableName, UnmappedSlaveTableName + "_Id", SlaveTableName, "Id",
                                        CompareOpration.Equal, JoinMode.Inner));
                     Type t2 = f.FieldType.GetGenericArguments()[0];
                     oi.CrossTables[t2]
@@ -293,21 +293,21 @@ namespace Lephone.Data.Common
             return false;
         }
 
-        internal static FromClause GetObjectFromClause(Type DbObjectType)
+        internal static FromClause GetObjectFromClause(Type dbObjectType)
         {
-            var dtas = (DbTableAttribute[]) DbObjectType.GetCustomAttributes(typeof (DbTableAttribute), false);
-            var joas = (JoinOnAttribute[]) DbObjectType.GetCustomAttributes(typeof (JoinOnAttribute), false);
+            var dtas = (DbTableAttribute[]) dbObjectType.GetCustomAttributes(typeof (DbTableAttribute), false);
+            var joas = (JoinOnAttribute[]) dbObjectType.GetCustomAttributes(typeof (JoinOnAttribute), false);
             if (dtas.Length != 0 && joas.Length != 0)
             {
                 throw new ArgumentException(string.Format("class [{0}] defined DbTable and JoinOn. Only one allowed.",
-                                                          DbObjectType.Name));
+                                                          dbObjectType.Name));
             }
             if (dtas.Length == 0)
             {
                 if (joas.Length == 0)
                 {
-                    string DefaultName = NameMapper.Instance.MapName(DbObjectType.Name);
-                    return new FromClause(GetTableNameFromConfig(DefaultName));
+                    string defaultName = NameMapper.Instance.MapName(dbObjectType.Name);
+                    return new FromClause(GetTableNameFromConfig(defaultName));
                 }
                 var jcs = new JoinClause[joas.Length];
                 for (int i = 0; i < joas.Length; i++)
@@ -317,28 +317,24 @@ namespace Lephone.Data.Common
                     {
                         n = i;
                     }
-                    jcs[n] = joas[i].joinner;
+                    jcs[n] = joas[i].Joinner;
                 }
                 foreach (JoinClause jc in jcs)
                 {
                     if (jc == null)
                     {
                         throw new ArgumentException(string.Format("class [{0}] JoinOnAttribute defined error.",
-                                                                  DbObjectType.Name));
+                                                                  dbObjectType.Name));
                     }
                 }
                 return new FromClause(jcs);
             }
-            if (dtas[0].TableName != null)
-            {
-                return new FromClause(GetTableNameFromConfig(dtas[0].TableName));
-            }
-            return new FromClause(dtas[0].LinkNames);
+            return new FromClause(GetTableNameFromConfig(dtas[0].TableName));
         }
 
-        internal static string GetTableNameFromConfig(string DefinedName)
+        internal static string GetTableNameFromConfig(string definedName)
         {
-            return ConfigHelper.DefaultSettings.GetValue("@" + DefinedName, DefinedName);
+            return ConfigHelper.DefaultSettings.GetValue("@" + definedName, definedName);
         }
     }
 }

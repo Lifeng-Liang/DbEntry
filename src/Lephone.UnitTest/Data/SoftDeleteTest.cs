@@ -107,6 +107,30 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
+        public void TestDelete2()
+        {
+            var n = SoftDelete.GetCount(null);
+
+            var o = SoftDelete.New.Init("aaa");
+            o.Name = "bbb";
+            o.Save();
+
+            var o2 = SoftDelete.New;
+            o2.Name = "ccc";
+            o2.Save();
+
+            var m = SoftDelete.GetCount(null);
+
+            Assert.AreEqual(2, m - n);
+
+            o2.Delete();
+
+            m = SoftDelete.GetCount(null);
+
+            Assert.AreEqual(1, m - n);
+        }
+
+        [Test]
         public void TestRead1()
         {
             SoftDelete o = SoftDelete.FindById(1);

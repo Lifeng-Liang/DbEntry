@@ -864,13 +864,5 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(3, sorted[1].Column);
             Assert.AreEqual(5, sorted[1].Sum);
         }
-
-        [Test]
-        public void TestReturnValueOfSave()
-        {
-            var o = SavePeople.New.Init("ii").Save();
-            var o1 = SavePeople.FindById(o.Id);
-            Assert.AreEqual("ii", o1.Name);
-        }
     }
 }

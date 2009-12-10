@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -141,21 +142,8 @@ namespace Lephone.UnitTest.Data
         }
     }
 
-    [JoinOn(0, "People.Id", "PCs.Id")]
+    [JoinOn(0, typeof(People), "Id", typeof(PCs), "Id")]
     public class JoinTableNoCreate : IDbObject
-    {
-        [DbColumn("People.Id")]
-        public long Id;
-
-        [DbColumn("People.Name")]
-        public string Name;
-
-        [DbColumn("PCs.Name")]
-        public string PcName;
-    }
-
-    [DbTable("People.Id", "PCs.Id")]
-    public class JoinTableNoCreate2 : IDbObject
     {
         [DbColumn("People.Id")]
         public long Id;
@@ -298,7 +286,6 @@ namespace Lephone.UnitTest.Data
         public void TestJoinTableNoCreate()
         {
             DbEntry.From<JoinTableNoCreate>().Where(null).Select();
-            DbEntry.From<JoinTableNoCreate2>().Where(null).Select();
         }
     }
 }

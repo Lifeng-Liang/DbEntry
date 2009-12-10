@@ -85,11 +85,25 @@ namespace Lephone.Data.Common
             {
                 _handler = new ReflectionDbObjectHandler(t, this);
             }
-            // get create talbes
-            var ct = ClassHelper.GetAttribute<CreateTableListAttribute>(t, false);
-            if(ct != null)
+            // get create tables
+            if(From.jcs != null)
             {
-                _createTables = ct.Types;
+                var tables = new Dictionary<Type, int>();
+                foreach (var joinClause in From.jcs)
+                {
+                    if (joinClause.Type1 != null)
+                    {
+                        tables[joinClause.Type1] = 1;
+                    }
+                    if (joinClause.Type2 != null)
+                    {
+                        tables[joinClause.Type2] = 1;
+                    }
+                }
+                if (tables.Count > 0)
+                {
+                    _createTables = new List<Type>(tables.Keys).ToArray();
+                }
             }
         }
 

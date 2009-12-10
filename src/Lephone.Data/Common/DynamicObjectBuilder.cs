@@ -550,19 +550,9 @@ namespace Lephone.Data.Common
             {
                 if (o is DbTableAttribute)
                 {
-                    var d = o as DbTableAttribute;
-                    if (d.TableName != null)
-                    {
-                        al.Add(new CustomAttributeBuilder(
-                            typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
-                            new object[] { d.TableName }));
-                    }
-                    else
-                    {
-                        al.Add(new CustomAttributeBuilder(
-                            typeof(DbTableAttribute).GetConstructor(new[] { typeof(string[]) }),
-                            new object[] { d.LinkNames }));
-                    }
+                    al.Add(new CustomAttributeBuilder(
+                        typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
+                        new object[] { ((DbTableAttribute)o).TableName }));
                     return true;
                 }
             }
@@ -580,8 +570,8 @@ namespace Lephone.Data.Common
                     var j = o as JoinOnAttribute;
                     var c = new CustomAttributeBuilder(
                         typeof(JoinOnAttribute).GetConstructor(
-                            new[] { typeof(int), typeof(string), typeof(string), typeof(CompareOpration), typeof(JoinMode) }),
-                        new object[] { j.Index, j.joinner.Key1, j.joinner.Key2, j.joinner.comp, j.joinner.mode });
+                            new[] { typeof(int), typeof(Type), typeof(string), typeof(Type), typeof(string), typeof(CompareOpration), typeof(JoinMode) }),
+                        new object[] { j.Index, j.Joinner.Type1, j.Joinner.Key1, j.Joinner.Type2, j.Joinner.Key2, j.Joinner.Comp, j.Joinner.Mode });
                     al.Add(c);
                 }
             }

@@ -7,27 +7,27 @@ namespace Lephone.Data.Definition
     public class JoinOnAttribute : Attribute
     {
         public int Index;
-        public JoinClause joinner;
+        public JoinClause Joinner;
 
-        public JoinOnAttribute(int Index, string Key1, string Key2)
-            : this(Index, Key1, Key2, CompareOpration.Equal, JoinMode.Inner)
+        public JoinOnAttribute(int index, Type modelType1, string key1, Type modelType2, string key2)
+            : this(index, modelType1, key1, modelType2, key2, CompareOpration.Equal, JoinMode.Inner)
         {
         }
 
-        public JoinOnAttribute(int Index, string Key1, string Key2, CompareOpration comp)
-            : this(Index, Key1, Key2, comp, JoinMode.Inner)
+        public JoinOnAttribute(int index, Type modelType1, string key1, Type modelType2, string key2, CompareOpration comp)
+            : this(index, modelType1, key1, modelType2, key2, comp, JoinMode.Inner)
         {
         }
 
-        public JoinOnAttribute(int Index, string Key1, string Key2, JoinMode mode)
-            : this(Index, Key1, Key2, CompareOpration.Equal, mode)
+        public JoinOnAttribute(int index, Type modelType1, string key1, Type modelType2, string key2, JoinMode mode)
+            : this(index, modelType1, key1, modelType2, key2, CompareOpration.Equal, mode)
         {
         }
 
-        public JoinOnAttribute(int Index, string Key1, string Key2, CompareOpration comp, JoinMode mode)
+        public JoinOnAttribute(int index, Type modelType1, string key1, Type modelType2, string key2, CompareOpration comp, JoinMode mode)
         {
-            this.Index = Index;
-            joinner = new JoinClause(Key1, Key2, comp, mode);
+            this.Index = index;
+            Joinner = new JoinClause(modelType1, key1, modelType2, key2, comp, mode);
         }
     }
 }
