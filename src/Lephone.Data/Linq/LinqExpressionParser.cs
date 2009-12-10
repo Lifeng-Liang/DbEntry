@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
-using Lephone.Data;
 using Lephone.Data.Definition;
 
-namespace Lephone.Linq
+namespace Lephone.Data.Linq
 {
-    internal class LinqExpressionParser<T> where T : class, IDbObject
+    public class LinqExpressionParser<T> where T : class, IDbObject
     {
         public WhereCondition condition;
         public OrderBy orderby;

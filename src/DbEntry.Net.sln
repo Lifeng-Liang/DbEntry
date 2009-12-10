@@ -63,8 +63,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Web", "Lephone.Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\DebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Linq", "Lephone.Linq\Lephone.Linq.csproj", "{E93B9148-B6FB-4340-9981-6CBB407CC6F8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debug Projects", "Debug Projects", "{B56B0A84-6668-4625-BBE3-7AADF2DBE22C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest Projects", "UnitTest Projects", "{A0CF8258-917F-4756-BF94-7C3F7E254352}"
@@ -171,16 +169,6 @@ Global
 		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9293C04C-D2E7-449F-833E-6E6624DCD6F4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|.NET.ActiveCfg = Release|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{E93B9148-B6FB-4340-9981-6CBB407CC6F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Debug|.NET.ActiveCfg = Debug|Any CPU
 		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Debug|Any CPU.Build.0 = Debug|Any CPU

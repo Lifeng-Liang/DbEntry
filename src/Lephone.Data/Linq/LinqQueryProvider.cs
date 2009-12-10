@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Lephone.Data;
+using Lephone.Data.Definition;
 
-namespace Lephone.Linq
+namespace Lephone.Data.Linq
 {
-    public class LinqQueryProvider<T, TKey> : IOrderedQueryable<T>, IQueryProvider where T : LinqObjectModel<T, TKey>
+    public class LinqQueryProvider<T, TKey> : IOrderedQueryable<T>, IQueryProvider where T : DbObjectModelBase<T, TKey>
     {
-        private readonly Expression expression;
+        private readonly Expression _expression;
 
         public LinqQueryProvider(Expression expression)
         {
-            this.expression = expression;
+            this._expression = expression;
         }
 
         #region IEnumerable<T> Members
 
         public IEnumerator<T> GetEnumerator()
         {
-            LinqExpressionParser<T> lep = new LinqExpressionParser<T>(this.expression);
+            var lep = new LinqExpressionParser<T>(this._expression);
             var list = DbEntry.From<T>().Where(lep.condition).OrderBy(lep.orderby).Select();
             return ((IEnumerable<T>)list).GetEnumerator();
         }
@@ -47,7 +47,7 @@ namespace Lephone.Linq
         {
             get
             {
-                return expression ?? Expression.Constant(this);
+                return _expression ?? Expression.Constant(this);
             }
         }
 

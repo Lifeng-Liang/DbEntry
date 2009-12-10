@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using Lephone.Util;
 
-namespace Lephone.Linq
+namespace Lephone.Data.Linq
 {
     public class LinqException : LephoneException
     {

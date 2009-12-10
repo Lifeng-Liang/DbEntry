@@ -109,7 +109,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDelete2()
         {
-            var n = SoftDelete.GetCount(null);
+            var n = SoftDelete.GetCount(WhereCondition.EmptyCondition);
 
             var o = SoftDelete.New.Init("aaa");
             o.Name = "bbb";
@@ -119,13 +119,13 @@ namespace Lephone.UnitTest.Data
             o2.Name = "ccc";
             o2.Save();
 
-            var m = SoftDelete.GetCount(null);
+            var m = SoftDelete.GetCount(WhereCondition.EmptyCondition);
 
             Assert.AreEqual(2, m - n);
 
             o2.Delete();
 
-            m = SoftDelete.GetCount(null);
+            m = SoftDelete.GetCount(WhereCondition.EmptyCondition);
 
             Assert.AreEqual(1, m - n);
         }

@@ -3,6 +3,7 @@ using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using Lephone.Util;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;
@@ -822,5 +823,21 @@ namespace Lephone.Data
                 _tableNames.Add(mt1.Name.ToLower(), 1);
             }
         }
+
+        #region Linq methods
+
+        public T GetObject<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
+        {
+            var wc = Linq.ExpressionParser<T>.Parse(expr);
+            return GetObject<T>(wc);
+        }
+
+        public int Delete<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
+        {
+            var wc = Linq.ExpressionParser<T>.Parse(expr);
+            return Delete<T>(wc);
+        }
+
+        #endregion
     }
 }

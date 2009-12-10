@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 
@@ -29,6 +30,9 @@ namespace Lephone.Data.QuerySyntax
         ISelectable<T> Range(int startIndex, int endIndex);
         ISelectable<T> Range(Range r);
         IGetPagedSelector PageSize(int pageSize);
+
+        IRangeable<T> ThenBy(Expression<Func<T, object>> expr);
+        IRangeable<T> ThenByDescending(Expression<Func<T, object>> expr);
     }
 
     public interface IAfterWhere<T> : ISelectable<T>, IGroupByable where T : class, IDbObject
@@ -42,10 +46,19 @@ namespace Lephone.Data.QuerySyntax
         DateTime? GetMaxDate(string columnName);
         DateTime? GetMinDate(string columnName);
         decimal? GetSum(string columnName);
+
+        IRangeable<T> OrderBy(Expression<Func<T, object>> expr);
+        IRangeable<T> OrderByDescending(Expression<Func<T, object>> expr);
+        decimal? GetMax(Expression<Func<T, object>> expr);
+        DateTime? GetMaxDate(Expression<Func<T, object>> expr);
+        decimal? GetMin(Expression<Func<T, object>> expr);
+        DateTime? GetMinDate(Expression<Func<T, object>> expr);
+        decimal? GetSum(Expression<Func<T, object>> expr);
     }
 
     public interface IWhere<T> where T : class, IDbObject
     {
         IAfterWhere<T> Where(WhereCondition where);
+        IAfterWhere<T> Where(Expression<Func<T, bool>> expr);
     }
 }

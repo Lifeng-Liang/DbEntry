@@ -24,7 +24,7 @@ copy *.dll ..\..\..\..\bin\
 :End</PostBuildEvent>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>DbEntry.snk</AssemblyOriginatorKeyFile>
     <SccProjectName>
@@ -94,6 +94,9 @@ copy *.dll ..\..\..\..\bin\
   <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
@@ -178,6 +181,12 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Dialect\SqlServer2008.cs" />
     <Compile Include="Driver\DbFactory.cs" />
     <Compile Include="Driver\SmartDbFactory.cs" />
+    <Compile Include="Linq\ExpressionParser.cs" />
+    <Compile Include="Linq\LinqException.cs" />
+    <Compile Include="Linq\LinqExpressionParser.cs" />
+    <Compile Include="Linq\LinqHelper.cs" />
+    <Compile Include="Linq\LinqOrderSyntax.cs" />
+    <Compile Include="Linq\LinqQueryProvider.cs" />
     <Compile Include="QuerySyntax\QueryInterfaces.cs" />
     <Compile Include="SqlEntry\ColumnInfo.cs" />
     <Compile Include="Logging\DatabaseLogRecorder.cs" />

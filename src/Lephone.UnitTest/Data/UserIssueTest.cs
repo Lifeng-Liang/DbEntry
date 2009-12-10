@@ -1,6 +1,5 @@
 ﻿using System;
 using Lephone.Data.Definition;
-using Lephone.Linq;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -34,7 +33,7 @@ namespace Lephone.UnitTest.Data
     }
 
     [Serializable]
-    public abstract class BaoXiuRS : LinqObjectModel<BaoXiuRS>
+    public abstract class BaoXiuRS : DbObjectModel<BaoXiuRS>
     {
         [AllowNull, Length(50)]
         public abstract string UserId { get; set; }// ID 

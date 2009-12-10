@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using Lephone.Data.Definition;
 using Lephone.Data;
 using Lephone.Data.Common;
-using Lephone.Linq;
 
 namespace Lephone
 {
     [DbTable("DCS_USERS"), Cacheable]
-    public abstract class User : LinqObjectModel<User>
+    public abstract class User : DbObjectModel<User>
     {
         [DbColumn("USER_NAME")]
         public abstract string Name { get; set; }
     }
 
     [DbTable("REF_ORG_UNIT"), Cacheable]
-    public abstract class OrganisationalUnit : LinqObjectModel<OrganisationalUnit>
+    public abstract class OrganisationalUnit : DbObjectModel<OrganisationalUnit>
     {
         [HasMany]
         public abstract IList<JobRoleRelation> JobRoleRelations { get; set; }
     }
 
     [DbTable("HRM_EMPLOYEES"), Cacheable]
-    public abstract class Employee : LinqObjectModel<Employee>
+    public abstract class Employee : DbObjectModel<Employee>
     {
         [HasOne]
         public abstract EmployeeRoleRelation Rel { get; set; }
@@ -32,7 +31,7 @@ namespace Lephone
     }
 
     [DbTable("DCS_PERSONS")]
-    public abstract class Person : LinqObjectModel<Person>
+    public abstract class Person : DbObjectModel<Person>
     {
         [DbColumn("NAME_LAST")]
         public abstract string LastName { get; set; }
@@ -42,7 +41,7 @@ namespace Lephone
     }
 
     [DbTable("REL_EMP_JOB_ROLE"), Cacheable]
-    public abstract class EmployeeRoleRelation : LinqObjectModel<EmployeeRoleRelation>
+    public abstract class EmployeeRoleRelation : DbObjectModel<EmployeeRoleRelation>
     {
         [DbColumn("UC")]
         public abstract long CreatedBy { get; set; }
@@ -61,7 +60,7 @@ namespace Lephone
     }
 
     [DbTable("REL_JOB_ROLE_ORG_UNIT"), Cacheable]
-    public abstract class JobRoleRelation : LinqObjectModel<JobRoleRelation>
+    public abstract class JobRoleRelation : DbObjectModel<JobRoleRelation>
     {
         [DbColumn("UC")]
         public abstract long CreatedBy { get; set; }
@@ -80,7 +79,7 @@ namespace Lephone
     }
 
     [DbTable("HRM_JOB_ROLES"), Cacheable]
-    public abstract class JobRole : LinqObjectModel<JobRole>
+    public abstract class JobRole : DbObjectModel<JobRole>
     {
         [DbColumn("UC")]
         public abstract long CreatedBy { get; set; }

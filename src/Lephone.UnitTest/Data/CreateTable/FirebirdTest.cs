@@ -1,26 +1,25 @@
 ﻿using System.Diagnostics;
 using Lephone.Data;
 using Lephone.Data.Definition;
-using Lephone.Linq;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data.CreateTable
 {
-    public abstract class fbLongName : LinqObjectModel<fbLongName>
+    public abstract class fbLongName : DbObjectModel<fbLongName>
     {
         // use guid to gen index name and encode it into base32
         [Index]
         public abstract string N123456789012345678901234567890 { get; set; }
     }
 
-    public abstract class fbLongName2 : LinqObjectModel<fbLongName2>
+    public abstract class fbLongName2 : DbObjectModel<fbLongName2>
     {
         [Index]
         public abstract string Name { get; set; }
     }
 
-    public abstract class fbBlob : LinqObjectModel<fbBlob>
+    public abstract class fbBlob : DbObjectModel<fbBlob>
     {
         [Length(64)]
         public abstract byte[] Blob1 { get; set; }

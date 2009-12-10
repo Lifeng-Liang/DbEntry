@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Lephone.Data.Caching;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
-using Lephone.Linq;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.util;
 using Lephone.Util;
@@ -29,21 +28,21 @@ namespace Lephone.UnitTest.Data
         }
 
         [DbTable("DCS_USERS"), Cacheable]
-        public abstract class User : LinqObjectModel<User>
+        public abstract class User : DbObjectModel<User>
         {
             [DbColumn("USER_NAME")]
             public abstract string Name { get; set; }
         }
 
         [DbTable("REF_ORG_UNIT"), Cacheable]
-        public abstract class OrganisationalUnit : LinqObjectModel<OrganisationalUnit>
+        public abstract class OrganisationalUnit : DbObjectModel<OrganisationalUnit>
         {
             [HasMany]
             public abstract IList<JobRoleRelation> JobRoleRelations { get; set; }
         }
 
         [DbTable("HRM_EMPLOYEES"), Cacheable]
-        public abstract class Employee : LinqObjectModel<Employee>
+        public abstract class Employee : DbObjectModel<Employee>
         {
             [HasOne]
             public abstract EmployeeRoleRelation Rel { get; set; }
@@ -53,7 +52,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [DbTable("DCS_PERSONS")]
-        public abstract class Person : LinqObjectModel<Person>
+        public abstract class Person : DbObjectModel<Person>
         {
             [DbColumn("NAME_LAST")]
             public abstract string LastName { get; set; }
@@ -63,7 +62,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [DbTable("REL_EMP_JOB_ROLE"), Cacheable]
-        public abstract class EmployeeRoleRelation : LinqObjectModel<EmployeeRoleRelation>
+        public abstract class EmployeeRoleRelation : DbObjectModel<EmployeeRoleRelation>
         {
             [DbColumn("UC")]
             public abstract long CreatedBy { get; set; }
@@ -82,7 +81,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [DbTable("REL_JOB_ROLE_ORG_UNIT"), Cacheable]
-        public abstract class JobRoleRelation : LinqObjectModel<JobRoleRelation>
+        public abstract class JobRoleRelation : DbObjectModel<JobRoleRelation>
         {
             [DbColumn("UC")]
             public abstract long CreatedBy { get; set; }
@@ -101,7 +100,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [DbTable("HRM_JOB_ROLES"), Cacheable]
-        public abstract class JobRole : LinqObjectModel<JobRole>
+        public abstract class JobRole : DbObjectModel<JobRole>
         {
             [DbColumn("UC")]
             public abstract long CreatedBy { get; set; }
@@ -167,7 +166,7 @@ namespace Lephone.UnitTest.Data
         /*
         Hi Lifeng, 
 
-        here¡äs my testing code (all used classes are marked cacheable and inherit from LinqObjectModel<T>):
+        here¡äs my testing code (all used classes are marked cacheable and inherit from DbObjectModel<T>):
 
         Test Case Failures:
         1) Docas.UnitTests.Common.ModelTest.T0300_HRM_JobRoleRelation : System.NullReferenceException : Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.

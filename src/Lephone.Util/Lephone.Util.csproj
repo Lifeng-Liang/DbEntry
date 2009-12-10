@@ -17,7 +17,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>util.snk</AssemblyOriginatorKeyFile>
     <SccProjectName>
@@ -88,6 +88,9 @@
       <Name>System</Name>
     </Reference>
     <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
@@ -97,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdditionalTypes.cs" />
+    <Compile Include="CommonExtends.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="FlyweightBase.cs" />
     <Compile Include="ILBuilder.cs" />

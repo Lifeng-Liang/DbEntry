@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Lephone.Data.Definition;
-using Lephone.Linq;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Linq
@@ -9,7 +8,7 @@ namespace Lephone.UnitTest.Linq
     public class LinqObjectModelTest : DataTestBase
     {
         [DbTable("Books")]
-        public abstract class Book : LinqObjectModel<Book>
+        public abstract class Book : DbObjectModel<Book>
         {
             public abstract string Name { get; set; }
             public abstract int Category_Id { get; set; }

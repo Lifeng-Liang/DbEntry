@@ -4,7 +4,6 @@ using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Linq;
 using Lephone.UnitTest.Data.Objects;
 using Lephone.Util;
 using NUnit.Framework;
@@ -19,7 +18,7 @@ namespace Lephone.UnitTest.Data.Inner
     }
 
     [Serializable]
-    public abstract class TableA : LinqObjectModel<TableA>
+    public abstract class TableA : DbObjectModel<TableA>
     {
         public abstract string Name { get; set; }
 
@@ -28,7 +27,7 @@ namespace Lephone.UnitTest.Data.Inner
     }
 
     [Serializable]
-    public abstract class TableB : LinqObjectModel<TableB>
+    public abstract class TableB : DbObjectModel<TableB>
     {
         [Index(UNIQUE = true, IndexName = "Url_TableAId", ASC = false)]
         public abstract string Url { get; set; }

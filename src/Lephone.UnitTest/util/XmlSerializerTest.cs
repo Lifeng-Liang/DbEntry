@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Lephone.Data.Definition;
 using Lephone.Util.Text;
-using Lephone.Linq;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
@@ -23,14 +23,14 @@ namespace Lephone.UnitTest.util
 
             public MyItem() { }
 
-            public MyItem(string Name)
+            public MyItem(string name)
             {
-                this.Name = Name;
+                this.Name = name;
             }
         }
 
         [Serializable]
-        public abstract class Sitex : LinqObjectModel<Sitex>
+        public abstract class Sitex : DbObjectModel<Sitex>
         {
             public abstract string Url { get; set; }
         }

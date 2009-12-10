@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Definition;
-using Lephone.Linq;
 using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
 
@@ -11,7 +10,7 @@ namespace Lephone.UnitTest.Data
     #region objects
 
     [Serializable]
-    public abstract class TableC : LinqObjectModel<TableC>
+    public abstract class TableC : DbObjectModel<TableC>
     {
         public abstract string Title { get; set; }
 
@@ -20,7 +19,7 @@ namespace Lephone.UnitTest.Data
     }
 
     [Serializable]
-    public abstract class TableD : LinqObjectModel<TableD>
+    public abstract class TableD : DbObjectModel<TableD>
     {
         public abstract string Name { get; set; }
 

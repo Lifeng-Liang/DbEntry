@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
 
-namespace Lephone.Linq
+namespace Lephone.Data.Linq
 {
-    internal static class ExpressionParser<T> where T : class, IDbObject
+    public static class ExpressionParser<T> where T : class, IDbObject
     {
         private static readonly Dictionary<string, string> dic;
 
@@ -207,8 +206,8 @@ namespace Lephone.Linq
         {
             object value 
                 = Right.NodeType == ExpressionType.Constant 
-                ? ((ConstantExpression)Right).Value 
-                : Expression.Lambda(Right).Compile().DynamicInvoke();
+                      ? ((ConstantExpression)Right).Value 
+                      : Expression.Lambda(Right).Compile().DynamicInvoke();
 
             //else if (Right.NodeType == ExpressionType.Convert
             //    || Right.NodeType == ExpressionType.MemberAccess)

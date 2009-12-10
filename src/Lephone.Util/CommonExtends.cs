@@ -1,138 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq.Expressions;
-using Lephone.Data;
-using Lephone.Data.QuerySyntax;
-using Lephone.Data.Definition;
-using Lephone.Linq;
 using Lephone.Util;
 using Lephone.Util.Text;
-using Lephone.Web;
 
 public static class CommonExtends
 {
-    #region Query
-
-    public static IAfterWhere<T> Where<T>(this IWhere<T> t, Expression<Func<T, bool>> expr) where T : class, IDbObject
-    {
-        var me = (QueryContent<T>)t;
-        if (expr != null)
-        {
-            me.m_where = ExpressionParser<T>.Parse(expr);
-        }
-        return me;
-    }
-
-    public static IRangeable<T> OrderBy<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        return AddOrderBy((QueryContent<T>)t, expr, true);
-    }
-
-    public static IRangeable<T> OrderByDescending<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        return AddOrderBy((QueryContent<T>)t, expr, false);
-    }
-
-    public static IRangeable<T> ThenBy<T>(this IRangeable<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        return AddOrderBy((QueryContent<T>)t, expr, true);
-    }
-
-    public static IRangeable<T> ThenByDescending<T>(this IRangeable<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        return AddOrderBy((QueryContent<T>)t, expr, false);
-    }
-
-    private static IRangeable<T> AddOrderBy<T>(QueryContent<T> me, Expression<Func<T, object>> expr, bool isAsc) where T : class, IDbObject
-    {
-        string n = GetColumnName(expr);
-        if (me.m_order == null)
-        {
-            me.m_order = new OrderBy();
-        }
-        me.m_order.OrderItems.Add(isAsc ? new ASC(n) : new DESC(n));
-        return me;
-    }
-
-    internal static MemberExpression GetMemberExpression(this LambdaExpression expr)
-    {
-        if (expr.Body is MemberExpression)
-        {
-            return (MemberExpression)expr.Body;
-        }
-        if (expr.Body is UnaryExpression)
-        {
-            return (MemberExpression)((UnaryExpression)expr.Body).Operand;
-        }
-        return null;
-    }
-
-    public static decimal? GetMax<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        string n = GetColumnName(expr);
-        return ((QueryContent<T>)t).GetMax(n);
-    }
-
-    public static DateTime? GetMaxDate<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        string n = GetColumnName(expr);
-        return ((QueryContent<T>)t).GetMaxDate(n);
-    }
-
-    public static decimal? GetMin<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        string n = GetColumnName(expr);
-        return ((QueryContent<T>)t).GetMin(n);
-    }
-
-    public static DateTime? GetMinDate<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        string n = GetColumnName(expr);
-        return ((QueryContent<T>)t).GetMinDate(n);
-    }
-
-    public static decimal? GetSum<T>(this IAfterWhere<T> t, Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        string n = GetColumnName(expr);
-        return ((QueryContent<T>)t).GetSum(n);
-    }
-
-    private static string GetColumnName<T>(Expression<Func<T, object>> expr) where T : class, IDbObject
-    {
-        MemberExpression e = expr.GetMemberExpression();
-        if (e != null)
-        {
-            string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
-            return n;
-        }
-        throw new LinqException("get column name error!");
-    }
-
-    public static T GetObject<T>(this DbContext c, Expression<Func<T, bool>> expr) where T : class, IDbObject
-    {
-        var wc = ExpressionParser<T>.Parse(expr);
-        return c.GetObject<T>(wc);
-    }
-
-    public static int Delete<T>(this DbContext c, Expression<Func<T, bool>> expr) where T : class, IDbObject
-    {
-        var wc = ExpressionParser<T>.Parse(expr);
-        return c.Delete<T>(wc);
-    }
-
-    #endregion
-
-    #region Web
-
-    public static void AddAndCondition<T>(this DbEntryDataSource<T> ds, Expression<Func<T, bool>> condition) where T : class, IDbObject
-    {
-        var c = ExpressionParser<T>.Parse(condition);
-        ds.Condition &= c;
-    }
-
-    #endregion
-
     #region String
 
     public static bool IsIndentityName(this string s)
@@ -242,7 +115,7 @@ public static class CommonExtends
 
     public static string First(this string[] array)
     {
-        if(array == null || array.Length == 0)
+        if (array == null || array.Length == 0)
         {
             return null;
         }
@@ -260,11 +133,11 @@ public static class CommonExtends
 
     public static string[] RemoveFirst(this string[] array)
     {
-        if(array == null)
+        if (array == null)
         {
             return null;
         }
-        if(array.Length == 0)
+        if (array.Length == 0)
         {
             return array;
         }
@@ -304,11 +177,11 @@ public static class CommonExtends
 
     public static List<T> RemoveFirst<T>(this List<T> list)
     {
-        if(list == null)
+        if (list == null)
         {
             return null;
         }
-        if(list.Count == 0)
+        if (list.Count == 0)
         {
             return list;
         }
@@ -335,5 +208,5 @@ public static class CommonExtends
         return string.IsNullOrEmpty(s);
     }
 
-	#endregion
+    #endregion
 }

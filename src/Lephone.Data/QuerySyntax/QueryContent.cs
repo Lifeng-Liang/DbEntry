@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq.Expressions;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.Linq;
 
 namespace Lephone.Data.QuerySyntax
 {
@@ -32,6 +34,15 @@ namespace Lephone.Data.QuerySyntax
         public IAfterWhere<T> Where(WhereCondition where)
         {
             m_where = where;
+            return this;
+        }
+
+        public IAfterWhere<T> Where(Expression<Func<T, bool>> expr)
+        {
+            if (expr != null)
+            {
+                m_where = ExpressionParser<T>.Parse(expr);
+            }
             return this;
         }
 
@@ -131,6 +142,46 @@ namespace Lephone.Data.QuerySyntax
             return m_entry.GetSum(typeof(T), m_where, columnName);
         }
 
+        public IRangeable<T> OrderBy(Expression<Func<T, object>> expr)
+        {
+            return AddOrderBy(this, expr, true);
+        }
+
+        public IRangeable<T> OrderByDescending(Expression<Func<T, object>> expr)
+        {
+            return AddOrderBy(this, expr, false);
+        }
+
+        public decimal? GetMax(Expression<Func<T, object>> expr)
+        {
+            string n = GetColumnName(expr);
+            return GetMax(n);
+        }
+
+        public DateTime? GetMaxDate(Expression<Func<T, object>> expr)
+        {
+            string n = GetColumnName(expr);
+            return GetMaxDate(n);
+        }
+
+        public decimal? GetMin(Expression<Func<T, object>> expr)
+        {
+            string n = GetColumnName(expr);
+            return GetMin(n);
+        }
+
+        public DateTime? GetMinDate(Expression<Func<T, object>> expr)
+        {
+            string n = GetColumnName(expr);
+            return GetMinDate(n);
+        }
+
+        public decimal? GetSum(Expression<Func<T, object>> expr)
+        {
+            string n = GetColumnName(expr);
+            return GetSum(n);
+        }
+
         public DbObjectList<GroupByObject<T1>> GroupBy<T1>(string columnName)
         {
             return m_entry.GetGroupBy<T1>(typeof(T), m_where, m_order, columnName);
@@ -146,5 +197,41 @@ namespace Lephone.Data.QuerySyntax
             m_pagesize = pageSize;
             return this;
         }
+
+        public IRangeable<T> ThenBy(Expression<Func<T, object>> expr)
+        {
+            return AddOrderBy(this, expr, true);
+        }
+
+        public IRangeable<T> ThenByDescending(Expression<Func<T, object>> expr)
+        {
+            return AddOrderBy(this, expr, false);
+        }
+
+        #region Linq help methods
+
+        private IRangeable<T> AddOrderBy(QueryContent<T> me, Expression<Func<T, object>> expr, bool isAsc)
+        {
+            string n = GetColumnName(expr);
+            if (me.m_order == null)
+            {
+                me.m_order = new OrderBy();
+            }
+            me.m_order.OrderItems.Add(isAsc ? new ASC(n) : new DESC(n));
+            return me;
+        }
+
+        private static string GetColumnName(Expression<Func<T, object>> expr)
+        {
+            MemberExpression e = expr.GetMemberExpression();
+            if (e != null)
+            {
+                string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
+                return n;
+            }
+            throw new LinqException("get column name error!");
+        }
+
+        #endregion
     }
 }

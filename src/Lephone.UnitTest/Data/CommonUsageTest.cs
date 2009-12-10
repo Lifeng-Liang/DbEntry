@@ -6,7 +6,6 @@ using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Linq;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.CreateTable;
 using Lephone.UnitTest.Data.Objects;
@@ -43,7 +42,7 @@ namespace Lephone.UnitTest.Data
         public abstract int Age { get; set; }
     }
 
-    public abstract class t_user : LinqObjectModel<t_user>
+    public abstract class t_user : DbObjectModel<t_user>
     {
         [Length(40)]
         public abstract string mc { get; set; }
@@ -682,11 +681,11 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMax()
         {
-            sqlite.From<SinglePerson>().Where(null).GetMax("Id");
+            sqlite.From<SinglePerson>().Where(WhereCondition.EmptyCondition).GetMax("Id");
             AssertSql(@"SELECT MAX([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
-            var n = DbEntry.From<SinglePerson>().Where(null).GetMax("Id");
+            var n = DbEntry.From<SinglePerson>().Where(WhereCondition.EmptyCondition).GetMax("Id");
             Assert.AreEqual(3, n);
 
             n = FieldPerson.GetMax(null, "Id");
@@ -696,11 +695,11 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMin()
         {
-            sqlite.From<SinglePerson>().Where(null).GetMin("Id");
+            sqlite.From<SinglePerson>().Where(WhereCondition.EmptyCondition).GetMin("Id");
             AssertSql(@"SELECT MIN([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
-            var n = DbEntry.From<SinglePerson>().Where(null).GetMin("Id");
+            var n = DbEntry.From<SinglePerson>().Where(WhereCondition.EmptyCondition).GetMin("Id");
             Assert.AreEqual(1, n);
 
             n = FieldPerson.GetMin(null, "Id");
@@ -711,11 +710,11 @@ namespace Lephone.UnitTest.Data
         public void TestMaxDate()
         {
             StaticRecorder.CurRow.Add(new RowInfo(new DateTime()));
-            sqlite.From<DateAndTime>().Where(null).GetMaxDate("dtValue");
+            sqlite.From<DateAndTime>().Where(WhereCondition.EmptyCondition).GetMaxDate("dtValue");
             AssertSql(@"SELECT MAX([dtValue]) AS [dtValue] FROM [DateAndTime];
 <Text><60>()");
 
-            var n = DbEntry.From<DateAndTime>().Where(null).GetMaxDate("dtValue");
+            var n = DbEntry.From<DateAndTime>().Where(WhereCondition.EmptyCondition).GetMaxDate("dtValue");
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
             n = DateAndTime.GetMaxDate(null, "dtValue");
@@ -726,11 +725,11 @@ namespace Lephone.UnitTest.Data
         public void TestMinDate()
         {
             StaticRecorder.CurRow.Add(new RowInfo(new DateTime()));
-            sqlite.From<DateAndTime>().Where(null).GetMinDate("dtValue");
+            sqlite.From<DateAndTime>().Where(WhereCondition.EmptyCondition).GetMinDate("dtValue");
             AssertSql(@"SELECT MIN([dtValue]) AS [dtValue] FROM [DateAndTime];
 <Text><60>()");
 
-            var n = DbEntry.From<DateAndTime>().Where(null).GetMinDate("dtValue");
+            var n = DbEntry.From<DateAndTime>().Where(WhereCondition.EmptyCondition).GetMinDate("dtValue");
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
             n = DateAndTime.GetMinDate(null, "dtValue");
@@ -740,11 +739,11 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSum()
         {
-            sqlite.From<SinglePerson>().Where(null).GetSum("Id");
+            sqlite.From<SinglePerson>().Where(WhereCondition.EmptyCondition).GetSum("Id");
             AssertSql(@"SELECT SUM([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
-            var n = DbEntry.From<SinglePerson>().Where(null).GetSum("Id");
+            var n = DbEntry.From<SinglePerson>().Where(WhereCondition.EmptyCondition).GetSum("Id");
             Assert.AreEqual(6, n);
 
             n = FieldPerson.GetSum(null, "Id");
@@ -783,7 +782,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDistinct()
         {
-            var list = DbEntry.From<DistinctTest>().Where(null).OrderBy(p => p.n).SelectDistinct();
+            var list = DbEntry.From<DistinctTest>().Where(WhereCondition.EmptyCondition).OrderBy(p => p.n).SelectDistinct();
             Assert.AreEqual(9, list.Count);
             var exps = new[] {0, 1, 2, 3, 4, 9, 11, 15, 16};
             for(int i = 0; i < 9; i++)
@@ -795,7 +794,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDistinctPagedSelector()
         {
-            var query = DbEntry.From<DistinctTest>().Where(null).OrderBy(p => p.n).PageSize(3).GetDistinctPagedSelector();
+            var query = DbEntry.From<DistinctTest>().Where(WhereCondition.EmptyCondition).OrderBy(p => p.n).PageSize(3).GetDistinctPagedSelector();
             Assert.AreEqual(9, query.GetResultCount());
             var list = (List<DistinctTest>)query.GetCurrentPage(1);
             Assert.AreEqual(3, list.Count);
@@ -851,11 +850,11 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGroupbySum()
         {
-            sqlite.From<SinglePerson>().Where(null).GroupBySum<string, long>("Name", "Id");
+            sqlite.From<SinglePerson>().Where(WhereCondition.EmptyCondition).GroupBySum<string, long>("Name", "Id");
             AssertSql(@"SELECT [Name],SUM([Id]) AS [Id] FROM [People] GROUP BY [Name];
 <Text><60>()");
 
-            var list = DbEntry.From<Book>().Where(null).GroupBySum<long, long>("Category_Id", "Id");
+            var list = DbEntry.From<Book>().Where(WhereCondition.EmptyCondition).GroupBySum<long, long>("Category_Id", "Id");
             var sorted = (from o in list orderby o.Column select o).ToList();
 
             Assert.AreEqual(2, sorted[0].Column);

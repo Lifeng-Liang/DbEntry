@@ -285,7 +285,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestJoinTableNoCreate()
         {
-            DbEntry.From<JoinTableNoCreate>().Where(null).Select();
+            DbEntry.From<JoinTableNoCreate>().Where(WhereCondition.EmptyCondition).Select();
         }
     }
 }

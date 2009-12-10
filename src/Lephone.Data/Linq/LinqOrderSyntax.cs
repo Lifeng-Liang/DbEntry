@@ -1,10 +1,9 @@
 ﻿using System;
 using Lephone.Data.Common;
 using System.Linq.Expressions;
-using Lephone.Data;
 using Lephone.Data.Definition;
 
-namespace Lephone.Linq
+namespace Lephone.Data.Linq
 {
     public class LinqOrderSyntax<T> where T : class, IDbObject
     {

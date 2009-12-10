@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Web;
 using System.Web.UI;
 using System.ComponentModel;
 using System.Security.Permissions;
 using Lephone.Data;
 using Lephone.Data.Common;
+using Lephone.Data.Linq;
 using Lephone.Data.QuerySyntax;
 using Lephone.Web.Common;
 using Lephone.Util;
@@ -19,6 +21,12 @@ namespace Lephone.Web
     [Designer(typeof(DbEntryDataSourceDesigner))]
     public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource where T : class, IDbObject
     {
+        public void AddAndCondition(Expression<Func<T, bool>> condition)
+        {
+            var c = ExpressionParser<T>.Parse(condition);
+            Condition &= c;
+        }
+
         private static readonly ObjectInfo ObjInfo = ObjectInfo.GetInstance(typeof(T));
         protected static readonly string KeyName = ObjInfo.KeyFields[0].Name;
         public event EventHandler DataSourceChanged;

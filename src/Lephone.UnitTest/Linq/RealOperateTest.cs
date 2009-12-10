@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Lephone.Data;
 using Lephone.Data.Definition;
-using Lephone.Linq;
-using Lephone.MockSql.Recorder;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Linq
@@ -13,21 +11,21 @@ namespace Lephone.UnitTest.Linq
     public class RealOperateTest : DataTestBase
     {
         [DbTable("People")]
-        public abstract class Person : LinqObjectModel<Person>
+        public abstract class Person : DbObjectModel<Person>
         {
             [DbColumn("Name")]
             public abstract string FirstName { get; set; }
         }
 
         [DbTable("Categories")]
-        public abstract class lCategory : LinqObjectModel<lCategory>
+        public abstract class lCategory : DbObjectModel<lCategory>
         {
             public abstract string Name { get; set; }
             [HasMany] public abstract IList<lBook> Books { get; set; }
         }
 
         [DbTable("Books")]
-        public abstract class lBook : LinqObjectModel<lBook>
+        public abstract class lBook : DbObjectModel<lBook>
         {
             public abstract string Name { get; set; }
             [BelongsTo, DbColumn("Category_Id")] public abstract lCategory Category { get; set; }
@@ -47,7 +45,7 @@ namespace Lephone.UnitTest.Linq
             public string Name;
         }
 
-        public abstract class Tst : LinqObjectModel<Tst>
+        public abstract class Tst : DbObjectModel<Tst>
         {
             public abstract DateTime Dt { get; set; }
         }
