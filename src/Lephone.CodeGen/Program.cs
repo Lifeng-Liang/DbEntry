@@ -57,14 +57,7 @@ namespace Lephone.CodeGen
                 return;
             }
 
-            if (args.Length == 2 && args[0].ToLower() == "dll")
-            {
-                GenerateAssembly(args[1]);
-                Console.WriteLine("Assembly saved!");
-                return;
-            }
-
-            if (args.Length < 2 || !ActionMatch(args[0]))
+            if (args.Length < 2)
             {
                 throw new ArgsErrorException(0, null);
             }
@@ -72,6 +65,20 @@ namespace Lephone.CodeGen
             if (!File.Exists(args[1]))
             {
                 throw new ArgsErrorException(2, "The file you input doesn't exist!");
+            }
+
+            var fileName = Path.GetFullPath(args[1]);
+
+            if (args.Length == 2 && args[0].ToLower() == "dll")
+            {
+                GenerateAssembly(fileName);
+                Console.WriteLine("Assembly saved!");
+                return;
+            }
+
+            if (!ActionMatch(args[0]))
+            {
+                throw new ArgsErrorException(0, null);
             }
 
             if (args.Length == 2)
@@ -83,12 +90,12 @@ namespace Lephone.CodeGen
             switch (args[0].ToLower())
             {
                 case "a":
-                    GenerateAspNetTemplate(args[1], args[2]);
+                    GenerateAspNetTemplate(fileName, args[2]);
                     break;
                 case "ra":
                     if (args.Length >= 4)
                     {
-                        var gen = new RailsActionGenerator(args[1], args[2], args[3]);
+                        var gen = new RailsActionGenerator(fileName, args[2], args[3]);
                         string s = gen.ToString();
                         Console.WriteLine(s);
                     }
@@ -101,7 +108,7 @@ namespace Lephone.CodeGen
                     if (args.Length >= 4)
                     {
                         string mpn = args.Length >= 5 ? args[4] : null;
-                        var gen = new RailsViewGenerator(args[1], args[2], args[3], mpn);
+                        var gen = new RailsViewGenerator(fileName, args[2], args[3], mpn);
                         string s = gen.ToString();
                         Console.WriteLine(s);
                     }

@@ -493,7 +493,7 @@ namespace Lephone.Data.Common
                 MethodInfo mi = typeof(DynamicObjectReference).GetMethod("SerializeObject", ClassHelper.StaticFlag);
                 tb.OverrideMethod(ImplFlag, "GetObjectData", typeof(ISerializable), null,
                                   new[] { typeof(SerializationInfo), typeof(StreamingContext) },
-                                  il => il.LoadArg(1).LoadArg(2).Call(mi));
+                                  il => il.LoadArg(0).LoadArg(1).LoadArg(2).Call(mi));
             }
 
             ConstructorInfo[] cis = GetConstructorInfos(sourceType);

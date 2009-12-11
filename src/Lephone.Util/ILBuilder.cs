@@ -6,9 +6,9 @@ namespace Lephone.Util
 {
     public class ILBuilder
     {
-        private static readonly Type[] emptyTypes = new Type[] { };
-        private static readonly MethodInfo dateEx = typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) });
-        private static readonly MethodInfo timeEx = typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) });
+        private static readonly Type[] EmptyTypes = new Type[] { };
+        private static readonly MethodInfo DateEx = typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) });
+        private static readonly MethodInfo TimeEx = typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) });
 
         public readonly ILGenerator il;
 
@@ -84,9 +84,9 @@ namespace Lephone.Util
             return this;
         }
 
-        public ILBuilder LoadArgShort(int Min, int Max)
+        public ILBuilder LoadArgShort(int min, int max)
         {
-            for (int i = Min; i <= Max; i++)
+            for (int i = min; i <= max; i++)
             {
                 il.Emit(OpCodes.Ldarg_S, i);
             }
@@ -105,11 +105,11 @@ namespace Lephone.Util
             return this;
         }
 
-        private static ConstructorInfo GetConstructor(Type SourceType)
+        private static ConstructorInfo GetConstructor(Type sourceType)
         {
-            Type t = SourceType;
+            Type t = sourceType;
             ConstructorInfo ret;
-            while ((ret = t.GetConstructor(emptyTypes)) == null)
+            while ((ret = t.GetConstructor(EmptyTypes)) == null)
             {
                 t = t.BaseType;
             }
@@ -159,7 +159,7 @@ namespace Lephone.Util
                     il.Emit(OpCodes.Stloc, n);
                     break;
             }
-            return null;
+            return this;
         }
 
         public ILBuilder LoadLoc(int n)
@@ -262,18 +262,18 @@ namespace Lephone.Util
             return this;
         }
 
-        private bool ProcessDateAndTime(Type inType, Type UnboxType)
+        private bool ProcessDateAndTime(Type inType, Type unboxType)
         {
             if (inType == typeof(Date))
             {
-                il.Emit(OpCodes.Unbox_Any, UnboxType);
-                il.Emit(OpCodes.Call, dateEx);
+                il.Emit(OpCodes.Unbox_Any, unboxType);
+                il.Emit(OpCodes.Call, DateEx);
                 return true;
             }
             if (inType == typeof(Time))
             {
-                il.Emit(OpCodes.Unbox_Any, UnboxType);
-                il.Emit(OpCodes.Call, timeEx);
+                il.Emit(OpCodes.Unbox_Any, unboxType);
+                il.Emit(OpCodes.Call, TimeEx);
                 return true;
             }
             return false;
@@ -290,6 +290,78 @@ namespace Lephone.Util
             if (t.IsValueType)
             {
                 il.Emit(OpCodes.Box, t);
+            }
+            return this;
+        }
+
+        public ILBuilder Ceq()
+        {
+            il.Emit(OpCodes.Ceq);
+            return this;
+        }
+
+        public ILBuilder Br_S(Label label)
+        {
+            il.Emit(OpCodes.Br_S, label);
+            return this;
+        }
+
+        public ILBuilder BrTrue_S(Label label)
+        {
+            il.Emit(OpCodes.Brtrue_S, label);
+            return this;
+        }
+
+        public ILBuilder BrFalse_S(Label label)
+        {
+            il.Emit(OpCodes.Brfalse_S, label);
+            return this;
+        }
+
+        public Label DefineLabel()
+        {
+            return il.DefineLabel();
+        }
+
+        public ILBuilder MarkLabel(Label label)
+        {
+            il.MarkLabel(label);
+            return this;
+        }
+
+        public ILBuilder LoadLocala_S(int index)
+        {
+            il.Emit(OpCodes.Ldloca_S, index);
+            return this;
+        }
+
+        public ILBuilder Bne_Un_S(Label label)
+        {
+            il.Emit(OpCodes.Bne_Un_S, label);
+            return this;
+        }
+
+        public ILBuilder Conv_R4()
+        {
+            il.Emit(OpCodes.Conv_R4);
+            return this;
+        }
+
+        public ILBuilder Conv_R8()
+        {
+            il.Emit(OpCodes.Conv_R8);
+            return this;
+        }
+
+        public ILBuilder ConvFloaty(Type type)
+        {
+            if(type == typeof(float))
+            {
+                il.Emit(OpCodes.Conv_R4);
+            }
+            else if(type == typeof(double))
+            {
+                il.Emit(OpCodes.Conv_R8);
             }
             return this;
         }

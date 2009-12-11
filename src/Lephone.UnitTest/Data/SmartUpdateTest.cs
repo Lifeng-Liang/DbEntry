@@ -286,7 +286,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject2()
         {
-            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
+            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("jerry", 18);
             u.Id = 1; // Make it looks like read from database
             u.Name = "Tom";
             de.Save(u);
@@ -313,7 +313,7 @@ namespace Lephone.UnitTest.Data
             {
                 de.NewTransaction(delegate
                 {
-                    var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
+                    var u = DynamicObjectBuilder.Instance.NewObject<asUser>("jerry", 18);
                     u.Id = 1; // Make it looks like read from database
                     u.Name = "Tom";
                     de.Save(u);
