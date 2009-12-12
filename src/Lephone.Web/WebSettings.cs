@@ -16,6 +16,10 @@ namespace Lephone.Web
         public static readonly double SessionCheckEvery = 5;
         public static readonly double SessionExpire = 20;
 
+        public static readonly string ScaffoldingMasterPage = "";
+        public static readonly string ContentPlaceHolderHead = "head";
+        public static readonly string ContentPlaceHolderBody = "ContentPlaceHolder1";
+
         static WebSettings()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(WebSettings));

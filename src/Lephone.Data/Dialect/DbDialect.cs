@@ -53,12 +53,12 @@ namespace Lephone.Data.Dialect
             get { return "NOW()"; }
         }
 
-        public virtual string GetUserId(string ConnectionString)
+        public virtual string GetUserId(string connectionString)
         {
             return null;
         }
 
-        public virtual IDataReader GetDataReader(IDataReader dr, Type ReturnType)
+        public virtual IDataReader GetDataReader(IDataReader dr, Type returnType)
         {
             return dr;
         }
@@ -105,7 +105,7 @@ namespace Lephone.Data.Dialect
             return dp.ExecuteScalar(sql);
         }
 
-        public virtual void ExecuteDropSequence(DataProvider dp, string TableName)
+        public virtual void ExecuteDropSequence(DataProvider dp, string tableName)
         {
         }
 
@@ -114,10 +114,10 @@ namespace Lephone.Data.Dialect
             return new DbStructInterface(null, null, null, null, null);
         }
 
-        public virtual string GetTypeName(DataType dt, bool IsUnicode, int Length)
+        public virtual string GetTypeName(DataType dt, bool isUnicode, int length)
         {
             object key = dt;
-            if(Length > 0)
+            if(length > 0)
             {
                 if (dt == DataType.String)
                 {
@@ -129,47 +129,47 @@ namespace Lephone.Data.Dialect
                 }
             }
             var s =(string)TypeNames[key];
-            if (Length > 0)
+            if (length > 0)
             {
                 if(dt == DataType.Binary)
                 {
-                    s += GetLengthStringForBlob(Length);
+                    s += GetLengthStringForBlob(length);
                 }
                 else
                 {
-                    s += " (" + Length + ")";
+                    s += " (" + length + ")";
                 }
             }
-            if (IsUnicode)
+            if (isUnicode)
             {
                 s = GetUnicodeTypeString(s);
             }
             return s;
         }
 
-        protected virtual string GetLengthStringForBlob(int Length)
+        protected virtual string GetLengthStringForBlob(int length)
         {
-            return " (" + Length + ")";
+            return " (" + length + ")";
         }
 
-        public virtual string GetUnicodeTypeString(string AsciiTypeString)
+        public virtual string GetUnicodeTypeString(string asciiTypeString)
         {
-            return "N" + AsciiTypeString;
+            return "N" + asciiTypeString;
         }
 
-        public virtual DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
+        public virtual DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
         {
-            return new CommonDbDriver(this, ConnectionString, DbProviderFactoryName, AutoCreateTable);
+            return new CommonDbDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
-        public virtual string GetConnectionString(string ConnectionString)
+        public virtual string GetConnectionString(string connectionString)
         {
-            return ProcessConnectionnString(ConnectionString);
+            return ProcessConnectionnString(connectionString);
         }
 
-        protected static string ProcessConnectionnString(string ConnectionString)
+        protected static string ProcessConnectionnString(string connectionString)
         {
-            string s = ConnectionString.Trim();
+            string s = connectionString.Trim();
             s = s.Replace("{BaseDirectory}", SystemHelper.BaseDirectory);
             s = s.Replace("{TempDirectory}", SystemHelper.TempDirectory);
             if (s.StartsWith("@"))
@@ -261,7 +261,7 @@ namespace Lephone.Data.Dialect
             get { return "PRIMARY KEY"; }
         }
 
-        public virtual string GetCreateSequenceString(string TableName)
+        public virtual string GetCreateSequenceString(string tableName)
         {
             return "";
         }

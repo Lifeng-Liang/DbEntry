@@ -3,7 +3,7 @@
 
 <h1>New User</h1>
 
-<form action="<%= UrlTo(new UTArgs{Action = "create"}) %>" method="post">
+<form action="<%= UrlTo.Action("create") %>" method="post">
   <p><label for="sysuser_name">Name</label><br /><input id="sysuser_name" name="sysuser[name]" size="30" type="text" value="" /></p>
   <p><label for="sysuser_age">Age</label><br /><input id="sysuser_age" name="sysuser[age]" size="30" type="text" value="" /></p>
   <p><label for="sysuser_birthday">Birthday</label><br /><input id="sysuser_birthday" name="sysuser[birthday]" size="30" type="text" value="" /></p>
@@ -11,6 +11,6 @@
   <input name="commit" type="submit" value="Create" />
 </form>
 
-<%= LinkTo(new LTArgs{Title = "Back", Action = "list"}) %>
+<%= LinkTo.Title("Back").Action("list") %>
 
 </asp:Content>

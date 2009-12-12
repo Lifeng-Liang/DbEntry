@@ -62,12 +62,12 @@ namespace Lephone.CodeGen
                 throw new ArgsErrorException(0, null);
             }
 
-            if (!File.Exists(args[1]))
+            var fileName = Path.GetFullPath(args[1]);
+
+            if (!File.Exists(fileName))
             {
                 throw new ArgsErrorException(2, "The file you input doesn't exist!");
             }
-
-            var fileName = Path.GetFullPath(args[1]);
 
             if (args.Length == 2 && args[0].ToLower() == "dll")
             {
@@ -83,7 +83,7 @@ namespace Lephone.CodeGen
 
             if (args.Length == 2)
             {
-                SearchClasses(args[1]);
+                SearchClasses(fileName);
                 return;
             }
 

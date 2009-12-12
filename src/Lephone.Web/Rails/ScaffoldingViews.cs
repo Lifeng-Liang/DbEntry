@@ -49,7 +49,12 @@ namespace Lephone.Web.Rails
             }
         }
 
-        private void Process(CallbackObjectHandler<HtmlBuilder> callback)
+        protected void BaseProcessRequest(HttpContext context)
+        {
+            base.ProcessRequest(context);
+        }
+
+        protected virtual void Process(CallbackObjectHandler<HtmlBuilder> callback)
         {
             ctx.Response.Write(string.Format(tHeader, ctx.Request.ApplicationPath));
 
@@ -67,10 +72,10 @@ namespace Lephone.Web.Rails
             Process(delegate(HtmlBuilder b)
             {
                 string cn = oi.BaseType.Name;
-                object o = bag["item"];
+                object o = this["Item"];
                 object id = oi.Handler.GetKeyValue(o);
                 b.h1.text(cn + " Edit").end.enter();
-                b.form("post", UrlTo(new UTArgs {Action = "update"}, id)).enter();
+                b.form("post", UrlTo.Action("update").Parameters(id)).enter();
 
                 foreach (MemberHandler m in oi.Fields)
                 {
@@ -88,8 +93,8 @@ namespace Lephone.Web.Rails
                 }
                 b.input.name("commit").type("submit").value("Update").end.enter().end.enter().enter();
 
-                b.include(LinkTo(new LTArgs{Title = "Show", Action = "show"}, id)).enter();
-                b.include(LinkTo(new LTArgs{Title = "Back", Action = "list"})).enter();
+                b.include(LinkTo.Title("Show").Action("show").Parameters(id)).enter();
+                b.include(LinkTo.Title("Back").Action("list")).enter();
             });
         }
 
@@ -98,7 +103,7 @@ namespace Lephone.Web.Rails
             Process(delegate(HtmlBuilder b)
             {
                 string cn = oi.BaseType.Name;
-                b.p.style("color: Green").text(Flash["notice"]).end.enter().enter();
+                b.p.style("color: Green").text(Flash.Notice).end.enter().enter();
                 b.h1.text("Listing " + Inflector.Pluralize(cn)).end.enter().enter();
 
                 b.table.tr.enter();
@@ -110,7 +115,7 @@ namespace Lephone.Web.Rails
 
                 b.end.enter().enter();
 
-                var objlist = bag["list"] as IEnumerable;
+                var objlist = this["List"] as IEnumerable;
                 if(objlist != null)
                 {
                     foreach (object o in objlist)
@@ -121,25 +126,25 @@ namespace Lephone.Web.Rails
                         {
                             b.td.text(m.GetValue(o) ?? "<NULL>").end.enter();
                         }
-                        b.td.include(LinkTo(new LTArgs {Title = "Show", Action = "show"}, id)).end.enter();
-                        b.td.include(LinkTo(new LTArgs {Title = "Edit", Action = "edit"}, id)).end.enter();
+                        b.td.include(LinkTo.Title("Show").Action("show").Parameters(id)).end.enter();
+                        b.td.include(LinkTo.Title("Edit").Action("edit").Parameters(id)).end.enter();
                         b.td.include(
-                            LinkTo(new LTArgs { Title = "Destroy", Action = "destroy", 
-                                    Addon = "onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"" },
-                                id)).end.enter();
+                            LinkTo.Title("Destroy").Action("destroy")
+                                .Addon("onclick=\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\"")
+                                .Parameters(id)).end.enter();
                         b.end.enter().enter();
                     }
 
                     b.end.enter().enter();
 
-                    var count = (int)(long)bag["list_count"];
-                    var pagesize = (int)bag["list_pagesize"];
+                    var count = (int)(long)this["ListCount"];
+                    var pagesize = (int)this["ListPageSize"];
                     for (int i = 0, n = 1; i < count; n++, i += pagesize)
                     {
-                        b.include(LinkTo(new LTArgs{Title = n.ToString(), Action = "list"}, n)).enter();
+                        b.include(LinkTo.Title(n.ToString()).Action("list").Parameters(n)).enter();
                     }
 
-                    b.enter().br.br.include(LinkTo(new LTArgs {Title = "New " + cn, Action = "new"})).br.enter();
+                    b.enter().br.br.include(LinkTo.Title("New " + cn).Action("new")).br.enter();
                 }
             });
         }
@@ -150,7 +155,7 @@ namespace Lephone.Web.Rails
             {
                 string cn = oi.BaseType.Name;
                 b.h1.text("New " + cn).end.enter();
-                b.form("post", UrlTo(new UTArgs {Controller = ControllerName, Action = "create"})).enter();
+                b.form("post", UrlTo.Controller(ControllerName).Action("create")).enter();
 
                 foreach (MemberHandler m in oi.Fields)
                 {
@@ -164,7 +169,7 @@ namespace Lephone.Web.Rails
 
                 b.input.name("commit").type("submit").value("Create").end.enter().end.enter().enter();
 
-                b.include(LinkTo(new LTArgs{Title = "Back", Action = "list"})).enter();
+                b.include(LinkTo.Title("Back").Action("list")).enter();
             });
         }
 
@@ -172,10 +177,10 @@ namespace Lephone.Web.Rails
         {
             Process(delegate(HtmlBuilder b)
             {
-                object o = bag["item"];
+                object o = this["Item"];
                 object id = oi.Handler.GetKeyValue(o);
 
-                b.p.style("color: Green").text(Flash["notice"]).end.enter().enter();
+                b.p.style("color: Green").text(Flash.Notice).end.enter().enter();
 
                 foreach (MemberHandler m in oi.Fields)
                 {
@@ -192,8 +197,8 @@ namespace Lephone.Web.Rails
 
                 b.enter();
 
-                b.include(LinkTo(new LTArgs{Title = "Edit", Action = "edit"}, id)).enter();
-                b.include(LinkTo(new LTArgs{Title = "Back", Action = "list"})).enter();
+                b.include(LinkTo.Title("Edit").Action("edit").Parameters(id)).enter();
+                b.include(LinkTo.Title("Back").Action("list")).enter();
             });
         }
 

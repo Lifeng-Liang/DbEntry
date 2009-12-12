@@ -97,7 +97,7 @@ namespace Lephone.Web
             {
                 throw new WebException("The Controller must inherits from ControllerBase");
             }
-            ctl.ctx = context;
+            ctl.Ctx = context;
 
             try
             {
@@ -146,7 +146,7 @@ namespace Lephone.Web
 
         private static void InitViewPage(string controllerName, ControllerBase ctl, string actionName, PageBase p)
         {
-            p.bag = ctl.bag;
+            p.Bag = ctl.Bag;
             p.ControllerName = controllerName;
             p.ActionName = actionName;
             p.InitFields();
@@ -214,7 +214,11 @@ namespace Lephone.Web
             if (ci.IsScaffolding)
             {
                 Type tt = GetScaffoldingType(t);
-                return new ScaffoldingViews(tt, context);
+                if(string.IsNullOrEmpty(WebSettings.ScaffoldingMasterPage))
+                {
+                    return new ScaffoldingViews(tt, context);
+                }
+                return new ScaffoldingViewsWithMaster(tt, context);
             }
             if (t == typeof(DefaultController))
             {

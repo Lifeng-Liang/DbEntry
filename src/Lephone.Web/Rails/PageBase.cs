@@ -8,9 +8,33 @@ namespace Lephone.Web.Rails
 {
     public class PageBase : Page
     {
-        protected internal Dictionary<string, object> bag = new Dictionary<string, object>();
         protected internal string ControllerName;
         protected internal string ActionName;
+        internal Dictionary<string, object> Bag = new Dictionary<string, object>();
+        private LinkTo _linkTo;
+        private UrlTo _urlTo;
+
+        protected internal LinkTo LinkTo
+        {
+            get { return _linkTo ?? (_linkTo = new LinkTo(ControllerName)); }
+        }
+
+        protected internal UrlTo UrlTo
+        {
+            get { return _urlTo ?? (_urlTo = new UrlTo(ControllerName)); }
+        }
+
+        protected object this[string key]
+        {
+            get
+            {
+                return Bag[key];
+            }
+            set
+            {
+                Bag[key] = value;
+            }
+        }
 
         public FlashBox Flash = new FlashBox();
 
@@ -21,7 +45,7 @@ namespace Lephone.Web.Rails
             base.OnInit(e);
             if (Master != null && Master is MasterPageBase)
             {
-                ((MasterPageBase)Master).bag = bag;
+                ((MasterPageBase)Master).Bag = Bag;
                 ((MasterPageBase)Master).InitFields();
             }
         }
@@ -33,7 +57,7 @@ namespace Lephone.Web.Rails
             {
                 if (!ClassHelper.HasAttribute<ExcludeAttribute>(info, false))
                 {
-                    object value = bag[info.Name];
+                    object value = this[info.Name];
                     info.SetValue(this, value);
                 }
             }
@@ -48,24 +72,5 @@ namespace Lephone.Web.Rails
         {
             Response.Write(s);
         }
-
-        protected internal string LinkTo(LTArgs args, params object[] Parameters)
-        {
-            if (string.IsNullOrEmpty(args.Controller))
-            {
-                args.Controller = ControllerName;
-            }
-            return MasterPageBase.LinkTo(args, Parameters);
-        }
-
-        protected internal string UrlTo(UTArgs args, params object[] Parameters)
-        {
-            if (string.IsNullOrEmpty(args.Controller))
-            {
-                args.Controller = ControllerName;
-            }
-            return MasterPageBase.UrlTo(args.Controller, args.Action, Parameters);
-        }
-
     }
 }

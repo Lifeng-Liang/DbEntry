@@ -115,7 +115,7 @@ namespace Lephone.CodeGen
             {
                 string cn = ClassType.Name;
                 b.h1.text("New " + cn).end.enter().enter();
-                b.form("post", "<%= UrlTo(new UTArgs{Action = \"create\"}) %>").enter();
+                b.form("post", "<%= UrlTo.Action(\"create\") %>").enter();
 
                 var oi = ObjectInfo.GetInstance(ClassType);
                 foreach (MemberHandler m in oi.Fields)
@@ -130,7 +130,7 @@ namespace Lephone.CodeGen
 
                 b.include("  ").input.name("commit").type("submit").value("Create").end.enter().end.enter().enter();
 
-                b.include("<%= LinkTo(new LTArgs{Title = \"Back\", Action = \"list\"}) %>").enter();
+                b.include("<%= LinkTo.Title(\"Back\").Action(\"list\") %>").enter();
             });
             return sb.ToString();
         }
@@ -140,15 +140,15 @@ namespace Lephone.CodeGen
             var sb = new StringBuilder();
 
             const string vars = @"
-    public IEnumerable list;
-    public long list_count;
-    public int list_pagesize;
+    public IEnumerable List;
+    public long ListCount;
+    public int ListPageSize;
 ";
             Process(sb, vars, delegate(HtmlBuilder b)
             {
                 string cn = ClassType.Name;
 
-                b.p.style("color: Green").include("<%= Flash[\"notice\"] %>").end.enter().enter();
+                b.p.style("color: Green").include("<%= Flash.Notice %>").end.enter().enter();
                 b.h1.text("Listing " + Inflector.Pluralize(cn)).end.enter().enter();
 
                 b.table.enter().tr.enter();
@@ -161,25 +161,25 @@ namespace Lephone.CodeGen
 
                 b.end.enter();
 
-                b.include("<% foreach (" + ClassType.Name + " o in list) { %>");
+                b.include("<% foreach (" + ClassType.Name + " o in List) { %>");
                 b.enter().tr.enter();
                 foreach (MemberHandler m in oi.SimpleFields)
                 {
                     b.include("  ").td.include("<%= o.").include(m.Name).include(" %>").end.enter();
                 }
-                b.include("  ").td.include("<%= LinkTo(new LTArgs {Title = \"Show\", Action = \"show\"}, o.Id) %>").end.enter();
-                b.include("  ").td.include("<%= LinkTo(new LTArgs {Title = \"Edit\", Action = \"edit\"}, o.Id) %>").end.enter();
-                b.include("  ").td.include("<%= LinkTo(new LTArgs {Title = \"Destroy\", Action = \"destroy\", Addon = \"onclick=\\\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\\\"\"}, o.Id) %>").end.enter();
+                b.include("  ").td.include("<%= LinkTo.Title(\"Show\").Action(\"show\").Parameters(o.Id) %>").end.enter();
+                b.include("  ").td.include("<%= LinkTo.Title(\"Edit\").Action(\"edit\").Parameters(o.Id) %>").end.enter();
+                b.include("  ").td.include("<%= LinkTo.Title(\"Destroy\").Action(\"destroy\").Addon(\"onclick=\\\"if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit(); };return false;\\\"\").Parameters(o.Id) %>").end.enter();
                 b.end.enter();
                 b.include("<% } %>").enter().end.enter();
 
                 b.include(@"
-<% for (int i = 0, n = 1; i < list_count; n++, i += list_pagesize) { %>
-  &nbsp;<%= LinkTo(new LTArgs{Title = n.ToString(), Action = ""list""}, n) %>
+<% for (int i = 0, n = 1; i < ListCount; n++, i += ListPageSize) { %>
+  &nbsp;<%= LinkTo.Title(n.ToString()).Action(""list"").Parameters(n) %>
 <% } %>
 ");
 
-                b.enter().br.br.enter().enter().include("<%= LinkTo(new LTArgs{Title = \"New " + cn + "\", Action = \"new\"}) %>").br.enter();
+                b.enter().br.br.enter().enter().include("<%= LinkTo.Title(\"New " + cn + "\").Action(\"new\"}) %>").br.enter();
             });
             return sb.ToString();
         }
@@ -187,23 +187,23 @@ namespace Lephone.CodeGen
         private string GetViewShow()
         {
             var sb = new StringBuilder();
-            Process(sb, "\n    public " + ClassType.Name + " item;\n", b =>
+            Process(sb, "\n    public " + ClassType.Name + " Item;\n", b =>
             {
-                b.p.style("color: Green").include("<%= Flash[\"notice\"] %>").end.enter().enter();
+                b.p.style("color: Green").include("<%= Flash.Notice %>").end.enter().enter();
 
                 var oi = ObjectInfo.GetInstance(ClassType);
                 foreach (MemberHandler m in oi.Fields)
                 {
                     if (!m.IsRelationField)
                     {
-                        b.p.tag("b").text(m.Name + ":").end.include("<%= item.").include(m.Name).include(" %>").end.enter();
+                        b.p.tag("b").text(m.Name + ":").end.include("<%= Item.").include(m.Name).include(" %>").end.enter();
                     }
                 }
 
                 b.enter();
 
-                b.include("<%= LinkTo(new LTArgs{Title = \"Edit\", Action = \"edit\"}, item.Id) %>").enter();
-                b.include("<%= LinkTo(new LTArgs{Title = \"Back\", Action = \"list\"}) %>").enter();
+                b.include("<%= LinkTo.Title(\"Edit\").Action(\"edit\").Parameters(Item.Id) %>").enter();
+                b.include("<%= LinkTo.Title(\"Back\").Action(\"list\") %>").enter();
             });
             return sb.ToString();
         }
@@ -211,10 +211,10 @@ namespace Lephone.CodeGen
         private string GetViewEdit()
         {
             var sb = new StringBuilder();
-            Process(sb, "\n    public " + ClassType.Name + " item;\n", b =>
+            Process(sb, "\n    public " + ClassType.Name + " Item;\n", b =>
             {
                 b.h1.text(ClassType.Name + " Edit").end.enter().enter();
-                b.form("post", "<%= UrlTo(new UTArgs{Action = \"update\"}, item.Id) %>").enter();
+                b.form("post", "<%= UrlTo.Action(\"update\").Parameters(Item.Id) %>").enter();
 
                 var oi = ObjectInfo.GetInstance(ClassType);
                 foreach (MemberHandler m in oi.Fields)
@@ -224,13 +224,13 @@ namespace Lephone.CodeGen
                         string n = ClassType.Name.ToLower() + "_" + m.Name.ToLower();
                         string n1 = ClassType.Name.ToLower() + "[" + m.Name.ToLower() + "]";
                         b.include("  ").p.label.attr("for", n).text(m.Name).end.br
-                            .include(ControlMapper.Map(m, n, n1, "<%= item." + m.Name + " %>")).end.enter();
+                            .include(ControlMapper.Map(m, n, n1, "<%= Item." + m.Name + " %>")).end.enter();
                     }
                 }
                 b.input.name("commit").type("submit").value("Update").end.enter().end.enter().enter();
 
-                b.include("<%= LinkTo(new LTArgs { Title = \"Show\", Action = \"show\" }, item.Id) %>").enter();
-                b.include("<%= LinkTo(new LTArgs { Title = \"Back\", Action = \"list\" }) %>").enter();
+                b.include("<%= LinkTo.Title(\"Show\").Action(\"show\").Parameters(Item.Id) %>").enter();
+                b.include("<%= LinkTo.Title(\"Back\").Action(\"list\") %>").enter();
             });
             return sb.ToString();
         }

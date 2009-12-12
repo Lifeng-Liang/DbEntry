@@ -6,8 +6,9 @@ namespace Lephone.Util
 {
     public delegate void CallbackVoidHandler();
     public delegate void CallbackObjectHandler<T>(T o);
-    public delegate TR CallbackHandler<T, TR>(T o);
-    public delegate void CallbackObjectHandler2<T, T1>(T o, T1 o1);
+    public delegate TR CallbackReturnHandler<T, TR>(T o);
+    public delegate TR CallbackReturnHandler2<T1, T2, TR>(T1 o1, T2 o2);
+    public delegate void CallbackObjectHandler2<T1, T2>(T1 o1, T2 o2);
 
     public static class CommonHelper
     {

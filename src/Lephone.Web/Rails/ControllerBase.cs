@@ -11,13 +11,32 @@ namespace Lephone.Web.Rails
 {
     public abstract class ControllerBase
     {
-        private static readonly string errorTemplate = ResourceHelper.ReadToEnd(typeof(ControllerBase), "Rails.Error.htm");
+        private static readonly string ErrorTemplate = ResourceHelper.ReadToEnd(typeof(ControllerBase), "Rails.Error.htm");
 
-        protected internal HttpContext ctx;
-        public readonly Dictionary<string, object> bag = new Dictionary<string, object>();
+        protected internal HttpContext Ctx;
+        internal readonly Dictionary<string, object> Bag = new Dictionary<string, object>();
         public readonly string ControllerName;
         public readonly FlashBox Flash = new FlashBox();
         public readonly SessionBox Session = new SessionBox();
+
+        protected object this[string key]
+        {
+            get
+            {
+                return Bag[key];
+            }
+            set
+            {
+                Bag[key] = value;
+            }
+        }
+
+        private UrlTo _urlTo;
+
+        protected internal UrlTo UrlTo
+        {
+            get { return _urlTo ?? (_urlTo = new UrlTo(ControllerName)); }
+        }
 
         protected ControllerBase()
         {
@@ -29,12 +48,12 @@ namespace Lephone.Web.Rails
             ControllerName = cn.ToLower();
         }
 
-        protected internal virtual string OnBeforeAction(string ActionName)
+        protected internal virtual string OnBeforeAction(string actionName)
         {
             return null;
         }
 
-        protected internal virtual string OnAfterAction(string ActionName)
+        protected internal virtual string OnAfterAction(string actionName)
         {
             return null;
         }
@@ -42,25 +61,15 @@ namespace Lephone.Web.Rails
         protected internal virtual void OnException(Exception ex)
         {
             Exception e = ex.InnerException ?? ex;
-            string title = ctx.Server.HtmlEncode(e.Message);
+            string title = Ctx.Server.HtmlEncode(e.Message);
             string text = e.ToString();
-            string result = string.Format(errorTemplate, title, text);
-            ctx.Response.Write(result);
+            string result = string.Format(ErrorTemplate, title, text);
+            Ctx.Response.Write(result);
         }
 
-        public void RedirectTo(UTArgs args, params object[] Parameters)
+        public void RedirectTo(string url)
         {
-            string url = UrlTo(args, Parameters);
-            ctx.Response.Redirect(url);
-        }
-
-        public string UrlTo(UTArgs args, params object[] Parameters)
-        {
-            if (string.IsNullOrEmpty(args.Controller))
-            {
-                args.Controller = ControllerName;
-            }
-            return MasterPageBase.UrlTo(args.Controller, args.Action, Parameters);
+            Ctx.Response.Redirect(url);
         }
     }
 
@@ -79,7 +88,7 @@ namespace Lephone.Web.Rails
             {
                 if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                 {
-                    string s = ctx.Request.Form[ControllerName + "[" + m.Name.ToLower() + "]"];
+                    string s = Ctx.Request.Form[ControllerName + "[" + m.Name.ToLower() + "]"];
                     if (m.IsLazyLoad)
                     {
                         object ll = m.MemberInfo.GetValue(obj);
@@ -101,8 +110,8 @@ namespace Lephone.Web.Rails
             {
                 DbEntry.Save(obj);
             }
-            Flash["notice"] = string.Format("{0} was successfully created", ControllerName);
-            RedirectTo(new UTArgs{Action = "list"});
+            Flash.Notice = string.Format("{0} was successfully created", ControllerName);
+            RedirectTo(UrlTo.Action("list"));
         }
 
         public virtual void List(int pageIndex, int? pageSize)
@@ -118,19 +127,19 @@ namespace Lephone.Web.Rails
             int psize = pageSize ?? WebSettings.DefaultPageSize;
             IPagedSelector ps = DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy("Id DESC")
                 .PageSize(psize).GetPagedSelector();
-            bag["list"] = ps.GetCurrentPage(pageIndex);
-            bag["list_count"] = ps.GetResultCount();
-            bag["list_pagesize"] = WebSettings.DefaultPageSize;
+            this["List"] = ps.GetCurrentPage(pageIndex);
+            this["ListCount"] = ps.GetResultCount();
+            this["ListPageSize"] = WebSettings.DefaultPageSize;
         }
 
         public virtual void Show(int n)
         {
-            bag["item"] = DbEntry.GetObject<T>(n);
+            this["Item"] = DbEntry.GetObject<T>(n);
         }
 
         public virtual void Edit(int n)
         {
-            bag["item"] = DbEntry.GetObject<T>(n);
+            this["Item"] = DbEntry.GetObject<T>(n);
         }
 
         public virtual void Update(int n)
@@ -142,7 +151,7 @@ namespace Lephone.Web.Rails
                 if (m.IsRelationField) { continue; }
                 if (!m.IsAutoSavedValue && !m.IsDbGenerate)
                 {
-                    string s = ctx.Request.Form[ControllerName + "[" + m.Name.ToLower() + "]"];
+                    string s = Ctx.Request.Form[ControllerName + "[" + m.Name.ToLower() + "]"];
                     if (m.IsLazyLoad)
                     {
                         object ll = m.MemberInfo.GetValue(obj);
@@ -166,8 +175,8 @@ namespace Lephone.Web.Rails
             {
                 DbEntry.Save(obj);
             }
-            Flash["notice"] = string.Format("{0} was successfully updated", ControllerName);
-            RedirectTo(new UTArgs{Action = "show"}, n);
+            Flash.Notice = string.Format("{0} was successfully updated", ControllerName);
+            RedirectTo(UrlTo.Action("show").Parameters(n));
         }
 
         public virtual void Destroy(int n)
@@ -183,7 +192,7 @@ namespace Lephone.Web.Rails
                 {
                     DbEntry.Save(o);
                 }
-                RedirectTo(new UTArgs{Action = "list"});
+                RedirectTo(UrlTo.Action("list"));
             }
         }
     }

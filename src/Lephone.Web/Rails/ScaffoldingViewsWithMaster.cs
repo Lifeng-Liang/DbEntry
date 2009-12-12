@@ -1,0 +1,73 @@
+﻿using System;
+using System.Web;
+using System.Web.UI;
+using Lephone.Util;
+
+namespace Lephone.Web.Rails
+{
+    internal class ScaffoldingViewsWithMaster : ScaffoldingViews
+    {
+        private HtmlBuilder _html;
+        private static bool _initialized;
+        private static object _fileDependencies;
+
+        public ScaffoldingViewsWithMaster(Type t, HttpContext context) : base(t, context)
+        {
+            base.AppRelativeVirtualPath = "~/ScaffoldingViews.aspx";
+            if (!_initialized)
+            {
+                _fileDependencies = base.GetWrappedFileDependencies(new[] { WebSettings.ScaffoldingMasterPage });
+                _initialized = true;
+            }
+        }
+
+        public override void ProcessRequest(HttpContext context)
+        {
+            base.ProcessRequest(context);
+            BaseProcessRequest(context);
+        }
+
+        protected override void Process(CallbackObjectHandler<HtmlBuilder> callback)
+        {
+            _html = HtmlBuilder.New;
+            callback(_html);
+        }
+
+        private void BuildControlContent1(Control ctrl)
+        {
+            IParserAccessor accessor = ctrl;
+            accessor.AddParsedSubObject(new LiteralControl("\r\n"));
+        }
+
+        private void BuildControlContent2(Control ctrl)
+        {
+            IParserAccessor accessor = ctrl;
+            accessor.AddParsedSubObject(new LiteralControl(_html.ToString()));
+        }
+
+
+        private void BuildControlTree()
+        {
+            //ctrl.Title = "Show";
+            MasterPageFile = WebSettings.ScaffoldingMasterPage;
+            this.InitializeCulture();
+            base.AddContentTemplate("head", new CompiledTemplateBuilder(BuildControlContent1));
+            base.AddContentTemplate("ContentPlaceHolder1", new CompiledTemplateBuilder(BuildControlContent2));
+            AddParsedSubObject(new LiteralControl("\r\n"));
+            AddParsedSubObject(new LiteralControl("\r\n"));
+        }
+
+        protected override void FrameworkInitialize()
+        {
+            base.FrameworkInitialize();
+            this.BuildControlTree();
+            base.AddWrappedFileDependencies(_fileDependencies);
+            base.Request.ValidateInput();
+        }
+
+        public override int GetTypeHashCode()
+        {
+            return 0x89e991c;
+        }
+    }
+}

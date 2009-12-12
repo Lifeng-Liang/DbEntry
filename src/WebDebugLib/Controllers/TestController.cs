@@ -9,22 +9,22 @@ namespace DebugLib.Controllers
         public void Add(int m, int n)
         {
             int r = m + n;
-            bag["obj"] = r;
+            this["obj"] = r;
         }
 
         public void Date(DateTime dt, int n)
         {
-            bag["obj"] = dt.AddDays(n);
+            this["obj"] = dt.AddDays(n);
         }
 
         public void NoView()
         {
-            bag["item"] = "Test for no view file!";
+            this["item"] = "Test for no view file!";
         }
 
         public void Say(string s1, string s2)
         {
-            bag["item"] = string.Format("<b>{0}, {1}</b>", s1, s2);
+            this["item"] = string.Format("<b>{0}, {1}</b>", s1, s2);
         }
 
         public void Hello(string[] ss)
@@ -34,7 +34,7 @@ namespace DebugLib.Controllers
             {
                 s += s1 + "<br />";
             }
-            bag["item"] = s;
+            this["item"] = s;
         }
     }
 }

@@ -300,7 +300,7 @@ namespace Lephone.Data.Common
         }
 
         private void OverrideSetValuesDirect(string name, MemoryTypeBuilder tb, Type srcType,
-            MemberHandler[] fields, CallbackHandler<MemberHandler, bool> cb1, CallbackHandler<MemberHandler, bool> cb2)
+            MemberHandler[] fields, CallbackReturnHandler<MemberHandler, bool> cb1, CallbackReturnHandler<MemberHandler, bool> cb2)
         {
             Type t = typeof(KeyValueCollection);
             MethodInfo addmi = t.GetMethod("Add", new[] { typeof(KeyValue) });

@@ -4,22 +4,22 @@ namespace Lephone.Web.Rails
 {
     public class FlashBox : SessionBox
     {
-        public override object this[string Name]
+        public override object this[string name]
         {
             get
             {
                 Dictionary<string, object> bag = GetCurrentBag();
-                if (bag.ContainsKey(Name))
+                if (bag.ContainsKey(name))
                 {
-                    object o = bag[Name];
-                    bag.Remove(Name);
+                    object o = bag[name];
+                    bag.Remove(name);
                     return o;
                 }
                 return string.Empty;
             }
             set
             {
-                base[Name] = value;
+                base[name] = value;
             }
         }
 
@@ -27,11 +27,11 @@ namespace Lephone.Web.Rails
         {
             get
             {
-                return (string)this["tip"];
+                return (string)this["Tip"];
             }
             set
             {
-                this["tip"] = value;
+                this["Tip"] = value;
             }
         }
 
@@ -39,11 +39,11 @@ namespace Lephone.Web.Rails
         {
             get
             {
-                return (string)this["notice"];
+                return (string)this["Notice"];
             }
             set
             {
-                this["notice"] = value;
+                this["Notice"] = value;
             }
         }
 
@@ -51,11 +51,11 @@ namespace Lephone.Web.Rails
         {
             get
             {
-                return (string)this["warning"];
+                return (string)this["Warning"];
             }
             set
             {
-                this["warning"] = value;
+                this["Warning"] = value;
             }
         }
     }

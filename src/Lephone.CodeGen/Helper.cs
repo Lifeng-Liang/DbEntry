@@ -7,7 +7,7 @@ namespace Lephone.CodeGen
 {
     public static class Helper
     {
-        public static void EnumTypes(string fileName, CallbackHandler<Type, bool> callback)
+        public static void EnumTypes(string fileName, CallbackReturnHandler<Type, bool> callback)
         {
             Assembly dll = Assembly.LoadFile(fileName);
             Type idot = Type.GetType("Lephone.Data.Definition.IDbObject, Lephone.Data", true);

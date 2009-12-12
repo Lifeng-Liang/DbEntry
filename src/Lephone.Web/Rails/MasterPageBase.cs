@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
-using System.Web;
 using System.Web.UI;
-using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Util;
 
@@ -14,9 +10,9 @@ namespace Lephone.Web.Rails
     {
         private Dictionary<string, object> _bag = new Dictionary<string, object>();
 
-        protected internal Dictionary<string, object> bag
+        internal Dictionary<string, object> Bag
         {
-            protected get
+            get
             {
                 return _bag;
             }
@@ -25,8 +21,20 @@ namespace Lephone.Web.Rails
                 _bag = value;
                 if (Master != null && Master is MasterPageBase)
                 {
-                    ((MasterPageBase)Master).bag = _bag;
+                    ((MasterPageBase)Master).Bag = _bag;
                 }
+            }
+        }
+
+        protected object this[string key]
+        {
+            get
+            {
+                return Bag[key];
+            }
+            set
+            {
+                Bag[key] = value;
             }
         }
 
@@ -37,12 +45,25 @@ namespace Lephone.Web.Rails
 
         public new SessionBox Session = new SessionBox();
 
+        private LinkTo _linkTo;
+        private UrlTo _urlTo;
+
+        protected internal LinkTo LinkTo
+        {
+            get { return _linkTo ?? (_linkTo = new LinkTo(ControllerName)); }
+        }
+
+        protected internal UrlTo UrlTo
+        {
+            get { return _urlTo ?? (_urlTo = new UrlTo(ControllerName)); }
+        }
+
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
             if (Master != null && Master is MasterPageBase)
             {
-                ((MasterPageBase)Master).bag = bag;
+                ((MasterPageBase)Master).Bag = Bag;
                 ((MasterPageBase)Master).InitFields();
             }
         }
@@ -54,7 +75,7 @@ namespace Lephone.Web.Rails
             {
                 if (!ClassHelper.HasAttribute<ExcludeAttribute>(info, false))
                 {
-                    object value = bag[info.Name];
+                    object value = this[info.Name];
                     info.SetValue(this, value);
                 }
             }
@@ -72,71 +93,6 @@ namespace Lephone.Web.Rails
         protected internal void Print(string s)
         {
             Response.Write(s);
-        }
-
-        protected static internal string LinkTo(LTArgs args, params object[] Parameters)
-        {
-            if (string.IsNullOrEmpty(args.Title))
-            {
-                throw new DataException("title can not be null or empty.");
-            }
-            string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
-                UrlTo(args.ToUTArgs(), Parameters),
-                args.Title,
-                args.Addon == null ? "" : " " + args.Addon);
-            return ret;
-        }
-
-        protected internal static string UrlTo(UTArgs args, params object[] Parameters)
-        {
-            return UrlTo(args.Controller, args.Action, Parameters);
-        }
-
-        public static string UrlTo(string Controller, string Action, params object[] Parameters)
-        {
-            string appPath = HttpContext.Current.Request.ApplicationPath;
-            var url = new StringBuilder();
-            url.Append(appPath);
-            if (!string.IsNullOrEmpty(appPath) && !appPath.EndsWith("/"))
-            {
-                url.Append("/");
-            }
-            url.Append(Controller).Append("/");
-            if (!string.IsNullOrEmpty(Action))
-            {
-                url.Append(Action).Append("/");
-            }
-            if (Parameters != null)
-            {
-                foreach (var o in Parameters)
-                {
-                    if (o != null)
-                    {
-                        AppendParameter(url, o);
-                    }
-                }
-            }
-            url.Length--;
-            if (WebSettings.UsingAspxPostfix)
-            {
-                url.Append(".aspx");
-            }
-            return url.ToString();
-        }
-
-        private static void AppendParameter(StringBuilder url, object o)
-        {
-            if (o is IEnumerable && !(o is string))
-            {
-                foreach (var obj in (IEnumerable)o)
-                {
-                    AppendParameter(url, obj);
-                }
-            }
-            else
-            {
-                url.Append(HttpUtility.UrlEncode(o.ToString())).Append("/");
-            }
         }
     }
 }

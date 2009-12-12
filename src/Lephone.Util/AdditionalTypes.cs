@@ -89,9 +89,9 @@
             get { return dt.DayOfYear; }
         }
 
-        public Date(int Year, int Month, int Day)
+        public Date(int year, int month, int day)
         {
-            dt = new DateTime(Year, Month, Day);
+            dt = new DateTime(year, month, day);
         }
 
         public Date(DateTime dt)

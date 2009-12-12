@@ -77,7 +77,7 @@ namespace Lephone.CodeGen
             {
                 if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                 {
-                    string s = "ctx.Request.Form[\"" + ClassType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
+                    string s = "Ctx.Request.Form[\"" + ClassType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
                     Type t = m.IsLazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
                     sb.Append("        obj.").Append(m.Name).Append(" = ");
                     GetFieldCode(sb, t, s);
@@ -93,8 +93,8 @@ namespace Lephone.CodeGen
                 sb.Append("\n        DbEntry.Save(obj);");
             }
             sb.Append(@"
-        Flash[""notice""] = """).Append(ClassType.Name).Append(@" was successfully created"";
-        RedirectTo(new UTArgs{Action = ""list""});
+        Flash.Notice = """).Append(ClassType.Name).Append(@" was successfully created"";
+        RedirectTo(UrlTo.Action(""list""));
     }
 ");
             return sb.ToString();
@@ -161,11 +161,11 @@ namespace Lephone.CodeGen
             pageIndex--;
         }
         int psize = pageSize ?? WebSettings.DefaultPageSize;
-        IPagedSelector ps = DbEntry.From<" + ClassType.Name + @">().Where(null).OrderBy(""Id DESC"")
+        IPagedSelector ps = DbEntry.From<" + ClassType.Name + @">().Where(WhereCondition.EmptyCondition).OrderBy(""Id DESC"")
             .PageSize(psize).GetPagedSelector();
-        bag[""list""] = ps.GetCurrentPage(pageIndex);
-        bag[""list_count""] = ps.GetResultCount();
-        bag[""list_pagesize""] = WebSettings.DefaultPageSize;
+        this[""List""] = ps.GetCurrentPage(pageIndex);
+        this[""ListCount""] = ps.GetResultCount();
+        this[""ListPageSize""] = WebSettings.DefaultPageSize;
     }
 ";
         }
@@ -177,7 +177,7 @@ namespace Lephone.CodeGen
                 return @"
     public virtual void Show(int n)
     {
-        bag[""item""] = " + ClassType.Name + @".FindById(n);
+        this[""Item""] = " + ClassType.Name + @".FindById(n);
     }
 ";
             }
@@ -185,7 +185,7 @@ namespace Lephone.CodeGen
             return @"
     public virtual void Show(int n)
     {
-        bag[""item""] = DbEntry.GetObject<" + ClassType.Name + @">(n);
+        this[""Item""] = DbEntry.GetObject<" + ClassType.Name + @">(n);
     }
 ";
         }
@@ -197,14 +197,14 @@ namespace Lephone.CodeGen
                 return @"
     public virtual void Edit(int n)
     {
-        bag[""item""] = " + ClassType.Name + @".FindById(n);
+        this[""Item""] = " + ClassType.Name + @".FindById(n);
     }
 ";
             }
             return @"
     public virtual void Edit(int n)
     {
-        bag[""item""] = DbEntry.GetObject<" + ClassType.Name + @">(n);
+        this[""Item""] = DbEntry.GetObject<" + ClassType.Name + @">(n);
     }
 ";
         }
@@ -230,7 +230,7 @@ namespace Lephone.CodeGen
                 if (m.IsRelationField) { continue; }
                 if (!m.IsAutoSavedValue && !m.IsDbGenerate)
                 {
-                    string s = "ctx.Request.Form[\"" + ClassType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
+                    string s = "Ctx.Request.Form[\"" + ClassType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
                     Type t = m.IsLazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
                     sb.Append("        obj.").Append(m.Name).Append(" = ");
                     GetFieldCode(sb, t, s);
@@ -247,9 +247,9 @@ namespace Lephone.CodeGen
             {
                 sb.Append("\n        DbEntry.Save(obj);\n");
             }
-            sb.Append("        Flash[\"notice\"] = \"").Append(ClassType.Name).Append(" was successfully updated\";");
+            sb.Append("        Flash.Notice = \"").Append(ClassType.Name).Append(" was successfully updated\";");
             sb.Append(@"
-        RedirectTo(new UTArgs{Action = ""show""}, n);
+        RedirectTo(UrlTo.Action(""show"").Parameters(n));
     }
 ");
             return sb.ToString();
@@ -266,7 +266,7 @@ namespace Lephone.CodeGen
         if (o != null)
         {
             o.Delete();
-            RedirectTo(new UTArgs{Action = ""list""});
+            RedirectTo(UrlTo.Action(""list""));
         }
     }
 ";
@@ -278,7 +278,7 @@ namespace Lephone.CodeGen
         if (o != null)
         {
             DbEntry.Delete(o);
-            RedirectTo(new UTArgs{Action = ""list""});
+            RedirectTo(UrlTo.Action(""list""));
         }
     }
 ";

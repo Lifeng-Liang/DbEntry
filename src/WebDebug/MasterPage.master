@@ -10,9 +10,13 @@
 <head runat="server">
     <title>Lephone's WebEntry</title>
     <link href="~/styles/scaffolding.css" type="text/css" rel="Stylesheet" />
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
 </head>
 <body>
-    <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
-    </asp:contentplaceholder>
+    <div style="height:50px; background-color:Gray">
+    </div>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+    </asp:ContentPlaceHolder>
 </body>
 </html>

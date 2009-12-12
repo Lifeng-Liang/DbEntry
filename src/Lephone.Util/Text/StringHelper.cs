@@ -207,25 +207,27 @@ namespace Lephone.Util.Text
         }
 
         public static string ProcessSymbol(string text, string left, string right,
-            CallbackHandler<string, string> callback)
+            CallbackReturnHandler<string, string> callback)
         {
             var ret = new StringBuilder();
             int last = 0;
+            int leftLen = left.Length;
+            int rightLen = right.Length;
             while (true)
             {
                 int m = text.IndexOf(left, last);
                 if (m >= last)
                 {
-                    int n = text.IndexOf(right, m);
+                    int n = text.IndexOf(right, m + leftLen);
                     if (n > m)
                     {
                         ret.Append(text.Substring(last, m - last));
                         if (callback != null)
                         {
-                            var inner = text.Substring(m + left.Length, n - m - left.Length);
+                            var inner = text.Substring(m + leftLen, n - m - leftLen);
                             ret.Append(callback(inner));
                         }
-                        last = n + right.Length;
+                        last = n + rightLen;
                         continue;
                     }
                 }

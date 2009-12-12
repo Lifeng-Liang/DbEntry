@@ -455,6 +455,10 @@ namespace Lephone.Data.Common
                        for (int i = 0; i < pis.Length; i++)
                        {
                            var pi = type.GetProperty(pis[i].Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+                           if(pi == null)
+                           {
+                               throw new DataException("Can not find the property named {0} in class {1}", pis[i].Name, info.ReturnType);
+                           }
                            il.LoadArg(0);
                            il.LoadArg(i + 1);
                            il.CallVirtual(pi.GetSetMethod());
