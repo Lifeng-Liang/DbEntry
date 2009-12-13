@@ -7,8 +7,8 @@ namespace Lephone.CodeGen
 {
     public class RailsActionGenerator
     {
-        private Type ClassType;
-        private readonly string ActionName;
+        private Type _classType;
+        private readonly string _actionName;
 
         public RailsActionGenerator(string fileName, string className, string actionName)
         {
@@ -16,17 +16,17 @@ namespace Lephone.CodeGen
             {
                 if (t.FullName == className)
                 {
-                    ClassType = t;
+                    _classType = t;
                     return false;
                 }
                 return true;
             });
-            ActionName = actionName;
+            _actionName = actionName;
         }
 
         public override string ToString()
         {
-            switch (ActionName)
+            switch (_actionName)
             {
                 case "New":
                     return GetActionNew();
@@ -59,7 +59,7 @@ namespace Lephone.CodeGen
         private static string GetActionNew()
         {
             return @"
-    public virtual void New()
+    public override void New()
     {
     }
 ";
@@ -68,23 +68,23 @@ namespace Lephone.CodeGen
         private string GetActionCreate()
         {
             var sb = new StringBuilder(@"
-    public virtual void Create()
+    public override void Create()
     {
 ");
-            sb.Append("        ").Append(ClassType.Name).Append(" obj = new ").Append(ClassType.Name).Append("();\n\n");
-            ObjectInfo oi = ObjectInfo.GetInstance(ClassType);
+            sb.Append("        ").Append(_classType.Name).Append(" obj = new ").Append(_classType.Name).Append("();\n\n");
+            ObjectInfo oi = ObjectInfo.GetInstance(_classType);
             foreach (MemberHandler m in oi.Fields)
             {
                 if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                 {
-                    string s = "Ctx.Request.Form[\"" + ClassType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
+                    string s = "Ctx.Request.Form[\"" + _classType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
                     Type t = m.IsLazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
                     sb.Append("        obj.").Append(m.Name).Append(" = ");
                     GetFieldCode(sb, t, s);
                     sb.Append(";\n");
                 }
             }
-            if (ClassType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
+            if (_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
                 sb.Append("\n        obj.Save();");
             }
@@ -93,7 +93,7 @@ namespace Lephone.CodeGen
                 sb.Append("\n        DbEntry.Save(obj);");
             }
             sb.Append(@"
-        Flash.Notice = """).Append(ClassType.Name).Append(@" was successfully created"";
+        Flash.Notice = """).Append(_classType.Name).Append(@" was successfully created"";
         RedirectTo(UrlTo.Action(""list""));
     }
 ");
@@ -150,7 +150,7 @@ namespace Lephone.CodeGen
         private string GetActionList()
         {
             return @"
-    public virtual void List(int pageIndex, int? pageSize)
+    public override void List(int pageIndex, int? pageSize)
     {
         if (pageIndex < 0)
         {
@@ -161,7 +161,7 @@ namespace Lephone.CodeGen
             pageIndex--;
         }
         int psize = pageSize ?? WebSettings.DefaultPageSize;
-        IPagedSelector ps = DbEntry.From<" + ClassType.Name + @">().Where(Condition.Empty).OrderBy(""Id DESC"")
+        IPagedSelector ps = DbEntry.From<" + _classType.Name + @">().Where(Condition.Empty).OrderBy(""Id DESC"")
             .PageSize(psize).GetPagedSelector();
         this[""List""] = ps.GetCurrentPage(pageIndex);
         this[""ListCount""] = ps.GetResultCount();
@@ -172,39 +172,39 @@ namespace Lephone.CodeGen
 
         private string GetActionShow()
         {
-            if(ClassType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
+            if(_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
                 return @"
-    public virtual void Show(int n)
+    public override void Show(int n)
     {
-        this[""Item""] = " + ClassType.Name + @".FindById(n);
+        this[""Item""] = " + _classType.Name + @".FindById(n);
     }
 ";
             }
 
             return @"
-    public virtual void Show(int n)
+    public override void Show(int n)
     {
-        this[""Item""] = DbEntry.GetObject<" + ClassType.Name + @">(n);
+        this[""Item""] = DbEntry.GetObject<" + _classType.Name + @">(n);
     }
 ";
         }
 
         private string GetActionEdit()
         {
-            if(ClassType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
+            if(_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
                 return @"
-    public virtual void Edit(int n)
+    public override void Edit(int n)
     {
-        this[""Item""] = " + ClassType.Name + @".FindById(n);
+        this[""Item""] = " + _classType.Name + @".FindById(n);
     }
 ";
             }
             return @"
-    public virtual void Edit(int n)
+    public override void Edit(int n)
     {
-        this[""Item""] = DbEntry.GetObject<" + ClassType.Name + @">(n);
+        this[""Item""] = DbEntry.GetObject<" + _classType.Name + @">(n);
     }
 ";
         }
@@ -212,25 +212,25 @@ namespace Lephone.CodeGen
         private string GetActionUpdate()
         {
             var sb = new StringBuilder(@"
-    public virtual void Update(int n)
+    public override void Update(int n)
     {
-        ").Append(ClassType.Name).Append(" obj = ");
-            if (ClassType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
+        ").Append(_classType.Name).Append(" obj = ");
+            if (_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
-                sb.Append(ClassType.Name).Append(".FindById(n);\n\n");
+                sb.Append(_classType.Name).Append(".FindById(n);\n\n");
             }
             else
             {
-                sb.Append("DbEntry.GetObject<").Append(ClassType.Name).Append(">(n);\n\n");
+                sb.Append("DbEntry.GetObject<").Append(_classType.Name).Append(">(n);\n\n");
             }
 
-            ObjectInfo oi = ObjectInfo.GetInstance(ClassType);
+            ObjectInfo oi = ObjectInfo.GetInstance(_classType);
             foreach (MemberHandler m in oi.Fields)
             {
                 if (m.IsRelationField) { continue; }
                 if (!m.IsAutoSavedValue && !m.IsDbGenerate)
                 {
-                    string s = "Ctx.Request.Form[\"" + ClassType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
+                    string s = "Ctx.Request.Form[\"" + _classType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
                     Type t = m.IsLazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
                     sb.Append("        obj.").Append(m.Name).Append(" = ");
                     GetFieldCode(sb, t, s);
@@ -239,7 +239,7 @@ namespace Lephone.CodeGen
             }
 
 
-            if(ClassType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
+            if(_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
                 sb.Append("\n        obj.Save();\n");
             }
@@ -247,7 +247,7 @@ namespace Lephone.CodeGen
             {
                 sb.Append("\n        DbEntry.Save(obj);\n");
             }
-            sb.Append("        Flash.Notice = \"").Append(ClassType.Name).Append(" was successfully updated\";");
+            sb.Append("        Flash.Notice = \"").Append(_classType.Name).Append(" was successfully updated\";");
             sb.Append(@"
         RedirectTo(UrlTo.Action(""show"").Parameters(n));
     }
@@ -257,12 +257,12 @@ namespace Lephone.CodeGen
 
         private string GetActionDestroy()
         {
-            if (ClassType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
+            if (_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
                 return @"
-    public virtual void Destroy(int n)
+    public override void Destroy(int n)
     {
-        " + ClassType.Name + @" o = " + ClassType.Name + @".FindById(n);
+        " + _classType.Name + @" o = " + _classType.Name + @".FindById(n);
         if (o != null)
         {
             o.Delete();
@@ -272,9 +272,9 @@ namespace Lephone.CodeGen
 ";
             }
             return @"
-    public virtual void Destroy(int n)
+    public override void Destroy(int n)
     {
-        " + ClassType.Name + @" o = DbEntry.GetObject<" + ClassType.Name + @">(n);
+        " + _classType.Name + @" o = DbEntry.GetObject<" + _classType.Name + @">(n);
         if (o != null)
         {
             DbEntry.Delete(o);

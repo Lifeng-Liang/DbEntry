@@ -179,7 +179,7 @@ namespace Lephone.CodeGen
 <% } %>
 ");
 
-                b.enter().br.br.enter().enter().include("<%= LinkTo.Title(\"New " + cn + "\").Action(\"new\"}) %>").br.enter();
+                b.enter().br.br.enter().enter().include("<%= LinkTo.Title(\"New " + cn + "\").Action(\"new\") %>").br.enter();
             });
             return sb.ToString();
         }
