@@ -57,14 +57,14 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test5()
         {
-            sqlite.From<Person>().Where(WhereCondition.EmptyCondition).OrderBy(p => p.FirstName).ThenBy(p => p.Id).Select();
+            sqlite.From<Person>().Where(Condition.Empty).OrderBy(p => p.FirstName).ThenBy(p => p.Id).Select();
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] ORDER BY [Name] ASC,[Id] ASC;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void Test6()
         {
-            sqlite.From<Person>().Where(WhereCondition.EmptyCondition).OrderByDescending(p => p.FirstName).ThenBy(p => p.Id).Select();
+            sqlite.From<Person>().Where(Condition.Empty).OrderByDescending(p => p.FirstName).ThenBy(p => p.Id).Select();
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] ORDER BY [Name] DESC,[Id] ASC;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
@@ -264,7 +264,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestMax()
         {
-            var n = DbEntry.From<Person>().Where(WhereCondition.EmptyCondition).GetMax(p => p.Id);
+            var n = DbEntry.From<Person>().Where(Condition.Empty).GetMax(p => p.Id);
             Assert.AreEqual(3, n);
 
             n = Person.GetMax(null, p => p.Id);
@@ -277,7 +277,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestMin()
         {
-            var n = DbEntry.From<Person>().Where(WhereCondition.EmptyCondition).GetMin(p => p.Id);
+            var n = DbEntry.From<Person>().Where(Condition.Empty).GetMin(p => p.Id);
             Assert.AreEqual(1, n);
 
             n = Person.GetMin(null, p => p.Id);
@@ -290,7 +290,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestMaxDate()
         {
-            var n = DbEntry.From<DateAndTime>().Where(WhereCondition.EmptyCondition).GetMaxDate(p => p.dtValue);
+            var n = DbEntry.From<DateAndTime>().Where(Condition.Empty).GetMaxDate(p => p.dtValue);
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
             n = DateAndTime.GetMaxDate(null, p => p.dtValue);
@@ -303,7 +303,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestMinDate()
         {
-            var n = DbEntry.From<DateAndTime>().Where(WhereCondition.EmptyCondition).GetMinDate(p => p.dtValue);
+            var n = DbEntry.From<DateAndTime>().Where(Condition.Empty).GetMinDate(p => p.dtValue);
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
             n = DateAndTime.GetMinDate(null, p => p.dtValue);
@@ -316,7 +316,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestSum()
         {
-            var n = DbEntry.From<Person>().Where(WhereCondition.EmptyCondition).GetSum(p => p.Id);
+            var n = DbEntry.From<Person>().Where(Condition.Empty).GetSum(p => p.Id);
             Assert.AreEqual(6, n);
 
             n = Person.GetSum(null, p => p.Id);

@@ -10,12 +10,12 @@ namespace Lephone.Web
     {
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
         {
-            WhereCondition c = null;
+            Condition c = null;
             foreach (string s in roleNames)
             {
                 c |= CK.K["Name"] == s;
             }
-            WhereCondition cu = null;
+            Condition cu = null;
             foreach (string s in usernames)
             {
                 cu |= CK.K["UserName"] == s;
@@ -131,7 +131,7 @@ namespace Lephone.Web
 
         public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
         {
-            WhereCondition c = null;
+            Condition c = null;
             foreach (string s in roleNames)
             {
                 c |= CK.K["Name"] == s;

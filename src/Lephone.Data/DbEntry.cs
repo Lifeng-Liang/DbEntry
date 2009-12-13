@@ -57,12 +57,12 @@ namespace Lephone.Data
             return _Instance.GetObject<T>(key);
         }
 
-        public static T GetObject<T>(WhereCondition c) where T : class, IDbObject
+        public static T GetObject<T>(Condition c) where T : class, IDbObject
         {
             return _Instance.GetObject<T>(c);
         }
 
-        public static T GetObject<T>(WhereCondition c, OrderBy ob) where T : class, IDbObject
+        public static T GetObject<T>(Condition c, OrderBy ob) where T : class, IDbObject
         {
             return _Instance.GetObject<T>(c, ob);
         }
@@ -87,7 +87,7 @@ namespace Lephone.Data
             return _Instance.Delete(obj);
 		}
 
-        public static int Delete<T>(WhereCondition iwc) where T : class, IDbObject
+        public static int Delete<T>(Condition iwc) where T : class, IDbObject
         {
             return _Instance.Delete<T>(iwc);
         }

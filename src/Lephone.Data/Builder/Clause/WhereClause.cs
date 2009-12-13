@@ -7,18 +7,18 @@ namespace Lephone.Data.Builder.Clause
 	[Serializable]
 	public class WhereClause : IClause
 	{
-		private WhereCondition _ic;
+		private Condition _ic;
 
 		public WhereClause()
 		{
 		}
 
-		public WhereClause(WhereCondition ic)
+		public WhereClause(Condition ic)
 		{
 			_ic = ic;
 		}
 
-		public WhereCondition Conditions
+		public Condition Conditions
 		{
 			set { _ic = value; }
 			get { return _ic; }
@@ -37,7 +37,7 @@ namespace Lephone.Data.Builder.Clause
 			return "";
 		}
 
-		public static implicit operator WhereClause (WhereCondition iwc)
+		public static implicit operator WhereClause (Condition iwc)
 		{
 			return new WhereClause(iwc);
 		}

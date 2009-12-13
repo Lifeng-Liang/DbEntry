@@ -5,12 +5,12 @@ namespace Lephone.Data.Common
 {
     public class StaticPagedSelector<T> : PagedSelector<T> where T : class, IDbObject
     {
-        public StaticPagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds)
+        public StaticPagedSelector(Condition iwc, OrderBy oc, int PageSize, DbContext ds)
             : base(iwc, oc, PageSize, ds)
         {
         }
 
-        public StaticPagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds, bool isDistinct)
+        public StaticPagedSelector(Condition iwc, OrderBy oc, int PageSize, DbContext ds, bool isDistinct)
             : base(iwc, oc, PageSize, ds, isDistinct)
         {
         }

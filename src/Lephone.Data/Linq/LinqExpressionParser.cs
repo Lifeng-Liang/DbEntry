@@ -6,7 +6,7 @@ namespace Lephone.Data.Linq
 {
     public class LinqExpressionParser<T> where T : class, IDbObject
     {
-        public WhereCondition condition;
+        public Condition condition;
         public OrderBy orderby;
 
         public LinqExpressionParser(Expression expr)

@@ -267,7 +267,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\Clause\ConditionClause.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="WhereCondition.cs">
+    <Compile Include="Condition.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Builder\Clause\KeyKeyClause.cs" />

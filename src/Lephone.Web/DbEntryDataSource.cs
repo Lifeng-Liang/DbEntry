@@ -93,10 +93,10 @@ namespace Lephone.Web
             }
         }
 
-        private WhereCondition _Condition;
+        private Condition _Condition;
 
         [Browsable(false)]
-        public WhereCondition Condition
+        public Condition Condition
         {
             get { return _Condition; }
             set { _Condition = value; }
@@ -122,7 +122,7 @@ namespace Lephone.Web
             return ret;
         }
 
-        public virtual List<T> ExecuteSelect(WhereCondition condition, OrderBy order, int MaximumRows, int PageIndex, ref int TotalRowCount)
+        public virtual List<T> ExecuteSelect(Condition condition, OrderBy order, int MaximumRows, int PageIndex, ref int TotalRowCount)
         {
             if (MaximumRows == 0)
             {

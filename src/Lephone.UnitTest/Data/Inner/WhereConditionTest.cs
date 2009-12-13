@@ -13,7 +13,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void Test1()
         {
-            WhereCondition c = null;
+            Condition c = null;
             c = ((c & null) | null);
             Assert.IsTrue(c is EmptyCondition);
         }
@@ -21,7 +21,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void Test2()
         {
-            WhereCondition c = null;
+            Condition c = null;
             c = ((c & null) | null);
             var cc = new WhereClause(c);
             var dpc = new DataParameterCollection();
@@ -31,7 +31,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void Test3()
         {
-            WhereCondition c = WhereCondition.EmptyCondition;
+            Condition c = Condition.Empty;
             c = ((c & null) | null);
             var cc = new WhereClause(c);
             var dpc = new DataParameterCollection();
@@ -41,7 +41,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void Test4()
         {
-            WhereCondition c = WhereCondition.EmptyCondition;
+            Condition c = Condition.Empty;
             c &= (CK.K["Id"] == 1 | CK.K["Age"] > 18);
             var cc = new WhereClause(c);
             var dpc = new DataParameterCollection();
@@ -52,7 +52,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void Test5()
         {
-            WhereCondition c = WhereCondition.EmptyCondition;
+            Condition c = Condition.Empty;
             c = c.And(CK.K["Id"].Eq(1)).Or(CK.K["Age"].Gt(18));
             var cc = new WhereClause(c);
             var dpc = new DataParameterCollection();
@@ -62,7 +62,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void Test6()
         {
-            WhereCondition c = null;
+            Condition c = null;
             c &= (CK.K["Id"] == 1 | CK.K["Age"] > 18);
             c &= null;
             c |= null;
@@ -75,7 +75,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void Test7()
         {
-            WhereCondition c = WhereCondition.EmptyCondition;
+            Condition c = Condition.Empty;
             c = c.And(CK.K["Id"].Eq(1)).Or(CK.K["Age"].Gt(18));
             c = c.And(null);
             c = c.Or(null);
@@ -88,7 +88,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void Test8()
         {
-            WhereCondition c = WhereCondition.EmptyCondition;
+            Condition c = Condition.Empty;
             c = c.And(CK.K["Id"] == 1).Or(CK.K["Age"] > 18);
             c = c.And(null);
             c = c.Or(null);

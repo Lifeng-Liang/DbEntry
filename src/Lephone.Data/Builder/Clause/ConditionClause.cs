@@ -7,7 +7,7 @@ using Lephone.Data.SqlEntry;
 namespace Lephone.Data.Builder.Clause
 {
 	[Serializable]
-	public abstract class ConditionClause : WhereCondition
+	public abstract class ConditionClause : Condition
 	{
 		private readonly string Condition;
 		private readonly ArrayList List = new ArrayList();
@@ -17,9 +17,9 @@ namespace Lephone.Data.Builder.Clause
 			this.Condition = Condition;
 		}
 
-	    protected ConditionClause(string Condition, params WhereCondition[] ics) : this(Condition)
+	    protected ConditionClause(string Condition, params Condition[] ics) : this(Condition)
 		{
-			foreach ( WhereCondition ic in ics )
+			foreach ( Condition ic in ics )
 			{
 				if ( ic != null )
 				{
@@ -32,7 +32,7 @@ namespace Lephone.Data.Builder.Clause
         {
             get
             {
-                foreach (WhereCondition ic in List)
+                foreach (Condition ic in List)
                 {
                     if (ic.SubClauseNotEmpty)
                     {
@@ -43,21 +43,21 @@ namespace Lephone.Data.Builder.Clause
             }
         }
 
-        public void Add(WhereCondition ic)
+        public void Add(Condition ic)
 		{
 			List.Add( ic );
 		}
 
-		public WhereCondition this[int index]
+		public Condition this[int index]
 		{
-			get { return (WhereCondition)List[index]; }
+			get { return (Condition)List[index]; }
 			set { List[index] = value; }
 		}
 
 		public override string ToSqlText(DataParameterCollection dpc, DbDialect dd)
 		{
 			var sb = new StringBuilder();
-			foreach ( WhereCondition ic in List )
+			foreach ( Condition ic in List )
 			{
                 if (ic.SubClauseNotEmpty)
                 {

@@ -161,7 +161,7 @@ namespace Lephone.CodeGen
             pageIndex--;
         }
         int psize = pageSize ?? WebSettings.DefaultPageSize;
-        IPagedSelector ps = DbEntry.From<" + ClassType.Name + @">().Where(WhereCondition.EmptyCondition).OrderBy(""Id DESC"")
+        IPagedSelector ps = DbEntry.From<" + ClassType.Name + @">().Where(Condition.Empty).OrderBy(""Id DESC"")
             .PageSize(psize).GetPagedSelector();
         this[""List""] = ps.GetCurrentPage(pageIndex);
         this[""ListCount""] = ps.GetResultCount();

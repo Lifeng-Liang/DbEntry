@@ -27,7 +27,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void Test1()
         {
-            var list = DbEntry.From<JoinClass>().Where(WhereCondition.EmptyCondition).Select();
+            var list = DbEntry.From<JoinClass>().Where(Condition.Empty).Select();
             Assert.IsNotNull(list);
             Assert.AreEqual(0, list.Count);
         }

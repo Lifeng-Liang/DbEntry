@@ -58,7 +58,7 @@ namespace Lephone.Data.QuerySyntax
 
     public interface IWhere<T> where T : class, IDbObject
     {
-        IAfterWhere<T> Where(WhereCondition where);
+        IAfterWhere<T> Where(Condition where);
         IAfterWhere<T> Where(Expression<Func<T, bool>> expr);
     }
 }

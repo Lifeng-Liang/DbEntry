@@ -109,7 +109,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDelete2()
         {
-            var n = SoftDelete.GetCount(WhereCondition.EmptyCondition);
+            var n = SoftDelete.GetCount(Condition.Empty);
 
             var o = SoftDelete.New.Init("aaa");
             o.Name = "bbb";
@@ -119,13 +119,13 @@ namespace Lephone.UnitTest.Data
             o2.Name = "ccc";
             o2.Save();
 
-            var m = SoftDelete.GetCount(WhereCondition.EmptyCondition);
+            var m = SoftDelete.GetCount(Condition.Empty);
 
             Assert.AreEqual(2, m - n);
 
             o2.Delete();
 
-            m = SoftDelete.GetCount(WhereCondition.EmptyCondition);
+            m = SoftDelete.GetCount(Condition.Empty);
 
             Assert.AreEqual(1, m - n);
         }
@@ -142,7 +142,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCount()
         {
-            long n = DbEntry.From<SoftDelete>().Where(WhereCondition.EmptyCondition).GetCount();
+            long n = DbEntry.From<SoftDelete>().Where(Condition.Empty).GetCount();
             Assert.AreEqual(3, n);
         }
 
@@ -150,7 +150,7 @@ namespace Lephone.UnitTest.Data
         public void TestGroupBy()
         {
             var dc = new DbContext("SQLite");
-            dc.From<SoftDelete>().Where(WhereCondition.EmptyCondition).GroupBy<string>("tom");
+            dc.From<SoftDelete>().Where(Condition.Empty).GroupBy<string>("tom");
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] NTEXT NOT NULL ,\n	[IsDeleted] BOOL NOT NULL \n);\n<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("SELECT [tom],COUNT([tom]) AS it__count__ FROM [SoftDelete] WHERE [IsDeleted] = @IsDeleted_0 GROUP BY [tom];\n<Text><60>(@IsDeleted_0=False:Boolean)", StaticRecorder.LastMessage);
         }

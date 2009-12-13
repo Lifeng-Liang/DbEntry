@@ -7,7 +7,7 @@ namespace Lephone.Data.Builder.Clause
 	[Serializable]
 	public class OrClause : ConditionClause
 	{
-		public OrClause(params WhereCondition[] kvs) : base("OR", kvs)
+		public OrClause(params Condition[] kvs) : base("OR", kvs)
 		{
 		}
 

@@ -158,7 +158,7 @@ namespace Lephone.Web.Rails
                 pageIndex--;
             }
             int psize = pageSize ?? WebSettings.DefaultPageSize;
-            IPagedSelector ps = DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy("Id DESC")
+            IPagedSelector ps = DbEntry.From<T>().Where(Condition.Empty).OrderBy("Id DESC")
                 .PageSize(psize).GetPagedSelector();
             this["List"] = ps.GetCurrentPage(pageIndex);
             this["ListCount"] = ps.GetResultCount();

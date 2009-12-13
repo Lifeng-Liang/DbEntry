@@ -121,10 +121,10 @@ namespace Lephone.Data
                 updatedColumns = ((DbObjectSmartUpdate)obj).m_UpdateColumns;
             }
 
-            WhereCondition EditCondition = IsNew ? null : !ObjectInfo.GetKeyWhereClause(obj);
+            Condition EditCondition = IsNew ? null : !ObjectInfo.GetKeyWhereClause(obj);
             foreach (List<MemberHandler> mhs in oi.UniqueIndexes.Values)
             {
-                WhereCondition c = null;
+                Condition c = null;
                 string n = "";
                 var sn = new StringBuilder();
                 foreach (MemberHandler h in mhs)

@@ -1,6 +1,6 @@
 namespace Lephone.Data.Builder.Clause
 {
-    public class ConstCondition : WhereCondition
+    public class ConstCondition : Condition
     {
         private readonly string Condition;
 

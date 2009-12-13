@@ -82,7 +82,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var ls = sqlite.From<FullType>().Where(WhereCondition.EmptyCondition).Select();
+            var ls = sqlite.From<FullType>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             var o = ls[0];
             Assert.IsNotNull(o);
@@ -104,7 +104,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            var ls = sqlite.From<FullType2>().Where(WhereCondition.EmptyCondition).Select();
+            var ls = sqlite.From<FullType2>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             var o = ls[0];
             Assert.IsNotNull(o);
@@ -126,7 +126,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSameValueIsNotChange()
         {
-            var ls = sqlite.From<FullType>().Where(WhereCondition.EmptyCondition).Select();
+            var ls = sqlite.From<FullType>().Where(Condition.Empty).Select();
             StaticRecorder.ClearMessages();
             Assert.AreEqual(1, ls.Count);
             var ft = ls[0];
@@ -148,7 +148,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSameValueIsNotChange2()
         {
-            var ls = sqlite.From<FullType2>().Where(WhereCondition.EmptyCondition).Select();
+            var ls = sqlite.From<FullType2>().Where(Condition.Empty).Select();
             StaticRecorder.ClearMessages();
             Assert.AreEqual(1, ls.Count);
             var ft = ls[0];

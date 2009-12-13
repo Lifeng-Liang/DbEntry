@@ -36,50 +36,50 @@ namespace Lephone.Data.Definition
 
         public static DbObjectList<T> FindAll()
         {
-            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).Select();
+            return DbEntry.From<T>().Where(Condition.Empty).Select();
         }
 
         public static DbObjectList<T> FindAll(OrderBy ob)
         {
-            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy(ob).Select();
+            return DbEntry.From<T>().Where(Condition.Empty).OrderBy(ob).Select();
         }
 
         public static DbObjectList<T> FindAll(string orderBy)
         {
-            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy(orderBy).Select();
+            return DbEntry.From<T>().Where(Condition.Empty).OrderBy(orderBy).Select();
         }
 
-        public static DbObjectList<T> Find(WhereCondition con)
+        public static DbObjectList<T> Find(Condition con)
         {
             return DbEntry.From<T>().Where(con).Select();
         }
 
-        public static DbObjectList<T> Find(WhereCondition con, OrderBy ob)
+        public static DbObjectList<T> Find(Condition con, OrderBy ob)
         {
             return DbEntry.From<T>().Where(con).OrderBy(ob).Select();
         }
 
-        public static DbObjectList<T> Find(WhereCondition con, string orderBy)
+        public static DbObjectList<T> Find(Condition con, string orderBy)
         {
             return DbEntry.From<T>().Where(con).OrderBy(orderBy).Select();
         }
 
-        public static T FindOne(WhereCondition con)
+        public static T FindOne(Condition con)
         {
             return DbEntry.GetObject<T>(con);
         }
 
-        public static T FindOne(WhereCondition con, OrderBy ob)
+        public static T FindOne(Condition con, OrderBy ob)
         {
             return DbEntry.GetObject<T>(con, ob);
         }
 
-        public static T FindOne(WhereCondition con, string orderBy)
+        public static T FindOne(Condition con, string orderBy)
         {
             return DbEntry.GetObject<T>(con, Data.OrderBy.Parse(orderBy));
         }
 
-        public static IAfterWhere<T> Where(WhereCondition con)
+        public static IAfterWhere<T> Where(Condition con)
         {
             return new QueryContent<T>(DbEntry.Context).Where(con);
         }
@@ -87,35 +87,35 @@ namespace Lephone.Data.Definition
         public static DbObjectList<T> FindRecent(int count)
         {
             string Id = ObjectInfo.GetKeyField(typeof(T)).Name;
-            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy((DESC)Id).Range(1, count).Select();
+            return DbEntry.From<T>().Where(Condition.Empty).OrderBy((DESC)Id).Range(1, count).Select();
         }
 
-        public static long GetCount(WhereCondition con)
+        public static long GetCount(Condition con)
         {
             return DbEntry.From<T>().Where(con).GetCount();
         }
 
-        public static decimal? GetMax(WhereCondition con, string columnName)
+        public static decimal? GetMax(Condition con, string columnName)
         {
             return DbEntry.From<T>().Where(con).GetMax(columnName);
         }
 
-        public static DateTime? GetMaxDate(WhereCondition con, string columnName)
+        public static DateTime? GetMaxDate(Condition con, string columnName)
         {
             return DbEntry.From<T>().Where(con).GetMaxDate(columnName);
         }
 
-        public static decimal? GetMin(WhereCondition con, string columnName)
+        public static decimal? GetMin(Condition con, string columnName)
         {
             return DbEntry.From<T>().Where(con).GetMin(columnName);
         }
 
-        public static DateTime? GetMinDate(WhereCondition con, string columnName)
+        public static DateTime? GetMinDate(Condition con, string columnName)
         {
             return DbEntry.From<T>().Where(con).GetMinDate(columnName);
         }
 
-        public static decimal? GetSum(WhereCondition con, string columnName)
+        public static decimal? GetSum(Condition con, string columnName)
         {
             return DbEntry.From<T>().Where(con).GetSum(columnName);
         }
@@ -130,10 +130,10 @@ namespace Lephone.Data.Definition
 
         public static void DeleteAll()
         {
-            DeleteAll(WhereCondition.EmptyCondition);
+            DeleteAll(Condition.Empty);
         }
 
-        public static void DeleteAll(WhereCondition con)
+        public static void DeleteAll(Condition con)
         {
             DbEntry.Delete<T>(con);
         }
@@ -162,7 +162,7 @@ namespace Lephone.Data.Definition
 
         public static DbObjectList<T> FindAll(Expression<Func<T, object>> orderby)
         {
-            return DbEntry.From<T>().Where(WhereCondition.EmptyCondition).OrderBy(orderby).Select();
+            return DbEntry.From<T>().Where(Condition.Empty).OrderBy(orderby).Select();
         }
 
         public static T FindOne(Expression<Func<T, bool>> condition)

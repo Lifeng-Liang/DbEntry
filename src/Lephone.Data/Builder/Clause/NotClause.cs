@@ -5,11 +5,11 @@ using Lephone.Data.SqlEntry;
 namespace Lephone.Data.Builder.Clause
 {
 	[Serializable]
-	public class NotClause : WhereCondition
+	public class NotClause : Condition
 	{
-		private readonly WhereCondition _ic;
+		private readonly Condition _ic;
 
-		public NotClause(WhereCondition ic)
+		public NotClause(Condition ic)
 		{
 			_ic = ic;
 		}

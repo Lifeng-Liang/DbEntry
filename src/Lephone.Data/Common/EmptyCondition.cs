@@ -1,6 +1,6 @@
 namespace Lephone.Data.Common
 {
-    public class EmptyCondition : WhereCondition
+    public class EmptyCondition : Condition
     {
         public override bool SubClauseNotEmpty
         {

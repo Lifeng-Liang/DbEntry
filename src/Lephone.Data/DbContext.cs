@@ -162,12 +162,12 @@ namespace Lephone.Data
             return new QueryContent<T>(this);
         }
 
-        public long GetResultCount(Type dbObjectType, WhereCondition iwc)
+        public long GetResultCount(Type dbObjectType, Condition iwc)
         {
             return GetResultCount(dbObjectType, iwc, false);
         }
 
-        public long GetResultCount(Type dbObjectType, WhereCondition iwc, bool isDistinct)
+        public long GetResultCount(Type dbObjectType, Condition iwc, bool isDistinct)
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
@@ -177,21 +177,21 @@ namespace Lephone.Data
             return Convert.ToInt64(ro);
         }
 
-        public decimal? GetMax(Type dbObjectType, WhereCondition iwc, string columnName)
+        public decimal? GetMax(Type dbObjectType, Condition iwc, string columnName)
         {
             object o = GetMaxObject(dbObjectType, iwc, columnName);
             if (o == null) return null;
             return Convert.ToDecimal(o);
         }
 
-        public DateTime? GetMaxDate(Type dbObjectType, WhereCondition iwc, string columnName)
+        public DateTime? GetMaxDate(Type dbObjectType, Condition iwc, string columnName)
         {
             object o = GetMaxObject(dbObjectType, iwc, columnName);
             if (o == null) return null;
             return Convert.ToDateTime(o);
         }
 
-        public object GetMaxObject(Type dbObjectType, WhereCondition iwc, string columnName)
+        public object GetMaxObject(Type dbObjectType, Condition iwc, string columnName)
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
@@ -205,21 +205,21 @@ namespace Lephone.Data
             return ro;
         }
 
-        public decimal? GetMin(Type dbObjectType, WhereCondition iwc, string columnName)
+        public decimal? GetMin(Type dbObjectType, Condition iwc, string columnName)
         {
             object o = GetMinObject(dbObjectType, iwc, columnName);
             if (o == null) return null;
             return Convert.ToDecimal(o);
         }
 
-        public DateTime? GetMinDate(Type dbObjectType, WhereCondition iwc, string columnName)
+        public DateTime? GetMinDate(Type dbObjectType, Condition iwc, string columnName)
         {
             object o = GetMinObject(dbObjectType, iwc, columnName);
             if (o == null) return null;
             return Convert.ToDateTime(o);
         }
 
-        public object GetMinObject(Type dbObjectType, WhereCondition iwc, string columnName)
+        public object GetMinObject(Type dbObjectType, Condition iwc, string columnName)
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
@@ -233,7 +233,7 @@ namespace Lephone.Data
             return ro;
         }
 
-        public decimal? GetSum(Type dbObjectType, WhereCondition iwc, string columnName)
+        public decimal? GetSum(Type dbObjectType, Condition iwc, string columnName)
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
@@ -247,7 +247,7 @@ namespace Lephone.Data
             return Convert.ToDecimal(ro);
         }
 
-        public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type dbObjectType, WhereCondition iwc, OrderBy order, string columnName)
+        public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type dbObjectType, Condition iwc, OrderBy order, string columnName)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             SqlStatement sql = oi.Composer.GetGroupByStatement(Dialect, iwc, order, columnName);
@@ -258,7 +258,7 @@ namespace Lephone.Data
             return list;
         }
 
-        public DbObjectList<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Type dbObjectType, WhereCondition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
+        public DbObjectList<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Type dbObjectType, Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             SqlStatement sql = oi.Composer.GetGroupBySumStatement(Dialect, iwc, order, groupbyColumnName, sumColumnName);
@@ -305,23 +305,23 @@ namespace Lephone.Data
             DataLoad(ip, dbObjectType, sql);
         }
 
-        public void FillCollection(IList list, Type dbObjectType, WhereCondition iwc, OrderBy oc, Range lc)
+        public void FillCollection(IList list, Type dbObjectType, Condition iwc, OrderBy oc, Range lc)
         {
             FillCollection(list, dbObjectType, iwc, oc, lc, false);
         }
 
-        public void FillCollection(IList list, Type dbObjectType, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void FillCollection(IList list, Type dbObjectType, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
             IProcessor ip = GetListProcessor(list, dbObjectType);
             DataLoad(ip, dbObjectType, null, iwc, oc, lc, isDistinct);
         }
 
-        public void FillCollection(IList list, Type dbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc)
+        public void FillCollection(IList list, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc)
         {
             FillCollection(list, dbObjectType, from, iwc, oc, lc, false);
         }
 
-        public void FillCollection(IList list, Type dbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void FillCollection(IList list, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
             IProcessor ip = GetListProcessor(list, dbObjectType);
             DataLoad(ip, dbObjectType, from, iwc, oc, lc, isDistinct);
@@ -334,7 +334,7 @@ namespace Lephone.Data
             DataLoadDirect(ip, dbObjectType, sql, false);
         }
 
-        public void DataLoad(IProcessor ip, Type dbObjectType, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void DataLoad(IProcessor ip, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct);
@@ -389,12 +389,12 @@ namespace Lephone.Data
             return (T)GetObject(typeof(T), key);
         }
 
-        public T GetObject<T>(WhereCondition c) where T : class, IDbObject
+        public T GetObject<T>(Condition c) where T : class, IDbObject
         {
             return (T)GetObject(typeof(T), c, null, null);
         }
 
-        public T GetObject<T>(WhereCondition c, OrderBy ob) where T : class, IDbObject
+        public T GetObject<T>(Condition c, OrderBy ob) where T : class, IDbObject
         {
             return (T)GetObject(typeof(T), c, ob);
         }
@@ -429,12 +429,12 @@ namespace Lephone.Data
             throw new DataException("To call this function, the table must have one premary key.");
         }
 
-        public object GetObject(Type t, WhereCondition c, OrderBy ob)
+        public object GetObject(Type t, Condition c, OrderBy ob)
         {
             return GetObject(t, c, ob, (ob == null) ? null : new Range(1, 1));
         }
 
-        internal object GetObject(Type t, WhereCondition c, OrderBy ob, Range r)
+        internal object GetObject(Type t, Condition c, OrderBy ob, Range r)
         {
             IList il = new ArrayList();
             FillCollection(il, t, c, ob, r);
@@ -556,7 +556,7 @@ namespace Lephone.Data
             Update(obj, ObjectInfo.GetKeyWhereClause(obj));
         }
 
-        private void Update(object obj, WhereCondition iwc)
+        private void Update(object obj, Condition iwc)
         {
             Type t = obj.GetType();
             TryCreateTable(t);
@@ -582,7 +582,7 @@ namespace Lephone.Data
             });
         }
 
-        private void InnerUpdate(object obj, WhereCondition iwc, ObjectInfo oi, DataProvider dp)
+        private void InnerUpdate(object obj, Condition iwc, ObjectInfo oi, DataProvider dp)
         {
             SqlStatement sql = oi.Composer.GetUpdateStatement(Dialect, obj, iwc);
             oi.LogSql(sql);
@@ -657,7 +657,7 @@ namespace Lephone.Data
             {
                 CrossTable mt = oi.CrossTables[t];
                 var sb = new DeleteStatementBuilder(mt.Name);
-                WhereCondition c = CK.K[mt.ColumeName1] == key1;
+                Condition c = CK.K[mt.ColumeName1] == key1;
                 c &= CK.K[mt.ColumeName2] == key2;
                 sb.Where.Conditions = c;
                 SqlStatement sql = sb.ToSqlStatement(Dialect);
@@ -718,7 +718,7 @@ namespace Lephone.Data
             return ret;
         }
 
-        public int Delete<T>(WhereCondition iwc) where T : class, IDbObject
+        public int Delete<T>(Condition iwc) where T : class, IDbObject
         {
             Type t = typeof(T);
             TryCreateTable(t);

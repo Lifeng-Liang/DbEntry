@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestAnd()
         {
-            WhereCondition c = CK.K["Id"] > 5 && CK.K["Id"] < 9;
+            Condition c = CK.K["Id"] > 5 && CK.K["Id"] < 9;
             var dpc = new DataParameterCollection();
             Assert.AreEqual("([Id] > @Id_0) AND ([Id] < @Id_1)", c.ToSqlText(dpc, new SqlServer2000()));
         }
@@ -19,7 +19,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestOr()
         {
-            WhereCondition c = CK.K["Id"] > 5 || CK.K["Id"] < 9;
+            Condition c = CK.K["Id"] > 5 || CK.K["Id"] < 9;
             var dpc = new DataParameterCollection();
             Assert.AreEqual("([Id] > @Id_0) OR ([Id] < @Id_1)", c.ToSqlText(dpc, new SqlServer2000()));
         }
@@ -27,8 +27,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestTwoWay()
         {
-            WhereCondition c = CK.K["Id"] > 5 || CK.K["Id"] < 9;
-            WhereCondition c1 = CK.K["Id"] > 5 | CK.K["Id"] < 9;
+            Condition c = CK.K["Id"] > 5 || CK.K["Id"] < 9;
+            Condition c1 = CK.K["Id"] > 5 | CK.K["Id"] < 9;
             var dpc = new DataParameterCollection();
             var dpc1 = new DataParameterCollection();
             Assert.AreEqual(c.ToSqlText(dpc, new SqlServer2000()), c1.ToSqlText(dpc1, new SqlServer2000()));

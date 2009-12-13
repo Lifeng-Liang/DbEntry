@@ -19,7 +19,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestToDataTable()
         {
-            DataTable dt = DbEntry.From<MyReader>().Where(WhereCondition.EmptyCondition).OrderBy("Id").Select().ToDataTable();
+            DataTable dt = DbEntry.From<MyReader>().Where(Condition.Empty).OrderBy("Id").Select().ToDataTable();
             Assert.AreEqual("Reader", dt.TableName);
             Assert.AreEqual(3, dt.Rows.Count);
             Assert.AreEqual(1, dt.Rows[0]["Id"]);
@@ -33,7 +33,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestToDataTable2()
         {
-            DataTable dt = DbEntry.From<NullableTable>().Where(WhereCondition.EmptyCondition).OrderBy("Id").Select().ToDataTable();
+            DataTable dt = DbEntry.From<NullableTable>().Where(Condition.Empty).OrderBy("Id").Select().ToDataTable();
             Assert.AreEqual("NullTest", dt.TableName);
             Assert.AreEqual(4, dt.Rows.Count);
 

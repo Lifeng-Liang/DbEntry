@@ -189,10 +189,10 @@ namespace Lephone.UnitTest.Data
         public SmartUpdateTest()
         {
             // raise AutoCreateTable once.
-            de.From<sUser>().Where(WhereCondition.EmptyCondition).Select();
-            de.From<rUser>().Where(WhereCondition.EmptyCondition).Select();
-            de.From<rArticle>().Where(WhereCondition.EmptyCondition).Select();
-            de.From<asUser>().Where(WhereCondition.EmptyCondition).Select();
+            de.From<sUser>().Where(Condition.Empty).Select();
+            de.From<rUser>().Where(Condition.Empty).Select();
+            de.From<rArticle>().Where(Condition.Empty).Select();
+            de.From<asUser>().Where(Condition.Empty).Select();
         }
 
         [SetUp]

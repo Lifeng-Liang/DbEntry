@@ -32,12 +32,12 @@ namespace Lephone.Data.Common
             return sb.ToSqlStatement(dialect);
         }
 
-        public override SqlStatement GetDeleteStatement(DbDialect dialect, WhereCondition iwc)
+        public override SqlStatement GetDeleteStatement(DbDialect dialect, Condition iwc)
         {
             return base.GetDeleteStatement(dialect, iwc && colExp);
         }
 
-        public override SqlStatement GetGroupByStatement(DbDialect dialect, WhereCondition iwc, OrderBy order, string columnName)
+        public override SqlStatement GetGroupByStatement(DbDialect dialect, Condition iwc, OrderBy order, string columnName)
         {
             return base.GetGroupByStatement(dialect, iwc && colExp, order, columnName);
         }
@@ -49,17 +49,17 @@ namespace Lephone.Data.Common
             return sb;
         }
 
-        public override SqlStatement GetResultCountStatement(DbDialect dialect, WhereCondition iwc, bool isDistinct)
+        public override SqlStatement GetResultCountStatement(DbDialect dialect, Condition iwc, bool isDistinct)
         {
             return base.GetResultCountStatement(dialect, iwc && colExp, isDistinct);
         }
 
-        public override SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, WhereCondition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public override SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
             return base.GetSelectStatement(dialect, from, iwc && colExp, oc, lc, isDistinct);
         }
 
-        public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, WhereCondition iwc)
+        public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)
         {
             return base.GetUpdateStatement(dialect, obj, iwc && colExp);
         }

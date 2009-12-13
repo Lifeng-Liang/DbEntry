@@ -36,12 +36,12 @@ namespace Lephone.Data.Linq
             throw new DataException("Can't find the field: " + FieldName);
         }
 
-        public static WhereCondition Parse(Expression<Func<T, bool>> expr)
+        public static Condition Parse(Expression<Func<T, bool>> expr)
         {
             return Parse(expr.Body);
         }
 
-        private static WhereCondition Parse(Expression expr)
+        private static Condition Parse(Expression expr)
         {
             if (expr is BinaryExpression)
             {
@@ -58,7 +58,7 @@ namespace Lephone.Data.Linq
             throw new LinqException("Not supported operation!");
         }
 
-        private static WhereCondition ParseUnary(UnaryExpression expr)
+        private static Condition ParseUnary(UnaryExpression expr)
         {
             switch (expr.NodeType)
             {
@@ -68,7 +68,7 @@ namespace Lephone.Data.Linq
             throw new LinqException("Not supported operation!");
         }
 
-        private static WhereCondition ParseBinary(BinaryExpression e)
+        private static Condition ParseBinary(BinaryExpression e)
         {
             switch (e.NodeType)
             {
@@ -93,7 +93,7 @@ namespace Lephone.Data.Linq
             }
         }
 
-        private static WhereCondition ParseMethodCall(MethodCallExpression e)
+        private static Condition ParseMethodCall(MethodCallExpression e)
         {
             if (e.Arguments.Count == 1)
             {
@@ -140,7 +140,7 @@ namespace Lephone.Data.Linq
             throw new LinqException("'Like' clause only supported one Parameter and the Parameter should be string and not allow NULL.");
         }
 
-        private static WhereCondition GetClause(BinaryExpression e, CompareOpration co)
+        private static Condition GetClause(BinaryExpression e, CompareOpration co)
         {
             Expression l = e.Left;
             if (l.NodeType == ExpressionType.Convert)

@@ -136,7 +136,7 @@ namespace Lephone.Data.Common
             return oi.From;
         }
 
-        public static WhereCondition GetKeyWhereClause(object obj)
+        public static Condition GetKeyWhereClause(object obj)
         {
             Type t = obj.GetType();
             ObjectInfo oi = GetInstance(t);
@@ -144,7 +144,7 @@ namespace Lephone.Data.Common
             {
                 throw new DataException("dbobject not define key field : " + t);
             }
-            WhereCondition ret = null;
+            Condition ret = null;
             Dictionary<string, object> dictionary = oi.Handler.GetKeyValues(obj);
             foreach (string s in dictionary.Keys)
             {

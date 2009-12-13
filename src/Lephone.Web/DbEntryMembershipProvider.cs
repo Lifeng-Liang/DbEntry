@@ -116,7 +116,7 @@ namespace Lephone.Web
             return GetMembershipUserCollection(null, pageIndex, pageSize, out totalRecords);
         }
 
-        private static MembershipUserCollection GetMembershipUserCollection(WhereCondition c, int pageIndex, int pageSize, out int totalRecords)
+        private static MembershipUserCollection GetMembershipUserCollection(Condition c, int pageIndex, int pageSize, out int totalRecords)
         {
             var ps = DbEntry.From<DbEntryMembershipUser>().Where(c)
                 .OrderBy("Id DESC").PageSize(pageSize).GetPagedSelector();

@@ -45,7 +45,7 @@ namespace Lephone.UnitTest.Data
             x = new DrInit { Name = "jerry", Count = 3 };
             DbEntry.Save(x);
 
-            var result = DbEntry.From<DrInit>().Where(WhereCondition.EmptyCondition).GroupBy<Cols>("Name,Count");
+            var result = DbEntry.From<DrInit>().Where(Condition.Empty).GroupBy<Cols>("Name,Count");
             var list = (from p in result orderby p.Column.Count select p).ToList();
 
             Assert.AreEqual(3, list.Count);

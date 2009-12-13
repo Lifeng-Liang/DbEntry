@@ -179,7 +179,7 @@ namespace Lephone.UnitTest.Data
         {
             var o = new MyTestTable {Name = "Tom", Gender = true, Age = 18, Birthday = DateTime.Now};
             DbEntry.Save(o);
-            List<MyTestTable> ls = DbEntry.From<MyTestTable>().Where(WhereCondition.EmptyCondition).Select();
+            List<MyTestTable> ls = DbEntry.From<MyTestTable>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("Tom", ls[0].Name);
             Assert.AreEqual(true, ls[0].Gender);
@@ -285,7 +285,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestJoinTableNoCreate()
         {
-            DbEntry.From<JoinTableNoCreate>().Where(WhereCondition.EmptyCondition).Select();
+            DbEntry.From<JoinTableNoCreate>().Where(Condition.Empty).Select();
         }
     }
 }

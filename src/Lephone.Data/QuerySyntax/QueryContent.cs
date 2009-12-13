@@ -9,7 +9,7 @@ namespace Lephone.Data.QuerySyntax
     [Serializable]
     public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IGetPagedSelector where T : class, IDbObject
     {
-        protected internal WhereCondition m_where;
+        protected internal Condition m_where;
         protected internal OrderBy m_order;
         protected internal Range m_range;
         protected internal DbContext m_entry;
@@ -31,7 +31,7 @@ namespace Lephone.Data.QuerySyntax
             }
         }
 
-        public IAfterWhere<T> Where(WhereCondition where)
+        public IAfterWhere<T> Where(Condition where)
         {
             m_where = where;
             return this;

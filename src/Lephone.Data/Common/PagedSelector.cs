@@ -5,18 +5,18 @@ namespace Lephone.Data.Common
 {
     public class PagedSelector<T> : IPagedSelector where T : class, IDbObject
     {
-        protected WhereCondition iwc;
+        protected Condition iwc;
         protected OrderBy oc;
         internal int _PageSize;
         protected DbContext Entry;
         internal bool isDistinct;
 
-        public PagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds)
+        public PagedSelector(Condition iwc, OrderBy oc, int PageSize, DbContext ds)
             : this(iwc, oc, PageSize, ds, false)
         {
         }
 
-        public PagedSelector(WhereCondition iwc, OrderBy oc, int PageSize, DbContext ds, bool isDistinct)
+        public PagedSelector(Condition iwc, OrderBy oc, int PageSize, DbContext ds, bool isDistinct)
         {
             this.iwc = iwc;
             this.oc = oc;

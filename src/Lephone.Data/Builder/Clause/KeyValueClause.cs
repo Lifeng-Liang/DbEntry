@@ -8,7 +8,7 @@ using Lephone.Data.Definition;
 namespace Lephone.Data.Builder.Clause
 {
 	[Serializable]
-	public class KeyValueClause : WhereCondition
+	public class KeyValueClause : Condition
 	{
 		protected KeyValue KV;
 		protected string Comp;

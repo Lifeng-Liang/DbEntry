@@ -16,7 +16,7 @@ namespace Lephone.Data.Common
         //    return sb.ToSqlStatement(Dialect);
         //}
 
-        public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, WhereCondition iwc)
+        public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)
         {
             var sb = new UpdateStatementBuilder(Info.From.GetMainTableName());
             Info.Handler.SetValuesForUpdate(sb, obj);

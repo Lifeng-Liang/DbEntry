@@ -5,7 +5,7 @@ namespace Lephone.Data.Builder.Clause
 	[Serializable]
 	public class AndClause : ConditionClause
 	{
-		public AndClause(params WhereCondition[] kvs) : base("AND", kvs)
+		public AndClause(params Condition[] kvs) : base("AND", kvs)
 		{
 		}
 	}
