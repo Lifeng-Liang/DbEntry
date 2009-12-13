@@ -11,17 +11,17 @@ namespace Lephone.Web.Rails
         protected internal string ControllerName;
         protected internal string ActionName;
         internal Dictionary<string, object> Bag = new Dictionary<string, object>();
-        private LinkTo _linkTo;
-        private UrlTo _urlTo;
+        private LinkToInfo.LinkTo _linkTo;
+        private UrlToInfo.UrlTo _urlTo;
 
-        protected internal LinkTo LinkTo
+        protected internal LinkToInfo.LinkTo LinkTo
         {
-            get { return _linkTo ?? (_linkTo = new LinkTo(ControllerName)); }
+            get { return _linkTo ?? (_linkTo = new LinkToInfo.LinkTo(ControllerName)); }
         }
 
-        protected internal UrlTo UrlTo
+        protected internal UrlToInfo.UrlTo UrlTo
         {
-            get { return _urlTo ?? (_urlTo = new UrlTo(ControllerName)); }
+            get { return _urlTo ?? (_urlTo = new UrlToInfo.UrlTo(ControllerName)); }
         }
 
         protected object this[string key]

@@ -24,6 +24,7 @@ namespace Lephone.Web.Rails
         public override void ProcessRequest(HttpContext context)
         {
             base.ProcessRequest(context);
+            // trick to call base.base.ProcessRequest, to avoid the ScaffoldingViewsBase class
             BaseProcessRequest(context);
         }
 
@@ -48,7 +49,7 @@ namespace Lephone.Web.Rails
 
         private void BuildControlTree()
         {
-            //ctrl.Title = "Show";
+            Title = ActionName;
             MasterPageFile = WebSettings.ScaffoldingMasterPage;
             this.InitializeCulture();
             base.AddContentTemplate("head", new CompiledTemplateBuilder(BuildControlContent1));

@@ -10,10 +10,10 @@ namespace Lephone.Web.Rails
 {
     internal class ScaffoldingViews : PageBase
     {
-        private readonly ObjectInfo oi;
-        private readonly HttpContext ctx;
+        private readonly ObjectInfo _oi;
+        private readonly HttpContext _ctx;
 
-        private const string tHeader = @"
+        private const string HeaderTemplate = @"
 <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
 
 <html xmlns=""http://www.w3.org/1999/xhtml"" >
@@ -26,14 +26,14 @@ namespace Lephone.Web.Rails
 
 ";
 
-        private const string tFooter = @"
+        private const string FooterTemplate = @"
 </body>
 </html>";
 
         public ScaffoldingViews(Type t, HttpContext context)
         {
-            oi = ObjectInfo.GetInstance(t);
-            ctx = context;
+            _oi = ObjectInfo.GetInstance(t);
+            _ctx = context;
         }
 
         public override void ProcessRequest(HttpContext context)
@@ -56,28 +56,28 @@ namespace Lephone.Web.Rails
 
         protected virtual void Process(CallbackObjectHandler<HtmlBuilder> callback)
         {
-            ctx.Response.Write(string.Format(tHeader, ctx.Request.ApplicationPath));
+            _ctx.Response.Write(string.Format(HeaderTemplate, _ctx.Request.ApplicationPath));
 
             HtmlBuilder b = HtmlBuilder.New;
 
             callback(b);
 
-            ctx.Response.Write(b);
+            _ctx.Response.Write(b);
 
-            ctx.Response.Write(tFooter);
+            _ctx.Response.Write(FooterTemplate);
         }
 
         public void Edit()
         {
             Process(delegate(HtmlBuilder b)
             {
-                string cn = oi.BaseType.Name;
+                string cn = _oi.BaseType.Name;
                 object o = this["Item"];
-                object id = oi.Handler.GetKeyValue(o);
+                object id = _oi.Handler.GetKeyValue(o);
                 b.h1.text(cn + " Edit").end.enter();
                 b.form("post", UrlTo.Action("update").Parameters(id)).enter();
 
-                foreach (MemberHandler m in oi.Fields)
+                foreach (MemberHandler m in _oi.Fields)
                 {
                     if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                     {
@@ -102,13 +102,13 @@ namespace Lephone.Web.Rails
         {
             Process(delegate(HtmlBuilder b)
             {
-                string cn = oi.BaseType.Name;
+                string cn = _oi.BaseType.Name;
                 b.p.style("color: Green").text(Flash.Notice).end.enter().enter();
                 b.h1.text("Listing " + Inflector.Pluralize(cn)).end.enter().enter();
 
                 b.table.tr.enter();
 
-                foreach (MemberHandler m in oi.SimpleFields)
+                foreach (MemberHandler m in _oi.SimpleFields)
                 {
                     b.th.text(m.Name).end.enter();
                 }
@@ -121,8 +121,8 @@ namespace Lephone.Web.Rails
                     foreach (object o in objlist)
                     {
                         b.tr.over();
-                        object id = oi.Handler.GetKeyValue(o);
-                        foreach (MemberHandler m in oi.SimpleFields)
+                        object id = _oi.Handler.GetKeyValue(o);
+                        foreach (MemberHandler m in _oi.SimpleFields)
                         {
                             b.td.text(m.GetValue(o) ?? "<NULL>").end.enter();
                         }
@@ -153,11 +153,11 @@ namespace Lephone.Web.Rails
         {
             Process(delegate(HtmlBuilder b)
             {
-                string cn = oi.BaseType.Name;
+                string cn = _oi.BaseType.Name;
                 b.h1.text("New " + cn).end.enter();
                 b.form("post", UrlTo.Controller(ControllerName).Action("create")).enter();
 
-                foreach (MemberHandler m in oi.Fields)
+                foreach (MemberHandler m in _oi.Fields)
                 {
                     if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                     {
@@ -178,11 +178,11 @@ namespace Lephone.Web.Rails
             Process(delegate(HtmlBuilder b)
             {
                 object o = this["Item"];
-                object id = oi.Handler.GetKeyValue(o);
+                object id = _oi.Handler.GetKeyValue(o);
 
                 b.p.style("color: Green").text(Flash.Notice).end.enter().enter();
 
-                foreach (MemberHandler m in oi.Fields)
+                foreach (MemberHandler m in _oi.Fields)
                 {
                     if(!m.IsRelationField)
                     {

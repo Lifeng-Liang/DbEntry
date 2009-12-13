@@ -79,7 +79,7 @@
     <Compile Include="DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="DbEntryMembershipUser.cs" />
-    <Compile Include="Rails\LinkTo.cs" />
+    <Compile Include="Rails\LinkToInfo.cs" />
     <Compile Include="Rails\MasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -92,7 +92,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Rails\SessionBox.cs" />
-    <Compile Include="Rails\UrlTo.cs" />
+    <Compile Include="Rails\UrlToInfo.cs" />
     <Compile Include="SmartMasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

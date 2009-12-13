@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
@@ -31,11 +32,11 @@ namespace Lephone.Web.Rails
             }
         }
 
-        private UrlTo _urlTo;
+        private UrlToInfo.UrlTo _urlTo;
 
-        protected internal UrlTo UrlTo
+        protected internal UrlToInfo.UrlTo UrlTo
         {
-            get { return _urlTo ?? (_urlTo = new UrlTo(ControllerName)); }
+            get { return _urlTo ?? (_urlTo = new UrlToInfo.UrlTo(ControllerName)); }
         }
 
         protected ControllerBase()
@@ -76,6 +77,38 @@ namespace Lephone.Web.Rails
     [Scaffolding]
     public abstract class ControllerBase<T> : ControllerBase where T : class, IDbObject
     {
+        //public T Item
+        //{
+        //    set
+        //    {
+        //        this["Item"] = value;
+        //    }
+        //}
+
+        //public IList Items
+        //{
+        //    set
+        //    {
+        //        this["List"] = value;
+        //    }
+        //}
+
+        //public long ListCount
+        //{
+        //    set
+        //    {
+        //        this["ListCount"] = value;
+        //    }
+        //}
+
+        //public int ListPageSize
+        //{
+        //    set
+        //    {
+        //        this["ListPageSize"] = value;
+        //    }
+        //}
+
         public virtual void New()
         {
         }
