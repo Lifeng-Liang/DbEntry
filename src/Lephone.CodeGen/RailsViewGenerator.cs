@@ -143,6 +143,7 @@ namespace Lephone.CodeGen
     public IEnumerable List;
     public long ListCount;
     public int ListPageSize;
+    public int ListPageCount;
 ";
             Process(sb, vars, delegate(HtmlBuilder b)
             {
@@ -174,8 +175,8 @@ namespace Lephone.CodeGen
                 b.include("<% } %>").enter().end.enter();
 
                 b.include(@"
-<% for (int i = 0, n = 1; i < ListCount; n++, i += ListPageSize) { %>
-  &nbsp;<%= LinkTo.Title(n.ToString()).Action(""list"").Parameters(n) %>
+<% for (int i = 1; i <= ListPageCount; i++) { %>
+  &nbsp;<%= LinkTo.Title(i.ToString()).Action(""list"").Parameters(i) %>
 <% } %>
 ");
 

@@ -216,9 +216,9 @@ namespace Lephone.Web
                 Type tt = GetScaffoldingType(t);
                 if(string.IsNullOrEmpty(WebSettings.ScaffoldingMasterPage))
                 {
-                    return new ScaffoldingViews(tt, context);
+                    return new ScaffoldingViews(ci, tt, context);
                 }
-                return new ScaffoldingViewsWithMaster(tt, context);
+                return new ScaffoldingViewsWithMaster(ci, tt, context);
             }
             if (t == typeof(DefaultController))
             {

@@ -11,7 +11,8 @@ namespace Lephone.Web.Rails
         private static bool _initialized;
         private static object _fileDependencies;
 
-        public ScaffoldingViewsWithMaster(Type t, HttpContext context) : base(t, context)
+        public ScaffoldingViewsWithMaster(ControllerInfo ci, Type t, HttpContext context)
+            : base(ci, t, context)
         {
             base.AppRelativeVirtualPath = "~/ScaffoldingViews.aspx";
             if (!_initialized)

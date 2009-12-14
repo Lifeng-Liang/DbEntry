@@ -8,13 +8,14 @@ namespace Lephone.Web.Rails
     {
         protected override void Init(Type t)
         {
+
             foreach (MethodInfo mi in t.GetMethods(ClassHelper.InstancePublic))
             {
                 if (ClassHelper.HasAttribute<DefaultActionAttribute>(mi, false))
                 {
-                    if (_DefaultAction == null)
+                    if (_defaultAction == null)
                     {
-                        _DefaultAction = mi.Name;
+                        _defaultAction = mi.Name;
                     }
                     else
                     {
@@ -22,26 +23,31 @@ namespace Lephone.Web.Rails
                     }
                 }
             }
-            if (ClassHelper.HasAttribute<ScaffoldingAttribute>(t, true))
-            {
-                _IsScaffolding = true;
-            }
+            _isScaffolding = ClassHelper.HasAttribute<ScaffoldingAttribute>(t, true);
+            _isStaticList = ClassHelper.HasAttribute<StaticListAttribute>(t, false);
         }
 
         private ControllerInfo() {}
 
-        private string _DefaultAction;
+        private string _defaultAction;
 
         public string DefaultAction
         {
-            get { return _DefaultAction ?? "list"; }
+            get { return _defaultAction ?? "list"; }
         }
 
-        private bool _IsScaffolding;
+        private bool _isScaffolding;
 
         public bool IsScaffolding
         {
-            get { return _IsScaffolding; }
+            get { return _isScaffolding; }
+        }
+
+        private bool _isStaticList;
+
+        public bool IsStaticList
+        {
+            get { return _isStaticList; }
         }
     }
 }

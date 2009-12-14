@@ -65,7 +65,7 @@ namespace Lephone.Web.Rails
 
         public static string GenerateUrl(string controller, string action, params object[] parameters)
         {
-            string appPath = HttpContext.Current.Request.ApplicationPath;
+            string appPath = HttpContext.Current.Request.ApplicationPath.ToLower();
             var url = new StringBuilder();
             url.Append(appPath);
             if (!string.IsNullOrEmpty(appPath) && !appPath.EndsWith("/"))

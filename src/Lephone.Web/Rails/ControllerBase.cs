@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
@@ -149,20 +148,38 @@ namespace Lephone.Web.Rails
 
         public virtual void List(int pageIndex, int? pageSize)
         {
+            var isStatic = ControllerInfo.GetInstance(this.GetType()).IsStaticList;
+            ProcessList(pageIndex, pageSize, isStatic);
+        }
+
+        protected void ProcessList(int pageIndex, int? pageSize, bool isStatic)
+        {
             if (pageIndex < 0)
             {
                 throw new DataException("The pageIndex out of supported range.");
+            }
+            int psize = pageSize ?? WebSettings.DefaultPageSize;
+            var psd = DbEntry.From<T>().Where(Condition.Empty).OrderBy("Id DESC").PageSize(psize);
+            var ps = isStatic ? psd.GetStaticPagedSelector() : psd.GetPagedSelector();
+
+
+            var listCount = ps.GetResultCount();
+            var listPageCount = (int)(Math.Floor((double)listCount / WebSettings.DefaultPageSize) + 1);
+            if(pageIndex == 0)
+            {
+                if(isStatic)
+                {
+                    pageIndex = listPageCount;
+                }
             }
             if (pageIndex != 0)
             {
                 pageIndex--;
             }
-            int psize = pageSize ?? WebSettings.DefaultPageSize;
-            IPagedSelector ps = DbEntry.From<T>().Where(Condition.Empty).OrderBy("Id DESC")
-                .PageSize(psize).GetPagedSelector();
             this["List"] = ps.GetCurrentPage(pageIndex);
-            this["ListCount"] = ps.GetResultCount();
+            this["ListCount"] = listCount;
             this["ListPageSize"] = WebSettings.DefaultPageSize;
+            this["ListPageCount"] = listPageCount;
         }
 
         public virtual void Show(int n)
