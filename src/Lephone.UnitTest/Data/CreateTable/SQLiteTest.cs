@@ -154,6 +154,22 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract string Name { get; set; }
     }
 
+    public abstract class ForTableName : DbObjectModel<ForTableName>
+    {
+        public abstract string Name { get; set; }
+
+        [BelongsTo]
+        public abstract For_TableName2 Table2 { get; set; }
+    }
+
+    public abstract class For_TableName2 : DbObjectModel<For_TableName2>
+    {
+        public abstract string Name { get; set; }
+
+        [HasMany]
+        public abstract IList<ForTableName> Tables { get; set; }
+    }
+
 
     #endregion
 
@@ -407,6 +423,18 @@ SELECT LAST_INSERT_ROWID();
             AssertSql(@"CREATE TABLE [Table_With_Non_Db_Gen_Id] (
     [Id] INT NOT NULL  PRIMARY KEY,
     [Name] NTEXT NOT NULL 
+);
+<Text><30>()");
+        }
+
+        [Test]
+        public void TestTableNameForBelongsToColumn()
+        {
+            sqlite.Create(typeof(ForTableName));
+            AssertSql(@"CREATE TABLE [For_Table_Name] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] NTEXT NOT NULL ,
+    [For_Table_Name2_Id] BIGINT NOT NULL 
 );
 <Text><30>()");
         }

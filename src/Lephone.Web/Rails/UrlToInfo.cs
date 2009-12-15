@@ -88,9 +88,9 @@ namespace Lephone.Web.Rails
                 }
             }
             url.Length--;
-            if (WebSettings.UsingAspxPostfix)
+            if (WebSettings.RailsPostfix != "")
             {
-                url.Append(".aspx");
+                url.Append(WebSettings.RailsPostfix);
             }
             return url.ToString();
         }

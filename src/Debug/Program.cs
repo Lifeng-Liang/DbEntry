@@ -1,14 +1,16 @@
 ﻿using System;
-using Lephone.Data;
-using Lephone.Data.Definition;
+using DebugLib;
 
 namespace Debug
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            var list = DbEntry.Context.GetDbColumnInfoList("people");
+            //Books.FindAll();
+            var list = User.FindAll();
+
+            Console.WriteLine(list.Count);
 
             Console.ReadLine();
         }

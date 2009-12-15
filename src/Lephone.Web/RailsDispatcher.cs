@@ -67,9 +67,12 @@ namespace Lephone.Web
             string url = context.Request.AppRelativeCurrentExecutionFilePath;
             url = url.Substring(2);
             
-            if (url.ToLower().EndsWith(".aspx"))
+            if(WebSettings.RailsPostfix != "")
             {
-                url = url.Substring(0, url.Length - 5);
+                if (url.ToLower().EndsWith(WebSettings.RailsPostfix))
+                {
+                    url = url.Substring(0, url.Length - WebSettings.RailsPostfix.Length);
+                }
             }
 
             string[] ss = url.Split(spliter, StringSplitOptions.RemoveEmptyEntries);

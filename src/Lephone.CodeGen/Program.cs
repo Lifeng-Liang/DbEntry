@@ -127,7 +127,7 @@ namespace Lephone.CodeGen
             ObjectInfo.GetInstance(typeof (DbEntryMembershipUser));
             ObjectInfo.GetInstance(typeof (DbEntryRole));
             ObjectInfo.GetInstance(typeof (LephoneSetting));
-            Helper.EnumTypes(fileName, t =>
+            Helper.EnumTypes(fileName, true, t =>
             {
                 ObjectInfo.GetInstance(t);
                 return true;

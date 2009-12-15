@@ -531,16 +531,16 @@ namespace Lephone.Data.Common
         {
             object[] os = sourceType.GetCustomAttributes(false);
             var al = new ArrayList();
-            bool hasAttr = false;
-            hasAttr |= PopulateDbTableAttribute(al, os);
-            hasAttr |= PopulateJoinOnAttribute(al, os);
-            if (!hasAttr)
-            {
-                string defaultName = NameMapper.Instance.MapName(sourceType.Name);
-                al.Add(new CustomAttributeBuilder(
-                    typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
-                    new object[] { defaultName }));
-            }
+            //bool hasAttr = false;
+            //hasAttr |= PopulateDbTableAttribute(al, os);
+            //hasAttr |= PopulateJoinOnAttribute(al, os);
+            //if (!hasAttr)
+            //{
+            //    string defaultName = NameMapper.Instance.MapName(sourceType.Name);
+            //    al.Add(new CustomAttributeBuilder(
+            //        typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
+            //        new object[] { defaultName }));
+            //}
             return (CustomAttributeBuilder[])al.ToArray(typeof(CustomAttributeBuilder));
         }
 
