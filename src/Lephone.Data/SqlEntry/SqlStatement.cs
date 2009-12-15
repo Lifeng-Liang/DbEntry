@@ -12,8 +12,8 @@ namespace Lephone.Data.SqlEntry
 		public DataParameterCollection Parameters;
 		public int SqlTimeOut = DataSetting.SqlTimeOut;
 		public CommandType SqlCommandType;
-        internal int StartIndex;
-        internal int EndIndex;
+        internal long StartIndex;
+        internal long EndIndex;
 
 		internal protected static CommandType GetCommandType(string sqlCommandText)
 		{

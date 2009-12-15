@@ -27,7 +27,7 @@ namespace Lephone.Data.QuerySyntax
 
     public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : class, IDbObject
     {
-        ISelectable<T> Range(int startIndex, int endIndex);
+        ISelectable<T> Range(long startIndex, long endIndex);
         ISelectable<T> Range(Range r);
         IGetPagedSelector PageSize(int pageSize);
 

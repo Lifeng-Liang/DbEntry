@@ -52,18 +52,6 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestForObjectAttribute()
-        {
-            Type t = AssemblyHandler.Instance.GetImplType(typeof(AbstractClass));
-
-            object[] ats = t.GetCustomAttributes(false);
-            Assert.AreEqual(1, ats.Length);
-            Assert.IsTrue(ats[0] is DbTableAttribute);
-            var da = (DbTableAttribute)ats[0];
-            Assert.AreEqual("Abstract_Class", da.TableName);
-        }
-
-        [Test]
         public void TestCreateObjectByParams()
         {
             var c = DynamicObjectBuilder.Instance.NewObject<AbstractClass>("abs");
@@ -86,60 +74,14 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestNamedClass()
-        {
-            Type t = AssemblyHandler.Instance.GetImplType(typeof(NamedClass));
-
-            object[] ats = t.GetCustomAttributes(false);
-            Assert.IsNotNull(ats);
-            Assert.AreEqual(1, ats.Length);
-            Assert.IsTrue(ats[0] is DbTableAttribute);
-            var da = (DbTableAttribute)ats[0];
-            Assert.AreEqual("abc", da.TableName);
-        }
-
-        [Test]
         public void TestSerializableClass()
         {
             Type t = AssemblyHandler.Instance.GetImplType(typeof(SerializableClass));
 
             object[] ats = t.GetCustomAttributes(false);
             Assert.IsNotNull(ats);
-            Assert.AreEqual(2, ats.Length);
-            Assert.IsTrue(ats[0] is SerializableAttribute || ats[1] is SerializableAttribute);
-        }
-
-        [Test]
-        public void TestJoinClass()
-        {
-            Type t = AssemblyHandler.Instance.GetImplType(typeof(JoinClass));
-            object[] js = t.GetCustomAttributes(false);
-            Assert.AreEqual(2, js.Length);
-            var j = (JoinOnAttribute)js[0];
-            int a1 = 0;
-            int a2 = 1;
-            if (j.Index == 2)
-            {
-                a1 = 1;
-                a2 = 0;
-            }
-            j = (JoinOnAttribute)js[a1];
-            Assert.AreEqual(1, j.Index);
-            Assert.AreEqual("abc", j.Joinner.Table1);
-            Assert.AreEqual("a1", j.Joinner.Key1);
-            Assert.AreEqual("Abstract_Class_Of_Age", j.Joinner.Table2);
-            Assert.AreEqual("a2", j.Joinner.Key2);
-            Assert.AreEqual(CompareOpration.LessOrEqual, j.Joinner.Comp);
-            Assert.AreEqual(JoinMode.Left, j.Joinner.Mode);
-
-            j = (JoinOnAttribute)js[a2];
-            Assert.AreEqual(2, j.Index);
-            Assert.AreEqual("abc", j.Joinner.Table1);
-            Assert.AreEqual("b1", j.Joinner.Key1);
-            Assert.AreEqual("Serializable_Class", j.Joinner.Table2);
-            Assert.AreEqual("b2", j.Joinner.Key2);
-            Assert.AreEqual(CompareOpration.Like, j.Joinner.Comp);
-            Assert.AreEqual(JoinMode.Right, j.Joinner.Mode);
+            Assert.AreEqual(1, ats.Length);
+            Assert.IsTrue(ats[0] is SerializableAttribute);
         }
     }
 }

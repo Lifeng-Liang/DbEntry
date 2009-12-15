@@ -143,7 +143,7 @@ namespace Lephone.CodeGen
     public IEnumerable List;
     public long ListCount;
     public int ListPageSize;
-    public int ListPageCount;
+    public long ListPageCount;
 ";
             Process(sb, vars, delegate(HtmlBuilder b)
             {

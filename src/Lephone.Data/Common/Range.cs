@@ -5,23 +5,23 @@ namespace Lephone.Data.Common
 	[Serializable]
 	public class Range
 	{
-        internal int StartIndex = -1;
-        internal int EndIndex = -1;
+        internal long StartIndex = -1;
+        internal long EndIndex = -1;
 
-        internal int Offset = -1;
-        internal int Rows = -1;
+        internal long Offset = -1;
+        internal long Rows = -1;
 
-        public Range(int StartIndex, int EndIndex)
+        public Range(long startIndex, long endIndex)
 		{
-            if (StartIndex <= 0 || EndIndex < StartIndex)
+            if (startIndex <= 0 || endIndex < startIndex)
 			{
 				throw new ArgumentOutOfRangeException();
 			}
-            this.StartIndex = StartIndex;
-            this.EndIndex = EndIndex;
+            this.StartIndex = startIndex;
+            this.EndIndex = endIndex;
 
-            this.Offset = StartIndex - 1;
-            this.Rows = EndIndex - Offset;
+            this.Offset = startIndex - 1;
+            this.Rows = endIndex - Offset;
 		}
 	}
 }

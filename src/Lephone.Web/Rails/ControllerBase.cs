@@ -164,12 +164,12 @@ namespace Lephone.Web.Rails
 
 
             var listCount = ps.GetResultCount();
-            var listPageCount = (int)(Math.Floor((double)listCount / WebSettings.DefaultPageSize) + 1);
+            var listPageCount = ps.GetPageCount();
             if(pageIndex == 0)
             {
                 if(isStatic)
                 {
-                    pageIndex = listPageCount;
+                    pageIndex = (int)listPageCount;
                 }
             }
             if (pageIndex != 0)

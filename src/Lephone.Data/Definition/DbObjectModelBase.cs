@@ -145,6 +145,11 @@ namespace Lephone.Data.Definition
             get { return new LinqQueryProvider<T, TKey>(null); }
         }
 
+        public static IAfterWhere<T> Where(Expression<Func<T, bool>> condition)
+        {
+            return new QueryContent<T>(DbEntry.Context).Where(condition);
+        }
+
         public static DbObjectList<T> Find(Expression<Func<T, bool>> condition)
         {
             return DbEntry.From<T>().Where(condition).Select();

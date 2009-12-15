@@ -140,18 +140,18 @@ namespace Lephone.Web.Rails
 
                     b.end.enter().enter();
 
-                    var pageCount = (int)this["ListPageCount"];
+                    var pageCount = (long)this["ListPageCount"];
 
                     if(_isStaticList)
                     {
-                        for (int i = pageCount; i > 0; i--)
+                        for (long i = pageCount; i > 0; i--)
                         {
                             b.include(LinkTo.Title(i.ToString()).Action("list").Parameters(i)).enter();
                         }
                     }
                     else
                     {
-                        for (int i = 1; i <= pageCount; i++)
+                        for (long i = 1; i <= pageCount; i++)
                         {
                             b.include(LinkTo.Title(i.ToString()).Action("list").Parameters(i)).enter();
                         }

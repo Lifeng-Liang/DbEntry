@@ -82,6 +82,10 @@ namespace Lephone.Web
             }
 
             string ControllerName = (ss.Length == 0) ? "default" : ss[0].ToLower();
+            if(ss.Length == 1 && ControllerName == "default.aspx")
+            {
+                ControllerName = "default";
+            }
 
             if (ctls.ContainsKey(ControllerName))
             {

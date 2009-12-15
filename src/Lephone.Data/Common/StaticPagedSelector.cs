@@ -5,17 +5,17 @@ namespace Lephone.Data.Common
 {
     public class StaticPagedSelector<T> : PagedSelector<T> where T : class, IDbObject
     {
-        public StaticPagedSelector(Condition iwc, OrderBy oc, int PageSize, DbContext ds)
-            : base(iwc, oc, PageSize, ds)
+        public StaticPagedSelector(Condition iwc, OrderBy oc, int pageSize, DbContext ds)
+            : base(iwc, oc, pageSize, ds)
         {
         }
 
-        public StaticPagedSelector(Condition iwc, OrderBy oc, int PageSize, DbContext ds, bool isDistinct)
-            : base(iwc, oc, PageSize, ds, isDistinct)
+        public StaticPagedSelector(Condition iwc, OrderBy oc, int pageSize, DbContext ds, bool isDistinct)
+            : base(iwc, oc, pageSize, ds, isDistinct)
         {
         }
 
-        public override IList GetCurrentPage(int PageIndex)
+        public override IList GetCurrentPage(long pageIndex)
         {
             long rc = GetResultCount();
             var firstPageSize = (int)(rc % _PageSize);
@@ -24,14 +24,14 @@ namespace Lephone.Data.Common
                 firstPageSize = _PageSize;
             }
             var pages = (int)((rc - firstPageSize) / _PageSize);
-            PageIndex = pages - PageIndex;
-            if (PageIndex <= 0)
+            pageIndex = pages - pageIndex;
+            if (pageIndex <= 0)
             {
                 return Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(1, firstPageSize).Select();
             }
-            int StartWith = firstPageSize + _PageSize * (PageIndex - 1);
-            int tn = StartWith + _PageSize;
-            IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(StartWith + 1, tn).Select();
+            long startWith = firstPageSize + _PageSize * (pageIndex - 1);
+            long tn = startWith + _PageSize;
+            IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(startWith + 1, tn).Select();
             return ret;
         }
     }

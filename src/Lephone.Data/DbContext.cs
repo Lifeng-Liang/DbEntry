@@ -355,8 +355,8 @@ namespace Lephone.Data
         private void DataLoadDirect(IProcessor ip, Type returnType, Type dbObjectType, SqlStatement sql, bool useIndex)
         {
             TryCreateTable(dbObjectType);
-            int startIndex = sql.StartIndex;
-            int endIndex = sql.EndIndex;
+            long startIndex = sql.StartIndex;
+            long endIndex = sql.EndIndex;
             if (Dialect.SupportsRangeStartIndex && endIndex > 0)
             {
                 endIndex = endIndex - startIndex + 1;

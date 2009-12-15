@@ -63,7 +63,7 @@ namespace Lephone.Data.QuerySyntax
             return this;
         }
 
-        public ISelectable<T> Range(int startIndex, int endIndex)
+        public ISelectable<T> Range(long startIndex, long endIndex)
         {
             m_range = new Range(startIndex, endIndex);
             return this;

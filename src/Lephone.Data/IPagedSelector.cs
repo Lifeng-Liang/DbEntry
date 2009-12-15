@@ -6,6 +6,7 @@ namespace Lephone.Data
     {
         int PageSize{get;}
         long GetResultCount();
-        IList GetCurrentPage(int PageIndex);
+        IList GetCurrentPage(long pageIndex);
+        long GetPageCount();
     }
 }

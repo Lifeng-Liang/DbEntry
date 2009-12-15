@@ -166,7 +166,7 @@ namespace Lephone.CodeGen
         this[""List""] = ps.GetCurrentPage(pageIndex);
         this[""ListCount""] = ps.GetResultCount();
         this[""ListPageSize""] = WebSettings.DefaultPageSize;
-        this[""ListPageCount""] = (int)(Math.Floor((double) listCount/WebSettings.DefaultPageSize) + 1);
+        this[""ListPageCount""] = ps.GetPageCount();
     }
 ";
         }
