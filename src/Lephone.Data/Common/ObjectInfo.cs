@@ -122,7 +122,7 @@ namespace Lephone.Data.Common
         private bool _hasAssociate;
         private bool _isAssociateObject;
         private bool _allowSqlLog = true;
-        private bool _hasOnePremarykey;
+        private bool _hasOnePrimaryKey;
         internal string _DeleteToTableName;
         internal string _SoftDeleteColumnName;
         private MemberHandler _lockVersion;
@@ -187,9 +187,9 @@ namespace Lephone.Data.Common
             get { return _allowSqlLog; }
         }
 
-        public bool HasOnePremarykey
+        public bool HasOnePrimaryKey
         {
-            get { return _hasOnePremarykey; }
+            get { return _hasOnePrimaryKey; }
         }
 
         public string DeleteToTableName
@@ -289,7 +289,7 @@ namespace Lephone.Data.Common
                 }
             }
 
-            _hasOnePremarykey = (keyFields != null && keyFields.Length == 1);
+            _hasOnePrimaryKey = (keyFields != null && keyFields.Length == 1);
         }
 
         #endregion

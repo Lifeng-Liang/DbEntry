@@ -46,7 +46,7 @@ namespace Lephone.Data.Definition
             if (m_IsLoaded)
             {
                 ObjectInfo oi = ObjectInfo.GetInstance(item.GetType());
-                if (oi.HasOnePremarykey)
+                if (oi.HasOnePrimaryKey)
                 {
                     object key = oi.Handler.GetKeyValue(item);
                     if (!key.Equals(oi.KeyFields[0].UnsavedValue))

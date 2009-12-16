@@ -14,7 +14,7 @@ namespace Lephone.Data.Definition
         void IRenew.SetAsNew()
         {
             ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
-            if (oi.HasOnePremarykey)
+            if (oi.HasOnePrimaryKey)
             {
                 oi.KeyFields[0].SetValue(this, oi.KeyFields[0].UnsavedValue);
             }

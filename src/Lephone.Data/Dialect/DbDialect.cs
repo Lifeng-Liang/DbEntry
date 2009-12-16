@@ -85,7 +85,7 @@ namespace Lephone.Data.Dialect
 
         public virtual object ExecuteInsert(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
         {
-            if (oi.HasOnePremarykey && oi.KeyFields[0].FieldType == typeof(Guid))
+            if (oi.HasOnePrimaryKey && oi.KeyFields[0].FieldType == typeof(Guid))
             {
                 Guid key = Guid.NewGuid();
                 sb.Values[0].Value = key;

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Reflection;
 using Lephone.Util;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;
@@ -63,30 +64,35 @@ namespace Lephone.Data
             string name = oi.From.GetMainTableName();
             if (name != null && !_tableNames.ContainsKey(name.ToLower()))
             {
-                IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
+                CreateTableAndRelations(oi, dbObjectType, mt => !_tableNames.ContainsKey(mt.Name.ToLower()));
+            }
+        }
+
+        private void CreateTableAndRelations(ObjectInfo oi, Type dbObjectType, CallbackReturnHandler<CrossTable, bool> callback)
+        {
+            IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
+            {
+                Create(dbObjectType);
+                if (!string.IsNullOrEmpty(oi.DeleteToTableName))
                 {
-                    Create(dbObjectType);
-                    if (!string.IsNullOrEmpty(oi.DeleteToTableName))
+                    CreateDeleteToTable(dbObjectType);
+                }
+                foreach (CrossTable mt in oi.CrossTables.Values)
+                {
+                    if (callback(mt))
                     {
-                        CreateDeleteToTable(dbObjectType);
-                    }
-                    foreach (CrossTable mt in oi.CrossTables.Values)
-                    {
-                        if (!_tableNames.ContainsKey(mt.Name.ToLower()))
+                        Debug.Assert(dbObjectType.Assembly.FullName != null);
+                        if (dbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
                         {
-                            Debug.Assert(dbObjectType.Assembly.FullName != null);
-                            if (dbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
-                            {
-                                CreateCrossTable(dbObjectType.BaseType, mt.HandleType);
-                            }
-                            else
-                            {
-                                CreateCrossTable(dbObjectType, mt.HandleType);
-                            }
+                            CreateCrossTable(dbObjectType.BaseType, mt.HandleType);
+                        }
+                        else
+                        {
+                            CreateCrossTable(dbObjectType, mt.HandleType);
                         }
                     }
-                });
-            }
+                }
+            });
         }
 
         protected Stack<List<string>> TransLists = new Stack<List<string>>();
@@ -402,7 +408,7 @@ namespace Lephone.Data
         public object GetObject(Type t, object key)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            if (oi.HasOnePremarykey)
+            if (oi.HasOnePrimaryKey)
             {
                 if (DataSetting.CacheEnabled && oi.Cacheable)
                 {
@@ -426,7 +432,7 @@ namespace Lephone.Data
                 }
                 return obj;
             }
-            throw new DataException("To call this function, the table must have one premary key.");
+            throw new DataException("To call this function, the table must have one primary key.");
         }
 
         public object GetObject(Type t, Condition c, OrderBy ob)
@@ -454,7 +460,7 @@ namespace Lephone.Data
         {
             Type t = obj.GetType();
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            if (!oi.HasOnePremarykey)
+            if (!oi.HasOnePrimaryKey)
             {
                 throw new DataException("To call this function, the table must have one primary key.");
             }
@@ -597,7 +603,7 @@ namespace Lephone.Data
             }
             oi.Composer.ProcessAfterSave(obj);
 
-            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
+            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
             {
                 SetCachedObject(obj);
             }
@@ -631,7 +637,7 @@ namespace Lephone.Data
                 oi.LogSql(sql);
                 ExecuteNonQuery(sql);
             }
-            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePremarykey)
+            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
             {
                 SetCachedObject(obj);
             }
@@ -726,6 +732,47 @@ namespace Lephone.Data
             SqlStatement sql = oi.Composer.GetDeleteStatement(Dialect, iwc);
             oi.LogSql(sql);
             return ExecuteNonQuery(sql);
+        }
+
+        public void RebuildTables(Assembly assembly)
+        {
+            var list = GetAllModels(assembly);
+            var ctlist = new List<string>();
+            foreach (var type in list)
+            {
+                var oi = ObjectInfo.GetInstance(type);
+                if(!string.IsNullOrEmpty(oi.From.GetMainTableName()))
+                {
+                    DropTable(type, true);
+                    CreateTableAndRelations(
+                        oi, type, mt =>
+                                  {
+                                      if (ctlist.Contains(mt.Name))
+                                      {
+                                          return false;
+                                      }
+                                      DropTable(mt.Name, true, oi);
+                                      ctlist.Add(mt.Name);
+                                      return true;
+                                  });
+                }
+            }
+        }
+
+        public List<Type> GetAllModels(Assembly assembly)
+        {
+            var idot = typeof(IDbObject);
+            var ts = new List<Type>();
+            foreach (var t in assembly.GetExportedTypes())
+            {
+                var lt = new List<Type>(t.GetInterfaces());
+                if (lt.Contains(idot))
+                {
+                    ts.Add(t);
+                }
+            }
+            ts.Sort((x, y) => x.FullName.CompareTo(y.FullName));
+            return ts;
         }
 
         public void DropTable(Type dbObjectType)

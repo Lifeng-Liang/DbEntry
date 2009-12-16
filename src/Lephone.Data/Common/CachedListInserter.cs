@@ -17,7 +17,7 @@ namespace Lephone.Data.Common
 
 		public bool Process(object obj)
 		{
-            if (oi.HasOnePremarykey && oi.Cacheable)
+            if (oi.HasOnePrimaryKey && oi.Cacheable)
             {
                 CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
             }

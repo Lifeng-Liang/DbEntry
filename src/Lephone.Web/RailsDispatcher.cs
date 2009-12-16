@@ -81,15 +81,15 @@ namespace Lephone.Web
                 ss[i] = HttpUtility.UrlDecode(ss[i]);
             }
 
-            string ControllerName = (ss.Length == 0) ? "default" : ss[0].ToLower();
-            if(ss.Length == 1 && ControllerName == "default.aspx")
+            string controllerName = (ss.Length == 0) ? "default" : ss[0].ToLower();
+            if(ss.Length == 1 && controllerName == "default.aspx")
             {
-                ControllerName = "default";
+                controllerName = "default";
             }
 
-            if (ctls.ContainsKey(ControllerName))
+            if (ctls.ContainsKey(controllerName))
             {
-                InvokeAction(context, ControllerName, ss);
+                InvokeAction(context, controllerName, ss);
                 return;
             }
             context.Response.StatusCode = 404;
@@ -109,22 +109,24 @@ namespace Lephone.Web
             try
             {
                 ControllerInfo ci = ControllerInfo.GetInstance(t);
-                string ActionName = ss.Length > 1 ? ss[1] : ci.DefaultAction;
-                MethodInfo mi = GetMethodInfo(t, ActionName);
+                string actionName = ss.Length > 1 ? ss[1] : ci.DefaultAction;
+                MethodInfo mi = GetMethodInfo(t, actionName);
                 if (mi == null)
                 {
-                    throw new WebException(string.Format("Action {0} doesn't exist!!!", ActionName));
+                    throw new WebException(string.Format("Action {0} doesn't exist!!!", actionName));
                 }
-
                 List<object> parameters = GetParameters(ss, mi);
                 object ret = CallAction(mi, ctl, parameters.ToArray()) ?? "";
+
+                var va = ClassHelper.GetAttribute<ViewAttribute>(mi, false);
+                string viewName = (va == null) ? actionName : va.ViewName;
                 if(string.IsNullOrEmpty(ret.ToString()))
                 {
                     // Invoke Viewer
-                    PageBase p = CreatePage(context, ci, t, controllerName, ActionName);
+                    PageBase p = CreatePage(context, ci, t, controllerName, viewName);
                     if (p != null)
                     {
-                        InitViewPage(controllerName, ctl, ActionName, p);
+                        InitViewPage(controllerName, ctl, viewName, p);
                         ((IHttpHandler)p).ProcessRequest(context);
                         factory.ReleaseHandler(p);
                     }
@@ -134,14 +136,15 @@ namespace Lephone.Web
                     context.Response.Redirect(ret.ToString());
                 }
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex)
             {
-                ctl.OnException(ex);
+                OnException(ex, ctl);
             }
-            catch (WebException ex)
-            {
-                ctl.OnException(ex);
-            }
+        }
+
+        protected virtual void OnException(Exception exception, ControllerBase controller)
+        {
+            controller.OnException(exception);
         }
 
         private static MethodInfo GetMethodInfo(Type t, string actionName)

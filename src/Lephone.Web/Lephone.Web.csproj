@@ -94,6 +94,7 @@
     <Compile Include="Rails\SessionBox.cs" />
     <Compile Include="Rails\StaticListAttribute.cs" />
     <Compile Include="Rails\UrlToInfo.cs" />
+    <Compile Include="Rails\ViewAttribute.cs" />
     <Compile Include="SmartMasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

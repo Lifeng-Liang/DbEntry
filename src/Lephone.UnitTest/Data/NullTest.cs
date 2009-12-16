@@ -198,5 +198,18 @@ namespace Lephone.UnitTest.Data
             Assert.IsTrue(1 == o.MyInt);
             Assert.IsTrue(false == o.MyBool);
         }
+
+        [Test]
+        public void TestEmptyString()
+        {
+            var o = NullableTable.New;
+            o.Name = "";
+            o.Save();
+
+            var o1 = NullableTable.FindById(o.Id);
+            Assert.IsNotNull(o1);
+            Assert.IsNotNull(o1.Name);
+            Assert.AreEqual("", o1.Name);
+        }
     }
 }
