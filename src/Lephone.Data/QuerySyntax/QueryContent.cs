@@ -9,11 +9,11 @@ namespace Lephone.Data.QuerySyntax
     [Serializable]
     public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IGetPagedSelector where T : class, IDbObject
     {
-        protected internal Condition m_where;
-        protected internal OrderBy m_order;
-        protected internal Range m_range;
-        protected internal DbContext m_entry;
-        protected internal int m_pagesize;
+        public Condition m_where;
+        public OrderBy m_order;
+        public Range m_range;
+        public DbContext m_entry;
+        public int m_pagesize;
 
         public QueryContent(DbContext entry)
         {
