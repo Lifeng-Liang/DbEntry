@@ -9,7 +9,7 @@ namespace Lephone.Web.Rails
         public void List()
         {
             var b = HtmlBuilder.New;
-            foreach (string s in RailsDispatcher.ctls.Keys)
+            foreach (string s in RailsDispatcher.Ctls.Keys)
             {
                 string url = UrlTo.Controller(s);
                 b = b.li.a(url).text(s).end.end;

@@ -11,33 +11,46 @@ namespace Lephone.Web
 {
     public class RailsDispatcher : IHttpHandler
     {
-        protected PageHandlerFactory factory = ClassHelper.CreateInstance<PageHandlerFactory>();
-        internal static Dictionary<string, Type> ctls;
-        private static readonly char[] spliter = new[] { '/' };
+        protected PageHandlerFactory Factory = ClassHelper.CreateInstance<PageHandlerFactory>();
+        protected internal static Dictionary<string, Type> Ctls;
+        protected static readonly char[] Spliter = new[] { '/' };
+        protected static readonly Type CbType = typeof(ControllerBase);
 
         static RailsDispatcher()
         {
-            ctls = new Dictionary<string, Type>();
-            ctls["default"] = typeof(DefaultController);
-            Type cbType = typeof(ControllerBase);
-            foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+            Ctls = new Dictionary<string, Type>();
+            Ctls["default"] = typeof(DefaultController);
+            if (WebSettings.ControllerAssembly == "")
             {
-                if(a.FullName == null) { continue; }
-                string s = a.FullName.Split(',')[0];
-                if (!s.StartsWith("System.") && CouldBeControllerAssemebly(s))
+                foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    foreach (Type t in a.GetTypes())
+                    if (a.FullName == null) { continue; }
+                    string s = a.FullName.Split(',')[0];
+                    if (!s.StartsWith("System.") && CouldBeControllerAssemebly(s))
                     {
-                        if (t.IsSubclassOf(cbType))
-                        {
-                            string tn = t.Name;
-                            if (tn.EndsWith("Controller"))
-                            {
-                                tn = tn.Substring(0, tn.Length - 10);
-                            }
-                            ctls[tn.ToLower()] = t;
-                        }
+                        SearchControllers(a);
                     }
+                }
+            }
+            else
+            {
+                var a = Assembly.Load(WebSettings.ControllerAssembly);
+                SearchControllers(a);
+            }
+        }
+
+        private static void SearchControllers(Assembly a)
+        {
+            foreach (Type t in a.GetTypes())
+            {
+                if (t.IsSubclassOf(CbType))
+                {
+                    string tn = t.Name;
+                    if (tn.EndsWith("Controller"))
+                    {
+                        tn = tn.Substring(0, tn.Length - 10);
+                    }
+                    Ctls[tn.ToLower()] = t;
                 }
             }
         }
@@ -62,7 +75,7 @@ namespace Lephone.Web
             get { return true; }
         }
 
-        public void ProcessRequest(HttpContext context)
+        public virtual void ProcessRequest(HttpContext context)
         {
             string url = context.Request.AppRelativeCurrentExecutionFilePath;
             url = url.Substring(2);
@@ -75,7 +88,7 @@ namespace Lephone.Web
                 }
             }
 
-            string[] ss = url.Split(spliter, StringSplitOptions.RemoveEmptyEntries);
+            string[] ss = url.Split(Spliter, StringSplitOptions.RemoveEmptyEntries);
             for(int i = 0; i < ss.Length; i++)
             {
                 ss[i] = HttpUtility.UrlDecode(ss[i]);
@@ -87,18 +100,20 @@ namespace Lephone.Web
                 controllerName = "default";
             }
 
-            if (ctls.ContainsKey(controllerName))
+            if (Ctls.ContainsKey(controllerName))
             {
                 InvokeAction(context, controllerName, ss);
                 return;
             }
+
+            context.Response.Write("Controller for [" + controllerName + "] not find!");
             context.Response.StatusCode = 404;
         }
 
         protected virtual void InvokeAction(HttpContext context, string controllerName, string[] ss)
         {
             // Invoke Controller
-            Type t = ctls[controllerName];
+            Type t = Ctls[controllerName];
             var ctl = ClassHelper.CreateInstance(t) as ControllerBase;
             if(ctl == null)
             {
@@ -128,7 +143,7 @@ namespace Lephone.Web
                     {
                         InitViewPage(controllerName, ctl, viewName, p);
                         ((IHttpHandler)p).ProcessRequest(context);
-                        factory.ReleaseHandler(p);
+                        Factory.ReleaseHandler(p);
                     }
                 }
                 else
@@ -214,7 +229,7 @@ namespace Lephone.Web
             string pp = context.Server.MapPath(vp);
             if (File.Exists(pp))
             {
-                object o = factory.GetHandler(context, context.Request.RequestType, vp, pp);
+                object o = Factory.GetHandler(context, context.Request.RequestType, vp, pp);
                 if (o == null)
                 {
                     throw new WebException("The template page must inherits from PageBase!!!");

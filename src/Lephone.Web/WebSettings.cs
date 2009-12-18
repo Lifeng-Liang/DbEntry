@@ -12,6 +12,7 @@ namespace Lephone.Web
 
         public static readonly int DefaultPageSize = 10;
 
+        public static readonly string ControllerAssembly = "";
         public static readonly string RailsPostfix = "";
         public static readonly double SessionCheckEvery = 5;
         public static readonly double SessionExpire = 20;

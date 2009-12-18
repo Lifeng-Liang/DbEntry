@@ -139,12 +139,13 @@ namespace Lephone.CodeGen
         {
             var sb = new StringBuilder();
 
-            const string vars = @"
-    public IEnumerable List;
+            string vars = string.Format(@"
+    public List<{0}> List;
     public long ListCount;
     public int ListPageSize;
     public long ListPageCount;
-";
+", ClassType.Name);
+
             Process(sb, vars, delegate(HtmlBuilder b)
             {
                 string cn = ClassType.Name;
@@ -162,7 +163,7 @@ namespace Lephone.CodeGen
 
                 b.end.enter();
 
-                b.include("<% foreach (" + ClassType.Name + " o in List) { %>");
+                b.include("<% foreach (var o in List) { %>");
                 b.enter().tr.enter();
                 foreach (MemberHandler m in oi.SimpleFields)
                 {
