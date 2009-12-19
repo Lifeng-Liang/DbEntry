@@ -40,9 +40,9 @@ namespace Lephone.Data.Dialect
             get { return "SYSDATE"; }
         }
 
-        public override string GetUserId(string ConnectionString)
+        public override string GetUserId(string connectionString)
         {
-            string [] ss = ConnectionString.Split(';');
+            string [] ss = connectionString.Split(';');
             foreach (string s in ss)
             {
                 string[] ms = s.Split('=');
@@ -54,9 +54,9 @@ namespace Lephone.Data.Dialect
             return null;
         }
 
-        public override IDataReader GetDataReader(IDataReader dr, Type ReturnType)
+        public override IDataReader GetDataReader(IDataReader dr, Type returnType)
         {
-            return new StupidDataReader(dr, ReturnType);
+            return new StupidDataReader(dr, returnType);
         }
 
         public override bool NotSupportPostFix
@@ -64,9 +64,9 @@ namespace Lephone.Data.Dialect
             get { return true; }
         }
 
-        protected override string GetSelectSequenceSql(string TableName)
+        public override string GetSelectSequenceSql(string tableName)
         {
-            return string.Format("SELECT {0}_SEQ.NEXTVAL FROM DUAL", TableName.ToUpper());
+            return string.Format("SELECT {0}_SEQ.NEXTVAL FROM DUAL", tableName.ToUpper());
         }
 
         public override bool NeedCommitCreateFirst
@@ -84,9 +84,9 @@ namespace Lephone.Data.Dialect
             get { return "NOT NULL"; }
         }
 
-        public override string GetCreateSequenceString(string TableName)
+        public override string GetCreateSequenceString(string tableName)
         {
-            return string.Format("CREATE SEQUENCE {0}_SEQ INCREMENT BY 1;\n", TableName.ToUpper());
+            return string.Format("CREATE SEQUENCE {0}_SEQ INCREMENT BY 1;\n", tableName.ToUpper());
         }
 
         protected override string QuoteSingle(string name)
@@ -104,19 +104,19 @@ namespace Lephone.Data.Dialect
             get { return true; }
         }
 
-        public override void ExecuteDropSequence(DataProvider dp, string TableName)
+        public override void ExecuteDropSequence(DataProvider dp, string tableName)
         {
-            string sql = string.Format("DROP SEQUENCE {0}_SEQ;\n", TableName.ToUpper());
+            string sql = string.Format("DROP SEQUENCE {0}_SEQ;\n", tableName.ToUpper());
             Logger.SQL.Trace(sql);
             dp.ExecuteNonQuery(sql);
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("SELECT * FROM ( SELECT ROW_.*, ROWNUM ROWNUM_ FROM ( {0} ) ROW_ WHERE ROWNUM <= {1} ) WHERE ROWNUM_ >= {2}",
-                Sql.SqlCommandText, ssb.Range.EndIndex, ssb.Range.StartIndex);
-            return Sql;
+            SqlStatement sql = base.GetNormalSelectSqlStatement(ssb);
+            sql.SqlCommandText = string.Format("SELECT * FROM ( SELECT ROW_.*, ROWNUM ROWNUM_ FROM ( {0} ) ROW_ WHERE ROWNUM <= {1} ) WHERE ROWNUM_ >= {2}",
+                sql.SqlCommandText, ssb.Range.EndIndex, ssb.Range.StartIndex);
+            return sql;
         }
 
         public override char ParameterPrefix

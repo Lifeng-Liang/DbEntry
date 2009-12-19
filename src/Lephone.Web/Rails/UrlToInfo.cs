@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
@@ -28,9 +29,10 @@ namespace Lephone.Web.Rails
             }
         }
 
-        string _controller;
-        string _action;
-        object[] _parameters;
+        protected string _controller;
+        protected string _action;
+        protected object[] _parameters;
+        protected List<KeyValuePair<string, string>> _urlParam;
 
         public UrlToInfo()
         {
@@ -53,6 +55,16 @@ namespace Lephone.Web.Rails
             return this;
         }
 
+        public UrlToInfo UrlParam(string key, string value)
+        {
+            if (_urlParam == null)
+            {
+                _urlParam = new List<KeyValuePair<string, string>>();
+            }
+            _urlParam.Add(new KeyValuePair<string, string>(key, value));
+            return this;
+        }
+
         public static implicit operator string(UrlToInfo info)
         {
             return info.ToString();
@@ -60,10 +72,11 @@ namespace Lephone.Web.Rails
 
         public override string ToString()
         {
-            return GenerateUrl(_controller, _action, _parameters);
+            return GenerateUrl(_controller, _action, _parameters, _urlParam);
         }
 
-        public static string GenerateUrl(string controller, string action, params object[] parameters)
+        public static string GenerateUrl(string controller, string action, 
+            object[] parameters, List<KeyValuePair<string, string>> urlParam)
         {
             string appPath = HttpContext.Current.Request.ApplicationPath.ToLower();
             var url = new StringBuilder();
@@ -92,7 +105,17 @@ namespace Lephone.Web.Rails
             {
                 url.Append(WebSettings.RailsPostfix);
             }
-            return url.ToString();
+            var s =  url.ToString();
+            if(urlParam != null)
+            {
+                var ub = new UrlBuilder(s, Encoding.UTF8);
+                foreach (var kv in urlParam)
+                {
+                    ub.Add(kv.Key, kv.Value);
+                }
+                return ub.ToString();
+            }
+            return s;
         }
 
         private static void AppendParameter(StringBuilder url, object o)

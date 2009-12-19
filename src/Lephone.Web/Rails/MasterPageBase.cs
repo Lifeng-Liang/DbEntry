@@ -41,9 +41,9 @@ namespace Lephone.Web.Rails
         protected internal string ControllerName;
         protected internal string ActionName;
 
-        public FlashBox Flash = new FlashBox();
+        public FlashHandler Flash = new FlashHandler();
 
-        public new SessionBox Session = new SessionBox();
+        public new SessionHandler Session = new SessionHandler();
 
         private LinkToInfo.LinkTo _linkTo;
         private UrlToInfo.UrlTo _urlTo;

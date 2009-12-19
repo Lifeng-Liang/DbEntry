@@ -16,9 +16,9 @@ namespace Lephone.Data.Dialect
             get { return "DATETIME(CURRENT_TIMESTAMP, 'localtime')"; }
         }
 
-        public override string GetConnectionString(string ConnectionString)
+        public override string GetConnectionString(string connectionString)
         {
-            string s = ProcessConnectionnString(ConnectionString);
+            string s = ProcessConnectionnString(connectionString);
             if (s[0] == '@')
             {
                 return "Cache Size=102400;Synchronous=Off;Data Source=" + s.Substring(1);
@@ -38,10 +38,10 @@ namespace Lephone.Data.Dialect
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
-                Sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
-            return Sql;
+            SqlStatement sql = base.GetNormalSelectSqlStatement(ssb);
+            sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
+                sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
+            return sql;
         }
 
         public override string IdentityTypeString

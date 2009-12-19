@@ -14,15 +14,15 @@ namespace Lephone.Data.Dialect
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            SqlStatement Sql = base.GetNormalSelectSqlStatement(ssb);
-            Sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
-                Sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
-            return Sql;
+            SqlStatement sql = base.GetNormalSelectSqlStatement(ssb);
+            sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
+                sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
+            return sql;
         }
 
-        public override string GetUnicodeTypeString(string AsciiTypeString)
+        public override string GetUnicodeTypeString(string asciiTypeString)
         {
-            return AsciiTypeString;
+            return asciiTypeString;
         }
 
         public override DbStructInterface GetDbStructInterface()

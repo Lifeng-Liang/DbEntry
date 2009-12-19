@@ -32,7 +32,9 @@ namespace Lephone.Web.Rails
         protected override void Process(CallbackObjectHandler<HtmlBuilder> callback)
         {
             _html = HtmlBuilder.New;
+            _html.div.Class("content").enter();
             callback(_html);
+            _html.end.enter();
         }
 
         private void BuildControlContent1(Control ctrl)

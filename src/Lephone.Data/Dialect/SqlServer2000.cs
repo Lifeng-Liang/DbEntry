@@ -19,9 +19,9 @@ namespace Lephone.Data.Dialect
             get { return "GETDATE()"; }
         }
 
-        public override DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
+        public override DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
         {
-            return new SqlServerDriver(this, ConnectionString, DbProviderFactoryName, AutoCreateTable);
+            return new SqlServerDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         public override DbStructInterface GetDbStructInterface()

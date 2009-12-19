@@ -2,9 +2,9 @@
 {
     public class Excel2007 : Excel
     {
-        public override string GetConnectionString(string ConnectionString)
+        public override string GetConnectionString(string connectionString)
         {
-            string s = ProcessConnectionnString(ConnectionString);
+            string s = ProcessConnectionnString(connectionString);
             if (s[0] == '@')
             {
                 return string.Format(

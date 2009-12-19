@@ -14,14 +14,14 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.UInt64] = "DECIMAL";
         }
 
-        public override IDataReader GetDataReader(IDataReader dr, Type ReturnType)
+        public override IDataReader GetDataReader(IDataReader dr, Type returnType)
         {
-            return new AccessDataReader(dr, ReturnType);
+            return new AccessDataReader(dr, returnType);
         }
 
-        public override DbDriver CreateDbDriver(string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
+        public override DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
         {
-            return new OleDbDriver(this, ConnectionString, DbProviderFactoryName, AutoCreateTable);
+            return new OleDbDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         public override DbStructInterface GetDbStructInterface()
@@ -29,9 +29,9 @@ namespace Lephone.Data.Dialect
             return new DbStructInterface(null, new[] { null, null, null, "TABLE" }, null, null, null);
         }
 
-        public override string GetConnectionString(string ConnectionString)
+        public override string GetConnectionString(string connectionString)
         {
-            string s = ProcessConnectionnString(ConnectionString);
+            string s = ProcessConnectionnString(connectionString);
             if (s[0] == '@')
             {
                 return "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + s.Substring(1);

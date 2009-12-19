@@ -20,6 +20,6 @@ namespace Lephone.Data.Dialect
             return key;
         }
 
-        protected abstract string GetSelectSequenceSql(string TableName);
+        public abstract string GetSelectSequenceSql(string tableName);
     }
 }

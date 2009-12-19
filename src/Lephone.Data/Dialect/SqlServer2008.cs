@@ -12,7 +12,7 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Time] = "TIME";
         }
 
-        public override IDataReader GetDataReader(IDataReader dr, System.Type ReturnType)
+        public override IDataReader GetDataReader(IDataReader dr, System.Type returnType)
         {
             return new TimeSpanLessDataReader(dr);
         }

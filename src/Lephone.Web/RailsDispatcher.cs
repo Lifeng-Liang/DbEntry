@@ -106,8 +106,7 @@ namespace Lephone.Web
                 return;
             }
 
-            context.Response.Write("Controller for [" + controllerName + "] not find!");
-            context.Response.StatusCode = 404;
+            ControllerHelper.OnException(new WebException("Controller for [{0}] not find!", controllerName), context);
         }
 
         protected virtual void InvokeAction(HttpContext context, string controllerName, string[] ss)
@@ -148,7 +147,7 @@ namespace Lephone.Web
                 }
                 else
                 {
-                    context.Response.Redirect(ret.ToString());
+                    context.Response.Redirect(ret.ToString(), false);
                 }
             }
             catch (Exception ex)

@@ -11,13 +11,11 @@ namespace Lephone.Web.Rails
 {
     public abstract class ControllerBase
     {
-        private static readonly string ErrorTemplate = ResourceHelper.ReadToEnd(typeof(ControllerBase), "Rails.Error.htm");
-
         protected internal HttpContext Ctx;
         internal readonly Dictionary<string, object> Bag = new Dictionary<string, object>();
         public readonly string ControllerName;
-        public readonly FlashBox Flash = new FlashBox();
-        public readonly SessionBox Session = new SessionBox();
+        public readonly FlashHandler Flash = new FlashHandler();
+        public readonly SessionHandler Session = new SessionHandler();
 
         protected object this[string key]
         {
@@ -60,16 +58,12 @@ namespace Lephone.Web.Rails
 
         protected internal virtual void OnException(Exception ex)
         {
-            Exception e = ex.InnerException ?? ex;
-            string title = Ctx.Server.HtmlEncode(e.Message);
-            string text = e.ToString();
-            string result = string.Format(ErrorTemplate, title, text);
-            Ctx.Response.Write(result);
+            ControllerHelper.OnException(ex, Ctx);
         }
 
         public void RedirectTo(string url)
         {
-            Ctx.Response.Redirect(url);
+            Ctx.Response.Redirect(url, false);
         }
     }
 

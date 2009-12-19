@@ -71,7 +71,7 @@
     <Compile Include="Rails\ControllerHelper.cs" />
     <Compile Include="Rails\ControllerInfo.cs" />
     <Compile Include="Rails\DefaultActionAttribute.cs" />
-    <Compile Include="Rails\FlashBox.cs" />
+    <Compile Include="Rails\FlashHandler.cs" />
     <Compile Include="RailsDispatcher.cs" />
     <Compile Include="DbEntryDataSource.cs" />
     <Compile Include="DbEntryMembershipProvider.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Rails\ScaffoldingViewsWithMaster.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Rails\SessionBox.cs" />
+    <Compile Include="Rails\SessionHandler.cs" />
     <Compile Include="Rails\StaticListAttribute.cs" />
     <Compile Include="Rails\UrlToInfo.cs" />
     <Compile Include="Rails\ViewAttribute.cs" />

@@ -2,7 +2,7 @@
 
 namespace Lephone.Web.Rails
 {
-    public class FlashBox : SessionBox
+    public class FlashHandler : SessionHandler
     {
         public override object this[string name]
         {

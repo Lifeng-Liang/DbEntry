@@ -4,26 +4,26 @@ using System.Web;
 
 namespace Lephone.Web.Rails
 {
-    public class SessionBox
+    public class SessionHandler
     {
         protected static Dictionary<string, Dictionary<string, object>> BagSet = new Dictionary<string, Dictionary<string, object>>();
         protected static DateTime NextChekTime = DateTime.MinValue;
 
-        public virtual object this[string Name]
+        public virtual object this[string name]
         {
             get
             {
                 Dictionary<string, object> bag = GetCurrentBag();
-                if (bag.ContainsKey(Name))
+                if (bag.ContainsKey(name))
                 {
-                    return bag[Name];
+                    return bag[name];
                 }
                 return null;
             }
             set
             {
                 Dictionary<string, object> bag = GetCurrentBag();
-                bag[Name] = value;
+                bag[name] = value;
             }
         }
 

@@ -2,7 +2,7 @@
 
 namespace Lephone.Web.Rails
 {
-    public class LinkToInfo
+    public class LinkToInfo : UrlToInfo
     {
         public class LinkTo
         {
@@ -32,11 +32,8 @@ namespace Lephone.Web.Rails
             }
         }
 
-        string _title;
-        string _controller;
-        string _action;
-        string _addon;
-        object[] _parameters;
+        protected string _title;
+        protected string _addon;
 
         public LinkToInfo()
         {
@@ -47,9 +44,9 @@ namespace Lephone.Web.Rails
             this._controller = controller;
         }
 
-        public LinkToInfo Action(string name)
+        public new LinkToInfo Action(string name)
         {
-            this._action = name;
+            base.Action(name);
             return this;
         }
 
@@ -65,21 +62,21 @@ namespace Lephone.Web.Rails
             return this;
         }
 
-        public LinkToInfo Parameters(params object[] parameters)
+        public new LinkToInfo Parameters(params object[] parameters)
         {
-            this._parameters = parameters;
+            base.Parameters(parameters);
+            return this;
+        }
+
+        public new LinkToInfo UrlParam(string key, string value)
+        {
+            base.UrlParam(key, value);
             return this;
         }
 
         public static implicit operator string(LinkToInfo info)
         {
             return info.ToString();
-        }
-
-        public UrlToInfo ToUrlToInfo()
-        {
-            var ut = new UrlToInfo(_controller).Action(_action).Parameters(_parameters);
-            return ut;
         }
 
         public override string ToString()
@@ -89,7 +86,7 @@ namespace Lephone.Web.Rails
                 throw new DataException("title can not be null or empty.");
             }
             string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
-                ToUrlToInfo(),
+                base.ToString(),
                 _title,
                 _addon == null ? "" : " " + _addon);
             return ret;

@@ -36,9 +36,9 @@ namespace Lephone.Web.Rails
             }
         }
 
-        public FlashBox Flash = new FlashBox();
+        public FlashHandler Flash = new FlashHandler();
 
-        public new SessionBox Session = new SessionBox();
+        public new SessionHandler Session = new SessionHandler();
 
         protected override void OnInit(System.EventArgs e)
         {

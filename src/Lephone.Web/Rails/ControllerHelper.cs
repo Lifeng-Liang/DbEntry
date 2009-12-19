@@ -1,10 +1,28 @@
 ﻿using System;
+using System.Web;
 using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
     public static class ControllerHelper
     {
+        private static readonly string ErrorTemplate = ResourceHelper.ReadToEnd(typeof(ControllerBase), "Rails.Error.htm");
+
+        public static void OnException(Exception ex, HttpContext ctx)
+        {
+            OnException(ex, ctx, 404);
+        }
+
+        public static void OnException(Exception ex, HttpContext ctx, int statusCode)
+        {
+            Exception e = ex.InnerException ?? ex;
+            string title = ctx.Server.HtmlEncode(e.Message);
+            string text = e.ToString();
+            string result = string.Format(ErrorTemplate, title, text);
+            ctx.Response.Write(result);
+            ctx.Response.StatusCode = statusCode;
+        }
+
         public static object ChangeType(object value, Type t)
         {
             if (t.IsEnum)

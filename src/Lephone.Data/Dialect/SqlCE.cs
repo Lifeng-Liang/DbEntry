@@ -10,9 +10,9 @@ namespace Lephone.Data.Dialect
             return base.GetNormalSelectSqlStatement(ssb);
         }
 
-        public override string GetConnectionString(string ConnectionString)
+        public override string GetConnectionString(string connectionString)
         {
-            string s = ProcessConnectionnString(ConnectionString);
+            string s = ProcessConnectionnString(connectionString);
             if (s[0] == '@')
             {
                 return "Data Source=" + s.Substring(1);
