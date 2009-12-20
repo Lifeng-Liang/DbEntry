@@ -24,7 +24,12 @@ namespace Lephone.Web.Rails
                 }
             }
             _isScaffolding = ClassHelper.HasAttribute<ScaffoldingAttribute>(t, true);
-            _isStaticList = ClassHelper.HasAttribute<StaticListAttribute>(t, false);
+            _listStyle = ListStyle.Default;
+            var lsa = ClassHelper.GetAttribute<ListStyleAttribute>(t, false);
+            if(lsa != null)
+            {
+                _listStyle = lsa.Style;
+            }
         }
 
         private ControllerInfo() {}
@@ -43,11 +48,11 @@ namespace Lephone.Web.Rails
             get { return _isScaffolding; }
         }
 
-        private bool _isStaticList;
+        private ListStyle _listStyle;
 
-        public bool IsStaticList
+        public ListStyle ListStyle
         {
-            get { return _isStaticList; }
+            get { return _listStyle; }
         }
     }
 }

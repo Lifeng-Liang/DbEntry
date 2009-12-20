@@ -17,7 +17,7 @@ namespace Lephone.Web.Rails
         public readonly FlashHandler Flash = new FlashHandler();
         public readonly SessionHandler Session = new SessionHandler();
 
-        protected object this[string key]
+        protected internal object this[string key]
         {
             get
             {
@@ -29,11 +29,9 @@ namespace Lephone.Web.Rails
             }
         }
 
-        private UrlToInfo.UrlTo _urlTo;
-
-        protected internal UrlToInfo.UrlTo UrlTo
+        protected internal UrlToInfo UrlTo
         {
-            get { return _urlTo ?? (_urlTo = new UrlToInfo.UrlTo(ControllerName)); }
+            get { return new UrlToInfo(ControllerName); }
         }
 
         protected ControllerBase()
@@ -70,43 +68,27 @@ namespace Lephone.Web.Rails
     [Scaffolding]
     public abstract class ControllerBase<T> : ControllerBase where T : class, IDbObject
     {
-        //public T Item
-        //{
-        //    set
-        //    {
-        //        this["Item"] = value;
-        //    }
-        //}
+        protected T Item
+        {
+            set
+            {
+                this["Item"] = value;
+            }
+        }
 
-        //public IList Items
-        //{
-        //    set
-        //    {
-        //        this["List"] = value;
-        //    }
-        //}
-
-        //public long ListCount
-        //{
-        //    set
-        //    {
-        //        this["ListCount"] = value;
-        //    }
-        //}
-
-        //public int ListPageSize
-        //{
-        //    set
-        //    {
-        //        this["ListPageSize"] = value;
-        //    }
-        //}
+        protected ItemList<T> ItemList
+        {
+            set
+            {
+                this["ItemList"] = value;
+            }
+        }
 
         public virtual void New()
         {
         }
 
-        public virtual void Create()
+        public virtual string Create()
         {
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             var obj = (T)oi.NewObject();
@@ -137,16 +119,16 @@ namespace Lephone.Web.Rails
                 DbEntry.Save(obj);
             }
             Flash.Notice = string.Format("{0} was successfully created", ControllerName);
-            RedirectTo(UrlTo.Action("list"));
+            return UrlTo.Action("list");
         }
 
-        public virtual void List(int pageIndex, int? pageSize)
+        public virtual void List(long? pageIndex, int? pageSize)
         {
-            var isStatic = ControllerInfo.GetInstance(this.GetType()).IsStaticList;
-            ProcessList(pageIndex, pageSize, isStatic);
+            var style = ControllerInfo.GetInstance(this.GetType()).ListStyle;
+            ProcessList(pageIndex, pageSize, style);
         }
 
-        protected void ProcessList(int pageIndex, int? pageSize, bool isStatic)
+        protected void ProcessList(long? pageIndex, int? pageSize, ListStyle style)
         {
             if (pageIndex < 0)
             {
@@ -154,39 +136,20 @@ namespace Lephone.Web.Rails
             }
             int psize = pageSize ?? WebSettings.DefaultPageSize;
             var psd = DbEntry.From<T>().Where(Condition.Empty).OrderBy("Id DESC").PageSize(psize);
-            var ps = isStatic ? psd.GetStaticPagedSelector() : psd.GetPagedSelector();
-
-
-            var listCount = ps.GetResultCount();
-            var listPageCount = ps.GetPageCount();
-            if(pageIndex == 0)
-            {
-                if(isStatic)
-                {
-                    pageIndex = (int)listPageCount;
-                }
-            }
-            if (pageIndex != 0)
-            {
-                pageIndex--;
-            }
-            this["List"] = ps.GetCurrentPage(pageIndex);
-            this["ListCount"] = listCount;
-            this["ListPageSize"] = WebSettings.DefaultPageSize;
-            this["ListPageCount"] = listPageCount;
+            this["ItemList"] = psd.GetItemList<T>(style, pageIndex);
         }
 
-        public virtual void Show(int n)
+        public virtual void Show(long n)
         {
             this["Item"] = DbEntry.GetObject<T>(n);
         }
 
-        public virtual void Edit(int n)
+        public virtual void Edit(long n)
         {
             this["Item"] = DbEntry.GetObject<T>(n);
         }
 
-        public virtual void Update(int n)
+        public virtual string Update(long n)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             var obj = DbEntry.GetObject<T>(n);
@@ -220,10 +183,10 @@ namespace Lephone.Web.Rails
                 DbEntry.Save(obj);
             }
             Flash.Notice = string.Format("{0} was successfully updated", ControllerName);
-            RedirectTo(UrlTo.Action("show").Parameters(n));
+            return UrlTo.Action("show").Parameters(n);
         }
 
-        public virtual void Destroy(int n)
+        public virtual string Destroy(long n)
         {
             object o = DbEntry.GetObject<T>(n);
             if (o != null)
@@ -236,8 +199,9 @@ namespace Lephone.Web.Rails
                 {
                     DbEntry.Save(o);
                 }
-                RedirectTo(UrlTo.Action("list"));
+                return UrlTo.Action("list");
             }
+            return null;
         }
     }
 }

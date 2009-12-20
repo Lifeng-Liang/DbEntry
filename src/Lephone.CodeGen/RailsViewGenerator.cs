@@ -140,10 +140,7 @@ namespace Lephone.CodeGen
             var sb = new StringBuilder();
 
             string vars = string.Format(@"
-    public List<{0}> List;
-    public long ListCount;
-    public int ListPageSize;
-    public long ListPageCount;
+    public ItemList<{0}> ItemList;
 ", ClassType.Name);
 
             Process(sb, vars, delegate(HtmlBuilder b)
@@ -163,7 +160,7 @@ namespace Lephone.CodeGen
 
                 b.end.enter();
 
-                b.include("<% foreach (var o in List) { %>");
+                b.include("<% foreach (var o in ItemList.List) { %>");
                 b.enter().tr.enter();
                 foreach (MemberHandler m in oi.SimpleFields)
                 {
@@ -176,7 +173,7 @@ namespace Lephone.CodeGen
                 b.include("<% } %>").enter().end.enter();
 
                 b.include(@"
-<% for (int i = 1; i <= ListPageCount; i++) { %>
+<% for (int i = 1; i <= ItemList.PageCount; i++) { %>
   &nbsp;<%= LinkTo.Title(i.ToString()).Action(""list"").Parameters(i) %>
 <% } %>
 ");

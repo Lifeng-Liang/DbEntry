@@ -11,7 +11,7 @@ namespace Lephone.Data.QuerySyntax
         DbObjectList<T> SelectDistinct();
     }
 
-    public interface IGetPagedSelector
+    public interface IGetPagedSelector<T>
     {
         IPagedSelector GetPagedSelector();
         IPagedSelector GetDistinctPagedSelector();
@@ -29,7 +29,7 @@ namespace Lephone.Data.QuerySyntax
     {
         ISelectable<T> Range(long startIndex, long endIndex);
         ISelectable<T> Range(Range r);
-        IGetPagedSelector PageSize(int pageSize);
+        IGetPagedSelector<T> PageSize(int pageSize);
 
         IRangeable<T> ThenBy(Expression<Func<T, object>> expr);
         IRangeable<T> ThenByDescending(Expression<Func<T, object>> expr);

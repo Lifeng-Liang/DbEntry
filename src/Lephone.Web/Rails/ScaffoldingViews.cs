@@ -30,11 +30,11 @@ namespace Lephone.Web.Rails
 </body>
 </html>";
 
-        private readonly bool _isStaticList;
+        private readonly ListStyle _style;
 
         public ScaffoldingViews(ControllerInfo ci, Type t, HttpContext context)
         {
-            _isStaticList = ci.IsStaticList;
+            _style = ci.ListStyle;
             _oi = ObjectInfo.GetInstance(t);
             _ctx = context;
         }
@@ -118,9 +118,10 @@ namespace Lephone.Web.Rails
 
                 b.end.enter().enter();
 
-                var objlist = this["List"] as IEnumerable;
-                if(objlist != null)
+                var itemList = this["ItemList"];
+                if (itemList != null)
                 {
+                    var objlist = (IEnumerable)ClassHelper.GetValue(itemList, "List");
                     foreach (object o in objlist)
                     {
                         b.tr.over();
@@ -140,18 +141,18 @@ namespace Lephone.Web.Rails
 
                     b.end.enter().enter();
 
-                    var pageCount = (long)this["ListPageCount"];
+                    var pageCount = (long) ClassHelper.GetValue(itemList, "PageCount");
 
-                    if(_isStaticList)
+                    if(_style == ListStyle.Default)
                     {
-                        for (long i = pageCount; i > 0; i--)
+                        for (long i = 1; i <= pageCount; i++)
                         {
                             b.include(LinkTo.Title(i.ToString()).Action("list").Parameters(i)).enter();
                         }
                     }
                     else
                     {
-                        for (long i = 1; i <= pageCount; i++)
+                        for (long i = pageCount; i > 0; i--)
                         {
                             b.include(LinkTo.Title(i.ToString()).Action("list").Parameters(i)).enter();
                         }

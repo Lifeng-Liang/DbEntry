@@ -128,7 +128,7 @@ namespace Lephone.Web
             {
                 return DbEntry.From<T>().Where(condition).OrderBy(order).Select();
             }
-            IGetPagedSelector igp = DbEntry
+            var igp = DbEntry
                 .From<T>()
                 .Where(condition)
                 .OrderBy(order)

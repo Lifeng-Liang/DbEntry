@@ -7,7 +7,7 @@ using Lephone.Data.Linq;
 namespace Lephone.Data.QuerySyntax
 {
     [Serializable]
-    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IGetPagedSelector where T : class, IDbObject
+    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IGetPagedSelector<T> where T : class, IDbObject
     {
         public Condition m_where;
         public OrderBy m_order;
@@ -192,7 +192,7 @@ namespace Lephone.Data.QuerySyntax
             return m_entry.GetGroupBySum<T1, T2>(typeof(T), m_where, m_order, groupbyColumnName, sumColumnName);
         }
 
-        public IGetPagedSelector PageSize(int pageSize)
+        public IGetPagedSelector<T> PageSize(int pageSize)
         {
             m_pagesize = pageSize;
             return this;

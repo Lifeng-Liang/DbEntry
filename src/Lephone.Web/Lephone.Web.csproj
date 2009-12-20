@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonWebExtends.cs" />
     <Compile Include="Common\ButtonIDConverter.cs" />
     <Compile Include="Common\DbEntryDataSourceDesigner.cs" />
     <Compile Include="Common\DbEntryDataSourceFieldSchema.cs" />
@@ -79,7 +80,9 @@
     <Compile Include="DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="DbEntryMembershipUser.cs" />
+    <Compile Include="Rails\ItemList.cs" />
     <Compile Include="Rails\LinkToInfo.cs" />
+    <Compile Include="Rails\ListStyleAttribute.cs" />
     <Compile Include="Rails\MasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -92,7 +95,6 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Rails\SessionHandler.cs" />
-    <Compile Include="Rails\StaticListAttribute.cs" />
     <Compile Include="Rails\UrlToInfo.cs" />
     <Compile Include="Rails\ViewAttribute.cs" />
     <Compile Include="SmartMasterPageBase.cs">

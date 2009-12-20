@@ -150,23 +150,16 @@ namespace Lephone.CodeGen
         private string GetActionList()
         {
             return @"
-    public override void List(int pageIndex, int? pageSize)
+    public override void List(long? pageIndex, int? pageSize)
     {
-        if (pageIndex < 0)
+        if (pageIndex < 1)
         {
             throw new DataException(""The pageIndex out of supported range."");
-        }
-        if (pageIndex != 0)
-        {
-            pageIndex--;
         }
         int psize = pageSize ?? WebSettings.DefaultPageSize;
         IPagedSelector ps = DbEntry.From<" + _classType.Name + @">().Where(Condition.Empty).OrderBy(""Id DESC"")
             .PageSize(psize).GetPagedSelector();
-        this[""List""] = ps.GetCurrentPage(pageIndex);
-        this[""ListCount""] = ps.GetResultCount();
-        this[""ListPageSize""] = WebSettings.DefaultPageSize;
-        this[""ListPageCount""] = ps.GetPageCount();
+        this[""ItemList""] = ps.GetItemList<T>((pageIndex ?? 1) - 1);
     }
 ";
         }

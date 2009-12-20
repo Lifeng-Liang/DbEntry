@@ -7,28 +7,6 @@ namespace Lephone.Web.Rails
 {
     public class UrlToInfo
     {
-        public class UrlTo
-        {
-            private readonly string _controllerName;
-
-            public UrlTo(string controllerName)
-            {
-                this._controllerName = controllerName;
-            }
-
-            public UrlToInfo Controller(string name)
-            {
-                var result = new UrlToInfo { _controller = name };
-                return result;
-            }
-
-            public UrlToInfo Action(string name)
-            {
-                var result = new UrlToInfo { _controller = this._controllerName, _action = name };
-                return result;
-            }
-        }
-
         protected string _controller;
         protected string _action;
         protected object[] _parameters;
@@ -41,6 +19,12 @@ namespace Lephone.Web.Rails
         public UrlToInfo(string controller)
         {
             this._controller = controller;
+        }
+
+        public UrlToInfo Controller(string name)
+        {
+            this._controller = name;
+            return this;
         }
 
         public UrlToInfo Action(string name)
