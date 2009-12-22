@@ -34,6 +34,11 @@ public static class CommonWebExtends
                 pageIndex = listPageCount;
             }
         }
-        return ps.GetItemList<T>((pageIndex ?? 1) - 1);
+        var list = ps.GetItemList<T>((pageIndex ?? 1) - 1);
+        if (style == ListStyle.Hybird && pageIndex == null)
+        {
+            list.PageIndex = 0;
+        }
+        return list;
     }
 }

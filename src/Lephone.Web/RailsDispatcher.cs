@@ -102,19 +102,19 @@ namespace Lephone.Web
 
             if (Ctls.ContainsKey(controllerName))
             {
-                InvokeAction(context, controllerName, ss);
+                ProcessAction(context, controllerName, ss);
                 return;
             }
 
             ControllerHelper.OnException(new WebException("Controller for [{0}] not find!", controllerName), context);
         }
 
-        protected virtual void InvokeAction(HttpContext context, string controllerName, string[] ss)
+        protected virtual void ProcessAction(HttpContext context, string controllerName, string[] ss)
         {
             // Invoke Controller
             Type t = Ctls[controllerName];
             var ctl = ClassHelper.CreateInstance(t) as ControllerBase;
-            if(ctl == null)
+            if (ctl == null)
             {
                 throw new WebException("The Controller must inherits from ControllerBase");
             }
@@ -124,35 +124,40 @@ namespace Lephone.Web
             {
                 ControllerInfo ci = ControllerInfo.GetInstance(t);
                 string actionName = ss.Length > 1 ? ss[1] : ci.DefaultAction;
-                MethodInfo mi = GetMethodInfo(t, actionName);
-                if (mi == null)
-                {
-                    throw new WebException(string.Format("Action {0} doesn't exist!!!", actionName));
-                }
-                List<object> parameters = GetParameters(ss, mi);
-                object ret = CallAction(mi, ctl, parameters.ToArray()) ?? "";
-
-                var va = ClassHelper.GetAttribute<ViewAttribute>(mi, false);
-                string viewName = (va == null) ? actionName : va.ViewName;
-                if(string.IsNullOrEmpty(ret.ToString()))
-                {
-                    // Invoke Viewer
-                    PageBase p = CreatePage(context, ci, t, controllerName, viewName);
-                    if (p != null)
-                    {
-                        InitViewPage(controllerName, ctl, viewName, p);
-                        ((IHttpHandler)p).ProcessRequest(context);
-                        Factory.ReleaseHandler(p);
-                    }
-                }
-                else
-                {
-                    context.Response.Redirect(ret.ToString(), false);
-                }
+                InvokeAction(context, controllerName, actionName.ToLower(), ss, t, ctl, ci);
             }
             catch (Exception ex)
             {
                 OnException(ex, ctl);
+            }
+        }
+
+        protected virtual void InvokeAction(HttpContext context, string controllerName, string actionName, string[] ss, Type t, ControllerBase ctl, ControllerInfo ci)
+        {
+            MethodInfo mi = GetMethodInfo(t, actionName);
+            if (mi == null)
+            {
+                throw new WebException(string.Format("Action {0} doesn't exist!!!", actionName));
+            }
+            List<object> parameters = GetParameters(ss, mi);
+            object ret = CallAction(mi, ctl, parameters.ToArray()) ?? "";
+
+            var va = ClassHelper.GetAttribute<ViewAttribute>(mi, false);
+            string viewName = (va == null) ? actionName : va.ViewName;
+            if(string.IsNullOrEmpty(ret.ToString()))
+            {
+                // Invoke Viewer
+                PageBase p = CreatePage(context, ci, t, controllerName, viewName);
+                if (p != null)
+                {
+                    InitViewPage(controllerName, ctl, viewName, p);
+                    ((IHttpHandler)p).ProcessRequest(context);
+                    Factory.ReleaseHandler(p);
+                }
+            }
+            else
+            {
+                context.Response.Redirect(ret.ToString(), false);
             }
         }
 

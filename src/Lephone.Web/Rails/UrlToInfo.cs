@@ -69,10 +69,10 @@ namespace Lephone.Web.Rails
             {
                 url.Append("/");
             }
-            url.Append(controller).Append("/");
+            url.Append(controller.ToLower()).Append("/");
             if (!string.IsNullOrEmpty(action))
             {
-                url.Append(action).Append("/");
+                url.Append(action.ToLower()).Append("/");
             }
             if (parameters != null)
             {

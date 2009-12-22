@@ -141,7 +141,7 @@ namespace Lephone.Web.Rails
             else
             {
                 string s = (value == null) ? "" : value.ToString();
-                b.tag("textarea").id(id).name(name).attr("cols", 50).attr("rows", 5).text(s).end.over();
+                b.tag("textarea").id(id).name(name).attr("cols", 50).attr("rows", 5).include(s).end.over();
             }
         }
 

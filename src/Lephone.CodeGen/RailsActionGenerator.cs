@@ -68,10 +68,10 @@ namespace Lephone.CodeGen
         private string GetActionCreate()
         {
             var sb = new StringBuilder(@"
-    public override void Create()
+    public override string Create()
     {
 ");
-            sb.Append("        ").Append(_classType.Name).Append(" obj = new ").Append(_classType.Name).Append("();\n\n");
+            sb.Append("        var").Append(" obj = ").Append(_classType.Name).Append(".New;\n\n");
             ObjectInfo oi = ObjectInfo.GetInstance(_classType);
             foreach (MemberHandler m in oi.Fields)
             {
@@ -94,7 +94,7 @@ namespace Lephone.CodeGen
             }
             sb.Append(@"
         Flash.Notice = """).Append(_classType.Name).Append(@" was successfully created"";
-        RedirectTo(UrlTo.Action(""list""));
+        return UrlTo.Action(""list"");
     }
 ");
             return sb.ToString();
@@ -123,7 +123,7 @@ namespace Lephone.CodeGen
                     sb.Append("decimal.Parse(").Append(s).Append(")");
                     break;
                 case "Boolean":
-                    sb.Append("bool.Parse(").Append(s).Append(")");
+                    sb.Append("(").Append(s).Append(" == \"on\") ? true : false");
                     break;
                 case "DateTime":
                     sb.Append("DateTime.Parse(").Append(s).Append(")");
@@ -137,7 +137,7 @@ namespace Lephone.CodeGen
                 default:
                     if(t.IsEnum)
                     {
-                        sb.Append("Enum.Parse(typeof(").Append(t.Name).Append("), ").Append(s).Append(")");
+                        sb.Append("(").Append(t.Name).Append(")Enum.Parse(typeof(").Append(t.Name).Append("), ").Append(s).Append(")");
                     }
                     else
                     {
@@ -169,7 +169,7 @@ namespace Lephone.CodeGen
             if(_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
                 return @"
-    public override void Show(int n)
+    public override void Show(long n)
     {
         this[""Item""] = " + _classType.Name + @".FindById(n);
     }
@@ -177,7 +177,7 @@ namespace Lephone.CodeGen
             }
 
             return @"
-    public override void Show(int n)
+    public override void Show(long n)
     {
         this[""Item""] = DbEntry.GetObject<" + _classType.Name + @">(n);
     }
@@ -189,14 +189,14 @@ namespace Lephone.CodeGen
             if(_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
                 return @"
-    public override void Edit(int n)
+    public override void Edit(long n)
     {
         this[""Item""] = " + _classType.Name + @".FindById(n);
     }
 ";
             }
             return @"
-    public override void Edit(int n)
+    public override void Edit(long n)
     {
         this[""Item""] = DbEntry.GetObject<" + _classType.Name + @">(n);
     }
@@ -206,7 +206,7 @@ namespace Lephone.CodeGen
         private string GetActionUpdate()
         {
             var sb = new StringBuilder(@"
-    public override void Update(int n)
+    public override string Update(long n)
     {
         ").Append(_classType.Name).Append(" obj = ");
             if (_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
@@ -243,7 +243,7 @@ namespace Lephone.CodeGen
             }
             sb.Append("        Flash.Notice = \"").Append(_classType.Name).Append(" was successfully updated\";");
             sb.Append(@"
-        RedirectTo(UrlTo.Action(""show"").Parameters(n));
+        return UrlTo.Action(""show"").Parameters(n);
     }
 ");
             return sb.ToString();
@@ -254,25 +254,25 @@ namespace Lephone.CodeGen
             if (_classType.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
                 return @"
-    public override void Destroy(int n)
+    public override string Destroy(long n)
     {
         " + _classType.Name + @" o = " + _classType.Name + @".FindById(n);
         if (o != null)
         {
             o.Delete();
-            RedirectTo(UrlTo.Action(""list""));
+            return UrlTo.Action(""list"");
         }
     }
 ";
             }
             return @"
-    public override void Destroy(int n)
+    public override string Destroy(long n)
     {
         " + _classType.Name + @" o = DbEntry.GetObject<" + _classType.Name + @">(n);
         if (o != null)
         {
             DbEntry.Delete(o);
-            RedirectTo(UrlTo.Action(""list""));
+            return UrlTo.Action(""list"");
         }
     }
 ";

@@ -4,7 +4,7 @@ using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
-    internal class ControllerInfo : FlyweightBase<Type, ControllerInfo>
+    public class ControllerInfo : FlyweightBase<Type, ControllerInfo>
     {
         protected override void Init(Type t)
         {
