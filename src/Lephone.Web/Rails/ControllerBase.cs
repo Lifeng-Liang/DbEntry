@@ -11,7 +11,7 @@ namespace Lephone.Web.Rails
 {
     public abstract class ControllerBase
     {
-        protected internal HttpContext Ctx;
+        public HttpContext Ctx { get; internal set; }
         internal readonly Dictionary<string, object> Bag = new Dictionary<string, object>();
         public readonly string ControllerName;
         public readonly FlashHandler Flash = new FlashHandler();
