@@ -55,8 +55,15 @@ namespace Lephone.Web.Rails
             {
                 if (!ClassHelper.HasAttribute<ExcludeAttribute>(info, false))
                 {
-                    object value = this[info.Name];
-                    info.SetValue(this, value);
+                    if(Bag.ContainsKey(info.Name))
+                    {
+                        object value = this[info.Name];
+                        info.SetValue(this, value);
+                    }
+                    else
+                    {
+                        throw new WebException("Can not find [{0}] in bag.", info.Name);
+                    }
                 }
             }
         }

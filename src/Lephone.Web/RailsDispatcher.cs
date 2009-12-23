@@ -106,7 +106,7 @@ namespace Lephone.Web
                 return;
             }
 
-            ControllerHelper.OnException(new WebException("Controller for [{0}] not find!", controllerName), context);
+            OnControllerNotFound(controllerName, context);
         }
 
         protected virtual void ProcessAction(HttpContext context, string controllerName, string[] ss)
@@ -164,6 +164,11 @@ namespace Lephone.Web
         protected virtual void OnException(Exception exception, ControllerBase controller)
         {
             controller.OnException(exception);
+        }
+
+        protected virtual void OnControllerNotFound(string controllerName, HttpContext context)
+        {
+            ControllerHelper.OnException(new WebException("Controller [{0}] not found!", controllerName), context);
         }
 
         private static MethodInfo GetMethodInfo(Type t, string actionName)
