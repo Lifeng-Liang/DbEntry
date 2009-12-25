@@ -6,22 +6,22 @@ namespace Lephone.Data.Caching
 {
     public class StaticHashCacheProvider : CacheProvider
     {
-        protected static Hashtable pool = new Hashtable(DataSetting.CacheSize);
+        protected static Hashtable Pool = new Hashtable(DataSetting.CacheSize);
 
         protected internal StaticHashCacheProvider() { }
 
-        public override object this[string Key]
+        public override object this[string key]
         {
             get
             {
-                var tv = (TimeValue)pool[Key];
+                var tv = (TimeValue)Pool[key];
                 if (tv == null)
                 {
                     return null;
                 }
                 if (MiscProvider.Instance.Now > tv.ExpiredOn)
                 {
-                    Remove(Key);
+                    Remove(key);
                     return null;
                 }
                 return tv.Value;
@@ -30,38 +30,43 @@ namespace Lephone.Data.Caching
             {
                 if (value == null)
                 {
-                    Remove(Key);
+                    Remove(key);
                 }
                 else
                 {
                     TimeValue tv = TimeValue.CreateTimeValue(value);
-                    lock (pool.SyncRoot)
+                    lock (Pool.SyncRoot)
                     {
-                        if (pool.Count > DataSetting.CacheSize)
+                        if (Pool.Count > DataSetting.CacheSize)
                         {
-                            pool.Clear();
+                            Pool.Clear();
                         }
 
-                        pool[Key] = tv;
+                        Pool[key] = tv;
                     }
                 }
             }
         }
 
-        public override void Remove(string Key)
+        public override void Remove(string key)
         {
-            lock (pool.SyncRoot)
+            lock (Pool.SyncRoot)
             {
-                pool.Remove(Key);
+                Pool.Remove(key);
             }
         }
 
         public override void Clear()
         {
-            lock (pool.SyncRoot)
+            lock (Pool.SyncRoot)
             {
-                pool.Clear();
+                Pool.Clear();
             }
+        }
+
+        public override int Count
+        {
+            get { return Pool.Count; }
         }
     }
 }

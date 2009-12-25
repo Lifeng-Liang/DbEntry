@@ -84,9 +84,9 @@ namespace Lephone.UnitTest.Data
         [DbColumn("Name")]
         public abstract string theName { get; set; }
 
-        public static FieldPerson FindByName(string Name)
+        public static FieldPerson FindByName(string name)
         {
-            return FindOne(Field["theName"] == Name);
+            return FindOne(p => p.theName == name);
         }
     }
 
@@ -504,14 +504,14 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("Lephone_Enum", oi.From.GetMainTableName());
         }
 
-        [Test]
-        public void Test_CK_Field()
-        {
-            var de = new DbContext("SqlServerMock");
-            StaticRecorder.ClearMessages();
-            de.From<PropertyClassWithDbColumn>().Where(CK<PropertyClassWithDbColumn>.Field["TheName"] == "tom").Select();
-            Assert.AreEqual("SELECT [Id],[Name] AS [TheName] FROM [People] WHERE [Name] = @Name_0;\n<Text><60>(@Name_0=tom:String)", StaticRecorder.LastMessage);
-        }
+        //[Test]
+        //public void Test_CK_Field()
+        //{
+        //    var de = new DbContext("SqlServerMock");
+        //    StaticRecorder.ClearMessages();
+        //    de.From<PropertyClassWithDbColumn>().Where(CK<PropertyClassWithDbColumn>.Field["TheName"] == "tom").Select();
+        //    Assert.AreEqual("SELECT [Id],[Name] AS [TheName] FROM [People] WHERE [Name] = @Name_0;\n<Text><60>(@Name_0=tom:String)", StaticRecorder.LastMessage);
+        //}
 
         [Test]
         public void TestNull()

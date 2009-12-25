@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
+using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
@@ -27,39 +27,50 @@ namespace Lephone.Web.Rails
             }
         }
 
+        public virtual int Count
+        {
+            get
+            {
+                ClearExpires();
+                return BagSet.Count;
+            }
+        }
+
+        public virtual int CurrentCount
+        {
+            get
+            {
+                return GetCurrentBag().Count;
+            }
+        }
+
         protected static Dictionary<string, object> GetCurrentBag()
         {
             ClearExpires();
-            HttpContext ctx = HttpContext.Current;
-            HttpCookie c = ctx.Request.Cookies["lf_session_id"];
-            if (c != null)
+            string cv = CookiesHandler.Instance["lf_session_id"];
+            if (cv != null)
             {
-                if(BagSet.ContainsKey(c.Value))
+                if(BagSet.ContainsKey(cv))
                 {
-                    Dictionary<string, object> bag = BagSet[c.Value];
-                    bag["ExpireTime"] = DateTime.Now.AddMinutes(WebSettings.SessionExpire);
+                    Dictionary<string, object> bag = BagSet[cv];
+                    bag["ExpireTime"] = MiscProvider.Instance.Now.AddMinutes(WebSettings.SessionExpire);
                     return bag;
                 }
             }
             string fid = Guid.NewGuid().ToString();
-            HttpCookie rpc = ctx.Response.Cookies["lf_session_id"];
-            if (rpc != null)
+            CookiesHandler.Instance["lf_session_id"] = fid;
+            var bag2 = new Dictionary<string, object>();
+            bag2["ExpireTime"] = MiscProvider.Instance.Now.AddMinutes(WebSettings.SessionExpire);
+            lock (BagSet)
             {
-                rpc.Value = fid;
-                var bag = new Dictionary<string, object>();
-                bag["ExpireTime"] = DateTime.Now.AddMinutes(WebSettings.SessionExpire);
-                lock (BagSet)
-                {
-                    BagSet[fid] = bag;
-                }
-                return bag;
+                BagSet[fid] = bag2;
             }
-            throw new WebException("Unexpacted exception");
+            return bag2;
         }
 
         protected static void ClearExpires()
         {
-            DateTime now = DateTime.Now;
+            DateTime now = MiscProvider.Instance.Now;
             if (now > NextChekTime)
             {
                 NextChekTime = now.AddMinutes(WebSettings.SessionCheckEvery);

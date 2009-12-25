@@ -166,7 +166,7 @@ namespace Lephone.Web.Rails
                         object v = ControllerHelper.ChangeType(s, m.FieldType.GetGenericArguments()[0]);
                         pi.SetValue(ll, v, null);
                         // TODO: get rid of use such method.
-                        typeof (T).GetMethod("m_ColumnUpdated", ClassHelper.AllFlag).Invoke(obj, new object[] {m.Name});
+                        ClassHelper.CallFunction(obj, "m_ColumnUpdated", m.Name);
                     }
                     else
                     {

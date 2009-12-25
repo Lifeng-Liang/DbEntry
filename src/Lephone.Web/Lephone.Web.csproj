@@ -34,6 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,6 +43,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -71,6 +73,7 @@
     <Compile Include="InMasterAttribute.cs" />
     <Compile Include="Rails\ControllerHelper.cs" />
     <Compile Include="Rails\ControllerInfo.cs" />
+    <Compile Include="Rails\CookiesHandler.cs" />
     <Compile Include="Rails\DefaultActionAttribute.cs" />
     <Compile Include="Rails\FlashHandler.cs" />
     <Compile Include="RailsDispatcher.cs" />

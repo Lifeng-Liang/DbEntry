@@ -9,10 +9,10 @@ namespace Lephone.Data.Caching
         public DateTime ExpiredOn;
         public object Value;
 
-        public TimeValue(DateTime ExpiredOn, object Value)
+        public TimeValue(DateTime expiredOn, object value)
         {
-            this.ExpiredOn = ExpiredOn;
-            this.Value = Value;
+            this.ExpiredOn = expiredOn;
+            this.Value = value;
         }
 
         public static DateTime GetExpiredOn()
@@ -20,9 +20,9 @@ namespace Lephone.Data.Caching
             return MiscProvider.Instance.Now.AddMinutes(DataSetting.CacheMinutes);
         }
 
-        public static TimeValue CreateTimeValue(object Value)
+        public static TimeValue CreateTimeValue(object value)
         {
-            return new TimeValue(GetExpiredOn(), Value);
+            return new TimeValue(GetExpiredOn(), value);
         }
     }
 }

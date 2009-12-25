@@ -62,7 +62,7 @@ namespace Lephone.Data.Linq
 
         public IQueryable<TElement> CreateQuery<TElement>(Expression expr)
         {
-            return new LinqQueryProvider<T, TKey>(expr) as IQueryable<TElement>;
+            return (IQueryable<TElement>)new LinqQueryProvider<T, TKey>(expr);
         }
 
         public IQueryable CreateQuery(Expression expr)

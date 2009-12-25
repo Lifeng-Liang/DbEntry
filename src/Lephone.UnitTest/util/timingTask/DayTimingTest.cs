@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestIt()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
 			ITiming t = new DayTiming(new TimeOfDayStructure(7, 12, 3), ntp);
 
 			Assert.AreEqual(false, t.TimesUp());
@@ -50,7 +50,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestIt2()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
 			ITiming t = new DayTiming(new TimeOfDayStructure(7, 12, 3), ntp);
 
 			ntp.SetNow(new DateTime(2004,3,6,7,12,2));
@@ -70,7 +70,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestOverTimingPoint()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,7,12,2,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,3,5,7,12,2,0));
 			ITiming t = new DayTiming(new TimeOfDayStructure(7, 12, 3), ntp);
 
 			Assert.AreEqual(false, t.TimesUp());
@@ -82,7 +82,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestAtTimingPoint()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,7,12,5,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,3,5,7,12,5,0));
 			ITiming t = new DayTiming(new TimeOfDayStructure(7, 12, 3), ntp);
 
 			Assert.AreEqual(false, t.TimesUp());
@@ -97,7 +97,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestOneDayOnce()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,7,10,2,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,3,5,7,10,2,0));
 			ITiming t = new DayTiming(new TimeOfDayStructure(7, 12, 3), ntp);
 
 			Assert.AreEqual(false, t.TimesUp());

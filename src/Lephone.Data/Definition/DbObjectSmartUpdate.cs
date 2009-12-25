@@ -21,11 +21,11 @@ namespace Lephone.Data.Definition
             m_UpdateColumns = new Dictionary<string, object>();
         }
 
-        protected internal void m_ColumnUpdated(string ColumnName)
+        protected internal void m_ColumnUpdated(string columnName)
         {
             if (m_UpdateColumns != null && !m_InternalInit)
             {
-                m_UpdateColumns[ColumnName] = 1;
+                m_UpdateColumns[columnName] = 1;
             }
         }
 

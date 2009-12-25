@@ -4,8 +4,8 @@ namespace Lephone.Web.Rails
 {
     public class LinkToInfo : UrlToInfo
     {
-        protected string _title;
-        protected string _addon;
+        protected string TheTitle;
+        protected string TheAddon;
 
         public LinkToInfo()
         {
@@ -13,7 +13,7 @@ namespace Lephone.Web.Rails
 
         public LinkToInfo(string controller)
         {
-            this._controller = controller;
+            this.TheController = controller;
         }
 
         public new LinkToInfo Controller(string name)
@@ -30,13 +30,13 @@ namespace Lephone.Web.Rails
 
         public LinkToInfo Title(string name)
         {
-            this._title = name;
+            this.TheTitle = name;
             return this;
         }
 
         public LinkToInfo Addon(string addon)
         {
-            this._addon = addon;
+            this.TheAddon = addon;
             return this;
         }
 
@@ -59,14 +59,14 @@ namespace Lephone.Web.Rails
 
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(_title))
+            if (string.IsNullOrEmpty(TheTitle))
             {
                 throw new DataException("title can not be null or empty.");
             }
             string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
                 base.ToString(),
-                _title,
-                _addon == null ? "" : " " + _addon);
+                TheTitle,
+                TheAddon == null ? "" : " " + TheAddon);
             return ret;
         }
     }

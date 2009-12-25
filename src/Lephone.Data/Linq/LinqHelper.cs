@@ -2,9 +2,9 @@
 
 namespace Lephone.Data.Linq
 {
-    static class LinqHelper
+    public static class LinqHelper
     {
-        internal static MemberExpression GetMemberExpression(this LambdaExpression expr)
+        public static MemberExpression GetMemberExpression(this LambdaExpression expr)
         {
             if (expr.Body is MemberExpression)
             {

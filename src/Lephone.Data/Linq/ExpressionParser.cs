@@ -26,14 +26,14 @@ namespace Lephone.Data.Linq
             }
         }
 
-        public static string GetColumnName(string FieldName)
+        public static string GetColumnName(string fieldName)
         {
-            string s = dic[FieldName];
+            string s = dic[fieldName];
             if (s != null)
             {
                 return s;
             }
-            throw new DataException("Can't find the field: " + FieldName);
+            throw new DataException("Can't find the field: " + fieldName);
         }
 
         public static Condition Parse(Expression<Func<T, bool>> expr)

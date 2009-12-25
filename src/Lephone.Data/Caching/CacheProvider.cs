@@ -7,8 +7,9 @@ namespace Lephone.Data.Caching
     {
         public static readonly CacheProvider Instance = (CacheProvider)ClassHelper.CreateInstance(DataSetting.CacheProvider);
 
-        public abstract object this[string Key] { get; set; }
-        public abstract void Remove(string Key);
+        public abstract object this[string key] { get; set; }
+        public abstract void Remove(string key);
         public abstract void Clear();
+        public abstract int Count { get; }
     }
 }

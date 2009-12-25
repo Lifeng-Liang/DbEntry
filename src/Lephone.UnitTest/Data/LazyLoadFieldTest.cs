@@ -1,5 +1,6 @@
 ﻿using Lephone.Data;
 using Lephone.Data.Definition;
+using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using Lephone.Util;
 using NUnit.Framework;
@@ -204,6 +205,23 @@ namespace Lephone.UnitTest.Data
             var u2 = DbEntry.GetObject<lzUser1>(1);
             Assert.AreEqual("tom", u2.Name);
             Assert.AreEqual("test", u2.Profile.Value);
+        }
+
+        //[Test]
+        //public void TestLazyLoadFieldForCondition()
+        //{
+        //    Condition c = CK<lzpUser>.Field["Profile"] == "test";
+        //    var dpc = new DataParameterCollection();
+        //    Assert.AreEqual("[Profile] = @Profile_0", c.ToSqlText(dpc, DbEntry.Context.Dialect));
+        //    Assert.AreEqual(1, dpc.Count);
+        //    Assert.AreEqual("test", dpc[0].Value);
+        //}
+
+        [Test]
+        public void TestLazyLoadFieldForCondition2()
+        {
+            sqlite.From<lzpUser>().Where(p => p.Profile == "test").Select();
+            AssertSql("SELECT [Id],[Name] FROM [lzp_User] WHERE [Profile] = @Profile_0;\n<Text><60>(@Profile_0=test:String)");
         }
     }
 }

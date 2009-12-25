@@ -14,10 +14,10 @@ namespace Lephone.Data.Definition
             get { return CK.Column; }
         }
 
-        protected static FieldNameGetter<T> Field
-        {
-            get { return CK<T>.Field; }
-        }
+        //protected static FieldNameGetter<T> Field
+        //{
+        //    get { return CK<T>.Field; }
+        //}
 
         public static T FindById(TKey id)
         {

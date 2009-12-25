@@ -31,7 +31,7 @@ namespace Lephone.Data.Linq
             return this;
         }
 
-        private void AddOrderBy(LambdaExpression expr, bool IsAsc)
+        private void AddOrderBy(LambdaExpression expr, bool isAsc)
         {
             MemberExpression e = expr.GetMemberExpression();
             if (e == null)
@@ -39,7 +39,7 @@ namespace Lephone.Data.Linq
                 throw new LinqException("Order By error!");
             }
             string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
-            AddOrderBy(IsAsc ? new ASC(n) : new DESC(n));
+            AddOrderBy(isAsc ? new ASC(n) : new DESC(n));
         }
 
         private void AddOrderBy(ASC item)

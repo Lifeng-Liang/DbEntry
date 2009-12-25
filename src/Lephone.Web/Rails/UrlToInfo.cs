@@ -7,10 +7,10 @@ namespace Lephone.Web.Rails
 {
     public class UrlToInfo
     {
-        protected string _controller;
-        protected string _action;
-        protected object[] _parameters;
-        protected List<KeyValuePair<string, string>> _urlParam;
+        protected string TheController;
+        protected string TheAction;
+        protected object[] TheParameters;
+        protected List<KeyValuePair<string, string>> TheUrlParam;
 
         public UrlToInfo()
         {
@@ -18,34 +18,34 @@ namespace Lephone.Web.Rails
 
         public UrlToInfo(string controller)
         {
-            this._controller = controller;
+            this.TheController = controller;
         }
 
         public UrlToInfo Controller(string name)
         {
-            this._controller = name;
+            this.TheController = name;
             return this;
         }
 
         public UrlToInfo Action(string name)
         {
-            this._action = name;
+            this.TheAction = name;
             return this;
         }
 
         public UrlToInfo Parameters(params object[] parameters)
         {
-            this._parameters = parameters;
+            this.TheParameters = parameters;
             return this;
         }
 
         public UrlToInfo UrlParam(string key, string value)
         {
-            if (_urlParam == null)
+            if (TheUrlParam == null)
             {
-                _urlParam = new List<KeyValuePair<string, string>>();
+                TheUrlParam = new List<KeyValuePair<string, string>>();
             }
-            _urlParam.Add(new KeyValuePair<string, string>(key, value));
+            TheUrlParam.Add(new KeyValuePair<string, string>(key, value));
             return this;
         }
 
@@ -56,7 +56,7 @@ namespace Lephone.Web.Rails
 
         public override string ToString()
         {
-            return GenerateUrl(_controller, _action, _parameters, _urlParam);
+            return GenerateUrl(TheController, TheAction, TheParameters, TheUrlParam);
         }
 
         public static string GenerateUrl(string controller, string action, 

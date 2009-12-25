@@ -21,6 +21,8 @@ namespace Lephone.Web
         public static readonly string ContentPlaceHolderHead = "head";
         public static readonly string ContentPlaceHolderBody = "ContentPlaceHolder1";
 
+        public static readonly string CookiesHandler = "Lephone.Web.Rails.CookiesHandler, Lephone.Web";
+
         static WebSettings()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(WebSettings));

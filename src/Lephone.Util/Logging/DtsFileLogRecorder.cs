@@ -14,15 +14,19 @@ namespace Lephone.Util.Logging
         {
             using (var sw = new StreamWriter(LogFileName, true, Encoding.Default))
             {
-                sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, GetString4Dts(source),
-                    GetString4Dts(name), GetString4Dts(message), GetString4Dts(eException.ToString()), GetString4Dts(DateTime.Now));
+                sw.WriteLine("{0},{1},{2},{3},{4},{5}", GetString4Dts(type), GetString4Dts(source),
+                    GetString4Dts(name), GetString4Dts(message), GetString4Dts(eException), GetString4Dts(DateTime.Now));
             }
         }
 
         private string GetString4Dts(object o)
         {
-            var s = o.ToString();
-            return "\"" + s.Replace("\"", "\"\"") + "\"";
+            if(o != null)
+            {
+                var s = o.ToString();
+                return "\"" + s.Replace("\"", "\"\"") + "\"";
+            }
+            return "null";
         }
     }
 }
