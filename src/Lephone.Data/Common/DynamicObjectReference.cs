@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Lephone.Data.Definition;
 using Lephone.Util;
 
 namespace Lephone.Data.Common
@@ -17,6 +18,11 @@ namespace Lephone.Data.Common
             {
                 info.AddValue(fi.Name, fi.GetValue(obj));
             }
+            if(obj is DbObjectSmartUpdate) // should be DbObjectModel<T, TKey>
+            {
+                var pi = t.GetProperty("Id");
+                info.AddValue(pi.Name, pi.GetValue(obj, new object[]{}));
+            }
         }
 
         protected object RealObj;
@@ -30,6 +36,11 @@ namespace Lephone.Data.Common
             {
                 object v = info.GetValue(fi.Name, fi.FieldType);
                 fi.SetValue(o, v);
+            }
+            if (o is DbObjectSmartUpdate) // should be DbObjectModel<T, TKey>
+            {
+                var pi = t.GetProperty("Id");
+                pi.SetValue(o, info.GetValue("Id", pi.PropertyType), new object[] {});
             }
             RealObj = o;
         }
