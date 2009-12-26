@@ -136,7 +136,7 @@ namespace Lephone.Web.Rails
             }
             int psize = pageSize ?? WebSettings.DefaultPageSize;
             var psd = DbEntry.From<T>().Where(Condition.Empty).OrderBy("Id DESC").PageSize(psize);
-            this["ItemList"] = psd.GetItemList<T>(style, pageIndex);
+            this["ItemList"] = psd.GetItemList(style, pageIndex);
         }
 
         public virtual void Show(long n)

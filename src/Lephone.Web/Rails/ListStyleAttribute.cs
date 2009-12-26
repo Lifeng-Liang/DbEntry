@@ -6,6 +6,7 @@ namespace Lephone.Web.Rails
     {
         Default,
         Static,
+        StaticLite,
         Hybird,
     }
 
