@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
 using Lephone.Util;
-using Lephone.Util.Text;
 
 namespace Lephone.Data.Common
 {

@@ -10,6 +10,8 @@ namespace Lephone.Data.Dialect
 		{
             TypeNames[DataType.Guid] = "CHAR(36)";
             TypeNames[DataType.Binary] = "BLOB";
+            TypeNames[DataType.Double] = "DOUBLE";
+            TypeNames[DataType.Single] = "FLOAT";
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)

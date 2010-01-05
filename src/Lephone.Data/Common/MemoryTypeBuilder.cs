@@ -149,9 +149,9 @@ namespace Lephone.Data.Common
         private static readonly ConstructorInfo SpecialNameAttributeConstructor
             = typeof(SpecialNameAttribute).GetConstructor(new Type[] {});
 
-        private static CustomAttributeBuilder GetDbColumnBuilder(string Name)
+        private static CustomAttributeBuilder GetDbColumnBuilder(string name)
         {
-            return new CustomAttributeBuilder(DbColumnAttributeConstructor, new object[] { Name });
+            return new CustomAttributeBuilder(DbColumnAttributeConstructor, new object[] { name });
         }
 
         private static CustomAttributeBuilder GetAllowNullBuilder()
@@ -187,14 +187,14 @@ namespace Lephone.Data.Common
             return new CustomAttributeBuilder(SpecialNameAttributeConstructor, new object[] { });
         }
 
-        private FieldInfo DefineField(string Name, Type PropertyType, FieldType ft, PropertyInfo pi)
+        private FieldInfo DefineField(string name, Type propertyType, FieldType ft, PropertyInfo pi)
         {
             if (ft == FieldType.Normal)
             {
-                return _innerType.DefineField(Name, PropertyType, FieldAttributes.Private);
+                return _innerType.DefineField(name, propertyType, FieldAttributes.Private);
             }
-            Type t = GetRealType(PropertyType, ft);
-            FieldBuilder fb = _innerType.DefineField(Name, t, FieldAttributes.FamORAssem);
+            Type t = GetRealType(propertyType, ft);
+            FieldBuilder fb = _innerType.DefineField(name, t, FieldAttributes.FamORAssem);
             var bs = (DbColumnAttribute[])pi.GetCustomAttributes(typeof(DbColumnAttribute), true);
             if (bs != null && bs.Length > 0)
             {
@@ -226,30 +226,30 @@ namespace Lephone.Data.Common
             return fb;
         }
 
-        private static Type GetRealType(Type PropertyType, FieldType ft)
+        private static Type GetRealType(Type propertyType, FieldType ft)
         {
             Type t;
             switch (ft)
             {
                 case FieldType.HasOne:
                     t = typeof(HasOne<>);
-                    t = t.MakeGenericType(PropertyType);
+                    t = t.MakeGenericType(propertyType);
                     break;
                 case FieldType.HasMany:
                     t = typeof(HasMany<>);
-                    t = t.MakeGenericType(PropertyType.GetGenericArguments()[0]);
+                    t = t.MakeGenericType(propertyType.GetGenericArguments()[0]);
                     break;
                 case FieldType.BelongsTo:
                     t = typeof(BelongsTo<>);
-                    t = t.MakeGenericType(PropertyType);
+                    t = t.MakeGenericType(propertyType);
                     break;
                 case FieldType.HasAndBelongsToMany:
                     t = typeof(HasAndBelongsToMany<>);
-                    t = t.MakeGenericType(PropertyType.GetGenericArguments()[0]);
+                    t = t.MakeGenericType(propertyType.GetGenericArguments()[0]);
                     break;
                 case FieldType.LazyLoad:
                     t = typeof(LazyLoadField<>);
-                    t = t.MakeGenericType(PropertyType);
+                    t = t.MakeGenericType(propertyType);
                     break;
                 default:
                     throw new DataException("Impossible");
@@ -269,7 +269,7 @@ namespace Lephone.Data.Common
             }
         }
 
-        public MemberHandler ImplProperty(Type OriginType, MethodInfo mupdate, PropertyInfo pi)
+        public MemberHandler ImplProperty(Type originType, MethodInfo mupdate, PropertyInfo pi)
         {
             string PropertyName = pi.Name;
             Type PropertyType = pi.PropertyType;
@@ -280,7 +280,7 @@ namespace Lephone.Data.Common
             FieldType ft = GetFieldType(pi);
             FieldInfo fi = DefineField(MemberPrifix + PropertyName, PropertyType, ft, pi);
 
-            OverrideMethod(OverrideFlag, GetPropertyName, OriginType, PropertyType, null, delegate(ILBuilder il)
+            OverrideMethod(OverrideFlag, GetPropertyName, originType, PropertyType, null, delegate(ILBuilder il)
             {
                 il.LoadArg(0);
                 il.LoadField(fi);
@@ -291,7 +291,7 @@ namespace Lephone.Data.Common
                 }
             });
 
-            OverrideMethod(OverrideFlag, SetPropertyName, OriginType, null, new[] { PropertyType }, delegate(ILBuilder il)
+            OverrideMethod(OverrideFlag, SetPropertyName, originType, null, new[] { PropertyType }, delegate(ILBuilder il)
             {
                 Label label = il.DefineLabel();
                 bool hasLabel = false;
@@ -402,23 +402,23 @@ namespace Lephone.Data.Common
             return hasLabel;
         }
 
-        public void OverrideMethod(MethodAttributes flag, string MethodName, Type OriginType, Type returnType, Type[] paramTypes, EmitCode emitCode)
+        public void OverrideMethod(MethodAttributes flag, string methodName, Type originType, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
-            MethodBuilder mb = DefineMethodDirect(flag, MethodName, returnType, paramTypes, emitCode);
-            MethodInfo mi = (paramTypes == null) ? OriginType.GetMethod(MethodName) : OriginType.GetMethod(MethodName, paramTypes);
+            MethodBuilder mb = DefineMethodDirect(flag, methodName, returnType, paramTypes, emitCode);
+            MethodInfo mi = (paramTypes == null) ? originType.GetMethod(methodName) : originType.GetMethod(methodName, paramTypes);
             _innerType.DefineMethodOverride(mb, mi);
         }
 
-        public void OverrideMethodDirect(MethodAttributes flag, string MethodName, Type OriginType, Type returnType, Type[] paramTypes, EmitCode emitCode)
+        public void OverrideMethodDirect(MethodAttributes flag, string methodName, Type originType, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
-            MethodBuilder mb = DefineMethodDirect(flag, MethodName, returnType, paramTypes, emitCode);
-            MethodInfo mi = OriginType.GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            MethodBuilder mb = DefineMethodDirect(flag, methodName, returnType, paramTypes, emitCode);
+            MethodInfo mi = originType.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             _innerType.DefineMethodOverride(mb, mi);
         }
 
-        public MethodBuilder DefineMethodDirect(MethodAttributes flag, string MethodName, Type returnType, Type[] paramTypes, EmitCode emitCode)
+        public MethodBuilder DefineMethodDirect(MethodAttributes flag, string methodName, Type returnType, Type[] paramTypes, EmitCode emitCode)
         {
-            MethodBuilder mb = _innerType.DefineMethod(MethodName, flag, returnType, paramTypes);
+            MethodBuilder mb = _innerType.DefineMethod(methodName, flag, returnType, paramTypes);
             var il = new ILBuilder(mb.GetILGenerator());
             emitCode(il);
             il.Return();
@@ -464,7 +464,6 @@ namespace Lephone.Data.Common
                            il.CallVirtual(pi.GetSetMethod());
                        }
                    }
-                   il.Return();
                });
         }
     }
