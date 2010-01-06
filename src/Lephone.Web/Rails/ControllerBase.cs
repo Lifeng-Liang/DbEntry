@@ -124,7 +124,7 @@ namespace Lephone.Web.Rails
 
         public virtual void List(long? pageIndex, int? pageSize)
         {
-            var style = ControllerInfo.GetInstance(this.GetType()).ListStyle;
+            var style = RailsDispatcher.Ctls[ControllerName].ListStyle;
             ProcessList(pageIndex, pageSize, style);
         }
 

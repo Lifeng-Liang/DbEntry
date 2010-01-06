@@ -4,18 +4,17 @@ using Lephone.Util;
 
 namespace Lephone.Web.Rails
 {
-    public class ControllerInfo : FlyweightBase<Type, ControllerInfo>
+    public class ControllerInfo
     {
-        protected override void Init(Type t)
+        public ControllerInfo(Type t)
         {
-
             foreach (MethodInfo mi in t.GetMethods(ClassHelper.InstancePublic))
             {
                 if (ClassHelper.HasAttribute<DefaultActionAttribute>(mi, false))
                 {
-                    if (_defaultAction == null)
+                    if (DefaultAction == null)
                     {
-                        _defaultAction = mi.Name;
+                        DefaultAction = mi.Name;
                     }
                     else
                     {
@@ -23,36 +22,38 @@ namespace Lephone.Web.Rails
                     }
                 }
             }
-            _isScaffolding = ClassHelper.HasAttribute<ScaffoldingAttribute>(t, true);
-            _listStyle = ListStyle.Default;
+
+            if (DefaultAction == null)
+            {
+                DefaultAction = "list";
+            }
+
+            IsScaffolding = ClassHelper.HasAttribute<ScaffoldingAttribute>(t, true);
+
+            ListStyle = ListStyle.Default;
             var lsa = ClassHelper.GetAttribute<ListStyleAttribute>(t, false);
             if(lsa != null)
             {
-                _listStyle = lsa.Style;
+                ListStyle = lsa.Style;
             }
+
+            ControllerName = t.Name;
+            if (ControllerName.EndsWith("Controller"))
+            {
+                ControllerName = ControllerName.Substring(0, ControllerName.Length - 10);
+            }
+
+            Type = t;
         }
 
-        private ControllerInfo() {}
+        public readonly string DefaultAction;
 
-        private string _defaultAction;
+        public readonly bool IsScaffolding;
 
-        public string DefaultAction
-        {
-            get { return _defaultAction ?? "list"; }
-        }
+        public readonly ListStyle ListStyle;
 
-        private bool _isScaffolding;
+        public readonly string ControllerName;
 
-        public bool IsScaffolding
-        {
-            get { return _isScaffolding; }
-        }
-
-        private ListStyle _listStyle;
-
-        public ListStyle ListStyle
-        {
-            get { return _listStyle; }
-        }
+        public readonly Type Type;
     }
 }

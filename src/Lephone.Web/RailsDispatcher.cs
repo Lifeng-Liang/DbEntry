@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Web.UI;
 using System.Reflection;
 using System.IO;
+using System.Web.Compilation;
 using Lephone.Util;
 using Lephone.Web.Rails;
 
@@ -11,15 +11,14 @@ namespace Lephone.Web
 {
     public class RailsDispatcher : IHttpHandler
     {
-        protected PageHandlerFactory Factory = ClassHelper.CreateInstance<PageHandlerFactory>();
-        protected internal static Dictionary<string, Type> Ctls;
+        protected internal static Dictionary<string, ControllerInfo> Ctls;
         protected static readonly char[] Spliter = new[] { '/' };
         protected static readonly Type CbType = typeof(ControllerBase);
 
         static RailsDispatcher()
         {
-            Ctls = new Dictionary<string, Type>();
-            Ctls["default"] = typeof(DefaultController);
+            Ctls = new Dictionary<string, ControllerInfo>();
+            Ctls["default"] = new ControllerInfo(typeof(DefaultController));
             if (WebSettings.ControllerAssembly == "")
             {
                 foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
@@ -39,7 +38,7 @@ namespace Lephone.Web
             }
         }
 
-        private static void SearchControllers(Assembly a)
+        protected static void SearchControllers(Assembly a)
         {
             foreach (Type t in a.GetTypes())
             {
@@ -50,12 +49,12 @@ namespace Lephone.Web
                     {
                         tn = tn.Substring(0, tn.Length - 10);
                     }
-                    Ctls[tn.ToLower()] = t;
+                    Ctls[tn.ToLower()] = new ControllerInfo(t);
                 }
             }
         }
 
-        private static bool CouldBeControllerAssemebly(string s)
+        protected static bool CouldBeControllerAssemebly(string s)
         {
             switch(s)
             {
@@ -102,18 +101,18 @@ namespace Lephone.Web
 
             if (Ctls.ContainsKey(controllerName))
             {
-                ProcessAction(context, controllerName, ss);
+                Process(context, controllerName, ss);
                 return;
             }
 
             OnControllerNotFound(controllerName, context);
         }
 
-        protected virtual void ProcessAction(HttpContext context, string controllerName, string[] ss)
+        protected virtual void Process(HttpContext context, string controllerName, string[] ss)
         {
             // Invoke Controller
-            Type t = Ctls[controllerName];
-            var ctl = ClassHelper.CreateInstance(t) as ControllerBase;
+            var ci = Ctls[controllerName];
+            var ctl = ClassHelper.CreateInstance(ci.Type) as ControllerBase;
             if (ctl == null)
             {
                 throw new WebException("The Controller must inherits from ControllerBase");
@@ -122,9 +121,12 @@ namespace Lephone.Web
 
             try
             {
-                ControllerInfo ci = ControllerInfo.GetInstance(t);
                 string actionName = ss.Length > 1 ? ss[1] : ci.DefaultAction;
-                InvokeAction(context, controllerName, actionName.ToLower(), ss, t, ctl, ci);
+                string viewName = InvokeAction(context, controllerName, actionName.ToLower(), ss, ctl, ci);
+                if(!viewName.IsNullOrEmpty())
+                {
+                    InvokeView(context, viewName, ctl, ci);
+                }
             }
             catch (Exception ex)
             {
@@ -132,9 +134,9 @@ namespace Lephone.Web
             }
         }
 
-        protected virtual void InvokeAction(HttpContext context, string controllerName, string actionName, string[] ss, Type t, ControllerBase ctl, ControllerInfo ci)
+        protected virtual string InvokeAction(HttpContext context, string controllerName, string actionName, string[] ss, ControllerBase ctl, ControllerInfo ci)
         {
-            MethodInfo mi = GetMethodInfo(t, actionName);
+            MethodInfo mi = GetMethodInfo(ci.Type, actionName);
             if (mi == null)
             {
                 throw new WebException(string.Format("Action {0} doesn't exist!!!", actionName));
@@ -143,21 +145,23 @@ namespace Lephone.Web
             object ret = CallAction(mi, ctl, parameters.ToArray()) ?? "";
 
             var va = ClassHelper.GetAttribute<ViewAttribute>(mi, false);
-            string viewName = (va == null) ? actionName : va.ViewName;
+            string viewName = (va == null) ? mi.Name : va.ViewName;
+
             if(string.IsNullOrEmpty(ret.ToString()))
             {
-                // Invoke Viewer
-                PageBase p = CreatePage(context, ci, t, controllerName, viewName);
-                if (p != null)
-                {
-                    InitViewPage(controllerName, ctl, viewName, p);
-                    ((IHttpHandler)p).ProcessRequest(context);
-                    Factory.ReleaseHandler(p);
-                }
+                return viewName;
             }
-            else
+            context.Response.Redirect(ret.ToString(), false);
+            return null;
+        }
+
+        protected virtual void InvokeView(HttpContext context, string viewName, ControllerBase ctl, ControllerInfo ci)
+        {
+            PageBase p = CreatePage(context, ci, viewName);
+            if (p != null)
             {
-                context.Response.Redirect(ret.ToString(), false);
+                InitViewPage(ci.ControllerName, ctl, viewName, p);
+                ((IHttpHandler)p).ProcessRequest(context);
             }
         }
 
@@ -171,22 +175,22 @@ namespace Lephone.Web
             ControllerHelper.OnException(new WebException("Controller [{0}] not found!", controllerName), context);
         }
 
-        private static MethodInfo GetMethodInfo(Type t, string actionName)
+        protected static MethodInfo GetMethodInfo(Type t, string actionName)
         {
             MethodInfo mi = t.GetMethod(actionName, ClassHelper.InstancePublic | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
             if (mi != null) return mi;
             return t.GetMethod(actionName, ClassHelper.InstancePublic | BindingFlags.IgnoreCase);
         }
 
-        private static void InitViewPage(string controllerName, ControllerBase ctl, string actionName, PageBase p)
+        protected static void InitViewPage(string controllerName, ControllerBase ctl, string actionName, PageBase p)
         {
             p.Bag = ctl.Bag;
-            p.ControllerName = controllerName;
-            p.ActionName = actionName;
+            p.ControllerName = controllerName.ToLower();
+            p.ActionName = actionName.ToLower();
             p.InitFields();
         }
 
-        private static List<object> GetParameters(string[] ss, MethodInfo mi)
+        protected static List<object> GetParameters(string[] ss, MethodInfo mi)
         {
             ParameterInfo[] pis = mi.GetParameters();
             var parameters = new List<object>();
@@ -232,36 +236,40 @@ namespace Lephone.Web
             parameters.AddRange(values);
         }
 
-        private PageBase CreatePage(HttpContext context, ControllerInfo ci, Type t, string controllerName, string actionName)
+        protected virtual PageBase CreatePage(HttpContext context, ControllerInfo ci, string actionName)
         {
-            string vp = context.Request.ApplicationPath + "/Views/" + controllerName + "/" + actionName + ".aspx";
+            string vp = "/Views/" + ci.ControllerName + "/" + actionName + ".aspx";
+            if(context.Request.ApplicationPath != "/")
+            {
+                vp = context.Request.ApplicationPath + vp;
+            }
             string pp = context.Server.MapPath(vp);
             if (File.Exists(pp))
             {
-                object o = Factory.GetHandler(context, context.Request.RequestType, vp, pp);
-                if (o == null)
+                object o = BuildManager.CreateInstanceFromVirtualPath(vp, typeof(object));
+                if (o == null || !(o is PageBase))
                 {
                     throw new WebException("The template page must inherits from PageBase!!!");
                 }
-                return o as PageBase;
+                return (PageBase)o;
             }
             if (ci.IsScaffolding)
             {
-                Type tt = GetScaffoldingType(t);
+                Type tt = GetScaffoldingType(ci.Type);
                 if(string.IsNullOrEmpty(WebSettings.ScaffoldingMasterPage))
                 {
                     return new ScaffoldingViews(ci, tt, context);
                 }
                 return new ScaffoldingViewsWithMaster(ci, tt, context);
             }
-            if (t == typeof(DefaultController))
+            if (ci.Type == typeof(DefaultController))
             {
                 return null;
             }
             throw new WebException(string.Format("The action {0} don't have view file!!!", actionName));
         }
 
-        private static Type GetScaffoldingType(Type t)
+        protected static Type GetScaffoldingType(Type t)
         {
             if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ControllerBase<>))
             {
@@ -274,7 +282,7 @@ namespace Lephone.Web
             return GetScaffoldingType(t.BaseType);
         }
 
-        private static object CallAction(MethodBase mi, ControllerBase c, object[] ps)
+        protected static object CallAction(MethodBase mi, ControllerBase c, object[] ps)
         {
             object o = c.OnBeforeAction(mi.Name);
             if (o != null) return o;
@@ -284,7 +292,7 @@ namespace Lephone.Web
             return o;
         }
 
-        private static object ChangeType(string s, Type t)
+        protected static object ChangeType(string s, Type t)
         {
             if(t.IsValueType && string.IsNullOrEmpty(s))
             {
