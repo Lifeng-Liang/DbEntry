@@ -107,5 +107,12 @@ namespace Lephone.UnitTest.util
             Assert.IsFalse(ti.IsChildOf(tb));
             Assert.IsFalse(ti.IsChildOf(to));
         }
+
+        [Test]
+        public void TestChangeType2()
+        {
+            var n = ClassHelper.ChangeType(null, typeof (DateTime?));
+            Assert.IsNull(n);
+        }
     }
 }
