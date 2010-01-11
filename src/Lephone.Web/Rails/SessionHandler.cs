@@ -73,14 +73,20 @@ namespace Lephone.Web.Rails
             DateTime now = MiscProvider.Instance.Now;
             if (now > NextChekTime)
             {
-                NextChekTime = now.AddMinutes(WebSettings.SessionCheckEvery);
-                var keys = new List<string>(BagSet.Keys);
-                foreach (string s in keys)
+                lock (BagSet)
                 {
-                    var et = (DateTime)BagSet[s]["ExpireTime"];
-                    if (now > et)
+                    if (now > NextChekTime)
                     {
-                        BagSet.Remove(s);
+                        NextChekTime = now.AddMinutes(WebSettings.SessionCheckEvery);
+                        var keys = new List<string>(BagSet.Keys);
+                        foreach (string s in keys)
+                        {
+                            var et = (DateTime)BagSet[s]["ExpireTime"];
+                            if (now > et)
+                            {
+                                BagSet.Remove(s);
+                            }
+                        }
                     }
                 }
             }

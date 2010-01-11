@@ -5,16 +5,16 @@ namespace Lephone.Util.Text
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class ShowStringAttribute : Attribute
 	{
-		private readonly string _ShowString;
+		private readonly string _showString;
 
 		public string ShowString
 		{
-			get { return _ShowString; }
+			get { return _showString; }
 		}
 
-		public ShowStringAttribute(string ShowString)
+		public ShowStringAttribute(string showString)
 		{
-			_ShowString = ShowString; 
+			_showString = showString; 
 		}
 	}
 }

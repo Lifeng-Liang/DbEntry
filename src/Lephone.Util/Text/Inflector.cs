@@ -75,21 +75,21 @@ namespace Lephone.Util.Text
             return word;
         }
 
-        public static string Camelize(string lower_case_and_underscored_word)
+        public static string Camelize(string lowerCaseAndUnderscoredWord)
         {
-            return Camelize(lower_case_and_underscored_word, true);
+            return Camelize(lowerCaseAndUnderscoredWord, true);
         }
 
-        public static string Camelize(string lower_case_and_underscored_word, bool first_letter_in_uppercase)
+        public static string Camelize(string lowerCaseAndUnderscoredWord, bool firstLetterInUppercase)
         {
-            if (first_letter_in_uppercase)
+            if (firstLetterInUppercase)
             {
-                string s = lower_case_and_underscored_word;
+                string s = lowerCaseAndUnderscoredWord;
                 s = new Regex(@"\/(.?)").Replace(s, delegate(Match match) { return "::" + match.Groups[1].Value.ToUpper(); });
                 s = new Regex(@"(^|_)(.)").Replace(s, delegate(Match match) { return match.Groups[2].Value.ToUpper(); });
                 return s;
             }
-            return lower_case_and_underscored_word[0] + Camelize(lower_case_and_underscored_word).Substring(1);
+            return lowerCaseAndUnderscoredWord[0] + Camelize(lowerCaseAndUnderscoredWord).Substring(1);
         }
 
         public static string Titleize(string word)
@@ -99,9 +99,9 @@ namespace Lephone.Util.Text
             return s;
         }
 
-        public static string Underscore(string camel_cased_word)
+        public static string Underscore(string camelCasedWord)
         {
-            string s = camel_cased_word;
+            string s = camelCasedWord;
             s = new Regex(@"::").Replace(s, @"/");
             s = new Regex(@"([A-Z]+)([A-Z][a-z])").Replace(s,@"$1_$2");
             s = new Regex(@"([a-z\d])([A-Z])").Replace(s, @"$1_$2");
@@ -109,43 +109,43 @@ namespace Lephone.Util.Text
             return s;
         }
 
-        public static string Dasherize(string underscored_word)
+        public static string Dasherize(string underscoredWord)
         {
-            return new Regex(@"_").Replace(underscored_word, "-");
+            return new Regex(@"_").Replace(underscoredWord, "-");
         }
 
-        public static string Humanize(string lower_case_and_underscored_word)
+        public static string Humanize(string lowerCaseAndUnderscoredWord)
         {
-            string s = lower_case_and_underscored_word;
+            string s = lowerCaseAndUnderscoredWord;
             s = new Regex(@"_id$").Replace(s, "");
             s = new Regex(@"_").Replace(s, " ");
             return StringHelper.Capitalize(s);
         }
 
-        public static string Demodulize(string class_name_in_module)
+        public static string Demodulize(string classNameInModule)
         {
-            return new Regex(@"^.*::").Replace(class_name_in_module, "");
+            return new Regex(@"^.*::").Replace(classNameInModule, "");
         }
 
-        public static string Tableize(string class_name)
+        public static string Tableize(string className)
         {
-            return Pluralize(Underscore(class_name));
+            return Pluralize(Underscore(className));
         }
 
-        public static string Classify(string table_name)
+        public static string Classify(string tableName)
         {
-            string s = new Regex(@".*\.").Replace(table_name, "");
+            string s = new Regex(@".*\.").Replace(tableName, "");
             return Camelize(Singularize(s));
         }
 
-        public static string ForeignKey(string class_name)
+        public static string ForeignKey(string className)
         {
-            return ForeignKey(class_name, true);
+            return ForeignKey(className, true);
         }
 
-        public static string ForeignKey(string class_name, bool separate_class_name_and_id_with_underscore)
+        public static string ForeignKey(string className, bool separateClassNameAndIdWithUnderscore)
         {
-            return Underscore(Demodulize(class_name)) + (separate_class_name_and_id_with_underscore ? "_id" : "id");
+            return Underscore(Demodulize(className)) + (separateClassNameAndIdWithUnderscore ? "_id" : "id");
         }
 
         public static string Ordinalize(int number)

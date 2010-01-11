@@ -9,23 +9,23 @@ namespace Lephone.Util
 {
 	public static class SystemHelper
 	{
-		private static string _ExeFileName;
-        private static string _BaseDirectory;
-	    private static string _TempDirectory;
+		private static string _exeFileName;
+        private static string _baseDirectory;
+	    private static string _tempDirectory;
 
         public static string ExeFileName
         {
-            get { return _ExeFileName; }
+            get { return _exeFileName; }
         }
 
         public static string BaseDirectory
         {
-            get { return _BaseDirectory; }
+            get { return _baseDirectory; }
         }
 
 	    public static string TempDirectory
 	    {
-            get { return _TempDirectory; }
+            get { return _tempDirectory; }
 	    }
 
 		static SystemHelper()
@@ -33,9 +33,9 @@ namespace Lephone.Util
             CommonHelper.CatchAll(delegate
             {
                 AppDomainSetup s = AppDomain.CurrentDomain.SetupInformation;
-                _ExeFileName = s.ApplicationName;
-                _BaseDirectory = s.ApplicationBase;
-                _TempDirectory = Path.GetTempPath();
+                _exeFileName = s.ApplicationName;
+                _baseDirectory = s.ApplicationBase;
+                _tempDirectory = Path.GetTempPath();
             });
 		}
 
@@ -67,39 +67,22 @@ namespace Lephone.Util
 			}
 		}
 
-		private static string GetStackTrackFunctionName(int Index)
+		private static string GetStackTrackFunctionName(int index)
 		{
-			Index += 2;
-			StackTrace st = new StackTrace(true);
-			if ( st.FrameCount > Index )
+			index += 2;
+			var st = new StackTrace(true);
+			if ( st.FrameCount > index )
 			{
-				StackFrame sf = st.GetFrame(Index);
+				StackFrame sf = st.GetFrame(index);
 				return GetMothodDesc(sf, false);
 			}
 		    return null;
 		}
 
-        //TODO: why left it?
-        //private static StringCollection GetMothodLineCollection(StackTrace st)
-        //{
-        //    return GetMothodLineCollection(st, false);
-        //}
-
-        //private static StringCollection GetMothodLineCollection(StackTrace st, bool NeedLineNo)
-        //{
-        //    StringCollection sc = new StringCollection();
-        //    for (int i = 0; i < st.FrameCount; i++)
-        //    {
-        //        StackFrame sf = st.GetFrame(i);
-        //        sc.Add( GetMothodDesc(sf, NeedLineNo) );
-        //    }
-        //    return sc;
-        //}
-
-		private static string GetMothodDesc(StackFrame sf, bool NeedLineNo)
+		private static string GetMothodDesc(StackFrame sf, bool needLineNo)
 		{
 			MethodBase mb = sf.GetMethod();
-			if ( NeedLineNo )
+			if ( needLineNo )
 			{
 				return GetMothodLine(mb) + GetCurLine(sf);
 			}
@@ -108,7 +91,7 @@ namespace Lephone.Util
 
 		private static string GetMothodLine(MethodBase mb)
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			Type t = mb.DeclaringType;
 			if (t != null)
 			{

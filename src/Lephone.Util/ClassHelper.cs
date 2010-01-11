@@ -87,27 +87,27 @@ namespace Lephone.Util
             return (T)CreateInstance(typeof(T));
         }
 
-		public static object CreateInstance(string ClassName)
+		public static object CreateInstance(string className)
 		{
-			var t = Type.GetType(ClassName, true);
+			var t = Type.GetType(className, true);
 			return CreateInstance(t);
 		}
 
-        public static object CreateInstance(string ClassName, params object[] os)
+        public static object CreateInstance(string className, params object[] os)
 		{
-			var t = Type.GetType(ClassName, true);
+			var t = Type.GetType(className, true);
 			return CreateInstance(t, os);
 		}
 
-		public static object CreateInstance(Assembly FromAssembly, string ClassName)
+		public static object CreateInstance(Assembly fromAssembly, string className)
 		{
-			var t = FromAssembly.GetType(ClassName);
+			var t = fromAssembly.GetType(className);
 			return CreateInstance(t);
 		}
 
-        public static object CreateInstance(Assembly FromAssembly, string ClassName, params object[] os)
+        public static object CreateInstance(Assembly fromAssembly, string className, params object[] os)
 		{
-			var t = FromAssembly.GetType(ClassName);
+			var t = fromAssembly.GetType(className);
 			return CreateInstance(t, os);
 		}
 
@@ -128,59 +128,59 @@ namespace Lephone.Util
             return (T)CreateInstance(typeof(T), os);
         }
 
-        public static void SetValue<T>(string FieldName, object value)
+        public static void SetValue<T>(string fieldName, object value)
         {
-            SetValue(typeof(T), FieldName, value);
+            SetValue(typeof(T), fieldName, value);
         }
 
-        public static void SetValue(Type SourceType, string FieldName, object value)
+        public static void SetValue(Type sourceType, string fieldName, object value)
         {
-            var fi = SourceType.GetField(FieldName, StaticFlag);
+            var fi = sourceType.GetField(fieldName, StaticFlag);
             if (fi != null)
                 fi.SetValue(null, value);
         }
 
-        public static void SetValue(object obj, string FieldName, object value)
+        public static void SetValue(object obj, string fieldName, object value)
         {
-            var fi = obj.GetType().GetField(FieldName, AllFlag);
+            var fi = obj.GetType().GetField(fieldName, AllFlag);
             if (fi != null)
                 fi.SetValue(obj, value);
         }
 
-        public static T GetValue<T>(string FieldName)
+        public static T GetValue<T>(string fieldName)
         {
-            return (T)GetValue(typeof(T), FieldName);
+            return (T)GetValue(typeof(T), fieldName);
         }
 
-        public static object GetValue(Type SourceType, string FieldName)
+        public static object GetValue(Type sourceType, string fieldName)
         {
-            var fi = SourceType.GetField(FieldName, StaticFlag);
+            var fi = sourceType.GetField(fieldName, StaticFlag);
             return fi == null ? null : fi.GetValue(null);
         }
 
-        public static object GetValue(object obj, string FieldName)
+        public static object GetValue(object obj, string fieldName)
         {
-            var fi = obj.GetType().GetField(FieldName, AllFlag);
+            var fi = obj.GetType().GetField(fieldName, AllFlag);
             return fi == null ? null : fi.GetValue(obj);
         }
 
-        public static object CallFunction(Type ot, string FunctionName, params object[] os)
+        public static object CallFunction(Type ot, string functionName, params object[] os)
         {
-            return CallFunction(null, ot, FunctionName, os);
+            return CallFunction(null, ot, functionName, os);
         }
 
-        public static object CallFunction(object obj, string FunctionName, params object[] os)
+        public static object CallFunction(object obj, string functionName, params object[] os)
         {
-            return CallFunction(obj, obj.GetType(), FunctionName, os);
+            return CallFunction(obj, obj.GetType(), functionName, os);
         }
 
-        private static object CallFunction(object obj, Type ot, string FunctionName, object[] os)
+        private static object CallFunction(object obj, Type ot, string functionName, object[] os)
         {
             var ts = GetTypesByObjs(os);
-            var mi = ot.GetMethod(FunctionName, AllFlag, null, CallingConventions.Any, ts, null);
+            var mi = ot.GetMethod(functionName, AllFlag, null, CallingConventions.Any, ts, null);
             if (mi == null)
             {
-                throw new SystemException(string.Format("Can not find the function called [{0}] in [{1}]", FunctionName, ot));
+                throw new SystemException(string.Format("Can not find the function called [{0}] in [{1}]", functionName, ot));
             }
             return mi.Invoke(obj, os);
         }
@@ -201,10 +201,10 @@ namespace Lephone.Util
         /// <param name="o">the object</param>
         /// <param name="msg">just like "This object is : {0}"</param>
         /// <param name="spliter">fields spliter</param>
-        /// <param name="NameTemplate">for field name output style</param>
-        /// <param name="NullString">if field is null, output this string</param>
+        /// <param name="nameTemplate">for field name output style</param>
+        /// <param name="nullString">if field is null, output this string</param>
         /// <returns></returns>
-        public static string ObjectToString(object o, string msg, string spliter, string NameTemplate, string NullString)
+        public static string ObjectToString(object o, string msg, string spliter, string nameTemplate, string nullString)
         {
             var sb = new StringBuilder();
             var fis = o.GetType().GetFields();
@@ -212,16 +212,16 @@ namespace Lephone.Util
 
             for (int i = 0; i < fis.Length; i++)
             {
-                if (NameTemplate != null)
+                if (nameTemplate != null)
                 {
-                    sb.AppendFormat(NameTemplate, fis[i].Name);
+                    sb.AppendFormat(nameTemplate, fis[i].Name);
                 }
                 sb.Append("{");
                 sb.Append(i.ToString());
                 sb.Append("}");
                 sb.Append(spliter);
                 object oo = fis[i].GetValue(o);
-                os[i] = (oo == null) ? NullString : oo.ToString();
+                os[i] = (oo == null) ? nullString : oo.ToString();
             }
             if (fis.Length > 0)
             {

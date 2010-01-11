@@ -4,18 +4,9 @@ namespace Lephone.Util
 {
 	public class NullEncoding : Encoding
 	{
-		#region Singleton
-
-		private static readonly NullEncoding _Instance = new NullEncoding();
-
-		public static NullEncoding Instance
-		{
-			get { return _Instance; }
-		}
+		public static readonly NullEncoding Instance = new NullEncoding();
 
 		private NullEncoding() {}
-
-		#endregion
 
 		public override int GetByteCount(char[] chars, int index, int count)
 		{

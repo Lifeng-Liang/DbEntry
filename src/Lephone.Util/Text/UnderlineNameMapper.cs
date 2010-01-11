@@ -4,17 +4,17 @@ namespace Lephone.Util.Text
 {
     public class UnderlineNameMapper : NameMapper
     {
-        public override string MapName(string Name)
+        public override string MapName(string name)
         {
             var sb = new StringBuilder();
-            bool BeforeIsSmall = false;
-            foreach (char c in Name)
+            bool beforeIsSmall = false;
+            foreach (char c in name)
             {
-                if (BeforeIsSmall && IsLarge(c))
+                if (beforeIsSmall && IsLarge(c))
                 {
                     sb.Append("_");
                 }
-                BeforeIsSmall = IsSmall(c);
+                beforeIsSmall = IsSmall(c);
                 sb.Append(c);
             }
             return sb.ToString();

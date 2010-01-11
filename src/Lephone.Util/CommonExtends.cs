@@ -28,19 +28,19 @@ public static class CommonExtends
         return StringHelper.EnsureEndsWith(s, s1);
     }
 
-    public static string MultiLineAddPrefix(this string Source)
+    public static string MultiLineAddPrefix(this string source)
     {
-        return StringHelper.MultiLineAddPrefix(Source);
+        return StringHelper.MultiLineAddPrefix(source);
     }
 
-    public static string MultiLineAddPrefix(this string Source, string Prefix)
+    public static string MultiLineAddPrefix(this string source, string prefix)
     {
-        return StringHelper.MultiLineAddPrefix(Source, Prefix);
+        return StringHelper.MultiLineAddPrefix(source, prefix);
     }
 
-    public static string MultiLineAddPrefix(this string Source, string Prefix, char SplitBy)
+    public static string MultiLineAddPrefix(this string source, string prefix, char splitBy)
     {
-        return StringHelper.MultiLineAddPrefix(Source, Prefix, SplitBy);
+        return StringHelper.MultiLineAddPrefix(source, prefix, splitBy);
     }
 
     public static string GetLeft(this string s)
@@ -63,9 +63,9 @@ public static class CommonExtends
         return StringHelper.GetAnsiLength(s);
     }
 
-    public static string GetMultiByteSubString(this string s, int Count)
+    public static string GetMultiByteSubString(this string s, int count)
     {
-        return StringHelper.GetMultiByteSubString(s, Count);
+        return StringHelper.GetMultiByteSubString(s, count);
     }
 
     public static string Capitalize(this string s)
@@ -92,9 +92,9 @@ public static class CommonExtends
         return StringHelper.StreamReadToEnd(s);
     }
 
-    public static string ReadToEnd(this Stream s, long Position)
+    public static string ReadToEnd(this Stream s, long position)
     {
-        return StringHelper.StreamReadToEnd(s, Position);
+        return StringHelper.StreamReadToEnd(s, position);
     }
 
     public static string ReadToEnd(this StreamReader s)

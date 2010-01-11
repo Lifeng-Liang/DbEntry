@@ -4,37 +4,37 @@ namespace Lephone.Util
 {
 	public static class Rand
 	{
-		private static readonly Random r = new Random();
+		private static readonly Random rand = new Random();
 
-		public static int Next(int MaxValue)
+		public static int Next(int maxValue)
 		{
-			lock (r)
+			lock (rand)
 			{
-				return r.Next(MaxValue);
+				return rand.Next(maxValue);
 			}
 		}
 
-		public static int Next(int MinValue, int MaxValue)
+		public static int Next(int minValue, int maxValue)
 		{
-			lock (r)
+			lock (rand)
 			{
-				return r.Next(MinValue, MaxValue);
+				return rand.Next(minValue, maxValue);
 			}
 		}
 
 		public static void NextBytes(byte[] buffer)
 		{
-			lock (r)
+			lock (rand)
 			{
-				r.NextBytes(buffer);
+				rand.NextBytes(buffer);
 			}
 		}
 		
 		public static double NextDouble()
 		{
-			lock (r)
+			lock (rand)
 			{
-				return r.NextDouble();
+				return rand.NextDouble();
 			}
 		}
 	}

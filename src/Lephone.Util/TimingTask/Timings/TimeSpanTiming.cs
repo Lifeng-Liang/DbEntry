@@ -8,25 +8,25 @@ namespace Lephone.Util.TimingTask.Timings
 		protected DateTime LastActiveTime;
 		protected MiscProvider miscTimeProvider;
 
-        public TimeSpanTiming(TimeSpan Span) : this(Span, MiscProvider.Instance) { }
+        public TimeSpanTiming(TimeSpan span) : this(span, MiscProvider.Instance) { }
 
-		public TimeSpanTiming(TimeSpan Span, MiscProvider miscTimeProvider)
+		public TimeSpanTiming(TimeSpan span, MiscProvider miscTimeProvider)
 		{
-			this.SpanSeconds = (int)Span.TotalSeconds;
+			this.SpanSeconds = (int)span.TotalSeconds;
 			this.miscTimeProvider = miscTimeProvider;
 			LastActiveTime = DateTime.MinValue;
 		}
 
 		public virtual bool TimesUp()
 		{
-			int ts = (int)TimeSpanFromNowOn().TotalSeconds;
+			var ts = (int)TimeSpanFromNowOn().TotalSeconds;
 			return ( ts <= 0 );
 		}
 
 		public virtual TimeSpan TimeSpanFromNowOn()
 		{
-			DateTime dt = GetNextActiveTime();
-            TimeSpan ts = dt.Subtract(miscTimeProvider.Now);
+			var dt = GetNextActiveTime();
+            var ts = dt.Subtract(miscTimeProvider.Now);
 			return ts;
 		}
 

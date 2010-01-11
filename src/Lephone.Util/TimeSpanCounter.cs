@@ -4,18 +4,18 @@ namespace Lephone.Util
 {
 	public class TimeSpanCounter
 	{
-		private readonly DateTime _TimeStart;
+		private readonly DateTime _timeStart;
 
 		public TimeSpanCounter()
 		{
-			_TimeStart = DateTime.Now;
+			_timeStart = DateTime.Now;
 		}
 
 		public TimeSpan Diff
 		{
 			get
 			{
-				return DateTime.Now.Subtract(_TimeStart);
+				return DateTime.Now.Subtract(_timeStart);
 			}
 		}
 

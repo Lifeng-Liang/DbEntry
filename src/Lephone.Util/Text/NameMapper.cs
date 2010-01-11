@@ -6,14 +6,14 @@ namespace Lephone.Util.Text
     {
         public static readonly NameMapper Instance = (NameMapper)ClassHelper.CreateInstance(UtilSetting.NameMapper);
 
-        public virtual string MapName(string Name)
+        public virtual string MapName(string name)
         {
-            return Name;
+            return name;
         }
 
-        public virtual string UnmapName(string Name)
+        public virtual string UnmapName(string name)
         {
-            return Name;
+            return name;
         }
 
         public virtual string Prefix

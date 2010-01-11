@@ -14,24 +14,24 @@ namespace Lephone.Util.Text
             SetReverseHexChar('a', 'f', 10);
         }
 
-        private static void SetReverseHexChar(char a, char b, int Add)
+        private static void SetReverseHexChar(char a, char b, int add)
         {
             for ( int i=a; i<=b; i++ )
             {
-                ReverseHexChar[i] = (byte)(i - a + Add);
+                ReverseHexChar[i] = (byte)(i - a + add);
             }
         }
 
-        public static byte[] Encode(string Src)
+        public static byte[] Encode(string src)
         {
-            int n = Src.Length;
+            int n = src.Length;
             if (( n % 2 ) == 0 )
             {
                 int m = n / 2;
                 var ret = new byte [m];
                 unsafe
                 {
-                    fixed ( char* p = Src )
+                    fixed ( char* p = src )
                     fixed (byte* r = ReverseHexChar)
                     {
                         for( int i=0, j=0; i<m; i++ )
@@ -47,9 +47,9 @@ namespace Lephone.Util.Text
             throw new ArgumentException("String length error!");
         }
 
-        public static string Decode(byte[] Src)
+        public static string Decode(byte[] src)
         {
-            int n = Src.Length;
+            int n = src.Length;
             var ret = new string((char)0, n + n);
             unsafe
             {
@@ -57,8 +57,8 @@ namespace Lephone.Util.Text
                 {
                     for( int i=0, j=0; i<n; i++ )
                     {
-                        p[j+1]	= h[ Src[i] & 15 ];
-                        p[j]	= h[ Src[i] >> 4 ];
+                        p[j+1]	= h[ src[i] & 15 ];
+                        p[j]	= h[ src[i] >> 4 ];
                         j += 2;
                     }
                 }

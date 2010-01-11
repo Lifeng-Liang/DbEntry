@@ -1,28 +1,27 @@
-﻿using System;
-using System.Timers;
+﻿using System.Timers;
 
 namespace Lephone.Util.TimingTask
 {
 	internal class SystemTimerAdapter : ITimer
 	{
-		private readonly Timer _Timer;
+		private readonly Timer _timer;
 		public event ElapsedEventHandler Elapsed;
 
 		public SystemTimerAdapter()
 		{
-			_Timer = new Timer();
+			_timer = new Timer();
 			Init();
 		}
 
-		public SystemTimerAdapter(double Interval)
+		public SystemTimerAdapter(double interval)
 		{
-			_Timer = new Timer(Interval);
+			_timer = new Timer(interval);
 			Init();
 		}
 
 		private void Init()
 		{
-			_Timer.Elapsed += _Timer_Elapsed;
+			_timer.Elapsed += _Timer_Elapsed;
 		}
 
 		private void _Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -37,11 +36,11 @@ namespace Lephone.Util.TimingTask
 		{
 			get
 			{
-				return _Timer.Enabled;
+				return _timer.Enabled;
 			}
 			set
 			{
-				_Timer.Enabled = value;
+				_timer.Enabled = value;
 			}
 		}
 
@@ -49,22 +48,22 @@ namespace Lephone.Util.TimingTask
 		{
 			get
 			{
-				return _Timer.Interval;
+				return _timer.Interval;
 			}
 			set
 			{
-				_Timer.Interval = value;
+				_timer.Interval = value;
 			}
 		}
 
 		public void Start()
 		{
-			_Timer.Start();
+			_timer.Start();
 		}
 
 		public void Stop()
 		{
-			_Timer.Stop();
+			_timer.Stop();
 		}
 	}
 }

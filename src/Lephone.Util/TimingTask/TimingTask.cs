@@ -2,18 +2,18 @@
 {
 	public class TimingTask
 	{
-		private ITask _Task;
-		private ITiming _Timing;
+		private ITask _task;
+		private ITiming _timing;
 
 		public ITask Task
 		{
 			set
 			{
-				_Task = value;
+				_task = value;
 			}
 			get
 			{
-				return _Task;
+				return _task;
 			}
 		}
 
@@ -21,26 +21,26 @@
 		{
 			set 
 			{
-				_Timing = value;
+				_timing = value;
 			}
 			get
 			{
-				return _Timing;
+				return _timing;
 			}
 		}
 
-		public TimingTask(ITask Task, ITiming Timing)
+		public TimingTask(ITask task, ITiming timing)
 		{
-			_Task = Task;
-			_Timing = Timing;
+			_task = task;
+			_timing = timing;
 		}
 
 		public void RunIfTimingUp()
 		{
-			if ( _Timing.TimesUp() )
+			if ( _timing.TimesUp() )
 			{
-				_Timing.Reset();
-				_Task.Run();
+				_timing.Reset();
+				_task.Run();
 			}
 		}
 	}

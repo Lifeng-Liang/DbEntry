@@ -12,10 +12,10 @@ namespace Lephone.Util.TimingTask
 
 		public ThreadingTimerAdapter() : this( 1000 ) {}
 
-		public ThreadingTimerAdapter(double Interval)
+		public ThreadingTimerAdapter(double interval)
 		{
 			tcb = Timer_Elapsed;
-			mInterval = Interval;
+			mInterval = interval;
 			mTimer = new Timer(tcb, null, (long)mInterval, (long)mInterval);
 		}
 

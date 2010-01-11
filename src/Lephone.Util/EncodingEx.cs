@@ -81,14 +81,14 @@ namespace Lephone.Util
 			get { return Encoding.UTF8; }
 		}
 
-		public static Encoding GetEncoding(string Name)
+		public static Encoding GetEncoding(string name)
 		{
-			return Encoding.GetEncoding(Name);
+			return Encoding.GetEncoding(name);
 		}
 
-		public static Encoding GetEncoding(int CodePage)
+		public static Encoding GetEncoding(int codePage)
 		{
-			return Encoding.GetEncoding(CodePage);
+			return Encoding.GetEncoding(codePage);
 		}
 	}
 }

@@ -2,14 +2,14 @@
 {
     public class InflectionNameMapper : UnderlineNameMapper
     {
-        public override string MapName(string Name)
+        public override string MapName(string name)
         {
-            return Inflector.Tableize(Name);
+            return Inflector.Tableize(name);
         }
 
-        public override string UnmapName(string Name)
+        public override string UnmapName(string name)
         {
-            return Inflector.Classify(Name);
+            return Inflector.Classify(name);
         }
     }
 }

@@ -9,20 +9,20 @@ namespace Lephone.Util.Setting
 
         internal ConfigHelper()
         {
-            AppSettings.nvc = new ConfigHelper("appSettings").nvc;
-            DefaultSettings.nvc = new ConfigHelper("Lephone.Settings").nvc;
+            AppSettings._nvc = new ConfigHelper("appSettings")._nvc;
+            DefaultSettings._nvc = new ConfigHelper("Lephone.Settings")._nvc;
         }
 
-        private NameValueCollection nvc;
+        private NameValueCollection _nvc;
 
-		public ConfigHelper(string SectionName)
+		public ConfigHelper(string sectionName)
 		{
-            nvc = ConfigReaderProxy.Instance.GetSection(SectionName);
+            _nvc = ConfigReaderProxy.Instance.GetSection(sectionName);
         }
 
 		protected override string GetString(string key)
 		{
-			return nvc[key];
+			return _nvc[key];
 		}
 	}
 }

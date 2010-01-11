@@ -12,16 +12,16 @@ namespace Lephone.Util
 
     public static class CommonHelper
     {
-        public static void Assert(bool AssertCondition)
+        public static void Assert(bool assertCondition)
         {
-            Assert(AssertCondition, "");
+            Assert(assertCondition, "");
         }
 
-        public static void Assert(bool AssertCondition, string FailedMessage, params object[] os)
+        public static void Assert(bool assertCondition, string failedMessage, params object[] os)
         {
-            if (!AssertCondition)
+            if (!assertCondition)
             {
-                string s = string.Format(FailedMessage, os);
+                string s = string.Format(failedMessage, os);
                 throw new LephoneException(s);
             }
         }
@@ -56,13 +56,13 @@ namespace Lephone.Util
             return true;
         }
 
-        public static int main(string[] args, int minArgCount, string Usage, CallbackVoidHandler Callback)
+        public static int main(string[] args, int minArgCount, string usage, CallbackVoidHandler callback)
         {
             if (args.Length >= minArgCount)
             {
                 try
                 {
-                    Callback();
+                    callback();
                     return 0;
                 }
                 catch (Exception ex)
@@ -78,7 +78,7 @@ namespace Lephone.Util
                     return 2;
                 }
             }
-            Console.WriteLine(Usage);
+            Console.WriteLine(usage);
             return 1;
         }
 
@@ -87,9 +87,9 @@ namespace Lephone.Util
             IfCatchException(true, callback);
         }
 
-        public static void IfCatchException(bool CatchException, CallbackVoidHandler callback)
+        public static void IfCatchException(bool catchException, CallbackVoidHandler callback)
         {
-            if (CatchException)
+            if (catchException)
             {
                 try
                 {
@@ -126,7 +126,7 @@ namespace Lephone.Util
             return GetEmptyValue(t, true, "Unknown Type");
         }
 
-        public static object GetEmptyValue(Type t, bool IncludeDateTime, string ExceptionText)
+        public static object GetEmptyValue(Type t, bool includeDateTime, string exceptionText)
         {
             if (t == typeof(int))
             {
@@ -136,15 +136,15 @@ namespace Lephone.Util
             {
                 return 0L;
             }
-            if (IncludeDateTime && t == typeof(DateTime))
+            if (includeDateTime && t == typeof(DateTime))
             {
                 return DateTime.MinValue;
             }
-            if (IncludeDateTime && t == typeof(Date))
+            if (includeDateTime && t == typeof(Date))
             {
                 return new Date(DateTime.MinValue);
             }
-            if (IncludeDateTime && t == typeof(Time))
+            if (includeDateTime && t == typeof(Time))
             {
                 return new Time(DateTime.MinValue);
             }
@@ -152,7 +152,7 @@ namespace Lephone.Util
             {
                 return Guid.Empty;
             }
-            throw new NotSupportedException(ExceptionText);
+            throw new NotSupportedException(exceptionText);
         }
 
         public static List<T> NewList<T>(params T[] ts)

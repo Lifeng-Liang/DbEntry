@@ -4,16 +4,16 @@ namespace Lephone.Util.TimingTask.Timings
 {
 	public class TimeOfDayStructure
 	{
-		private readonly TimeSpan _TimeOfDay;
+		private readonly TimeSpan _timeOfDay;
 
-		public TimeOfDayStructure(int Hour, int Minute, int Second)
+		public TimeOfDayStructure(int hour, int minute, int second)
 		{
-			_TimeOfDay = new TimeSpan(Hour, Minute, Second);
+			_timeOfDay = new TimeSpan(hour, minute, second);
 		}
 
 		public TimeSpan TimeSpanFromMidNight
 		{
-			get { return _TimeOfDay; }
+			get { return _timeOfDay; }
 		}
 	}
 }

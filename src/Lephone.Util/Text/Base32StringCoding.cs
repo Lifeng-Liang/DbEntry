@@ -4,8 +4,8 @@ namespace Lephone.Util.Text
 {
     public static class Base32StringCoding
     {
-        private static readonly char[] base32Table = "0123456789abcdefghijklmnopqrstuv".ToCharArray();
-        private static readonly byte[] reverseByteArray = new byte[128];
+        private static readonly char[] Base32Table = "0123456789abcdefghijklmnopqrstuv".ToCharArray();
+        private static readonly byte[] ReverseByteArray = new byte[128];
 
         static Base32StringCoding()
         {
@@ -14,11 +14,11 @@ namespace Lephone.Util.Text
             SetReverseHexChar('a', 'v', 10);
         }
 
-        private static void SetReverseHexChar(char a, char b, int Add)
+        private static void SetReverseHexChar(char a, char b, int add)
         {
             for (int i = a; i <= b; i++)
             {
-                reverseByteArray[i] = (byte)(i - a + Add);
+                ReverseByteArray[i] = (byte)(i - a + add);
             }
         }
 
@@ -26,53 +26,53 @@ namespace Lephone.Util.Text
         {
             int n = src.Length;
             int rest = n % 8;
-            int len = getLength(n, rest);
+            int len = GetLength(n, rest);
             var ret = new byte[len];
             int j = 0;
             switch (rest)
             {
                 case 2:
-                    ret[j++] = (byte)(reverseByteArray[src[0]] << 5 | reverseByteArray[src[1]]);
+                    ret[j++] = (byte)(ReverseByteArray[src[0]] << 5 | ReverseByteArray[src[1]]);
                     break;
                 case 4:
                     ret[j++] =
                         (byte)
-                        (reverseByteArray[src[0]] << 7 | reverseByteArray[src[1]] << 2 | reverseByteArray[src[2]] >> 3);
-                    ret[j++] = (byte)((reverseByteArray[src[2]] & 7) << 5 | reverseByteArray[src[3]]);
+                        (ReverseByteArray[src[0]] << 7 | ReverseByteArray[src[1]] << 2 | ReverseByteArray[src[2]] >> 3);
+                    ret[j++] = (byte)((ReverseByteArray[src[2]] & 7) << 5 | ReverseByteArray[src[3]]);
                     break;
                 case 5:
-                    byte ix2 = reverseByteArray[src[1]];
-                    byte ix3 = reverseByteArray[src[3]];
-                    ret[j++] = (byte)(reverseByteArray[src[0]] << 4 | ix2 >> 1);
-                    ret[j++] = (byte)((ix2 & 1) << 7 | reverseByteArray[src[2]] << 2 | ix3 >> 3);
-                    ret[j++] = (byte)((ix3 & 7) << 5 | reverseByteArray[src[4]]);
+                    byte ix2 = ReverseByteArray[src[1]];
+                    byte ix3 = ReverseByteArray[src[3]];
+                    ret[j++] = (byte)(ReverseByteArray[src[0]] << 4 | ix2 >> 1);
+                    ret[j++] = (byte)((ix2 & 1) << 7 | ReverseByteArray[src[2]] << 2 | ix3 >> 3);
+                    ret[j++] = (byte)((ix3 & 7) << 5 | ReverseByteArray[src[4]]);
                     break;
                 case 7:
-                    byte i3 = reverseByteArray[src[2]];
-                    byte i4 = reverseByteArray[src[3]];
-                    byte i6 = reverseByteArray[src[5]];
-                    ret[j++] = (byte)(reverseByteArray[src[0]] << 6 | reverseByteArray[src[1]] << 1 | i3 >> 4);
+                    byte i3 = ReverseByteArray[src[2]];
+                    byte i4 = ReverseByteArray[src[3]];
+                    byte i6 = ReverseByteArray[src[5]];
+                    ret[j++] = (byte)(ReverseByteArray[src[0]] << 6 | ReverseByteArray[src[1]] << 1 | i3 >> 4);
                     ret[j++] = (byte)((i3 & 0xf) << 4 | i4 >> 1);
-                    ret[j++] = (byte)((i4 & 1) << 7 | reverseByteArray[src[4]] << 2 | i6 >> 3);
-                    ret[j++] = (byte)((i6 & 7) << 5 | reverseByteArray[src[6]]);
+                    ret[j++] = (byte)((i4 & 1) << 7 | ReverseByteArray[src[4]] << 2 | i6 >> 3);
+                    ret[j++] = (byte)((i6 & 7) << 5 | ReverseByteArray[src[6]]);
                     break;
             }
             for (int i = rest; i < n; i += 8)
             {
-                byte i2 = reverseByteArray[src[i + 1]];
-                byte i4 = reverseByteArray[src[i + 3]];
-                byte i5 = reverseByteArray[src[i + 4]];
-                byte i7 = reverseByteArray[src[i + 6]];
-                ret[j++] = (byte)(reverseByteArray[src[i]] << 3 | i2 >> 2);
-                ret[j++] = (byte)((i2 & 3) << 6 | reverseByteArray[src[i + 2]] << 1 | i4 >> 4);
+                byte i2 = ReverseByteArray[src[i + 1]];
+                byte i4 = ReverseByteArray[src[i + 3]];
+                byte i5 = ReverseByteArray[src[i + 4]];
+                byte i7 = ReverseByteArray[src[i + 6]];
+                ret[j++] = (byte)(ReverseByteArray[src[i]] << 3 | i2 >> 2);
+                ret[j++] = (byte)((i2 & 3) << 6 | ReverseByteArray[src[i + 2]] << 1 | i4 >> 4);
                 ret[j++] = (byte)((i4 & 0xf) << 4 | i5 >> 1);
-                ret[j++] = (byte)((i5 & 1) << 7 | reverseByteArray[src[i + 5]] << 2 | i7 >> 3);
-                ret[j++] = (byte)((i7 & 7) << 5 | reverseByteArray[src[i + 7]]);
+                ret[j++] = (byte)((i5 & 1) << 7 | ReverseByteArray[src[i + 5]] << 2 | i7 >> 3);
+                ret[j++] = (byte)((i7 & 7) << 5 | ReverseByteArray[src[i + 7]]);
             }
             return ret;
         }
 
-        private static int getLength(int n, int rest)
+        private static int GetLength(int n, int rest)
         {
             int len = n / 8 * 5;
             switch (rest)
@@ -105,7 +105,7 @@ namespace Lephone.Util.Text
             var ret = new string((char)0, len);
             unsafe
             {
-                fixed (char* p = ret, h = base32Table)
+                fixed (char* p = ret, h = Base32Table)
                 {
                     int j = 0;
                     switch(rest)

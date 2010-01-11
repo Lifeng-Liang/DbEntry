@@ -6,23 +6,23 @@ namespace Lephone.Util.TimingTask
 {
 	public class TimingTaskController : IDisposable
 	{
-		private readonly ITimer tCheck;
-		private readonly TimingTaskCollection Tasks;
-		private bool Starting;
+		private readonly ITimer _tCheck;
+		private readonly TimingTaskCollection _tasks;
+		private bool _starting;
 
-		public TimingTaskController(TimingTaskCollection Tasks)
-			: this(Tasks, new ThreadingTimerAdapter(1000)) {}
+		public TimingTaskController(TimingTaskCollection tasks)
+			: this(tasks, new ThreadingTimerAdapter(1000)) {}
 
-		public TimingTaskController(TimingTaskCollection Tasks, ITimer it)
+		public TimingTaskController(TimingTaskCollection tasks, ITimer it)
 		{
-			Starting = false;
-			this.Tasks = Tasks;
-			tCheck = it;
+			_starting = false;
+			this._tasks = tasks;
+			_tCheck = it;
 		}
 
 		private void tCheck_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			foreach ( TimingTask t in Tasks )
+			foreach ( TimingTask t in _tasks )
 			{
 				try
 				{
@@ -37,21 +37,21 @@ namespace Lephone.Util.TimingTask
 
 		public void Start()
 		{
-			if ( !Starting )
+			if ( !_starting )
 			{
-				Starting = true;
-				tCheck.Elapsed += tCheck_Elapsed;
-				tCheck.Start();
+				_starting = true;
+				_tCheck.Elapsed += tCheck_Elapsed;
+				_tCheck.Start();
 			}
 		}
 
 		public void Dispose()
 		{
-			if ( Starting )
+			if ( _starting )
 			{
-				Starting = false;
-				tCheck.Elapsed -= tCheck_Elapsed;
-				tCheck.Stop();
+				_starting = false;
+				_tCheck.Elapsed -= tCheck_Elapsed;
+				_tCheck.Stop();
 			}
 		}
 	}

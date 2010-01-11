@@ -2,10 +2,10 @@
 {
 	public class MonthTiming : DayOfRangeTimingBase
 	{
-		public MonthTiming(TimeOfDayStructure TimeOfDay, int DayOfMonth) : base(TimeOfDay, DayOfMonth) {}
+		public MonthTiming(TimeOfDayStructure timeOfDay, int dayOfMonth) : base(timeOfDay, dayOfMonth) {}
 
-		public MonthTiming(TimeOfDayStructure TimeOfDay, int DayOfMonth, MiscProvider miscTimeProvider)
-			: base(TimeOfDay, DayOfMonth, miscTimeProvider) {}
+		public MonthTiming(TimeOfDayStructure timeOfDay, int dayOfMonth, MiscProvider miscTimeProvider)
+			: base(timeOfDay, dayOfMonth, miscTimeProvider) {}
 
 		protected override bool IsDayOfRange()
 		{

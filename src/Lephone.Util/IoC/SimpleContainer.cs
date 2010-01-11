@@ -7,7 +7,7 @@ namespace Lephone.Util.IoC
 {
     public static class SimpleContainer
     {
-        private static readonly Dictionary<Type, Dictionary<string, Type>> container
+        private static readonly Dictionary<Type, Dictionary<string, Type>> Container
             = new Dictionary<Type, Dictionary<string, Type>>();
 
         internal static readonly string DefaultName = "";
@@ -77,9 +77,9 @@ namespace Lephone.Util.IoC
             {
                 throw new ArgumentException("Impl type could not be interface or abstract class", "to");
             }
-            if(container.ContainsKey(ti))
+            if(Container.ContainsKey(ti))
             {
-                var value = container[ti];
+                var value = Container[ti];
                 if(value.ContainsKey(name))
                 {
                     if(throwException)
@@ -94,9 +94,9 @@ namespace Lephone.Util.IoC
             }
             else
             {
-                lock (container)
+                lock (Container)
                 {
-                    container[ti] = new Dictionary<string, Type> { { name, to } };
+                    Container[ti] = new Dictionary<string, Type> { { name, to } };
                 }
             }
         }
@@ -113,9 +113,9 @@ namespace Lephone.Util.IoC
 
         public static object Get(Type t, string name)
         {
-            if (container.ContainsKey(t))
+            if (Container.ContainsKey(t))
             {
-                var value = container[t];
+                var value = Container[t];
                 if (value.ContainsKey(name))
                 {
                     object obj = CreateInjectableObject(value[name]);
@@ -135,7 +135,7 @@ namespace Lephone.Util.IoC
             }
             var ci = cis[0];
             var ps = ci.GetParameters();
-            object[] os = new object[ps.Length];
+            var os = new object[ps.Length];
             for (int i = 0; i < ps.Length; i++)
             {
                 var ia = ClassHelper.GetAttribute<InjectionAttribute>(ps[i], false);

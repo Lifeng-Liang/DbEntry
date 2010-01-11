@@ -9,14 +9,14 @@ namespace Lephone.Util.TimingTask.Timings
 		protected MiscProvider miscTimeProvider;
 		protected DateTime LastCheckTime = DateTime.Now;
 
-		public DayOfRangeTimingBase(TimeOfDayStructure TimeOfDay, int DayOfRange)
-			: this(TimeOfDay, DayOfRange, MiscProvider.Instance) {}
+	    protected DayOfRangeTimingBase(TimeOfDayStructure timeOfDay, int dayOfRange)
+			: this(timeOfDay, dayOfRange, MiscProvider.Instance) {}
 
-		public DayOfRangeTimingBase(TimeOfDayStructure TimeOfDay, int DayOfRange, MiscProvider miscTimeProvider)
+	    protected DayOfRangeTimingBase(TimeOfDayStructure timeOfDay, int dayOfRange, MiscProvider miscTimeProvider)
 		{
 			this.miscTimeProvider = miscTimeProvider;
-			this.TimeOfDay = TimeOfDay.TimeSpanFromMidNight;
-			this.DayOfRange = DayOfRange;
+			this.TimeOfDay = timeOfDay.TimeSpanFromMidNight;
+			this.DayOfRange = dayOfRange;
 		}
 
 		public bool TimesUp()

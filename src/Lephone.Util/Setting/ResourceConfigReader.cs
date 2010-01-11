@@ -12,25 +12,25 @@ namespace Lephone.Util.Setting
     public class ResourceConfigReader : ConfigReader
     {
         private const string ConfigFilePostFix = ".config.xml";
-        private Dictionary<string, NameValueCollection> XmlConfigs;
+        private Dictionary<string, NameValueCollection> _xmlConfigs;
 
         public override NameValueCollection GetSection(string sectionName)
         {
-            if (XmlConfigs == null)
+            if (_xmlConfigs == null)
             {
                 InitAllXmlConfigFiles();
             }
-            Debug.Assert(XmlConfigs != null);
-            if (XmlConfigs.ContainsKey(sectionName))
+            Debug.Assert(_xmlConfigs != null);
+            if (_xmlConfigs.ContainsKey(sectionName))
             {
-                return XmlConfigs[sectionName];
+                return _xmlConfigs[sectionName];
             }
             return new NameValueCollection();
         }
 
         private void InitAllXmlConfigFiles()
         {
-            XmlConfigs = new Dictionary<string, NameValueCollection>();
+            _xmlConfigs = new Dictionary<string, NameValueCollection>();
             var ass = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly a in ass)
             {
@@ -83,9 +83,9 @@ namespace Lephone.Util.Setting
                     if (n.Name != "configSections")
                     {
                         var l = (NameValueCollection)h.Create(null, null, n);
-                        lock (XmlConfigs)
+                        lock (_xmlConfigs)
                         {
-                            XmlConfigs[n.Name] = l;
+                            _xmlConfigs[n.Name] = l;
                         }
                     }
                 }

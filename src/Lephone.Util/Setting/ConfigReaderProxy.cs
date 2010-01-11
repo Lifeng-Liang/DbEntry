@@ -4,16 +4,16 @@ namespace Lephone.Util.Setting
 {
     public class ConfigReaderProxy : ConfigReader
     {
-        private static ConfigReader instance = new ConfigReaderProxy();
+        private static ConfigReader _instance = new ConfigReaderProxy();
 
         public static ConfigReader Instance
         {
-            get { return instance; }
+            get { return _instance; }
         }
 
         protected static void SetInstance(ConfigReader r)
         {
-            instance = r;
+            _instance = r;
             new ConfigHelper();
         }
 
