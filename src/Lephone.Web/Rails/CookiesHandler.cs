@@ -16,13 +16,18 @@ namespace Lephone.Web.Rails
             }
             set
             {
-                var c = HttpContext.Current.Response.Cookies[name];
-                if(c == null)
-                {
-                    throw new WebException("Unexpacted exception");
-                }
-                c.Value = value;
+                SetCookies(HttpContext.Current.Request.Cookies[name], value);
+                SetCookies(HttpContext.Current.Response.Cookies[name], value);
             }
+        }
+
+        private void SetCookies(HttpCookie c, string value)
+        {
+            if(c == null)
+            {
+                throw new WebException("Unexpacted exception");
+            }
+            c.Value = value;
         }
     }
 }

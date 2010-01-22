@@ -22,5 +22,10 @@ namespace Lephone.UnitTest.Web
                 _bag[name] = value;
             }
         }
+
+        public void Clear()
+        {
+            _bag.Clear();
+        }
     }
 }
