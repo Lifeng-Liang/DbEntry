@@ -53,10 +53,10 @@ namespace Lephone.Data.SqlEntry
 
         #region utils
 
-        public List<DbColumnInfo> GetDbColumnInfoList(string TableName)
+        public List<DbColumnInfo> GetDbColumnInfoList(string tableName)
         {
-            string SqlStr = "select * from " + Dialect.QuoteForTableName(TableName) + " where 1<>1";
-            var sql = new SqlStatement(CommandType.Text, SqlStr);
+            string sqlStr = "select * from " + Dialect.QuoteForTableName(tableName) + " where 1<>1";
+            var sql = new SqlStatement(CommandType.Text, sqlStr);
             var ret = new List<DbColumnInfo>();
             ExecuteDataReader(sql, CommandBehavior.KeyInfo | CommandBehavior.SchemaOnly, delegate(IDataReader dr)
             {
@@ -73,7 +73,7 @@ namespace Lephone.Data.SqlEntry
         {
             var ret = new List<string>();
             DbStructInterface si = Dialect.GetDbStructInterface();
-            string UserId = Dialect.GetUserId(Driver.ConnectionString);
+            string userId = Dialect.GetUserId(Driver.ConnectionString);
             NewConnection(delegate
             {
                 var c = (DbConnection)ConProvider.Connection;
@@ -83,9 +83,9 @@ namespace Lephone.Data.SqlEntry
                     {
                         if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
                     }
-                    if (UserId != null)
+                    if (userId != null)
                     {
-                        if (!dr["OWNER"].Equals(UserId)) { continue; }
+                        if (!dr["OWNER"].Equals(userId)) { continue; }
                     }
                     string s = dr[si.TableNameString].ToString();
                     ret.Add(s);
@@ -112,31 +112,31 @@ namespace Lephone.Data.SqlEntry
 
         #region Execute Sql
 
-        public DataSet ExecuteDataset(SqlStatement Sql, Type ReturnType)
+        public DataSet ExecuteDataset(SqlStatement sql, Type returnType)
 		{
-			var ds = (DataSet)ClassHelper.CreateInstance(ReturnType);
-			ExecuteDataset(Sql, ds);
+			var ds = (DataSet)ClassHelper.CreateInstance(returnType);
+			ExecuteDataset(sql, ds);
 			return ds;
 		}
 
-		public DataSet ExecuteDataset(SqlStatement Sql)
+		public DataSet ExecuteDataset(SqlStatement sql)
 		{
 			var ds = new DataSet();
-			ExecuteDataset(Sql, ds);
+			ExecuteDataset(sql, ds);
 			return ds;
 		}
 
-		private void ExecuteDataset(SqlStatement Sql, DataSet ds)
+		private void ExecuteDataset(SqlStatement sql, DataSet ds)
 		{
             UsingConnection(delegate
             {
-                using (IDbCommand e = GetDbCommand(Sql))
+                using (IDbCommand e = GetDbCommand(sql))
                 {
                     IDbDataAdapter d = m_Driver.GetDbAdapter(e);
                     if (Dialect.ExecuteEachLine)
                     {
                         int i = 0;
-                        foreach (string s in split(e.CommandText))
+                        foreach (string s in Split(e.CommandText))
                         {
                             e.CommandText = s;
                             ((DbDataAdapter)d).Fill(ds, 0, DataSetting.MaxRecords, "Table" + i);
@@ -147,7 +147,7 @@ namespace Lephone.Data.SqlEntry
                     {
                         d.Fill(ds);
                     }
-                    PopulateOutParams(Sql, e);
+                    PopulateOutParams(sql, e);
                 }
             });
         }
@@ -157,7 +157,7 @@ namespace Lephone.Data.SqlEntry
             return UpdateDataset(selectSql, ds, 1);
         }
 
-        public int UpdateDataset(SqlStatement selectSql, DataSet ds, int UpdateBatchSize)
+        public int UpdateDataset(SqlStatement selectSql, DataSet ds, int updateBatchSize)
         {
             int ret = 0;
             UsingConnection(delegate
@@ -167,7 +167,7 @@ namespace Lephone.Data.SqlEntry
                 cb.QuotePrefix = Dialect.OpenQuote.ToString();
                 cb.QuoteSuffix = Dialect.CloseQuote.ToString();
                 cb.DataAdapter = d;
-                d.UpdateBatchSize = UpdateBatchSize;
+                d.UpdateBatchSize = updateBatchSize;
                 ret = d.Update(ds);
                 ds.AcceptChanges();
             });
@@ -179,12 +179,12 @@ namespace Lephone.Data.SqlEntry
             return UpdateDataset(insertSql, updateSql, deleteSql, ds, 1, false);
         }
 
-        public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int UpdateBatchSize)
+        public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize)
         {
-            return UpdateDataset(insertSql, updateSql, deleteSql, ds, UpdateBatchSize, true);
+            return UpdateDataset(insertSql, updateSql, deleteSql, ds, updateBatchSize, true);
         }
 
-        private int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int UpdateBatchSize, bool throwException)
+        private int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize, bool throwException)
         {
             int ret = 0;
             UsingConnection(delegate
@@ -204,7 +204,7 @@ namespace Lephone.Data.SqlEntry
                 }
                 if (d is DbDataAdapter)
                 {
-                    ((DbDataAdapter) d).UpdateBatchSize = UpdateBatchSize;
+                    ((DbDataAdapter) d).UpdateBatchSize = updateBatchSize;
                 }
                 else if(throwException)
                 {
@@ -216,9 +216,9 @@ namespace Lephone.Data.SqlEntry
             return ret;
         }
 
-        private IDbCommand GetDbCommandForUpdate(SqlStatement Sql)
+        private IDbCommand GetDbCommandForUpdate(SqlStatement sql)
         {
-            IDbCommand c = GetDbCommand(Sql);
+            IDbCommand c = GetDbCommand(sql);
             foreach(IDataParameter p in c.Parameters)
             {
                 p.SourceColumn = p.ParameterName[0] == Dialect.ParameterPrefix ? p.ParameterName.Substring(1) : p.ParameterName;
@@ -226,52 +226,52 @@ namespace Lephone.Data.SqlEntry
             return c;
         }
 
-        public object ExecuteScalar(SqlStatement Sql)
+        public object ExecuteScalar(SqlStatement sql)
 		{
             object obj = null;
             UsingConnection(delegate
             {
-                using (IDbCommand e = GetDbCommand(Sql))
+                using (IDbCommand e = GetDbCommand(sql))
                 {
                     if (Dialect.ExecuteEachLine)
                     {
                         ExecuteBeforeLines(e);
                     }
                     obj = e.ExecuteScalar();
-                    PopulateOutParams(Sql, e);
+                    PopulateOutParams(sql, e);
                 }
             });
             return obj;
         }
 
-		public int ExecuteNonQuery(SqlStatement Sql)
+		public int ExecuteNonQuery(SqlStatement sql)
 		{
             int i = 0;
             UsingConnection(delegate
             {
-                using (IDbCommand e = GetDbCommand(Sql))
+                using (IDbCommand e = GetDbCommand(sql))
                 {
                     if (Dialect.ExecuteEachLine)
                     {
                         i = ExecuteBeforeLines(e);
                     }
                     i += e.ExecuteNonQuery();
-                    PopulateOutParams(Sql, e);
+                    PopulateOutParams(sql, e);
                 }
             });
             return i;
         }
 
-        public void ExecuteDataReader(SqlStatement Sql, CallbackObjectHandler<IDataReader> callback)
+        public void ExecuteDataReader(SqlStatement sql, CallbackObjectHandler<IDataReader> callback)
         {
-            ExecuteDataReader(Sql, CommandBehavior.Default, callback);
+            ExecuteDataReader(sql, CommandBehavior.Default, callback);
         }
 
-        public void ExecuteDataReader(SqlStatement Sql, CommandBehavior behavior, CallbackObjectHandler<IDataReader> callback)
+        public void ExecuteDataReader(SqlStatement sql, CommandBehavior behavior, CallbackObjectHandler<IDataReader> callback)
         {
             UsingConnection(delegate
             {
-                using (IDbCommand e = GetDbCommand(Sql))
+                using (IDbCommand e = GetDbCommand(sql))
                 {
                     if (Dialect.ExecuteEachLine)
                     {
@@ -279,7 +279,7 @@ namespace Lephone.Data.SqlEntry
                     }
                     using (IDataReader r = e.ExecuteReader(behavior))
                     {
-                        PopulateOutParams(Sql, e);
+                        PopulateOutParams(sql, e);
                         callback(r);
                     }
                 }
@@ -287,11 +287,11 @@ namespace Lephone.Data.SqlEntry
         }
 
         // It's only for stupid oracle
-        internal void ExecuteDataReader(SqlStatement Sql, Type ReturnType, CallbackObjectHandler<IDataReader> callback)
+        internal void ExecuteDataReader(SqlStatement sql, Type returnType, CallbackObjectHandler<IDataReader> callback)
         {
             UsingConnection(delegate
             {
-                using (IDbCommand e = GetDbCommand(Sql))
+                using (IDbCommand e = GetDbCommand(sql))
                 {
                     if (Dialect.ExecuteEachLine)
                     {
@@ -299,8 +299,8 @@ namespace Lephone.Data.SqlEntry
                     }
                     using (IDataReader r = e.ExecuteReader(CommandBehavior.Default))
                     {
-                        PopulateOutParams(Sql, e);
-                        using (IDataReader dr = Dialect.GetDataReader(r, ReturnType))
+                        PopulateOutParams(sql, e);
+                        using (IDataReader dr = Dialect.GetDataReader(r, returnType))
                         {
                             callback(dr);
                         }
@@ -309,10 +309,10 @@ namespace Lephone.Data.SqlEntry
             });
         }
 
-        public IDbCommand GetDbCommand(SqlStatement Sql)
+        public IDbCommand GetDbCommand(SqlStatement sql)
         {
             ConnectionContext et = ConProvider;
-            IDbCommand e = m_Driver.GetDbCommand(Sql, et.Connection);
+            IDbCommand e = m_Driver.GetDbCommand(sql, et.Connection);
             if (et.Transaction != null)
             {
                 e.Transaction = et.Transaction;
@@ -320,13 +320,13 @@ namespace Lephone.Data.SqlEntry
             return e;
         }
 
-        protected void PopulateOutParams(SqlStatement Sql, IDbCommand e)
+        protected void PopulateOutParams(SqlStatement sql, IDbCommand e)
         {
-            if (Sql.Parameters.UserSetKey && (Sql.SqlCommandType == CommandType.StoredProcedure))
+            if (sql.Parameters.UserSetKey && (sql.SqlCommandType == CommandType.StoredProcedure))
             {
-                for (int i = 0; i < Sql.Parameters.Count; i++)
+                for (int i = 0; i < sql.Parameters.Count; i++)
                 {
-                    DataParameter p = Sql.Parameters[i];
+                    DataParameter p = sql.Parameters[i];
                     if (p.Direction != ParameterDirection.Input)
                     {
                         p.Value = ((IDbDataParameter)e.Parameters[i]).Value;
@@ -341,7 +341,7 @@ namespace Lephone.Data.SqlEntry
 
         protected int ExecuteBeforeLines(IDbCommand e)
         {
-            List<string> al = split(e.CommandText);
+            List<string> al = Split(e.CommandText);
             int ret = 0;
             for (int i = 0; i < al.Count - 1; i++)
             {
@@ -352,7 +352,7 @@ namespace Lephone.Data.SqlEntry
             return ret;
         }
 
-        private List<string> split(string cText)
+        private List<string> Split(string cText)
         {
             var ret = new List<string>();
             using (var sr = new StreamReader(new MemoryStream(Encoding.Unicode.GetBytes(cText)), Encoding.Unicode))
@@ -393,25 +393,25 @@ namespace Lephone.Data.SqlEntry
 
         #region Shortcut
 
-        private static readonly Regex reg = new Regex("'.*'|\\?", RegexOptions.Compiled);
+        private static readonly Regex Reg = new Regex("'.*'|\\?", RegexOptions.Compiled);
 
-        public SqlStatement GetSqlStatement(string SqlStr, params object[] os)
+        public SqlStatement GetSqlStatement(string sqlStr, params object[] os)
         {
-            CommandType ct = SqlStatement.GetCommandType(SqlStr);
+            CommandType ct = SqlStatement.GetCommandType(sqlStr);
             if (ct == CommandType.StoredProcedure)
             {
-                return new SqlStatement(ct, SqlStr, os);
+                return new SqlStatement(ct, sqlStr, os);
             }
             var dpc = new DataParameterCollection();
             int start = 0, n = 0;
             var sql = new StringBuilder();
             string pp = Dialect.ParameterPrefix + "p";
-            foreach (Match m in reg.Matches(SqlStr))
+            foreach (Match m in Reg.Matches(sqlStr))
             {
                 if (m.Length == 1)
                 {
                     string pn = pp + n;
-                    sql.Append(SqlStr.Substring(start, m.Index - start));
+                    sql.Append(sqlStr.Substring(start, m.Index - start));
                     sql.Append(pn);
                     start = m.Index + 1;
                     var dp = new DataParameter(pn, os[n]);
@@ -419,27 +419,27 @@ namespace Lephone.Data.SqlEntry
                     n++;
                 }
             }
-            if (start < SqlStr.Length)
+            if (start < sqlStr.Length)
             {
-                sql.Append(SqlStr.Substring(start));
+                sql.Append(sqlStr.Substring(start));
             }
             var ret = new SqlStatement(ct, sql.ToString(), dpc);
             return ret;
         }
 
-        public DataSet ExecuteDataset(string SqlCommandText, params object[] os)
+        public DataSet ExecuteDataset(string sqlCommandText, params object[] os)
         {
-            return ExecuteDataset(GetSqlStatement(SqlCommandText, os));
+            return ExecuteDataset(GetSqlStatement(sqlCommandText, os));
         }
 
-        public object ExecuteScalar(string SqlCommandText, params object[] os)
+        public object ExecuteScalar(string sqlCommandText, params object[] os)
         {
-            return ExecuteScalar(GetSqlStatement(SqlCommandText, os));
+            return ExecuteScalar(GetSqlStatement(sqlCommandText, os));
         }
 
-        public int ExecuteNonQuery(string SqlCommandText, params object[] os)
+        public int ExecuteNonQuery(string sqlCommandText, params object[] os)
         {
-            return ExecuteNonQuery(GetSqlStatement(SqlCommandText, os));
+            return ExecuteNonQuery(GetSqlStatement(sqlCommandText, os));
         }
 
         #endregion

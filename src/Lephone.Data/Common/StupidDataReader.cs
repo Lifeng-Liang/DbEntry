@@ -9,31 +9,31 @@ namespace Lephone.Data.Common
     // for stupid oracle
     public class StupidDataReader : DbDataReader
     {
-        private readonly Dictionary<int, Type> indexType;
-        private readonly Dictionary<string, Type> nameType;
+        private readonly Dictionary<int, Type> _indexType;
+        private readonly Dictionary<string, Type> _nameType;
         protected IDataReader dr;
 
-        public StupidDataReader(IDataReader dr, Type ReturnType)
+        public StupidDataReader(IDataReader dr, Type returnType)
         {
             this.dr = dr;
-            if (ReturnType != null)
+            if (returnType != null)
             {
-                indexType = new Dictionary<int, Type>();
-                nameType = new Dictionary<string, Type>();
-                ObjectInfo oi = ObjectInfo.GetInstance(ReturnType);
+                _indexType = new Dictionary<int, Type>();
+                _nameType = new Dictionary<string, Type>();
+                ObjectInfo oi = ObjectInfo.GetInstance(returnType);
                 int n = 0;
                 foreach (MemberHandler mh in oi.SimpleFields)
                 {
-                    indexType.Add(n++, mh.FieldType);
-                    nameType.Add(mh.Name, mh.FieldType);
+                    _indexType.Add(n++, mh.FieldType);
+                    _nameType.Add(mh.Name, mh.FieldType);
                 }
                 foreach (MemberHandler mh in oi.RelationFields)
                 {
                     if (mh.IsBelongsTo)
                     {
                         ObjectInfo oi1 = ObjectInfo.GetInstance(mh.FieldType.GetGenericArguments()[0]);
-                        indexType.Add(n++, oi1.KeyFields[0].FieldType);
-                        nameType.Add(mh.Name, oi1.KeyFields[0].FieldType);
+                        _indexType.Add(n++, oi1.KeyFields[0].FieldType);
+                        _nameType.Add(mh.Name, oi1.KeyFields[0].FieldType);
                     }
                 }
             }
@@ -178,7 +178,7 @@ namespace Lephone.Data.Common
             get
             {
                 object o = dr[name];
-                return GetObject(o, nameType[name]);
+                return GetObject(o, _nameType[name]);
             }
         }
 
@@ -187,7 +187,7 @@ namespace Lephone.Data.Common
             get
             {
                 object o = dr[ordinal];
-                return GetObject(o, indexType[ordinal]);
+                return GetObject(o, _indexType[ordinal]);
             }
         }
 

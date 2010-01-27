@@ -1,58 +1,56 @@
 ﻿using System;
 using Lephone.Data;
 using Lephone.Data.Definition;
-using Lephone.Data.SqlEntry;
 
 namespace Debug
 {
-    public abstract class T1 : DbObjectModel<T1>
+    public abstract class FullType : DbObjectModel<FullType>
     {
-        public abstract double Price { get; set; }
+        public abstract string c1 { get; set; }
+        public abstract int c2 { get; set; }
+        public abstract short c3 { get; set; }
+        public abstract byte c4 { get; set; }
+        public abstract bool c5 { get; set; }
+        public abstract DateTime c6 { get; set; }
+        public abstract decimal c7 { get; set; }
+        public abstract float c8 { get; set; }
+        public abstract double c9 { get; set; }
+        public abstract Guid c10 { get; set; }
+        //public abstract sbyte c11 { get; set; }
+        //public abstract byte[] c15 { get; set; }
+        public abstract Date c16 { get; set; }
+        public abstract Time c17 { get; set; }
     }
 
-
-    public abstract class T2 : DbObjectModel<T2>
-    {
-        public abstract long T1Id { get; set; }
-    }
-
-    public class TM : IDbObject
-    {
-        public double Price { get; set; }
-    }
 
     class Program
     {
         static void Main()
         {
-            DbEntry.Context.DropAndCreate(typeof(T1));
-            DbEntry.Context.DropAndCreate(typeof(T2));
+            var ft = FullType.New;
+            ft.c1 = "tom";
+            ft.c2 = 2;
+            ft.c3 = 3;
+            ft.c4 = 4;
+            ft.c5 = true;
+            ft.c6 = new DateTime(2000, 1, 1);
+            ft.c7 = 7;
+            ft.c8 = (float)8.1;
+            ft.c9 = 9.1;
+            ft.c10 = Guid.NewGuid();
+            //ft.c11 = 11;
+            //ft.c15 = new byte[] { 1, 2, 3, 4, 5 };
+            ft.c16 = Date.Now;
+            ft.c17 = Time.Now;
+            ft.Save();
+            Console.WriteLine("Save Done!!!");
+            Console.WriteLine();
 
-            var t1 = T1.New;
-            t1.Price = 0;
-            t1.Save();
-
-            var t2 = T2.New;
-            t2.T1Id = 1;
-            t2.Save();
-
-            var m1 = T1.FindAll();
-DbEntry.Context.ExecuteDataReader(new SqlStatement("SELECT Price FROM T1 WHERE Id = 1;"),
-    dr =>
-    {
-        dr.Read();
-        var p = dr["Price"];
-        Console.WriteLine(p.GetType());
-        Console.WriteLine(p);
-    });
-DbEntry.Context.ExecuteDataReader(new SqlStatement("SELECT T1.Price as Price FROM T1 INNER JOIN  T2 on T1.Id = T2.T1Id;"),
-    dr =>
-    {
-        dr.Read();
-        var p = dr["Price"];
-        Console.WriteLine(p.GetType());
-        Console.WriteLine(p);
-    });
+            var list = DbEntry.Context.ExecuteList<FullType>("Select * from full_types");
+            foreach (var fullType in list)
+            {
+                Console.WriteLine(fullType);
+            }
 
             Console.ReadLine();
         }

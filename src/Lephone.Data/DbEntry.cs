@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using System.Linq.Expressions;
 using Lephone.Util;
 using Lephone.Data.QuerySyntax;
 using Lephone.Data.Common;
@@ -65,6 +67,11 @@ namespace Lephone.Data
         public static T GetObject<T>(Condition c, OrderBy ob) where T : class, IDbObject
         {
             return _Instance.GetObject<T>(c, ob);
+        }
+
+        public static T GetObject<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
+        {
+            return _Instance.GetObject(expr);
         }
 
         public static void Save(object obj)

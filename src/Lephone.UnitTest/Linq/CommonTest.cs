@@ -20,6 +20,18 @@ namespace Lephone.UnitTest.Linq
             public abstract string FirstName { get; set; }
         }
 
+        public enum MyEnum
+        {
+            Test1,
+            Test2,
+        }
+
+        public abstract class EnumTest : DbObjectModel<EnumTest>
+        {
+            [DbColumn("ccc")]
+            public abstract MyEnum Abc { get; set; }
+        }
+
         [Test]
         public void Test1()
         {
@@ -331,6 +343,13 @@ namespace Lephone.UnitTest.Linq
         {
             sqlite.Delete<Person>(p => p.FirstName.EndsWith("T"));
             Assert.AreEqual("DELETE FROM [People] WHERE [Name] LIKE @Name_0;\n<Text><30>(@Name_0=%T:String)", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestEnum()
+        {
+            sqlite.From<EnumTest>().Where(p => p.Abc == MyEnum.Test1).Select();
+            AssertSql("SELECT [Id],[ccc] AS [Abc] FROM [Enum_Test] WHERE [ccc] = @ccc_0;\n<Text><60>(@ccc_0=0:Int32)");
         }
     }
 }
