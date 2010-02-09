@@ -153,7 +153,7 @@
     <Compile Include="Web\HtmlBuilderTest.cs" />
     <Compile Include="Web\MembershipTest.cs" />
     <Compile Include="Web\MockCookiesHandler.cs" />
-    <Compile Include="Web\RailsTest.cs" />
+    <Compile Include="Web\MvcTest.cs" />
     <Compile Include="Web\SessionHandlerTest.cs" />
     <Compile Include="Web\UrlBuilderTest.cs" />
     <Compile Include="Web\XmlBuilderTest.cs" />

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public enum ListStyle
     {
@@ -21,3 +21,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

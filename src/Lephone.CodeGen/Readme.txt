@@ -17,7 +17,7 @@ Example:
 
 ----------------------------------------------------------------------------
 
-Usage for Rails actions:
+Usage for Mvc actions:
     Lephone.CodeGen ra FileName [ClassPath ActionName]
 
 FileName:   The assembly file name who has the model classes.
@@ -31,7 +31,7 @@ Example:
 
 ----------------------------------------------------------------------------
 
-Usage for Rails views:
+Usage for Mvc views:
     Lephone.CodeGen rv FileName [ClassPath ViewName [MasterPage]]
 
 FileName:   The assembly file name who has the model classes.

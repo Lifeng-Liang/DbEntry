@@ -4,7 +4,7 @@ using System.Web.UI;
 using Lephone.Data.Definition;
 using Lephone.Util;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class PageBase : Page
     {
@@ -79,3 +79,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

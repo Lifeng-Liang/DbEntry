@@ -62,7 +62,7 @@ namespace Lephone.Data.Driver
 
         private void TryGetDeriveParametersMethod(Type[] ts, Type CommandType)
         {
-            CommonHelper.IfCatchException(true, delegate
+            CommonHelper.CatchAll(delegate
             {
                 foreach (Type t in ts)
                 {

@@ -3,7 +3,7 @@ using System.Web;
 using System.Web.UI;
 using Lephone.Util;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     internal class ScaffoldingViewsWithMaster : ScaffoldingViews
     {
@@ -75,3 +75,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

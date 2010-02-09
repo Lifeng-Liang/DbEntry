@@ -2,7 +2,7 @@
 using Lephone.Data.Common;
 using Lephone.Util.Text;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class ControlMapper
     {
@@ -170,3 +170,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Lephone.Data.Common;
 using Lephone.Data.Logging;
@@ -95,7 +95,7 @@ namespace Lephone.CodeGen
                 case "ra":
                     if (args.Length >= 4)
                     {
-                        var gen = new RailsActionGenerator(fileName, args[2], args[3]);
+                        var gen = new MvcActionGenerator(fileName, args[2], args[3]);
                         string s = gen.ToString();
                         Console.WriteLine(s);
                     }
@@ -108,7 +108,7 @@ namespace Lephone.CodeGen
                     if (args.Length >= 4)
                     {
                         string mpn = args.Length >= 5 ? args[4] : null;
-                        var gen = new RailsViewGenerator(fileName, args[2], args[3], mpn);
+                        var gen = new MvcViewGenerator(fileName, args[2], args[3], mpn);
                         string s = gen.ToString();
                         Console.WriteLine(s);
                     }

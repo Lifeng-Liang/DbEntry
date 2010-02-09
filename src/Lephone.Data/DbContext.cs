@@ -787,7 +787,7 @@ namespace Lephone.Data
             DropTable(tn, catchException, oi);
             if (oi.HasSystemKey)
             {
-                CommonHelper.IfCatchException(true, () => Dialect.ExecuteDropSequence(this, tn));
+                CommonHelper.CatchAll(() => Dialect.ExecuteDropSequence(this, tn));
             }
             foreach (CrossTable mt in oi.CrossTables.Values)
             {

@@ -1,6 +1,6 @@
 ﻿using Lephone.Data;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class LinkToInfo : UrlToInfo
     {
@@ -64,10 +64,12 @@ namespace Lephone.Web.Rails
                 throw new DataException("title can not be null or empty.");
             }
             string ret = string.Format("<a href=\"{0}\"{2}>{1}</a>",
-                base.ToString(),
-                TheTitle,
-                TheAddon == null ? "" : " " + TheAddon);
+                                       base.ToString(),
+                                       TheTitle,
+                                       TheAddon == null ? "" : " " + TheAddon);
             return ret;
         }
     }
 }
+
+

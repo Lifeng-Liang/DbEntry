@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class FlashHandler : SessionHandler
     {
@@ -60,3 +60,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

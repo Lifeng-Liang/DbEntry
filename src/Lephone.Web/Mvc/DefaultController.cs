@@ -1,15 +1,15 @@
 ﻿using Lephone.Util;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class DefaultController : ControllerBase
     {
-        private static readonly string Template = ResourceHelper.ReadToEnd(typeof(DefaultController), "Rails.Default.htm");
+        private static readonly string Template = ResourceHelper.ReadToEnd(typeof(DefaultController), "Mvc.Default.htm");
 
         public void List()
         {
             var b = HtmlBuilder.New;
-            foreach (string s in RailsDispatcher.Ctls.Keys)
+            foreach (string s in MvcDispatcher.Ctls.Keys)
             {
                 string url = UrlTo.Controller(s);
                 b = b.li.a(url).text(s).end.end;
@@ -18,3 +18,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

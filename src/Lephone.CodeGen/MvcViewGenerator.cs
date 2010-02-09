@@ -4,11 +4,11 @@ using Lephone.Data.Common;
 using Lephone.Util;
 using Lephone.Util.Text;
 using Lephone.Web;
-using Lephone.Web.Rails;
+using Lephone.Web.Mvc;
 
 namespace Lephone.CodeGen
 {
-    public class RailsViewGenerator
+    public class MvcViewGenerator
     {
         private const string tHeader = @"<%@ Page Language=""C#"" %>
 
@@ -47,7 +47,7 @@ namespace Lephone.CodeGen
         private readonly string ViewName;
         private readonly string MasterPageName;
 
-        public RailsViewGenerator(string fileName, string className, string viewName, string MasterPageName)
+        public MvcViewGenerator(string fileName, string className, string viewName, string MasterPageName)
         {
             Helper.EnumTypes(fileName, t =>
             {

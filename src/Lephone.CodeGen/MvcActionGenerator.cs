@@ -5,12 +5,12 @@ using Lephone.Data.Definition;
 
 namespace Lephone.CodeGen
 {
-    public class RailsActionGenerator
+    public class MvcActionGenerator
     {
         private Type _classType;
         private readonly string _actionName;
 
-        public RailsActionGenerator(string fileName, string className, string actionName)
+        public MvcActionGenerator(string fileName, string className, string actionName)
         {
             Helper.EnumTypes(fileName, t =>
             {

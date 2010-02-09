@@ -2,7 +2,7 @@
 using System.Reflection;
 using Lephone.Util;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class ControllerInfo
     {
@@ -57,3 +57,5 @@ namespace Lephone.Web.Rails
         public readonly Type Type;
     }
 }
+
+

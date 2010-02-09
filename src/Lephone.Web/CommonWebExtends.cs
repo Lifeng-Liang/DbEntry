@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;
-using Lephone.Web.Rails;
+using Lephone.Web.Mvc;
 
 public static class CommonWebExtends
 {

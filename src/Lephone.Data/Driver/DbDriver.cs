@@ -152,7 +152,7 @@ namespace Lephone.Data.Driver
             e.CommandText = Sql.SqlCommandText;
 
             // for some database not supports CommandTimeout
-            CommonHelper.IfCatchException(true, () => e.CommandTimeout = Sql.SqlTimeOut);
+            CommonHelper.CatchAll(() => e.CommandTimeout = Sql.SqlTimeOut);
 
             e.CommandType = Sql.SqlCommandType;
             e.Connection = conn;

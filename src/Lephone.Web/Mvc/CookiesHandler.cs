@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using Lephone.Util;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class CookiesHandler
     {
@@ -35,3 +35,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

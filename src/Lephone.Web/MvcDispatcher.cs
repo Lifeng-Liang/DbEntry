@@ -1,21 +1,21 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Reflection;
 using System.IO;
 using System.Web.Compilation;
 using Lephone.Util;
-using Lephone.Web.Rails;
+using Lephone.Web.Mvc;
 
 namespace Lephone.Web
 {
-    public class RailsDispatcher : IHttpHandler
+    public class MvcDispatcher : IHttpHandler
     {
         protected internal static Dictionary<string, ControllerInfo> Ctls;
         protected static readonly char[] Spliter = new[] { '/' };
         protected static readonly Type CbType = typeof(ControllerBase);
 
-        static RailsDispatcher()
+        static MvcDispatcher()
         {
             Ctls = new Dictionary<string, ControllerInfo>();
             Ctls["default"] = new ControllerInfo(typeof(DefaultController));
@@ -79,11 +79,11 @@ namespace Lephone.Web
             string url = context.Request.AppRelativeCurrentExecutionFilePath;
             url = url.Substring(2);
             
-            if(WebSettings.RailsPostfix != "")
+            if(WebSettings.MvcPostfix != "")
             {
-                if (url.ToLower().EndsWith(WebSettings.RailsPostfix))
+                if (url.ToLower().EndsWith(WebSettings.MvcPostfix))
                 {
-                    url = url.Substring(0, url.Length - WebSettings.RailsPostfix.Length);
+                    url = url.Substring(0, url.Length - WebSettings.MvcPostfix.Length);
                 }
             }
 

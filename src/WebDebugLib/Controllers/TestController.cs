@@ -1,5 +1,5 @@
-﻿using System;
-using Lephone.Web.Rails;
+using System;
+using Lephone.Web.Mvc;
 
 namespace DebugLib.Controllers
 {

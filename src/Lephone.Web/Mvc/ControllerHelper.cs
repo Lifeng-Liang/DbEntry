@@ -2,11 +2,11 @@
 using System.Web;
 using Lephone.Util;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public static class ControllerHelper
     {
-        private static readonly string ErrorTemplate = ResourceHelper.ReadToEnd(typeof(ControllerBase), "Rails.Error.htm");
+        private static readonly string ErrorTemplate = ResourceHelper.ReadToEnd(typeof(ControllerBase), "Mvc.Error.htm");
 
         public static void OnException(Exception ex, HttpContext ctx)
         {
@@ -51,3 +51,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

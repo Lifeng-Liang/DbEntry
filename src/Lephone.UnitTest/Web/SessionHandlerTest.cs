@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Lephone.UnitTest.util;
 using Lephone.Util;
-using Lephone.Web.Rails;
+using Lephone.Web.Mvc;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Web

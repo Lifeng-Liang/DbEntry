@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class UrlToInfo
     {
@@ -60,7 +60,7 @@ namespace Lephone.Web.Rails
         }
 
         public static string GenerateUrl(string controller, string action, 
-            object[] parameters, List<KeyValuePair<string, string>> urlParam)
+                                         object[] parameters, List<KeyValuePair<string, string>> urlParam)
         {
             string appPath = HttpContext.Current.Request.ApplicationPath.ToLower();
             var url = new StringBuilder();
@@ -85,9 +85,9 @@ namespace Lephone.Web.Rails
                 }
             }
             url.Length--;
-            if (WebSettings.RailsPostfix != "")
+            if (WebSettings.MvcPostfix != "")
             {
-                url.Append(WebSettings.RailsPostfix);
+                url.Append(WebSettings.MvcPostfix);
             }
             var s =  url.ToString();
             if(urlParam != null)
@@ -118,3 +118,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

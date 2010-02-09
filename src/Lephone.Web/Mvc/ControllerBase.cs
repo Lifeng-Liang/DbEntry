@@ -7,7 +7,7 @@ using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Util;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public abstract class ControllerBase
     {
@@ -124,7 +124,7 @@ namespace Lephone.Web.Rails
 
         public virtual void List(long? pageIndex, int? pageSize)
         {
-            var style = RailsDispatcher.Ctls[ControllerName].ListStyle;
+            var style = MvcDispatcher.Ctls[ControllerName].ListStyle;
             ProcessList(pageIndex, pageSize, style);
         }
 
@@ -205,3 +205,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

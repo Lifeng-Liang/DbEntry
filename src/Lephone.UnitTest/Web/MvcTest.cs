@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Reflection;
 using Lephone.Util;
 using Lephone.Web;
@@ -7,16 +7,16 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Web
 {
     [TestFixture]
-    public class RailsTest
+    public class MvcTest
     {
         [Test]
         public void Test1()
         {
             var Parameters = new List<object>();
             var ss = new[] {"controller", "action", "test", "ok", "3rd", "18", "30"};
-            MethodInfo mi = typeof (RailsTest).GetMethod("testHelper", ClassHelper.AllFlag);
+            MethodInfo mi = typeof (MvcTest).GetMethod("testHelper", ClassHelper.AllFlag);
             var pis = mi.GetParameters();
-            RailsDispatcher.ProcessArray(Parameters, ss, 2, pis, 0);
+            MvcDispatcher.ProcessArray(Parameters, ss, 2, pis, 0);
 
             Assert.AreEqual(3, Parameters.Count);
             Assert.AreEqual(typeof(string[]), Parameters[0].GetType());
@@ -34,9 +34,9 @@ namespace Lephone.UnitTest.Web
         {
             var Parameters = new List<object>();
             var ss = new[] { "controller", "action", "test", "ok", "3rd", "18", "30" };
-            MethodInfo mi = typeof(RailsTest).GetMethod("test2Helper", ClassHelper.AllFlag);
+            MethodInfo mi = typeof(MvcTest).GetMethod("test2Helper", ClassHelper.AllFlag);
             var pis = mi.GetParameters();
-            RailsDispatcher.ProcessArray(Parameters, ss, 2, pis, 0);
+            MvcDispatcher.ProcessArray(Parameters, ss, 2, pis, 0);
 
             Assert.AreEqual(3, Parameters.Count);
             Assert.AreEqual(typeof(string[]), Parameters[0].GetType());

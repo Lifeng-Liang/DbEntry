@@ -71,35 +71,35 @@
     <Compile Include="HtmlBuilder.cs" />
     <Compile Include="HttpParameterAttribute.cs" />
     <Compile Include="InMasterAttribute.cs" />
-    <Compile Include="Rails\ControllerHelper.cs" />
-    <Compile Include="Rails\ControllerInfo.cs" />
-    <Compile Include="Rails\CookiesHandler.cs" />
-    <Compile Include="Rails\DefaultActionAttribute.cs" />
-    <Compile Include="Rails\FlashHandler.cs" />
-    <Compile Include="RailsDispatcher.cs" />
+    <Compile Include="Mvc\ControllerHelper.cs" />
+    <Compile Include="Mvc\ControllerInfo.cs" />
+    <Compile Include="Mvc\CookiesHandler.cs" />
+    <Compile Include="Mvc\DefaultActionAttribute.cs" />
+    <Compile Include="Mvc\FlashHandler.cs" />
+    <Compile Include="MvcDispatcher.cs" />
     <Compile Include="DbEntryDataSource.cs" />
     <Compile Include="DbEntryMembershipProvider.cs" />
     <Compile Include="DbEntryRole.cs" />
     <Compile Include="DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
     <Compile Include="DbEntryMembershipUser.cs" />
-    <Compile Include="Rails\ItemList.cs" />
-    <Compile Include="Rails\LinkToInfo.cs" />
-    <Compile Include="Rails\ListStyleAttribute.cs" />
-    <Compile Include="Rails\MasterPageBase.cs">
+    <Compile Include="Mvc\ItemList.cs" />
+    <Compile Include="Mvc\LinkToInfo.cs" />
+    <Compile Include="Mvc\ListStyleAttribute.cs" />
+    <Compile Include="Mvc\MasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Rails\ScaffoldingAttribute.cs" />
-    <Compile Include="Rails\ScaffoldingViews.cs">
+    <Compile Include="Mvc\ScaffoldingAttribute.cs" />
+    <Compile Include="Mvc\ScaffoldingViews.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Rails\ControlMapper.cs" />
-    <Compile Include="Rails\ScaffoldingViewsWithMaster.cs">
+    <Compile Include="Mvc\ControlMapper.cs" />
+    <Compile Include="Mvc\ScaffoldingViewsWithMaster.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Rails\SessionHandler.cs" />
-    <Compile Include="Rails\UrlToInfo.cs" />
-    <Compile Include="Rails\ViewAttribute.cs" />
+    <Compile Include="Mvc\SessionHandler.cs" />
+    <Compile Include="Mvc\UrlToInfo.cs" />
+    <Compile Include="Mvc\ViewAttribute.cs" />
     <Compile Include="SmartMasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -110,9 +110,9 @@
     <Compile Include="WebControlException.cs" />
     <Compile Include="WebException.cs" />
     <Compile Include="WebSettings.cs" />
-    <Compile Include="Rails\ControllerBase.cs" />
-    <Compile Include="Rails\DefaultController.cs" />
-    <Compile Include="Rails\PageBase.cs">
+    <Compile Include="Mvc\ControllerBase.cs" />
+    <Compile Include="Mvc\DefaultController.cs" />
+    <Compile Include="Mvc\PageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -132,10 +132,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Rails\Default.htm" />
+    <EmbeddedResource Include="Mvc\Default.htm" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Rails\Error.htm" />
+    <EmbeddedResource Include="Mvc\Error.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

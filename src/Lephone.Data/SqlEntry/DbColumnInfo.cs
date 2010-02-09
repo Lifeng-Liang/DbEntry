@@ -32,7 +32,7 @@ namespace Lephone.Data.SqlEntry
             var fis = t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
             foreach (FieldInfo fi in fis)
             {
-                CommonHelper.IfCatchException(true,
+                CommonHelper.CatchAll(
                     delegate
                     {
                         object o = dr[fi.Name];

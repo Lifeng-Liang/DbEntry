@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Lephone.Data.Definition;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class ItemList<T> where T : class, IDbObject
     {
@@ -12,3 +12,5 @@ namespace Lephone.Web.Rails
         public long PageIndex;
     }
 }
+
+

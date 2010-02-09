@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Lephone.Web.Rails;
+using System.Collections.Generic;
+using Lephone.Web.Mvc;
 
 namespace Lephone.UnitTest.Web
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class ViewAttribute : Attribute
@@ -13,3 +13,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+

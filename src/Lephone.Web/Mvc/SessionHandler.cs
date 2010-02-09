@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Lephone.Util;
 
-namespace Lephone.Web.Rails
+namespace Lephone.Web.Mvc
 {
     public class SessionHandler
     {
@@ -93,3 +93,5 @@ namespace Lephone.Web.Rails
         }
     }
 }
+
+
