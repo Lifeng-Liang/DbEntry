@@ -40,5 +40,22 @@ namespace Lephone.UnitTest.util
         {
             _guid = id;
         }
+
+        private long _secends;
+
+        public override long Secends
+        {
+            get { return _secends; }
+        }
+
+        public void SetSecends(long s)
+        {
+            _secends = s;
+        }
+
+        public void AddSecends(long s)
+        {
+            _secends += s;
+        }
     }
 }

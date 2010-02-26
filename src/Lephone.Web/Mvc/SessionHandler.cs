@@ -6,15 +6,30 @@ namespace Lephone.Web.Mvc
 {
     public class SessionHandler
     {
-        protected static Dictionary<string, Dictionary<string, object>> BagSet = new Dictionary<string, Dictionary<string, object>>();
-        protected static DateTime NextChekTime = DateTime.MinValue;
+        public class SessionItem
+        {
+            public long ExpireTime;
+            public Dictionary<string, object> Bag;
+        }
+
+        protected static Dictionary<string, SessionItem> BagSet = new Dictionary<string, SessionItem>();
+
+        private static readonly long SessionExpire = (long)WebSettings.SessionExpire * 60;
+        private static readonly long SessionCheckEvery = (long)WebSettings.SessionCheckEvery * 60;
+
+        private static long _nextChekTime;
+
+        public static long NextCheckTime
+        {
+            get { return _nextChekTime; }
+        }
 
         public virtual object this[string name]
         {
             get
             {
-                Dictionary<string, object> bag = GetCurrentBag();
-                if (bag.ContainsKey(name))
+                var bag = GetCurrentBag();
+                if (bag != null && bag.ContainsKey(name))
                 {
                     return bag[name];
                 }
@@ -22,7 +37,7 @@ namespace Lephone.Web.Mvc
             }
             set
             {
-                Dictionary<string, object> bag = GetCurrentBag();
+                var bag = GetOrCreateCurrentBag();
                 bag[name] = value;
             }
         }
@@ -40,8 +55,30 @@ namespace Lephone.Web.Mvc
         {
             get
             {
-                return GetCurrentBag().Count;
+                var bag = GetCurrentBag();
+                return bag == null ? -1 : bag.Count;
             }
+        }
+
+        protected static Dictionary<string, object> GetOrCreateCurrentBag()
+        {
+            var bag =  GetCurrentBag();
+            if(bag != null)
+            {
+                return bag;
+            }
+            string fid = Guid.NewGuid().ToString();
+            CookiesHandler.Instance["lf_session_id"] = fid;
+            var item = new SessionItem
+                           {
+                               ExpireTime = MiscProvider.Instance.Secends + SessionExpire,
+                               Bag = new Dictionary<string, object>()
+                           };
+            lock (BagSet)
+            {
+                BagSet[fid] = item;
+            }
+            return item.Bag;
         }
 
         protected static Dictionary<string, object> GetCurrentBag()
@@ -52,36 +89,31 @@ namespace Lephone.Web.Mvc
             {
                 if(BagSet.ContainsKey(cv))
                 {
-                    Dictionary<string, object> bag = BagSet[cv];
-                    bag["ExpireTime"] = MiscProvider.Instance.Now.AddMinutes(WebSettings.SessionExpire);
-                    return bag;
+                    var item = BagSet[cv];
+                    if(item != null)
+                    {
+                        item.ExpireTime = MiscProvider.Instance.Secends + SessionExpire;
+                        return item.Bag;
+                    }
                 }
             }
-            string fid = Guid.NewGuid().ToString();
-            CookiesHandler.Instance["lf_session_id"] = fid;
-            var bag2 = new Dictionary<string, object>();
-            bag2["ExpireTime"] = MiscProvider.Instance.Now.AddMinutes(WebSettings.SessionExpire);
-            lock (BagSet)
-            {
-                BagSet[fid] = bag2;
-            }
-            return bag2;
+            return null;
         }
 
         protected static void ClearExpires()
         {
-            DateTime now = MiscProvider.Instance.Now;
-            if (now > NextChekTime)
+            var now = MiscProvider.Instance.Secends;
+            if (now > _nextChekTime)
             {
                 lock (BagSet)
                 {
-                    if (now > NextChekTime)
+                    if (now > _nextChekTime)
                     {
-                        NextChekTime = now.AddMinutes(WebSettings.SessionCheckEvery);
+                        _nextChekTime = now + SessionCheckEvery;
                         var keys = new List<string>(BagSet.Keys);
                         foreach (string s in keys)
                         {
-                            var et = (DateTime)BagSet[s]["ExpireTime"];
+                            var et = BagSet[s].ExpireTime;
                             if (now > et)
                             {
                                 BagSet.Remove(s);

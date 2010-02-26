@@ -9,7 +9,7 @@ namespace Lephone.Web.Mvc
             get
             {
                 Dictionary<string, object> bag = GetCurrentBag();
-                if (bag.ContainsKey(name))
+                if (bag != null && bag.ContainsKey(name))
                 {
                     object o = bag[name];
                     bag.Remove(name);
