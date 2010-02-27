@@ -194,9 +194,6 @@
     <Compile Include="ThreadingQueue.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TimeSpanCounter.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TimingTask\ITask.cs">
       <SubType>Code</SubType>
     </Compile>

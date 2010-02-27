@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
 
@@ -7,18 +8,24 @@ namespace Lephone.Data.Builder.Clause
 {
     public class FromClause : IClause
     {
-        private readonly string TableNameMain;
-        internal readonly JoinClause[] jcs;
-        private readonly HybridDictionary FromStrings = new HybridDictionary();
+        public readonly string MainTableName;
+        public readonly Type PartOf;
+        public readonly JoinClause[] JoinClauseList;
+        private readonly HybridDictionary _fromStrings = new HybridDictionary();
 
         public FromClause(string tableName)
         {
-            TableNameMain = tableName;
+            MainTableName = tableName;
         }
 
-        public FromClause(params JoinClause[] jcs)
+        public FromClause(Type partOf)
         {
-            this.jcs = jcs;
+            this.PartOf = partOf;
+        }
+
+        public FromClause(params JoinClause[] joinClauseList)
+        {
+            this.JoinClauseList = joinClauseList;
         }
 
         //internal FromClause(params string[] linkColumnNames)
@@ -27,52 +34,56 @@ namespace Lephone.Data.Builder.Clause
         //    {
         //        throw new ArgumentException("LinkColumnNames.Length not even or less than 2.");
         //    }
-        //    jcs = new JoinClause[linkColumnNames.Length / 2];
+        //    joinClauseList = new JoinClause[linkColumnNames.Length / 2];
         //    for (int i = 0; i < linkColumnNames.Length; i+=2)
         //    {
-        //        jcs[i / 2] = new JoinClause(linkColumnNames[i], linkColumnNames[i + 1],
+        //        joinClauseList[i / 2] = new JoinClause(linkColumnNames[i], linkColumnNames[i + 1],
         //            CompareOpration.Equal, JoinMode.Inner);
         //    }
         //}
 
-        public string GetMainTableName()
-        {
-            return TableNameMain;
-        }
-
         public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd)
         {
-            if (TableNameMain != null)
+            if (MainTableName != null)
             {
-                return dd.QuoteForTableName(TableNameMain);
+                return dd.QuoteForTableName(MainTableName);
             }
 
-            if (FromStrings.Contains(dd))
+            if (_fromStrings.Contains(dd))
             {
-                return (string)FromStrings[dd];
+                return (string)_fromStrings[dd];
             }
 
-            var sd = new StringDictionary();
-            string ret = dd.QuoteForTableName(jcs[0].Table1);
-            sd.Add(ret, "");
-            for (int i = 0; i < jcs.Length; i++)
+            string ret;
+
+            if (PartOf != null)
             {
-                if (i != 0 && dd.NeedBracketForJoin)
+                ret = dd.QuoteForLimitTableName(ObjectInfo.GetInstance(PartOf).From.MainTableName);
+            }
+            else
+            {
+                var sd = new StringDictionary();
+                ret = dd.QuoteForTableName(JoinClauseList[0].Table1);
+                sd.Add(ret, "");
+                for (int i = 0; i < JoinClauseList.Length; i++)
                 {
-                    ret = string.Format("({0})", ret);
+                    if (i != 0 && dd.NeedBracketForJoin)
+                    {
+                        ret = string.Format("({0})", ret);
+                    }
+                    string tn = dd.QuoteForTableName(JoinClauseList[i].Table2);
+                    if (sd.ContainsKey(tn)) { tn = dd.QuoteForTableName(JoinClauseList[i].Table1); }
+                    sd.Add(tn, "");
+                    ret = string.Format("{0} {3} JOIN {1} On {2}",
+                                        ret,
+                                        tn,
+                                        JoinClauseList[i].ToSqlText(dpc, dd),
+                                        JoinClauseList[i].Mode);
                 }
-                string tn = dd.QuoteForTableName(jcs[i].Table2);
-                if (sd.ContainsKey(tn)) { tn = dd.QuoteForTableName(jcs[i].Table1); }
-                sd.Add(tn, "");
-                ret = string.Format("{0} {3} JOIN {1} On {2}",
-                                    ret,
-                                    tn,
-                                    jcs[i].ToSqlText(dpc, dd),
-                                    jcs[i].Mode);
             }
-            lock (FromStrings.SyncRoot)
+            lock (_fromStrings.SyncRoot)
             {
-                FromStrings[dd] = ret;
+                _fromStrings[dd] = ret;
             }
             return ret;
         }

@@ -155,6 +155,12 @@ namespace Lephone.UnitTest.Data
         public string PcName;
     }
 
+    [DbTable(typeof(DateAndTime))]
+    public abstract class DtPart : DbObjectModel<DtPart>
+    {
+        public abstract DateTime dtValue { get; set; }
+    }
+
     #endregion
 
     [TestFixture]
@@ -286,6 +292,14 @@ namespace Lephone.UnitTest.Data
         public void TestJoinTableNoCreate()
         {
             DbEntry.From<JoinTableNoCreate>().Where(Condition.Empty).Select();
+        }
+
+        [Test]
+        public void TestPartOf()
+        {
+            sqlite.From<DtPart>().Where(Condition.Empty).Select();
+            AssertSql(@"SELECT [Id],[dtValue] FROM [DateAndTime];
+<Text><60>()");
         }
     }
 }

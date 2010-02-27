@@ -68,7 +68,7 @@ namespace Lephone.Data.Common
             MemberHandler[] keys = kfs.ToArray();
 
             Init(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
-            SetManyToManyFrom(this, From.GetMainTableName(), Fields);
+            SetManyToManyFrom(this, From.MainTableName, Fields);
 
             _RelationFields = rlfs.ToArray();
             _SimpleFields = sifs.ToArray();
@@ -87,9 +87,9 @@ namespace Lephone.Data.Common
             GetIndexes();
         }
 
-        public static object CreateObject(DbContext context, Type DbObjectType, IDataReader dr, bool UseIndex)
+        public static object CreateObject(DbContext context, Type dbObjectType, IDataReader dr, bool useIndex)
         {
-            ObjectInfo oi = GetInstance(DbObjectType);
+            ObjectInfo oi = GetInstance(dbObjectType);
             object obj = oi.NewObject();
             var sudi = obj as DbObjectSmartUpdate;
             if (sudi != null)
@@ -104,8 +104,8 @@ namespace Lephone.Data.Common
                     bt.Init(context, mh.Name);
                 }
             }
-            oi.Handler.LoadSimpleValues(obj, UseIndex, dr);
-            oi.Handler.LoadRelationValues(context, obj, UseIndex, dr);
+            oi.Handler.LoadSimpleValues(obj, useIndex, dr);
+            oi.Handler.LoadRelationValues(context, obj, useIndex, dr);
             if (sudi != null)
             {
                 sudi.m_InternalInit = false;
@@ -130,9 +130,9 @@ namespace Lephone.Data.Common
             }
         }
 
-        public static FromClause GetFromClause(Type DbObjectType)
+        public static FromClause GetFromClause(Type dbObjectType)
         {
-            ObjectInfo oi = GetInstance(DbObjectType);
+            ObjectInfo oi = GetInstance(dbObjectType);
             return oi.From;
         }
 
@@ -240,52 +240,52 @@ namespace Lephone.Data.Common
             return null;
         }
 
-        private static void SetManyToManyFrom(ObjectInfo oi, string MainTableName, IEnumerable<MemberHandler> Fields)
+        private static void SetManyToManyFrom(ObjectInfo oi, string mainTableName, IEnumerable<MemberHandler> fields)
         {
-            foreach (MemberHandler f in Fields)
+            foreach (MemberHandler f in fields)
             {
                 if (f.IsHasAndBelongsToMany)
                 {
                     Type ft = f.FieldType.GetGenericArguments()[0];
-                    string SlaveTableName = GetObjectFromClause(ft).GetMainTableName();
+                    string slaveTableName = GetObjectFromClause(ft).MainTableName;
 
-                    string UnmappedMainTableName = NameMapper.Instance.UnmapName(MainTableName);
-                    string UnmappedSlaveTableName = NameMapper.Instance.UnmapName(SlaveTableName);
+                    string unmappedMainTableName = NameMapper.Instance.UnmapName(mainTableName);
+                    string unmappedSlaveTableName = NameMapper.Instance.UnmapName(slaveTableName);
 
-                    string CrossTableName = getCrossTableName(f, UnmappedMainTableName, UnmappedSlaveTableName);
+                    string crossTableName = GetCrossTableName(f, unmappedMainTableName, unmappedSlaveTableName);
 
                     var fc = new FromClause(
-                        new JoinClause(CrossTableName, UnmappedSlaveTableName + "_Id", SlaveTableName, "Id",
+                        new JoinClause(crossTableName, unmappedSlaveTableName + "_Id", slaveTableName, "Id",
                                        CompareOpration.Equal, JoinMode.Inner));
                     Type t2 = f.FieldType.GetGenericArguments()[0];
                     oi.CrossTables[t2]
-                        = new CrossTable(t2, fc, CrossTableName, UnmappedMainTableName + "_Id",
-                                         UnmappedSlaveTableName + "_Id");
+                        = new CrossTable(t2, fc, crossTableName, unmappedMainTableName + "_Id",
+                                         unmappedSlaveTableName + "_Id");
                 }
             }
         }
 
-        private static string getCrossTableName(MemberHandler f, string UnmappedMainTableName, string UnmappedSlaveTableName)
+        private static string GetCrossTableName(MemberHandler f, string unmappedMainTableName, string unmappedSlaveTableName)
         {
-            string CrossTableName;
+            string crossTableName;
             if(!string.IsNullOrEmpty(f.CrossTableName))
             {
-                CrossTableName = f.CrossTableName;
+                crossTableName = f.CrossTableName;
             }
             else
             {
-                CrossTableName
-                    = UnmappedMainTableName.CompareTo(UnmappedSlaveTableName) > 0
-                          ? UnmappedSlaveTableName + "_" + UnmappedMainTableName
-                          : UnmappedMainTableName + "_" + UnmappedSlaveTableName;
+                crossTableName
+                    = unmappedMainTableName.CompareTo(unmappedSlaveTableName) > 0
+                          ? unmappedSlaveTableName + "_" + unmappedMainTableName
+                          : unmappedMainTableName + "_" + unmappedSlaveTableName;
             }
-            CrossTableName = NameMapper.Instance.Prefix + CrossTableName;
-            return CrossTableName;
+            crossTableName = NameMapper.Instance.Prefix + crossTableName;
+            return crossTableName;
         }
 
-        private static bool DisableSqlLog(Type DbObjectType)
+        private static bool DisableSqlLog(Type dbObjectType)
         {
-            object[] ds = DbObjectType.GetCustomAttributes(typeof (DisableSqlLogAttribute), false);
+            object[] ds = dbObjectType.GetCustomAttributes(typeof (DisableSqlLogAttribute), false);
             if (ds.Length != 0)
             {
                 return true;
@@ -329,6 +329,10 @@ namespace Lephone.Data.Common
                     }
                 }
                 return new FromClause(jcs);
+            }
+            if (dtas[0].TableName == null)
+            {
+                return new FromClause(dtas[0].PartOf);
             }
             return new FromClause(GetTableNameFromConfig(dtas[0].TableName));
         }

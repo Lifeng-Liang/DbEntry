@@ -8,10 +8,7 @@ namespace Lephone.Util
     {
         public static readonly MiscProvider Instance = (MiscProvider)ClassHelper.CreateInstance(UtilSetting.MiscProvider);
 
-        protected MiscProvider()
-        {
-            _secends = -1;
-        }
+        protected MiscProvider() {}
 
         public virtual DateTime Now
         {
@@ -23,22 +20,24 @@ namespace Lephone.Util
             return Guid.NewGuid();
         }
 
-        private Timer _timer;
-        private long _secends;
+        private static class TickProvider
+        {
+            private static Timer _timer; // to avoid it to be collected by GC.
+
+            public static long Secends;
+
+            static TickProvider()
+            {
+                _timer = new Timer(o => { Secends++; }, null, 1000, 1000);
+            }
+            
+        }
 
         public virtual long Secends
         {
             get
             {
-                if (_secends < 0)
-                {
-                    _secends = 0;
-                    _timer = new Timer(o =>
-                              {
-                                  _secends++;
-                              }, null, 1000, 1000);
-                }
-                return _secends;
+                return TickProvider.Secends;
             }
         }
     }

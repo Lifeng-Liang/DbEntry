@@ -96,7 +96,7 @@ namespace Lephone.Data.Common
     {
         public override void Run()
         {
-            DestinationTableName = ObjectInfo.GetInstance(typeof(T)).From.GetMainTableName();
+            DestinationTableName = ObjectInfo.GetInstance(typeof(T)).From.MainTableName;
             Copy();
         }
 

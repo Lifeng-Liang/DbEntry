@@ -26,7 +26,7 @@ namespace Lephone.Data.Common
 
         public override SqlStatement GetDeleteStatement(DbDialect dialect, object obj)
         {
-            var sb = new UpdateStatementBuilder(Info.From.GetMainTableName());
+            var sb = new UpdateStatementBuilder(Info.From.MainTableName);
             sb.Values.Add(new KeyValue(ColumnName, true));
             sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj) && colExp;
             return sb.ToSqlStatement(dialect);

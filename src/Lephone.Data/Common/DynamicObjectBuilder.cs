@@ -549,9 +549,19 @@ namespace Lephone.Data.Common
             {
                 if (o is DbTableAttribute)
                 {
-                    al.Add(new CustomAttributeBuilder(
-                        typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
-                        new object[] { ((DbTableAttribute)o).TableName }));
+                    var attribute = (DbTableAttribute)o;
+                    if(attribute.TableName != null)
+                    {
+                        al.Add(new CustomAttributeBuilder(
+                            typeof(DbTableAttribute).GetConstructor(new[] { typeof(string) }),
+                            new object[] { attribute.TableName }));
+                    }
+                    else
+                    {
+                        al.Add(new CustomAttributeBuilder(
+                            typeof(DbTableAttribute).GetConstructor(new[] { typeof(Type) }),
+                            new object[] { attribute.PartOf }));
+                    }
                     return true;
                 }
             }

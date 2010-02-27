@@ -53,7 +53,7 @@ namespace Lephone.Data.Common
         public DataTable ToDataTable()
         {
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            var dt = new DataTable(oi.From.GetMainTableName());
+            var dt = new DataTable(oi.From.MainTableName);
             foreach (MemberHandler m in oi.SimpleFields)
             {
                 DataColumn dc 

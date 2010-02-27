@@ -10,7 +10,7 @@ namespace Lephone.Data.Common
 
         //public override SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
         //{
-        //    DeleteStatementBuilder sb = new DeleteStatementBuilder(Info.From.GetMainTableName());
+        //    DeleteStatementBuilder sb = new DeleteStatementBuilder(Info.From.MainTableName);
         //    sb.Where.Conditions = DbObjectHelper.GetKeyWhereClause(obj)
         //        && (CK.K[Info.LockVersion.Name] == Info.LockVersion.GetValue(obj));
         //    return sb.ToSqlStatement(Dialect);
@@ -18,7 +18,7 @@ namespace Lephone.Data.Common
 
         public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)
         {
-            var sb = new UpdateStatementBuilder(Info.From.GetMainTableName());
+            var sb = new UpdateStatementBuilder(Info.From.MainTableName);
             Info.Handler.SetValuesForUpdate(sb, obj);
             var lv = (int)Info.LockVersion.GetValue(obj);
             sb.Where.Conditions = iwc && (CK.K[Info.LockVersion.Name] == lv);

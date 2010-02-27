@@ -106,14 +106,14 @@ namespace Lephone.Data.Common
 
         public virtual InsertStatementBuilder GetInsertStatementBuilder(object obj)
         {
-            var sb = new InsertStatementBuilder(Info.From.GetMainTableName());
+            var sb = new InsertStatementBuilder(Info.From.MainTableName);
             Info.Handler.SetValuesForInsert(sb, obj);
             return sb;
         }
 
         public virtual SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)
         {
-            var sb = new UpdateStatementBuilder(Info.From.GetMainTableName());
+            var sb = new UpdateStatementBuilder(Info.From.MainTableName);
             Info.Handler.SetValuesForUpdate(sb, obj);
             sb.Where.Conditions = iwc;
             return sb.ToSqlStatement(dialect);
@@ -121,14 +121,14 @@ namespace Lephone.Data.Common
 
         public virtual SqlStatement GetDeleteStatement(DbDialect dialect, object obj)
         {
-            var sb = new DeleteStatementBuilder(Info.From.GetMainTableName());
+            var sb = new DeleteStatementBuilder(Info.From.MainTableName);
             sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj);
             return sb.ToSqlStatement(dialect);
         }
 
         public virtual SqlStatement GetDeleteStatement(DbDialect dialect, Condition iwc)
         {
-            var sb = new DeleteStatementBuilder(Info.From.GetMainTableName());
+            var sb = new DeleteStatementBuilder(Info.From.MainTableName);
             sb.Where.Conditions = iwc;
             return sb.ToSqlStatement(dialect);
         }
@@ -141,7 +141,7 @@ namespace Lephone.Data.Common
 
         public virtual CreateTableStatementBuilder GetCreateTableStatementBuilder()
         {
-            string tname = Info.From.GetMainTableName();
+            string tname = Info.From.MainTableName;
             var cts = new CreateTableStatementBuilder(tname);
             foreach (MemberHandler fh in Info.Fields)
             {

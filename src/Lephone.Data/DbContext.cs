@@ -61,7 +61,7 @@ namespace Lephone.Data
 
         private void InnerTryCreateTable(Type dbObjectType, ObjectInfo oi)
         {
-            string name = oi.From.GetMainTableName();
+            string name = oi.From.MainTableName;
             if (name != null && !_tableNames.ContainsKey(name.ToLower()))
             {
                 CreateTableAndRelations(oi, dbObjectType, mt => !_tableNames.ContainsKey(mt.Name.ToLower()));
@@ -741,7 +741,7 @@ namespace Lephone.Data
             foreach (var type in list)
             {
                 var oi = ObjectInfo.GetInstance(type);
-                if(!string.IsNullOrEmpty(oi.From.GetMainTableName()))
+                if(!string.IsNullOrEmpty(oi.From.MainTableName))
                 {
                     DropTable(type, true);
                     CreateTableAndRelations(
@@ -783,7 +783,7 @@ namespace Lephone.Data
         public void DropTable(Type dbObjectType, bool catchException)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            string tn = oi.From.GetMainTableName();
+            string tn = oi.From.MainTableName;
             DropTable(tn, catchException, oi);
             if (oi.HasSystemKey)
             {
@@ -821,7 +821,7 @@ namespace Lephone.Data
             ExecuteNonQuery(sql);
             if (Driver.AutoCreateTable && _tableNames != null)
             {
-                _tableNames.Add(oi.From.GetMainTableName().ToLower(), 1);
+                _tableNames.Add(oi.From.MainTableName.ToLower(), 1);
             }
         }
 

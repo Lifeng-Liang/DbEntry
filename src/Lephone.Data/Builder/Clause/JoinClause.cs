@@ -21,8 +21,8 @@ namespace Lephone.Data.Builder.Clause
         {
             this.Type1 = type1;
             this.Type2 = type2;
-            this.Table1 = ObjectInfo.GetInstance(type1).From.GetMainTableName();
-            this.Table2 = ObjectInfo.GetInstance(type2).From.GetMainTableName();
+            this.Table1 = ObjectInfo.GetInstance(type1).From.MainTableName;
+            this.Table2 = ObjectInfo.GetInstance(type2).From.MainTableName;
             this.Key1 = key1;
             this.Key2 = key2;
             this.Comp = comp;

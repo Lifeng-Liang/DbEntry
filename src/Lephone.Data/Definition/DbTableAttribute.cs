@@ -6,10 +6,16 @@ namespace Lephone.Data.Definition
 	public class DbTableAttribute : Attribute
 	{
         public string TableName;
+	    public Type PartOf;
 
 		public DbTableAttribute(string tableName)
 		{
             this.TableName = tableName;
 		}
+
+        public DbTableAttribute(Type partOf)
+        {
+            this.PartOf = partOf;
+        }
     }
 }

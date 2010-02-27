@@ -86,10 +86,14 @@ namespace Lephone.Data.Common
                 _handler = new ReflectionDbObjectHandler(t, this);
             }
             // get create tables
-            if(From.jcs != null)
+            if(From.PartOf != null)
+            {
+                _createTables = new [] { From.PartOf };
+            }
+            else if(From.JoinClauseList != null)
             {
                 var tables = new Dictionary<Type, int>();
-                foreach (var joinClause in From.jcs)
+                foreach (var joinClause in From.JoinClauseList)
                 {
                     if (joinClause.Type1 != null)
                     {
