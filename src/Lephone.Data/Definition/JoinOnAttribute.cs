@@ -29,5 +29,11 @@ namespace Lephone.Data.Definition
             this.Index = index;
             Joinner = new JoinClause(modelType1, key1, modelType2, key2, comp, mode);
         }
+
+        public JoinOnAttribute(int index, string table1, string key1, string table2, string key2, CompareOpration comp, JoinMode mode)
+        {
+            this.Index = index;
+            Joinner = new JoinClause(table1, key1, table2, key2, comp, mode);
+        }
     }
 }
