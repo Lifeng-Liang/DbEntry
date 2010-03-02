@@ -498,62 +498,75 @@ namespace Lephone.Data
             {
                 UsingTransaction(delegate
                 {
-                    if (parentFirst) { e1(this); }
-                    object mkey = oi.Handler.GetKeyValue(obj);
-                    using (new Scope<object>(mkey))
+                    if (parentFirst)
                     {
-                        foreach (MemberHandler f in oi.RelationFields)
-                        {
-                            var ho = (ILazyLoading)f.GetValue(obj);
-                            ho.IsLoaded = true;
-                            if (f.IsHasOne || f.IsHasMany || (f.IsHasAndBelongsToMany && parentFirst))
-                            {
-                                object llo = ho.Read();
-                                if (llo == null)
-                                {
-                                    if (f.IsHasOne)
-                                    {
-                                        var ho1 = (IHasOne)ho;
-                                        if (ho1.LastValue != null)
-                                        {
-                                            Save(ho1.LastValue);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (f.IsHasMany)
-                                    {
-                                        var ho2 = (IHasMany)ho;
-                                        foreach (object item in ho2.RemovedValues)
-                                        {
-                                            Save(item);
-                                        }
-                                    }
-
-                                    CommonHelper.TryEnumerate(llo, e2);
-                                }
-                            }
-                            if (f.IsHasAndBelongsToMany)
-                            {
-                                var so = (IHasAndBelongsToManyRelations)ho;
-                                foreach (object n in so.SavedNewRelations)
-                                {
-                                    SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
-                                }
-                                foreach (object n in so.RemovedRelations)
-                                {
-                                    RemoveManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
-                                }
-                            }
-                        }
-                        if (!parentFirst) { e1(this); }
+                        e1(this);
+                        ProcessChildren(parentFirst, oi, obj, e2);
+                    }
+                    else
+                    {
+                        ProcessChildren(parentFirst, oi, obj, e2);
+                        e1(this);
                     }
                 });
             }
             else
             {
                 e1(this);
+            }
+        }
+
+        private void ProcessChildren(bool parentFirst, ObjectInfo oi, object obj, CallbackObjectHandler<object> e2)
+        {
+            object mkey = oi.Handler.GetKeyValue(obj);
+            using (new Scope<object>(mkey))
+            {
+                foreach (MemberHandler f in oi.RelationFields)
+                {
+                    var ho = (ILazyLoading)f.GetValue(obj);
+                    if(ho.IsLoaded)
+                    {
+                        if (f.IsHasOne || f.IsHasMany || (f.IsHasAndBelongsToMany && parentFirst))
+                        {
+                            object llo = ho.Read();
+                            if (llo == null)
+                            {
+                                if (f.IsHasOne)
+                                {
+                                    var ho1 = (IHasOne)ho;
+                                    if (ho1.LastValue != null)
+                                    {
+                                        Save(ho1.LastValue);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (f.IsHasMany)
+                                {
+                                    var ho2 = (IHasMany)ho;
+                                    foreach (object item in ho2.RemovedValues)
+                                    {
+                                        Save(item);
+                                    }
+                                }
+                                CommonHelper.TryEnumerate(llo, e2);
+                            }
+                        }
+                        if (f.IsHasAndBelongsToMany)
+                        {
+                            var so = (IHasAndBelongsToManyRelations)ho;
+                            foreach (object n in so.SavedNewRelations)
+                            {
+                                SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
+                            }
+                            foreach (object n in so.RemovedRelations)
+                            {
+                                RemoveManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
+                            }
+                        }
+                    }
+                }
             }
         }
 

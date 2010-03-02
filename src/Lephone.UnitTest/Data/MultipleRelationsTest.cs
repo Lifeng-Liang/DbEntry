@@ -181,7 +181,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("name", book.Categories[0].Title.Names[0].Name);
         }
 
-        [Test, Ignore("need to be fixed")]
+        [Test]
         public void TestHasAndBelongsToMany2()
         {
             mrBook b = mrBook.New.Init("book");
@@ -203,7 +203,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("name", book.Categories[0].Title.Names[0].Name);
         }
 
-        [Test, Ignore("need to be fixed")]
+        [Test]
         public void TestSimulateManyToMany()
         {
             mrReader r = mrReader.New.Init("reader");

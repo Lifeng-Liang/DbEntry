@@ -336,5 +336,22 @@ namespace Lephone.UnitTest.Data
             var c2 = DbEntry.GetObject<Acategory>(2);
             Assert.AreEqual(2, c2.Books.Count);
         }
+
+        [Test]
+        public void TestReadAfterSave()
+        {
+            var c = DbEntry.GetObject<Category>(2);
+            Assert.IsNotNull(c);
+            DbEntry.Save(c);
+
+            Assert.IsTrue(3 == c.Books.Count);
+            Assert.AreEqual("Game", c.Name);
+            Assert.AreEqual("Diablo", c.Books[0].Name);
+            Assert.AreEqual(1, c.Books[0].Id);
+            Assert.AreEqual("Pal95", c.Books[1].Name);
+            Assert.AreEqual(4, c.Books[1].Id);
+            Assert.AreEqual("Wow", c.Books[2].Name);
+            Assert.AreEqual(5, c.Books[2].Id);
+        }
     }
 }
