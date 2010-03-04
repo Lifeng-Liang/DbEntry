@@ -158,7 +158,7 @@ namespace Lephone.Data
                 }
                 if (c != null)
                 {
-                    if (DbEntry.Context.GetResultCount(t, c && EditCondition) != 0)
+                    if (oi.Context.GetResultCount(t, c && EditCondition) != 0)
                     {
                         sn.Length -= _SeparatorTextLength;
                         IsValid = false;

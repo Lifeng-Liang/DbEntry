@@ -26,12 +26,12 @@ namespace Lephone.Data.Definition
 
         public static DbObjectList<T> FindBySql(string sqlStr)
         {
-            return DbEntry.Context.ExecuteList<T>(sqlStr);
+            return DbEntry.GetContext(typeof(T)).ExecuteList<T>(sqlStr);
         }
 
         public static DbObjectList<T> FindBySql(SqlEntry.SqlStatement sql)
         {
-            return DbEntry.Context.ExecuteList<T>(sql);
+            return DbEntry.GetContext(typeof(T)).ExecuteList<T>(sql);
         }
 
         public static DbObjectList<T> FindAll()
@@ -81,7 +81,7 @@ namespace Lephone.Data.Definition
 
         public static IAfterWhere<T> Where(Condition con)
         {
-            return new QueryContent<T>(DbEntry.Context).Where(con);
+            return new QueryContent<T>(DbEntry.GetContext(typeof(T))).Where(con);
         }
 
         public static DbObjectList<T> FindRecent(int count)
@@ -147,7 +147,7 @@ namespace Lephone.Data.Definition
 
         public static IAfterWhere<T> Where(Expression<Func<T, bool>> condition)
         {
-            return new QueryContent<T>(DbEntry.Context).Where(condition);
+            return new QueryContent<T>(DbEntry.GetContext(typeof(T))).Where(condition);
         }
 
         public static DbObjectList<T> Find(Expression<Func<T, bool>> condition)
@@ -172,7 +172,7 @@ namespace Lephone.Data.Definition
 
         public static T FindOne(Expression<Func<T, bool>> condition)
         {
-            return DbEntry.Context.GetObject(condition);
+            return DbEntry.GetContext(typeof(T)).GetObject(condition);
         }
 
         public static LinqOrderSyntax<T> OrderBy(Expression<Func<T, object>> orderby)

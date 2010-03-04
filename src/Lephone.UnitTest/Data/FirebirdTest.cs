@@ -9,7 +9,7 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class FirebirdTest
     {
-        private readonly DbContext de = new DbContext("Firebird");
+        private readonly DbContext de = EntryConfig.NewContext("Firebird");
 
         [SetUp]
         public void SetUp()

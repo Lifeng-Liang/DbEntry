@@ -8,17 +8,20 @@ namespace Lephone.Data.Common
 {
 	public static class EntryConfig
 	{
-        public static readonly DbDriver Default = GetDriver(DataSetting.DefaultContext);
+        public static DbContext NewContext(string prefix)
+        {
+            return new DbContext(prefix);
+        }
 
-        public static DbDriver GetDriver(int Index)
+        public static DbDriver GetDriver(int index)
 		{
-			return GetDriver(Index.ToString());
+			return GetDriver(index.ToString());
 		}
 
-        public static DbDriver GetDriver(string Prefix)
+        public static DbDriver GetDriver(string prefix)
 		{
-            if (Prefix != "") { Prefix += "."; }
-            string pd = Prefix + "DataBase";
+            if (prefix != "") { prefix += "."; }
+            string pd = prefix + "DataBase";
             string ds = ConfigHelper.DefaultSettings.GetValue(pd);
             if (ds == "")
             {
@@ -32,27 +35,27 @@ namespace Lephone.Data.Common
             }
             var d = (DbDialect)ClassHelper.CreateInstance(ds);
             string cs = d.GetConnectionString(ss[1].Trim());
-            string pf = ConfigHelper.DefaultSettings.GetValue(Prefix + "DbProviderFactory");
-            string dcn = ConfigHelper.DefaultSettings.GetValue(Prefix + "DbDriver");
-            string act = ConfigHelper.DefaultSettings.GetValue(Prefix + "AutoCreateTable");
+            string pf = ConfigHelper.DefaultSettings.GetValue(prefix + "DbProviderFactory");
+            string dcn = ConfigHelper.DefaultSettings.GetValue(prefix + "DbDriver");
+            string act = ConfigHelper.DefaultSettings.GetValue(prefix + "AutoCreateTable");
             return CreateDbDriver(d, dcn, cs, pf, act);
 		}
 
-        public static DbDriver CreateDbDriver(DbDialect DialectClass, string DriverClassName, string ConnectionString, string DbProviderFactoryName, string act)
+        public static DbDriver CreateDbDriver(DbDialect dialectClass, string driverClassName, string connectionString, string dbProviderFactoryName, string act)
         {
-            bool AutoCreateTable = string.IsNullOrEmpty(act) ? false : bool.Parse(act);
-            CheckProperty(DialectClass, ConnectionString);
-            if (DriverClassName == "")
+            bool autoCreateTable = string.IsNullOrEmpty(act) ? false : bool.Parse(act);
+            CheckProperty(dialectClass, connectionString);
+            if (driverClassName == "")
             {
-                return DialectClass.CreateDbDriver(ConnectionString, DbProviderFactoryName, AutoCreateTable);
+                return dialectClass.CreateDbDriver(connectionString, dbProviderFactoryName, autoCreateTable);
             }
-            return (DbDriver)ClassHelper.CreateInstance(DriverClassName,
-                DialectClass, ConnectionString, DbProviderFactoryName, AutoCreateTable);
+            return (DbDriver)ClassHelper.CreateInstance(driverClassName,
+                dialectClass, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
-        private static void CheckProperty(DbDialect DialectClass, string ConnectionString)
+        private static void CheckProperty(DbDialect dialectClass, string connectionString)
 		{
-            if (DialectClass == null || ConnectionString == "")
+            if (dialectClass == null || connectionString == "")
 			{
                 throw new SettingException("DialectClass or ConnectionString not defined in the App.config file.");
 			}

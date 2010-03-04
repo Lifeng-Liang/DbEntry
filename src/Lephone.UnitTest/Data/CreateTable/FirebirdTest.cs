@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
@@ -42,7 +42,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestToAvoidMoreThan31CharsIndexName()
         {
-            var de = new DbContext("Firebird");
+            var de = EntryConfig.NewContext("Firebird");
             de.Create(typeof(fbLongName));
             string s = getIndexName();
             Debug.Assert(s != null);
@@ -62,7 +62,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestForNormalIndexName()
         {
-            var de = new DbContext("Firebird");
+            var de = EntryConfig.NewContext("Firebird");
             de.Create(typeof(fbLongName2));
             string s = getIndexName();
             Debug.Assert(s != null);
@@ -72,7 +72,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestBlob()
         {
-            var de = new DbContext("Firebird");
+            var de = EntryConfig.NewContext("Firebird");
             de.Create(typeof(fbBlob));
             Assert.AreEqual(@"CREATE TABLE ""FB_BLOB"" (
     ""ID"" BIGINT NOT NULL PRIMARY KEY,

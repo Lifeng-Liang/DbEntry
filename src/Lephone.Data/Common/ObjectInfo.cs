@@ -29,6 +29,7 @@ namespace Lephone.Data.Common
                     oi._cacheable = true;
                 }
             }
+            oi.InitContext();
             return oi;
         }
 
@@ -138,6 +139,8 @@ namespace Lephone.Data.Common
         private readonly Dictionary<string, List<ASC>> _indexes = new Dictionary<string, List<ASC>>();
         private readonly Dictionary<string, List<MemberHandler>> _uniqueIndexes = new Dictionary<string, List<MemberHandler>>();
         private readonly Dictionary<Type, CrossTable> _crossTables = new Dictionary<Type, CrossTable>();
+
+        private DbContext _context;
 
         private Type[] _createTables;
 
@@ -251,6 +254,11 @@ namespace Lephone.Data.Common
             get { return _createTables; }
         }
 
+        public DbContext Context
+        {
+            get { return _context; }
+        }
+
         #endregion
 
         #region ctor
@@ -260,6 +268,12 @@ namespace Lephone.Data.Common
         internal ObjectInfo(Type handleType, FromClause from, MemberHandler[] keyFields, MemberHandler[] fields, bool disableSqlLog)
         {
             Init(handleType, from, keyFields, fields, disableSqlLog);
+        }
+
+        internal void InitContext()
+        {
+            var attr = ClassHelper.GetAttribute<DbContextAttribute>(_baseType, true);
+            _context = DbEntry.GetContext(attr == null ? null : attr.ContextName);
         }
 
         internal void Init(Type handleType, FromClause fromClause, MemberHandler[] keyFields, MemberHandler[] fields, bool disableSqlLog)

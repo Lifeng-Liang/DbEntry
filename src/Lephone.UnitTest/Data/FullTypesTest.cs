@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using Lephone.Util;
@@ -43,7 +44,7 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class FullTypesTest
     {
-        private static readonly DbContext sqlite = new DbContext("SQLite");
+        private static readonly DbContext sqlite = EntryConfig.NewContext("SQLite");
         private static readonly Guid guid = Guid.NewGuid();
 
         static FullTypesTest()

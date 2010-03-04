@@ -1,4 +1,5 @@
 ﻿using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
@@ -14,7 +15,7 @@ namespace Lephone.UnitTest.Data
             public abstract int Age { get; set; }
         }
 
-        public static readonly DbContext sqlite = new DbContext("SQLite");
+        public static readonly DbContext sqlite = EntryConfig.NewContext("SQLite");
 
         [SetUp]
         public void SetUp()

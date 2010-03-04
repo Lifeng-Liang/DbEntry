@@ -1,4 +1,5 @@
 ﻿using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
 
@@ -6,7 +7,7 @@ namespace Lephone.UnitTest
 {
     public class SqlTestBase
     {
-        protected readonly DbContext sqlite = new DbContext("SQLite");
+        protected readonly DbContext sqlite = EntryConfig.NewContext("SQLite");
 
         [SetUp]
         public void SetUp()

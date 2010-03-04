@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Data;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Lephone.Util;
 using Lephone.Data.QuerySyntax;
@@ -16,33 +18,64 @@ namespace Lephone.Data
 
         public static void UsingTransaction(CallbackVoidHandler callback)
         {
-            _Instance.UsingTransaction(callback);
+            Context.UsingTransaction(callback);
         }
 
         public static void UsingTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
-            _Instance.UsingTransaction(il, callback);
+            Context.UsingTransaction(il, callback);
         }
 
         public static void NewTransaction(CallbackVoidHandler callback)
         {
-            _Instance.NewTransaction(callback);
+            Context.NewTransaction(callback);
         }
 
         public static void NewTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
-            _Instance.NewTransaction(il, callback);
+            Context.NewTransaction(il, callback);
         }
 
         #endregion
 
         #region Instance
 
-        private static readonly DbContext _Instance = new DbContext(EntryConfig.Default);
+        public static readonly DbContext Context;
+        private static readonly HybridDictionary CtxDict;
 
-        public static DbContext Context
+        static DbEntry()
+	    {
+            CtxDict = new HybridDictionary();
+            Context = GetContext(DataSetting.DefaultContext);
+	    }
+
+        public static DbContext GetContext(string prefix)
         {
-            get { return _Instance; }
+            if (string.IsNullOrEmpty(prefix) && Context != null)
+            {
+                return Context;
+            }
+            Debug.Assert(prefix != null);
+            if(CtxDict.Contains(prefix))
+            {
+                return (DbContext) CtxDict[prefix];
+            }
+            lock (CtxDict.SyncRoot)
+            {
+                if (CtxDict.Contains(prefix))
+                {
+                    return (DbContext)CtxDict[prefix];
+                }
+                var ctx = new DbContext(prefix);
+                CtxDict[prefix] = ctx;
+                return ctx;
+            }
+        }
+
+        public static DbContext GetContext(Type type)
+        {
+            var oi = ObjectInfo.GetInstance(type);
+            return oi.Context;
         }
 
         #endregion
@@ -51,52 +84,52 @@ namespace Lephone.Data
 
         public static IWhere<T> From<T>() where T : class, IDbObject
         {
-            return _Instance.From<T>();
+            return GetContext(typeof(T)).From<T>();
         }
 
         public static T GetObject<T>(object key) where T : class, IDbObject
         {
-            return _Instance.GetObject<T>(key);
+            return GetContext(typeof(T)).GetObject<T>(key);
         }
 
         public static T GetObject<T>(Condition c) where T : class, IDbObject
         {
-            return _Instance.GetObject<T>(c);
+            return GetContext(typeof(T)).GetObject<T>(c);
         }
 
         public static T GetObject<T>(Condition c, OrderBy ob) where T : class, IDbObject
         {
-            return _Instance.GetObject<T>(c, ob);
+            return GetContext(typeof(T)).GetObject<T>(c, ob);
         }
 
         public static T GetObject<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
         {
-            return _Instance.GetObject(expr);
+            return GetContext(typeof(T)).GetObject(expr);
         }
 
         public static void Save(object obj)
         {
-            _Instance.Save(obj);
+            GetContext(obj.GetType()).Save(obj);
         }
 
         public static void Update(object obj)
 		{
-            _Instance.Update(obj);
+            GetContext(obj.GetType()).Update(obj);
 		}
 
         public static void Insert(object obj)
 		{
-            _Instance.Insert(obj);
+            GetContext(obj.GetType()).Insert(obj);
 		}
 
         public static int Delete(object obj)
 		{
-            return _Instance.Delete(obj);
+            return GetContext(obj.GetType()).Delete(obj);
 		}
 
         public static int Delete<T>(Condition iwc) where T : class, IDbObject
         {
-            return _Instance.Delete<T>(iwc);
+            return GetContext(typeof(T)).Delete<T>(iwc);
         }
 
         #endregion

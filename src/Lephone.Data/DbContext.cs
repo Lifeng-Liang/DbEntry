@@ -21,11 +21,16 @@ namespace Lephone.Data
     {
         private Dictionary<string, int> _tableNames;
         // for remoting only
-        public DbContext() : this(EntryConfig.Default) { }
+        public DbContext() : this(DataSetting.DefaultContext) { }
 
-        public DbContext(string prefix) : this(EntryConfig.GetDriver(prefix)) { }
+        protected internal DbContext(string prefix) : this(EntryConfig.GetDriver(prefix)) { }
 
-        public DbContext(DbDriver driver) : base(driver) { }
+        protected internal DbContext(DbDriver driver) : base(driver) { }
+
+        public static DbContext GetInstance(string prefix)
+        {
+            return DbEntry.GetContext(prefix);
+        }
 
         public DateTime GetDatabaseTime()
         {
@@ -456,7 +461,7 @@ namespace Lephone.Data
             CommonHelper.TryEnumerate(obj, InnerSave);
         }
 
-        private void InnerSave(object obj)
+        internal void InnerSave(object obj)
         {
             Type t = obj.GetType();
             ObjectInfo oi = ObjectInfo.GetInstance(t);

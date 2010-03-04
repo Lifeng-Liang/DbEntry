@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
@@ -149,7 +150,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGroupBy()
         {
-            var dc = new DbContext("SQLite");
+            var dc = EntryConfig.NewContext("SQLite");
             dc.From<SoftDelete>().Where(Condition.Empty).GroupBy<string>("tom");
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] NTEXT NOT NULL ,\n	[IsDeleted] BOOL NOT NULL \n);\n<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("SELECT [tom],COUNT([tom]) AS it__count__ FROM [SoftDelete] WHERE [IsDeleted] = @IsDeleted_0 GROUP BY [tom];\n<Text><60>(@IsDeleted_0=False:Boolean)", StaticRecorder.LastMessage);
@@ -158,7 +159,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateTable()
         {
-            var dc = new DbContext("SQLite");
+            var dc = EntryConfig.NewContext("SQLite");
             dc.Create(typeof(SoftDelete));
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] NTEXT NOT NULL ,\n	[IsDeleted] BOOL NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }

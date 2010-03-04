@@ -109,7 +109,7 @@ namespace Lephone
     {
         static void Main()
         {
-            Process(new DbContext(EntryConfig.GetDriver(3)), "-->> Using SQLite : ");
+            Process(DbContext.GetInstance("3"), "-->> Using SQLite : ");
 
             Console.WriteLine("-- The End --");
             Console.ReadLine();

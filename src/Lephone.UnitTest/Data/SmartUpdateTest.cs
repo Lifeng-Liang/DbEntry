@@ -184,7 +184,7 @@ namespace Lephone.UnitTest.Data
     {
         #region init
 
-        private readonly DbContext de = new DbContext(EntryConfig.GetDriver("SQLite"));
+        private readonly DbContext de = EntryConfig.NewContext("SQLite");
 
         public SmartUpdateTest()
         {

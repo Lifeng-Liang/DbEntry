@@ -7,10 +7,10 @@ namespace Lephone.Data.Logging
     {
         public void ProcessLog(LogType type, string source, string name, string message, Exception eException)
         {
-            LephoneLog li = new LephoneLog(type, source, name, message, eException);
+            var li = new LephoneLog(type, source, name, message, eException);
             try
             {
-                DbEntry.Context.Insert(li);
+                DbEntry.Save(li);
             }
             catch (Exception ex)
             {

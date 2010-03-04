@@ -10,8 +10,8 @@ namespace Lephone.Data.Common
 {
     public abstract class BulkCopyProcessor
     {
-        protected readonly DbContext Src = new DbContext("Source");
-        protected readonly DbContext Dest = new DbContext("Destination");
+        protected readonly DbContext Src = DbContext.GetInstance("Source");
+        protected readonly DbContext Dest = DbContext.GetInstance("Destination");
 
         public static void CopyAll(Type t)
         {
@@ -24,7 +24,7 @@ namespace Lephone.Data.Common
             {
                 if (t.BaseType == typeof(BulkCopyProcessor))
                 {
-                    BulkCopyProcessor o = (BulkCopyProcessor)ClassHelper.CreateInstance(t);
+                    var o = (BulkCopyProcessor)ClassHelper.CreateInstance(t);
                     o.Run();
                 }
             }

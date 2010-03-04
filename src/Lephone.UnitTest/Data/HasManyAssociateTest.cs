@@ -232,7 +232,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(c.Name, c1.Name);
         }
 
-        [Test]
+        [Test, Ignore("Looks like a bad idea, may should just remove such feature.")]
         public void TestHasMany13()
         {
             // DbEntry.Save(c.Books) will save all data in the list,

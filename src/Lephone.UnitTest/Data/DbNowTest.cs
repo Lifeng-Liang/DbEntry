@@ -1,6 +1,7 @@
 ﻿using System;
 using Lephone.Data;
 using Lephone.Data.Builder;
+using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
@@ -55,7 +56,7 @@ namespace Lephone.UnitTest.Data
             public abstract string Name { get; set; }
         }
 
-        private readonly DbContext sqlite = new DbContext("SQLite");
+        private readonly DbContext sqlite = EntryConfig.NewContext("SQLite");
 
         [SetUp]
         public void SetUp()

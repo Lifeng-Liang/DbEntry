@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
@@ -64,7 +65,7 @@ namespace Lephone.UnitTest.Data
         [Test, ExpectedException(typeof(InvalidCastException))]
         public void TestGetTheRightCopier2()
         {
-            var dc = new DbContext("SqlServerMock");
+            var dc = EntryConfig.NewContext("SqlServerMock");
             dc.NewTransaction(delegate
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy(); // exception

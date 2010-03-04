@@ -170,6 +170,11 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract IList<ForTableName> Tables { get; set; }
     }
 
+    [DbContext("SQLite")]
+    public abstract class ForDefineContext : DbObjectModel<ForDefineContext>
+    {
+        public abstract string Name { get; set; }
+    }
 
     #endregion
 
@@ -435,6 +440,18 @@ SELECT LAST_INSERT_ROWID();
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
     [Name] NTEXT NOT NULL ,
     [For_Table_Name2_Id] BIGINT NOT NULL 
+);
+<Text><30>()");
+        }
+
+        [Test]
+        public void TestDefineContext()
+        {
+            var context = DbEntry.GetContext(typeof(ForDefineContext));
+            context.Create(typeof(ForDefineContext));
+            AssertSql(@"CREATE TABLE [For_Define_Context] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] NTEXT NOT NULL 
 );
 <Text><30>()");
         }

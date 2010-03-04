@@ -12,7 +12,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCross()
         {
-            var de = new DbContext(EntryConfig.GetDriver("SQLite"));
+            var de = EntryConfig.NewContext("SQLite");
             de.From<ImpPeople>().Where(Condition.Empty).Select();
             StaticRecorder.ClearMessages();
 
