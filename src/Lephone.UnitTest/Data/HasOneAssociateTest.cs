@@ -146,7 +146,7 @@ namespace Lephone.UnitTest.Data
             DbEntry.Save(pc);
 
             Assert.IsTrue(0 != pc.Id);
-            Assert.IsTrue(0 == p.Id);
+            Assert.IsTrue(0 != p.Id);
         }
 
         [Test]

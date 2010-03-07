@@ -9,7 +9,7 @@ namespace Lephone.Data.Definition
     }
 
     [Serializable]
-    public class HasOne<T> : LazyLoadOneBase<T>, IRenew, IHasOne where T : class, IDbObject
+    public class HasOne<T> : LazyLoadOneBase<T>, IHasOne where T : class, IDbObject
     {
         private OrderBy Order;
 
@@ -86,15 +86,6 @@ namespace Lephone.Data.Definition
                     ILazyLoading ll = (ILazyLoading)mh.GetValue(m_Value);
                     ll.Write(owner, true);
                 }
-            }
-        }
-
-        void IRenew.SetAsNew()
-        {
-            if (m_Value != null)
-            {
-                MemberHandler f = ObjectInfo.GetInstance(typeof(T)).KeyFields[0];
-                f.SetValue(m_Value, f.UnsavedValue);
             }
         }
     }

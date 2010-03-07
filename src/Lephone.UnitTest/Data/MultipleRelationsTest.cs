@@ -89,7 +89,7 @@ namespace Lephone.UnitTest.Data
         {
             public abstract string Name { get; set; }
             [HasMany] public abstract IList<mrReaderAndArticle> xTable { get; set; }
-            public mrReader Init(string name) { Name = name; return this; }
+            public abstract mrReader Init(string name);
         }
 
         public abstract class mrReaderAndArticle : DbObjectModel<mrReaderAndArticle>
@@ -97,14 +97,14 @@ namespace Lephone.UnitTest.Data
             public abstract string Name { get; set; }
             [BelongsTo] public abstract mrReader Reader { get; set; }
             [BelongsTo] public abstract mrArticle Article { get; set; }
-            public mrReaderAndArticle Init(string name) { Name = name; return this; }
+            public abstract mrReaderAndArticle Init(string name);
         }
 
         public abstract class mrArticle : DbObjectModel<mrArticle>
         {
             public abstract string Name { get; set; }
             [HasMany] public abstract IList<mrReaderAndArticle> xTable { get; set; }
-            public mrArticle Init(string name) { Name = name; return this; }
+            public abstract mrArticle Init(string name);
         }
 
         #endregion
@@ -211,6 +211,10 @@ namespace Lephone.UnitTest.Data
             mrReaderAndArticle ra = mrReaderAndArticle.New.Init("x");
             r.xTable.Add(ra);
             a.xTable.Add(ra);
+
+            Assert.AreEqual(a, ra.Article);
+            Assert.AreEqual(r, ra.Reader);
+            Assert.AreEqual("article", r.xTable[0].Article.Name);
 
             r.Save();
 

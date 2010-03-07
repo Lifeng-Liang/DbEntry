@@ -11,10 +11,11 @@ namespace Lephone.UnitTest.util
         {
             public static int Count;
 
-            protected override void Init(string t)
+            protected override Flyweight CreateInst(string t)
             {
                 Count++;
                 Thread.Sleep(1000);
+                return new Flyweight();
             }
         }
 

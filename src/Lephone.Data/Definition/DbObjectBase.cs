@@ -5,34 +5,10 @@ using Lephone.Data.Common;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class DbObjectBase : IRenew, IDbObject
+    public class DbObjectBase : IDbObject
     {
         public DbObjectBase()
         {
-        }
-
-        void IRenew.SetAsNew()
-        {
-            ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
-            if (oi.HasOnePrimaryKey)
-            {
-                oi.KeyFields[0].SetValue(this, oi.KeyFields[0].UnsavedValue);
-            }
-            if (oi.IsAssociateObject)
-            {
-                foreach (MemberHandler f in oi.RelationFields)
-                {
-                    if (f.IsHasOne || f.IsHasMany)
-                    {
-                        object obj = f.GetValue(this);
-                        if (obj != null)
-                        {
-                            var ll = (IRenew)obj;
-                            ll.SetAsNew();
-                        }
-                    }
-                }
-            }
         }
 
         public override string ToString()

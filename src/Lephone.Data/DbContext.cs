@@ -39,7 +39,7 @@ namespace Lephone.Data
             return dt;
         }
 
-        private void TryCreateTable(Type dbObjectType)
+        internal void TryCreateTable(Type dbObjectType)
         {
             if (Driver.AutoCreateTable)
             {
@@ -137,7 +137,7 @@ namespace Lephone.Data
             }
         }
 
-        protected virtual void SetCachedObject(object obj)
+        protected internal virtual void SetCachedObject(object obj)
         {
             string key = KeyGenerator.Instance[obj];
             CacheProvider.Instance[key] = ObjectInfo.CloneObject(obj);
@@ -458,288 +458,26 @@ namespace Lephone.Data
 
         public void Save(object obj)
         {
-            CommonHelper.TryEnumerate(obj, InnerSave);
-        }
-
-        internal void InnerSave(object obj)
-        {
-            Type t = obj.GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            if (!oi.HasOnePrimaryKey)
-            {
-                throw new DataException("To call this function, the table must have one primary key.");
-            }
-            MemberHandler k = oi.KeyFields[0];
-            if (oi.HasSystemKey)
-            {
-                if (k.UnsavedValue == null)
-                {
-                    throw new DataException("To call this functionn, the UnsavedValue must be set.");
-                }
-                InnerSave(k.UnsavedValue.Equals(k.GetValue(obj)), obj);
-            }
-            else
-            {
-                InnerSave(null == GetObject(obj.GetType(), k.GetValue(obj)), obj);
-            }
-        }
-
-        private void InnerSave(bool isInsert, object obj)
-        {
-            if (isInsert)
-            {
-                Insert(obj);
-            }
-            else
-            {
-                Update(obj);
-            }
-        }
-
-        private void ProcessRelation(ObjectInfo oi, bool parentFirst, object obj,
-            CallbackObjectHandler<DataProvider> e1, CallbackObjectHandler<object> e2)
-        {
-            if (oi.HasAssociate)
-            {
-                UsingTransaction(delegate
-                {
-                    if (parentFirst)
-                    {
-                        e1(this);
-                        ProcessChildren(parentFirst, oi, obj, e2);
-                    }
-                    else
-                    {
-                        ProcessChildren(parentFirst, oi, obj, e2);
-                        e1(this);
-                    }
-                });
-            }
-            else
-            {
-                e1(this);
-            }
-        }
-
-        private void ProcessChildren(bool parentFirst, ObjectInfo oi, object obj, CallbackObjectHandler<object> e2)
-        {
-            object mkey = oi.Handler.GetKeyValue(obj);
-            using (new Scope<object>(mkey))
-            {
-                foreach (MemberHandler f in oi.RelationFields)
-                {
-                    var ho = (ILazyLoading)f.GetValue(obj);
-                    if(ho.IsLoaded)
-                    {
-                        if (f.IsHasOne || f.IsHasMany || (f.IsHasAndBelongsToMany && parentFirst))
-                        {
-                            object llo = ho.Read();
-                            if (llo == null)
-                            {
-                                if (f.IsHasOne)
-                                {
-                                    var ho1 = (IHasOne)ho;
-                                    if (ho1.LastValue != null)
-                                    {
-                                        Save(ho1.LastValue);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (f.IsHasMany)
-                                {
-                                    var ho2 = (IHasMany)ho;
-                                    foreach (object item in ho2.RemovedValues)
-                                    {
-                                        Save(item);
-                                    }
-                                }
-                                CommonHelper.TryEnumerate(llo, e2);
-                            }
-                        }
-                        if (f.IsHasAndBelongsToMany)
-                        {
-                            var so = (IHasAndBelongsToManyRelations)ho;
-                            foreach (object n in so.SavedNewRelations)
-                            {
-                                SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
-                            }
-                            foreach (object n in so.RemovedRelations)
-                            {
-                                RemoveManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        public void Update(object obj)
-        {
-            Update(obj, ObjectInfo.GetKeyWhereClause(obj));
-        }
-
-        private void Update(object obj, Condition iwc)
-        {
-            Type t = obj.GetType();
-            TryCreateTable(t);
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            ProcessRelation(oi, true, obj, delegate(DataProvider dp)
-            {
-                var to = obj as DbObjectSmartUpdate;
-                if (to != null && to.m_UpdateColumns != null)
-                {
-                    if (to.m_UpdateColumns.Count > 0)
-                    {
-                        InnerUpdate(obj, iwc, oi, dp);
-                    }
-                }
-                else
-                {
-                    InnerUpdate(obj, iwc, oi, dp);
-                }
-            }, delegate(object o)
-            {
-                SetBelongsToForeignKey(obj, o, oi.KeyFields[0].GetValue(obj));
-                Save(o);
-            });
-        }
-
-        private void InnerUpdate(object obj, Condition iwc, ObjectInfo oi, DataProvider dp)
-        {
-            SqlStatement sql = oi.Composer.GetUpdateStatement(Dialect, obj, iwc);
-            oi.LogSql(sql);
-            int n = dp.ExecuteNonQuery(sql);
-            if (n == 0)
-            {
-                throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
-            }
-            if (obj is DbObjectSmartUpdate)
-            {
-                ((DbObjectSmartUpdate)obj).m_UpdateColumns = new Dictionary<string, object>();
-            }
-            oi.Composer.ProcessAfterSave(obj);
-
-            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
-            {
-                SetCachedObject(obj);
-            }
+            var o = new ModelUpdater(this);
+            o.Save(obj);
         }
 
         public void Insert(object obj)
         {
-            Type t = obj.GetType();
-            TryCreateTable(t);
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            InsertStatementBuilder sb = oi.Composer.GetInsertStatementBuilder(obj);
-            if (oi.HasSystemKey)
-            {
-                ProcessRelation(oi, true, obj, delegate(DataProvider dp)
-                {
-                    object key = dp.Dialect.ExecuteInsert(dp, sb, oi);
-                    ObjectInfo.SetKey(obj, key);
-                    foreach (Type t2 in oi.CrossTables.Keys)
-                    {
-                        SetManyToManyRelation(oi, t2, key, Scope<object>.Current);
-                    }
-                }, delegate(object o)
-                {
-                    SetBelongsToForeignKey(obj, o, oi.Handler.GetKeyValue(obj));
-                    Save(o);
-                });
-            }
-            else
-            {
-                SqlStatement sql = sb.ToSqlStatement(Dialect);
-                oi.LogSql(sql);
-                ExecuteNonQuery(sql);
-            }
-            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
-            {
-                SetCachedObject(obj);
-            }
+            var o = new ModelUpdater(this);
+            o.Insert(obj);
         }
 
-        private void SetManyToManyRelation(ObjectInfo oi, Type t, object key1, object key2)
+        public void Update(object obj)
         {
-            if (oi.CrossTables.ContainsKey(t) && key1 != null && key2 != null)
-            {
-                CrossTable mt = oi.CrossTables[t];
-                var sb = new InsertStatementBuilder(mt.Name);
-                sb.Values.Add(new KeyValue(mt.ColumeName1, key1));
-                sb.Values.Add(new KeyValue(mt.ColumeName2, key2));
-                SqlStatement sql = sb.ToSqlStatement(Dialect);
-                oi.LogSql(sql);
-                ExecuteNonQuery(sql);
-            }
-        }
-
-        private void RemoveManyToManyRelation(ObjectInfo oi, Type t, object key1, object key2)
-        {
-            if (oi.CrossTables.ContainsKey(t) && key1 != null && key2 != null)
-            {
-                CrossTable mt = oi.CrossTables[t];
-                var sb = new DeleteStatementBuilder(mt.Name);
-                Condition c = CK.K[mt.ColumeName1] == key1;
-                c &= CK.K[mt.ColumeName2] == key2;
-                sb.Where.Conditions = c;
-                SqlStatement sql = sb.ToSqlStatement(Dialect);
-                oi.LogSql(sql);
-                ExecuteNonQuery(sql);
-            }
-        }
-
-        private static void SetBelongsToForeignKey(object obj, object subobj, object foreignKey)
-        {
-            ObjectInfo oi = ObjectInfo.GetInstance(subobj.GetType());
-            MemberHandler mh = oi.GetBelongsTo(obj.GetType());
-            if (mh != null)
-            {
-                var ho = mh.GetValue(subobj) as IBelongsTo;
-                if (ho != null)
-                {
-                    ho.ForeignKey = foreignKey;
-                }
-            }
+            var o = new ModelUpdater(this);
+            o.Update(obj);
         }
 
         public int Delete(object obj)
         {
-            Type t = obj.GetType();
-            TryCreateTable(t);
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            SqlStatement sql = oi.Composer.GetDeleteStatement(Dialect, obj);
-            oi.LogSql(sql);
-            int ret = 0;
-            ProcessRelation(oi, false, obj, delegate(DataProvider dp)
-            {
-                ret += dp.ExecuteNonQuery(sql);
-                if (DataSetting.CacheEnabled && oi.Cacheable)
-                {
-                    CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
-                }
-                ret += DeleteRelation(oi, obj);
-            }, o => Delete(o));
-            if (oi.KeyFields[0].UnsavedValue != null)
-            {
-                oi.KeyFields[0].SetValue(obj, oi.KeyFields[0].UnsavedValue);
-            }
-            return ret;
-        }
-
-        private int DeleteRelation(ObjectInfo oi, object obj)
-        {
-            int ret = 0;
-            foreach (CrossTable mt in oi.CrossTables.Values)
-            {
-                var sb = new DeleteStatementBuilder(mt.Name);
-                sb.Where.Conditions = CK.K[mt.ColumeName1] == oi.Handler.GetKeyValue(obj);
-                SqlStatement sql = sb.ToSqlStatement(Dialect);
-                oi.LogSql(sql);
-                ret += ExecuteNonQuery(sql);
-            }
-            return ret;
+            var o = new ModelUpdater(this);
+            return o.Delete(obj);
         }
 
         public int Delete<T>(Condition iwc) where T : class, IDbObject

@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdditionalTypes.cs" />
+    <Compile Include="AvoidList.cs" />
     <Compile Include="CommonExtends.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="FlyweightBase.cs" />

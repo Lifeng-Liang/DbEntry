@@ -12,7 +12,7 @@ namespace Lephone.Data.Common
 {
     public partial class ObjectInfo
     {
-        internal void InitObjectInfoBySimpleMode(Type t)
+        internal ObjectInfo(Type t, bool isSimp)
         {
             var lt = new List<Type>(t.GetInterfaces());
             if (!lt.Contains(typeof (IDbObject)))

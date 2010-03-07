@@ -12,15 +12,29 @@ namespace Lephone.Data.Common
     {
         #region GetInstance
 
-        public new static ObjectInfo GetInstance(Type dbObjectType)
+        protected override Type CheckKey(Type dbObjectType)
         {
             if (dbObjectType.IsNotPublic)
             {
                 throw new DataException("The model class should be public");
             }
             Type t = (dbObjectType.IsAbstract) ? AssemblyHandler.Instance.GetImplType(dbObjectType) : dbObjectType;
-            // should only one TKey here, so use "new" keyword here
-            ObjectInfo oi = FlyweightBase<Type, ObjectInfo>.GetInstance(t);
+            var c = ClassHelper.GetArgumentlessConstructor(t);
+            if (c == null)
+            {
+                string typeName = t.Name;
+                if (typeName.StartsWith(MemoryTypeBuilder.MemberPrifix))
+                {
+                    typeName = t.BaseType.Name;
+                }
+                throw new DataException("class {0} need a public/protected(DbObjectModel) argumentless constructor", typeName);
+            }
+            return t;
+        }
+
+        protected override ObjectInfo GetInst(Type dbObjectType)
+        {
+            var oi = base.GetInst(dbObjectType);
             if (oi.BaseType == null)
             {
                 oi._baseType = dbObjectType;
@@ -33,32 +47,24 @@ namespace Lephone.Data.Common
             return oi;
         }
 
+        protected override ObjectInfo CreateInst(Type t)
+        {
+            return new ObjectInfo(t);
+        }
+
         internal static ObjectInfo GetSimpleInstance(Type dbObjectType)
         {
             Type t = (dbObjectType.IsAbstract) ? AssemblyHandler.Instance.GetImplType(dbObjectType) : dbObjectType;
-            if (dic.ContainsKey(t))
+            if (Jar.ContainsKey(t))
             {
-                return dic[t];
+                return Jar[t];
             }
-            var oi = new ObjectInfo();
-            oi.InitObjectInfoBySimpleMode(t);
+            var oi = new ObjectInfo(t, true);
             return oi;
         }
 
-        protected override void Init(Type t)
+        protected ObjectInfo(Type t) : this(t, true)
         {
-            var c = ClassHelper.GetArgumentlessConstructor(t);
-            if(c == null)
-            {
-                string typeName = t.Name;
-                if(typeName.StartsWith(MemoryTypeBuilder.MemberPrifix))
-                {
-                    typeName = t.BaseType.Name;
-                }
-                throw new DataException("class {0} need a public/protected(DbObjectModel) argumentless constructor", typeName);
-            }
-
-            InitObjectInfoBySimpleMode(t);
             // binding QueryComposer
             if (!string.IsNullOrEmpty(SoftDeleteColumnName))
             {
@@ -120,7 +126,6 @@ namespace Lephone.Data.Common
         private QueryComposer _composer;
 
         private bool _cacheable;
-        private Type _baseType;
         private Type _handleType;
         private FromClause _from;
         private bool _hasSystemKey;
@@ -128,13 +133,9 @@ namespace Lephone.Data.Common
         private bool _isAssociateObject;
         private bool _allowSqlLog = true;
         private bool _hasOnePrimaryKey;
-        internal string _DeleteToTableName;
-        internal string _SoftDeleteColumnName;
         private MemberHandler _lockVersion;
         private MemberHandler[] _keyFields;
         private MemberHandler[] _fields;
-        internal MemberHandler[] _SimpleFields;
-        internal MemberHandler[] _RelationFields;
 
         private readonly Dictionary<string, List<ASC>> _indexes = new Dictionary<string, List<ASC>>();
         private readonly Dictionary<string, List<MemberHandler>> _uniqueIndexes = new Dictionary<string, List<MemberHandler>>();
@@ -143,6 +144,12 @@ namespace Lephone.Data.Common
         private DbContext _context;
 
         private Type[] _createTables;
+
+        private Type _baseType;
+        internal string _DeleteToTableName;
+        internal string _SoftDeleteColumnName;
+        internal MemberHandler[] _SimpleFields;
+        internal MemberHandler[] _RelationFields;
 
         public IDbObjectHandler Handler
         {
@@ -288,7 +295,7 @@ namespace Lephone.Data.Common
 
             foreach (MemberHandler f in fields)
             {
-                if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany)
+                if (f.IsHasOne || f.IsHasMany || f.IsHasAndBelongsToMany || f.IsBelongsTo)
                 {
                     _hasAssociate = true;
                     _isAssociateObject = true;

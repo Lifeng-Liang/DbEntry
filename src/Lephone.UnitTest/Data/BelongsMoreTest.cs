@@ -14,11 +14,7 @@ namespace Lephone.UnitTest.Data
         [HasMany(OrderBy = "Id")]
         public abstract IList<BelongsMore> bms { get; set; }
 
-        public bArticle Init(string Name)
-        {
-            this.Name = Name;
-            return this;
-        }
+        public abstract bArticle Init(string name);
     }
 
     [DbTable("Reader")]
@@ -28,11 +24,7 @@ namespace Lephone.UnitTest.Data
         [HasMany(OrderBy = "Id")]
         public abstract IList<BelongsMore> bms { get; set; }
 
-        public bReader Init(string Name)
-        {
-            this.Name = Name;
-            return this;
-        }
+        public abstract bReader Init(string name);
     }
 
     [DbTable("BelongsMore")]
@@ -45,11 +37,7 @@ namespace Lephone.UnitTest.Data
         [BelongsTo]
         public abstract bReader rd { get; set; }
 
-        public BelongsMore Init(string Name)
-        {
-            this.Name = Name;
-            return this;
-        }
+        public abstract BelongsMore Init(string name);
     }
 
     #endregion
@@ -147,7 +135,7 @@ namespace Lephone.UnitTest.Data
             r.bms.Add(b);
             a.bms.Add(b);
             r.Save();
-            a.Save();
+            //a.Save();
 
             bReader r1 = bReader.FindById(r.Id);
             Assert.AreEqual("test", r1.Name);

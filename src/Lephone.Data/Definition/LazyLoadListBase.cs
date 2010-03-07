@@ -4,7 +4,7 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data.Definition
 {
-    public abstract class LazyLoadListBase<T> : IList<T>, ILazyLoading, IRenew
+    public abstract class LazyLoadListBase<T> : IList<T>, ILazyLoading
     {
         protected string ForeignKeyName;
         protected object owner;
@@ -232,19 +232,6 @@ namespace Lephone.Data.Definition
         {
             ((ILazyLoading)this).Read();
             return ((IEnumerable)InnerList).GetEnumerator();
-        }
-
-        #endregion
-
-        #region IRenew members
-
-        void IRenew.SetAsNew()
-        {
-            MemberHandler f = ObjectInfo.GetInstance(typeof(T)).KeyFields[0];
-            foreach (T t in InnerList)
-            {
-                f.SetValue(t, f.UnsavedValue);
-            }
         }
 
         #endregion

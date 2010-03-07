@@ -123,6 +123,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\GroupBySumObject.cs" />
     <Compile Include="Common\AssemblyHandler.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
+    <Compile Include="Common\ModelUpdater.cs" />
     <Compile Include="Common\TimeSpanLessDataReader.cs" />
     <Compile Include="DataReaderEmitHelper.cs" />
     <Compile Include="Definition\CacheableAttribute.cs" />
@@ -163,7 +164,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\EmptyCondition.cs" />
     <Compile Include="Builder\CreateTableStatementBuilder.cs" />
     <Compile Include="Builder\DbIndex.cs" />
-    <Compile Include="Definition\IRenew.cs" />
     <Compile Include="Definition\ISavedNewRelations.cs" />
     <Compile Include="Definition\LazyLoadAttribute.cs" />
     <Compile Include="Definition\LazyLoadField.cs" />

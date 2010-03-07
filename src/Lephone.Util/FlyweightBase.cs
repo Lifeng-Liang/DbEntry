@@ -4,24 +4,30 @@ namespace Lephone.Util
 {
     public abstract class FlyweightBase<TKey, TValue> where TValue : FlyweightBase<TKey, TValue>
     {
-        protected static Dictionary<TKey, TValue> dic = new Dictionary<TKey, TValue>();
+        protected static Dictionary<TKey, TValue> Jar = new Dictionary<TKey, TValue>();
+
+        private static readonly TValue Instance = ClassHelper.CreateInstance<TValue>();
 
         public static TValue GetInstance(TKey t)
         {
-            if (dic.ContainsKey(t))
+            return Instance.GetInst(t);
+        }
+
+        protected virtual TValue GetInst(TKey tk)
+        {
+            var t = CheckKey(tk);
+            if (Jar.ContainsKey(t))
             {
-                return dic[t];
+                return Jar[t];
             }
-            lock (dic)
+            lock (Jar)
             {
-                if (dic.ContainsKey(t))
+                if (Jar.ContainsKey(t))
                 {
-                    return dic[t];
+                    return Jar[t];
                 }
-                var v = ClassHelper.CreateInstance<TValue>();
-                TKey x = v.CheckKey(t);
-                v.Init(x);
-                dic[t] = v;
+                var v = CreateInst(t);
+                Jar[t] = v;
                 return v;
             }
         }
@@ -31,6 +37,6 @@ namespace Lephone.Util
             return t;
         }
 
-        protected abstract void Init(TKey t);
+        protected abstract TValue CreateInst(TKey t);
     }
 }
