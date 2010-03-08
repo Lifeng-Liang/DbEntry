@@ -7,54 +7,45 @@ namespace Lephone.Data.Definition
     public abstract class LazyLoadListBase<T> : IList<T>, ILazyLoading
     {
         protected string ForeignKeyName;
-        protected object owner;
-        protected DbContext context;
-        protected bool m_IsLoaded;
+        protected object Owner;
         protected IList<T> InnerList = new DbObjectList<T>();
 
         protected LazyLoadListBase(object owner)
         {
-            this.owner = owner;
+            this.Owner = owner;
         }
 
         #region ILazyLoad members
 
-        bool ILazyLoading.IsLoaded
-        {
-            get { return m_IsLoaded; }
-            set { m_IsLoaded = value; }
-        }
+        public bool IsLoaded { get; set; }
 
         object ILazyLoading.Read()
         {
-            if (!m_IsLoaded)
+            if (!IsLoaded)
             {
                 ((ILazyLoading)this).Load();
-                m_IsLoaded = true;
-                context = null;
+                IsLoaded = true;
             }
             return InnerList;
         }
 
-        void ILazyLoading.Write(object item, bool IsLoad)
+        void ILazyLoading.Write(object item, bool isLoad)
         {
-            InnerWrite(item, IsLoad);
+            InnerWrite(item, isLoad);
             InnerList.Add((T)item);
         }
 
-        protected abstract void InnerWrite(object item, bool IsLoad);
+        protected abstract void InnerWrite(object item, bool isLoad);
 
         protected void WriteAndSet(object item)
         {
-            m_IsLoaded = true;
+            IsLoaded = true;
             InnerWrite(item, false);
-            context = null;
         }
 
-        void ILazyLoading.Init(DbContext context, string ForeignKeyName)
+        void ILazyLoading.Init(string foreignKeyName)
         {
-            this.context = context;
-            this.ForeignKeyName = ForeignKeyName;
+            this.ForeignKeyName = foreignKeyName;
         }
 
         void ILazyLoading.Load()
@@ -74,24 +65,24 @@ namespace Lephone.Data.Definition
             {
                 tkey = af.GetValue(InnerList[0]);
             }
-            bool Found = false;
-            int Index = 0;
+            bool found = false;
+            int index = 0;
             foreach (T o in l)
             {
                 InnerWrite(o, true);
                 if (af.GetValue(o).Equals(tkey))
                 {
-                    Found = true;
+                    found = true;
                 }
                 else
                 {
-                    if (Found)
+                    if (found)
                     {
                         InnerList.Add(o);
                     }
                     else
                     {
-                        InnerList.Insert(Index++, o);
+                        InnerList.Insert(index++, o);
                     }
                 }
             }

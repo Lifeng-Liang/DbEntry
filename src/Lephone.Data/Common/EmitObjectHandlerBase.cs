@@ -97,20 +97,20 @@ namespace Lephone.Data.Common
             f.SetValue(o, d);
         }
 
-        public void LoadRelationValues(DbContext driver, object o, bool useIndex, IDataReader dr)
+        public void LoadRelationValues(object o, bool useIndex, IDataReader dr)
         {
             if (useIndex)
             {
-                LoadRelationValuesByIndex(driver, o, dr);
+                LoadRelationValuesByIndex(o, dr);
             }
             else
             {
-                LoadRelationValuesByName(driver, o, dr);
+                LoadRelationValuesByName(o, dr);
             }
         }
 
-        protected abstract void LoadRelationValuesByIndex(DbContext driver, object o, IDataReader dr);
-        protected abstract void LoadRelationValuesByName(DbContext driver, object o, IDataReader dr);
+        protected abstract void LoadRelationValuesByIndex(object o, IDataReader dr);
+        protected abstract void LoadRelationValuesByName(object o, IDataReader dr);
 
         public Dictionary<string, object> GetKeyValues(object o)
         {

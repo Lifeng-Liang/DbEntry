@@ -5,77 +5,62 @@ using Lephone.Util;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class BelongsTo<T> : IBelongsTo where T : class, IDbObject
+    public class BelongsTo<T> : LazyLoadOneBase<T>, IBelongsTo where T : class, IDbObject
     {
-        private readonly object owner;
-        private string _ForeignKeyName;
-        private object _ForeignKey;
+        private readonly DbObjectSmartUpdate _osu;
+        private object _foreignKey;
+        private ObjectInfo oi;
 
-        private DbContext context;
-        private bool _IsLoaded;
-        private T _Value;
-
-        public event CallbackObjectHandler<string> ValueChanged;
-
-        public BelongsTo(object owner)
+        public BelongsTo(object owner) : base(owner)
         {
-            this.owner = owner;
-            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
+            oi = ObjectInfo.GetInstance(owner.GetType());
             MemberHandler mh = oi.GetBelongsTo(typeof(T));
-            _ForeignKeyName = mh.Name;
-            ObjectInfo oi1 = ObjectInfo.GetInstance(typeof(T));
-            _ForeignKey = oi1.GetPrimaryKeyDefaultValue();
-            //_ForeignKey = Info.GetPrimaryKeyDefaultValue();
-            var o = owner as DbObjectSmartUpdate;
-            if (o != null)
-            {
-                ValueChanged += o.m_ColumnUpdated;
-            }
+            RelationName = mh.Name;
+            var oi1 = ObjectInfo.GetInstance(typeof(T));
+            _foreignKey = oi1.GetPrimaryKeyDefaultValue();
+            _osu = owner as DbObjectSmartUpdate;
         }
 
         public void ForeignKeyChanged()
         {
-            if (ValueChanged != null)
+            if (_osu != null)
             {
-                ValueChanged(_ForeignKeyName);
+                _osu.m_ColumnUpdated(RelationName);
             }
         }
 
         public object ForeignKey
         {
-            get { return _ForeignKey; }
-            set { _ForeignKey = value; }
+            get { return _foreignKey; }
+            set { _foreignKey = value; }
         }
 
-        bool ILazyLoading.IsLoaded
+        protected override void DoWrite(object oldValue, bool isLoad)
         {
-            get { return _IsLoaded; }
-            set { _IsLoaded = value; }
-        }
-
-        object ILazyLoading.Read()
-        {
-            if (!_IsLoaded)
+            var oi = ObjectInfo.GetInstance(typeof(T));
+            if (oi.KeyFields != null && oi.KeyFields.Length == 1)
             {
-                ((ILazyLoading)this).Load();
-                _IsLoaded = true;
-                context = null;
-            }
-            return _Value;
-        }
-
-        void ILazyLoading.Write(object item, bool IsLoad)
-        {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            if (oi.KeyFields != null & oi.KeyFields.Length == 1)
-            {
-                _Value = (T)item;
-                _ForeignKey = (item == null) ? CommonHelper.GetEmptyValue(oi.KeyFields[0].FieldType) : oi.KeyFields[0].GetValue(item);
-                _IsLoaded = true;
-                context = null;
-                if (ValueChanged != null && !IsLoad)
+                _foreignKey = (m_Value == null) ? CommonHelper.GetEmptyValue(oi.KeyFields[0].FieldType) : oi.KeyFields[0].GetValue(m_Value);
+                if (!isLoad)
                 {
-                    ValueChanged(_ForeignKeyName);
+                    ForeignKeyChanged();
+                    //if (m_Value != null)
+                    //{
+                    //    foreach (var mh in oi.RelationFields)
+                    //    {
+                    //        if (mh.IsHasOne || mh.IsHasMany)
+                    //        {
+                    //            Type st = mh.FieldType.GetGenericArguments()[0];
+                    //            st = st.IsAbstract ? AssemblyHandler.Instance.GetImplType(st) : st;
+                    //            Type ot = Owner.GetType();
+                    //            if (st == ot)
+                    //            {
+                    //                var ll = (ILazyLoading)mh.GetValue(m_Value);
+                    //                ll.Write(Owner, false);
+                    //            }
+                    //        }
+                    //    }
+                    //}
                 }
             }
             else
@@ -84,54 +69,25 @@ namespace Lephone.Data.Definition
             }
         }
 
-        public T Value
+        protected override void DoLoad()
         {
-            get
+            m_Value = oi.Context.GetObject<T>(_foreignKey);
+            if (m_Value != null)
             {
-                return (T)((ILazyLoading)this).Read();
-            }
-            set
-            {
-                ((ILazyLoading)this).Write(value, false);
-            }
-        }
-
-        void ILazyLoading.Init(DbContext driver, string ForeignKeyName)
-        {
-            this.context = driver;
-            this._ForeignKeyName = ForeignKeyName;
-        }
-
-        void ILazyLoading.Load()
-        {
-            _Value = context.GetObject<T>(_ForeignKey);
-            if (_Value != null)
-            {
-                ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-                foreach (MemberHandler f in oi.Fields)
+                var oi1 = ObjectInfo.GetInstance(typeof(T));
+                foreach (MemberHandler f in oi1.RelationFields)
                 {
                     if (f.IsHasOne || f.IsHasMany)
                     {
                         Type t = f.FieldType.GetGenericArguments()[0];
-                        if (t == owner.GetType())
+                        if (t == Owner.GetType())
                         {
-                            var ll = (ILazyLoading)f.GetValue(_Value);
-                            ll.Write(owner, true);
+                            var ll = (ILazyLoading)f.GetValue(m_Value);
+                            ll.Write(Owner, true);
                         }
                     }
                 }
             }
         }
-
-        //TODO: why left this?
-        //private string GetKeyName()
-        //{
-        //    ObjectInfo Info = ObjectInfo.GetInstance(typeof(T));
-        //    if (Info.KeyFields != null & Info.KeyFields.Length == 1)
-        //    {
-        //        return Info.KeyFields[0].Name;
-        //    }
-        //    throw new DataException("The object must have one primary key.");
-        //}
     }
 }

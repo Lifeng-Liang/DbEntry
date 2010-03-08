@@ -31,6 +31,32 @@ namespace Lephone.UnitTest.Data.Objects
         }
     }
 
+    [DbTable("People"), DbContext("SqlServerMock")]
+    public class PersonSql : DbObject
+    {
+        public string Name = null;
+        public HasOne<PersonalComputerSql> PC;
+
+        public PersonSql()
+        {
+            PC = new HasOne<PersonalComputerSql>(this, "");
+        }
+    }
+
+    [DbTable("PCs"), DbContext("SqlServerMock")]
+    public class PersonalComputerSql : DbObject
+    {
+        public string Name = null;
+
+        [DbColumn("Person_Id")]
+        public BelongsTo<PersonSql> Owner;
+
+        public PersonalComputerSql()
+        {
+            Owner = new BelongsTo<PersonSql>(this);
+        }
+    }
+
     // HasMany
 
     [DbTable("Books")]

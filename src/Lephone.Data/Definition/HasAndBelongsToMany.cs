@@ -1,49 +1,49 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Lephone.Data.Common;
 
 namespace Lephone.Data.Definition
 {
     public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, IHasAndBelongsToManyRelations where T : class, IDbObject
     {
-        private readonly OrderBy Order;
+        private readonly OrderBy _order;
 
-        private readonly List<object> _SavedNewRelations = new List<object>();
-        List<object> IHasAndBelongsToManyRelations.SavedNewRelations { get { return _SavedNewRelations; } }
+        private readonly List<object> _savedNewRelations = new List<object>();
+        List<object> IHasAndBelongsToManyRelations.SavedNewRelations { get { return _savedNewRelations; } }
 
-        private readonly List<object> _RemovedRelations = new List<object>();
-        List<object> IHasAndBelongsToManyRelations.RemovedRelations { get { return _RemovedRelations; } }
+        private readonly List<object> _removedRelations = new List<object>();
+        List<object> IHasAndBelongsToManyRelations.RemovedRelations { get { return _removedRelations; } }
 
         internal HasAndBelongsToMany(object owner)
             : base(owner)
         {
-            Order = new OrderBy();
+            _order = new OrderBy();
             InitForeignKeyName();
         }
 
-        public HasAndBelongsToMany(object owner, OrderBy Order)
+        public HasAndBelongsToMany(object owner, OrderBy order)
             : base(owner)
         {
-            this.Order = Order;
+            this._order = order;
             InitForeignKeyName();
         }
 
-        public HasAndBelongsToMany(object owner, string OrderByString)
+        public HasAndBelongsToMany(object owner, string orderByString)
             : base(owner)
         {
-            Order = OrderBy.Parse(OrderByString);
+            _order = OrderBy.Parse(orderByString);
             InitForeignKeyName();
         }
 
         private void InitForeignKeyName()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
+            ObjectInfo oi = ObjectInfo.GetInstance(Owner.GetType());
             MemberHandler mh = oi.GetHasAndBelongsToMany(typeof(T));
             ForeignKeyName = mh.Name;
         }
 
-        protected override void InnerWrite(object item, bool IsLoad)
+        protected override void InnerWrite(object item, bool isLoad)
         {
-            if (m_IsLoaded)
+            if (IsLoaded)
             {
                 ObjectInfo oi = ObjectInfo.GetInstance(item.GetType());
                 if (oi.HasOnePrimaryKey)
@@ -51,7 +51,7 @@ namespace Lephone.Data.Definition
                     object key = oi.Handler.GetKeyValue(item);
                     if (!key.Equals(oi.KeyFields[0].UnsavedValue))
                     {
-                        _SavedNewRelations.Add(key);
+                        _savedNewRelations.Add(key);
                     }
                 }
                 else
@@ -63,11 +63,11 @@ namespace Lephone.Data.Definition
 
         protected override IList<T> InnerLoad()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
-            object key = oi.KeyFields[0].GetValue(owner);
+            ObjectInfo oi = ObjectInfo.GetInstance(Owner.GetType());
+            object key = oi.KeyFields[0].GetValue(Owner);
             var il = new DbObjectList<T>();
-            context.FillCollection(il, typeof(T), oi.CrossTables[typeof(T)].From,
-                CK.K[ForeignKeyName] == key, Order, null);
+            oi.Context.FillCollection(il, typeof(T), oi.CrossTables[typeof(T)].From,
+                CK.K[ForeignKeyName] == key, _order, null);
             return il;
         }
 
@@ -77,11 +77,11 @@ namespace Lephone.Data.Definition
             object key = oi.Handler.GetKeyValue(item);
             if (key == oi.KeyFields[0].UnsavedValue)
             {
-                _SavedNewRelations.Remove(key);
+                _savedNewRelations.Remove(key);
             }
             else
             {
-                _RemovedRelations.Add(key);
+                _removedRelations.Add(key);
             }
         }
     }

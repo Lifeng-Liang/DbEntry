@@ -70,7 +70,23 @@ namespace Lephone.UnitTest.Data
         public int Count;
     }
 
+    [DbContext("SqlServerMock")]
+    public class CountTableSql : DbObject
+    {
+        [SpecialName]
+        public int Count;
+    }
+
     public abstract class CountTable2 : DbObjectModel<CountTable2>
+    {
+        public abstract string Name { get; set; }
+
+        [SpecialName]
+        public abstract int Count { get; set; }
+    }
+
+    [DbContext("SqlServerMock")]
+    public abstract class CountTable2Sql : DbObjectModel<CountTable2Sql>
     {
         public abstract string Name { get; set; }
 
@@ -85,6 +101,18 @@ namespace Lephone.UnitTest.Data
         public abstract string theName { get; set; }
 
         public static FieldPerson FindByName(string name)
+        {
+            return FindOne(p => p.theName == name);
+        }
+    }
+
+    [DbTable("People"), DbContext("SqlServerMock")]
+    public abstract class FieldPersonSql : DbObjectModel<FieldPersonSql>
+    {
+        [DbColumn("Name")]
+        public abstract string theName { get; set; }
+
+        public static FieldPersonSql FindByName(string name)
         {
             return FindOne(p => p.theName == name);
         }
@@ -471,26 +499,23 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestFindOneWithSqlServer2005()
         {
-            var de = EntryConfig.NewContext("SqlServerMock");
-            var p = de.GetObject<Person>(CK.K["Name"] == "test", null);
+            var p = DbEntry.GetObject<Person>(CK.K["Name"] == "test", null);
             Assert.IsNull(p);
         }
 
         [Test]
         public void Test2ndPageWithSqlserver2005()
         {
-            var de = EntryConfig.NewContext("SqlServerMock");
             StaticRecorder.ClearMessages();
-            de.From<Person>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
+            DbEntry.From<PersonSql>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
             Assert.AreEqual("SELECT [Id],[Name] FROM (SELECT [Id],[Name], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void Test2ndPageWithSqlserver2005WithAlias()
         {
-            var de = EntryConfig.NewContext("SqlServerMock");
             StaticRecorder.ClearMessages();
-            de.From<FieldPerson>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
+            DbEntry.From<FieldPersonSql>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
             Assert.AreEqual("SELECT [Id],[theName] FROM (SELECT [Id],[Name] AS [theName], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
         }
 
@@ -516,41 +541,37 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestNull()
         {
-            var de = EntryConfig.NewContext("SqlServerMock");
             StaticRecorder.ClearMessages();
-            de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] == null).Select();
+            DbEntry.From<PropertyClassWithDbColumnSql>().Where(CK.K["Name"] == null).Select();
             Assert.AreEqual("SELECT [Id],[Name] AS [TheName] FROM [People] WHERE [Name] IS NULL;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestNotNull()
         {
-            var de = EntryConfig.NewContext("SqlServerMock");
             StaticRecorder.ClearMessages();
-            de.From<PropertyClassWithDbColumn>().Where(CK.K["Name"] != null).Select();
+            DbEntry.From<PropertyClassWithDbColumnSql>().Where(CK.K["Name"] != null).Select();
             Assert.AreEqual("SELECT [Id],[Name] AS [TheName] FROM [People] WHERE [Name] IS NOT NULL;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestCountTable()
         {
-            var de = EntryConfig.NewContext("SqlServerMock");
             StaticRecorder.ClearMessages();
-            var ct = new CountTable {Id = 1};
-            de.Save(ct);
-            Assert.AreEqual("UPDATE [Count_Table] SET [Count]=[Count]+1  WHERE [Id] = @Id_0;\n<Text><30>(@Id_0=1:Int64)", StaticRecorder.LastMessage);
+            var ct = new CountTableSql {Id = 1};
+            DbEntry.Save(ct);
+            Assert.AreEqual("UPDATE [Count_Table_Sql] SET [Count]=[Count]+1  WHERE [Id] = @Id_0;\n<Text><30>(@Id_0=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestCountTable2()
         {
-            var de = EntryConfig.NewContext("SqlServerMock");
             StaticRecorder.ClearMessages();
-            CountTable2 ct = CountTable2.New;
+            var ct = CountTable2Sql.New;
             ct.Id = 1;
             ct.Name = "tom";
-            de.Save(ct);
-            Assert.AreEqual("UPDATE [Count_Table2] SET [Name]=@Name_0,[Count]=[Count]+1  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            DbEntry.Save(ct);
+            Assert.AreEqual("UPDATE [Count_Table2Sql] SET [Name]=@Name_0,[Count]=[Count]+1  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]

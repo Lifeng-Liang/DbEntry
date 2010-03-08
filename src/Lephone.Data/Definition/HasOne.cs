@@ -11,80 +11,75 @@ namespace Lephone.Data.Definition
     [Serializable]
     public class HasOne<T> : LazyLoadOneBase<T>, IHasOne where T : class, IDbObject
     {
-        private OrderBy Order;
+        private readonly OrderBy _order;
 
-        private object _LastValue;
-        object IHasOne.LastValue { get { return _LastValue; } set { _LastValue = value; } }
+        object IHasOne.LastValue { get; set; }
 
         internal HasOne(object owner) : base(owner) { }
 
-        public HasOne(object owner, OrderBy Order)
+        public HasOne(object owner, OrderBy order)
             : base(owner)
         {
-            this.Order = Order;
+            this._order = order;
+            if (_order == null)
+            {
+                var oi = ObjectInfo.GetInstance(Owner.GetType());
+                if (oi.HasSystemKey)
+                {
+                    _order = new OrderBy(oi.KeyFields[0].Name);
+                }
+            }
         }
 
-        public HasOne(object owner, string OrderByString)
+        public HasOne(object owner, string orderByString)
             : base(owner)
         {
-            this.Order = OrderBy.Parse(OrderByString);
+            this._order = OrderBy.Parse(orderByString);
         }
 
-        protected override void DoWrite(object OldValue, bool IsLoad)
+        protected override void DoWrite(object oldValue, bool isLoad)
         {
             if (m_Value == null)
             {
-                if (OldValue != null)
+                if (oldValue != null)
                 {
-                    ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-                    MemberHandler mh = oi.GetBelongsTo(owner.GetType());
+                    var oi = ObjectInfo.GetInstance(typeof(T));
+                    MemberHandler mh = oi.GetBelongsTo(Owner.GetType());
                     if (mh != null)
                     {
-                        ILazyLoading ll = (ILazyLoading)mh.GetValue(OldValue);
+                        var ll = (ILazyLoading)mh.GetValue(oldValue);
                         ll.Write(null, false);
                     }
                 }
             }
             else
             {
-                ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-                MemberHandler mh = oi.GetBelongsTo(owner.GetType());
+                var oi = ObjectInfo.GetInstance(typeof(T));
+                MemberHandler mh = oi.GetBelongsTo(Owner.GetType());
                 if (mh != null)
                 {
-                    ILazyLoading ll = (ILazyLoading)mh.GetValue(m_Value);
-                    ll.Write(owner, false);
+                    var ll = (ILazyLoading)mh.GetValue(m_Value);
+                    ll.Write(Owner, false);
                 }
             }
-            _LastValue = OldValue;
-        }
-
-        protected override void DoSetOwner()
-        {
-            if (Order == null)
-            {
-                ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
-                if (oi.HasSystemKey)
-                {
-                    Order = new OrderBy(oi.KeyFields[0].Name);
-                }
-            }
+            ((IHasOne)this).LastValue = oldValue;
         }
 
         protected override void DoLoad()
         {
             if (RelationName == null) { return; }
-            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
-            object key = oi.KeyFields[0].GetValue(owner);
-            m_Value = context.GetObject<T>(CK.K[RelationName] == key, Order);
+            var oi = ObjectInfo.GetInstance(Owner.GetType());
+            object key = oi.KeyFields[0].GetValue(Owner);
+            m_Value = oi.Context.GetObject<T>(CK.K[RelationName] == key, _order);
 
             if (m_Value != null)
             {
-                ObjectInfo ti = ObjectInfo.GetInstance(typeof(T));
-                MemberHandler mh = ti.GetBelongsTo(owner.GetType());
+                var ti = ObjectInfo.GetInstance(typeof(T));
+                MemberHandler mh = ti.GetBelongsTo(Owner.GetType());
                 if (mh != null)
                 {
-                    ILazyLoading ll = (ILazyLoading)mh.GetValue(m_Value);
-                    ll.Write(owner, true);
+                    var ll = (ILazyLoading)mh.GetValue(m_Value);
+                    ll.Write(Owner, true);
                 }
             }
         }

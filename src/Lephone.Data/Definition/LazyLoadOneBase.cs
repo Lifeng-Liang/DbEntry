@@ -2,45 +2,36 @@
 {
     public abstract class LazyLoadOneBase<T> : ILazyLoading
     {
-        protected object owner;
+        protected object Owner;
         protected string RelationName;
-        protected DbContext context;
-        protected bool m_IsLoaded;
         protected T m_Value;
 
         protected LazyLoadOneBase(object owner)
         {
-            this.owner = owner;
-            DoSetOwner();
+            this.Owner = owner;
         }
 
-        bool ILazyLoading.IsLoaded
-        {
-            get { return m_IsLoaded; }
-            set { m_IsLoaded = value; }
-        }
+        public bool IsLoaded { get; set; }
 
         object ILazyLoading.Read()
         {
-            if (!m_IsLoaded)
+            if (!IsLoaded)
             {
                 ((ILazyLoading)this).Load();
-                m_IsLoaded = true;
-                context = null;
+                IsLoaded = true;
             }
             return m_Value;
         }
 
-        void ILazyLoading.Write(object item, bool IsLoad)
+        void ILazyLoading.Write(object item, bool isLoad)
         {
-            object OldValue = m_Value;
+            object oldValue = m_Value;
             m_Value = (T)item;
-            DoWrite(OldValue, IsLoad);
-            m_IsLoaded = true;
-            context = null;
+            DoWrite(oldValue, isLoad);
+            IsLoaded = true;
         }
 
-        protected virtual void DoWrite(object OldValue, bool IsLoad) { }
+        protected virtual void DoWrite(object oldValue, bool isLoad) { }
 
         public T Value
         {
@@ -54,12 +45,9 @@
             }
         }
 
-        protected virtual void DoSetOwner() {}
-
-        void ILazyLoading.Init(DbContext context, string RelationName)
+        void ILazyLoading.Init(string relationName)
         {
-            this.context = context;
-            this.RelationName = RelationName;
+            this.RelationName = relationName;
         }
 
         void ILazyLoading.Load()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Lephone.Data.Common;
 using Lephone.Util;
@@ -13,48 +13,48 @@ namespace Lephone.Data.Definition
     [Serializable]
     public class HasMany<T> : LazyLoadListBase<T>, IHasMany where T : class, IDbObject
     {
-        private readonly OrderBy Order;
+        private readonly OrderBy _order;
 
         internal HasMany(object owner)
             : base(owner)
         {
-            this.Order = new OrderBy();
+            this._order = new OrderBy();
         }
 
-        public HasMany(object owner, OrderBy Order)
+        public HasMany(object owner, OrderBy order)
             : base(owner)
         {
-            this.Order = Order;
+            this._order = order;
         }
 
-        public HasMany(object owner, string OrderByString)
+        public HasMany(object owner, string orderByString)
             : base(owner)
         {
-            this.Order = OrderBy.Parse(OrderByString);
+            this._order = OrderBy.Parse(orderByString);
         }
 
-        private readonly List<object> _RemovedValues = new List<object>();
-        List<object> IHasMany.RemovedValues { get { return _RemovedValues; } }
+        private readonly List<object> _removedValues = new List<object>();
+        List<object> IHasMany.RemovedValues { get { return _removedValues; } }
 
-        protected override void InnerWrite(object item, bool IsLoad)
+        protected override void InnerWrite(object item, bool isLoad)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            MemberHandler mh = oi.GetBelongsTo(owner.GetType());
+            MemberHandler mh = oi.GetBelongsTo(Owner.GetType());
             if (mh != null)
             {
                 var ll = (ILazyLoading)mh.GetValue(item);
-                ll.Write(owner, IsLoad);
+                ll.Write(Owner, isLoad);
             }
         }
 
         protected override IList<T> InnerLoad()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(owner.GetType());
-            object key = oi.KeyFields[0].GetValue(owner);
-            IList<T> l = context
+            ObjectInfo oi = ObjectInfo.GetInstance(Owner.GetType());
+            object key = oi.KeyFields[0].GetValue(Owner);
+            IList<T> l = oi.Context
                 .From<T>()
                 .Where(CK.K[ForeignKeyName] == key)
-                .OrderBy(Order)
+                .OrderBy(_order)
                 .Select();
             return l;
         }
@@ -64,12 +64,12 @@ namespace Lephone.Data.Definition
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             if (!oi.IsNewObject(item))
             {
-                Type ot = owner.GetType();
+                Type ot = Owner.GetType();
                 MemberHandler mh = oi.GetBelongsTo(ot);
                 var o = (IBelongsTo)mh.GetValue(item);
                 o.ForeignKey = CommonHelper.GetEmptyValue(o.ForeignKey.GetType());
                 o.ForeignKeyChanged();
-                _RemovedValues.Add(item);
+                _removedValues.Add(item);
             }
         }
     }

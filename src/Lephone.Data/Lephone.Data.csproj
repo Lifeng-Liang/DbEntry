@@ -124,6 +124,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\AssemblyHandler.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
     <Compile Include="Common\ModelUpdater.cs" />
+    <Compile Include="Common\ObjectInfo_ctor.cs" />
     <Compile Include="Common\TimeSpanLessDataReader.cs" />
     <Compile Include="DataReaderEmitHelper.cs" />
     <Compile Include="Definition\CacheableAttribute.cs" />

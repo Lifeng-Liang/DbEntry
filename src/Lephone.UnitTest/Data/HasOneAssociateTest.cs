@@ -215,18 +215,18 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRemoveRelation()
         {
-            var Jerry = DbEntry.GetObject<Person>(2);
-            Assert.IsNotNull(Jerry);
-            Assert.AreEqual("Jerry", Jerry.Name);
-            Assert.IsNotNull(Jerry.PC.Value);
-            Assert.AreEqual("IBM", Jerry.PC.Value.Name);
+            var jerry = DbEntry.GetObject<Person>(2);
+            Assert.IsNotNull(jerry);
+            Assert.AreEqual("Jerry", jerry.Name);
+            Assert.IsNotNull(jerry.PC.Value);
+            Assert.AreEqual("IBM", jerry.PC.Value.Name);
 
-            Jerry.PC.Value = null;
-            DbEntry.Save(Jerry);
+            jerry.PC.Value = null;
+            DbEntry.Save(jerry);
 
-            Jerry = DbEntry.GetObject<Person>(2);
-            Assert.IsNotNull(Jerry);
-            Assert.IsNull(Jerry.PC.Value);
+            jerry = DbEntry.GetObject<Person>(2);
+            Assert.IsNotNull(jerry);
+            Assert.IsNull(jerry.PC.Value);
         }
 
         [Test]

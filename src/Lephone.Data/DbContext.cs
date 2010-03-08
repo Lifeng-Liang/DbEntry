@@ -381,7 +381,7 @@ namespace Lephone.Data
                     count++;
                     if (count >= startIndex)
                     {
-                        object di = ObjectInfo.CreateObject(this, returnType, dr, useIndex);
+                        object di = ObjectInfo.CreateObject(returnType, dr, useIndex);
                         if (!ip.Process(di))
                         {
                             break;
@@ -420,7 +420,7 @@ namespace Lephone.Data
                     object co = CacheProvider.Instance[KeyGenerator.Instance.GetKey(t, key)];
                     if (co != null)
                     {
-                        object objInCache = ObjectInfo.CloneObject(co, this);
+                        object objInCache = ObjectInfo.CloneObject(co);
                         return objInCache;
                     }
                 }

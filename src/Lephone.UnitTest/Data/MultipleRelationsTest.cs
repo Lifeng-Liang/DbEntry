@@ -214,6 +214,31 @@ namespace Lephone.UnitTest.Data
 
             Assert.AreEqual(a, ra.Article);
             Assert.AreEqual(r, ra.Reader);
+            Assert.AreEqual(1, a.xTable.Count);
+            Assert.AreEqual("x", a.xTable[0].Name);
+            Assert.AreEqual("article", r.xTable[0].Article.Name);
+
+            r.Save();
+
+            mrReader reader = mrReader.FindById(r.Id);
+            Assert.AreEqual("reader", reader.Name);
+            Assert.AreEqual("x", reader.xTable[0].Name);
+            Assert.AreEqual("article", reader.xTable[0].Article.Name);
+        }
+
+        [Test]
+        public void TestSimulateManyToMany2()
+        {
+            mrReader r = mrReader.New.Init("reader");
+            mrArticle a = mrArticle.New.Init("article");
+            mrReaderAndArticle ra = mrReaderAndArticle.New.Init("x");
+            r.xTable.Add(ra);
+            r.xTable[0].Article = a;
+
+            Assert.AreEqual(a, ra.Article);
+            Assert.AreEqual(r, ra.Reader);
+            Assert.AreEqual(1, a.xTable.Count);
+            Assert.AreEqual("x", a.xTable[0].Name);
             Assert.AreEqual("article", r.xTable[0].Article.Name);
 
             r.Save();

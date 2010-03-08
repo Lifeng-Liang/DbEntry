@@ -68,7 +68,7 @@ namespace Lephone.Data.Common
             }
         }
 
-        public void LoadRelationValues(DbContext driver, object o, bool useIndex, IDataReader dr)
+        public void LoadRelationValues(object o, bool useIndex, IDataReader dr)
         {
             int n = oi.SimpleFields.Length;
             foreach (MemberHandler f in oi.RelationFields)
@@ -76,7 +76,7 @@ namespace Lephone.Data.Common
                 var ho = (ILazyLoading)f.GetValue(o);
                 if (f.IsLazyLoad)
                 {
-                    ho.Init(driver, f.Name);
+                    ho.Init(f.Name);
                 }
                 else if (f.IsHasOne || f.IsHasMany)
                 {
@@ -84,13 +84,11 @@ namespace Lephone.Data.Common
                     MemberHandler h1 = oi1.GetBelongsTo(oi.HandleType);
                     if (h1 != null)
                     {
-                        ho.Init(driver, h1.Name);
+                        ho.Init(h1.Name);
                     }
                     else
                     {
-                        // TODO: should throw exception or not ?
-                        throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
-                        // ho.Init(driver, "__");
+                        throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
                     }
                 }
                 else if (f.IsHasAndBelongsToMany)
@@ -99,13 +97,11 @@ namespace Lephone.Data.Common
                     MemberHandler h1 = oi1.GetHasAndBelongsToMany(oi.HandleType);
                     if (h1 != null)
                     {
-                        ho.Init(driver, h1.Name);
+                        ho.Init(h1.Name);
                     }
                     else
                     {
-                        // TODO: should throw exception or not ?
-                        throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
-                        // ho.Init(driver, "__");
+                        throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
                     }
                 }
                 else if (f.IsBelongsTo) // TODO: IsHasAndBelongsToMany

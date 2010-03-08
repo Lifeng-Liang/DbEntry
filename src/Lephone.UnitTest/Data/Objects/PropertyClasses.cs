@@ -47,4 +47,18 @@ namespace Lephone.UnitTest.Data.Objects
             this.TheName = Name;
         }
     }
+
+    [DbTable("People"), DbContext("SqlServerMock")]
+    public abstract class PropertyClassWithDbColumnSql : DbObject
+    {
+        [DbColumn("Name")]
+        public abstract string TheName { get; set; }
+
+        public PropertyClassWithDbColumnSql() { }
+
+        public PropertyClassWithDbColumnSql(string Name)
+        {
+            this.TheName = Name;
+        }
+    }
 }

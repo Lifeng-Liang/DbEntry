@@ -178,10 +178,10 @@ namespace Lephone.Data.Common
         {
             string methodName = useIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
             tb.OverrideMethodDirect(OverrideFlag, methodName, VhBaseType, null,
-                new[] { typeof(DbContext), typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
+                new[] { typeof(object), typeof(IDataReader) }, delegate(ILBuilder il)
                 {
                     // User u = (User)o;
-                    il.DeclareLocal(srcType).LoadArg(2).Cast(srcType).SetLoc(0);
+                    il.DeclareLocal(srcType).LoadArg(1).Cast(srcType).SetLoc(0);
                     // set values
                     MethodInfo mi = typeof(ILazyLoading).GetMethod("Init");
                     foreach (MemberHandler f in relationFields)
@@ -190,7 +190,7 @@ namespace Lephone.Data.Common
                         f.MemberInfo.EmitGet(il);
                         if (f.IsLazyLoad)
                         {
-                            il.LoadArg(1).LoadString(f.Name).CallVirtual(mi);
+                            il.LoadString(f.Name).CallVirtual(mi);
                         }
                         else if (f.IsHasOne || f.IsHasMany)
                         {
@@ -198,9 +198,9 @@ namespace Lephone.Data.Common
                             MemberHandler mh = oi1.GetBelongsTo(srcType);
                             if (mh == null)
                             {
-                                throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
+                                throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
                             }
-                            il.LoadArg(1).LoadString(mh.Name).CallVirtual(mi);
+                            il.LoadString(mh.Name).CallVirtual(mi);
                         }
                         else if (f.IsHasAndBelongsToMany)
                         {
@@ -208,13 +208,13 @@ namespace Lephone.Data.Common
                             MemberHandler mh = oi1.GetHasAndBelongsToMany(srcType);
                             if (mh == null)
                             {
-                                throw new DataException("HasOne or HasMany and BelongsTo must be paired.");
+                                throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
                             }
-                            il.LoadArg(1).LoadString(mh.Name).CallVirtual(mi);
+                            il.LoadString(mh.Name).CallVirtual(mi);
                         }
                         else if (f.IsBelongsTo)
                         {
-                            il.LoadArg(3);
+                            il.LoadArg(2);
                             if (useIndex)
                             {
                                 il.LoadInt(index++).CallVirtual(Helper.GetMethodInfo(true));
