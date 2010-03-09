@@ -6,8 +6,8 @@ namespace Lephone.Data.Linq
 {
     public class LinqExpressionParser<T> where T : class, IDbObject
     {
-        public Condition condition;
-        public OrderBy orderby;
+        public Condition Condition;
+        public OrderBy Orderby;
 
         public LinqExpressionParser(Expression expr)
         {
@@ -31,19 +31,15 @@ namespace Lephone.Data.Linq
                 case "OrderBy":
                 case "ThenBy":
                     Parse(expr.Arguments[0]);
-                    AddOrderBy(
-                        (LambdaExpression)((UnaryExpression)expr.Arguments[1]).Operand, true
-                        );
+                    AddOrderBy(expr, true);
                     break;
                 case "OrderByDescending":
                 case "ThenByDescending":
                     Parse(expr.Arguments[0]);
-                    AddOrderBy(
-                        (LambdaExpression)((UnaryExpression)expr.Arguments[1]).Operand, false
-                        );
+                    AddOrderBy(expr, false);
                     break;
                 case "Where":
-                    condition = ExpressionParser<T>.Parse(
+                    Condition = ExpressionParser<T>.Parse(
                         (Expression<Func<T, bool>>)((UnaryExpression)expr.Arguments[1]).Operand
                         );
                     break;
@@ -54,23 +50,24 @@ namespace Lephone.Data.Linq
             }
         }
 
-        private void AddOrderBy(LambdaExpression expr, bool IsAsc)
+        private void AddOrderBy(MethodCallExpression expression, bool isAsc)
         {
+            var expr = (LambdaExpression)((UnaryExpression)expression.Arguments[1]).Operand;
             var e = expr.Body as MemberExpression;
             if (e != null)
             {
                 string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
-                AddOrderBy(IsAsc ? new ASC(n) : new DESC(n));
+                AddOrderBy(isAsc ? new ASC(n) : new DESC(n));
             }
         }
 
         private void AddOrderBy(ASC item)
         {
-            if (orderby == null)
+            if (Orderby == null)
             {
-                orderby = new OrderBy();
+                Orderby = new OrderBy();
             }
-            orderby.OrderItems.Add(item);
+            Orderby.OrderItems.Add(item);
         }
     }
 }

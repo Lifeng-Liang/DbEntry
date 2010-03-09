@@ -50,12 +50,19 @@ namespace Lephone.Data.Definition
 
         public void ReadXml(System.Xml.XmlReader reader)
         {
-            throw new NotImplementedException();
+            //var oi = ObjectInfo.GetInstance(GetType());
+            //foreach (MemberHandler mh in oi.SimpleFields)
+            //{
+            //    var ns = reader.ReadElementString(mh.MemberInfo.Name);
+            //    object o = ClassHelper.ChangeType(ns, mh.FieldType);
+            //    mh.SetValue(this, o);
+            //}
+            throw new NotImplementedException(); // can not create instance of abstract class...
         }
 
         public void WriteXml(System.Xml.XmlWriter writer)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(GetType());
+            var oi = ObjectInfo.GetInstance(GetType());
             foreach (MemberHandler mh in oi.SimpleFields)
             {
                 object o = mh.GetValue(this);

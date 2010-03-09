@@ -46,7 +46,7 @@ namespace Lephone.Util
 
 		public static string GetDateTimeString(DateTime dt)
 		{
-			return dt.ToString("yyMMddHHmmss");
+			return dt.ToString("yyyyMMdd_HHmmss");
 		}
 
 		#region Get StackTrack Function Name

@@ -74,6 +74,7 @@ namespace Lephone.UnitTest.Data
             var c = Cls1.FindById(c1.Id);
             Assert.AreEqual("c1", c.Name);
             Assert.AreEqual("c2", c.Cls2.Name);
+            Assert.AreEqual(2, c.Cls2.Cls3List.Count);
             Assert.AreEqual("c31", c.Cls2.Cls3List[0].Name);
             Assert.AreEqual("c32", c.Cls2.Cls3List[1].Name);
             Assert.AreEqual("c4", c.Cls2.Cls3List[0].Cls4.Name);
@@ -89,15 +90,72 @@ namespace Lephone.UnitTest.Data
             c1.Cls2.Cls3List.Add(Cls3.New.Init("c32"));
             c1.Cls2.Cls3List[0].Cls4 = Cls4.New.Init("c4");
             c1.Cls2.Cls3List[0].Cls4.Cls5 = Cls5.New.Init("c5");
+
             c1.Save();
 
             var c = Cls1.FindById(c1.Id);
             Assert.AreEqual("c1", c.Name);
             Assert.AreEqual("c2", c.Cls2.Name);
+            Assert.AreEqual(2, c.Cls2.Cls3List.Count);
             Assert.AreEqual("c31", c.Cls2.Cls3List[0].Name);
             Assert.AreEqual("c32", c.Cls2.Cls3List[1].Name);
             Assert.AreEqual("c4", c.Cls2.Cls3List[0].Cls4.Name);
             Assert.AreEqual("c5", c.Cls2.Cls3List[0].Cls4.Cls5.Name);
+        }
+
+        [Test]
+        public void Test3()
+        {
+            var c1 = Cls1.New.Init("c1");
+            c1.Cls2 = Cls2.New.Init("c2");
+            c1.Cls2.Cls3List.Add(Cls3.New.Init("c31"));
+            c1.Cls2.Cls3List.Add(Cls3.New.Init("c32"));
+            c1.Cls2.Cls3List[0].Cls4 = Cls4.New.Init("c4");
+            c1.Cls2.Cls3List[0].Cls4.Cls5 = Cls5.New.Init("c5");
+
+            c1.Save();
+
+            var c = Cls1.FindById(c1.Id);
+            c.Cls2.Cls3List.Add(Cls3.New.Init("c33"));
+
+            c.Save();
+
+            c = Cls1.FindById(c1.Id);
+            Assert.AreEqual("c1", c.Name);
+            Assert.AreEqual("c2", c.Cls2.Name);
+            Assert.AreEqual(3, c.Cls2.Cls3List.Count);
+            Assert.AreEqual("c31", c.Cls2.Cls3List[0].Name);
+            Assert.AreEqual("c32", c.Cls2.Cls3List[1].Name);
+            Assert.AreEqual("c33", c.Cls2.Cls3List[2].Name);
+            Assert.AreEqual("c4", c.Cls2.Cls3List[0].Cls4.Name);
+            Assert.AreEqual("c5", c.Cls2.Cls3List[0].Cls4.Cls5.Name);
+        }
+
+        [Test]
+        public void Test4()
+        {
+            var c1 = Cls1.New.Init("c1");
+            c1.Cls2 = Cls2.New.Init("c2");
+            c1.Cls2.Cls3List.Add(Cls3.New.Init("c31"));
+            c1.Cls2.Cls3List.Add(Cls3.New.Init("c32"));
+            c1.Cls2.Cls3List[0].Cls4 = Cls4.New.Init("c4");
+            c1.Cls2.Cls3List[0].Cls4.Cls5 = Cls5.New.Init("c5");
+
+            c1.Save();
+
+            var c4 = Cls4.FindById(c1.Cls2.Cls3List[0].Cls4.Id);
+            c4.Cls5 = Cls5.New.Init("c5x");
+
+            c4.Save();
+
+            var c = Cls1.FindById(c1.Id);
+            Assert.AreEqual("c1", c.Name);
+            Assert.AreEqual("c2", c.Cls2.Name);
+            Assert.AreEqual(2, c.Cls2.Cls3List.Count);
+            Assert.AreEqual("c31", c.Cls2.Cls3List[0].Name);
+            Assert.AreEqual("c32", c.Cls2.Cls3List[1].Name);
+            Assert.AreEqual("c4", c.Cls2.Cls3List[0].Cls4.Name);
+            Assert.AreEqual("c5x", c.Cls2.Cls3List[0].Cls4.Cls5.Name);
         }
     }
 }

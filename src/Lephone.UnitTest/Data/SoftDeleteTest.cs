@@ -184,7 +184,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("myName2", t.Nome);
         }
 
-        [Test, Ignore("for now")]
+        [Test]
         public void TestVerify()
         {
             var x = SoftDeleteIndex.New.Init("a");

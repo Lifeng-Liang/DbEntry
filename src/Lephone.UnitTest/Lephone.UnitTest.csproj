@@ -108,6 +108,7 @@
     <Compile Include="Data\UserIssueTest.cs" />
     <Compile Include="Data\ValidateHandlerTest.cs" />
     <Compile Include="Data\VBHelperTest.cs" />
+    <Compile Include="DotNetFramework\LinqTest.cs" />
     <Compile Include="DotNetFramework\MathTest.cs" />
     <Compile Include="DotNetFramework\NullabelTest.cs" />
     <Compile Include="DotNetFramework\ReflectionTest.cs" />

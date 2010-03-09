@@ -14,6 +14,9 @@ namespace Lephone.Data.Definition
     public class HasMany<T> : LazyLoadListBase<T>, IHasMany where T : class, IDbObject
     {
         private readonly OrderBy _order;
+        private readonly List<object> _removedValues = new List<object>();
+
+        List<object> IHasMany.RemovedValues { get { return _removedValues; } }
 
         internal HasMany(object owner)
             : base(owner)
@@ -33,12 +36,9 @@ namespace Lephone.Data.Definition
             this._order = OrderBy.Parse(orderByString);
         }
 
-        private readonly List<object> _removedValues = new List<object>();
-        List<object> IHasMany.RemovedValues { get { return _removedValues; } }
-
         protected override void InnerWrite(object item, bool isLoad)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
+            var oi = ObjectInfo.GetInstance(typeof(T));
             MemberHandler mh = oi.GetBelongsTo(Owner.GetType());
             if (mh != null)
             {

@@ -194,7 +194,7 @@ namespace Lephone.Data.Common
                         }
                         else if (f.IsHasOne || f.IsHasMany)
                         {
-                            ObjectInfo oi1 = ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
+                            var oi1 = ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
                             MemberHandler mh = oi1.GetBelongsTo(srcType);
                             if (mh == null)
                             {
@@ -204,7 +204,7 @@ namespace Lephone.Data.Common
                         }
                         else if (f.IsHasAndBelongsToMany)
                         {
-                            ObjectInfo oi1 = ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
+                            var oi1 = ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
                             MemberHandler mh = oi1.GetHasAndBelongsToMany(srcType);
                             if (mh == null)
                             {

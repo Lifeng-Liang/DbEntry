@@ -188,6 +188,24 @@ namespace Lephone.Data
             return Convert.ToInt64(ro);
         }
 
+        internal long GetResultCountAvoidSoftDelete(Type dbObjectType, Condition iwc, bool isDistinct)
+        {
+            TryCreateTable(dbObjectType);
+            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql;
+            if (oi.Composer is SoftDeleteQueryComposer)
+            {
+                sql = ((SoftDeleteQueryComposer)oi.Composer).GetResultCountStatementWithoutDeleteCheck(Dialect, iwc, isDistinct);
+            }
+            else
+            {
+                sql = oi.Composer.GetResultCountStatement(Dialect, iwc, isDistinct);
+            }
+            oi.LogSql(sql);
+            object ro = ExecuteScalar(sql);
+            return Convert.ToInt64(ro);
+        }
+
         public decimal? GetMax(Type dbObjectType, Condition iwc, string columnName)
         {
             object o = GetMaxObject(dbObjectType, iwc, columnName);

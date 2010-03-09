@@ -20,7 +20,7 @@ namespace Lephone.Data.Linq
         public IEnumerator<T> GetEnumerator()
         {
             var lep = new LinqExpressionParser<T>(this._expression);
-            var list = DbEntry.From<T>().Where(lep.condition).OrderBy(lep.orderby).Select();
+            var list = DbEntry.From<T>().Where(lep.Condition).OrderBy(lep.Orderby).Select();
             return ((IEnumerable<T>)list).GetEnumerator();
         }
 

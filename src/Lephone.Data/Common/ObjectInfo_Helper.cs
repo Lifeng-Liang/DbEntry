@@ -15,7 +15,7 @@ namespace Lephone.Data.Common
     {
         public static object CreateObject(Type dbObjectType, IDataReader dr, bool useIndex)
         {
-            ObjectInfo oi = GetInstance(dbObjectType);
+            var oi = GetInstance(dbObjectType);
             object obj = oi.NewObject();
             var sudi = obj as DbObjectSmartUpdate;
             if (sudi != null)
@@ -91,7 +91,7 @@ namespace Lephone.Data.Common
 
         internal static MemberHandler GetKeyField(Type tt)
         {
-            ObjectInfo oi = GetSimpleInstance(tt);
+            var oi = GetSimpleInstance(tt);
             if (oi.KeyFields.Length > 0)
             {
                 return oi.KeyFields[0];
@@ -224,7 +224,7 @@ namespace Lephone.Data.Common
         public static object CloneObject(object obj)
         {
             if (obj == null) { return null; }
-            ObjectInfo oi = GetInstance(obj.GetType());
+            var oi = GetInstance(obj.GetType());
             object o = oi.NewObject();
             var os = o as DbObjectSmartUpdate;
             if (os != null)

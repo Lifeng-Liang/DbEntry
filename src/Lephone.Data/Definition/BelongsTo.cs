@@ -38,29 +38,37 @@ namespace Lephone.Data.Definition
         protected override void DoWrite(object oldValue, bool isLoad)
         {
             var oi = ObjectInfo.GetInstance(typeof(T));
-            if (oi.KeyFields != null && oi.KeyFields.Length == 1)
+            if (oi.HasOnePrimaryKey)
             {
                 _foreignKey = (m_Value == null) ? CommonHelper.GetEmptyValue(oi.KeyFields[0].FieldType) : oi.KeyFields[0].GetValue(m_Value);
                 if (!isLoad)
                 {
                     ForeignKeyChanged();
-                    //if (m_Value != null)
-                    //{
-                    //    foreach (var mh in oi.RelationFields)
-                    //    {
-                    //        if (mh.IsHasOne || mh.IsHasMany)
-                    //        {
-                    //            Type st = mh.FieldType.GetGenericArguments()[0];
-                    //            st = st.IsAbstract ? AssemblyHandler.Instance.GetImplType(st) : st;
-                    //            Type ot = Owner.GetType();
-                    //            if (st == ot)
-                    //            {
-                    //                var ll = (ILazyLoading)mh.GetValue(m_Value);
-                    //                ll.Write(Owner, false);
-                    //            }
-                    //        }
-                    //    }
-                    //}
+                    if(m_Value == null && oldValue != null)
+                    {
+                        // TODO: remove oldValue
+                    }
+                    else if (m_Value != null && m_Value != oldValue)
+                    {
+                        foreach (var mh in oi.RelationFields)
+                        {
+                            if (mh.IsHasOne || mh.IsHasMany)
+                            {
+                                Type st = mh.FieldType.GetGenericArguments()[0];
+                                st = st.IsAbstract ? AssemblyHandler.Instance.GetImplType(st) : st;
+                                Type ot = Owner.GetType();
+                                if (st == ot)
+                                {
+                                    var ll = (ILazyLoading)mh.GetValue(m_Value);
+                                    if(!ll.IsLoaded)
+                                    {
+                                        ll.Write(Owner, true);
+                                        ll.IsLoaded = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             else

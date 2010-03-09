@@ -10,6 +10,7 @@ using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.CreateTable;
 using Lephone.UnitTest.Data.Objects;
 using Lephone.Util.Logging;
+using Lephone.Util.Text;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -23,7 +24,6 @@ namespace Lephone.UnitTest.Data
 
         public abstract SavePeople Init(string name);
     }
-
 
     [DbTable("File")]
     public class DistinctTest : IDbObject
@@ -152,7 +152,7 @@ namespace Lephone.UnitTest.Data
         public abstract string FirstName { get; set; }
         public abstract string LastName { get; set; }
 
-        public abstract InitTest2 Init(string Name, string FirstName, string LastName);
+        public abstract InitTest2 Init(string name, string firstName, string lastName);
     }
 
     public abstract class InitTest3 : DbObjectModel<InitTest3>
@@ -161,7 +161,7 @@ namespace Lephone.UnitTest.Data
         public abstract string FirstName { get; set; }
         public abstract string LastName { get; set; }
 
-        public abstract InitTest3 Init(string Name, string LastName, string FirstName);
+        public abstract InitTest3 Init(string name, string lastName, string firstName);
     }
 
     public abstract class InitTest4 : DbObjectModel<InitTest4>
@@ -170,7 +170,7 @@ namespace Lephone.UnitTest.Data
         public abstract bool Gender { get; set; }
         public abstract int? Age { get; set; }
 
-        public abstract InitTest4 Initialize(string Name, bool Gender, int? Age);
+        public abstract InitTest4 Initialize(string name, bool gender, int? age);
         public abstract InitTest4 Initialize(InitTest4 obj);
     }
 
@@ -883,6 +883,17 @@ namespace Lephone.UnitTest.Data
 
             Assert.AreEqual(3, sorted[1].Column);
             Assert.AreEqual(5, sorted[1].Sum);
+        }
+
+        [Test, Ignore("Can not create instance of abstract class")]
+        public void TestXml()
+        {
+            var o1 = InitTest2.New.Init("tom", "cat", "miao");
+            var xml = XmlSerializer<InitTest2>.Xml.Serialize(o1);
+            var o2 = XmlSerializer<InitTest2>.Xml.Deserialize(xml);
+            Assert.AreEqual("tom", o2.Name);
+            Assert.AreEqual("tom", o2.FirstName);
+            Assert.AreEqual("miao", o2.LastName);
         }
     }
 }
