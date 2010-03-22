@@ -12,6 +12,7 @@ namespace Lephone.Util
 		private static string _exeFileName;
         private static string _baseDirectory;
 	    private static string _tempDirectory;
+	    private static string _currDirectory;
 
         public static string ExeFileName
         {
@@ -28,6 +29,11 @@ namespace Lephone.Util
             get { return _tempDirectory; }
 	    }
 
+	    public static string CurrentDirectory
+	    {
+            get { return _currDirectory; }
+	    }
+
 		static SystemHelper()
 		{
             CommonHelper.CatchAll(delegate
@@ -36,6 +42,11 @@ namespace Lephone.Util
                 _exeFileName = s.ApplicationName;
                 _baseDirectory = s.ApplicationBase;
                 _tempDirectory = Path.GetTempPath();
+                _currDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                if (!_currDirectory.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                {
+                    _currDirectory += Path.DirectorySeparatorChar;
+                }
             });
 		}
 
