@@ -19,7 +19,7 @@ namespace Lephone.Data.Common
 
         private void UsingAvoidObjectList(CallbackVoidHandler callback)
         {
-            if(Scope<AvoidObjectList>.Current == null)
+            if (Scope<AvoidObjectList>.Current == null)
             {
                 using (new Scope<AvoidObjectList>(new AvoidObjectList()))
                 {
@@ -37,6 +37,18 @@ namespace Lephone.Data.Common
         public void Save(object obj)
         {
             UsingAvoidObjectList(() => InnerSave(obj));
+        }
+
+        private void RelationSave(object obj)
+        {
+            if(obj is DbObjectSmartUpdate)
+            {
+                ((DbObjectSmartUpdate)obj).Save();
+            }
+            else
+            {
+                InnerSave(obj);
+            }
         }
 
         private void InnerSave(object obj)
@@ -176,7 +188,7 @@ namespace Lephone.Data.Common
                                 object llo = ho.Read();
                                 if (llo != null)
                                 {
-                                    InnerSave(llo);
+                                    RelationSave(llo);
                                 }
                             }
                         }
@@ -188,7 +200,7 @@ namespace Lephone.Data.Common
                         ProcessChildren(oi, obj, o =>
                         {
                             SetBelongsToForeignKey(obj, o, oi.Handler.GetKeyValue(obj));
-                            InnerSave(o);
+                            RelationSave(o);
                         });
                     }
                 });
@@ -217,7 +229,7 @@ namespace Lephone.Data.Common
                                 var ho1 = (IHasOne)ho;
                                 if (ho1.LastValue != null)
                                 {
-                                    InnerSave(ho1.LastValue);
+                                    RelationSave(ho1.LastValue);
                                 }
                             }
                             else
@@ -233,7 +245,7 @@ namespace Lephone.Data.Common
                                 var ho1 = (IHasMany)ho;
                                 foreach (object item in ho1.RemovedValues)
                                 {
-                                    InnerSave(item);
+                                    RelationSave(item);
                                 }
                                 CommonHelper.TryEnumerate(llo, processChild);
                             }
@@ -336,7 +348,7 @@ namespace Lephone.Data.Common
                                 var ho1 = (IHasOne)ho;
                                 if (ho1.LastValue != null)
                                 {
-                                    InnerSave(ho1.LastValue);
+                                    RelationSave(ho1.LastValue);
                                 }
                             }
                             else
@@ -352,7 +364,7 @@ namespace Lephone.Data.Common
                                 var ho1 = (IHasMany)ho;
                                 foreach (object item in ho1.RemovedValues)
                                 {
-                                    InnerSave(item);
+                                    RelationSave(item);
                                 }
                                 CommonHelper.TryEnumerate(llo, processChild);
                             }
@@ -374,7 +386,7 @@ namespace Lephone.Data.Common
             }
         }
 
-	    #endregion
+        #endregion
 
         #region Help functions
 
@@ -420,7 +432,6 @@ namespace Lephone.Data.Common
                 }
             }
         }
-
 
         #endregion
     }

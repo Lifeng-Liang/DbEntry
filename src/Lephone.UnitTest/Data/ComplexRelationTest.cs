@@ -1,12 +1,27 @@
 ﻿using System.Collections.Generic;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
     [TestFixture]
-    public class ComplexRelationTest
+    public class ComplexRelationTest : DataTestBase
     {
+        protected override void OnSetUp()
+        {
+            base.OnSetUp();
+            DbEntry.Context.DropAndCreate(typeof(Cls1));
+            DbEntry.Context.DropAndCreate(typeof(Cls2));
+            DbEntry.Context.DropAndCreate(typeof(Cls3));
+            DbEntry.Context.DropAndCreate(typeof(Cls4));
+            DbEntry.Context.DropAndCreate(typeof(Cls5));
+            DbEntry.Context.DropAndCreate(typeof(OverSave));
+            DbEntry.Context.DropAndCreate(typeof(OverSave2));
+            DbEntry.Context.DropAndCreate(typeof(OverSave3));
+            DbEntry.Context.DropAndCreate(typeof(OverSave4));
+        }
+
         public abstract class Cls1 : DbObjectModel<Cls1>
         {
             public abstract string Name { get; set; }
@@ -56,6 +71,56 @@ namespace Lephone.UnitTest.Data
             public abstract Cls4 Cls4 { get; set; }
 
             public abstract Cls5 Init(string name);
+        }
+
+        public abstract class OverSave : DbObjectModel<OverSave>
+        {
+            public abstract string Name { get; set; }
+
+            [HasMany]
+            public abstract IList<OverSave2> Overs { get; set; }
+
+            public abstract OverSave Init(string name);
+        }
+
+        public abstract class OverSave2 : DbObjectModel<OverSave2>
+        {
+            public abstract string Name { get; set; }
+
+            [BelongsTo]
+            public abstract OverSave Over { get; set; }
+
+            public abstract OverSave2 Init(string name);
+
+            public override void Save()
+            {
+            }
+        }
+
+        public abstract class OverSave3 : DbObjectModel<OverSave3>
+        {
+            public abstract string Name { get; set; }
+
+            [HasMany]
+            public abstract IList<OverSave4> Overs { get; set; }
+
+            public abstract OverSave3 Init(string name);
+        }
+
+        public abstract class OverSave4 : DbObjectModel<OverSave4>
+        {
+            public abstract string Name { get; set; }
+
+            [BelongsTo]
+            public abstract OverSave3 Over { get; set; }
+
+            public abstract OverSave4 Init(string name);
+
+            public override void Save()
+            {
+                this.Name = "change";
+                base.Save();
+            }
         }
 
         [Test]
@@ -156,6 +221,31 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("c32", c.Cls2.Cls3List[1].Name);
             Assert.AreEqual("c4", c.Cls2.Cls3List[0].Cls4.Name);
             Assert.AreEqual("c5x", c.Cls2.Cls3List[0].Cls4.Cls5.Name);
+        }
+
+        [Test]
+        public void TestOverrideSave()
+        {
+            var o = OverSave.New.Init("test");
+            o.Overs.Add(OverSave2.New.Init("ok"));
+            o.Save();
+
+            var o1 = OverSave.FindById(o.Id);
+            Assert.AreEqual("test", o1.Name);
+            Assert.AreEqual(0, o1.Overs.Count);
+        }
+
+        [Test]
+        public void TestOverrideSave2()
+        {
+            var o = OverSave3.New.Init("test");
+            o.Overs.Add(OverSave4.New.Init("ok"));
+            o.Save();
+
+            var o1 = OverSave3.FindById(o.Id);
+            Assert.AreEqual("test", o1.Name);
+            Assert.AreEqual(1, o1.Overs.Count);
+            Assert.AreEqual("change", o1.Overs[0].Name);
         }
     }
 }

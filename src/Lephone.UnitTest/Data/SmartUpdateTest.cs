@@ -55,6 +55,7 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [DbContext("SQLite")]
     public class rUser : DbObjectModel<rUser>
     {
         private string _Name;
@@ -104,6 +105,7 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [DbContext("SQLite")]
     public class rArticle : DbObjectModel<rArticle>
     {
         private string _Name;
@@ -184,7 +186,7 @@ namespace Lephone.UnitTest.Data
     {
         #region init
 
-        private readonly DbContext de = EntryConfig.NewContext("SQLite");
+        private readonly DbContext de = DbEntry.GetContext("SQLite");
 
         public SmartUpdateTest()
         {
