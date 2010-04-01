@@ -539,10 +539,13 @@ namespace Lephone.Data
             var ts = new List<Type>();
             foreach (var t in assembly.GetExportedTypes())
             {
-                var lt = new List<Type>(t.GetInterfaces());
-                if (lt.Contains(idot))
+                if(!t.IsGenericType)
                 {
-                    ts.Add(t);
+                    var lt = new List<Type>(t.GetInterfaces());
+                    if (lt.Contains(idot))
+                    {
+                        ts.Add(t);
+                    }
                 }
             }
             ts.Sort((x, y) => x.FullName.CompareTo(y.FullName));
