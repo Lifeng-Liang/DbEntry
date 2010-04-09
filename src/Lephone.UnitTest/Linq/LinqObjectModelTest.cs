@@ -134,7 +134,7 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual("Beijing", l[1].Name);
         }
 
-        [Test, Ignore("for now")]
+        [Test]
         public void TestPartialSelect()
         {
             var l = from book in Book.Table where book.Category_Id == 2 orderby book.Id select new { book.Name };
@@ -143,6 +143,48 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual("Diablo", list[0].Name);
             Assert.AreEqual("Pal95", list[1].Name);
             Assert.AreEqual("Wow", list[2].Name);
+        }
+
+        [Test]
+        public void TestPartialSelect2()
+        {
+            var l = from book in Book.Table where book.Category_Id == 2 orderby book.Id select new { book.Name, book.Category_Id };
+            var list = l.ToList();
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual("Diablo", list[0].Name);
+            Assert.AreEqual(2, list[0].Category_Id);
+            Assert.AreEqual("Pal95", list[1].Name);
+            Assert.AreEqual(2, list[1].Category_Id);
+            Assert.AreEqual("Wow", list[2].Name);
+            Assert.AreEqual(2, list[2].Category_Id);
+        }
+
+        [Test]
+        public void TestPartialSelect3()
+        {
+            var l = from book in Book.Table where book.Category_Id == 2 orderby book.Id select new { book.Category_Id, book.Name };
+            var list = l.ToList();
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual("Diablo", list[0].Name);
+            Assert.AreEqual(2, list[0].Category_Id);
+            Assert.AreEqual("Pal95", list[1].Name);
+            Assert.AreEqual(2, list[1].Category_Id);
+            Assert.AreEqual("Wow", list[2].Name);
+            Assert.AreEqual(2, list[2].Category_Id);
+        }
+
+        [Test]
+        public void TestPartialSelect4()
+        {
+            var l = from book in Book.Table where book.Category_Id == 2 orderby book.Id select new { book.Name, CID = book.Category_Id };
+            var list = l.ToList();
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual("Diablo", list[0].Name);
+            Assert.AreEqual(2, list[0].CID);
+            Assert.AreEqual("Pal95", list[1].Name);
+            Assert.AreEqual(2, list[1].CID);
+            Assert.AreEqual("Wow", list[2].Name);
+            Assert.AreEqual(2, list[2].CID);
         }
     }
 }

@@ -7,13 +7,13 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data.Linq
 {
-    public static class ExpressionParser<T> where T : class, IDbObject
+    public static class ExpressionParser<T>
     {
-        private static readonly Dictionary<string, string> dic;
+        private static readonly Dictionary<string, string> Jar;
 
         static ExpressionParser()
         {
-            dic = new Dictionary<string, string>();
+            Jar = new Dictionary<string, string>();
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
             foreach (MemberHandler m in oi.Fields)
             {
@@ -22,13 +22,13 @@ namespace Lephone.Data.Linq
                 {
                     key = key.Substring(1);
                 }
-                dic.Add(key, m.Name);
+                Jar.Add(key, m.Name);
             }
         }
 
         public static string GetColumnName(string fieldName)
         {
-            string s = dic[fieldName];
+            string s = Jar[fieldName];
             if (s != null)
             {
                 return s;
@@ -202,12 +202,12 @@ namespace Lephone.Data.Linq
             throw new LinqException("The expression must be 'Column op const' or 'Column op Column'");
         }
 
-        private static object GetRightValue(Expression Right)
+        private static object GetRightValue(Expression right)
         {
             object value 
-                = Right.NodeType == ExpressionType.Constant 
-                      ? ((ConstantExpression)Right).Value 
-                      : Expression.Lambda(Right).Compile().DynamicInvoke();
+                = right.NodeType == ExpressionType.Constant 
+                      ? ((ConstantExpression)right).Value 
+                      : Expression.Lambda(right).Compile().DynamicInvoke();
 
             //else if (Right.NodeType == ExpressionType.Convert
             //    || Right.NodeType == ExpressionType.MemberAccess)

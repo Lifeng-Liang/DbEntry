@@ -81,14 +81,25 @@ namespace Lephone.Data.QuerySyntax
         public DbObjectList<T> Select()
         {
             var ret = new DbObjectList<T>();
-            m_entry.FillCollection(ret, typeof(T), m_where, m_order, m_range);
+            var t = typeof(T);
+            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, false);
+            return ret;
+        }
+
+        public DbObjectList<TResult> Select<TResult>()
+        {
+            var ret = new DbObjectList<TResult>();
+            var tresult = typeof(TResult);
+            var t = typeof(T);
+            m_entry.FillCollection(ret, tresult, t, null, m_where, m_order, m_range, false);
             return ret;
         }
 
         public DbObjectList<T> SelectDistinct()
         {
             var ret = new DbObjectList<T>();
-            m_entry.FillCollection(ret, typeof(T), m_where, m_order, m_range, true);
+            var t = typeof(T);
+            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, true);
             return ret;
         }
 

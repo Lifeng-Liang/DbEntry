@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Lephone.Data.Definition;
+using Lephone.Data.QuerySyntax;
 
 namespace Lephone.Data.Linq
 {
-    public class LinqQueryProvider<T, TKey> : IOrderedQueryable<T>, IQueryProvider where T : DbObjectModelBase<T, TKey>
+    public class LinqQueryProvider<T, TResult> : IOrderedQueryable<TResult>, IQueryProvider where T : class, IDbObject
     {
         private readonly Expression _expression;
 
@@ -17,11 +18,12 @@ namespace Lephone.Data.Linq
 
         #region IEnumerable<T> Members
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<TResult> GetEnumerator()
         {
             var lep = new LinqExpressionParser<T>(this._expression);
-            var list = DbEntry.From<T>().Where(lep.Condition).OrderBy(lep.Orderby).Select();
-            return ((IEnumerable<T>)list).GetEnumerator();
+            var query = (QueryContent<T>)DbEntry.From<T>().Where(lep.Condition).OrderBy(lep.Orderby);
+            var list = query.Select<TResult>();
+            return ((IEnumerable<TResult>)list).GetEnumerator();
         }
 
         #endregion
@@ -62,18 +64,18 @@ namespace Lephone.Data.Linq
 
         public IQueryable<TElement> CreateQuery<TElement>(Expression expr)
         {
-            return (IQueryable<TElement>)new LinqQueryProvider<T, TKey>(expr);
+            return new LinqQueryProvider<T, TElement>(expr);
         }
 
         public IQueryable CreateQuery(Expression expr)
         {
-            return new LinqQueryProvider<T, TKey>(expr);
+            return new LinqQueryProvider<T, TResult>(expr);
         }
 
-        public TResult Execute<TResult>(Expression expr)
+        public TElement Execute<TElement>(Expression expr)
         {
             // never used ???
-            return (TResult)CreateQuery(expr).GetEnumerator();
+            return (TElement)CreateQuery(expr).GetEnumerator();
         }
 
         public object Execute(Expression expr)

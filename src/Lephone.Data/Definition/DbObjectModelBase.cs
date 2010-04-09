@@ -86,8 +86,8 @@ namespace Lephone.Data.Definition
 
         public static DbObjectList<T> FindRecent(int count)
         {
-            string Id = ObjectInfo.GetKeyField(typeof(T)).Name;
-            return DbEntry.From<T>().Where(Condition.Empty).OrderBy((DESC)Id).Range(1, count).Select();
+            string id = ObjectInfo.GetKeyField(typeof(T)).Name;
+            return DbEntry.From<T>().Where(Condition.Empty).OrderBy((DESC)id).Range(1, count).Select();
         }
 
         public static long GetCount(Condition con)
@@ -140,9 +140,9 @@ namespace Lephone.Data.Definition
 
         #region Linq methods
 
-        public static LinqQueryProvider<T, TKey> Table
+        public static LinqQueryProvider<T, T> Table
         {
-            get { return new LinqQueryProvider<T, TKey>(null); }
+            get { return new LinqQueryProvider<T, T>(null); }
         }
 
         public static IAfterWhere<T> Where(Expression<Func<T, bool>> condition)

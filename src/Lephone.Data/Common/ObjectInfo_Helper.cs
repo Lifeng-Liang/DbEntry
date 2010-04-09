@@ -15,6 +15,11 @@ namespace Lephone.Data.Common
     {
         public static object CreateObject(Type dbObjectType, IDataReader dr, bool useIndex)
         {
+            if(dbObjectType.Name.StartsWith("<"))
+            {
+                return DynamicLinqObjectHandler.GetInstance(dbObjectType).CreateObject(dr, useIndex);
+            }
+
             var oi = GetInstance(dbObjectType);
             object obj = oi.NewObject();
             var sudi = obj as DbObjectSmartUpdate;

@@ -311,7 +311,9 @@ namespace Lephone.Data
         public DbObjectList<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
         {
             var ret = new DbObjectList<T>();
-            FillCollection(ret, typeof(T), sql);
+            var t = typeof(T);
+            IProcessor ip = GetListProcessor(ret, t);
+            DataLoadDirect(ip, t, t, sql, false);
             return ret;
         }
 
@@ -328,57 +330,40 @@ namespace Lephone.Data
             return new LimitedListInserter(il);
         }
 
-        public void FillCollection(IList list, Type dbObjectType, SqlStatement sql)
+        //public void FillCollection(IList list, Type dbObjectType, SqlStatement sql)
+        //{
+        //    IProcessor ip = GetListProcessor(list, dbObjectType);
+        //    DataLoad(ip, dbObjectType, sql);
+        //}
+
+        //public void FillCollection(IList list, Type dbObjectType, Condition iwc, OrderBy oc, Range lc)
+        //{
+        //    FillCollection(list, dbObjectType, iwc, oc, lc, false);
+        //}
+
+        //public void FillCollection(IList list, Type returnType, Type dbObjectType, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
+        //{
+        //    IProcessor ip = GetListProcessor(list, dbObjectType);
+        //    DataLoad(ip, returnType, dbObjectType, null, iwc, oc, lc, isDistinct);
+        //}
+
+        //public void FillCollection(IList list, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc)
+        //{
+        //    FillCollection(list, dbObjectType, from, iwc, oc, lc, false);
+        //}
+
+        public void FillCollection(IList list, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
             IProcessor ip = GetListProcessor(list, dbObjectType);
-            DataLoad(ip, dbObjectType, sql);
+            DataLoad(ip, returnType, dbObjectType, from, iwc, oc, lc, isDistinct);
         }
 
-        public void FillCollection(IList list, Type dbObjectType, Condition iwc, OrderBy oc, Range lc)
-        {
-            FillCollection(list, dbObjectType, iwc, oc, lc, false);
-        }
-
-        public void FillCollection(IList list, Type dbObjectType, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
-        {
-            IProcessor ip = GetListProcessor(list, dbObjectType);
-            DataLoad(ip, dbObjectType, null, iwc, oc, lc, isDistinct);
-        }
-
-        public void FillCollection(IList list, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc)
-        {
-            FillCollection(list, dbObjectType, from, iwc, oc, lc, false);
-        }
-
-        public void FillCollection(IList list, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
-        {
-            IProcessor ip = GetListProcessor(list, dbObjectType);
-            DataLoad(ip, dbObjectType, from, iwc, oc, lc, isDistinct);
-        }
-
-        public void DataLoad(IProcessor ip, Type dbObjectType, SqlStatement sql)
+        private void DataLoad(IProcessor ip, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
+            SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct, returnType);
             oi.LogSql(sql);
-            DataLoadDirect(ip, dbObjectType, sql, false);
-        }
-
-        public void DataLoad(IProcessor ip, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
-        {
-            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct);
-            oi.LogSql(sql);
-            DataLoadDirect(ip, dbObjectType, sql);
-        }
-
-        private void DataLoadDirect(IProcessor ip, Type dbObjectType, SqlStatement sql)
-        {
-            DataLoadDirect(ip, dbObjectType, sql, true);
-        }
-
-        private void DataLoadDirect(IProcessor ip, Type dbObjectType, SqlStatement sql, bool useIndex)
-        {
-            DataLoadDirect(ip, dbObjectType, dbObjectType, sql, useIndex);
+            DataLoadDirect(ip, returnType, dbObjectType, sql, true);
         }
 
         private void DataLoadDirect(IProcessor ip, Type returnType, Type dbObjectType, SqlStatement sql, bool useIndex)
@@ -466,7 +451,7 @@ namespace Lephone.Data
         internal object GetObject(Type t, Condition c, OrderBy ob, Range r)
         {
             IList il = new ArrayList();
-            FillCollection(il, t, c, ob, r);
+            FillCollection(il, t, t, null, c, ob, r, false);
             if (il.Count < 1)
             {
                 return null;

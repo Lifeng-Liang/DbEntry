@@ -102,7 +102,7 @@ namespace Lephone.Data.Common
             }
         }
 
-        private static readonly Dictionary<Type, Type> _dic = new Dictionary<Type, Type>();
+        private static readonly Dictionary<Type, Type> Jar = new Dictionary<Type, Type>();
 
         public virtual IDbObjectHandler CreateDbObjectHandler(Type srcType, ObjectInfo oi)
         {
@@ -117,18 +117,18 @@ namespace Lephone.Data.Common
 
         public virtual Type GetImplType(Type sourceType)
         {
-            if (_dic.ContainsKey(sourceType))
+            if (Jar.ContainsKey(sourceType))
             {
-                return _dic[sourceType];
+                return Jar[sourceType];
             }
-            lock (_dic)
+            lock (Jar)
             {
-                if (_dic.ContainsKey(sourceType))
+                if (Jar.ContainsKey(sourceType))
                 {
-                    return _dic[sourceType];
+                    return Jar[sourceType];
                 }
                 Type t = GetImplementedType(sourceType);
-                _dic[sourceType] = t;
+                Jar[sourceType] = t;
                 return t;
             }
         }

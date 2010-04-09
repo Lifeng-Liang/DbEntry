@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Dialect;
@@ -89,13 +90,35 @@ namespace Lephone.Data.Common
             return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public virtual SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, Type returnType)
         {
-            var sb = new SelectStatementBuilder(from ?? Info.From, oc, lc) {IsDistinct = isDistinct};
+            var sb = new SelectStatementBuilder(from ?? Info.From, oc, lc) { IsDistinct = isDistinct };
             sb.Where.Conditions = iwc;
-            Info.Handler.SetValuesForSelect(sb);
+            if(returnType.Name.StartsWith("<"))
+            {
+                SetSelectColumnsForDynamicLinqObject(sb, returnType);
+            }
+            else
+            {
+                Info.Handler.SetValuesForSelect(sb);
+            }
             // DataBase Process
             return sb.ToSqlStatement(dialect);
+        }
+
+        private void SetSelectColumnsForDynamicLinqObject(SelectStatementBuilder sb, Type returnType)
+        {
+            var handler = DynamicLinqObjectHandler.GetInstance(returnType);
+            handler.Init(Info);
+            foreach (MemberHandler fi in handler.GetMembers())
+            {
+                string value = null;
+                if (fi.Name != fi.MemberInfo.Name)
+                {
+                    value = fi.MemberInfo.Name;
+                }
+                sb.Keys.Add(new KeyValuePair<string, string>(fi.Name, value));
+            }
         }
 
         public virtual SqlStatement GetInsertStatement(DbDialect dialect, object obj)

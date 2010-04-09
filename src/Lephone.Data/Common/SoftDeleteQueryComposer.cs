@@ -1,4 +1,5 @@
-﻿using Lephone.Data.Builder;
+﻿using System;
+using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
@@ -59,9 +60,9 @@ namespace Lephone.Data.Common
             return base.GetResultCountStatement(dialect, iwc, isDistinct);
         }
 
-        public override SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public override SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, Type returnType)
         {
-            return base.GetSelectStatement(dialect, from, iwc && _colExp, oc, lc, isDistinct);
+            return base.GetSelectStatement(dialect, from, iwc && _colExp, oc, lc, isDistinct, returnType);
         }
 
         public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)

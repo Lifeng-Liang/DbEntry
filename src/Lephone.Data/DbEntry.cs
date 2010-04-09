@@ -41,11 +41,11 @@ namespace Lephone.Data
         #region Instance
 
         public static readonly DbContext Context;
-        private static readonly HybridDictionary CtxDict;
+        private static readonly HybridDictionary Jar;
 
         static DbEntry()
 	    {
-            CtxDict = new HybridDictionary();
+            Jar = new HybridDictionary();
             Context = GetContext(DataSetting.DefaultContext);
 	    }
 
@@ -56,18 +56,18 @@ namespace Lephone.Data
                 return Context;
             }
             Debug.Assert(prefix != null);
-            if(CtxDict.Contains(prefix))
+            if(Jar.Contains(prefix))
             {
-                return (DbContext) CtxDict[prefix];
+                return (DbContext) Jar[prefix];
             }
-            lock (CtxDict.SyncRoot)
+            lock (Jar.SyncRoot)
             {
-                if (CtxDict.Contains(prefix))
+                if (Jar.Contains(prefix))
                 {
-                    return (DbContext)CtxDict[prefix];
+                    return (DbContext)Jar[prefix];
                 }
                 var ctx = new DbContext(prefix);
-                CtxDict[prefix] = ctx;
+                Jar[prefix] = ctx;
                 return ctx;
             }
         }

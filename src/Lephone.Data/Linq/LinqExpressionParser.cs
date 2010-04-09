@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using Lephone.Data.Definition;
+using Lephone.Data.Common;
 
 namespace Lephone.Data.Linq
 {
-    public class LinqExpressionParser<T> where T : class, IDbObject
+    public class LinqExpressionParser<T>
     {
         public Condition Condition;
         public OrderBy Orderby;
@@ -44,6 +45,8 @@ namespace Lephone.Data.Linq
                         );
                     break;
                 case "Select":
+                    Parse(expr.Arguments[0]);
+                    ProcessSelectColumns(expr.Arguments[1]);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -68,6 +71,34 @@ namespace Lephone.Data.Linq
                 Orderby = new OrderBy();
             }
             Orderby.OrderItems.Add(item);
+        }
+
+        private static void ProcessSelectColumns(Expression expr)
+        {
+            var ex = GetUnQuoteExpression(expr);
+            if (ex.Body.NodeType != ExpressionType.New) return;
+
+            var exNew = (NewExpression) ex.Body;
+            var type = exNew.Constructor.DeclaringType;
+            var handler = DynamicLinqObjectHandler.GetInstance(type);
+            if(handler.IsJarNotInitialized)
+            {
+                var list = new List<string>(exNew.Arguments.Count);
+                foreach (MemberExpression member in exNew.Arguments)
+                {
+                    list.Add(member.Member.Name);
+                }
+                handler.Init(list);
+            }
+        }
+
+        private static LambdaExpression GetUnQuoteExpression(Expression expr)
+        {
+            if (expr.NodeType == ExpressionType.Quote)
+            {
+                return GetUnQuoteExpression(((UnaryExpression)expr).Operand);
+            }
+            return (LambdaExpression)expr;
         }
     }
 }
