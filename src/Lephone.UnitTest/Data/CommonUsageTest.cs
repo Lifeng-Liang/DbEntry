@@ -895,5 +895,13 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("tom", o2.FirstName);
             Assert.AreEqual("miao", o2.LastName);
         }
+
+        [Test]
+        public void TestInClause()
+        {
+            sqlite.From<SinglePerson>().Where(CK.K["Id"].In(1, 3, 5, 7)).Select();
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (1,3,5,7);
+<Text><60>()");
+        }
     }
 }

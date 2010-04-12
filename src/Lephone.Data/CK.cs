@@ -251,5 +251,10 @@ namespace Lephone.Data
             _function = ColumnFunction.ToUpper;
             return this;
         }
-    }
+
+	    public Condition In(params object[] args)
+	    {
+	        return new InClause(ColumnName, args);
+	    }
+	}
 }

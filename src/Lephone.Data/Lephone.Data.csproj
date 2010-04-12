@@ -107,6 +107,7 @@ copy *.dll ..\..\..\..\bin\
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder\Clause\ConstCondition.cs" />
+    <Compile Include="Builder\Clause\InClause.cs" />
     <Compile Include="Builder\ISqlKeys.cs" />
     <Compile Include="Caching\CacheProvider.cs" />
     <Compile Include="Caching\KeyGenerator.cs" />
