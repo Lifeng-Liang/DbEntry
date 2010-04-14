@@ -9,7 +9,7 @@ namespace Lephone.Data.SqlEntry
 		String		= DbType.String,
 		DateTime	= DbType.DateTime,
         Date        = DbType.Date,
-        Time        = DbType.DateTime,
+        Time        = DbType.Time,
 
         Boolean     = DbType.Boolean,
 

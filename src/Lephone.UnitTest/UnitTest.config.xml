@@ -32,6 +32,10 @@
     <add key="SqlServerMock.DbDriver" value="Lephone.Data.Driver.SqlServerDriver, Lephone.Data" />
     <add key="SqlServerMock.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />
 
+    <add key="SqlServer2008.DataBase" value="@SqlServer2008 : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
+    <add key="SqlServer2008.DbDriver" value="Lephone.Data.Driver.SqlServerDriver, Lephone.Data" />
+    <add key="SqlServer2008.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />
+
     <add key="TestInt" value="10" />
     <add key="TheString" value="OK" />
     <add key="TestBool" value="true" />
