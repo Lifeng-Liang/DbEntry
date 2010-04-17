@@ -6,8 +6,8 @@ namespace Lephone.Data.Driver
 {
     internal class SqlServerDriver : DbDriver
 	{
-        public SqlServerDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
-            : base(DialectClass, ConnectionString, DbProviderFactoryName, AutoCreateTable) { }
+        public SqlServerDriver(Dialect.DbDialect dialectClass, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+            : base(dialectClass, connectionString, dbProviderFactoryName, autoCreateTable) { }
 
         protected override DbProviderFactory GetDefaultProviderFactory()
         {

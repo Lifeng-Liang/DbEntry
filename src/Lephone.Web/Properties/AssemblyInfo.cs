@@ -6,9 +6,9 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("WebEntry.Net")]
-[assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2010")]
 [assembly: AssemblyTrademark("http://www.codeplex.com/DbEntry")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 
-[assembly: AssemblyVersion("3.6.*")]
+[assembly: AssemblyVersion("3.9.*")]

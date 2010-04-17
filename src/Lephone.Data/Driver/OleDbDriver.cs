@@ -7,8 +7,8 @@ namespace Lephone.Data.Driver
 {
     internal class OleDbDriver : DbDriver
 	{
-        public OleDbDriver(Dialect.DbDialect DialectClass, string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
-            : base(DialectClass, ConnectionString, DbProviderFactoryName, AutoCreateTable)
+        public OleDbDriver(Dialect.DbDialect dialectClass, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+            : base(dialectClass, connectionString, dbProviderFactoryName, autoCreateTable)
 		{
 		}
 
@@ -26,7 +26,7 @@ namespace Lephone.Data.Driver
 		{
             var odp = (OleDbParameter)base.GetDbParameter(dp);
 			// TODO: Is OleDb Bug, Or Access Bug? Or, all Drivers bug£¿
-            if ( dp.Type == DataType.DateTime )
+            if (dp.Type == DataType.DateTime || dp.Type == DataType.Time)
             {
                 odp.OleDbType = OleDbType.Date;
             }

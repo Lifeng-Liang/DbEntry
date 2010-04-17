@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
@@ -35,6 +36,12 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract string Name2 { get; set; }
     }
 
+    public abstract class fbTime : DbObjectModel<fbTime>
+    {
+        [Length(50)]
+        public abstract string Name { get; set; }
+        public abstract Time Time { get; set; }
+    }
 
     [TestFixture]
     public class FirebirdTest
@@ -81,6 +88,19 @@ namespace Lephone.UnitTest.Data.CreateTable
     ""BLOB3"" BLOB SUB_TYPE 0 NOT NULL ,
     ""NAME"" VARCHAR (30) CHARACTER SET UNICODE_FSS NOT NULL ,
     ""NAME2"" BLOB SUB_TYPE 1 CHARACTER SET UNICODE_FSS NOT NULL
+);
+<Text><30>()".Replace("\r\n", "").Replace("    ", ""), StaticRecorder.Messages[0]);
+        }
+
+        [Test]
+        public void TestTime()
+        {
+            var de = EntryConfig.NewContext("Firebird");
+            de.Create(typeof(fbTime));
+            Assert.AreEqual(@"CREATE TABLE ""FB_TIME"" (
+    ""ID"" BIGINT NOT NULL PRIMARY KEY,
+    ""NAME"" VARCHAR (50) CHARACTER SET UNICODE_FSS NOT NULL ,
+    ""TIME"" TIME NOT NULL
 );
 <Text><30>()".Replace("\r\n", "").Replace("    ", ""), StaticRecorder.Messages[0]);
         }

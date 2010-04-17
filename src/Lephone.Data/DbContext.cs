@@ -358,7 +358,7 @@ namespace Lephone.Data
             DataLoad(ip, returnType, dbObjectType, from, iwc, oc, lc, isDistinct);
         }
 
-        private void DataLoad(IProcessor ip, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void DataLoad(IProcessor ip, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct, returnType);

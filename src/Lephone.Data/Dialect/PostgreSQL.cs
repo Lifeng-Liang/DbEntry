@@ -9,6 +9,7 @@ namespace Lephone.Data.Dialect
         public PostgreSQL()
         {
             TypeNames[DataType.DateTime] = "TIMESTAMP";
+            TypeNames[DataType.Time] = "TIME";
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)

@@ -21,46 +21,46 @@ namespace Lephone.Data.Driver
             get { return MiCb_DeriveParameters != null; }
         }
 
-        public void Init(string AssemblyName)
+        public void Init(string assemblyName)
         {
-            InitWithAssemblyName(AssemblyName);
+            InitWithAssemblyName(assemblyName);
         }
 
-        private void InitWithAssemblyName(string AssemblyName)
+        private void InitWithAssemblyName(string assemblyName)
         {
-            var EmptyParam = new Type[] { };
-            Assembly asm = Assembly.Load(AssemblyName);
+            var emptyParam = new Type[] { };
+            Assembly asm = Assembly.Load(assemblyName);
             Type[] ts = asm.GetTypes();
-            Type CommandType = null;
+            Type commandType = null;
             foreach (Type t in ts)
             {
                 if (CiCommand == null && IsInterfaceOf(t, typeof(IDbCommand)))
                 {
-                    CommandType = t;
-                    CiCommand = t.GetConstructor(EmptyParam);
+                    commandType = t;
+                    CiCommand = t.GetConstructor(emptyParam);
                 }
                 if (CiConnection == null && IsInterfaceOf(t, typeof(IDbConnection)))
                 {
-                    CiConnection = t.GetConstructor(EmptyParam);
+                    CiConnection = t.GetConstructor(emptyParam);
                 }
                 if (CiDataAdapter == null && IsInterfaceOf(t, typeof(IDbDataAdapter)))
                 {
-                    CiDataAdapter = t.GetConstructor(EmptyParam);
+                    CiDataAdapter = t.GetConstructor(emptyParam);
                 }
                 if (CiParameter == null && IsInterfaceOf(t, typeof(IDbDataParameter)))
                 {
-                    CiParameter = t.GetConstructor(EmptyParam);
+                    CiParameter = t.GetConstructor(emptyParam);
                 }
                 if(CiCommandBuilder == null && IsInterfaceOf(t, typeof(DbCommandBuilder)))
                 {
-                    CiCommandBuilder = t.GetConstructor(EmptyParam);
+                    CiCommandBuilder = t.GetConstructor(emptyParam);
                 }
             }
             AssertConstructorNotNull(CiCommand, CiConnection, CiDataAdapter, CiParameter);
-            TryGetDeriveParametersMethod(ts, CommandType);
+            TryGetDeriveParametersMethod(ts, commandType);
         }
 
-        private void TryGetDeriveParametersMethod(Type[] ts, Type CommandType)
+        private void TryGetDeriveParametersMethod(Type[] ts, Type commandType)
         {
             CommonHelper.CatchAll(delegate
             {
@@ -74,7 +74,7 @@ namespace Lephone.Data.Driver
                                                           ClassHelper.StaticFlag,
                                                           null,
                                                           CallingConventions.Any,
-                                                          new[] {CommandType},
+                                                          new[] {commandType},
                                                           null);
                       break;
                     }
@@ -131,11 +131,11 @@ namespace Lephone.Data.Driver
             return null;
         }
 
-        public void DeriveParameters(IDbCommand Command)
+        public void DeriveParameters(IDbCommand command)
         {
             if (MiCb_DeriveParameters != null)
             {
-                MiCb_DeriveParameters.Invoke(null, new object[] { Command });
+                MiCb_DeriveParameters.Invoke(null, new object[] { command });
             }
             else
             {

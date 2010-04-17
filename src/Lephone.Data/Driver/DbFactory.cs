@@ -5,38 +5,38 @@ namespace Lephone.Data.Driver
 {
     public class DbFactory
     {
-        private readonly DbProviderFactory InnerFactory;
+        private readonly DbProviderFactory _innerFactory;
 
         protected DbFactory() { }
 
-        public DbFactory(DbProviderFactory Factory)
+        public DbFactory(DbProviderFactory factory)
         {
-            InnerFactory = Factory;
+            _innerFactory = factory;
         }
 
         public virtual IDbCommand CreateCommand()
         {
-            return InnerFactory.CreateCommand();
+            return _innerFactory.CreateCommand();
         }
 
         public virtual IDbConnection CreateConnection()
         {
-            return InnerFactory.CreateConnection();
+            return _innerFactory.CreateConnection();
         }
 
         public virtual IDbDataAdapter CreateDataAdapter()
         {
-            return InnerFactory.CreateDataAdapter();
+            return _innerFactory.CreateDataAdapter();
         }
 
         public virtual IDbDataParameter CreateParameter()
         {
-            return InnerFactory.CreateParameter();
+            return _innerFactory.CreateParameter();
         }
 
         public virtual DbCommandBuilder CreateCommandBuilder()
         {
-            return InnerFactory.CreateCommandBuilder();
+            return _innerFactory.CreateCommandBuilder();
         }
     }
 }

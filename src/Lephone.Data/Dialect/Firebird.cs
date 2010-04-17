@@ -10,6 +10,7 @@ namespace Lephone.Data.Dialect
         {
             TypeNames[DataType.Boolean] = "SMALLINT";
             TypeNames[DataType.DateTime] = "TIMESTAMP";
+            TypeNames[DataType.Time] = "TIME";
             TypeNames[DataType.String] = "BLOB SUB_TYPE 1";
             TypeNames[DataType.Binary] = "BLOB SUB_TYPE 0";
             TypeNames[typeof(byte[])] = "BLOB";

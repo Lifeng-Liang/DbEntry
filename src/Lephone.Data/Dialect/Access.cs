@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
-using Lephone.Data.Driver;
 using Lephone.Data.Common;
+using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Dialect

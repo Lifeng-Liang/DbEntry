@@ -1,6 +1,7 @@
 using Lephone.Data.Builder;
-using Lephone.Data.SqlEntry;
 using Lephone.Data.Common;
+using Lephone.Data.Driver;
+using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Dialect
 {
@@ -12,6 +13,11 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Binary] = "BLOB";
             TypeNames[DataType.Double] = "DOUBLE";
             TypeNames[DataType.Single] = "FLOAT";
+        }
+
+        public override DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        {
+            return new MySqlDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)

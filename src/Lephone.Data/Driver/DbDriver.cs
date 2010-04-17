@@ -21,19 +21,19 @@ namespace Lephone.Data.Driver
 
 	    public readonly bool AutoCreateTable;
 
-	    protected DbDriver(DbDialect Dialect, string ConnectionString, string DbProviderFactoryName, bool AutoCreateTable)
+	    protected DbDriver(DbDialect dialect, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
 		{
-            this.ConnectionString = ConnectionString;
-            this.Dialect = Dialect;
-	        this.AutoCreateTable = AutoCreateTable;
-            ProviderFactory = CreateDbProviderFactory(DbProviderFactoryName);
+            this.ConnectionString = connectionString;
+            this.Dialect = dialect;
+	        this.AutoCreateTable = autoCreateTable;
+            ProviderFactory = CreateDbProviderFactory(dbProviderFactoryName);
 		}
 
-        private DbFactory CreateDbProviderFactory(string DbProviderFactoryName)
+        private DbFactory CreateDbProviderFactory(string dbProviderFactoryName)
         {
-            if (DbProviderFactoryName != "")
+            if (dbProviderFactoryName != "")
             {
-                string[] ss = StringHelper.Split(DbProviderFactoryName, ':', 2);
+                string[] ss = StringHelper.Split(dbProviderFactoryName, ':', 2);
                 string fn = ss[0].Trim();
                 string addon = ss[1].Trim();
                 if (fn[0] == '@')
@@ -56,11 +56,11 @@ namespace Lephone.Data.Driver
 		private static ArrayList CloneSpParameters(IList eps)
 		{
 			var ps = new ArrayList();
-			for (int i = 0; i < eps.Count; i++)
+			foreach (object t in eps)
 			{
-				ps.Add( ((ICloneable)eps[i]).Clone() );
+			    ps.Add( ((ICloneable)t).Clone() );
 			}
-			return ps;
+		    return ps;
 		}
 
 		private static void RemoveReturnParameter(IList dpc)
@@ -76,11 +76,11 @@ namespace Lephone.Data.Driver
 			}
 		}
 
-		protected void FillDbParameters(SqlStatement Sql, IDbCommand e)
+		protected void FillDbParameters(SqlStatement sql, IDbCommand e)
 		{
-			if ( (!Sql.Parameters.UserSetKey) && (e.CommandType == CommandType.StoredProcedure) )
+			if ( (!sql.Parameters.UserSetKey) && (e.CommandType == CommandType.StoredProcedure) )
 			{
-				string sKey = Sql.SqlCommandText + ":" + ConnectionString;
+				string sKey = sql.SqlCommandText + ":" + ConnectionString;
 				if ( SpParameters.Contains(sKey) )
 				{
 					ArrayList al = CloneSpParameters( (ArrayList)SpParameters[sKey] );
@@ -97,38 +97,38 @@ namespace Lephone.Data.Driver
                     SpParameters[sKey] = ps;
 				}
 
-				for ( int i=0; i<Sql.Parameters.Count; i++ )
+				for ( int i=0; i<sql.Parameters.Count; i++ )
 				{
-					((IDataParameter)e.Parameters[i]).Value = Sql.Parameters[i].Value;
+					((IDataParameter)e.Parameters[i]).Value = sql.Parameters[i].Value;
 				}
 			}
 			else
 			{
 				// TODO: parse SqlCommandText and fill it to Parameters.
-				foreach ( DataParameter dp in Sql.Parameters )
+				foreach ( DataParameter dp in sql.Parameters )
 				{
 					e.Parameters.Add(GetDbParameter(dp));
 				}
 			}
 		}
 
-		public IDbCommand GetDbCommand(SqlStatement Sql, IDbConnection conn)
+		public IDbCommand GetDbCommand(SqlStatement sql, IDbConnection conn)
 		{
-			IDbCommand c = GetDriverCommand(Sql, conn);
+			var c = GetDriverCommand(sql, conn);
 			return c;
 		}
 
-        protected static object GetDbValue(object DotNetValue)
+        protected static object GetDbValue(object dotNetValue)
         {
-            if (DotNetValue == null)
+            if (dotNetValue == null)
             {
                 return DBNull.Value;
             }
-            if(DotNetValue.GetType().IsEnum)
+            if(dotNetValue.GetType().IsEnum)
             {
-                return (int) DotNetValue;
+                return (int) dotNetValue;
             }
-            return DotNetValue;
+            return dotNetValue;
         }
 
         public virtual IDbDataAdapter GetDbAdapter(IDbCommand command)
@@ -146,17 +146,17 @@ namespace Lephone.Data.Driver
             return d;
         }
 
-        public virtual IDbCommand GetDriverCommand(SqlStatement Sql, IDbConnection conn)
+        public virtual IDbCommand GetDriverCommand(SqlStatement sql, IDbConnection conn)
         {
             IDbCommand e = ProviderFactory.CreateCommand();
-            e.CommandText = Sql.SqlCommandText;
+            e.CommandText = sql.SqlCommandText;
 
             // for some database not supports CommandTimeout
-            CommonHelper.CatchAll(() => e.CommandTimeout = Sql.SqlTimeOut);
+            CommonHelper.CatchAll(() => e.CommandTimeout = sql.SqlTimeOut);
 
-            e.CommandType = Sql.SqlCommandType;
+            e.CommandType = sql.SqlCommandType;
             e.Connection = conn;
-            FillDbParameters(Sql, e);
+            FillDbParameters(sql, e);
             return e;
         }
 
