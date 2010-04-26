@@ -21,7 +21,7 @@ namespace Lephone.Data.Common
         public override CreateTableStatementBuilder GetCreateTableStatementBuilder()
         {
             CreateTableStatementBuilder cts = base.GetCreateTableStatementBuilder();
-            cts.Columns.Add(new ColumnInfo(_columnName, typeof(bool), false, false, false, false, 0));
+            cts.Columns.Add(new ColumnInfo(_columnName, typeof(bool), false, false, false, false, 0, 0));
             return cts;
         }
 

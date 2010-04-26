@@ -173,6 +173,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\LazyLoadListBase.cs" />
     <Compile Include="Definition\LazyLoadOneBase.cs" />
     <Compile Include="Definition\OrderByAttribute.cs" />
+    <Compile Include="Definition\PrecisionAttribute.cs" />
     <Compile Include="Definition\SoftDeleteAttribute.cs" />
     <Compile Include="Definition\SpecialNameAttribute.cs" />
     <Compile Include="Dialect\Access2007.cs" />

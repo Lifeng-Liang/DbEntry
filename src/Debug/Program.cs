@@ -1,58 +1,67 @@
 ﻿using System;
+//using System.Linq;
 using Lephone.Data;
 using Lephone.Data.Definition;
 
 namespace Debug
 {
-    public abstract class FullType : DbObjectModel<FullType>
-    {
-        public abstract string c1 { get; set; }
-        public abstract int c2 { get; set; }
-        public abstract short c3 { get; set; }
-        public abstract byte c4 { get; set; }
-        public abstract bool c5 { get; set; }
-        public abstract DateTime c6 { get; set; }
-        public abstract decimal c7 { get; set; }
-        public abstract float c8 { get; set; }
-        public abstract double c9 { get; set; }
-        public abstract Guid c10 { get; set; }
-        //public abstract sbyte c11 { get; set; }
-        //public abstract byte[] c15 { get; set; }
-        public abstract Date c16 { get; set; }
-        public abstract Time c17 { get; set; }
-    }
-
-
     class Program
     {
+        //public abstract class User : DbObjectModel<User>
+        //{
+        //    public abstract string Name { get; set; }
+        //    public abstract int Age { get; set; }
+        //    public abstract bool Gender { get; set; }
+        //    public abstract DateTime Birthday { get; set; }
+
+        //    public abstract User Init(string name, int age, bool gender, DateTime birthday);
+        //}
+
+        //static void Main()
+        //{
+        //    // Create
+        //    var u = User.New.Init("tom", 18, true, DateTime.Now);
+        //    u.Save();
+        //    // Read
+        //    var u1 = User.FindById(u.Id);
+        //    // Update
+        //    u1.Name = "jerry";
+        //    u1.Save();
+        //    // Delete
+        //    u1.Delete();
+        //    // Query
+        //    var ids = from p in User.Table where p.Age > 15 select new {p.Id};
+        //    var l1 = from p in User.Table where p.Age > 15 && p.Gender == true select p;
+        //    var l2 = User.Find(p => p.Age > 15 && p.Gender == true); // another style of linq
+        //    var l3 = User.FindBySql("Select * From [User] Where [Age] > 15 And [Gender] = true"); // sql
+        //}
+
+        public class MyUser : IDbObject
+        {
+            [DbKey]
+            public Guid Id { get; set; }
+
+            public string Name { get; set; }
+
+            public MyUser Init(string name)
+            {
+                this.Name = name;
+                return this;
+            }
+        }
+
         static void Main()
         {
-            var ft = FullType.New;
-            ft.c1 = "tom";
-            ft.c2 = 2;
-            ft.c3 = 3;
-            ft.c4 = 4;
-            ft.c5 = true;
-            ft.c6 = new DateTime(2000, 1, 1);
-            ft.c7 = 7;
-            ft.c8 = (float)8.1;
-            ft.c9 = 9.1;
-            ft.c10 = Guid.NewGuid();
-            //ft.c11 = 11;
-            //ft.c15 = new byte[] { 1, 2, 3, 4, 5 };
-            ft.c16 = Date.Now;
-            ft.c17 = Time.Now;
-            ft.Save();
-            Console.WriteLine("Save Done!!!");
-            Console.WriteLine();
+            var u = new MyUser();
+            u.Init("tom");
+            DbEntry.Save(u);
 
-            var list = DbEntry.Context.ExecuteList<FullType>("Select * from full_types");
-            foreach (var fullType in list)
-            {
-                Console.WriteLine(fullType);
-            }
+            Console.WriteLine("{0},{1}", u.Id, u.Name);
 
-            Console.ReadLine();
+            var u1 = DbEntry.GetObject<MyUser>(u.Id);
+            Console.WriteLine(u1);
+
+            Console.WriteLine("{0},{1}", u.Id, u.Name);
         }
     }
 }

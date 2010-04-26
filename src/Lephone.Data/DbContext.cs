@@ -592,7 +592,7 @@ namespace Lephone.Data
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             CreateTableStatementBuilder sb = oi.Composer.GetCreateTableStatementBuilder();
             sb.TableName = oi.DeleteToTableName;
-            sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0));
+            sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0, 0));
             SqlStatement sql = sb.ToSqlStatement(Dialect);
             oi.LogSql(sql);
             ExecuteNonQuery(sql);
@@ -618,8 +618,8 @@ namespace Lephone.Data
             var cts = new CreateTableStatementBuilder(mt1.Name);
             var ls = new List<string> { mt1.ColumeName1, mt1.ColumeName2 };
             ls.Sort();
-            cts.Columns.Add(new ColumnInfo(ls[0], oi1.KeyFields[0].FieldType, false, false, false, false, 0));
-            cts.Columns.Add(new ColumnInfo(ls[1], oi2.KeyFields[0].FieldType, false, false, false, false, 0));
+            cts.Columns.Add(new ColumnInfo(ls[0], oi1.KeyFields[0].FieldType, false, false, false, false, 0, 0));
+            cts.Columns.Add(new ColumnInfo(ls[1], oi2.KeyFields[0].FieldType, false, false, false, false, 0, 0));
             // add index
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName1));
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName2));

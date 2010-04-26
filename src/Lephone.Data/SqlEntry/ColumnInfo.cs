@@ -10,19 +10,21 @@ namespace Lephone.Data.SqlEntry
         public bool AllowNull;
         public bool IsUnicode;
         public int Length;
+        public int DecimalPart;
 
-        public ColumnInfo(string Key, Type ValueType, bool IsKey, bool IsDbGenerate, bool AllowNull, bool IsUnicode, int Length)
-            : base(Key, null, ValueType)
+        public ColumnInfo(string key, Type valueType, bool isKey, bool isDbGenerate, bool allowNull, bool isUnicode, int length, int decimalPart)
+            : base(key, null, valueType)
         {
-            this.IsKey = IsKey;
-            this.IsDbGenerate = IsDbGenerate;
-            this.AllowNull = AllowNull;
-            this.IsUnicode = IsUnicode;
-            this.Length = Length;
+            this.IsKey = isKey;
+            this.IsDbGenerate = isDbGenerate;
+            this.AllowNull = allowNull;
+            this.IsUnicode = isUnicode;
+            this.Length = length;
+            this.DecimalPart = decimalPart;
         }
 
         internal ColumnInfo(MemberHandler fh)
-            : this(fh.Name, GetType(fh), fh.IsKey, fh.IsDbGenerate, fh.AllowNull, fh.IsUnicode, fh.MaxLength)
+            : this(fh.Name, GetType(fh), fh.IsKey, fh.IsDbGenerate, fh.AllowNull, fh.IsUnicode, fh.MaxLength, fh.DecimalPart)
         {
         }
 
@@ -30,7 +32,7 @@ namespace Lephone.Data.SqlEntry
         {
             if (fh.IsBelongsTo)
             {
-                Common.ObjectInfo oi = ObjectInfo.GetInstance(fh.FieldType.GetGenericArguments()[0]);
+                var oi = ObjectInfo.GetInstance(fh.FieldType.GetGenericArguments()[0]);
                 if (oi.KeyFields != null && oi.KeyFields.Length == 1)
                 {
                     return oi.KeyFields[0].FieldType;

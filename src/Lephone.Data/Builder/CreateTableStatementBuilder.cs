@@ -41,7 +41,7 @@ namespace Lephone.Data.Builder
                 }
                 else
                 {
-                    sql.Append(dd.GetTypeName(DataTypeParser.Parse(ci.ValueType), ci.IsUnicode, ci.Length));
+                    sql.Append(dd.GetTypeName(DataTypeParser.Parse(ci.ValueType), ci.IsUnicode, ci.Length, ci.DecimalPart));
                 }
                 if (ci.IsDbGenerate)
                 {

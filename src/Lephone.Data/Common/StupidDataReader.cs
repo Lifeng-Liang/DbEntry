@@ -11,11 +11,11 @@ namespace Lephone.Data.Common
     {
         private readonly Dictionary<int, Type> _indexType;
         private readonly Dictionary<string, Type> _nameType;
-        protected IDataReader dr;
+        protected IDataReader DataReader;
 
         public StupidDataReader(IDataReader dr, Type returnType)
         {
-            this.dr = dr;
+            this.DataReader = dr;
             if (returnType != null)
             {
                 _indexType = new Dictionary<int, Type>();
@@ -25,7 +25,10 @@ namespace Lephone.Data.Common
                 foreach (MemberHandler mh in oi.SimpleFields)
                 {
                     _indexType.Add(n++, mh.FieldType);
-                    _nameType.Add(mh.Name, mh.FieldType);
+                    if (!_nameType.ContainsKey(mh.Name))
+                    {
+                        _nameType.Add(mh.Name, mh.FieldType);
+                    }
                 }
                 foreach (MemberHandler mh in oi.RelationFields)
                 {
@@ -43,132 +46,132 @@ namespace Lephone.Data.Common
 
         public override void Close()
         {
-            dr.Close();
+            DataReader.Close();
         }
 
         public override int Depth
         {
-            get { return dr.Depth; }
+            get { return DataReader.Depth; }
         }
 
         public override int FieldCount
         {
-            get { return dr.FieldCount; }
+            get { return DataReader.FieldCount; }
         }
 
         public override string GetDataTypeName(int ordinal)
         {
-            return dr.GetDataTypeName(ordinal);
+            return DataReader.GetDataTypeName(ordinal);
         }
 
         public override DateTime GetDateTime(int ordinal)
         {
-            return dr.GetDateTime(ordinal);
+            return DataReader.GetDateTime(ordinal);
         }
 
         public override decimal GetDecimal(int ordinal)
         {
-            return dr.GetDecimal(ordinal);
+            return DataReader.GetDecimal(ordinal);
         }
 
         public override double GetDouble(int ordinal)
         {
-            return dr.GetDouble(ordinal);
+            return DataReader.GetDouble(ordinal);
         }
 
         public override System.Collections.IEnumerator GetEnumerator()
         {
-            return ((DbDataReader)dr).GetEnumerator();
+            return ((DbDataReader)DataReader).GetEnumerator();
         }
 
         public override Type GetFieldType(int ordinal)
         {
-            return dr.GetFieldType(ordinal);
+            return DataReader.GetFieldType(ordinal);
         }
 
         public override float GetFloat(int ordinal)
         {
-            return dr.GetFloat(ordinal);
+            return DataReader.GetFloat(ordinal);
         }
 
         public override Guid GetGuid(int ordinal)
         {
-            return dr.GetGuid(ordinal);
+            return DataReader.GetGuid(ordinal);
         }
 
         public override string GetName(int ordinal)
         {
-            return dr.GetName(ordinal);
+            return DataReader.GetName(ordinal);
         }
 
         public override int GetOrdinal(string name)
         {
-            return dr.GetOrdinal(name);
+            return DataReader.GetOrdinal(name);
         }
 
         public override DataTable GetSchemaTable()
         {
-            return dr.GetSchemaTable();
+            return DataReader.GetSchemaTable();
         }
 
         public override string GetString(int ordinal)
         {
-            return dr.GetString(ordinal);
+            return DataReader.GetString(ordinal);
         }
 
         public override object GetValue(int ordinal)
         {
-            return dr.GetValue(ordinal);
+            return DataReader.GetValue(ordinal);
         }
 
         public override int GetValues(object[] values)
         {
-            return dr.GetValues(values);
+            return DataReader.GetValues(values);
         }
 
         public override bool HasRows
         {
-            get { return ((DbDataReader)dr).HasRows; }
+            get { return ((DbDataReader)DataReader).HasRows; }
         }
 
         public override bool IsClosed
         {
-            get { return dr.IsClosed; }
+            get { return DataReader.IsClosed; }
         }
 
         public override bool IsDBNull(int ordinal)
         {
-            return dr.IsDBNull(ordinal);
+            return DataReader.IsDBNull(ordinal);
         }
 
         public override bool NextResult()
         {
-            return dr.NextResult();
+            return DataReader.NextResult();
         }
 
         public override bool Read()
         {
-            return dr.Read();
+            return DataReader.Read();
         }
 
         public override int RecordsAffected
         {
-            get { return dr.RecordsAffected; }
+            get { return DataReader.RecordsAffected; }
         }
 
         public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
         {
-            return dr.GetBytes(ordinal, dataOffset, buffer, bufferOffset, length);
+            return DataReader.GetBytes(ordinal, dataOffset, buffer, bufferOffset, length);
         }
 
         public override char GetChar(int ordinal)
         {
-            return dr.GetChar(ordinal);
+            return DataReader.GetChar(ordinal);
         }
 
         public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
         {
-            return dr.GetChars(ordinal, dataOffset, buffer, bufferOffset, length);
+            return DataReader.GetChars(ordinal, dataOffset, buffer, bufferOffset, length);
         }
 
         #endregion
@@ -177,7 +180,7 @@ namespace Lephone.Data.Common
         {
             get
             {
-                object o = dr[name];
+                object o = DataReader[name];
                 return GetObject(o, _nameType[name]);
             }
         }
@@ -186,12 +189,12 @@ namespace Lephone.Data.Common
         {
             get
             {
-                object o = dr[ordinal];
+                object o = DataReader[ordinal];
                 return GetObject(o, _indexType[ordinal]);
             }
         }
 
-        private object GetObject(object o, Type t)
+        private static object GetObject(object o, Type t)
         {
             if (o == DBNull.Value || t == o.GetType())
             {
@@ -206,28 +209,28 @@ namespace Lephone.Data.Common
 
         public override bool GetBoolean(int ordinal)
         {
-            decimal o = dr.GetDecimal(ordinal);
+            decimal o = DataReader.GetDecimal(ordinal);
             return (o == 1);
         }
 
         public override byte GetByte(int ordinal)
         {
-            return Convert.ToByte(dr[ordinal]);
+            return Convert.ToByte(DataReader[ordinal]);
         }
 
         public override short GetInt16(int ordinal)
         {
-            return Convert.ToInt16(dr[ordinal]);
+            return Convert.ToInt16(DataReader[ordinal]);
         }
 
         public override int GetInt32(int ordinal)
         {
-            return Convert.ToInt32(dr[ordinal]);
+            return Convert.ToInt32(DataReader[ordinal]);
         }
 
         public override long GetInt64(int ordinal)
         {
-            return Convert.ToInt64(dr[ordinal]);
+            return Convert.ToInt64(DataReader[ordinal]);
         }
     }
 }

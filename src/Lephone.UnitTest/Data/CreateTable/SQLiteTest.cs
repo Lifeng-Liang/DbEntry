@@ -176,6 +176,15 @@ namespace Lephone.UnitTest.Data.CreateTable
         public abstract string Name { get; set; }
     }
 
+    [DbContext("SQLite")]
+    public abstract class PrDecimal : DbObjectModel<PrDecimal>
+    {
+        public abstract decimal Price { get; set; }
+
+        [Precision(10, 4)]
+        public abstract decimal TotalFee { get; set; }
+    }
+
     #endregion
 
     [TestFixture]
@@ -452,6 +461,18 @@ SELECT LAST_INSERT_ROWID();
             AssertSql(@"CREATE TABLE [For_Define_Context] (
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
     [Name] NTEXT NOT NULL 
+);
+<Text><30>()");
+        }
+
+        [Test]
+        public void TestDecimal()
+        {
+            sqlite.Create(typeof(PrDecimal));
+            AssertSql(@"CREATE TABLE [Pr_Decimal] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Price] DECIMAL (16,2) NOT NULL ,
+    [TotalFee] DECIMAL (10,4) NOT NULL 
 );
 <Text><30>()");
         }

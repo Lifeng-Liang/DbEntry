@@ -30,6 +30,7 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Int16] = "NUMBER(5,0)";
             TypeNames[DataType.UInt16] = "NUMBER(5,0)";
 
+            TypeNames[DataType.Guid] = "CHAR(36)";
             TypeNames[DataType.Binary] = "BLOB";
 
             TypeNames[typeof(string)] = "VARCHAR2";

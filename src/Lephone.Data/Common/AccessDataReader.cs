@@ -5,29 +5,29 @@ namespace Lephone.Data.Common
 {
     public class AccessDataReader : StupidDataReader
     {
-        public AccessDataReader(IDataReader dr, Type ReturnType)
-            : base(dr, ReturnType)
+        public AccessDataReader(IDataReader dr, Type returnType)
+            : base(dr, returnType)
         {
         }
 
         public override bool GetBoolean(int ordinal)
         {
-            return dr.GetBoolean(ordinal);
+            return DataReader.GetBoolean(ordinal);
         }
 
         public override byte GetByte(int ordinal)
         {
-            return dr.GetByte(ordinal);
+            return DataReader.GetByte(ordinal);
         }
 
         public override short GetInt16(int ordinal)
         {
-            return dr.GetInt16(ordinal);
+            return DataReader.GetInt16(ordinal);
         }
 
         public override int GetInt32(int ordinal)
         {
-            return dr.GetInt32(ordinal);
+            return DataReader.GetInt32(ordinal);
         }
     }
 }

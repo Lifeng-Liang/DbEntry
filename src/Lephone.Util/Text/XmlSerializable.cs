@@ -1,5 +1,8 @@
-﻿namespace Lephone.Util.Text
+﻿using System;
+
+namespace Lephone.Util.Text
 {
+    [Serializable]
     public abstract class XmlSerializable<T> where T : XmlSerializable<T>
     {
         public string ToXml()

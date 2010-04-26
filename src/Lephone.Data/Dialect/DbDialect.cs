@@ -114,7 +114,7 @@ namespace Lephone.Data.Dialect
             return new DbStructInterface(null, null, null, null, null);
         }
 
-        public virtual string GetTypeName(DataType dt, bool isUnicode, int length)
+        public virtual string GetTypeName(DataType dt, bool isUnicode, int length, int decimalPart)
         {
             object key = dt;
             if(length > 0)
@@ -129,7 +129,7 @@ namespace Lephone.Data.Dialect
                 }
             }
             var s =(string)TypeNames[key];
-            if (length > 0)
+            if (length > 0 || decimalPart > 0)
             {
                 if(dt == DataType.Binary)
                 {
@@ -137,7 +137,14 @@ namespace Lephone.Data.Dialect
                 }
                 else
                 {
-                    s += " (" + length + ")";
+                    if(decimalPart > 0)
+                    {
+                        s += " (" + length + "," + decimalPart + ")";
+                    }
+                    else
+                    {
+                        s += " (" + length + ")";
+                    }
                 }
             }
             if (isUnicode)

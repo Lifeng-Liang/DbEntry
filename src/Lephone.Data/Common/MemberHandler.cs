@@ -131,6 +131,7 @@ namespace Lephone.Data.Common
         public readonly bool AllowNull;
         public readonly int MinLength;
         public readonly int MaxLength;
+	    public readonly int DecimalPart;
 	    public readonly string LengthErrorMessage;
         public readonly bool IsUnicode;
         public readonly string Regular;
@@ -330,6 +331,22 @@ namespace Lephone.Data.Common
                 MinLength = lengthAttribute.Min;
                 MaxLength = lengthAttribute.Max;
                 LengthErrorMessage = lengthAttribute.ErrorMessage;
+            }
+
+            if(fi.MemberType == typeof(decimal))
+            {
+                var precisionAttribute = fi.GetAttribute<PrecisionAttribute>(false);
+                if (precisionAttribute != null)
+                {
+                    MaxLength = precisionAttribute.IntegralPart;
+                    DecimalPart = precisionAttribute.DecimalPart;
+                    // TODO: validation message
+                }
+                else
+                {
+                    MaxLength = 16;
+                    DecimalPart = 2;
+                }
             }
 
             if (fi.MemberType == typeof(string) ||
