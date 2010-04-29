@@ -42,6 +42,7 @@ namespace Lephone.Util.Setting
                         {
                             string xml = ResourceHelper.ReadToEnd(a, s, false);
                             ParseConfig(xml);
+                            return;
                         }
                     }
                 }
