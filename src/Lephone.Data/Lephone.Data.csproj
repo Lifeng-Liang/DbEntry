@@ -186,6 +186,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Dialect\SqlServer2008.cs" />
     <Compile Include="Driver\DbFactory.cs" />
     <Compile Include="Driver\MySqlDriver.cs" />
+    <Compile Include="Driver\OracleDriver.cs" />
     <Compile Include="Driver\SmartDbFactory.cs" />
     <Compile Include="Linq\ExpressionParser.cs" />
     <Compile Include="Linq\LinqException.cs" />

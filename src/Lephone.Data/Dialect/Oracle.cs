@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
 using Lephone.Data.Common;
@@ -53,6 +54,11 @@ namespace Lephone.Data.Dialect
                 }
             }
             return null;
+        }
+
+        public override DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        {
+            return new OracleDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         public override IDataReader GetDataReader(IDataReader dr, Type returnType)
