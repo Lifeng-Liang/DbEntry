@@ -47,6 +47,29 @@ namespace Lephone.Util.Text
             return l.ToArray();
         }
 
+        public static List<string> SplitByCase(string s)
+        {
+            var result = new List<string>();
+            int n = 0, i;
+            for (i = 0; i < s.Length; i++)
+            {
+                var c = s[i];
+                if (c >= 'A' && c <= 'Z')
+                {
+                    if(i > 0)
+                    {
+                        result.Add(s.Substring(n, i - n));
+                        n = i;
+                    }
+                }
+            }
+            if(i > n)
+            {
+                result.Add(s.Substring(n, i - n));
+            }
+            return result;
+        }
+
         public static string EnsureEndsWith(string s, char c)
 		{
 			return EnsureEndsWith(s, new string(c, 1));

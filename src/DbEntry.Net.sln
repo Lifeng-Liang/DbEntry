@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E42B44C-3848-4A14-B2E7-69A309C59B91}"
 	ProjectSection(SolutionItems) = preProject
 		actsastree.snippet = actsastree.snippet
@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		vsprop.snippet = vsprop.snippet
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debug Projects", "Debug Projects", "{B56B0A84-6668-4625-BBE3-7AADF2DBE22C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest Projects", "UnitTest Projects", "{A0CF8258-917F-4756-BF94-7C3F7E254352}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Data", "Lephone.Data\Lephone.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Util", "Lephone.Util\Lephone.Util.csproj", "{F53E89FC-F364-4C7D-A20A-CACFBF11C196}"
@@ -31,13 +35,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlRecorder", "SqlRecorder\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debug", "Debug\Debug.csproj", "{EE0F0B59-1970-4929-A73D-1A89862F9B83}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebDebug", "WebDebug\", "{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebDebug", "WebDebug", "{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A}"
 	ProjectSection(WebsiteProperties) = preProject
 		SccProjectName = ""
 		SccAuxPath = ""
 		SccLocalPath = ""
 		SccProvider = ""
-		TargetFramework = "3.5"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		ProjectReferences = "{25AFD300-493A-4553-B4DC-129D3A9022A8}|Lephone.Data.dll;{9293C04C-D2E7-449F-833E-6E6624DCD6F4}|DebugLib.dll;{F53E89FC-F364-4C7D-A20A-CACFBF11C196}|Lephone.Util.dll;{A73147C3-73C4-4590-9EC4-250AC83F4EF5}|Lephone.Web.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/WebDebug"
 		Debug.AspNetCompiler.PhysicalPath = "WebDebug\"
@@ -60,10 +64,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Web", "Lephone.Web\Lephone.Web.csproj", "{A73147C3-73C4-4590-9EC4-250AC83F4EF5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\DebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debug Projects", "Debug Projects", "{B56B0A84-6668-4625-BBE3-7AADF2DBE22C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest Projects", "UnitTest Projects", "{A0CF8258-917F-4756-BF94-7C3F7E254352}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.CodeGen", "Lephone.CodeGen\Lephone.CodeGen.csproj", "{B36CF407-9408-428D-A2B7-0245E58CDE17}"
 EndProject
@@ -182,50 +182,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C79309C3-3E59-490C-89EA-6A4AA05B0DD5} = {A0CF8258-917F-4756-BF94-7C3F7E254352}
-		{48E4289C-FABF-46F6-AC45-AAA4224F84D3} = {A0CF8258-917F-4756-BF94-7C3F7E254352}
+		{92805D19-5BFD-4EC4-B485-BEF6598CD14A} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
 		{EE0F0B59-1970-4929-A73D-1A89862F9B83} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
 		{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
 		{9293C04C-D2E7-449F-833E-6E6624DCD6F4} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
-		{92805D19-5BFD-4EC4-B485-BEF6598CD14A} = {B56B0A84-6668-4625-BBE3-7AADF2DBE22C}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs01.codeplex.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Debug\\Debug.csproj
-		SccProjectName1 = Debug
-		SccLocalPath1 = Debug
-		SccProjectUniqueName2 = Lephone.MockSql\\Lephone.MockSql.csproj
-		SccProjectName2 = Lephone.MockSql
-		SccLocalPath2 = Lephone.MockSql
-		SccProjectUniqueName3 = SqlRecorder\\SqlRecorder.csproj
-		SccProjectName3 = SqlRecorder
-		SccLocalPath3 = SqlRecorder
-		SccProjectUniqueName4 = Lephone.UnitTest\\Lephone.UnitTest.csproj
-		SccProjectName4 = Lephone.UnitTest
-		SccLocalPath4 = Lephone.UnitTest
-		SccWebProject5 = true
-		SccProjectUniqueName5 = WebDebug
-		SccProjectName5 = WebDebug
-		SccLocalPath5 = .
-		SccProjectFilePathRelativizedFromConnection5 = WebDebug\\
-		SccProjectEnlistmentChoice5 = 2
-		SccProjectUniqueName6 = Lephone.Data\\Lephone.Data.csproj
-		SccProjectName6 = Lephone.Data
-		SccLocalPath6 = Lephone.Data
-		SccProjectUniqueName7 = Lephone.Util\\Lephone.Util.csproj
-		SccProjectName7 = Lephone.Util
-		SccLocalPath7 = Lephone.Util
-		SccProjectUniqueName8 = Lephone.Web\\Lephone.Web.csproj
-		SccProjectName8 = Lephone.Web
-		SccLocalPath8 = Lephone.Web
-		SccProjectUniqueName9 = WebDebugLib\\DebugLib.csproj
-		SccProjectName9 = WebDebugLib
-		SccLocalPath9 = WebDebugLib
-		SccProjectUniqueName10 = Lephone.Linq\\Lephone.Linq.csproj
-		SccProjectName10 = Lephone.Linq
-		SccLocalPath10 = Lephone.Linq
+		{48E4289C-FABF-46F6-AC45-AAA4224F84D3} = {A0CF8258-917F-4756-BF94-7C3F7E254352}
+		{C79309C3-3E59-490C-89EA-6A4AA05B0DD5} = {A0CF8258-917F-4756-BF94-7C3F7E254352}
 	EndGlobalSection
 EndGlobal

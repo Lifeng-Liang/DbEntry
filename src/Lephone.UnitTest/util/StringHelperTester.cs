@@ -247,5 +247,41 @@ namespace Lephone.UnitTest.util
             result = StringHelper.ProcessSymbol("1111(abc]]]]2222", "(", "]]]]", text => text);
             Assert.AreEqual("1111abc2222", result);
         }
+
+        [Test]
+        public void TestSplitByCase()
+        {
+            var list = StringHelper.SplitByCase("nameAndAge");
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual("name", list[0]);
+            Assert.AreEqual("And", list[1]);
+            Assert.AreEqual("Age", list[2]);
+        }
+
+        [Test]
+        public void TestSplitByCase2()
+        {
+            var list = StringHelper.SplitByCase("NameAndAge");
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual("Name", list[0]);
+            Assert.AreEqual("And", list[1]);
+            Assert.AreEqual("Age", list[2]);
+        }
+
+        [Test]
+        public void TestSplitByCase3()
+        {
+            var list = StringHelper.SplitByCase("name");
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual("name", list[0]);
+        }
+
+        [Test]
+        public void TestSplitByCase4()
+        {
+            var list = StringHelper.SplitByCase("Name");
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual("Name", list[0]);
+        }
     }
 }

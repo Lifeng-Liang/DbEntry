@@ -5,44 +5,44 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data
 {
-    //[Serializable]
-    //public class FieldNameGetter<T>
-    //{
-    //    private static readonly ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
+    [Serializable]
+    public class FieldNameGetter<T>
+    {
+        private static readonly ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
 
-    //    public CK this[string fieldName]
-    //    {
-    //        get
-    //        {
-    //            foreach (MemberHandler m in oi.Fields)
-    //            {
-    //                if(m.IsLazyLoad)
-    //                {
-    //                    if(m.MemberInfo.Name == "$" + fieldName)
-    //                    {
-    //                        return new CK(m.Name);
-    //                    }
-    //                }
-    //                else if (m.MemberInfo.Name == fieldName)
-    //                {
-    //                    return new CK(m.Name);
-    //                }
-    //            }
-    //            throw new DataException("Can't find the field: " + fieldName);
-    //        }
-    //    }
-    //}
+        public CK this[string fieldName]
+        {
+            get
+            {
+                foreach (MemberHandler m in oi.Fields)
+                {
+                    if (m.IsLazyLoad)
+                    {
+                        if (m.MemberInfo.Name == "$" + fieldName)
+                        {
+                            return new CK(m.Name);
+                        }
+                    }
+                    else if (m.MemberInfo.Name == fieldName)
+                    {
+                        return new CK(m.Name);
+                    }
+                }
+                throw new DataException("Can't find the field: " + fieldName);
+            }
+        }
+    }
 
-    //[Serializable]
-    //public class CK<T>
-    //{
-    //    private static readonly FieldNameGetter<T> _Field = new FieldNameGetter<T>();
+    [Serializable]
+    public class CK<T>
+    {
+        private static readonly FieldNameGetter<T> _Field = new FieldNameGetter<T>();
 
-    //    public static FieldNameGetter<T> Field
-    //    {
-    //        get { return _Field; }
-    //    }
-    //}
+        public static FieldNameGetter<T> Field
+        {
+            get { return _Field; }
+        }
+    }
 
 	[Serializable]
 	public class CK

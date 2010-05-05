@@ -19,6 +19,11 @@ namespace Lephone.Data.Definition
         //    get { return CK<T>.Field; }
         //}
 
+        public static dynamic FindBy
+        {
+            get { return new DynamicQuery<T>(); }
+        }
+
         public static T FindById(TKey id)
         {
             return DbEntry.GetObject<T>(id);

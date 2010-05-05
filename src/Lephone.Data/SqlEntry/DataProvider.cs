@@ -13,7 +13,7 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data.SqlEntry
 {
-	public class DataProvider : IHasConnection
+	public partial class DataProvider : IHasConnection
 	{
 		internal DbDriver m_Driver;
 

@@ -174,6 +174,14 @@ namespace Lephone.UnitTest.Data
         public abstract InitTest4 Initialize(InitTest4 obj);
     }
 
+    [DbContext("SQLite")]
+    public abstract class FindByModel : DbObjectModel<FindByModel>
+    {
+        [DbColumn("FirstName")]
+        public abstract string Name { get; set; }
+        public abstract int Age { get; set; }
+    }
+
     #endregion
 
     [TestFixture]
@@ -902,6 +910,79 @@ namespace Lephone.UnitTest.Data
             sqlite.From<SinglePerson>().Where(CK.K["Id"].In(1, 3, 5, 7)).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (1,3,5,7);
 <Text><60>()");
+        }
+
+        [Test]
+        public void TestFindBy()
+        {
+            FindByModel.FindBy.NameAndAge("tom", 18);
+            AssertSql(@"SELECT [Id],[FirstName] AS [Name],[Age] FROM [Find_By_Model] WHERE ([FirstName] = @FirstName_0) AND ([Age] = @Age_1);
+<Text><60>(@FirstName_0=tom:String,@Age_1=18:Int32)");
+        }
+
+        [Test]
+        public void TestFindBy2()
+        {
+            FindByModel.FindBy.Name("tom");
+            AssertSql(@"SELECT [Id],[FirstName] AS [Name],[Age] FROM [Find_By_Model] WHERE [FirstName] = @FirstName_0;
+<Text><60>(@FirstName_0=tom:String)");
+        }
+
+        [Test, ExpectedException(typeof(DataException))]
+        public void TestFindBy3()
+        {
+            FindByModel.FindBy.NameAge("tom", 18);
+        }
+
+        [Test, ExpectedException(typeof(DataException))]
+        public void TestFindBy4()
+        {
+            FindByModel.FindBy.Name("tom", 18);
+        }
+
+        [Test]
+        public void TestExecuteDynamicTable()
+        {
+            dynamic table = DbEntry.Context.ExecuteDynamicTable("Select * From People Order By Id");
+            Assert.AreEqual(3, table.Count);
+            Assert.AreEqual(1, table[0].Id);
+            Assert.AreEqual("Tom", table[0].Name);
+            Assert.AreEqual(2, table[1].Id);
+            Assert.AreEqual("Jerry", table[1].Name);
+            Assert.AreEqual(3, table[2].Id);
+            Assert.AreEqual("Mike", table[2].Name);
+        }
+
+        [Test]
+        public void TestExecuteDynamicList()
+        {
+            dynamic list = DbEntry.Context.ExecuteDynamicList("Select * From People Order By Id");
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual(1, list[0].Id);
+            Assert.AreEqual("Tom", list[0].Name);
+            Assert.AreEqual(2, list[1].Id);
+            Assert.AreEqual("Jerry", list[1].Name);
+            Assert.AreEqual(3, list[2].Id);
+            Assert.AreEqual("Mike", list[2].Name);
+        }
+
+        [Test]
+        public void TestExecuteDynamicRow()
+        {
+            dynamic row = DbEntry.Context.ExecuteDynamicRow("Select * From People Where Id = 1");
+            Assert.AreEqual("Tom", row.Name);
+        }
+
+        [Test]
+        public void TestExecuteDynamicSet()
+        {
+            dynamic set = DbEntry.Context.ExecuteDynamicSet(@"Select * From People Order By Id;
+Select * From PCs Order By Id;");
+            Assert.AreEqual(2, set.Count);
+            Assert.AreEqual(3, set[0].Count);
+            Assert.AreEqual(3, set[1].Count);
+            Assert.AreEqual("Tom", set[0][0].Name);
+            Assert.AreEqual("IBM", set[1][0].Name);
         }
     }
 }

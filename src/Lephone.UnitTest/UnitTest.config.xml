@@ -22,7 +22,7 @@
 
     <add key="Development.AutoCreateTable" value="true" />
     <add key="Development.DataBase" value="@SQLite : @{TempDirectory}UnitTest.db" />
-    <add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.65.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
+    <add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
 
     <add key="1.DataBase" value="@Access : @~test.mdb" />
 
