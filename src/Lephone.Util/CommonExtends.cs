@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Lephone.Util;
+using Lephone.Util.Setting;
 using Lephone.Util.Text;
 
 public static class CommonExtends
@@ -206,6 +207,11 @@ public static class CommonExtends
     public static bool IsNullOrEmpty(this string s)
     {
         return string.IsNullOrEmpty(s);
+    }
+
+    public static void Initalize(this Type type)
+    {
+        ConfigHelper.AppSettings.InitClass(type);
     }
 
     #endregion

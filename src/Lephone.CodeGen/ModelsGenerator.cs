@@ -101,7 +101,7 @@ namespace Lephone.CodeGen
 
             protected virtual void AppendBaseType(string tableName)
             {
-                Result.Append(" : LinqObjectModel<").Append(tableName).Append(">\r\n{\r\n");
+                Result.Append(" : DbObjectModel<").Append(tableName).Append(">\r\n{\r\n");
             }
 
             protected virtual void BuildKeyColomn(DbColumnInfo info)
