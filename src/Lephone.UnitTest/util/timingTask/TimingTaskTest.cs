@@ -11,43 +11,43 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestIt()
 		{
-			var Task = new MockTask();
+			var task = new MockTask();
 			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
-			ITiming Timing = new TimeSpanTiming(new TimeSpan(0, 5, 0), ntp);
+			ITiming timing = new TimeSpanTiming(new TimeSpan(0, 5, 0), ntp);
 
-			var tt = new TimingTask(Task, Timing);
+			var tt = new TimingTask(task, timing);
 			tt.RunIfTimingUp();
-			Assert.AreEqual(true, Task.DoTaskOk);
-			Task.DoTaskOk = false;
+			Assert.AreEqual(true, task.DoTaskOk);
+			task.DoTaskOk = false;
 
 			ntp.Add(new TimeSpan(0,0,1));
 			tt.RunIfTimingUp();
-			Assert.AreEqual(false, Task.DoTaskOk);
+			Assert.AreEqual(false, task.DoTaskOk);
 
 			ntp.Add(new TimeSpan(0,1,1));
 			tt.RunIfTimingUp();
-			Assert.AreEqual(false, Task.DoTaskOk);
+			Assert.AreEqual(false, task.DoTaskOk);
 
 			ntp.Add(new TimeSpan(0,3,1));
 			tt.RunIfTimingUp();
-			Assert.AreEqual(false, Task.DoTaskOk);
+			Assert.AreEqual(false, task.DoTaskOk);
 
 			ntp.Add(new TimeSpan(0,0,56));
 			tt.RunIfTimingUp();
-			Assert.AreEqual(false, Task.DoTaskOk);
+			Assert.AreEqual(false, task.DoTaskOk);
 
 			ntp.Add(new TimeSpan(0,0,1));
 			tt.RunIfTimingUp();
-			Assert.AreEqual(true, Task.DoTaskOk);
-			Task.DoTaskOk = false;
+			Assert.AreEqual(true, task.DoTaskOk);
+			task.DoTaskOk = false;
 
 			ntp.Add(new TimeSpan(0,0,1));
 			tt.RunIfTimingUp();
-			Assert.AreEqual(false, Task.DoTaskOk);
+			Assert.AreEqual(false, task.DoTaskOk);
 
 			ntp.Add(new TimeSpan(0,5,8));
 			tt.RunIfTimingUp();
-			Assert.AreEqual(true, Task.DoTaskOk);
+			Assert.AreEqual(true, task.DoTaskOk);
 		}
 	}
 }

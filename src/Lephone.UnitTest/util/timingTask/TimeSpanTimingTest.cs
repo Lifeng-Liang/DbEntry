@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestForSecends()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
 			ITiming t = new TimeSpanTiming(new TimeSpan(0, 0, 3), ntp);
 
 			Assert.AreEqual(true, t.TimesUp());
@@ -34,10 +34,36 @@ namespace Lephone.UnitTest.util.timingTask
 			Assert.AreEqual(true, t.TimesUp());
 		}
 
-		[Test]
+        [Test]
+        public void TestForSecends2()
+        {
+            var ntp = new MockMiscProvider(new DateTime(2004, 3, 5, 10, 5, 10, 0));
+            ITiming t = new TimeSpanTiming(new TimeSpan(0, 0, 3), false, ntp);
+
+            Assert.AreEqual(false, t.TimesUp());
+            t.Reset();
+
+            ntp.Add(new TimeSpan(0, 0, 1));
+            Assert.AreEqual(false, t.TimesUp());
+
+            ntp.Add(new TimeSpan(0, 0, 1));
+            Assert.AreEqual(false, t.TimesUp());
+
+            ntp.Add(new TimeSpan(0, 0, 1));
+            Assert.AreEqual(true, t.TimesUp());
+            t.Reset();
+
+            ntp.Add(new TimeSpan(0, 0, 1));
+            Assert.AreEqual(false, t.TimesUp());
+
+            ntp.Add(new TimeSpan(0, 0, 4));
+            Assert.AreEqual(true, t.TimesUp());
+        }
+
+        [Test]
 		public void TestForMinutes()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
 			ITiming t = new TimeSpanTiming(new TimeSpan(0, 5, 0), ntp);
 
 			Assert.AreEqual(true, t.TimesUp());
@@ -69,7 +95,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestForHours()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
 			ITiming t = new TimeSpanTiming(new TimeSpan(6, 0, 0), ntp);
 
 			Assert.AreEqual(true, t.TimesUp());

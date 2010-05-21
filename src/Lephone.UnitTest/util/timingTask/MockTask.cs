@@ -4,27 +4,14 @@ namespace Lephone.UnitTest.util.timingTask
 {
 	public class MockTask : ITask
 	{
-		public int Times = 0;
-		private bool _DoTaskOk;
+		public int Times;
 
-		public bool DoTaskOk
-		{
-			get
-			{
-				return _DoTaskOk;
-			}
-			set
-			{
-				_DoTaskOk = value;
-			}
-		}
+	    public bool DoTaskOk { get; set; }
 
-		public MockTask() {}
-
-		public void Run()
+	    public void Run()
 		{
 			Times ++;
-			_DoTaskOk = true;
+			DoTaskOk = true;
 		}
 	}
 }

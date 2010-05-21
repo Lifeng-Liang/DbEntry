@@ -4,9 +4,7 @@ namespace Lephone.UnitTest.util.timingTask
 {
 	public class MockTimer : ITimer
 	{
-		public MockTimer() {}
-
-		public event System.Timers.ElapsedEventHandler Elapsed;
+	    public event System.Timers.ElapsedEventHandler Elapsed;
 
 		public bool Enabled
 		{

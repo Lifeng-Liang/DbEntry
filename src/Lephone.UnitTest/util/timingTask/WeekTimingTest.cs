@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestIt()
 		{
-			MockMiscProvider ntp = new MockMiscProvider(new DateTime(2004,11,21,7,10,2,0));
+			var ntp = new MockMiscProvider(new DateTime(2004,11,21,7,10,2,0));
 			ITiming t = new WeekTiming(new TimeOfDayStructure(7, 12, 3), DayOfWeek.Monday, ntp);
 
 			Assert.AreEqual(false, t.TimesUp());

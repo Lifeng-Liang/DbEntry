@@ -95,8 +95,8 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(true, o.c5);
             Assert.AreEqual(new DateTime(2000, 1, 1), o.c6);
             Assert.AreEqual(7, o.c7);
-            Assert.AreEqual(8.1, o.c8);
-            Assert.AreEqual(9.1, o.c9);
+            Assert.AreEqual(8.1f, o.c8);
+            Assert.AreEqual(9.1d, o.c9);
             Assert.AreEqual(guid, o.c10);
             Assert.AreEqual(11, o.c11);
             Assert.AreEqual(new byte[] { 1, 2, 3, 4, 5 }, o.c15);
@@ -117,8 +117,8 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(true, o.c5);
             Assert.AreEqual(new DateTime(2000, 1, 1), o.c6);
             Assert.AreEqual(7, o.c7);
-            Assert.AreEqual(8.1, o.c8);
-            Assert.AreEqual(9.1, o.c9);
+            Assert.AreEqual(8.1f, o.c8);
+            Assert.AreEqual(9.1d, o.c9);
             Assert.AreEqual(guid, o.c10);
             Assert.AreEqual(11, o.c11);
             Assert.AreEqual(new byte[] { 1, 2, 3, 4, 5 }, o.c15);
