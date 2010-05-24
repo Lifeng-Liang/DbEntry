@@ -12,11 +12,11 @@ namespace Lephone.Data.SqlEntry
         {
             get
             {
-                return BulkCopy.BatchSize;
+                return _bulkCopy.BatchSize;
             }
             set
             {
-                BulkCopy.BatchSize = value;
+                _bulkCopy.BatchSize = value;
             }
         }
 
@@ -28,7 +28,7 @@ namespace Lephone.Data.SqlEntry
             }
             set
             {
-                BulkCopy.BulkCopyTimeout = value;
+                _bulkCopy.BulkCopyTimeout = value;
             }
         }
 
@@ -40,7 +40,7 @@ namespace Lephone.Data.SqlEntry
             }
             set
             {
-                BulkCopy.DestinationTableName = value;
+                _bulkCopy.DestinationTableName = value;
             }
         }
 
@@ -48,11 +48,11 @@ namespace Lephone.Data.SqlEntry
         {
             get
             {
-                return BulkCopy.NotifyAfter;
+                return _bulkCopy.NotifyAfter;
             }
             set
             {
-                BulkCopy.NotifyAfter = value;
+                _bulkCopy.NotifyAfter = value;
             }
         }
 
@@ -60,12 +60,12 @@ namespace Lephone.Data.SqlEntry
 
         public event SqlRowsCopiedEventHandler SqlRowsCopied;
 
-        private readonly SqlBulkCopy BulkCopy;
+        private readonly SqlBulkCopy _bulkCopy;
 
         public SqlServerBulkCopy(SqlConnection connection)
         {
-            BulkCopy = new SqlBulkCopy(connection);
-            BulkCopy.SqlRowsCopied += BulkCopy_SqlRowsCopied;
+            _bulkCopy = new SqlBulkCopy(connection);
+            _bulkCopy.SqlRowsCopied += BulkCopy_SqlRowsCopied;
         }
 
         void BulkCopy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)
@@ -78,32 +78,32 @@ namespace Lephone.Data.SqlEntry
 
         public void Close()
         {
-            BulkCopy.Close();
+            _bulkCopy.Close();
         }
 
         public void WriteToServer(DataRow[] rows)
         {
-            BulkCopy.WriteToServer(rows);
+            _bulkCopy.WriteToServer(rows);
         }
 
         public void WriteToServer(DataTable table)
         {
-            BulkCopy.WriteToServer(table);
+            _bulkCopy.WriteToServer(table);
         }
 
         public void WriteToServer(IDataReader reader)
         {
-            BulkCopy.WriteToServer(reader);
+            _bulkCopy.WriteToServer(reader);
         }
 
         public void WriteToServer(DataTable table, DataRowState rowState)
         {
-            BulkCopy.WriteToServer(table, rowState);
+            _bulkCopy.WriteToServer(table, rowState);
         }
 
         void IDisposable.Dispose()
         {
-            ((IDisposable)BulkCopy).Dispose();
+            ((IDisposable)_bulkCopy).Dispose();
         }
     }
 }

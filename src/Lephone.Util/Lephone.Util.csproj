@@ -117,6 +117,7 @@
     <Compile Include="Logging\ConsoleMessageRecorder.cs" />
     <Compile Include="Logging\DebugLogRecorder.cs" />
     <Compile Include="Logging\ILogDirect.cs" />
+    <Compile Include="Logging\LogRecorderProvider.cs" />
     <Compile Include="Logging\LogType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -7,6 +7,8 @@ namespace Lephone.Util.Logging
 {
 	public class TextFileLogRecorder : ILogRecorder
 	{
+        protected object SyncRoot = new object();
+
 		protected string LogFileName;
 
 		public TextFileLogRecorder()
@@ -30,12 +32,20 @@ namespace Lephone.Util.Logging
                 SystemHelper.ExeFileName, SystemHelper.GetDateTimeString());
 		}
 
-        public virtual void ProcessLog(LogType type, string source, string name, string message, Exception eException)
+        public void ProcessLog(LogType type, string source, string name, string message, Exception eException)
         {
-            using (var sw = new StreamWriter(LogFileName, true, Encoding.Default))
+            lock (SyncRoot)
             {
-                sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, source, name, message, eException, DateTime.Now);
+                using (var sw = new StreamWriter(LogFileName, true, Encoding.Default))
+                {
+                    sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, source, name, message, eException, DateTime.Now);
+                }
             }
+        }
+
+        protected virtual void WriteLog(StreamWriter sw, LogType type, string source, string name, string message, Exception eException)
+        {
+            sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, source, name, message, eException, DateTime.Now);
         }
     }
 }

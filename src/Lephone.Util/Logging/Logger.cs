@@ -31,7 +31,7 @@ namespace Lephone.Util.Logging
             string s = ConfigHelper.DefaultSettings.GetValue(_name + "LogRecorder");
             if (s != "")
             {
-                ilc = (ILogRecorder)ClassHelper.CreateInstance(s);
+                ilc = LogRecorderProvider.GetLogRecorder(s);
                 if (ilc == null)
                 {
                     throw new SettingException();
