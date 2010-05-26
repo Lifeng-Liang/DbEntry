@@ -94,9 +94,9 @@ namespace Lephone.Data.SqlEntry
             return ret;
         }
 
-        public IDbBulkCopy GetDbBulkCopy()
+        public IDbBulkCopy GetDbBulkCopy(bool identityInsert)
         {
-            if (Driver is SqlServerDriver)
+            if (!identityInsert && Driver is SqlServerDriver)
             {
                 if (Scope<ConnectionContext>.Current != null)
                 {
@@ -105,7 +105,7 @@ namespace Lephone.Data.SqlEntry
                 }
                 throw new DataException("It must have current connection.");
             }
-            return new CommonBulkCopy(this);
+            return new CommonBulkCopy(this, identityInsert);
         }
 
 	    #endregion
@@ -139,7 +139,7 @@ namespace Lephone.Data.SqlEntry
                         foreach (string s in Split(e.CommandText))
                         {
                             e.CommandText = s;
-                            ((DbDataAdapter)d).Fill(ds, 0, DataSetting.MaxRecords, "Table" + i);
+                            ((DbDataAdapter)d).Fill(ds, 0, DataSettings.MaxRecords, "Table" + i);
                             i++;
                         }
                     }

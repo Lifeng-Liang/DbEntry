@@ -6,7 +6,7 @@ namespace Lephone.Data.Caching
 {
     public class KeyGenerator
     {
-        public static readonly KeyGenerator Instance = (KeyGenerator)ClassHelper.CreateInstance(DataSetting.CacheKeyGenerator);
+        public static readonly KeyGenerator Instance = (KeyGenerator)ClassHelper.CreateInstance(DataSettings.CacheKeyGenerator);
 
         public string this[object obj]
         {

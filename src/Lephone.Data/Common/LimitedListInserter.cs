@@ -17,7 +17,7 @@ namespace Lephone.Data.Common
 		{
 			list.Add( obj );
             Count++;
-            return (Count < DataSetting.MaxRecords);
+            return (Count < DataSettings.MaxRecords);
 		}
     }
 }

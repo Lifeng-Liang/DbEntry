@@ -6,7 +6,7 @@ namespace Lephone.Data.Caching
 {
     public class StaticHashCacheProvider : CacheProvider
     {
-        protected static Hashtable Pool = new Hashtable(DataSetting.CacheSize);
+        protected static Hashtable Pool = new Hashtable(DataSettings.CacheSize);
 
         protected internal StaticHashCacheProvider() { }
 
@@ -37,7 +37,7 @@ namespace Lephone.Data.Caching
                     TimeValue tv = TimeValue.CreateTimeValue(value);
                     lock (Pool.SyncRoot)
                     {
-                        if (Pool.Count > DataSetting.CacheSize)
+                        if (Pool.Count > DataSettings.CacheSize)
                         {
                             Pool.Clear();
                         }

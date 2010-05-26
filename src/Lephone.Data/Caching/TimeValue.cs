@@ -17,7 +17,7 @@ namespace Lephone.Data.Caching
 
         public static DateTime GetExpiredOn()
         {
-            return MiscProvider.Instance.Now.AddMinutes(DataSetting.CacheMinutes);
+            return MiscProvider.Instance.Now.AddMinutes(DataSettings.CacheMinutes);
         }
 
         public static TimeValue CreateTimeValue(object value)

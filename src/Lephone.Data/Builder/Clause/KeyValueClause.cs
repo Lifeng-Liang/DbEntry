@@ -60,7 +60,7 @@ namespace Lephone.Data.Builder.Clause
 	    protected virtual string GetValueString(DataParameterCollection dpc, DbDialect dd)
         {
             string dpStr;
-            if (DataSetting.UsingParameter)
+            if (DataSettings.UsingParameter)
             {
                 dpStr = string.Format(dd.ParameterPrefix + "{0}_{1}", DataParameter.LegalKey(KV.Key), dpc.Count);
                 var dp = new DataParameter(dpStr, KV.NullableValue, KV.ValueType);

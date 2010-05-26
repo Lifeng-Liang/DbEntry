@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.Reflection;
 using Lephone.Data.SqlEntry;
 using Lephone.Util;
@@ -30,63 +28,60 @@ namespace Lephone.Data.Common
             }
         }
 
-        private string _DestinationTableName;
+        private string _destinationTableName;
 
         protected string DestinationTableName
         {
-            get { return _DestinationTableName; }
+            get { return _destinationTableName; }
             set
             {
-                _DestinationTableName = value;
-                if (_ClearTableFirst)
+                _destinationTableName = value;
+                if (_clearTableFirst)
                 {
                     ClearTable(value);
                 }
             }
         }
 
-        private int _BatchSize;
-        private int _NotifyAfter;
-        private bool _ClearTableFirst;
-        private int _Times = 1;
+        private readonly int _batchSize;
+        private readonly int _notifyAfter;
+        private readonly bool _clearTableFirst;
+        private int _times = 1;
 
-        public BulkCopyProcessor()
+        protected BulkCopyProcessor()
             : this(100, 100, true)
         {
         }
 
-        public BulkCopyProcessor(int BatchSize, int NotifyAfter, bool ClearTableFirst)
+        protected BulkCopyProcessor(int batchSize, int notifyAfter, bool clearTableFirst)
         {
-            this._BatchSize = BatchSize;
-            this._NotifyAfter = NotifyAfter;
-            this._ClearTableFirst = ClearTableFirst;
+            this._batchSize = batchSize;
+            this._notifyAfter = notifyAfter;
+            this._clearTableFirst = clearTableFirst;
         }
 
-        protected void ClearTable(string TableName)
+        protected void ClearTable(string tableName)
         {
-            SqlStatement sql = new SqlStatement("delete from " + Dest.Dialect.QuoteForTableName(TableName));
+            var sql = new SqlStatement("delete from " + Dest.Dialect.QuoteForTableName(tableName));
             Dest.ExecuteNonQuery(sql);
-            Console.WriteLine("{0} cleared!", TableName);
+            Console.WriteLine("{0} cleared!", tableName);
         }
 
-        protected void BulkCopy(string sql)
+        protected void BulkCopy(string sql, bool identityInsert)
         {
-            Src.ExecuteDataReader(new SqlStatement(sql), delegate(IDataReader dr)
+            Src.ExecuteDataReader(new SqlStatement(sql), dr =>
             {
                 Dest.NewConnection(delegate
                 {
-                    IDbBulkCopy c = Dest.GetDbBulkCopy();
-                    c.BatchSize = _BatchSize;
+                    IDbBulkCopy c = Dest.GetDbBulkCopy(identityInsert);
+                    c.BatchSize = _batchSize;
                     c.DestinationTableName = DestinationTableName;
-                    c.NotifyAfter = _NotifyAfter;
-                    c.SqlRowsCopied += delegate(object sender, SqlRowsCopiedEventArgs e)
-                    {
-                        Console.WriteLine("{0}: {1}", DestinationTableName, e.RowsCopied);
-                    };
+                    c.NotifyAfter = _notifyAfter;
+                    c.SqlRowsCopied += (sender, e) => Console.WriteLine("{0}: {1}", DestinationTableName, e.RowsCopied);
                     c.WriteToServer(dr);
                 });
             });
-            Console.WriteLine("{0} ({1}) copied!", DestinationTableName, _Times++);
+            Console.WriteLine("{0} ({1}) copied!", DestinationTableName, _times++);
         }
 
         public abstract void Run();

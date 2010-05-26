@@ -44,8 +44,8 @@ namespace Lephone.Data.Common
                 _composer = new QueryComposer(this);
             }
             // binding DbObjectHandler
-            if (DataSetting.ObjectHandlerType == HandlerType.Emit
-                || (DataSetting.ObjectHandlerType == HandlerType.Both && t.IsPublic))
+            if (DataSettings.ObjectHandlerType == HandlerType.Emit
+                || (DataSettings.ObjectHandlerType == HandlerType.Both && t.IsPublic))
             {
                 _handler = AssemblyHandler.Instance.CreateDbObjectHandler(t, this);
             }

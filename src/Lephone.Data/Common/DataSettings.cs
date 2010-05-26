@@ -10,7 +10,7 @@ namespace Lephone.Data.Common
         Both,
     }
 
-    internal static class DataSetting
+    internal static class DataSettings
 	{
         public static readonly HandlerType ObjectHandlerType = HandlerType.Emit;
 
@@ -39,9 +39,9 @@ namespace Lephone.Data.Common
 
         public static readonly bool CacheClearWhenError     = false;
 
-        static DataSetting()
+        static DataSettings()
         {
-            ConfigHelper.DefaultSettings.InitClass(typeof(DataSetting));
+            ConfigHelper.DefaultSettings.InitClass(typeof(DataSettings));
         }
 	}
 }

@@ -49,7 +49,7 @@ namespace Lephone.Data.SqlEntry
 
 		private void InitSqlTimeOut()
 		{
-			SqlTimeOut = DataSetting.TimeConsumingSqlTimeOut;
+			SqlTimeOut = DataSettings.TimeConsumingSqlTimeOut;
 		}
 	}
 }

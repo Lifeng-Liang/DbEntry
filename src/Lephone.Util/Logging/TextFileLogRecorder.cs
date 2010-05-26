@@ -38,7 +38,7 @@ namespace Lephone.Util.Logging
             {
                 using (var sw = new StreamWriter(LogFileName, true, Encoding.Default))
                 {
-                    sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, source, name, message, eException, DateTime.Now);
+                	WriteLog(sw, type, source, name, message, eException);
                 }
             }
         }

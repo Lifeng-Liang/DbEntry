@@ -21,7 +21,7 @@ namespace Lephone.Data
     {
         private Dictionary<string, int> _tableNames;
         // for remoting only
-        public DbContext() : this(DataSetting.DefaultContext) { }
+        public DbContext() : this(DataSettings.DefaultContext) { }
 
         protected internal DbContext(string prefix) : this(EntryConfig.GetDriver(prefix)) { }
 
@@ -104,7 +104,7 @@ namespace Lephone.Data
 
         protected internal override void OnBeginTransaction()
         {
-            if (DataSetting.CacheEnabled && !DataSetting.CacheClearWhenError)
+            if (DataSettings.CacheEnabled && !DataSettings.CacheClearWhenError)
             {
                 TransLists.Push(new List<string>());
             }
@@ -112,7 +112,7 @@ namespace Lephone.Data
 
         protected internal override void OnCommittedTransaction()
         {
-            if (DataSetting.CacheEnabled && !DataSetting.CacheClearWhenError)
+            if (DataSettings.CacheEnabled && !DataSettings.CacheClearWhenError)
             {
                 TransLists.Pop();
             }
@@ -120,9 +120,9 @@ namespace Lephone.Data
 
         protected internal override void OnTransactionError()
         {
-            if (DataSetting.CacheEnabled)
+            if (DataSettings.CacheEnabled)
             {
-                if (DataSetting.CacheClearWhenError)
+                if (DataSettings.CacheClearWhenError)
                 {
                     CacheProvider.Instance.Clear();
                 }
@@ -319,11 +319,11 @@ namespace Lephone.Data
 
         protected static IProcessor GetListProcessor(IList il, Type t)
         {
-            if (DataSetting.CacheAnySelectedItem)
+            if (DataSettings.CacheAnySelectedItem)
             {
                 return new CachedListInserter(il, t);
             }
-            if (DataSetting.MaxRecords == 0)
+            if (DataSettings.MaxRecords == 0)
             {
                 return new ListInserter(il);
             }
@@ -418,7 +418,7 @@ namespace Lephone.Data
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             if (oi.HasOnePrimaryKey)
             {
-                if (DataSetting.CacheEnabled && oi.Cacheable)
+                if (DataSettings.CacheEnabled && oi.Cacheable)
                 {
                     object co = CacheProvider.Instance[KeyGenerator.Instance.GetKey(t, key)];
                     if (co != null)
@@ -431,7 +431,7 @@ namespace Lephone.Data
                 string keyname = oi.KeyFields[0].Name;
                 object obj = GetObject(t, CK.K[keyname] == key, null, null);
 
-                if (DataSetting.CacheEnabled && oi.Cacheable)
+                if (DataSettings.CacheEnabled && oi.Cacheable)
                 {
                     if (obj != null)
                     {

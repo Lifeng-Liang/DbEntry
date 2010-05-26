@@ -117,7 +117,7 @@ namespace Lephone.Data.Common
                 oi.LogSql(sql);
                 _context.ExecuteNonQuery(sql);
             }
-            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
+            if (DataSettings.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
             {
                 _context.SetCachedObject(obj);
             }
@@ -166,7 +166,7 @@ namespace Lephone.Data.Common
             }
             oi.Composer.ProcessAfterSave(obj);
 
-            if (DataSetting.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
+            if (DataSettings.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
             {
                 _context.SetCachedObject(obj);
             }
@@ -287,7 +287,7 @@ namespace Lephone.Data.Common
             ProcessRelation2(oi, obj, delegate(DataProvider dp)
             {
                 ret += dp.ExecuteNonQuery(sql);
-                if (DataSetting.CacheEnabled && oi.Cacheable)
+                if (DataSettings.CacheEnabled && oi.Cacheable)
                 {
                     CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
                 }

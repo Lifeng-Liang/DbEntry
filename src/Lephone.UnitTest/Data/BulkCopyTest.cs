@@ -57,7 +57,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGetTheRightCopier()
         {
-            IDbBulkCopy c = DbEntry.Context.GetDbBulkCopy();
+            IDbBulkCopy c = DbEntry.Context.GetDbBulkCopy(false);
             Assert.IsNotNull(c);
             Assert.IsTrue(c is CommonBulkCopy);
         }
@@ -68,7 +68,7 @@ namespace Lephone.UnitTest.Data
             var dc = EntryConfig.NewContext("SqlServerMock");
             dc.NewTransaction(delegate
             {
-                IDbBulkCopy c = dc.GetDbBulkCopy(); // exception
+                IDbBulkCopy c = dc.GetDbBulkCopy(false); // exception
                 Assert.IsNotNull(c);
                 Assert.IsTrue(c is SqlServerBulkCopy);
             });
@@ -83,7 +83,7 @@ namespace Lephone.UnitTest.Data
             {
                 sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = sqlite.GetDbBulkCopy();
+                    IDbBulkCopy c = sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
@@ -111,7 +111,7 @@ namespace Lephone.UnitTest.Data
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
             sqlite.NewConnection(delegate
             {
-                IDbBulkCopy c = sqlite.GetDbBulkCopy();
+                IDbBulkCopy c = sqlite.GetDbBulkCopy(false);
                 c.BatchSize = 2;
                 c.DestinationTableName = "test";
                 c.NotifyAfter = 3;
@@ -138,7 +138,7 @@ namespace Lephone.UnitTest.Data
             DataSet ds = DbEntry.Context.ExecuteDataset(sql);
             sqlite.NewConnection(delegate
             {
-                IDbBulkCopy c = sqlite.GetDbBulkCopy();
+                IDbBulkCopy c = sqlite.GetDbBulkCopy(false);
                 c.BatchSize = 2;
                 c.DestinationTableName = "test";
                 c.NotifyAfter = 2;
@@ -166,7 +166,7 @@ namespace Lephone.UnitTest.Data
             {
                 sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = sqlite.GetDbBulkCopy();
+                    IDbBulkCopy c = sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
@@ -192,7 +192,7 @@ namespace Lephone.UnitTest.Data
             {
                 sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = sqlite.GetDbBulkCopy();
+                    IDbBulkCopy c = sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;

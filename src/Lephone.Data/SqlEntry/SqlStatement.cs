@@ -10,7 +10,7 @@ namespace Lephone.Data.SqlEntry
 	{
 		public string SqlCommandText;
 		public DataParameterCollection Parameters;
-		public int SqlTimeOut = DataSetting.SqlTimeOut;
+		public int SqlTimeOut = DataSettings.SqlTimeOut;
 		public CommandType SqlCommandType;
         internal long StartIndex;
         internal long EndIndex;

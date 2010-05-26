@@ -308,7 +308,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="SqlEntry\DataParameterCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\DataSetting.cs">
+    <Compile Include="Common\DataSettings.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SqlEntry\DataType.cs">

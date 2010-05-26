@@ -10,47 +10,41 @@ namespace Lephone.Data.SqlEntry
     {
         #region properties
 
-        private int _BatchSize;
+        private int _batchSize;
 
         public int BatchSize
         {
-            get { return _BatchSize; }
+            get { return _batchSize; }
             set
             {
                 if (value < 0) { throw new DataException("Argument out of scope."); }
-                _BatchSize = value;
+                _batchSize = value;
             }
         }
 
-        private int _BulkCopyTimeout = 30;
+        private int _bulkCopyTimeout = 30;
 
         public int BulkCopyTimeout
         {
-            get { return _BulkCopyTimeout; }
+            get { return _bulkCopyTimeout; }
             set
             {
                 if (value < 0) { throw new DataException("Argument out of scope."); }
-                _BulkCopyTimeout = value;
+                _bulkCopyTimeout = value;
             }
         }
 
-        private string _DestinationTableName;
+        public string DestinationTableName { get; set; }
 
-        public string DestinationTableName
-        {
-            get { return _DestinationTableName; }
-            set { _DestinationTableName = value; }
-        }
-
-        private int _NotifyAfter;
+        private int _notifyAfter;
 
         public int NotifyAfter
         {
-            get { return _NotifyAfter; }
+            get { return _notifyAfter; }
             set
             {
                 if (value < 0) { throw new DataException("Argument out of scope."); }
-                _NotifyAfter = value;
+                _notifyAfter = value;
             }
         }
 
@@ -58,26 +52,29 @@ namespace Lephone.Data.SqlEntry
 
         public event SqlRowsCopiedEventHandler SqlRowsCopied;
 
-        private readonly DataProvider Provider;
+        private readonly DataProvider _provider;
 
-        public CommonBulkCopy(DataProvider Provider)
+        private readonly bool _identityInsert;
+
+        public CommonBulkCopy(DataProvider provider, bool identityInsert)
         {
-            this.Provider = Provider;
+            this._provider = provider;
+            this._identityInsert = identityInsert;
         }
 
         public void Close()
         {
-            Provider.ConProvider.Close();
+            _provider.ConProvider.Close();
         }
 
         public void WriteToServer(DataRow[] rows)
         {
-            Provider.NewTransaction(delegate
+            ProcessWrite(delegate
             {
                 foreach (DataRow dr in rows)
                 {
-                    InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
-                    DataColumnCollection dcc = dr.Table.Columns;
+                    var sb = new InsertStatementBuilder(this.DestinationTableName);
+                    var dcc = dr.Table.Columns;
                     for (int i = 0; i < dcc.Count; i++)
                     {
                         object o = GetValue(dr[i]);
@@ -90,11 +87,11 @@ namespace Lephone.Data.SqlEntry
 
         public void WriteToServer(DataTable table)
         {
-            Provider.NewTransaction(delegate
+            ProcessWrite(delegate
             {
                 foreach (DataRow dr in table.Rows)
                 {
-                    InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
+                    var sb = new InsertStatementBuilder(this.DestinationTableName);
                     for (int i = 0; i < table.Columns.Count; i++)
                     {
                         object o = GetValue(dr[i]);
@@ -107,11 +104,11 @@ namespace Lephone.Data.SqlEntry
 
         public void WriteToServer(IDataReader reader)
         {
-            Provider.NewTransaction(delegate
+            ProcessWrite(delegate
             {
                 while (reader.Read())
                 {
-                    InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
+                    var sb = new InsertStatementBuilder(this.DestinationTableName);
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
                         object o = GetValue(reader[i]);
@@ -124,13 +121,13 @@ namespace Lephone.Data.SqlEntry
 
         public void WriteToServer(DataTable table, DataRowState rowState)
         {
-            Provider.NewTransaction(delegate
+            ProcessWrite(delegate
             {
                 foreach (DataRow dr in table.Rows)
                 {
                     if (dr.RowState == rowState)
                     {
-                        InsertStatementBuilder sb = new InsertStatementBuilder(this.DestinationTableName);
+                        var sb = new InsertStatementBuilder(this.DestinationTableName);
                         for (int i = 0; i < table.Columns.Count; i++)
                         {
                             object o = GetValue(dr[i]);
@@ -142,28 +139,46 @@ namespace Lephone.Data.SqlEntry
             });
         }
 
-        private object GetValue(object o)
+        private void ProcessWrite(CallbackVoidHandler callback)
+        {
+            _provider.NewTransaction(() =>
+            {
+                if(_identityInsert)
+                {
+                    var name = _provider.Dialect.QuoteForTableName(DestinationTableName);
+                    _provider.ExecuteNonQuery(string.Format("SET IDENTITY_INSERT {0} ON", name));
+                    callback();
+                    _provider.ExecuteNonQuery(string.Format("SET IDENTITY_INSERT {0} OFF", name));
+                }
+                else
+                {
+                    callback();
+                }
+            });
+        }
+
+        private static object GetValue(object o)
         {
             return (o == DBNull.Value) ? null : o;
         }
 
-        private long Count;
+        private long _count;
 
         private bool WriteSingleToServer(InsertStatementBuilder sb)
         {
-            SqlStatement Sql = sb.ToSqlStatement(Provider.Dialect);
-            Sql.SqlTimeOut = _BulkCopyTimeout;
-            Provider.ExecuteNonQuery(Sql);
-            Count++;
-            if (_BatchSize > 0 && (Count % _BatchSize) == 0)
+            SqlStatement sql = sb.ToSqlStatement(_provider.Dialect);
+            sql.SqlTimeOut = _bulkCopyTimeout;
+            _provider.ExecuteNonQuery(sql);
+            _count++;
+            if (_batchSize > 0 && (_count % _batchSize) == 0)
             {
                 ConnectionContext cc = Scope<ConnectionContext>.Current;
                 cc.Commit();
                 cc.BeginTransaction();
             }
-            if (SqlRowsCopied != null && _NotifyAfter > 0 && ((Count % _NotifyAfter) == 0))
+            if (SqlRowsCopied != null && _notifyAfter > 0 && ((_count % _notifyAfter) == 0))
             {
-                SqlRowsCopiedEventArgs e = new SqlRowsCopiedEventArgs(Count);
+                var e = new SqlRowsCopiedEventArgs(_count);
                 SqlRowsCopied(this, e);
                 if (e.Abort) { return false; }
             }

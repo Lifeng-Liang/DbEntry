@@ -46,7 +46,7 @@ namespace Lephone.Data
         static DbEntry()
 	    {
             Jar = new HybridDictionary();
-            Context = GetContext(DataSetting.DefaultContext);
+            Context = GetContext(DataSettings.DefaultContext);
 	    }
 
         public static DbContext GetContext(string prefix)
