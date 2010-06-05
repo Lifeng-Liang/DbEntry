@@ -18,11 +18,9 @@ namespace Lephone.UnitTest.Data
     #region Objects
 
     [DbTable("People")]
-    public abstract class SavePeople : DbObjectModel<SavePeople>
+    public class SavePeople : DbObjectModel<SavePeople>
     {
-        public abstract string Name { get; set; }
-
-        public abstract SavePeople Init(string name);
+        public string Name { get; set; }
     }
 
     [DbTable("File")]
@@ -31,24 +29,24 @@ namespace Lephone.UnitTest.Data
         [DbColumn("BelongsTo_Id")] public int n;
     }
 
-    public abstract class NotDefineRelation : DbObjectModel<NotDefineRelation>
+    public class NotDefineRelation : DbObjectModel<NotDefineRelation>
     {
-        public abstract AllowNullOnValueType Relation { get; set; }
+        public AllowNullOnValueType Relation { get; set; }
     }
 
-    public abstract class AllowNullOnValueType : DbObjectModel<AllowNullOnValueType>
+    public class AllowNullOnValueType : DbObjectModel<AllowNullOnValueType>
     {
         [AllowNull]
-        public abstract int Age { get; set; }
+        public int Age { get; set; }
     }
 
-    public abstract class t_user : DbObjectModel<t_user>
+    public class t_user : DbObjectModel<t_user>
     {
         [Length(40)]
-        public abstract string mc { get; set; }
+        public string mc { get; set; }
 
         [SpecialName, LazyLoad]
-        public abstract DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 
     [DbTable("People")]
@@ -58,10 +56,10 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("People")]
-    public abstract class UniquePerson : DbObjectModel<UniquePerson>
+    public class UniquePerson : DbObjectModel<UniquePerson>
     {
         [Index(UNIQUE = true)]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
     }
 
     public class CountTable : DbObject
@@ -77,28 +75,28 @@ namespace Lephone.UnitTest.Data
         public int Count;
     }
 
-    public abstract class CountTable2 : DbObjectModel<CountTable2>
+    public class CountTable2 : DbObjectModel<CountTable2>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [SpecialName]
-        public abstract int Count { get; set; }
+        public int Count { get; set; }
     }
 
     [DbContext("SqlServerMock")]
-    public abstract class CountTable2Sql : DbObjectModel<CountTable2Sql>
+    public class CountTable2Sql : DbObjectModel<CountTable2Sql>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [SpecialName]
-        public abstract int Count { get; set; }
+        public int Count { get; set; }
     }
 
     [DbTable("People")]
-    public abstract class FieldPerson : DbObjectModel<FieldPerson>
+    public class FieldPerson : DbObjectModel<FieldPerson>
     {
         [DbColumn("Name")]
-        public abstract string theName { get; set; }
+        public string theName { get; set; }
 
         public static FieldPerson FindByName(string name)
         {
@@ -107,10 +105,10 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("People"), DbContext("SqlServerMock")]
-    public abstract class FieldPersonSql : DbObjectModel<FieldPersonSql>
+    public class FieldPersonSql : DbObjectModel<FieldPersonSql>
     {
         [DbColumn("Name")]
-        public abstract string theName { get; set; }
+        public string theName { get; set; }
 
         public static FieldPersonSql FindByName(string name)
         {
@@ -119,12 +117,12 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("LockVersionTest")]
-    public abstract class LockVersionTest : DbObjectModel<LockVersionTest>
+    public class LockVersionTest : DbObjectModel<LockVersionTest>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [SpecialName]
-        public abstract int LockVersion { get; set; }
+        public int LockVersion { get; set; }
     }
 
     public class MKEY : IDbObject
@@ -138,48 +136,12 @@ namespace Lephone.UnitTest.Data
         public int Age;
     }
 
-    public abstract class InitTest : DbObjectModel<InitTest>
-    {
-        public abstract string Name { get; set; }
-        public abstract int Age { get; set; }
-
-        public abstract InitTest Init(string name, int age); // Ignore case
-    }
-
-    public abstract class InitTest2 : DbObjectModel<InitTest2>
-    {
-        public abstract string Name { get; set; }
-        public abstract string FirstName { get; set; }
-        public abstract string LastName { get; set; }
-
-        public abstract InitTest2 Init(string name, string firstName, string lastName);
-    }
-
-    public abstract class InitTest3 : DbObjectModel<InitTest3>
-    {
-        public abstract string Name { get; set; }
-        public abstract string FirstName { get; set; }
-        public abstract string LastName { get; set; }
-
-        public abstract InitTest3 Init(string name, string lastName, string firstName);
-    }
-
-    public abstract class InitTest4 : DbObjectModel<InitTest4>
-    {
-        public abstract string Name { get; set; }
-        public abstract bool Gender { get; set; }
-        public abstract int? Age { get; set; }
-
-        public abstract InitTest4 Initialize(string name, bool gender, int? age);
-        public abstract InitTest4 Initialize(InitTest4 obj);
-    }
-
     [DbContext("SQLite")]
-    public abstract class FindByModel : DbObjectModel<FindByModel>
+    public class FindByModel : DbObjectModel<FindByModel>
     {
         [DbColumn("FirstName")]
-        public abstract string Name { get; set; }
-        public abstract int Age { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
     }
 
     #endregion
@@ -335,8 +297,7 @@ namespace Lephone.UnitTest.Data
             p1 = PeopleModel.FindById(2);
             Assert.IsNull(p1);
 
-            p = PeopleModel.New;
-            p.Name = "123456";
+            p = new PeopleModel {Name = "123456"};
             Assert.IsFalse(p.IsValid());
 
             Assert.AreEqual(1, PeopleModel.CountName("Tom"));
@@ -362,8 +323,7 @@ namespace Lephone.UnitTest.Data
             var p = new ImpPeople {Name = "tom"};
             Assert.AreEqual("{ Id = 0, Name = tom }", p.ToString());
 
-            DArticle a = DArticle.New;
-            a.Name = "long";
+            var a = new DArticle {Name = "long"};
             Assert.AreEqual("{ Id = 0, Name = long }", a.ToString());
 
             var c = new ImpPCs {Name = "HP"};
@@ -436,7 +396,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGuidKey()
         {
-            GuidKey o = GuidKey.New;
+            var o = new GuidKey();
             Assert.IsTrue(Guid.Empty == o.Id);
 
             o.Name = "guid";
@@ -462,7 +422,7 @@ namespace Lephone.UnitTest.Data
         public void TestGuidColumn()
         {
             var g = Guid.NewGuid();
-            var o = GuidColumn.New.Init(g);
+            var o = new GuidColumn {TheGuid = g};
             o.Save();
 
             var o1 = GuidColumn.FindById(o.Id);
@@ -482,8 +442,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUniqueValidate()
         {
-            var u = UniquePerson.New;
-            u.Name = "test";
+            var u = new UniquePerson {Name = "test"};
             var vh = new ValidateHandler();
             vh.ValidateObject(u);
             Assert.IsTrue(vh.IsValid);
@@ -512,7 +471,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void Test2ndPageWithSqlserver2005()
+        public void Test2NdPageWithSqlserver2005()
         {
             StaticRecorder.ClearMessages();
             DbEntry.From<PersonSql>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
@@ -520,7 +479,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void Test2ndPageWithSqlserver2005WithAlias()
+        public void Test2NdPageWithSqlserver2005WithAlias()
         {
             StaticRecorder.ClearMessages();
             DbEntry.From<FieldPersonSql>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
@@ -575,9 +534,7 @@ namespace Lephone.UnitTest.Data
         public void TestCountTable2()
         {
             StaticRecorder.ClearMessages();
-            var ct = CountTable2Sql.New;
-            ct.Id = 1;
-            ct.Name = "tom";
+            var ct = new CountTable2Sql {Id = 1, Name = "tom"};
             DbEntry.Save(ct);
             Assert.AreEqual("UPDATE [Count_Table2Sql] SET [Name]=@Name_0,[Count]=[Count]+1  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
@@ -617,11 +574,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDefineCrossTableName3()
         {
-            var b = crxBook1.New;
-            b.Name = "test";
+            var b = new crxBook1 {Name = "test"};
 
-            var c = crxCategory1.New;
-            c.Name = "math";
+            var c = new crxCategory1 {Name = "math"};
 
             c.Books.Add(b);
 
@@ -634,7 +589,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestMKEY()
+        public void TestMkey()
         {
             DbEntry.Context.Create(typeof(MKEY));
 
@@ -656,8 +611,7 @@ namespace Lephone.UnitTest.Data
         {
             try
             {
-                var d = t_user.New;
-                d.mc = "张三";
+                var d = new t_user {mc = "张三"};
                 d.Save();
             }
             catch(DataException ex)
@@ -667,7 +621,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestMKEYForUpdate()
+        public void TestMkeyForUpdate()
         {
             var p = new MKEY { FirstName = "test", LastName = "next", Age = 11 };
             sqlite.Update(p);
@@ -843,40 +797,6 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestInitialize()
-        {
-            var o = InitTest.New.Init("tom", 17);
-            Assert.AreEqual(0, o.Id);
-            Assert.AreEqual("tom", o.Name);
-            Assert.AreEqual(17, o.Age);
-
-            var o2 = InitTest2.New.Init("1", "2", "3");
-            Assert.AreEqual("1", o2.Name);
-            Assert.AreEqual("2", o2.FirstName);
-            Assert.AreEqual("3", o2.LastName);
-
-            var o3 = InitTest3.New.Init("1", "2", "3");
-            Assert.AreEqual("1", o3.Name);
-            Assert.AreEqual("2", o3.LastName);
-            Assert.AreEqual("3", o3.FirstName);
-
-            var o4 = InitTest4.New.Initialize("1", true, 18);
-            Assert.AreEqual("1", o4.Name);
-            Assert.AreEqual(true, o4.Gender);
-            Assert.AreEqual(18, o4.Age);
-
-            o4 = InitTest4.New.Initialize("1", true, null);
-            Assert.AreEqual("1", o4.Name);
-            Assert.AreEqual(true, o4.Gender);
-            Assert.IsNull(o4.Age);
-
-            var ox = InitTest4.New.Initialize(o4);
-            Assert.AreEqual("1", ox.Name);
-            Assert.AreEqual(true, ox.Gender);
-            Assert.IsNull(ox.Age);
-        }
-
-        [Test]
         public void TestGroupbySum()
         {
             sqlite.From<SinglePerson>().Where(Condition.Empty).GroupBySum<string, long>("Name", "Id");
@@ -891,17 +811,6 @@ namespace Lephone.UnitTest.Data
 
             Assert.AreEqual(3, sorted[1].Column);
             Assert.AreEqual(5, sorted[1].Sum);
-        }
-
-        [Test, Ignore("Can not create instance of abstract class")]
-        public void TestXml()
-        {
-            var o1 = InitTest2.New.Init("tom", "cat", "miao");
-            var xml = XmlSerializer<InitTest2>.Xml.Serialize(o1);
-            var o2 = XmlSerializer<InitTest2>.Xml.Deserialize(xml);
-            Assert.AreEqual("tom", o2.Name);
-            Assert.AreEqual("tom", o2.FirstName);
-            Assert.AreEqual("miao", o2.LastName);
         }
 
         [Test]

@@ -5,10 +5,10 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [DbTable("PCs")]
-    public abstract class UnsignedPC : DbObjectModel<UnsignedPC>
+    public class UnsignedPC : DbObjectModel<UnsignedPC>
     {
-        public abstract string Name { get; set; }
-        public abstract uint Person_Id { get; set; }
+        public string Name { get; set; }
+        public uint Person_Id { get; set; }
     }
 
     [DbTable("PCs")]

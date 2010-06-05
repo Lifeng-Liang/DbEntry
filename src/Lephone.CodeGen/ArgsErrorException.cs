@@ -6,9 +6,9 @@ namespace Lephone.CodeGen
     {
         public readonly int ReturnCode;
 
-        public ArgsErrorException(int ReturnCode, string message) : base(message)
+        public ArgsErrorException(int returnCode, string message) : base(message)
         {
-            this.ReturnCode = ReturnCode;
+            this.ReturnCode = returnCode;
         }
     }
 }

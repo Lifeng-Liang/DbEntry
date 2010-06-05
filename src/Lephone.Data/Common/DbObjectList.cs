@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Data;
@@ -10,20 +9,6 @@ namespace Lephone.Data.Common
 	public class DbObjectList<T> : List<T>, IXmlSerializable
 	{
         public DbObjectList() { }
-
-        public DbObjectList<Tout> OfType<Tout>() where Tout : new()
-        {
-            if (typeof(T) == typeof(Tout))
-            {
-                return (DbObjectList<Tout>)((object)this);
-            }
-            var ret = new DbObjectList<Tout>();
-            foreach (Tout i in (IEnumerable)this)
-            {
-                ret.Add(i);
-            }
-            return ret;
-        }
 
         public System.Xml.Schema.XmlSchema GetSchema()
         {

@@ -9,9 +9,9 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class ThreadIssueTest
     {
-        public abstract class User1 : DbObjectModel<User1>
+        public class User1 : DbObjectModel<User1>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
         }
 
         public static Exception Exception;
@@ -61,9 +61,9 @@ namespace Lephone.UnitTest.Data
             }
         }
 
-        public abstract class User2 : DbObjectModel<User2>
+        public class User2 : DbObjectModel<User2>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
         }
 
         [Test]

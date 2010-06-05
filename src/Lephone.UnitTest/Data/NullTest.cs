@@ -8,40 +8,40 @@ namespace Lephone.UnitTest.Data
     #region objects
 
     [DbTable("NullTest")]
-    public abstract class NullableTable : DbObjectModel<NullableTable>
+    public class NullableTable : DbObjectModel<NullableTable>
     {
         [AllowNull]
-        public abstract string Name { get; set; }
-        public abstract int? MyInt { get; set; }
-        public abstract bool? MyBool { get; set; }
+        public string Name { get; set; }
+        public int? MyInt { get; set; }
+        public bool? MyBool { get; set; }
     }
 
     [DbTable("NullTest")]
-    public abstract class NullTable : DbObjectModel<NullTable>
+    public class NullTable : DbObjectModel<NullTable>
     {
         [AllowNull]
-        public abstract string Name { get; set; }
-        public abstract int MyInt { get; set; }
-        public abstract bool MyBool { get; set; }
+        public string Name { get; set; }
+        public int MyInt { get; set; }
+        public bool MyBool { get; set; }
     }
 
     [DbTable("NullTest")]
-    public abstract class NullableTableLazyInt : DbObjectModel<NullableTableLazyInt>
+    public class NullableTableLazyInt : DbObjectModel<NullableTableLazyInt>
     {
         [AllowNull]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
         [LazyLoad]
-        public abstract int? MyInt { get; set; }
-        public abstract bool? MyBool { get; set; }
+        public int? MyInt { get; set; }
+        public bool? MyBool { get; set; }
     }
 
     [DbTable("NullTest")]
-    public abstract class NullableTableLazyString : DbObjectModel<NullableTableLazyString>
+    public class NullableTableLazyString : DbObjectModel<NullableTableLazyString>
     {
         [LazyLoad, AllowNull]
-        public abstract string Name { get; set; }
-        public abstract int? MyInt { get; set; }
-        public abstract bool? MyBool { get; set; }
+        public string Name { get; set; }
+        public int? MyInt { get; set; }
+        public bool? MyBool { get; set; }
     }
 
     #endregion
@@ -116,7 +116,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void Test3WithSQL()
+        public void Test3WithSql()
         {
             List<NullableTable> ls = DbEntry.Context.ExecuteList<NullableTable>(
                 "select * from NullTest where Id = 3");
@@ -130,12 +130,9 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestCRUD()
+        public void TestCrud()
         {
-            NullableTable o = NullableTable.New;
-            o.Name = null;
-            o.MyInt = null;
-            o.MyBool = null;
+            var o = new NullableTable {Name = null, MyInt = null, MyBool = null};
             o.Save();
 
             NullableTable o1 = NullableTable.FindById(o.Id);
@@ -202,8 +199,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestEmptyString()
         {
-            var o = NullableTable.New;
-            o.Name = "";
+            var o = new NullableTable {Name = ""};
             o.Save();
 
             var o1 = NullableTable.FindById(o.Id);

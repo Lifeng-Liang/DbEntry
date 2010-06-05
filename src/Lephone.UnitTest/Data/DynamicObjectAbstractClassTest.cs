@@ -1,6 +1,5 @@
 ﻿using System;
 using Lephone.Data.Common;
-using Lephone.Data.Definition;
 using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
 
@@ -57,20 +56,6 @@ namespace Lephone.UnitTest.Data
             var c = DynamicObjectBuilder.Instance.NewObject<AbstractClass>("abs");
             Assert.IsNotNull(c);
             Assert.AreEqual("abs", c.Name);
-        }
-
-        [Test]
-        public void TestCreateObjectByMutilParams()
-        {
-            DateTime dt = DateTime.Now;
-            var c = DynamicObjectBuilder.Instance.NewObject<ConstructorBase>("a1", 11, "a2", 22, true, dt);
-            Assert.IsNotNull(c);
-            Assert.AreEqual("a1", c.p1);
-            Assert.AreEqual(11, c.p2);
-            Assert.AreEqual("a2", c.p3);
-            Assert.AreEqual(22, c.p4);
-            Assert.AreEqual(true, c.p5);
-            Assert.AreEqual(dt, c.p6);
         }
 
         [Test]

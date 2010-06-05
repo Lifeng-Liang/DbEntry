@@ -7,40 +7,40 @@ using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data.CreateTable
 {
-    public abstract class fbLongName : DbObjectModel<fbLongName>
+    public class fbLongName : DbObjectModel<fbLongName>
     {
         // use guid to gen index name and encode it into base32
         [Index]
-        public abstract string N123456789012345678901234567890 { get; set; }
+        public string N123456789012345678901234567890 { get; set; }
     }
 
-    public abstract class fbLongName2 : DbObjectModel<fbLongName2>
+    public class fbLongName2 : DbObjectModel<fbLongName2>
     {
         [Index]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
     }
 
-    public abstract class fbBlob : DbObjectModel<fbBlob>
+    public class fbBlob : DbObjectModel<fbBlob>
     {
         [Length(64)]
-        public abstract byte[] Blob1 { get; set; }
+        public byte[] Blob1 { get; set; }
 
         [Length(85)]
-        public abstract byte[] Blob2 { get; set; }
+        public byte[] Blob2 { get; set; }
 
-        public abstract byte[] Blob3 { get; set; }
+        public byte[] Blob3 { get; set; }
 
         [Length(30)]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
-        public abstract string Name2 { get; set; }
+        public string Name2 { get; set; }
     }
 
-    public abstract class fbTime : DbObjectModel<fbTime>
+    public class fbTime : DbObjectModel<fbTime>
     {
         [Length(50)]
-        public abstract string Name { get; set; }
-        public abstract Time Time { get; set; }
+        public string Name { get; set; }
+        public Time Time { get; set; }
     }
 
     [TestFixture]

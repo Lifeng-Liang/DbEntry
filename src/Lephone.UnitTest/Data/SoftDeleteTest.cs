@@ -10,48 +10,30 @@ namespace Lephone.UnitTest.Data
     #region objects
 
     [SoftDelete, DbTable("SoftDelete")]
-    public abstract class SoftDelete : DbObjectModel<SoftDelete>
+    public class SoftDelete : DbObjectModel<SoftDelete>
     {
-        public abstract string Name { get; set; }
-
-        public SoftDelete Init(string name)
-        {
-            this.Name = name;
-            return this;
-        }
+        public string Name { get; set; }
     }
 
     [SoftDelete]
-    public abstract class SoftDeleteIndex : DbObjectModel<SoftDeleteIndex>
+    public class SoftDeleteIndex : DbObjectModel<SoftDeleteIndex>
     {
         [Index(UNIQUE = true)]
-        public abstract string Name { get; set; }
-
-        public SoftDeleteIndex Init(string name)
-        {
-            this.Name = name;
-            return this;
-        }
+        public string Name { get; set; }
     }
 
     [DbTable("SoftDelete")]
-    public abstract class SoftDeleteFull : DbObjectModel<SoftDeleteFull>
+    public class SoftDeleteFull : DbObjectModel<SoftDeleteFull>
     {
-        public abstract string Name { get; set; }
-        public abstract bool IsDeleted { get; set; }
+        public string Name { get; set; }
+        public bool IsDeleted { get; set; }
     }
 
     [SoftDelete, DbTable("Tests")]
-    public abstract class Test : DbObjectModel<Test>
+    public class Test : DbObjectModel<Test>
     {
         [Length(100), StringColumn(IsUnicode = false)]
-        public abstract string Nome { get; set; }
-
-        public Test Init(string nome)
-        {
-            Nome = nome;
-            return this;
-        }
+        public string Nome { get; set; }
     }
 
     #endregion
@@ -62,7 +44,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsert()
         {
-            SoftDelete o = SoftDelete.New.Init("test");
+            var o = new SoftDelete {Name = "test"};
             o.Save();
 
             SoftDeleteFull o1 = SoftDeleteFull.FindById(o.Id);
@@ -112,12 +94,11 @@ namespace Lephone.UnitTest.Data
         {
             var n = SoftDelete.GetCount(Condition.Empty);
 
-            var o = SoftDelete.New.Init("aaa");
+            var o = new SoftDelete {Name = "aaa"};
             o.Name = "bbb";
             o.Save();
 
-            var o2 = SoftDelete.New;
-            o2.Name = "ccc";
+            var o2 = new SoftDelete {Name = "ccc"};
             o2.Save();
 
             var m = SoftDelete.GetCount(Condition.Empty);
@@ -169,9 +150,9 @@ namespace Lephone.UnitTest.Data
         {
             DbEntry.Context.DropAndCreate(typeof(Test));
 
-            var t = Test.New.Init("myName");
+            var t = new Test {Nome = "myName"};
             t.Save();
-            t = Test.New.Init("myName2");
+            t = new Test {Nome = "myName2"};
             t.Save();
             t = Test.FindById(1);
             t.Delete();
@@ -187,11 +168,11 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestVerify()
         {
-            var x = SoftDeleteIndex.New.Init("a");
+            var x = new SoftDeleteIndex {Name = "a"};
             x.Save();
             x.Delete();
 
-            var y = SoftDeleteIndex.New.Init("a");
+            var y = new SoftDeleteIndex {Name = "a"};
             bool b = y.Validate().IsValid;
             Assert.IsFalse(b);
         }

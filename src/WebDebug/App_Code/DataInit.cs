@@ -15,20 +15,20 @@ public static class DataInit
 
         DbEntry.NewTransaction(delegate
         {
-            SysUser.New.Init("tom", 19, GetDate(), true).Save();
-            SysUser.New.Init("jerry", 26, GetDate(), true).Save();
-            SysUser.New.Init("mike", 21, GetDate(), true).Save();
-            SysUser.New.Init("rose", 17, GetDate(), false).Save();
-            SysUser.New.Init("alice", 16, GetDate(), false).Save();
+            new SysUser { Name = "tom", Age = 19, Birthday = GetDate(), IsMale = true }.Save();
+            new SysUser { Name = "jerry", Age = 26, Birthday = GetDate(), IsMale = true }.Save();
+            new SysUser { Name = "mike", Age = 21, Birthday = GetDate(), IsMale = true }.Save();
+            new SysUser { Name = "rose", Age = 17, Birthday = GetDate(), IsMale = false }.Save();
+            new SysUser { Name = "alice", Age = 16, Birthday = GetDate(), IsMale = false }.Save();
 
-            SysUser.New.Init("peter", 41, GetDate(), true).Save();
-            SysUser.New.Init("vito", 28, GetDate(), true).Save();
-            SysUser.New.Init("jeff", 23, GetDate(), true).Save();
-            SysUser.New.Init("kate", 22, GetDate(), false).Save();
-            SysUser.New.Init("july", 25, GetDate(), false).Save();
+            new SysUser { Name = "peter", Age = 41, Birthday = GetDate(), IsMale = true }.Save();
+            new SysUser { Name = "vito", Age = 28, Birthday = GetDate(), IsMale = true }.Save();
+            new SysUser { Name = "jeff", Age = 23, Birthday = GetDate(), IsMale = true }.Save();
+            new SysUser { Name = "kate", Age = 22, Birthday = GetDate(), IsMale = false }.Save();
+            new SysUser { Name = "july", Age = 25, Birthday = GetDate(), IsMale = false }.Save();
 
-            SysUser.New.Init("lephone", 31, GetDate(), true).Save();
-            SysUser.New.Init("juan", 25, GetDate(), false).Save();
+            new SysUser { Name = "lephone", Age = 31, Birthday = GetDate(), IsMale = true }.Save();
+            new SysUser { Name = "juan", Age = 25, Birthday = GetDate(), IsMale = false }.Save();
         });
     }
 

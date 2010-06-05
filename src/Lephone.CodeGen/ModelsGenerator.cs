@@ -183,14 +183,7 @@ namespace Lephone.CodeGen
 
             protected override void BuildKeyColomn(DbColumnInfo info)
             {
-                if (info.IsAutoIncrement)
-                {
-                    Result.Append("\t[DbKey]\r\n");
-                }
-                else
-                {
-                    Result.Append("\t[DbKey(IsDbGenerate = false)]\r\n");
-                }
+                Result.Append(info.IsAutoIncrement ? "\t[DbKey]\r\n" : "\t[DbKey(IsDbGenerate = false)]\r\n");
                 BuildColumn(info);
             }
 

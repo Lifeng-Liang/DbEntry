@@ -9,102 +9,90 @@ namespace Lephone.UnitTest.Data
     {
         #region objects of HasMany and HasOne
 
-        public abstract class mrUser : DbObjectModel<mrUser>
+        public class mrUser : DbObjectModel<mrUser>
         {
-            public abstract string Name { get; set; }
-            [HasMany] public abstract IList<mrProject> Projects { get; set; }
-            public mrUser Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [HasMany] public IList<mrProject> Projects { get; set; }
         }
 
-        public abstract class mrProject : DbObjectModel<mrProject>
+        public class mrProject : DbObjectModel<mrProject>
         {
-            public abstract string Name { get; set; }
-            [BelongsTo] public abstract mrUser Owner { get; set; }
-            [HasMany] public abstract IList<mrSubject> Subjects { get; set; }
-            public mrProject Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [BelongsTo] public mrUser Owner { get; set; }
+            [HasMany] public IList<mrSubject> Subjects { get; set; }
         }
 
-        public abstract class mrSubject : DbObjectModel<mrSubject>
+        public class mrSubject : DbObjectModel<mrSubject>
         {
-            public abstract string Name { get; set; }
-            [BelongsTo] public abstract mrProject Owner { get; set; }
-            [HasMany] public abstract IList<mrAttribute> Attributes { get; set; }
-            public mrSubject Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [BelongsTo] public mrProject Owner { get; set; }
+            [HasMany] public IList<mrAttribute> Attributes { get; set; }
         }
 
-        public abstract class mrAttribute : DbObjectModel<mrAttribute>
+        public class mrAttribute : DbObjectModel<mrAttribute>
         {
-            public abstract string Name { get; set; }
-            [BelongsTo] public abstract mrSubject Owner { get; set; }
-            [HasOne] public abstract mrTitle Title { get; set; }
-            public mrAttribute Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [BelongsTo] public mrSubject Owner { get; set; }
+            [HasOne] public mrTitle Title { get; set; }
         }
 
-        public abstract class mrTitle : DbObjectModel<mrTitle>
+        public class mrTitle : DbObjectModel<mrTitle>
         {
-            public abstract string Name { get; set; }
-            [BelongsTo] public abstract mrAttribute Owner { get; set; }
-            public mrTitle Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [BelongsTo] public mrAttribute Owner { get; set; }
         }
 
         #endregion
 
         #region objects of HasAndBelongsTo and HasOne and HasMany
 
-        public abstract class mrBook : DbObjectModel<mrBook>
+        public class mrBook : DbObjectModel<mrBook>
         {
-            public abstract string Name { get; set; }
-            [HasAndBelongsToMany] public abstract IList<mrCategory> Categories { get; set; }
-            public mrBook Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [HasAndBelongsToMany] public IList<mrCategory> Categories { get; set; }
         }
 
-        public abstract class mrCategory : DbObjectModel<mrCategory>
+        public class mrCategory : DbObjectModel<mrCategory>
         {
-            public abstract string Name { get; set; }
-            [HasAndBelongsToMany] public abstract IList<mrBook> Books { get; set; }
-            [HasOne] public abstract mrCateTitle Title { get; set; }
-            public mrCategory Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [HasAndBelongsToMany] public IList<mrBook> Books { get; set; }
+            [HasOne] public mrCateTitle Title { get; set; }
         }
 
-        public abstract class mrCateTitle : DbObjectModel<mrCateTitle>
+        public class mrCateTitle : DbObjectModel<mrCateTitle>
         {
-            public abstract string Name { get; set; }
-            [BelongsTo] public abstract mrCategory Category { get; set; }
-            [HasMany] public abstract IList<mrCateTitleName> Names { get; set; }
-            public mrCateTitle Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [BelongsTo] public mrCategory Category { get; set; }
+            [HasMany] public IList<mrCateTitleName> Names { get; set; }
         }
 
-        public abstract class mrCateTitleName : DbObjectModel<mrCateTitleName>
+        public class mrCateTitleName : DbObjectModel<mrCateTitleName>
         {
-            public abstract string Name { get; set; }
-            [BelongsTo] public abstract mrCateTitle Owner { get; set; }
-            public mrCateTitleName Init(string name) { Name = name; return this; }
+            public string Name { get; set; }
+            [BelongsTo] public mrCateTitle Owner { get; set; }
         }
 
         #endregion
 
         #region simulate many to many
 
-        public abstract class mrReader : DbObjectModel<mrReader>
+        public class mrReader : DbObjectModel<mrReader>
         {
-            public abstract string Name { get; set; }
-            [HasMany] public abstract IList<mrReaderAndArticle> xTable { get; set; }
-            public abstract mrReader Init(string name);
+            public string Name { get; set; }
+            [HasMany] public IList<mrReaderAndArticle> xTable { get; set; }
         }
 
-        public abstract class mrReaderAndArticle : DbObjectModel<mrReaderAndArticle>
+        public class mrReaderAndArticle : DbObjectModel<mrReaderAndArticle>
         {
-            public abstract string Name { get; set; }
-            [BelongsTo] public abstract mrReader Reader { get; set; }
-            [BelongsTo] public abstract mrArticle Article { get; set; }
-            public abstract mrReaderAndArticle Init(string name);
+            public string Name { get; set; }
+            [BelongsTo] public mrReader Reader { get; set; }
+            [BelongsTo] public mrArticle Article { get; set; }
         }
 
-        public abstract class mrArticle : DbObjectModel<mrArticle>
+        public class mrArticle : DbObjectModel<mrArticle>
         {
-            public abstract string Name { get; set; }
-            [HasMany] public abstract IList<mrReaderAndArticle> xTable { get; set; }
-            public abstract mrArticle Init(string name);
+            public string Name { get; set; }
+            [HasMany] public IList<mrReaderAndArticle> xTable { get; set; }
         }
 
         #endregion
@@ -112,15 +100,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasManyAndHasOne1()
         {
-            mrUser u = mrUser.New.Init("user");
-            mrProject p = mrProject.New.Init("project");
+            var u = new mrUser {Name = "user"};
+            var p = new mrProject {Name = "project"};
             u.Projects.Add(p);
             Assert.AreEqual("user", p.Owner.Name);
-            mrSubject s = mrSubject.New.Init("subject");
+            var s = new mrSubject {Name = "subject"};
             p.Subjects.Add(s);
-            mrAttribute a = mrAttribute.New.Init("attribute");
+            var a = new mrAttribute {Name = "attribute"};
             s.Attributes.Add(a);
-            mrTitle t = mrTitle.New.Init("title");
+            var t = new mrTitle {Name = "title"};
             a.Title = t;
 
             u.Save();
@@ -138,15 +126,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasManyAndHasOne2()
         {
-            mrUser u = mrUser.New.Init("user");
-            mrProject p = mrProject.New.Init("project");
+            var u = new mrUser {Name = "user"};
+            var p = new mrProject {Name = "project"};
             u.Projects.Add(p);
             Assert.AreEqual("user", p.Owner.Name);
-            mrSubject s = mrSubject.New.Init("subject");
+            var s = new mrSubject {Name = "subject"};
             p.Subjects.Add(s);
-            mrAttribute a = mrAttribute.New.Init("attribute");
+            var a = new mrAttribute {Name = "attribute"};
             s.Attributes.Add(a);
-            mrTitle t = mrTitle.New.Init("title");
+            var t = new mrTitle {Name = "title"};
             a.Title = t;
 
             u.Save();
@@ -163,12 +151,12 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasAndBelongsToMany1()
         {
-            mrBook b = mrBook.New.Init("book");
-            mrCategory c = mrCategory.New.Init("category");
+            var b = new mrBook {Name = "book"};
+            var c = new mrCategory {Name = "category"};
             b.Categories.Add(c);
-            mrCateTitle t = mrCateTitle.New.Init("title");
+            var t = new mrCateTitle {Name = "title"};
             c.Title = t;
-            mrCateTitleName n = mrCateTitleName.New.Init("name");
+            var n = new mrCateTitleName {Name = "name"};
             t.Names.Add(n);
 
             b.Save();
@@ -184,13 +172,13 @@ namespace Lephone.UnitTest.Data
         [Test, Ignore("for now")]
         public void TestHasAndBelongsToMany2()
         {
-            mrBook b = mrBook.New.Init("book");
-            mrCategory c = mrCategory.New.Init("category");
+            var b = new mrBook {Name = "book"};
+            var c = new mrCategory {Name = "category"};
             b.Categories.Add(c);
             Assert.AreEqual(1, c.Books.Count);
-            mrCateTitle t = mrCateTitle.New.Init("title");
+            var t = new mrCateTitle {Name = "title"};
             c.Title = t;
-            mrCateTitleName n = mrCateTitleName.New.Init("name");
+            var n = new mrCateTitleName {Name = "name"};
             t.Names.Add(n);
 
             c.Save();
@@ -206,9 +194,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSimulateManyToMany()
         {
-            mrReader r = mrReader.New.Init("reader");
-            mrArticle a = mrArticle.New.Init("article");
-            mrReaderAndArticle ra = mrReaderAndArticle.New.Init("x");
+            var r = new mrReader {Name = "reader"};
+            var a = new mrArticle {Name = "article"};
+            var ra = new mrReaderAndArticle {Name = "x"};
             r.xTable.Add(ra);
             a.xTable.Add(ra);
 
@@ -229,9 +217,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSimulateManyToMany2()
         {
-            mrReader r = mrReader.New.Init("reader");
-            mrArticle a = mrArticle.New.Init("article");
-            mrReaderAndArticle ra = mrReaderAndArticle.New.Init("x");
+            var r = new mrReader {Name = "reader"};
+            var a = new mrArticle {Name = "article"};
+            var ra = new mrReaderAndArticle {Name = "x"};
             r.xTable.Add(ra);
             r.xTable[0].Article = a;
 

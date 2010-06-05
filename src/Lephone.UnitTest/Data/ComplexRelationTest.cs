@@ -22,99 +22,81 @@ namespace Lephone.UnitTest.Data
             DbEntry.Context.DropAndCreate(typeof(OverSave4));
         }
 
-        public abstract class Cls1 : DbObjectModel<Cls1>
+        public class Cls1 : DbObjectModel<Cls1>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
             [HasOne]
-            public abstract Cls2 Cls2 { get; set; }
-
-            public abstract Cls1 Init(string name);
+            public Cls2 Cls2 { get; set; }
         }
 
-        public abstract class Cls2 : DbObjectModel<Cls2>
+        public class Cls2 : DbObjectModel<Cls2>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
             [BelongsTo]
-            public abstract Cls1 Cls1 { get; set; }
+            public Cls1 Cls1 { get; set; }
             [HasMany(OrderBy = "Id")]
-            public abstract IList<Cls3> Cls3List { get; set; }
-
-            public abstract Cls2 Init(string name);
+            public IList<Cls3> Cls3List { get; set; }
         }
 
-        public abstract class Cls3 : DbObjectModel<Cls3>
+        public class Cls3 : DbObjectModel<Cls3>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
             [BelongsTo]
-            public abstract Cls2 Cls2 { get; set; }
+            public Cls2 Cls2 { get; set; }
             [BelongsTo]
-            public abstract Cls4 Cls4 { get; set; }
-
-            public abstract Cls3 Init(string name);
+            public Cls4 Cls4 { get; set; }
         }
 
-        public abstract class Cls4 : DbObjectModel<Cls4>
+        public class Cls4 : DbObjectModel<Cls4>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
             [HasMany(OrderBy = "Id")]
-            public abstract IList<Cls3> Cls3List { get; set; }
+            public IList<Cls3> Cls3List { get; set; }
             [BelongsTo]
-            public abstract Cls5 Cls5 { get; set; }
-
-            public abstract Cls4 Init(string name);
+            public Cls5 Cls5 { get; set; }
         }
 
-        public abstract class Cls5 : DbObjectModel<Cls5>
+        public class Cls5 : DbObjectModel<Cls5>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
             [HasOne]
-            public abstract Cls4 Cls4 { get; set; }
-
-            public abstract Cls5 Init(string name);
+            public Cls4 Cls4 { get; set; }
         }
 
-        public abstract class OverSave : DbObjectModel<OverSave>
+        public class OverSave : DbObjectModel<OverSave>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
 
             [HasMany]
-            public abstract IList<OverSave2> Overs { get; set; }
-
-            public abstract OverSave Init(string name);
+            public IList<OverSave2> Overs { get; set; }
         }
 
-        public abstract class OverSave2 : DbObjectModel<OverSave2>
+        public class OverSave2 : DbObjectModel<OverSave2>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
 
             [BelongsTo]
-            public abstract OverSave Over { get; set; }
-
-            public abstract OverSave2 Init(string name);
+            public OverSave Over { get; set; }
 
             public override void Save()
             {
             }
         }
 
-        public abstract class OverSave3 : DbObjectModel<OverSave3>
+        public class OverSave3 : DbObjectModel<OverSave3>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
 
             [HasMany]
-            public abstract IList<OverSave4> Overs { get; set; }
-
-            public abstract OverSave3 Init(string name);
+            public IList<OverSave4> Overs { get; set; }
         }
 
-        public abstract class OverSave4 : DbObjectModel<OverSave4>
+        public class OverSave4 : DbObjectModel<OverSave4>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
 
             [BelongsTo]
-            public abstract OverSave3 Over { get; set; }
-
-            public abstract OverSave4 Init(string name);
+            public OverSave3 Over { get; set; }
 
             public override void Save()
             {
@@ -126,14 +108,12 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var c1 = Cls1.New.Init("c1");
-            c1.Cls2 = Cls2.New.Init("c2");
-            c1.Cls2.Cls3List.Add(Cls3.New.Init("c31"));
-            c1.Cls2.Cls3List.Add(Cls3.New.Init("c32"));
-            var c4 = Cls4.New.Init("c4");
+            var c1 = new Cls1 {Name = "c1", Cls2 = new Cls2 {Name = "c2"}};
+            c1.Cls2.Cls3List.Add(new Cls3 {Name = "c31"});
+            c1.Cls2.Cls3List.Add(new Cls3 {Name = "c32"});
+            var c4 = new Cls4 {Name = "c4"};
             c4.Cls3List.Add(c1.Cls2.Cls3List[0]);
-            var c5 = Cls5.New.Init("c5");
-            c5.Cls4 = c1.Cls2.Cls3List[0].Cls4;
+            var c5 = new Cls5 {Name = "c5", Cls4 = c1.Cls2.Cls3List[0].Cls4};
             c1.Save();
 
             var c = Cls1.FindById(c1.Id);
@@ -149,12 +129,10 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            var c1 = Cls1.New.Init("c1");
-            c1.Cls2 = Cls2.New.Init("c2");
-            c1.Cls2.Cls3List.Add(Cls3.New.Init("c31"));
-            c1.Cls2.Cls3List.Add(Cls3.New.Init("c32"));
-            c1.Cls2.Cls3List[0].Cls4 = Cls4.New.Init("c4");
-            c1.Cls2.Cls3List[0].Cls4.Cls5 = Cls5.New.Init("c5");
+            var c1 = new Cls1 {Name = "c1", Cls2 = new Cls2 {Name = "c2"}};
+            c1.Cls2.Cls3List.Add(new Cls3 {Name = "c31"});
+            c1.Cls2.Cls3List.Add(new Cls3 {Name = "c32"});
+            c1.Cls2.Cls3List[0].Cls4 = new Cls4 {Name = "c4", Cls5 = new Cls5 {Name = "c5"}};
 
             c1.Save();
 
@@ -171,17 +149,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            var c1 = Cls1.New.Init("c1");
-            c1.Cls2 = Cls2.New.Init("c2");
-            c1.Cls2.Cls3List.Add(Cls3.New.Init("c31"));
-            c1.Cls2.Cls3List.Add(Cls3.New.Init("c32"));
-            c1.Cls2.Cls3List[0].Cls4 = Cls4.New.Init("c4");
-            c1.Cls2.Cls3List[0].Cls4.Cls5 = Cls5.New.Init("c5");
+            var c1 = new Cls1 {Name = "c1", Cls2 = new Cls2 {Name = "c2"}};
+            c1.Cls2.Cls3List.Add(new Cls3 {Name = "c31"});
+            c1.Cls2.Cls3List.Add(new Cls3 {Name = "c32"});
+            c1.Cls2.Cls3List[0].Cls4 = new Cls4 {Name = "c4", Cls5 = new Cls5 {Name = "c5"}};
 
             c1.Save();
 
             var c = Cls1.FindById(c1.Id);
-            c.Cls2.Cls3List.Add(Cls3.New.Init("c33"));
+            c.Cls2.Cls3List.Add(new Cls3 {Name = "c33"});
 
             c.Save();
 
@@ -199,17 +175,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test4()
         {
-            var c1 = Cls1.New.Init("c1");
-            c1.Cls2 = Cls2.New.Init("c2");
-            c1.Cls2.Cls3List.Add(Cls3.New.Init("c31"));
-            c1.Cls2.Cls3List.Add(Cls3.New.Init("c32"));
-            c1.Cls2.Cls3List[0].Cls4 = Cls4.New.Init("c4");
-            c1.Cls2.Cls3List[0].Cls4.Cls5 = Cls5.New.Init("c5");
+            var c1 = new Cls1 {Name = "c1", Cls2 = new Cls2 {Name = "c2"}};
+            c1.Cls2.Cls3List.Add(new Cls3 {Name = "c31"});
+            c1.Cls2.Cls3List.Add(new Cls3 {Name = "c32"});
+            c1.Cls2.Cls3List[0].Cls4 = new Cls4 {Name = "c4", Cls5 = new Cls5 {Name = "c5"}};
 
             c1.Save();
 
             var c4 = Cls4.FindById(c1.Cls2.Cls3List[0].Cls4.Id);
-            c4.Cls5 = Cls5.New.Init("c5x");
+            c4.Cls5 = new Cls5 {Name = "c5x"};
 
             c4.Save();
 
@@ -226,8 +200,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestOverrideSave()
         {
-            var o = OverSave.New.Init("test");
-            o.Overs.Add(OverSave2.New.Init("ok"));
+            var o = new OverSave {Name = "test"};
+            o.Overs.Add(new OverSave2 {Name = "ok"});
             o.Save();
 
             var o1 = OverSave.FindById(o.Id);
@@ -238,8 +212,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestOverrideSave2()
         {
-            var o = OverSave3.New.Init("test");
-            o.Overs.Add(OverSave4.New.Init("ok"));
+            var o = new OverSave3 {Name = "test"};
+            o.Overs.Add(new OverSave4 {Name = "ok"});
             o.Save();
 
             var o1 = OverSave3.FindById(o.Id);

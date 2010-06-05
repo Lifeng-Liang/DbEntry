@@ -9,14 +9,12 @@ namespace DebugLib.Models
         Female,
     }
 
-    public abstract class SysUser : DbObjectModel<SysUser>
+    public class SysUser : DbObjectModel<SysUser>
     {
         [Length(20)]
-        public abstract string Name { get; set; }
-        public abstract int Age { get; set; }
-        public abstract Date Birthday { get; set; }
-        public abstract bool IsMale { get; set; }
-
-        public abstract SysUser Init(string name, int age, Date birthday, bool isMale);
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public Date Birthday { get; set; }
+        public bool IsMale { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class FirebirdTest
     {
-        private readonly DbContext de = EntryConfig.NewContext("Firebird");
+        private readonly DbContext _firebird = EntryConfig.NewContext("Firebird");
 
         [SetUp]
         public void SetUp()
@@ -20,9 +20,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateAndInsert()
         {
-            PeopleModel o = PeopleModel.New;
-            o.Name = "tom";
-            de.Save(o);
+            var o = new PeopleModel {Name = "tom"};
+            _firebird.Save(o);
 
             Assert.AreEqual(4, StaticRecorder.Messages.Count);
             Assert.AreEqual("CREATE TABLE \"PEOPLE\" (\"ID\" BIGINT NOT NULL PRIMARY KEY,\"NAME\" VARCHAR (5) CHARACTER SET UNICODE_FSS NOT NULL);<Text><30>()", StaticRecorder.Messages[0]);
@@ -35,28 +34,28 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSelect()
         {
-            de.From<PeopleModel>().Where(CK.K["Name"] == "tom" && CK.K["Age"] > 18).Select();
+            _firebird.From<PeopleModel>().Where(CK.K["Name"] == "tom" && CK.K["Age"] > 18).Select();
             Assert.AreEqual("SELECT \"ID\",\"NAME\" FROM \"PEOPLE\" WHERE (\"NAME\" = @Name_0) AND (\"AGE\" > @Age_1);<Text><60>(@Name_0=tom:String,@Age_1=18:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestCreate()
         {
-            de.Create(typeof(LephoneEnum));
-            const string Exp = "CREATE TABLE \"LEPHONE_ENUM\" (" +
+            _firebird.Create(typeof(LephoneEnum));
+            const string exp = "CREATE TABLE \"LEPHONE_ENUM\" (" +
                                "\"ID\" BIGINT NOT NULL PRIMARY KEY," +
                                "\"TYPE\" INT NOT NULL ," +
                                "\"NAME\" VARCHAR (50) CHARACTER SET UNICODE_FSS NOT NULL ," +
                                "\"VALUE\" INT" +
                                ");<Text><30>()";
-            Assert.AreEqual(Exp, StaticRecorder.Messages[0]);
+            Assert.AreEqual(exp, StaticRecorder.Messages[0]);
             Assert.AreEqual("CREATE GENERATOR GEN_LEPHONE_ENUM_ID;<Text><30>()", StaticRecorder.Messages[1]);
         }
 
         [Test]
         public void TestDrop()
         {
-            de.DropTable(typeof(LephoneEnum));
+            _firebird.DropTable(typeof(LephoneEnum));
             Assert.AreEqual("DROP TABLE \"LEPHONE_ENUM\"<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("DROP GENERATOR GEN_LEPHONE_ENUM_ID;<Text><30>()", StaticRecorder.Messages[1]);
         }

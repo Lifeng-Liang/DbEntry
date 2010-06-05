@@ -9,36 +9,36 @@ using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
-    public abstract class FullType : DbObjectModel<FullType>
+    public class FullType : DbObjectModel<FullType>
     {
-        public abstract string c1 { get; set; }
-        public abstract int c2 { get; set; }
-        public abstract short c3 { get; set; }
-        public abstract byte c4 { get; set; }
-        public abstract bool c5 { get; set; }
-        public abstract DateTime c6 { get; set; }
-        public abstract decimal c7 { get; set; }
-        public abstract float c8 { get; set; }
-        public abstract double c9 { get; set; }
-        public abstract Guid c10 { get; set; }
-        public abstract sbyte c11 { get; set; }
-        public abstract byte[] c15 { get; set; }
+        public string c1 { get; set; }
+        public int c2 { get; set; }
+        public short c3 { get; set; }
+        public byte c4 { get; set; }
+        public bool c5 { get; set; }
+        public DateTime c6 { get; set; }
+        public decimal c7 { get; set; }
+        public float c8 { get; set; }
+        public double c9 { get; set; }
+        public Guid c10 { get; set; }
+        public sbyte c11 { get; set; }
+        public byte[] c15 { get; set; }
     }
 
-    public abstract class FullType2 : DbObjectModel<FullType2>
+    public class FullType2 : DbObjectModel<FullType2>
     {
-        public abstract string c1 { get; set; }
-        public abstract int? c2 { get; set; }
-        public abstract short? c3 { get; set; }
-        public abstract byte? c4 { get; set; }
-        public abstract bool? c5 { get; set; }
-        public abstract DateTime? c6 { get; set; }
-        public abstract decimal? c7 { get; set; }
-        public abstract float? c8 { get; set; }
-        public abstract double? c9 { get; set; }
-        public abstract Guid? c10 { get; set; }
-        public abstract sbyte? c11 { get; set; }
-        public abstract byte[] c15 { get; set; }
+        public string c1 { get; set; }
+        public int? c2 { get; set; }
+        public short? c3 { get; set; }
+        public byte? c4 { get; set; }
+        public bool? c5 { get; set; }
+        public DateTime? c6 { get; set; }
+        public decimal? c7 { get; set; }
+        public float? c8 { get; set; }
+        public double? c9 { get; set; }
+        public Guid? c10 { get; set; }
+        public sbyte? c11 { get; set; }
+        public byte[] c15 { get; set; }
     }
 
     [TestFixture]
@@ -56,19 +56,21 @@ namespace Lephone.UnitTest.Data
         [SetUp]
         public void SetUp()
         {
-            FullType ft = FullType.New;
-            ft.c1 = "tom";
-            ft.c2 = 2;
-            ft.c3 = 3;
-            ft.c4 = 4;
-            ft.c5 = true;
-            ft.c6 = new DateTime(2000, 1, 1);
-            ft.c7 = 7;
-            ft.c8 = (float)8.1;
-            ft.c9 = 9.1;
-            ft.c10 = guid;
-            ft.c11 = 11;
-            ft.c15 = new byte[] { 1, 2, 3, 4, 5 };
+            var ft = new FullType
+                         {
+                             c1 = "tom",
+                             c2 = 2,
+                             c3 = 3,
+                             c4 = 4,
+                             c5 = true,
+                             c6 = new DateTime(2000, 1, 1),
+                             c7 = 7,
+                             c8 = (float) 8.1,
+                             c9 = 9.1,
+                             c10 = guid,
+                             c11 = 11,
+                             c15 = new byte[] {1, 2, 3, 4, 5}
+                         };
             // get infos.
             PropertyInfo[] pis = typeof(FullType).GetProperties();
             StaticRecorder.CurRow.Clear();

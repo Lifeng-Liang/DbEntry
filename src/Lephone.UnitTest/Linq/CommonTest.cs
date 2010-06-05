@@ -14,10 +14,10 @@ namespace Lephone.UnitTest.Linq
         public int nnn = 30;
 
         [DbTable("People")]
-        public abstract class Person : DbObjectModel<Person>
+        public class Person : DbObjectModel<Person>
         {
             [DbColumn("Name")]
-            public abstract string FirstName { get; set; }
+            public string FirstName { get; set; }
         }
 
         public enum MyEnum
@@ -26,10 +26,10 @@ namespace Lephone.UnitTest.Linq
             Test2,
         }
 
-        public abstract class EnumTest : DbObjectModel<EnumTest>
+        public class EnumTest : DbObjectModel<EnumTest>
         {
             [DbColumn("ccc")]
-            public abstract MyEnum Abc { get; set; }
+            public MyEnum Abc { get; set; }
         }
 
         [Test]

@@ -4,19 +4,12 @@ using Lephone.Util.Setting;
 
 namespace Lephone.Data.Common
 {
-    public abstract class LephoneSetting : DbObjectModel<LephoneSetting>
+    public class LephoneSetting : DbObjectModel<LephoneSetting>
     {
         [Length(1, 50), Index(UNIQUE = true)]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
-        public abstract string Content { get; set; }
-
-        public LephoneSetting Init(string name, string content)
-        {
-            this.Name = name;
-            this.Content = content;
-            return this;
-        }
+        public string Content { get; set; }
     }
 
     public class DbConfigHelper : ConfigHelperBase

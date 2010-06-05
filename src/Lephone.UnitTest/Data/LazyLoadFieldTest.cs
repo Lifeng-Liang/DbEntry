@@ -1,6 +1,5 @@
 ﻿using Lephone.Data;
 using Lephone.Data.Definition;
-using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using Lephone.Util;
 using NUnit.Framework;
@@ -18,9 +17,9 @@ namespace Lephone.UnitTest.Data
         }
     }
 
-    public abstract class lzUser : DbObjectModel<lzUser>
+    public class lzUser : DbObjectModel<lzUser>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [DbColumn("Profile")]
         protected internal LazyLoadField<string> _Profile;
@@ -39,29 +38,29 @@ namespace Lephone.UnitTest.Data
             }
         }
 
-        protected lzUser()
+        public lzUser()
         {
             _Profile = new LazyLoadField<string>(this);
         }
     }
 
-    public abstract class lzpUser : DbObjectModel<lzpUser>
+    public class lzpUser : DbObjectModel<lzpUser>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [LazyLoad]
-        public abstract string Profile { get; set; }
+        public string Profile { get; set; }
     }
 
     [DbTable("User")]
-    public abstract class lzpUser1 : DbObjectModel<lzpUser1>
+    public class lzpUser1 : DbObjectModel<lzpUser1>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [LazyLoad, AllowNull, DbColumn("MyTest"), Length(10)]
         [StringColumn(IsUnicode=false, Regular=CommonRegular.EmailRegular)]
         [Index(ASC=true, IndexName="test", UNIQUE=true)]
-        public abstract string Profile { get; set; }
+        public string Profile { get; set; }
     }
 
     [TestFixture]
@@ -94,9 +93,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestValidate()
         {
-            lzpUser1 u = lzpUser1.New;
-            u.Name = "tom";
-            u.Profile = "xxx";
+            var u = new lzpUser1 {Name = "tom", Profile = "xxx"};
             Assert.IsFalse(u.IsValid());
 
             u.Profile = "a@b.c";
@@ -113,19 +110,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsert()
         {
-            lzUser u = lzUser.New;
-            u.Name = "tom";
-            u.Profile = "test";
+            var u = new lzUser {Name = "tom", Profile = "test"};
             sqlite.Insert(u);
             Assert.AreEqual("INSERT INTO [lz_User] ([Name],[Profile]) VALUES (@Name_0,@Profile_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String,@Profile_1=test:String)", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void TestCRUD()
+        public void TestCrud()
         {
-            lzUser u = lzUser.New;
-            u.Name = "tom";
-            u.Profile = "test";
+            var u = new lzUser {Name = "tom", Profile = "test"};
             u.Save();
             Assert.AreEqual(1, u.Id);
 
@@ -147,11 +140,9 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestCRUDforDynamicObject()
+        public void TestCrudForDynamicObject()
         {
-            lzpUser u = lzpUser.New;
-            u.Name = "tom";
-            u.Profile = "test";
+            var u = new lzpUser {Name = "tom", Profile = "test"};
             u.Save();
             Assert.AreEqual(1, u.Id);
 
@@ -175,9 +166,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestForNotUpdateWithDynamicObject()
         {
-            lzpUser u = lzpUser.New;
-            u.Name = "tom";
-            u.Profile = "test";
+            var u = new lzpUser {Name = "tom", Profile = "test"};
             u.Save();
             Assert.AreEqual(1, u.Id);
 
@@ -193,9 +182,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestForNotUpdate()
         {
-            var u = new lzUser1();
-            u.Name = "tom";
-            u.Profile.Value = "test";
+            var u = new lzUser1 {Name = "tom", Profile = {Value = "test"}};
             DbEntry.Save(u);
             Assert.AreEqual(1, u.Id);
 

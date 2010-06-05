@@ -5,27 +5,25 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [DbTable("DateAndTime")]
-    public abstract class DateAndTime : DbObjectModel<DateAndTime>
+    public class DateAndTime : DbObjectModel<DateAndTime>
     {
-        public abstract DateTime dtValue { get; set; }
+        public DateTime dtValue { get; set; }
 
-        public abstract Date dValue { get; set; }
+        public Date dValue { get; set; }
 
-        public abstract Time tValue { get; set; }
+        public Time tValue { get; set; }
 
-        public abstract DateTime? dtnValue { get; set; }
+        public DateTime? dtnValue { get; set; }
 
-        public abstract Date? dnValue { get; set; }
+        public Date? dnValue { get; set; }
 
-        public abstract Time? tnValue { get; set; }
+        public Time? tnValue { get; set; }
     }
 
-    public abstract class DateAndTime2 : DbObjectModel<DateAndTime2>
+    public class DateAndTime2 : DbObjectModel<DateAndTime2>
     {
-        public abstract Date StartDate { get; set; }
-        public abstract Time StartTime { get; set; }
-
-        public abstract DateAndTime2 Init(Date startDate, Time startTime);
+        public Date StartDate { get; set; }
+        public Time StartTime { get; set; }
     }
 
 
@@ -61,7 +59,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            var dt = DateAndTime2.New.Init(new Date(2008, 7, 22), new Time(12, 30, 50));
+            var dt = new DateAndTime2 {StartDate = new Date(2008, 7, 22), StartTime = new Time(12, 30, 50)};
             dt.Save();
 
             var n = DateAndTime2.FindById(dt.Id);

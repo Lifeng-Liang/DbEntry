@@ -30,9 +30,9 @@ namespace Lephone.UnitTest.util
         }
 
         [Serializable]
-        public abstract class Sitex : DbObjectModel<Sitex>
+        public class Sitex : DbObjectModel<Sitex>
         {
-            public abstract string Url { get; set; }
+            public string Url { get; set; }
         }
 
         [Test]
@@ -54,8 +54,7 @@ namespace Lephone.UnitTest.util
         [Test, Ignore("waiting for a full supported ReadXml function, Maybe include GetSchema")]
         public void Test3()
         {
-            Sitex s = Sitex.New;
-            s.Url = "ddd";
+            var s = new Sitex {Url = "ddd"};
             string c2 = XmlSerializer<Sitex>.Xml.Serialize(s);
             Assert.AreEqual(@"<?xml version=""1.0""?>
 <Sitex>

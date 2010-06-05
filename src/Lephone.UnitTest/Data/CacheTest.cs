@@ -16,121 +16,117 @@ namespace Lephone.UnitTest.Data
         #region models
 
         [Cacheable, DbTable("PCs")]
-        public abstract class Lazyable : DbObjectModel<Lazyable>
+        public class Lazyable : DbObjectModel<Lazyable>
         {
             [LazyLoad, DbColumn("Name")]
-            public abstract string Content { get; set; }
+            public string Content { get; set; }
 
             [DbColumn("Person_Id")]
-            public abstract int TestColumn { get; set; }
-
-            public abstract Lazyable Init(string content, int testColumn);
+            public int TestColumn { get; set; }
         }
 
         [Cacheable, DbTable("PCs"), DbContext("SQLite")]
-        public abstract class LazyableSqlite : DbObjectModel<LazyableSqlite>
+        public class LazyableSqlite : DbObjectModel<LazyableSqlite>
         {
             [LazyLoad, DbColumn("Name")]
-            public abstract string Content { get; set; }
+            public string Content { get; set; }
 
             [DbColumn("Person_Id")]
-            public abstract int TestColumn { get; set; }
-
-            public abstract LazyableSqlite Init(string content, int testColumn);
+            public int TestColumn { get; set; }
         }
 
         [DbTable("DCS_USERS"), Cacheable]
-        public abstract class User : DbObjectModel<User>
+        public class User : DbObjectModel<User>
         {
             [DbColumn("USER_NAME")]
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
         }
 
         [DbTable("REF_ORG_UNIT"), Cacheable]
-        public abstract class OrganisationalUnit : DbObjectModel<OrganisationalUnit>
+        public class OrganisationalUnit : DbObjectModel<OrganisationalUnit>
         {
             [HasMany]
-            public abstract IList<JobRoleRelation> JobRoleRelations { get; set; }
+            public IList<JobRoleRelation> JobRoleRelations { get; set; }
         }
 
         [DbTable("HRM_EMPLOYEES"), Cacheable]
-        public abstract class Employee : DbObjectModel<Employee>
+        public class Employee : DbObjectModel<Employee>
         {
             [HasOne]
-            public abstract EmployeeRoleRelation Rel { get; set; }
+            public EmployeeRoleRelation Rel { get; set; }
 
             [BelongsTo]
-            public abstract Person Person { get; set; }
+            public Person Person { get; set; }
         }
 
         [DbTable("DCS_PERSONS")]
-        public abstract class Person : DbObjectModel<Person>
+        public class Person : DbObjectModel<Person>
         {
             [DbColumn("NAME_LAST")]
-            public abstract string LastName { get; set; }
+            public string LastName { get; set; }
 
             [HasOne]
-            public abstract Employee emp { get; set; }
+            public Employee emp { get; set; }
         }
 
         [DbTable("REL_EMP_JOB_ROLE"), Cacheable]
-        public abstract class EmployeeRoleRelation : DbObjectModel<EmployeeRoleRelation>
+        public class EmployeeRoleRelation : DbObjectModel<EmployeeRoleRelation>
         {
             [DbColumn("UC")]
-            public abstract long CreatedBy { get; set; }
+            public long CreatedBy { get; set; }
 
             [DbColumn("AF")]
-            public abstract bool Active { get; set; }
+            public bool Active { get; set; }
 
             [DbColumn("START_DATE")]
-            public abstract DateTime? Start { get; set; }
+            public DateTime? Start { get; set; }
 
             [BelongsTo]
-            public abstract Employee Employee { get; set; }
+            public Employee Employee { get; set; }
 
             [BelongsTo]
-            public abstract JobRole jrr { get; set; }
+            public JobRole jrr { get; set; }
         }
 
         [DbTable("REL_JOB_ROLE_ORG_UNIT"), Cacheable]
-        public abstract class JobRoleRelation : DbObjectModel<JobRoleRelation>
+        public class JobRoleRelation : DbObjectModel<JobRoleRelation>
         {
             [DbColumn("UC")]
-            public abstract long CreatedBy { get; set; }
+            public long CreatedBy { get; set; }
 
             [DbColumn("AF")]
-            public abstract bool Active { get; set; }
+            public bool Active { get; set; }
 
             [DbColumn("RELATION_TYPE")]
-            public abstract JobRoleRelationType Type { get; set; }
+            public JobRoleRelationType Type { get; set; }
 
             [BelongsTo]
-            public abstract OrganisationalUnit OrganisationalUnit { get; set; }
+            public OrganisationalUnit OrganisationalUnit { get; set; }
 
             [BelongsTo]
-            public abstract JobRole JobRole { get; set; }
+            public JobRole JobRole { get; set; }
         }
 
         [DbTable("HRM_JOB_ROLES"), Cacheable]
-        public abstract class JobRole : DbObjectModel<JobRole>
+        public class JobRole : DbObjectModel<JobRole>
         {
             [DbColumn("UC")]
-            public abstract long CreatedBy { get; set; }
+            public long CreatedBy { get; set; }
 
             [DbColumn("CODE")]
-            public abstract string Code { get; set; }
+            public string Code { get; set; }
 
             [DbColumn("ROLE_NAME")]
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
 
             [DbColumn("DESCRIPTION")]
-            public abstract string Description { get; set; }
+            public string Description { get; set; }
 
             [HasMany]
-            public abstract IList<JobRoleRelation> JobRoleRelations { get; set; }
+            public IList<JobRoleRelation> JobRoleRelations { get; set; }
 
             [HasMany]
-            public abstract IList<EmployeeRoleRelation> EmployeeRoleRelations { get; set; }
+            public IList<EmployeeRoleRelation> EmployeeRoleRelations { get; set; }
         }
 
         public enum JobRoleRelationType
@@ -188,7 +184,7 @@ namespace Lephone.UnitTest.Data
         */
 
         [Test]
-        public void T0300_HRM_JobRoleRelation()
+        public void T0300HrmJobRoleRelation()
         {
             // get system user
             var u = User.FindOne(x => x.Name == "SYSTEM");
@@ -203,26 +199,26 @@ namespace Lephone.UnitTest.Data
             Assert.IsNotNull(emp);
 
             // create employee job role relation
-            EmployeeRoleRelation rel1 = EmployeeRoleRelation.New;
-            rel1.CreatedBy = u.Id;
-            rel1.Active = true;
-            rel1.Start = DateTime.Now;
-            rel1.Employee = emp;
+            var rel1 = new EmployeeRoleRelation
+                           {
+                               CreatedBy = u.Id,
+                               Active = true,
+                               Start = DateTime.Now,
+                               Employee = emp
+                           };
             rel1.Save();
 
             // create job role relation
-            JobRoleRelation rel = JobRoleRelation.New;
-            rel.CreatedBy = u.Id;
-            rel.Active = true;
-            rel.Type = JobRoleRelationType.Manager;
-            rel.OrganisationalUnit = ou;
+            var rel = new JobRoleRelation
+                          {
+                              CreatedBy = u.Id,
+                              Active = true,
+                              Type = JobRoleRelationType.Manager,
+                              OrganisationalUnit = ou
+                          };
             rel.Save();
 
-            JobRole jr = JobRole.New;
-            jr.CreatedBy = u.Id;
-            jr.Code = "CEO";
-            jr.Name = "CEO";
-            jr.Description = "CEO";
+            var jr = new JobRole {CreatedBy = u.Id, Code = "CEO", Name = "CEO", Description = "CEO"};
             jr.JobRoleRelations.Add(rel);
             jr.EmployeeRoleRelations.Add(rel1);
             jr.Save();

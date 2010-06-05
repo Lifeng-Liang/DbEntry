@@ -5,55 +5,53 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [DbTable("SYS_GRU")]
-    public abstract class AppGrupoUsr : DbObjectModel<AppGrupoUsr>
+    public class AppGrupoUsr : DbObjectModel<AppGrupoUsr>
     {
         [Length(20)]
-        public abstract string Codigo { get; set; }
+        public string Codigo { get; set; }
 
         [Length(50), AllowNull]
-        public abstract string Nombre { get; set; }
+        public string Nombre { get; set; }
 
         [HasMany(OrderBy = "Id")]
-        public abstract HasMany<AppGrupoUsrMnu> GrpMnu { get; set; }
+        public HasMany<AppGrupoUsrMnu> GrpMnu { get; set; }
     }
 
     [DbTable("SYS_GUM")]
-    public abstract class AppGrupoUsrMnu : DbObjectModel<AppGrupoUsrMnu>
+    public class AppGrupoUsrMnu : DbObjectModel<AppGrupoUsrMnu>
     {
         [BelongsTo, DbColumn("gru_id")]
-        public abstract AppGrupoUsr AppGrupoUsr { get; set; }
+        public AppGrupoUsr AppGrupoUsr { get; set; }
 
         [Length(20), AllowNull]
-        public abstract string CodigoMenu { get; set; }
+        public string CodigoMenu { get; set; }
 
         [Length(50), AllowNull]
-        public abstract string Atts { get; set; }
-
-        public abstract AppGrupoUsrMnu Init(string CodigoMenu, string Atts);
+        public string Atts { get; set; }
     }
 
     [Serializable]
-    public abstract class BaoXiuRS : DbObjectModel<BaoXiuRS>
+    public class BaoXiuRS : DbObjectModel<BaoXiuRS>
     {
         [AllowNull, Length(50)]
-        public abstract string UserId { get; set; }// ID 
+        public string UserId { get; set; }// ID 
         [AllowNull, Length(50)]
-        public abstract string UserName { get; set; }//  
+        public string UserName { get; set; }//  
         [AllowNull, Length(50)]
-        public abstract string ADDR { get; set; }//班级或办公室名称
+        public string ADDR { get; set; }//班级或办公室名称
         [AllowNull, Length(50)]
-        public abstract string Fenlei { get; set; }// 分类 
+        public string Fenlei { get; set; }// 分类 
         [AllowNull, Length(500)]
-        public abstract string Content { get; set; }//故障内容
-        public abstract Date? DT1 { get; set; }// 维修日期
-        public abstract Date? DT { get; set; }// 报修日期
+        public string Content { get; set; }//故障内容
+        public Date? DT1 { get; set; }// 维修日期
+        public Date? DT { get; set; }// 报修日期
         [AllowNull, Length(50)]
-        public abstract string People { get; set; }//PEOPLE 使用人
+        public string People { get; set; }//PEOPLE 使用人
         [AllowNull, Length(50)]
-        public abstract string Tel { get; set; }//
+        public string Tel { get; set; }//
 
         [AllowNull, Length(50)]
-        public abstract string Weixiu { get; set; }//维修记录
+        public string Weixiu { get; set; }//维修记录
     }
 
     [TestFixture]
@@ -62,10 +60,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var u = AppGrupoUsr.New;
-            u.Codigo = "codigo";
-            u.Nombre = "test";
-            var g = AppGrupoUsrMnu.New.Init("menu", "atts");
+            var u = new AppGrupoUsr {Codigo = "codigo", Nombre = "test"};
+            var g = new AppGrupoUsrMnu {CodigoMenu = "menu", Atts = "atts"};
             u.GrpMnu.Add(g);
             u.Save();
 
@@ -82,9 +78,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            var o = BaoXiuRS.New;
-            o.DT1 = new Date(2009, 5, 20);
-            o.DT = new Date(2009, 5, 22);
+            var o = new BaoXiuRS {DT1 = new Date(2009, 5, 20), DT = new Date(2009, 5, 22)};
             o.Save();
 
             var o1 = BaoXiuRS.FindById(o.Id);

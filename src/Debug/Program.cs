@@ -6,20 +6,18 @@ namespace Debug
 {
     class Program
     {
-        public abstract class User : DbObjectModel<User>
+        public class User : DbObjectModel<User>
         {
-            public abstract string Name { get; set; }
-            public abstract int Age { get; set; }
-            public abstract bool Gender { get; set; }
-            public abstract DateTime Birthday { get; set; }
-
-            public abstract User Init(string name, int age, bool gender, DateTime birthday);
+            public string Name { get; set; }
+            public int Age { get; set; }
+            public bool Gender { get; set; }
+            public DateTime Birthday { get; set; }
         }
 
         static void Main()
         {
             // Create
-            var u = User.New.Init("tom", 18, true, DateTime.Now);
+            var u = new User {Name = "tom", Age = 18, Gender = true, Birthday = DateTime.Now};
             u.Save();
             // Read
             var u1 = User.FindById(u.Id);

@@ -8,36 +8,30 @@ namespace Lephone.UnitTest.Data
     #region objects
 
     [DbTable("Article")]
-    public abstract class bArticle : DbObjectModel<bArticle>
+    public class bArticle : DbObjectModel<bArticle>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
         [HasMany(OrderBy = "Id")]
-        public abstract IList<BelongsMore> bms { get; set; }
-
-        public abstract bArticle Init(string name);
+        public IList<BelongsMore> bms { get; set; }
     }
 
     [DbTable("Reader")]
-    public abstract class bReader : DbObjectModel<bReader>
+    public class bReader : DbObjectModel<bReader>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
         [HasMany(OrderBy = "Id")]
-        public abstract IList<BelongsMore> bms { get; set; }
-
-        public abstract bReader Init(string name);
+        public IList<BelongsMore> bms { get; set; }
     }
 
     [DbTable("BelongsMore")]
-    public abstract class BelongsMore : DbObjectModel<BelongsMore>
+    public class BelongsMore : DbObjectModel<BelongsMore>
     {
         [Length(50)]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
         [BelongsTo]
-        public abstract bArticle art { get; set; }
+        public bArticle art { get; set; }
         [BelongsTo]
-        public abstract bReader rd { get; set; }
-
-        public abstract BelongsMore Init(string name);
+        public bReader rd { get; set; }
     }
 
     #endregion
@@ -100,8 +94,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsert()
         {
-            bReader r = bReader.New;
-            r.Name = "test";
+            var r = new bReader {Name = "test"};
             r.Save();
 
             bReader r1 = bReader.FindById(r.Id);
@@ -112,8 +105,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsertRelations()
         {
-            bReader r = bReader.New.Init("test");
-            BelongsMore b = BelongsMore.New.Init("b");
+            var r = new bReader {Name = "test"};
+            var b = new BelongsMore {Name = "b"};
             r.bms.Add(b);
             r.Save();
 
@@ -129,9 +122,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsertRelations2()
         {
-            bReader r = bReader.New.Init("test");
-            bArticle a = bArticle.New.Init("art");
-            BelongsMore b = BelongsMore.New.Init("b");
+            var r = new bReader {Name = "test"};
+            var a = new bArticle {Name = "art"};
+            var b = new BelongsMore {Name = "b"};
             r.bms.Add(b);
             a.bms.Add(b);
             r.Save();
@@ -237,7 +230,7 @@ namespace Lephone.UnitTest.Data
             bArticle a = bArticle.FindById(1);
             Assert.AreEqual(0, a.bms.Count);
 
-            a.bms.Add(BelongsMore.New.Init("mytest"));
+            a.bms.Add(new BelongsMore {Name = "mytest"});
             a.Save();
 
             a = bArticle.FindById(1);

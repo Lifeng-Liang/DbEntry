@@ -11,16 +11,15 @@ namespace Lephone.UnitTest.Data
     public class SerializeTest
     {
         [Serializable]
-        public abstract class User : DbObjectModel<User>
+        public class User : DbObjectModel<User>
         {
-            public abstract string Name { get; set; }
-            public abstract User Init(long id, string name);
+            public string Name { get; set; }
         }
 
         [Test]
         public void Test1()
         {
-            var u = User.New.Init(3, "tom");
+            var u = new User {Id = 3, Name = "tom"};
 
             IFormatter formatter = new BinaryFormatter();
             using(var stream = new MemoryStream())

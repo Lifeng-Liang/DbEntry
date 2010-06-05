@@ -6,33 +6,33 @@ using Lephone.Util.Text;
 
 namespace Lephone.Web
 {
-    public abstract class DbEntryMembershipUser : DbObjectModel<DbEntryMembershipUser>
+    public class DbEntryMembershipUser : DbObjectModel<DbEntryMembershipUser>
     {
         [Length(1, 30), Index(UNIQUE = true)]
-        public abstract string UserName { get; set; }
+        public string UserName { get; set; }
 
         [Length(64)]
-        public abstract byte[] Password { get; set; }
+        public byte[] Password { get; set; }
 
         [Length(1, 50), Index(UNIQUE = true)]
-        public abstract string Email { get; set; }
+        public string Email { get; set; }
 
         [Length(50)]
-        public abstract string PasswordQuestion { get; set; }
+        public string PasswordQuestion { get; set; }
 
         [Length(64)]
-        public abstract byte[] PasswordAnswer { get; set; }
+        public byte[] PasswordAnswer { get; set; }
 
-        public abstract bool IsApproved { get; set; }
+        public bool IsApproved { get; set; }
 
         [AllowNull]
-        public abstract string Comment { get; set; }
+        public string Comment { get; set; }
 
         [SpecialName]
-        public abstract DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id", CrossTableName = "DbEntryMembershipUser_Role")]
-        public abstract IList<DbEntryRole> Roles { get; set; }
+        public IList<DbEntryRole> Roles { get; set; }
 
         public DbEntryMembershipUser Init(string userName, string password, string email, 
             string passwordQuestion, string passwordAnswer, bool isApproved, string comment)

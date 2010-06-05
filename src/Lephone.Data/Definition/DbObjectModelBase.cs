@@ -125,14 +125,6 @@ namespace Lephone.Data.Definition
             return DbEntry.From<T>().Where(con).GetSum(columnName);
         }
 
-        public static T New
-        {
-            get
-            {
-                return (T)ObjectInfo.GetInstance(typeof(T)).Handler.CreateInstance();
-            }
-        }
-
         public static void DeleteAll()
         {
             DeleteAll(Condition.Empty);

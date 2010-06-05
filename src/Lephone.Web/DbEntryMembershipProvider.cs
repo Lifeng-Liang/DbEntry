@@ -64,7 +64,7 @@ namespace Lephone.Web
         {
             try
             {
-                var u = DbEntryMembershipUser.New.Init(username, password, email, passwordQuestion, passwordAnswer, isApproved, null);
+                var u = new DbEntryMembershipUser().Init(username, password, email, passwordQuestion, passwordAnswer, isApproved, null);
                 u.Save();
                 status = MembershipCreateStatus.Success;
                 return u.ToMembershipUser();

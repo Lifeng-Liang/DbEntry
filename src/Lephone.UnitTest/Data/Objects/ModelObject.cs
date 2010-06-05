@@ -4,31 +4,29 @@ using Lephone.Data.Definition;
 namespace Lephone.UnitTest.Data.Objects
 {
     [DbTable("People")]
-    public abstract class PeopleModel : DbObjectModel<PeopleModel>
+    public class PeopleModel : DbObjectModel<PeopleModel>
     {
         [Length(5)]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
-        public static PeopleModel FindByName(string Name)
+        public static PeopleModel FindByName(string name)
         {
-            return FindOne(Col["Name"] == Name);
+            return FindOne(Col["Name"] == name);
         }
 
-        public static long CountName(string Name)
+        public static long CountName(string name)
         {
-            return GetCount(Col["Name"] == Name);
+            return GetCount(Col["Name"] == name);
         }
     }
 
-    public abstract class GuidKey : DbObjectModel<GuidKey, Guid>
+    public class GuidKey : DbObjectModel<GuidKey, Guid>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
     }
 
-    public abstract class GuidColumn : DbObjectModel<GuidColumn>
+    public class GuidColumn : DbObjectModel<GuidColumn>
     {
-        public abstract Guid TheGuid { get; set; }
-
-        public abstract GuidColumn Init(Guid theGuid);
+        public Guid TheGuid { get; set; }
     }
 }

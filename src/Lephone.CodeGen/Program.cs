@@ -1,9 +1,7 @@
 using System;
 using System.IO;
-using Lephone.Data.Common;
-using Lephone.Data.Logging;
+using Lephone.CodeGen.Processor;
 using Lephone.Util;
-using Lephone.Web;
 
 namespace Lephone.CodeGen
 {
@@ -71,8 +69,8 @@ namespace Lephone.CodeGen
 
             if (args.Length == 2 && args[0].ToLower() == "dll")
             {
-                GenerateAssembly(fileName);
-                Console.WriteLine("Assembly saved!");
+                new AssemblyProcessor().Process(fileName);
+                Console.WriteLine("Assembly processed!");
                 return;
             }
 
@@ -120,20 +118,20 @@ namespace Lephone.CodeGen
             }
         }
 
-        private static void GenerateAssembly(string fileName)
-        {
-            ObjectInfo.GetInstance(typeof (LephoneEnum));
-            ObjectInfo.GetInstance(typeof (LephoneLog));
-            ObjectInfo.GetInstance(typeof (DbEntryMembershipUser));
-            ObjectInfo.GetInstance(typeof (DbEntryRole));
-            ObjectInfo.GetInstance(typeof (LephoneSetting));
-            Helper.EnumTypes(fileName, true, t =>
-            {
-                ObjectInfo.GetInstance(t);
-                return true;
-            });
-            MemoryAssembly.Instance.Save();
-        }
+        //private static void GenerateAssembly(string fileName)
+        //{
+        //    ObjectInfo.GetInstance(typeof (LephoneEnum));
+        //    ObjectInfo.GetInstance(typeof (LephoneLog));
+        //    ObjectInfo.GetInstance(typeof (DbEntryMembershipUser));
+        //    ObjectInfo.GetInstance(typeof (DbEntryRole));
+        //    ObjectInfo.GetInstance(typeof (LephoneSetting));
+        //    Helper.EnumTypes(fileName, true, t =>
+        //    {
+        //        ObjectInfo.GetInstance(t);
+        //        return true;
+        //    });
+        //    MemoryAssembly.Instance.Save();
+        //}
 
         private static void GenerateAspNetTemplate(string fileName, string className)
         {

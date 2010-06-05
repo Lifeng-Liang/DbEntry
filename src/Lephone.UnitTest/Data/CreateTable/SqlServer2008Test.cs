@@ -10,11 +10,11 @@ namespace Lephone.UnitTest.Data.CreateTable
     public class SqlServer2008Test
     {
         [DbContext("SqlServer2008")]
-        public abstract class Ss2008 : DbObjectModel<Ss2008>
+        public class Ss2008 : DbObjectModel<Ss2008>
         {
-            public abstract string Name { get; set; }
+            public string Name { get; set; }
             [SpecialName]
-            public abstract DateTime CreatedOn { get; set; }
+            public DateTime CreatedOn { get; set; }
         }
 
         protected static void AssertSql(string sql)

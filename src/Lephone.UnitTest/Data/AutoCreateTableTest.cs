@@ -78,7 +78,7 @@ namespace Lephone.UnitTest.Data
         {
             arts = new HasAndBelongsToMany<cmmArticle>(this, new OrderBy("Id"));
         }
-        public cmmReader(string Name) : this() { this.Name = Name; }
+        public cmmReader(string name) : this() { this.Name = name; }
     }
 
     [DbTable("cmmArticle")]
@@ -91,7 +91,7 @@ namespace Lephone.UnitTest.Data
         {
             rads = new HasAndBelongsToMany<cmmReader>(this, new OrderBy("Id"));
         }
-        public cmmArticle(string Title) : this() { this.Title = Title; }
+        public cmmArticle(string title) : this() { this.Title = title; }
     }
 
     public enum MyEnum
@@ -102,12 +102,12 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("EnumTest")]
-    public abstract class EnumTest : DbObjectModel<EnumTest>
+    public class EnumTest : DbObjectModel<EnumTest>
     {
         [Length(50)]
-        public abstract string Name { get; set; }
-        public abstract MyEnum MyType { get; set; }
-        public abstract DateTime MyDate { get; set; }
+        public string Name { get; set; }
+        public MyEnum MyType { get; set; }
+        public DateTime MyDate { get; set; }
     }
 
     public enum UserRole
@@ -118,28 +118,18 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("SampleData")]
-    public abstract class SampleData : DbObjectModel<SampleData>
+    public class SampleData : DbObjectModel<SampleData>
     {
         [Length(50)]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
-        public abstract UserRole Role { get; set; }
+        public UserRole Role { get; set; }
 
-        public abstract DateTime JoinDate { get; set; }
+        public DateTime JoinDate { get; set; }
 
-        public abstract bool Enabled { get; set; }
+        public bool Enabled { get; set; }
 
-        public abstract int? NullInt { get; set; }
-
-        public SampleData Init(string name, UserRole role, DateTime joinDate, bool enabled, int? nullInt)
-        {
-            Name = name;
-            Role = role;
-            JoinDate = joinDate;
-            Enabled = enabled;
-            NullInt = nullInt;
-            return this;
-        }
+        public int? NullInt { get; set; }
     }
 
     [JoinOn(0, typeof(People), "Id", typeof(PCs), "Id")]
@@ -156,9 +146,9 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable(typeof(DateAndTime))]
-    public abstract class DtPart : DbObjectModel<DtPart>
+    public class DtPart : DbObjectModel<DtPart>
     {
-        public abstract DateTime dtValue { get; set; }
+        public DateTime dtValue { get; set; }
     }
 
     #endregion
@@ -196,8 +186,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasOne()
         {
-            var u = new ctUser { Name = "Tom" };
-            u.info.Value = new ctInfo {iMsg = "ok"};
+            var u = new ctUser {Name = "Tom", info = {Value = new ctInfo {iMsg = "ok"}}};
             DbEntry.Save(u);
             var o = DbEntry.GetObject<ctUser>(u.Id);
             Assert.AreEqual("Tom", o.Name);
@@ -247,7 +236,7 @@ namespace Lephone.UnitTest.Data
         public void TestSmartUpdateForDynamicObject5()
         {
             // read from database, the updateColumns is empty
-            asUser u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
+            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
             u.Save();
             asUser u1 = asUser.FindById(u.Id);
             Assert.AreEqual(0, u1.GetUpdateColumns().Count);
@@ -262,10 +251,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestEnum()
         {
-            EnumTest u = EnumTest.New;
-            u.Name = "test";
-            u.MyType = MyEnum.Manager;
-            u.MyDate = new DateTime(2000, 1, 1);
+            var u = new EnumTest {Name = "test", MyType = MyEnum.Manager, MyDate = new DateTime(2000, 1, 1)};
             u.Save();
 
             EnumTest u1 = EnumTest.FindById(u.Id);
@@ -281,9 +267,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSampleData()
         {
-            SampleData.New.Init("angel", UserRole.Worker, new DateTime(2004, 2, 27, 15, 10, 23), true, null).Save();
-            SampleData.New.Init("tom", UserRole.Manager, new DateTime(2001, 3, 17, 7, 12, 4), false, null).Save();
-            SampleData.New.Init("jerry", UserRole.Client, new DateTime(1999, 1, 31, 21, 22, 55), true, 10).Save();
+            new SampleData{Name = "angel", Role = UserRole.Worker, JoinDate = new DateTime(2004, 2, 27, 15, 10, 23),Enabled = true,NullInt = null}.Save();
+            new SampleData{Name = "tom", Role = UserRole.Manager, JoinDate = new DateTime(2001, 3, 17, 7, 12, 4), Enabled = false, NullInt = null}.Save();
+            new SampleData{Name = "jerry", Role = UserRole.Client, JoinDate = new DateTime(1999, 1, 31, 21, 22, 55), Enabled = true, NullInt = 10}.Save();
             List<SampleData> ls1 = SampleData.Find(CK.K["Id"] > 1, new OrderBy("Id"));
             Assert.AreEqual(2, ls1.Count);
         }

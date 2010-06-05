@@ -86,39 +86,35 @@ namespace Lephone.UnitTest.Data.Objects
     }
 
     [DbTable("Categories")]
-    public abstract class Acategory : DbObjectModel<Acategory>
+    public class Acategory : DbObjectModel<Acategory>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
         [HasMany]
-        public abstract IList<Abook> Books { get; set; }
+        public IList<Abook> Books { get; set; }
     }
 
     [DbTable("Books")]
-    public abstract class Abook : DbObjectModel<Abook>
+    public class Abook : DbObjectModel<Abook>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
         [BelongsTo, DbColumn("Category_Id")]
-        public abstract Acategory CurCategory { get; set; }
+        public Acategory CurCategory { get; set; }
     }
 
-    public abstract class Article : DbObjectModel<Article>
+    public class Article : DbObjectModel<Article>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]
-        public abstract IList<Reader> Readers { get; set; }
-
-        public Article Init(string Name) { this.Name = Name; return this; }
+        public IList<Reader> Readers { get; set; }
     }
 
-    public abstract class Reader : DbObjectModel<Reader>
+    public class Reader : DbObjectModel<Reader>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]
-        public abstract IList<Article> Articles { get; set; }
-
-        public Reader Init(string Name) { this.Name = Name; return this; }
+        public IList<Article> Articles { get; set; }
     }
 
     public class Article_Reader : IDbObject

@@ -55,6 +55,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\Resources\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -72,13 +75,17 @@
   <ItemGroup>
     <Compile Include="ArgsErrorException.cs" />
     <Compile Include="AspNetGenerator.cs" />
+    <Compile Include="Processor\AssemblyProcessor.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="Processor\IlBuilder.cs" />
+    <Compile Include="Processor\ModelProcessor.cs" />
     <Compile Include="ModelsGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MvcActionGenerator.cs" />
     <Compile Include="MvcViewGenerator.cs" />
     <Compile Include="TypeComparer.cs" />
+    <Compile Include="Processor\TypeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lephone.Data\Lephone.Data.csproj">

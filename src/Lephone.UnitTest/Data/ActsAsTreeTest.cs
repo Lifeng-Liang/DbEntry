@@ -4,21 +4,21 @@ using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
-    public abstract class File : DbObjectModel<File>
+    public class File : DbObjectModel<File>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [HasMany(OrderBy = "Id")]
-        public abstract IList<File> Children { get; set; }
+        public IList<File> Children { get; set; }
 
         [BelongsTo, DbColumn("BelongsTo_Id")]
-        public abstract File Parent { get; set; }
+        public File Parent { get; set; }
     }
 
     [DbTable("File")]
-    public abstract class TheFile : DbObjectModelAsTree<TheFile>
+    public class TheFile : DbObjectModelAsTree<TheFile>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
     }
 
     [TestFixture]
@@ -82,8 +82,7 @@ namespace Lephone.UnitTest.Data
         {
             File f = File.FindById(16);
             Assert.AreEqual(2, f.Children.Count);
-            File nf = File.New;
-            nf.Name = "gbk.tbl";
+            var nf = new File {Name = "gbk.tbl"};
             f.Children.Add(nf);
             f.Save();
 
@@ -152,8 +151,7 @@ namespace Lephone.UnitTest.Data
         {
             TheFile f = TheFile.FindById(16);
             Assert.AreEqual(2, f.Children.Count);
-            TheFile nf = TheFile.New;
-            nf.Name = "gbk.tbl";
+            var nf = new TheFile {Name = "gbk.tbl"};
             f.Children.Add(nf);
             f.Save();
 

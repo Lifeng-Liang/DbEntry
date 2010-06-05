@@ -18,28 +18,28 @@ namespace Lephone.UnitTest.Data.Inner
     }
 
     [Serializable]
-    public abstract class TableA : DbObjectModel<TableA>
+    public class TableA : DbObjectModel<TableA>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [HasOne]
-        public abstract TableB tableB { get; set; }
+        public TableB tableB { get; set; }
     }
 
     [Serializable]
-    public abstract class TableB : DbObjectModel<TableB>
+    public class TableB : DbObjectModel<TableB>
     {
         [Index(UNIQUE = true, IndexName = "Url_TableAId", ASC = false)]
-        public abstract string Url { get; set; }
+        public string Url { get; set; }
 
         [Index(UNIQUE = true, IndexName = "Url_TableAId", ASC = false)]
         [BelongsTo, DbColumn("TableAId")]
-        public abstract TableA TB { get; set; }
+        public TableA TB { get; set; }
     }
 
     public class ClassSite {}
 
-    public abstract class indexSample
+    public class indexSample
     {
         [Index(UNIQUE = true, IndexName = "indexname1", ASC = true)]
         [Index(UNIQUE = false, IndexName = "indexname2", ASC = true)]
@@ -48,11 +48,11 @@ namespace Lephone.UnitTest.Data.Inner
         [Index(UNIQUE = true, IndexName = "indexname1", ASC = true)]
         [Index(UNIQUE = false, IndexName = "indexname2", ASC = true)]
         [BelongsTo, DbColumn("SiteId")]
-        public abstract ClassSite Site { get; set; }
+        public ClassSite Site { get; set; }
 
         [Index(UNIQUE = true, IndexName = "qid", ASC = true)]
         [BelongsTo, DbColumn("SiteId"), Index(IndexName = "xxx"), Index(IndexName = "ccc")]
-        public abstract ClassSite Site2 { get; set; }
+        public ClassSite Site2 { get; set; }
     }
 
     #endregion
@@ -90,12 +90,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void TestCloneObject()
         {
-            var p = People.New;
-            p.Id = 10;
-            p.Name = "abc";
-            PCs pc = PCs.New;
-            pc.Name = "uuu";
-            p.pc = pc;
+            var p = new People {Id = 10, Name = "abc", pc = new PCs {Name = "uuu"}};
 
             var p1 = (People)ObjectInfo.CloneObject(p);
             Assert.AreEqual(10, p1.Id);
@@ -113,7 +108,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void TestBaseType2()
         {
-            Type t = People.New.GetType();
+            Type t = new People().GetType();
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             Assert.AreEqual("People", oi.BaseType.Name);
         }
@@ -147,14 +142,11 @@ namespace Lephone.UnitTest.Data.Inner
             de.DropAndCreate(typeof(TableA));
             de.DropAndCreate(typeof(TableB));
 
-            var t1 = TableA.New;
-            t1.Name = "TestName1";
+            var t1 = new TableA {Name = "TestName1"};
             t1.Save();
 
             var t2 = TableA.FindById(1);
-            var t3 = TableB.New;
-            t3.Url = "TestUrl1";
-            t3.TB = t2;
+            var t3 = new TableB {Url = "TestUrl1", TB = t2};
             t3.Validate();
             t3.Save();
         }

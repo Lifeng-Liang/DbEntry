@@ -12,16 +12,16 @@ namespace Lephone.UnitTest.Data.CreateTable
 
     public class CCC1 : DbObjectModel<IndexTestClass> {}
 
-    public abstract class IndexTestClass : DbObjectModel<IndexTestClass>
+    public class IndexTestClass : DbObjectModel<IndexTestClass>
     {
         [BelongsTo, DbColumn("CCCId"), Index(IndexName = "xxx1", UNIQUE = true), Index(IndexName = "ccc1", UNIQUE = true)]
-        public abstract CCC1 CCC { get; set; }
+        public CCC1 CCC { get; set; }
 
         [Index(IndexName = "xxx1", UNIQUE = true)]
-        public abstract int QQQId { get; set; }
+        public int QQQId { get; set; }
 
         [Length(50), Index(IndexName = "ccc1", UNIQUE = true)]
-        public abstract string UUUs { get; set; }
+        public string UUUs { get; set; }
     }
 
     public class TableWithNonDbGenId : IDbObject
@@ -130,65 +130,65 @@ namespace Lephone.UnitTest.Data.CreateTable
         }
     }
 
-    public abstract class crxBook1 : DbObjectModel<crxBook1>
+    public class crxBook1 : DbObjectModel<crxBook1>
     {
         [Length(20)]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public abstract IList<crxCategory1> Categories { get; set; }
+        public IList<crxCategory1> Categories { get; set; }
     }
 
-    public abstract class crxCategory1 : DbObjectModel<crxCategory1>
+    public class crxCategory1 : DbObjectModel<crxCategory1>
     {
         [Length(20)]
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public abstract IList<crxBook1> Books { get; set; }
+        public IList<crxBook1> Books { get; set; }
     }
 
     [DbTable("tom:test_table")]
-    public abstract class compTableName : DbObjectModel<compTableName>
+    public class compTableName : DbObjectModel<compTableName>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
     }
 
-    public abstract class ForTableName : DbObjectModel<ForTableName>
+    public class ForTableName : DbObjectModel<ForTableName>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [BelongsTo]
-        public abstract For_TableName2 Table2 { get; set; }
+        public For_TableName2 Table2 { get; set; }
     }
 
-    public abstract class For_TableName2 : DbObjectModel<For_TableName2>
+    public class For_TableName2 : DbObjectModel<For_TableName2>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [HasMany]
-        public abstract IList<ForTableName> Tables { get; set; }
+        public IList<ForTableName> Tables { get; set; }
     }
 
     [DbContext("SQLite")]
-    public abstract class ForDefineContext : DbObjectModel<ForDefineContext>
+    public class ForDefineContext : DbObjectModel<ForDefineContext>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
     }
 
     [DbContext("SQLite")]
-    public abstract class PrDecimal : DbObjectModel<PrDecimal>
+    public class PrDecimal : DbObjectModel<PrDecimal>
     {
-        public abstract decimal Price { get; set; }
+        public decimal Price { get; set; }
 
         [Precision(10, 4)]
-        public abstract decimal TotalFee { get; set; }
+        public decimal TotalFee { get; set; }
     }
 
     #endregion
 
     [TestFixture]
-    public class SQLiteTest : SqlTestBase
+    public class SqliteTest : SqlTestBase
     {
         [Test]
         public void TestGuidMultiKey()
@@ -322,7 +322,7 @@ CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC
         }
 
         [Test]
-        public void TestBinaryAndBLOB()
+        public void TestBinaryAndBlob()
         {
             sqlite.Create(typeof(BinaryAndBLOB));
             AssertSql(
@@ -334,7 +334,7 @@ CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC
         }
 
         [Test]
-        public void TestValidationOfBinaryAndBLOB()
+        public void TestValidationOfBinaryAndBlob()
         {
             var o = new BinaryAndBLOB {password = new byte[] {1}, image = new byte[] {}};
             var vh = new ValidateHandler();
@@ -407,14 +407,13 @@ CREATE INDEX [IX_R_book_and_category_crx_Category1_Id] ON [R_book_and_category] 
         }
 
         [Test]
-        public void TestTableNameForCRUD()
+        public void TestTableNameForCrud()
         {
             sqlite.From<compTableName>().Where(p => p.Name == "tom").Select();
             AssertSql(@"SELECT [Id],[Name] FROM [tom].[test_table] WHERE [Name] = @Name_0;
 <Text><60>(@Name_0=tom:String)");
 
-            var c = compTableName.New;
-            c.Name = "tom";
+            var c = new compTableName {Name = "tom"};
             sqlite.Insert(c);
             AssertSql(@"INSERT INTO [tom].[test_table] ([Name]) VALUES (@Name_0);
 SELECT LAST_INSERT_ROWID();

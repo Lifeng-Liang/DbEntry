@@ -9,10 +9,10 @@ namespace Lephone.UnitTest.DotNetFramework
     public class LinqTest
     {
         [DbTable("Books")]
-        public abstract class Book : DbObjectModel<Book>
+        public class Book : DbObjectModel<Book>
         {
-            public abstract string Name { get; set; }
-            public abstract int Category_Id { get; set; }
+            public string Name { get; set; }
+            public int Category_Id { get; set; }
         }
 
         [Test]

@@ -48,41 +48,23 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("People")]
-    public abstract class vPeople : DbObjectModel<vPeople>
+    public class vPeople : DbObjectModel<vPeople>
     {
         [Index(UNIQUE = true, UniqueErrorMessage = "Already in use, please input another")]
-        public abstract string Name { get; set; }
-
-        public vPeople Init(string name)
-        {
-            Name = name;
-            return this;
-        }
+        public string Name { get; set; }
     }
 
     [DbTable("People")]
-    public abstract class vPeople0 : DbObjectModel<vPeople0>
+    public class vPeople0 : DbObjectModel<vPeople0>
     {
         [Index(UNIQUE = true)]
-        public abstract string Name { get; set; }
-
-        public vPeople0 Init(string name)
-        {
-            Name = name;
-            return this;
-        }
+        public string Name { get; set; }
     }
 
-    public abstract class vPeople1 : DbObjectModel<vPeople1>
+    public class vPeople1 : DbObjectModel<vPeople1>
     {
         [ShowString("测试")]
-        public abstract string Name { get; set; }
-
-        public vPeople1 Init(string name)
-        {
-            Name = name;
-            return this;
-        }
+        public string Name { get; set; }
     }
 
     [TestFixture]
@@ -166,7 +148,7 @@ namespace Lephone.UnitTest.Data
         public void Test8()
         {
             var vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ",");
-            Assert.IsFalse(vh.ValidateObject(vPeople.New.Init("Tom")));
+            Assert.IsFalse(vh.ValidateObject(new vPeople {Name = "Tom"}));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("Already in use, please input another", vh.ErrorMessages["Name"]);
         }
@@ -175,7 +157,7 @@ namespace Lephone.UnitTest.Data
         public void Test9()
         {
             var vh = new ValidateHandler(false, false, "{1}", "null", "match", "length", "unique", ", ");
-            Assert.IsFalse(vh.ValidateObject(vPeople0.New.Init("Tom")));
+            Assert.IsFalse(vh.ValidateObject(new vPeople0 {Name = "Tom"}));
             Assert.AreEqual(1, vh.ErrorMessages.Count);
             Assert.AreEqual("unique", vh.ErrorMessages["Name"]);
         }
@@ -184,7 +166,7 @@ namespace Lephone.UnitTest.Data
         public void Test10()
         {
             var vh = new ValidateHandler(true);
-            vh.ValidateObject(vPeople1.New.Init(""));
+            vh.ValidateObject(new vPeople1 {Name = ""});
             Assert.AreEqual(false, vh.IsValid);
             Assert.AreEqual("Invalid Field 测试 Not Allow Null.", vh.ErrorMessages["Name"]);
         }

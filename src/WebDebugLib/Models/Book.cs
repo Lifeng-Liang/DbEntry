@@ -10,14 +10,14 @@ namespace DebugLib.Models
         Story,
     }
 
-    public abstract class Book : DbObjectModel<Book>
+    public class Book : DbObjectModel<Book>
     {
-        [Length(30)] public abstract string Name { get; set; }
-        public abstract Date BuyDate { get; set; }
-        public abstract float Price { get; set; }
-        public abstract BookCatagory Catagory { get; set; }
-        public abstract bool Read { get; set; }
-        [SpecialName] public abstract DateTime CreatedOn { get; set; }
-        [SpecialName] public abstract DateTime? UpdatedOn { get; set; }
+        [Length(30)] public string Name { get; set; }
+        public Date BuyDate { get; set; }
+        public float Price { get; set; }
+        public BookCatagory Catagory { get; set; }
+        public bool Read { get; set; }
+        [SpecialName] public DateTime CreatedOn { get; set; }
+        [SpecialName] public DateTime? UpdatedOn { get; set; }
     }
 }

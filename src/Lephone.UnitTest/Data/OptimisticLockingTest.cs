@@ -5,33 +5,21 @@ using NUnit.Framework;
 namespace Lephone.UnitTest.Data
 {
     [DbTable("Books"), Cacheable]
-    public abstract class CachedLockBook : DbObjectModel<CachedLockBook>
+    public class CachedLockBook : DbObjectModel<CachedLockBook>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [DbColumn("Category_Id"), SpecialName]
-        public abstract int LockVersion { get; set; }
-
-        public CachedLockBook Init(string name)
-        {
-            Name = name;
-            return this;
-        }
+        public int LockVersion { get; set; }
     }
 
     [DbTable("Books")]
-    public abstract class LockBook : DbObjectModel<LockBook>
+    public class LockBook : DbObjectModel<LockBook>
     {
-        public abstract string Name { get; set; }
+        public string Name { get; set; }
 
         [DbColumn("Category_Id"), SpecialName]
-        public abstract int LockVersion { get; set; }
-
-        public LockBook Init(string name)
-        {
-            Name = name;
-            return this;
-        }
+        public int LockVersion { get; set; }
     }
 
     [DbTable("Books")]
@@ -49,7 +37,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var b = LockBook.New.Init("locker");
+            var b = new LockBook {Name = "locker"};
             b.Save();
             long id = b.Id;
 
@@ -70,7 +58,7 @@ namespace Lephone.UnitTest.Data
         [Test, ExpectedException(typeof(DataException))]
         public void Test2()
         {
-            var b = LockBook.New.Init("locker");
+            var b = new LockBook {Name = "locker"};
             b.Save();
             long id = b.Id;
 
@@ -104,7 +92,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestResave()
         {
-            var b1 = LockBook.New.Init("test");
+            var b1 = new LockBook {Name = "test"};
             b1.Save();
             var b = LockBook.FindById(b1.Id);
             b.Name = "aa";
@@ -116,7 +104,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateAfterInsert()
         {
-            var b = LockBook.New.Init("test");
+            var b = new LockBook {Name = "test"};
             b.Save();
             b.Name = "bb";
             b.Save(); // should not throw exception
@@ -125,7 +113,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCachedLockVersion()
         {
-            var b = CachedLockBook.New.Init("abc");
+            var b = new CachedLockBook {Name = "abc"};
             b.Save();
             b.Name = "aaa";
             b.Save();

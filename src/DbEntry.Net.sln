@@ -65,8 +65,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\Deb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.CodeGen", "Lephone.CodeGen\Lephone.CodeGen.csproj", "{B36CF407-9408-428D-A2B7-0245E58CDE17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Processor", "Lephone.Processor\Lephone.Processor.csproj", "{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -199,18 +197,6 @@ Global
 		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B36CF407-9408-428D-A2B7-0245E58CDE17}.Release|x86.ActiveCfg = Release|Any CPU
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Debug|.NET.ActiveCfg = Debug|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Debug|x86.ActiveCfg = Debug|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Debug|x86.Build.0 = Debug|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Release|.NET.ActiveCfg = Release|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Release|Any CPU.ActiveCfg = Release|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Release|Mixed Platforms.Build.0 = Release|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Release|x86.ActiveCfg = Release|x86
-		{9008CE0E-CFD9-47CE-9F14-9CCCF7D7B434}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

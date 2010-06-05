@@ -9,9 +9,9 @@ namespace Lephone.UnitTest.DotNetFramework
         public int? n;
     }
 
-    public abstract class test2 : IDbObject
+    public class test2 : IDbObject
     {
-        public abstract int? n { get; set; }
+        public int? n { get; set; }
     }
 
     [TestFixture]

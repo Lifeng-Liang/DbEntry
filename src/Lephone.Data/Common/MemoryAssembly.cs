@@ -9,41 +9,41 @@ namespace Lephone.Data.Common
     {
         public const string DefaultAssemblyName = "DbEntry_MemoryAssembly";
         public static readonly MemoryAssembly Instance = new MemoryAssembly();
-        private static int index;
+        private static int _index;
 
-        private readonly AssemblyBuilder InnerAssembly;
-        private ModuleBuilder InnerModule;
-        private readonly string AssemblyName;
+        private readonly AssemblyBuilder _innerAssembly;
+        private ModuleBuilder _innerModule;
+        private readonly string _assemblyName;
 
         public MemoryAssembly()
             : this(DefaultAssemblyName) { }
 
-        public MemoryAssembly(string AssemblyName)
+        public MemoryAssembly(string assemblyName)
         {
-            this.AssemblyName = AssemblyName;
-            var an = new AssemblyName(AssemblyName);
+            this._assemblyName = assemblyName;
+            var an = new AssemblyName(assemblyName);
             byte[] bs = ResourceHelper.ReadAll(GetType(), "dynamic.snk");
             an.KeyPair = new StrongNameKeyPair(bs);
-            InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
+            _innerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
                 an, AssemblyBuilderAccess.RunAndSave);
             ResetModule();
         }
 
-        public MemoryTypeBuilder DefineType(TypeAttributes attr, Type InheritsFrom, Type[] Interfaces)
+        public MemoryTypeBuilder DefineType(TypeAttributes attr, Type inheritsFrom, Type[] interfaces)
         {
-            return DefineType(attr, InheritsFrom, Interfaces, new CustomAttributeBuilder[] { });
+            return DefineType(attr, inheritsFrom, interfaces, new CustomAttributeBuilder[] { });
         }
 
-        public MemoryTypeBuilder DefineType(TypeAttributes attr, Type InheritsFrom, Type[] Interfaces, CustomAttributeBuilder[] attributes)
+        public MemoryTypeBuilder DefineType(TypeAttributes attr, Type inheritsFrom, Type[] interfaces, CustomAttributeBuilder[] attributes)
         {
-            string TypeName = MemoryTypeBuilder.MemberPrifix + index;
-            index++;
-            return DefineType(TypeName, attr, InheritsFrom, Interfaces, attributes);
+            string typeName = MemoryTypeBuilder.MemberPrifix + _index;
+            _index++;
+            return DefineType(typeName, attr, inheritsFrom, interfaces, attributes);
         }
 
-        public MemoryTypeBuilder DefineType(string TypeName, TypeAttributes attr, Type InheritsFrom, Type[] Interfaces, CustomAttributeBuilder[] attributes)
+        public MemoryTypeBuilder DefineType(string typeName, TypeAttributes attr, Type inheritsFrom, Type[] interfaces, CustomAttributeBuilder[] attributes)
         {
-            TypeBuilder tb = InnerModule.DefineType(TypeName, attr, InheritsFrom, Interfaces);
+            TypeBuilder tb = _innerModule.DefineType(typeName, attr, inheritsFrom, interfaces);
             if (attributes != null)
             {
                 foreach (CustomAttributeBuilder cb in attributes)
@@ -56,12 +56,12 @@ namespace Lephone.Data.Common
 
         public void ResetModule()
         {
-            InnerModule = InnerAssembly.DefineDynamicModule(AssemblyName, @"DbEntry_MemoryAssembly.dll");
+            _innerModule = _innerAssembly.DefineDynamicModule(_assemblyName, @"DbEntry_MemoryAssembly.dll");
         }
 
         public void Save()
         {
-            InnerAssembly.Save(@"DbEntry_MemoryAssembly.dll");
+            _innerAssembly.Save(@"DbEntry_MemoryAssembly.dll");
         }
     }
 }

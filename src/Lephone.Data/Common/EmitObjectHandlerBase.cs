@@ -11,10 +11,6 @@ namespace Lephone.Data.Common
     {
         protected KeyValue[] kvc;
 
-        public EmitObjectHandlerBase()
-        {
-        }
-
         protected KeyValue NewKeyValue(int n, object v)
         {
             KeyValue kv = kvc[n];
@@ -179,15 +175,15 @@ namespace Lephone.Data.Common
         Female,
     }
 
-    internal abstract class User : DbObjectModel<User>
+    internal class User : DbObjectModel<User>
     {
         [DbKey(IsDbGenerate=false)]
-        public abstract int Key { get; set; }
-        public abstract string Name { get; set; }
-        public abstract int Age { get; set; }
-        public abstract DateTime Time { get; set; }
-        public abstract GenderType Gender { get; set; }
-        public abstract bool IsLocal { get; set; }
+        public int Key { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public DateTime Time { get; set; }
+        public GenderType Gender { get; set; }
+        public bool IsLocal { get; set; }
 
         public HasMany<User> Children;
         public BelongsTo<User> Parent;
@@ -195,9 +191,9 @@ namespace Lephone.Data.Common
         public LazyLoadField<string> Profile;
 
         [AllowNull]
-        public abstract string NullString { get; set; }
+        public string NullString { get; set; }
 
-        public abstract int? NullInt { get; set; }
+        public int? NullInt { get; set; }
     }
 
     internal class UserValueHandler : EmitObjectHandlerBase

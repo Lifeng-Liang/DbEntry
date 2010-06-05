@@ -11,24 +11,24 @@ namespace Lephone.UnitTest.Linq
     public class RealOperateTest : DataTestBase
     {
         [DbTable("People")]
-        public abstract class Person : DbObjectModel<Person>
+        public class Person : DbObjectModel<Person>
         {
             [DbColumn("Name")]
-            public abstract string FirstName { get; set; }
+            public string FirstName { get; set; }
         }
 
         [DbTable("Categories")]
-        public abstract class lCategory : DbObjectModel<lCategory>
+        public class lCategory : DbObjectModel<lCategory>
         {
-            public abstract string Name { get; set; }
-            [HasMany] public abstract IList<lBook> Books { get; set; }
+            public string Name { get; set; }
+            [HasMany] public IList<lBook> Books { get; set; }
         }
 
         [DbTable("Books")]
-        public abstract class lBook : DbObjectModel<lBook>
+        public class lBook : DbObjectModel<lBook>
         {
-            public abstract string Name { get; set; }
-            [BelongsTo, DbColumn("Category_Id")] public abstract lCategory Category { get; set; }
+            public string Name { get; set; }
+            [BelongsTo, DbColumn("Category_Id")] public lCategory Category { get; set; }
         }
 
         [DbTable("People")]
@@ -45,9 +45,9 @@ namespace Lephone.UnitTest.Linq
             public string Name;
         }
 
-        public abstract class Tst : DbObjectModel<Tst>
+        public class Tst : DbObjectModel<Tst>
         {
-            public abstract DateTime Dt { get; set; }
+            public DateTime Dt { get; set; }
         }
 
         [Test]

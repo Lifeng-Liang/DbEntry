@@ -157,25 +157,15 @@ namespace Lephone.UnitTest.Data
         }
     }
 
-    public abstract class asUser : DbObjectModel<asUser>
+    public class asUser : DbObjectModel<asUser>
     {
         [DbColumn("theName")]
-        public abstract string Name { get; set; }
-        public abstract int Age { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
 
         public Dictionary<string, object> GetUpdateColumns()
         {
             return this.m_UpdateColumns;
-        }
-
-        protected asUser()
-        {
-        }
-
-        protected asUser(string Name, int Age)
-        {
-            this.Name = Name;
-            this.Age = Age;
         }
     }
 

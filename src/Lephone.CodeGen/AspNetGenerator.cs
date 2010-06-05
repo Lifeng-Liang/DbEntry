@@ -7,22 +7,22 @@ namespace Lephone.CodeGen
 {
     public class AspNetGenerator
     {
-        private readonly Type type;
-        private readonly ObjectInfo oi;
-        private readonly HtmlBuilder b;
-        string title, id;
+        private readonly Type _type;
+        private readonly ObjectInfo _oi;
+        private readonly HtmlBuilder _b;
+        string _title, _id;
 
         public AspNetGenerator(Type type)
         {
-            this.type = type;
-            oi = ObjectInfo.GetInstance(type);
-            b = HtmlBuilder.New.table.attr("border", 0).enter();
+            this._type = type;
+            _oi = ObjectInfo.GetInstance(type);
+            _b = HtmlBuilder.New.table.attr("border", 0).enter();
         }
 
         public override string ToString()
         {
-            string oibtName = oi.BaseType.Name;
-            foreach (var m in oi.SimpleFields)
+            string oibtName = _oi.BaseType.Name;
+            foreach (var m in _oi.SimpleFields)
             {
                 if (m.IsKey)
                 {
@@ -31,17 +31,17 @@ namespace Lephone.CodeGen
 
                 string memberName = m.MemberInfo.Name;
 
-                title = oibtName + " " + memberName + ":";
-                id = oibtName + "_" + memberName;
+                _title = oibtName + " " + memberName + ":";
+                _id = oibtName + "_" + memberName;
 
-                b.tr.td.Class("FieldTitle").text(title).end.td.Class("FieldControl");
+                _b.tr.td.Class("FieldTitle").text(_title).end.td.Class("FieldControl");
 
                 ProcessMember(m);
 
-                b.end.end.enter();
+                _b.end.end.enter();
             }
-            b.end.enter();
-            return b.ToString();
+            _b.end.enter();
+            return _b.ToString();
         }
 
         private void ProcessMember(MemberHandler m)
@@ -69,62 +69,62 @@ namespace Lephone.CodeGen
             }
             else
             {
-                throw new ApplicationException(string.Format("Out of scope of member {0} of class: {1}", m.MemberInfo.Name, type.FullName));
+                throw new ApplicationException(string.Format("Out of scope of member {0} of class: {1}", m.MemberInfo.Name, _type.FullName));
             }
         }
 
         protected void ProcessEnum(MemberHandler m)
         {
             Type t = m.FieldType;
-            b.asp("DropDownList", id);
+            _b.asp("DropDownList", _id);
 
             foreach (string s in Enum.GetNames(t))
             {
                 object e = Enum.Parse(t, s);
                 string text = StringHelper.EnumToString(e);
-                b.tag("asp:ListItem").attr("Text", text).attr("Value", s).end.over();
+                _b.tag("asp:ListItem").attr("Text", text).attr("Value", s).end.over();
             }
-            b.end.over();
+            _b.end.over();
         }
 
         protected void ProcessBoolean(MemberHandler m)
         {
-            b.asp("CheckBox", id).end.over();
+            _b.asp("CheckBox", _id).end.over();
         }
 
         protected void ProcessString(MemberHandler m)
         {
-            int Iml = m.MaxLength;
-            b.asp("TextBox", id);
-            if (Iml > 0)
+            int iml = m.MaxLength;
+            _b.asp("TextBox", _id);
+            if (iml > 0)
             {
-                b.attr("MaxLength", Iml).attr("Columns", Iml > 60 ? 60 : Iml);
+                _b.attr("MaxLength", iml).attr("Columns", iml > 60 ? 60 : iml);
             }
             else
             {
-                b.attr("TextMode", "MultiLine").attr("Columns", 60).attr("Rows", 10);
+                _b.attr("TextMode", "MultiLine").attr("Columns", 60).attr("Rows", 10);
             }
-            b.end.over();
+            _b.end.over();
         }
 
         protected void ProcessDateTime(MemberHandler m)
         {
-            b.asp("TextBox", id).attr("Columns", 23);
+            _b.asp("TextBox", _id).attr("Columns", 23);
 
             if (m.IsCreatedOn || m.IsUpdatedOn)
             {
-                b.attr("Enabled", "False");
+                _b.attr("Enabled", "False");
             }
             else
             {
-                b.attr("onclick", "getDateString(this, oCalendarEn)");
+                _b.attr("onclick", "getDateString(this, oCalendarEn)");
             }
-            b.end.over();
+            _b.end.over();
         }
 
         protected void ProcessValueType(MemberHandler m)
         {
-            b.asp("TextBox", id).attr("MaxLength", 20).attr("Columns", 20).end.over();
+            _b.asp("TextBox", _id).attr("MaxLength", 20).attr("Columns", 20).end.over();
         }
     }
 }
