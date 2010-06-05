@@ -23,7 +23,7 @@ namespace Lephone.CodeGen
                 }
             }
 
-            var ts = DbEntry.Context.GetAllModels(dll);
+            var ts = DbEntry.GetAllModels(dll);
 
             foreach (Type t in ts)
             {

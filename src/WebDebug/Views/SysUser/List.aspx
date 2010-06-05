@@ -1,8 +1,6 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="User List" %>
 <script runat="server">
-    public IEnumerable List;
-    public long ListCount;
-    public int ListPageSize;
+    public ItemList<SysUser> ItemList;
 </script>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
@@ -13,7 +11,7 @@
 
 <table>
 <tr><th>Id</th><th>Name</th><th>Age</th></tr>
-<% foreach (SysUser u in List) { %>
+<% foreach (var u in ItemList.List) { %>
 <tr>
   <td><%= u.Id %></td><td><%= u.Name %></td><td><%= u.Age %></td>
   <td><%= LinkTo.Title("Show").Action("show").Parameters(u.Id) %></td>
@@ -23,7 +21,7 @@
 <% } %>
 </table>
 
-<% for (int i = 0, n = 1; i < ListCount; n++, i += ListPageSize) { %>
+<% for (int i = 0, n = 1; i < ItemList.Count; n++, i += ItemList.PageSize) { %>
       &nbsp;<%= LinkTo.Title(n.ToString()).Action("list").Parameters(n) %>
 <% } %>
 

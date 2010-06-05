@@ -495,7 +495,7 @@ namespace Lephone.Data
 
         public void RebuildTables(Assembly assembly)
         {
-            var list = GetAllModels(assembly);
+            var list = DbEntry.GetAllModels(assembly);
             var ctlist = new List<string>();
             foreach (var type in list)
             {
@@ -516,25 +516,6 @@ namespace Lephone.Data
                                   });
                 }
             }
-        }
-
-        public List<Type> GetAllModels(Assembly assembly)
-        {
-            var idot = typeof(IDbObject);
-            var ts = new List<Type>();
-            foreach (var t in assembly.GetExportedTypes())
-            {
-                if(!t.IsGenericType)
-                {
-                    var lt = new List<Type>(t.GetInterfaces());
-                    if (lt.Contains(idot))
-                    {
-                        ts.Add(t);
-                    }
-                }
-            }
-            ts.Sort((x, y) => x.FullName.CompareTo(y.FullName));
-            return ts;
         }
 
         public void DropTable(Type dbObjectType)

@@ -22,9 +22,28 @@ namespace Lephone.Processor
             return null;
         }
 
-        public static bool IsDbModel(this TypeDefinition type)
+
+        public static TypeDefinition InterfaceDef;
+
+        public static bool IsDbModel(TypeDefinition type)
         {
-            return type.Interfaces.Any(p => p.FullName == "Lephone.Data.Definition.IDbObject");
+            //if(type.IsClass)
+            //{
+            //    if(type.HasInterfaces)
+            //    {
+            //        if(type.FullName == "System.Object")
+            //        {
+            //            return false;
+            //        }
+            //        var b = type.Interfaces.Any(p => p.FullName == "Lephone.Data.Definition.IDbObject");
+            //        if(b)
+            //        {
+            //            return true;
+            //        }
+            //        return IsDbModel(type.BaseType.);
+            //    }
+            //}
+            return true;
         }
     }
 }

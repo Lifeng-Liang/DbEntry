@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Reflection;
 using Lephone.Util;
 using Lephone.Data.QuerySyntax;
 using Lephone.Data.Common;
@@ -133,5 +135,26 @@ namespace Lephone.Data
         }
 
         #endregion
+
+        public static List<Type> GetAllModels(Assembly assembly)
+        {
+            var idot = typeof(IDbObject);
+            var ts = new List<Type>();
+            foreach (var t in assembly.GetExportedTypes())
+            {
+                if (!t.IsGenericType && !t.IsAbstract)
+                {
+                    foreach (var @interface in t.GetInterfaces())
+                    {
+                        if (@interface == idot)
+                        {
+                            ts.Add(t);
+                        }
+                    }
+                }
+            }
+            ts.Sort((x, y) => x.FullName.CompareTo(y.FullName));
+            return ts;
+        }
     }
 }
