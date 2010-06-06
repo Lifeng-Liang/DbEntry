@@ -179,13 +179,13 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        public IlBuilder CallVirtual(MethodDefinition mi)
+        public IlBuilder CallVirtual(MethodReference mi)
         {
             _il.Emit(OpCodes.Callvirt, mi);
             return this;
         }
 
-        public IlBuilder Call(MethodDefinition mi)
+        public IlBuilder Call(MethodReference mi)
         {
             _il.Emit(OpCodes.Call, mi);
             return this;

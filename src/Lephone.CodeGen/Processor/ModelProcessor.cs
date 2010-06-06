@@ -10,10 +10,12 @@ namespace Lephone.CodeGen.Processor
     {
         private const string MemberPrifix = "$";
         private readonly TypeDefinition _model;
+        private readonly KnownTypesHandler _handler;
 
-        public ModelProcessor(TypeDefinition model)
+        public ModelProcessor(TypeDefinition model, KnownTypesHandler handler)
         {
             this._model = model;
+            this._handler = handler;
         }
 
         public void Process()
@@ -61,7 +63,15 @@ namespace Lephone.CodeGen.Processor
             var list = GetProperties();
             foreach (var pi in list)
             {
-                ProcessProperty(pi);
+                var ft = GetFieldType(pi);
+                if (!pi.PropertyType.IsValueType && !pi.PropertyType.IsArray && pi.PropertyType.FullName != "System.String")
+                {
+                    if (ft == FieldType.Normal || ft == FieldType.LazyLoad)
+                    {
+                        throw new DataException("The property '{0}' should define as relation field and can not set lazy load attribute", pi.Name);
+                    }
+                }
+                ProcessProperty(pi, ft);
             }
         }
 
@@ -78,24 +88,17 @@ namespace Lephone.CodeGen.Processor
 
         private List<PropertyDefinition> GetProperties()
         {
-            var pis = _model.Properties;
-            var plist = new List<PropertyDefinition>();
-            foreach (PropertyDefinition pi in pis)
+            var result = new List<PropertyDefinition>();
+            foreach (PropertyDefinition pi in _model.Properties)
             {
-                if (pi.SetMethod != null && pi.GetMethod != null)
+                if(pi.SetMethod != null && pi.GetMethod != null 
+                    && pi.SetMethod.IsCompilerGenerated() 
+                    && pi.GetMethod.IsCompilerGenerated())
                 {
-                    if (!pi.PropertyType.IsValueType && !pi.PropertyType.IsArray && pi.PropertyType.FullName != "System.String")
-                    {
-                        var ft = GetFieldType(pi);
-                        if (ft == FieldType.Normal || ft == FieldType.LazyLoad)
-                        {
-                            throw new DataException("The property '{0}' should define as relation field and can not set lazy load attribute", pi.Name);
-                        }
-                    }
-                    plist.Add(pi);
+                    result.Add(pi);
                 }
             }
-            return plist;
+            return result;
         }
 
         private static FieldType GetFieldType(PropertyDefinition pi)
@@ -119,16 +122,13 @@ namespace Lephone.CodeGen.Processor
             return FieldType.Normal;
         }
 
-        private void ProcessProperty(PropertyDefinition pi)
+        private void ProcessProperty(PropertyDefinition pi, FieldType ft)
         {
-            FieldType ft = GetFieldType(pi);
-
             var fi = DefineField(MemberPrifix + pi.Name, pi.PropertyType, ft, pi);
             _model.Fields.Add(fi);
 
             ProcessPropertyGet(pi, ft, fi);
             ProcessPropertySet(pi, ft, fi);
-
         }
 
         private static void ProcessPropertyGet(PropertyDefinition pi, FieldType ft, FieldDefinition fi)
@@ -139,21 +139,15 @@ namespace Lephone.CodeGen.Processor
             var processor = new IlBuilder(method.Body.GetILProcessor());
             processor.LoadArg(0);
             processor.LoadField(fi);
+            if (ft == FieldType.BelongsTo || ft == FieldType.HasOne || ft == FieldType.LazyLoad)
+            {
+                var getValue = fi.FieldType.GetMethod("get_Value");
+                processor.CallVirtual(getValue);
+            }
             processor.Return();
-            //OverrideMethod(OverrideFlag, "get_" + pi.Name, originType, pi.PropertyType, null, delegate(ILBuilder il)
-            //{
-            //    il.LoadArg(0);
-            //    il.LoadField(fi);
-            //    if (ft == FieldType.BelongsTo || ft == FieldType.HasOne || ft == FieldType.LazyLoad)
-            //    {
-            //        MethodInfo getValue = fi.FieldType.GetMethod("get_Value", ClassHelper.InstancePublic);
-            //        il.CallVirtual(getValue);
-            //    }
-            //});
-            //TODO: implements property get
         }
 
-        private static void ProcessPropertySet(PropertyDefinition pi, FieldType ft, FieldDefinition fi)
+        private void ProcessPropertySet(PropertyDefinition pi, FieldType ft, FieldDefinition fi)
         {
             var method = pi.SetMethod;
             RemovePropertyCompilerGeneratedAttribute(method);
@@ -162,8 +156,13 @@ namespace Lephone.CodeGen.Processor
             processor.LoadArg(0);
             processor.LoadArg(1);
             processor.SetField(fi);
+            if (ft == FieldType.LazyLoad || ft == FieldType.Normal)
+            {
+                processor.LoadArg(0);
+                processor.LoadString(pi.GetColumnName());
+                processor.Call(_handler.UpdateColumn);
+            }
             processor.Return();
-            //**var mupdate = new MethodDefinition("m_ColumnUpdated", Mono.Cecil.MethodAttributes.Public, null);
             //OverrideMethod(OverrideFlag, SetPropertyName, originType, null, new[] { pi.PropertyType }, delegate(ILBuilder il)
             //{
             //    Label label = il.DefineLabel();

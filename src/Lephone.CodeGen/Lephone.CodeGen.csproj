@@ -78,6 +78,7 @@
     <Compile Include="Processor\AssemblyProcessor.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Processor\IlBuilder.cs" />
+    <Compile Include="Processor\KnownTypesHandler.cs" />
     <Compile Include="Processor\ModelProcessor.cs" />
     <Compile Include="ModelsGenerator.cs" />
     <Compile Include="Program.cs" />

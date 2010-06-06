@@ -29,10 +29,11 @@ namespace Lephone.CodeGen.Processor
             var models = DbEntry.GetAllModels(assembly);
 
             var module = ModuleDefinition.ReadModule(name);
+            var handler = new KnownTypesHandler(module);
             foreach (var model in models)
             {
                 var type = module.GetType(model.FullName);
-                var processor = new ModelProcessor(type);
+                var processor = new ModelProcessor(type, handler);
                 processor.Process();
             }
 
