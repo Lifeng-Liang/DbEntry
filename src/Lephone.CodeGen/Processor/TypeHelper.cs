@@ -6,8 +6,6 @@ namespace Lephone.CodeGen.Processor
 {
     public static class TypeHelper
     {
-        public const string CompilerGenerated = "System.Runtime.CompilerServices.CompilerGeneratedAttribute";
-
         public static List<CustomAttribute> GetCustomAttributes(this IMemberDefinition type, string attributeName)
         {
             var result = new List<CustomAttribute>();
@@ -40,14 +38,26 @@ namespace Lephone.CodeGen.Processor
             return null;
         }
 
+        public static object GetField(this CustomAttribute attribute, string name)
+        {
+            foreach (var field in attribute.Fields)
+            {
+                if(field.Name == name)
+                {
+                    return field.Argument.Value;
+                }
+            }
+            return null;
+        }
+
         public static bool IsCompilerGenerated(this IMemberDefinition type)
         {
-            return type.GetCustomAttribute(CompilerGenerated) != null;
+            return type.GetCustomAttribute(KnownTypesHandler.CompilerGeneratedAttribute) != null;
         }
 
         public static bool IsExclude(this IMemberDefinition type)
         {
-            return type.GetCustomAttribute("Lephone.Data.Definition.ExcludeAttribute") != null;
+            return type.GetCustomAttribute(KnownTypesHandler.ExcludeAttribute) != null;
         }
 
         public static MethodDefinition GetMethod(this TypeReference type, string name)
@@ -60,16 +70,47 @@ namespace Lephone.CodeGen.Processor
                     return method;
                 }
             }
-            if (type.FullName == "System.Object")
+            if (type.FullName == KnownTypesHandler.Object)
             {
                 return null;
             }
             return GetMethod(realType.BaseType, name);
         }
 
+        public static MethodDefinition GetConstructor(this TypeReference type, params Type[] types)
+        {
+            foreach (var method in type.Resolve().Methods)
+            {
+                if(method.IsConstructor)
+                {
+                    if(IsParametersSame(method, types))
+                    {
+                        return method;
+                    }
+                }
+            }
+            throw new ApplicationException("Can not find ctor");
+        }
+
+        private static bool IsParametersSame(MethodDefinition ctor, Type[] types)
+        {
+            if(ctor.Parameters.Count == types.Length)
+            {
+                for (int i = 0; i < ctor.Parameters.Count; i++)
+                {
+                    if(ctor.Parameters[i].ParameterType.FullName != types[i].FullName)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
         public static string GetColumnName(this PropertyDefinition property)
         {
-            var dbColumn = property.GetCustomAttribute("Lephone.Data.Definition.DbColumnAttribute");
+            var dbColumn = property.GetCustomAttribute(KnownTypesHandler.DbColumnAttribute);
             if (dbColumn != null)
             {
                 return dbColumn.ConstructorArguments[0].Value.ToString();
@@ -101,14 +142,17 @@ namespace Lephone.CodeGen.Processor
         public static TypeReference MakeGenericType(TypeReference type, params TypeReference[] arguments)
         {
             if (type.GenericParameters.Count != arguments.Length)
+            {
                 throw new ArgumentException();
+            }
 
             var instance = new GenericInstanceType(type);
             foreach (var argument in arguments)
+            {
                 instance.GenericArguments.Add(argument);
+            }
 
             return instance;
-
         }
     }
 }

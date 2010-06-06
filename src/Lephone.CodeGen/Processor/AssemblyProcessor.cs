@@ -9,7 +9,6 @@ namespace Lephone.CodeGen.Processor
 {
     public class AssemblyProcessor
     {
-
         private static readonly Dictionary<Type, MethodInfo> TypeDict;
 
         static AssemblyProcessor()
@@ -41,6 +40,5 @@ namespace Lephone.CodeGen.Processor
 
             Console.ReadLine();
         }
-
     }
 }

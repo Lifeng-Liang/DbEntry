@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Resources\dbmodel.snippet = Resources\dbmodel.snippet
 		Resources\dsource.snippet = Resources\dsource.snippet
 		License.txt = License.txt
-		Resources\Mono.Cecil.dll = Resources\Mono.Cecil.dll
 		Resources\nunit.framework.dll = Resources\nunit.framework.dll
 		Resources\test.snippet = Resources\test.snippet
 		Resources\trans.snippet = Resources\trans.snippet

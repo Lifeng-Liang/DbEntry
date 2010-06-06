@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
+using FieldAttributes = Mono.Cecil.FieldAttributes;
 
 namespace Lephone.CodeGen.Processor
 {
@@ -11,11 +13,13 @@ namespace Lephone.CodeGen.Processor
         private const string MemberPrifix = "$";
         private readonly TypeDefinition _model;
         private readonly KnownTypesHandler _handler;
+        private readonly List<PropertyInformation> _properties;
 
         public ModelProcessor(TypeDefinition model, KnownTypesHandler handler)
         {
             this._model = model;
             this._handler = handler;
+            _properties = GetProperties();
         }
 
         public void Process()
@@ -60,18 +64,17 @@ namespace Lephone.CodeGen.Processor
 
         private void ProcessProperties()
         {
-            var list = GetProperties();
-            foreach (var pi in list)
+            foreach (var pi in _properties)
             {
-                var ft = GetFieldType(pi);
-                if (!pi.PropertyType.IsValueType && !pi.PropertyType.IsArray && pi.PropertyType.FullName != "System.String")
+                var t = pi.PropertyDefinition.PropertyType;
+                if (!t.IsValueType && !t.IsArray && t.FullName != KnownTypesHandler.String)
                 {
-                    if (ft == FieldType.Normal || ft == FieldType.LazyLoad)
+                    if (pi.FieldType == FieldType.Normal || pi.FieldType == FieldType.LazyLoad)
                     {
-                        throw new DataException("The property '{0}' should define as relation field and can not set lazy load attribute", pi.Name);
+                        throw new DataException("The property '{0}' should define as relation field and can not set lazy load attribute", pi.PropertyDefinition.Name);
                     }
                 }
-                ProcessProperty(pi, ft);
+                ProcessProperty(pi);
             }
         }
 
@@ -81,88 +84,158 @@ namespace Lephone.CodeGen.Processor
             {
                 if (c.IsConstructor)
                 {
-                    //TODO: process constructor
+                    ProcessConstructor(c);
                 }
             }
         }
 
-        private List<PropertyDefinition> GetProperties()
+        private void ProcessConstructor(MethodDefinition constructor)
         {
-            var result = new List<PropertyDefinition>();
+            var processor = new IlBuilder(constructor.Body.GetILProcessor());
+            foreach (var pi in _properties)
+            {
+                if(pi.FieldType != FieldType.Normal)
+                {
+                    processor.LoadArg(0).LoadArg(0);
+                    MethodReference ci1;
+                    var ft = (GenericInstanceType)pi.FieldDefinition.FieldType;
+                    if (pi.IsHasOne || pi.IsHasMany || pi.IsHasAndBelongsToMany)
+                    {
+                        ci1 = ft.GetConstructor(typeof(object), typeof(string));
+                        var ob = GetOrderByString(pi);
+                        if (string.IsNullOrEmpty(ob))
+                        {
+                            processor.LoadNull();
+                        }
+                        else
+                        {
+                            processor.LoadString(ob);
+                        }
+                    }
+                    else
+                    {
+                        ci1 = ft.GetConstructor(typeof(object));
+                    }
+                    var ctor = _handler.Import(ci1);
+                    processor.NewObj(ctor);
+                    processor.SetField(pi.FieldDefinition);
+                }
+            }
+            processor.LoadArg(0).Call(_handler.InitUpdateColumns);
+            var target = GetCallBaseCtor(constructor);
+            processor.InsertAfter(target);
+        }
+
+        private static string GetOrderByString(PropertyInformation pi)
+        {
+            var pd = pi.PropertyDefinition;
+            CustomAttribute ca;
+            switch (pi.FieldType)
+            {
+                case FieldType.HasOne:
+                    ca = pd.GetCustomAttribute(KnownTypesHandler.HasOneAttribute);
+                    break;
+                case FieldType.HasMany:
+                    ca = pd.GetCustomAttribute(KnownTypesHandler.HasManyAttribute);
+                    break;
+                case FieldType.HasAndBelongsToMany:
+                    ca = pd.GetCustomAttribute(KnownTypesHandler.HasAndBelongsToManyAttribute);
+                    break;
+                default:
+                    throw new ApplicationException("Impossiable");
+            }
+            var value = (string)ca.GetField("OrderBy");
+            return value;
+        }
+
+        private static Instruction GetCallBaseCtor(MethodDefinition constructor)
+        {
+            foreach (var instruction in constructor.Body.Instructions)
+            {
+                if(instruction.OpCode.Code == Code.Call)
+                {
+                    var ctor = (MethodReference)instruction.Operand;
+                    if(ctor.Name == ".ctor")
+                    {
+                        return instruction;
+                    }
+                }
+            }
+            throw new ApplicationException("Can not find base ctor call");
+        }
+
+        private List<PropertyInformation> GetProperties()
+        {
+            var result = new List<PropertyInformation>();
             foreach (PropertyDefinition pi in _model.Properties)
             {
                 if(pi.SetMethod != null && pi.GetMethod != null 
                     && pi.SetMethod.IsCompilerGenerated() 
                     && pi.GetMethod.IsCompilerGenerated())
                 {
-                    result.Add(pi);
+                    var ft = KnownTypesHandler.GetFieldType(pi);
+                    result.Add(new PropertyInformation {PropertyDefinition = pi, FieldType = ft});
                 }
             }
             return result;
         }
 
-        private static FieldType GetFieldType(PropertyDefinition pi)
+        private void ProcessProperty(PropertyInformation pi)
         {
-            foreach (CustomAttribute ca in pi.CustomAttributes)
+            DefineField(pi);
+            _model.Fields.Add(pi.FieldDefinition);
+
+            ProcessPropertyGet(pi);
+            ProcessPropertySet(pi);
+        }
+
+        private static void RemovePropertyCompilerGeneratedAttribute(MethodDefinition method)
+        {
+            foreach (var attribute in method.CustomAttributes)
             {
-                switch (ca.Constructor.DeclaringType.FullName)
+                if (attribute.Constructor.DeclaringType.FullName == KnownTypesHandler.CompilerGeneratedAttribute)
                 {
-                    case "Lephone.Data.Definition.HasOneAttribute":
-                        return FieldType.HasOne;
-                    case "Lephone.Data.Definition.BelongsToAttribute":
-                        return FieldType.BelongsTo;
-                    case "Lephone.Data.Definition.HasManyAttribute":
-                        return FieldType.HasMany;
-                    case "Lephone.Data.Definition.HasAndBelongsToManyAttribute":
-                        return FieldType.HasAndBelongsToMany;
-                    case "Lephone.Data.Definition.LazyLoadAttribute":
-                        return FieldType.LazyLoad;
+                    method.CustomAttributes.Remove(attribute);
+                    return;
                 }
             }
-            return FieldType.Normal;
         }
 
-        private void ProcessProperty(PropertyDefinition pi, FieldType ft)
+        private static IlBuilder PreProcessPropertyMethod(MethodDefinition method)
         {
-            var fi = DefineField(MemberPrifix + pi.Name, pi.PropertyType, ft, pi);
-            _model.Fields.Add(fi);
-
-            ProcessPropertyGet(pi, ft, fi);
-            ProcessPropertySet(pi, ft, fi);
-        }
-
-        private static void ProcessPropertyGet(PropertyDefinition pi, FieldType ft, FieldDefinition fi)
-        {
-            var method = pi.GetMethod;
             RemovePropertyCompilerGeneratedAttribute(method);
             method.Body.Instructions.Clear();
-            var processor = new IlBuilder(method.Body.GetILProcessor());
+            return new IlBuilder(method.Body.GetILProcessor());
+        }
+
+        private void ProcessPropertyGet(PropertyInformation pi)
+        {
+            var processor = PreProcessPropertyMethod(pi.PropertyDefinition.GetMethod);
             processor.LoadArg(0);
-            processor.LoadField(fi);
-            if (ft == FieldType.BelongsTo || ft == FieldType.HasOne || ft == FieldType.LazyLoad)
+            processor.LoadField(pi.FieldDefinition);
+            if (pi.FieldType == FieldType.BelongsTo || pi.FieldType == FieldType.HasOne || pi.FieldType == FieldType.LazyLoad)
             {
-                var getValue = fi.FieldType.GetMethod("get_Value");
+                var getValue = _handler.Import(pi.FieldDefinition.FieldType.GetMethod("get_Value"));
                 processor.CallVirtual(getValue);
             }
             processor.Return();
+            processor.Append();
         }
 
-        private void ProcessPropertySet(PropertyDefinition pi, FieldType ft, FieldDefinition fi)
+        private void ProcessPropertySet(PropertyInformation pi)
         {
-            var method = pi.SetMethod;
-            RemovePropertyCompilerGeneratedAttribute(method);
-            method.Body.Instructions.Clear();
-            var processor = new IlBuilder(method.Body.GetILProcessor());
+            var processor = PreProcessPropertyMethod(pi.PropertyDefinition.SetMethod);
             processor.LoadArg(0);
             processor.LoadArg(1);
-            processor.SetField(fi);
-            if (ft == FieldType.LazyLoad || ft == FieldType.Normal)
+            processor.SetField(pi.FieldDefinition);
+            if (pi.FieldType == FieldType.LazyLoad || pi.FieldType == FieldType.Normal)
             {
                 processor.LoadArg(0);
-                processor.LoadString(pi.GetColumnName());
-                processor.Call(_handler.UpdateColumn);
+                processor.LoadString(pi.PropertyDefinition.GetColumnName());
+                processor.Call(_handler.ColumnUpdated);
             }
             processor.Return();
+            processor.Append();
             //OverrideMethod(OverrideFlag, SetPropertyName, originType, null, new[] { pi.PropertyType }, delegate(ILBuilder il)
             //{
             //    Label label = il.DefineLabel();
@@ -198,20 +271,8 @@ namespace Lephone.CodeGen.Processor
             //TODO: implements property set
         }
 
-        private static void RemovePropertyCompilerGeneratedAttribute(MethodDefinition method)
-        {
-            foreach (var attribute in method.CustomAttributes)
-            {
-                if(attribute.Constructor.DeclaringType.FullName == TypeHelper.CompilerGenerated)
-                {
-                    method.CustomAttributes.Remove(attribute);
-                    return;
-                }
-            }
-        }
-
         /*
-        private static bool EmitCompareStatement(ILBuilder il, Type propertyType, FieldInfo fi, Label label)
+        private static bool EmitCompareStatement(IlBuilder il, Type propertyType, FieldInfo fi, Label label)
         {
             bool hasLabel = false;
             if (propertyType.IsValueType)
@@ -284,34 +345,40 @@ namespace Lephone.CodeGen.Processor
         }
         */
 
-        private static FieldDefinition DefineField(string name, TypeReference propertyType, FieldType ft, PropertyDefinition pi)
+        private void DefineField(PropertyInformation pi)
         {
-            if (ft == FieldType.Normal)
+            var pd = pi.PropertyDefinition;
+            var name = MemberPrifix + pd.Name;
+            var propertyType = pd.PropertyType;
+
+            if (pi.FieldType == FieldType.Normal)
             {
-                return new FieldDefinition(name, FieldAttributes.Private, propertyType);
+                pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.Private, propertyType);
+                return;
             }
-            var t = GetRealType(propertyType, ft);
+            var t = _handler.GetRealType(pi);
             var fb = new FieldDefinition(name, FieldAttributes.FamORAssem, t);
-            var bc = pi.GetCustomAttribute("Lephone.Data.Definition.DbColumnAttribute");
+            var bc = pd.GetCustomAttribute(KnownTypesHandler.DbColumnAttribute);
             if (bc != null)
             {
                 fb.CustomAttributes.Add(bc);
             }
-            else if (ft == FieldType.LazyLoad)
+            else if (pi.FieldType == FieldType.LazyLoad)
             {
                 //fb.SetCustomAttribute(GetDbColumnBuilder(pi.Name));
                 //TODO: set [DbColumn(pi.Name)] to fb
             }
-            if (ft == FieldType.HasAndBelongsToMany)
+            if (pi.FieldType == FieldType.HasAndBelongsToMany)
             {
-                var mm = pi.GetCustomAttribute("Lephone.Data.Definition.HasAndBelongsToManyAttribute");
-                //if (!string.IsNullOrEmpty(mm.CrossTableName))
-                //{
-                //    fb.SetCustomAttribute(new CustomAttributeBuilder(CrossTableNameAttributeConstructor, new object[] { mm.CrossTableName }));
-                //}
-                //TODO: set [CrossTableName(mm.CrossTableName)] to fb
+                var mm = pd.GetCustomAttribute(KnownTypesHandler.HasAndBelongsToManyAttribute);
+                var ctName = (string)mm.GetField("CrossTableName");
+                if(!string.IsNullOrEmpty(ctName))
+                {
+                    //fb.SetCustomAttribute(new CustomAttributeBuilder(CrossTableNameAttributeConstructor, new object[] { mm.CrossTableName }));
+                    //TODO: set [CrossTableName(mm.CrossTableName)] to fb
+                }
             }
-            if (ft == FieldType.LazyLoad)
+            if (pi.FieldType == FieldType.LazyLoad)
             {
                 //ProcessCustomAttribute<AllowNullAttribute>(pi, o => fb.SetCustomAttribute(GetAllowNullBuilder()));
                 //ProcessCustomAttribute<LengthAttribute>(pi, o => fb.SetCustomAttribute(GetLengthBuilder(o)));
@@ -320,36 +387,7 @@ namespace Lephone.CodeGen.Processor
                 //ProcessCustomAttribute<SpecialNameAttribute>(pi, o => fb.SetCustomAttribute(GetSpecialNameBuilder()));
                 //TODO: set all arrtibutes to LazyLoad field.
             }
-            return fb;
-        }
-
-        private static TypeDefinition GetRealType(TypeReference propertyType, FieldType ft)
-        {
-            switch (ft)
-            {
-                //case FieldType.HasOne:
-                //    t = typeof(HasOne<>);
-                //    t = t.MakeGenericType(propertyType);
-                //    break;
-                //case FieldType.HasMany:
-                //    t = typeof(HasMany<>);
-                //    t = t.MakeGenericType(propertyType.GetGenericArguments()[0]);
-                //    break;
-                //case FieldType.BelongsTo:
-                //    t = typeof(BelongsTo<>);
-                //    t = t.MakeGenericType(propertyType);
-                //    break;
-                //case FieldType.HasAndBelongsToMany:
-                //    t = typeof(HasAndBelongsToMany<>);
-                //    t = t.MakeGenericType(propertyType.GetGenericArguments()[0]);
-                //    break;
-                //case FieldType.LazyLoad:
-                //    t = typeof(LazyLoadField<>);
-                //    t = t.MakeGenericType(propertyType);
-                //    break;
-                default:
-                    throw new DataException("Impossible");
-            }
+            pi.FieldDefinition = fb;
         }
     }
 }

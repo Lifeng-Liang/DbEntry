@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -7,25 +8,56 @@ namespace Lephone.CodeGen.Processor
     public class IlBuilder
     {
         //private static readonly Type[] EmptyTypes = new Type[] { };
-        //private static readonly MethodDefinition DateEx = typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) });
-        //private static readonly MethodDefinition TimeEx = typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) });
+        //private static readonly MethodDefinition DateEx = typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
+        //private static readonly MethodDefinition TimeEx = typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
 
         private readonly ILProcessor _il;
+
+        private readonly List<Instruction> _list;
 
         public IlBuilder(ILProcessor il)
         {
             this._il = il;
+            _list = new List<Instruction>();
+        }
+
+        public void Append()
+        {
+            foreach (var instruction in _list)
+            {
+                _il.Append(instruction);
+            }
+            _list.Clear();
+        }
+
+        public void InsertBefore(Instruction target)
+        {
+            foreach (var instruction in _list)
+            {
+                _il.InsertBefore(target, instruction);
+            }
+            _list.Clear();
+        }
+
+        public void InsertAfter(Instruction target)
+        {
+            foreach (var instruction in _list)
+            {
+                _il.InsertAfter(target, instruction);
+                target = instruction;
+            }
+            _list.Clear();
         }
 
         //public IlBuilder DeclareLocal(Type t)
         //{
-        //    il.DeclareLocal(t);
+        //    il.DeclareLocal(t));
         //    return this;
         //}
 
         public IlBuilder Emit(OpCode opCode)
         {
-            _il.Emit(opCode);
+            _list.Add(_il.Create(opCode));
             return this;
         }
 
@@ -34,34 +66,34 @@ namespace Lephone.CodeGen.Processor
             switch (n)
             {
                 case 0:
-                    _il.Emit(OpCodes.Ldc_I4_0);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_0));
                     break;
                 case 1:
-                    _il.Emit(OpCodes.Ldc_I4_1);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_1));
                     break;
                 case 2:
-                    _il.Emit(OpCodes.Ldc_I4_2);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_2));
                     break;
                 case 3:
-                    _il.Emit(OpCodes.Ldc_I4_3);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_3));
                     break;
                 case 4:
-                    _il.Emit(OpCodes.Ldc_I4_4);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_4));
                     break;
                 case 5:
-                    _il.Emit(OpCodes.Ldc_I4_5);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_5));
                     break;
                 case 6:
-                    _il.Emit(OpCodes.Ldc_I4_6);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_6));
                     break;
                 case 7:
-                    _il.Emit(OpCodes.Ldc_I4_7);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_7));
                     break;
                 case 8:
-                    _il.Emit(OpCodes.Ldc_I4_8);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4_8));
                     break;
                 default:
-                    _il.Emit(OpCodes.Ldc_I4, n);
+                    _list.Add(_il.Create(OpCodes.Ldc_I4, n));
                     break;
             }
             return this;
@@ -72,19 +104,19 @@ namespace Lephone.CodeGen.Processor
             switch (n)
             {
                 case 0:
-                    _il.Emit(OpCodes.Ldarg_0);
+                    _list.Add(_il.Create(OpCodes.Ldarg_0));
                     break;
                 case 1:
-                    _il.Emit(OpCodes.Ldarg_1);
+                    _list.Add(_il.Create(OpCodes.Ldarg_1));
                     break;
                 case 2:
-                    _il.Emit(OpCodes.Ldarg_2);
+                    _list.Add(_il.Create(OpCodes.Ldarg_2));
                     break;
                 case 3:
-                    _il.Emit(OpCodes.Ldarg_3);
+                    _list.Add(_il.Create(OpCodes.Ldarg_3));
                     break;
                 default:
-                    _il.Emit(OpCodes.Ldarg, n);
+                    _list.Add(_il.Create(OpCodes.Ldarg, n));
                     break;
             }
             return this;
@@ -94,20 +126,20 @@ namespace Lephone.CodeGen.Processor
         {
             for (int i = min; i <= max; i++)
             {
-                _il.Emit(OpCodes.Ldarg_S, i);
+                _list.Add(_il.Create(OpCodes.Ldarg_S, i));
             }
             return this;
         }
 
         public IlBuilder LoadField(FieldDefinition fi)
         {
-            _il.Emit(OpCodes.Ldfld, fi);
+            _list.Add(_il.Create(OpCodes.Ldfld, fi));
             return this;
         }
 
         public IlBuilder SetField(FieldDefinition fi)
         {
-            _il.Emit(OpCodes.Stfld, fi);
+            _list.Add(_il.Create(OpCodes.Stfld, fi));
             return this;
         }
 
@@ -122,15 +154,15 @@ namespace Lephone.CodeGen.Processor
         //    return ret;
         //}
 
-        //public IlBuilder NewObj(ConstructorInfo ci)
-        //{
-        //    il.Emit(OpCodes.Newobj, ci);
-        //    return this;
-        //}
+        public IlBuilder NewObj(MethodReference ci)
+        {
+            _list.Add(_il.Create(OpCodes.Newobj, ci));
+            return this;
+        }
 
         //public IlBuilder NewObj(Type t)
         //{
-        //    return NewObj(GetConstructor(t));
+        //    return NewObj(GetConstructor(t)));
         //}
 
         public IlBuilder SetLoc(int n)
@@ -138,19 +170,19 @@ namespace Lephone.CodeGen.Processor
             switch (n)
             {
                 case 0:
-                    _il.Emit(OpCodes.Stloc_0);
+                    _list.Add(_il.Create(OpCodes.Stloc_0));
                     break;
                 case 1:
-                    _il.Emit(OpCodes.Stloc_1);
+                    _list.Add(_il.Create(OpCodes.Stloc_1));
                     break;
                 case 2:
-                    _il.Emit(OpCodes.Stloc_2);
+                    _list.Add(_il.Create(OpCodes.Stloc_2));
                     break;
                 case 3:
-                    _il.Emit(OpCodes.Stloc_3);
+                    _list.Add(_il.Create(OpCodes.Stloc_3));
                     break;
                 default:
-                    _il.Emit(OpCodes.Stloc, n);
+                    _list.Add(_il.Create(OpCodes.Stloc, n));
                     break;
             }
             return this;
@@ -161,19 +193,19 @@ namespace Lephone.CodeGen.Processor
             switch (n)
             {
                 case 0:
-                    _il.Emit(OpCodes.Ldloc_0);
+                    _list.Add(_il.Create(OpCodes.Ldloc_0));
                     break;
                 case 1:
-                    _il.Emit(OpCodes.Ldloc_1);
+                    _list.Add(_il.Create(OpCodes.Ldloc_1));
                     break;
                 case 2:
-                    _il.Emit(OpCodes.Ldloc_2);
+                    _list.Add(_il.Create(OpCodes.Ldloc_2));
                     break;
                 case 3:
-                    _il.Emit(OpCodes.Ldloc_3);
+                    _list.Add(_il.Create(OpCodes.Ldloc_3));
                     break;
                 default:
-                    _il.Emit(OpCodes.Ldloc, n);
+                    _list.Add(_il.Create(OpCodes.Ldloc, n));
                     break;
             }
             return this;
@@ -181,37 +213,37 @@ namespace Lephone.CodeGen.Processor
 
         public IlBuilder CallVirtual(MethodReference mi)
         {
-            _il.Emit(OpCodes.Callvirt, mi);
+            _list.Add(_il.Create(OpCodes.Callvirt, mi));
             return this;
         }
 
         public IlBuilder Call(MethodReference mi)
         {
-            _il.Emit(OpCodes.Call, mi);
+            _list.Add(_il.Create(OpCodes.Call, mi));
             return this;
         }
 
         //public IlBuilder Call(ConstructorInfo ci)
         //{
-        //    il.Emit(OpCodes.Call, ci);
+        //    il.Emit(OpCodes.Call, ci));
         //    return this;
         //}
 
         public IlBuilder Return()
         {
-            _il.Emit(OpCodes.Ret);
+            _list.Add(_il.Create(OpCodes.Ret));
             return this;
         }
 
         public IlBuilder LoadString(string s)
         {
-            _il.Emit(OpCodes.Ldstr, s);
+            _list.Add(_il.Create(OpCodes.Ldstr, s));
             return this;
         }
 
         public IlBuilder LoadNull()
         {
-            _il.Emit(OpCodes.Ldnull);
+            _list.Add(_il.Create(OpCodes.Ldnull));
             return this;
         }
 
@@ -233,25 +265,25 @@ namespace Lephone.CodeGen.Processor
         //        }
         //        if (t == typeof(bool))
         //        {
-        //            t = typeof(bool);
+        //            t = typeof(bool));
         //        }
         //        else if (t == typeof(uint))
         //        {
-        //            t = typeof(int);
+        //            t = typeof(int));
         //        }
         //        else if (t == typeof(ulong))
         //        {
-        //            t = typeof(long);
+        //            t = typeof(long));
         //        }
         //        else if (t == typeof(ushort))
         //        {
-        //            t = typeof(short);
+        //            t = typeof(short));
         //        }
-        //        il.Emit(OpCodes.Unbox_Any, t);
+        //        il.Emit(OpCodes.Unbox_Any, t));
         //    }
         //    else
         //    {
-        //        il.Emit(OpCodes.Castclass, t);
+        //        il.Emit(OpCodes.Castclass, t));
         //    }
         //    return this;
         //}
@@ -260,14 +292,14 @@ namespace Lephone.CodeGen.Processor
         //{
         //    if (inType == typeof(Date))
         //    {
-        //        il.Emit(OpCodes.Unbox_Any, unboxType);
-        //        il.Emit(OpCodes.Call, DateEx);
+        //        il.Emit(OpCodes.Unbox_Any, unboxType));
+        //        il.Emit(OpCodes.Call, DateEx));
         //        return true;
         //    }
         //    if (inType == typeof(Time))
         //    {
-        //        il.Emit(OpCodes.Unbox_Any, unboxType);
-        //        il.Emit(OpCodes.Call, TimeEx);
+        //        il.Emit(OpCodes.Unbox_Any, unboxType));
+        //        il.Emit(OpCodes.Call, TimeEx));
         //        return true;
         //    }
         //    return false;
@@ -275,7 +307,7 @@ namespace Lephone.CodeGen.Processor
 
         public IlBuilder Cast(TypeDefinition t)
         {
-            _il.Emit(OpCodes.Castclass, t);
+            _list.Add(_il.Create(OpCodes.Castclass, t));
             return this;
         }
 
@@ -283,67 +315,67 @@ namespace Lephone.CodeGen.Processor
         {
             if (t.IsValueType)
             {
-                _il.Emit(OpCodes.Box, t);
+                _list.Add(_il.Create(OpCodes.Box, t));
             }
             return this;
         }
 
         public IlBuilder Ceq()
         {
-            _il.Emit(OpCodes.Ceq);
+            _list.Add(_il.Create(OpCodes.Ceq));
             return this;
         }
 
         //public IlBuilder Br_S(Label label)
         //{
-        //    il.Emit(OpCodes.Br_S, label);
+        //    il.Emit(OpCodes.Br_S, label));
         //    return this;
         //}
 
         //public IlBuilder BrTrue_S(Label label)
         //{
-        //    il.Emit(OpCodes.Brtrue_S, label);
+        //    il.Emit(OpCodes.Brtrue_S, label));
         //    return this;
         //}
 
         //public IlBuilder BrFalse_S(Label label)
         //{
-        //    il.Emit(OpCodes.Brfalse_S, label);
+        //    il.Emit(OpCodes.Brfalse_S, label));
         //    return this;
         //}
 
         //public Label DefineLabel()
         //{
-        //    return il.DefineLabel();
+        //    return il.DefineLabel());
         //}
 
         //public IlBuilder MarkLabel(Label label)
         //{
-        //    il.MarkLabel(label);
+        //    il.MarkLabel(label));
         //    return this;
         //}
 
         public IlBuilder LoadLocala_S(int index)
         {
-            _il.Emit(OpCodes.Ldloca_S, index);
+            _list.Add(_il.Create(OpCodes.Ldloca_S, index));
             return this;
         }
 
         //public IlBuilder Bne_Un_S(Label label)
         //{
-        //    il.Emit(OpCodes.Bne_Un_S, label);
+        //    il.Emit(OpCodes.Bne_Un_S, label));
         //    return this;
         //}
 
         public IlBuilder Conv_R4()
         {
-            _il.Emit(OpCodes.Conv_R4);
+            _list.Add(_il.Create(OpCodes.Conv_R4));
             return this;
         }
 
         public IlBuilder Conv_R8()
         {
-            _il.Emit(OpCodes.Conv_R8);
+            _list.Add(_il.Create(OpCodes.Conv_R8));
             return this;
         }
 
@@ -351,11 +383,11 @@ namespace Lephone.CodeGen.Processor
         {
             if (type == typeof(float))
             {
-                _il.Emit(OpCodes.Conv_R4);
+                _list.Add(_il.Create(OpCodes.Conv_R4));
             }
             else if (type == typeof(double))
             {
-                _il.Emit(OpCodes.Conv_R8);
+                _list.Add(_il.Create(OpCodes.Conv_R8));
             }
             return this;
         }
