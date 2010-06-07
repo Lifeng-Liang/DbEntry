@@ -79,6 +79,7 @@
     <Compile Include="Helper.cs" />
     <Compile Include="Processor\IlBuilder.cs" />
     <Compile Include="Processor\KnownTypesHandler.cs" />
+    <Compile Include="Processor\ModelHandlerGenerator.cs" />
     <Compile Include="Processor\ModelProcessor.cs" />
     <Compile Include="ModelsGenerator.cs" />
     <Compile Include="Processor\PropertyInformation.cs" />

@@ -117,6 +117,7 @@ namespace Lephone.CodeGen.Processor
                         ci1 = ft.GetConstructor(typeof(object));
                     }
                     var ctor = _handler.Import(ci1);
+                    ctor.DeclaringType = ft; //NOTE: should be a bug of Cecil
                     processor.NewObj(ctor);
                     processor.SetField(pi.FieldDefinition);
                 }
@@ -236,8 +237,6 @@ namespace Lephone.CodeGen.Processor
             }
             processor.Return();
             processor.Append();
-            //OverrideMethod(OverrideFlag, SetPropertyName, originType, null, new[] { pi.PropertyType }, delegate(ILBuilder il)
-            //{
             //    Label label = il.DefineLabel();
             //    bool hasLabel = false;
             //    if (ft == FieldType.Normal)
@@ -267,7 +266,6 @@ namespace Lephone.CodeGen.Processor
             //    {
             //        il.MarkLabel(label);
             //    }
-            //});
             //TODO: implements property set
         }
 
@@ -356,38 +354,66 @@ namespace Lephone.CodeGen.Processor
                 pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.Private, propertyType);
                 return;
             }
+
             var t = _handler.GetRealType(pi);
-            var fb = new FieldDefinition(name, FieldAttributes.FamORAssem, t);
+            pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.FamORAssem, t);
+            PopulateDbColumn(pi);
+            GenerateCrossTableForHasManyAndBelongsTo(pi);
+            PopulateCustomAttributeForLazyLoadColumn(pi);
+        }
+
+        private void PopulateDbColumn(PropertyInformation pi)
+        {
+            var pd = pi.PropertyDefinition;
             var bc = pd.GetCustomAttribute(KnownTypesHandler.DbColumnAttribute);
             if (bc != null)
             {
-                fb.CustomAttributes.Add(bc);
+                pd.CustomAttributes.Remove(bc);
+                pi.FieldDefinition.CustomAttributes.Add(bc);
             }
             else if (pi.FieldType == FieldType.LazyLoad)
             {
-                //fb.SetCustomAttribute(GetDbColumnBuilder(pi.Name));
-                //TODO: set [DbColumn(pi.Name)] to fb
+                var c = _handler.GetDbColumn(pi.PropertyDefinition.Name);
+                pi.FieldDefinition.CustomAttributes.Add(c);
             }
+        }
+
+        private void GenerateCrossTableForHasManyAndBelongsTo(PropertyInformation pi)
+        {
+            var pd = pi.PropertyDefinition;
             if (pi.FieldType == FieldType.HasAndBelongsToMany)
             {
                 var mm = pd.GetCustomAttribute(KnownTypesHandler.HasAndBelongsToManyAttribute);
                 var ctName = (string)mm.GetField("CrossTableName");
-                if(!string.IsNullOrEmpty(ctName))
+                if (!string.IsNullOrEmpty(ctName))
                 {
-                    //fb.SetCustomAttribute(new CustomAttributeBuilder(CrossTableNameAttributeConstructor, new object[] { mm.CrossTableName }));
-                    //TODO: set [CrossTableName(mm.CrossTableName)] to fb
+                    var c = _handler.GetCrossTable(ctName);
+                    pi.FieldDefinition.CustomAttributes.Add(c);
                 }
             }
+            
+        }
+
+        private static void PopulateCustomAttributeForLazyLoadColumn(PropertyInformation pi)
+        {
             if (pi.FieldType == FieldType.LazyLoad)
             {
-                //ProcessCustomAttribute<AllowNullAttribute>(pi, o => fb.SetCustomAttribute(GetAllowNullBuilder()));
-                //ProcessCustomAttribute<LengthAttribute>(pi, o => fb.SetCustomAttribute(GetLengthBuilder(o)));
-                //ProcessCustomAttribute<StringColumnAttribute>(pi, o => fb.SetCustomAttribute(GetStringColumnBuilder(o)));
-                //ProcessCustomAttribute<IndexAttribute>(pi, o => fb.SetCustomAttribute(GetIndexBuilder(o)));
-                //ProcessCustomAttribute<SpecialNameAttribute>(pi, o => fb.SetCustomAttribute(GetSpecialNameBuilder()));
-                //TODO: set all arrtibutes to LazyLoad field.
+                PopulateCustomAttribute(pi, KnownTypesHandler.AllowNullAttribute);
+                PopulateCustomAttribute(pi, KnownTypesHandler.LengthAttribute);
+                PopulateCustomAttribute(pi, KnownTypesHandler.StringColumnAttribute);
+                PopulateCustomAttribute(pi, KnownTypesHandler.IndexAttribute);
+                PopulateCustomAttribute(pi, KnownTypesHandler.SpecialNameAttribute);
             }
-            pi.FieldDefinition = fb;
+        }
+
+        private static void PopulateCustomAttribute(PropertyInformation pi, string attributeName)
+        {
+            var c = pi.PropertyDefinition.GetCustomAttribute(attributeName);
+            if(c != null)
+            {
+                pi.PropertyDefinition.CustomAttributes.Remove(c);
+                pi.FieldDefinition.CustomAttributes.Add(c);
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Common
 {
-    internal abstract class EmitObjectHandlerBase : IDbObjectHandler
+    public abstract class EmitObjectHandlerBase : IDbObjectHandler
     {
         protected KeyValue[] kvc;
 

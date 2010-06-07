@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Runtime.CompilerServices;
-using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Util;
 using Mono.Cecil;
+using DataException = Lephone.Data.DataException;
+using SpecialNameAttribute = Lephone.Data.Definition.SpecialNameAttribute;
 
 namespace Lephone.CodeGen.Processor
 {
@@ -22,11 +24,17 @@ namespace Lephone.CodeGen.Processor
         public static readonly string OrderByAttribute = typeof(OrderByAttribute).FullName;
         public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
         public static readonly string ExcludeAttribute = typeof(ExcludeAttribute).FullName;
+        public static readonly string AllowNullAttribute = typeof(AllowNullAttribute).FullName;
+        public static readonly string LengthAttribute = typeof(LengthAttribute).FullName;
+        public static readonly string StringColumnAttribute = typeof(StringColumnAttribute).FullName;
+        public static readonly string IndexAttribute = typeof(IndexAttribute).FullName;
+        public static readonly string SpecialNameAttribute = typeof(SpecialNameAttribute).FullName;
 
         private static readonly Dictionary<string, FieldType> Jar;
 
         public readonly MethodReference ColumnUpdated;
         public readonly MethodReference InitUpdateColumns;
+        public readonly TypeReference ModelHandlerBaseType;
 
         private readonly ModuleDefinition _module;
 
@@ -36,6 +44,16 @@ namespace Lephone.CodeGen.Processor
         private readonly TypeReference _hasAndBelongsToMany;
         private readonly TypeReference _lazyLoadField;
 
+        private readonly TypeReference _string;
+        private readonly TypeReference _type;
+        private readonly MethodReference _dbColumn;
+        private readonly MethodReference _crossTable;
+        private readonly MethodReference _forType;
+
+        public readonly TypeReference ObjectType;
+        public readonly TypeReference VoidType;
+        public readonly TypeReference IDataReaderType;
+
         public KnownTypesHandler(ModuleDefinition module)
         {
             this._module = module;
@@ -44,9 +62,18 @@ namespace Lephone.CodeGen.Processor
             _belongsTo = _module.Import(typeof(BelongsTo<>));
             _hasAndBelongsToMany = _module.Import(typeof(HasAndBelongsToMany<>));
             _lazyLoadField = _module.Import(typeof(LazyLoadField<>));
+            _string = _module.Import(typeof(string));
+            _type = _module.Import(typeof(Type));
+            _dbColumn = Import(Import(typeof(DbColumnAttribute)).GetConstructor(typeof(string)));
+            _crossTable = Import(Import(typeof(CrossTableNameAttribute)).GetConstructor(typeof(string)));
+            _forType = Import(Import(typeof(ForTypeAttribute)).GetConstructor(typeof(Type)));
             var dbase = typeof(DbObjectSmartUpdate);
             ColumnUpdated = _module.Import(dbase.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag));
             InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
+            ModelHandlerBaseType = _module.Import(typeof(EmitObjectHandlerBase));
+            ObjectType = Import(typeof(object));
+            VoidType = Import(typeof(void));
+            IDataReaderType = Import(typeof(IDataReader));
         }
 
         static KnownTypesHandler()
@@ -82,11 +109,13 @@ namespace Lephone.CodeGen.Processor
                 case FieldType.HasOne:
                     return TypeHelper.MakeGenericType(_hasOne, propertyType);
                 case FieldType.HasMany:
-                    return TypeHelper.MakeGenericType(_hasMany, propertyType.GenericParameters[0]);
+                    return TypeHelper.MakeGenericType(_hasMany, 
+                        ((GenericInstanceType)propertyType).GenericArguments[0]);
                 case FieldType.BelongsTo:
                     return TypeHelper.MakeGenericType(_belongsTo, propertyType);
                 case FieldType.HasAndBelongsToMany:
-                    return TypeHelper.MakeGenericType(_hasAndBelongsToMany, propertyType.GenericParameters[0]);
+                    return TypeHelper.MakeGenericType(_hasAndBelongsToMany,
+                        ((GenericInstanceType)propertyType).GenericArguments[0]);
                 case FieldType.LazyLoad:
                     return TypeHelper.MakeGenericType(_lazyLoadField, propertyType);
                 default:
@@ -102,6 +131,27 @@ namespace Lephone.CodeGen.Processor
         public TypeReference Import(Type type)
         {
             return _module.Import(type);
+        }
+
+        public CustomAttribute GetDbColumn(string name)
+        {
+            var r = new CustomAttribute(_dbColumn);
+            r.ConstructorArguments.Add(new CustomAttributeArgument(_string, name));
+            return r;
+        }
+
+        public CustomAttribute GetCrossTable(string name)
+        {
+            var r = new CustomAttribute(_crossTable);
+            r.ConstructorArguments.Add(new CustomAttributeArgument(_string, name));
+            return r;
+        }
+
+        public CustomAttribute GetForType(TypeReference type)
+        {
+            var r = new CustomAttribute(_forType);
+            r.ConstructorArguments.Add(new CustomAttributeArgument(_type, type));
+            return r;
         }
     }
 }

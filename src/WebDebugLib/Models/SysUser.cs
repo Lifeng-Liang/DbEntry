@@ -16,8 +16,5 @@ namespace DebugLib.Models
         public int Age { get; set; }
         public Date Birthday { get; set; }
         public bool IsMale { get; set; }
-
-        [HasOne(OrderBy = "Id")]
-        public Book Book { get; set; }
     }
 }

@@ -34,6 +34,9 @@ namespace Lephone.CodeGen.Processor
                 var type = module.GetType(model.FullName);
                 var processor = new ModelProcessor(type, handler);
                 processor.Process();
+                var generator = new ModelHandlerGenerator(type, handler);
+                var mh = generator.Generate();
+                module.Types.Add(mh);
             }
 
             module.Write(name + ".dll");
