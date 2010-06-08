@@ -79,6 +79,7 @@
     <Compile Include="Controllers\SysUserController.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
     <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\OnlyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\SysUser.cs" />
   </ItemGroup>

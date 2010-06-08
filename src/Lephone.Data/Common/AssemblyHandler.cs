@@ -61,16 +61,10 @@ namespace Lephone.Data.Common
 
             public override Type GetDbObjectHandler(Type sourceType, ObjectInfo oi)
             {
-                foreach (var type in _staticAssembly.GetTypes())
+                var attr = ClassHelper.GetAttribute<ModelHandlerAttribute>(sourceType, false);
+                if(attr != null)
                 {
-                    var attr = ClassHelper.GetAttribute<ForTypeAttribute>(type, false);
-                    if (attr != null)
-                    {
-                        if (attr.Type == sourceType)
-                        {
-                            return type;
-                        }
-                    }
+                    return attr.Type;
                 }
                 throw new DataException("Can not find ObjectHandler for: {0}", sourceType.FullName);
             }

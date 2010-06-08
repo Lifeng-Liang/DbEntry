@@ -4,6 +4,7 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.SqlEntry;
 using Lephone.Util;
 using Mono.Cecil;
 using DataException = Lephone.Data.DataException;
@@ -15,6 +16,7 @@ namespace Lephone.CodeGen.Processor
     {
         public static readonly string Object = typeof(object).FullName;
         public static readonly string String = typeof(string).FullName;
+        public static readonly string DbObjectSmartUpdate = typeof(DbObjectSmartUpdate).FullName;
         public static readonly string DbColumnAttribute = typeof(DbColumnAttribute).FullName;
         public static readonly string HasOneAttribute = typeof(HasOneAttribute).FullName;
         public static readonly string BelongsToAttribute = typeof(BelongsToAttribute).FullName;
@@ -35,6 +37,7 @@ namespace Lephone.CodeGen.Processor
         public readonly MethodReference ColumnUpdated;
         public readonly MethodReference InitUpdateColumns;
         public readonly TypeReference ModelHandlerBaseType;
+        public readonly MethodReference ModelHandlerBaseTypeCtor;
 
         private readonly ModuleDefinition _module;
 
@@ -48,11 +51,15 @@ namespace Lephone.CodeGen.Processor
         private readonly TypeReference _type;
         private readonly MethodReference _dbColumn;
         private readonly MethodReference _crossTable;
-        private readonly MethodReference _forType;
+        private readonly MethodReference _modelHandler;
 
         public readonly TypeReference ObjectType;
         public readonly TypeReference VoidType;
-        public readonly TypeReference IDataReaderType;
+        public readonly TypeReference BoolType;
+        public readonly TypeReference DataReaderInterface;
+        public readonly TypeReference DictionaryStringObjectType;
+        public readonly TypeReference ListKeyValuePairStringStringType;
+        public readonly TypeReference KeyValueCollectionType;
 
         public KnownTypesHandler(ModuleDefinition module)
         {
@@ -66,14 +73,19 @@ namespace Lephone.CodeGen.Processor
             _type = _module.Import(typeof(Type));
             _dbColumn = Import(Import(typeof(DbColumnAttribute)).GetConstructor(typeof(string)));
             _crossTable = Import(Import(typeof(CrossTableNameAttribute)).GetConstructor(typeof(string)));
-            _forType = Import(Import(typeof(ForTypeAttribute)).GetConstructor(typeof(Type)));
+            _modelHandler = Import(Import(typeof(ModelHandlerAttribute)).GetConstructor(typeof(Type)));
             var dbase = typeof(DbObjectSmartUpdate);
             ColumnUpdated = _module.Import(dbase.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag));
             InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
             ModelHandlerBaseType = _module.Import(typeof(EmitObjectHandlerBase));
+            ModelHandlerBaseTypeCtor = Import(ModelHandlerBaseType.GetConstructor());
             ObjectType = Import(typeof(object));
             VoidType = Import(typeof(void));
-            IDataReaderType = Import(typeof(IDataReader));
+            BoolType = Import(typeof(bool));
+            DataReaderInterface = Import(typeof(IDataReader));
+            DictionaryStringObjectType = Import(typeof(Dictionary<string, object>));
+            ListKeyValuePairStringStringType = Import(typeof(List<KeyValuePair<string, string>>));
+            KeyValueCollectionType = Import(typeof(KeyValueCollection));
         }
 
         static KnownTypesHandler()
@@ -147,9 +159,9 @@ namespace Lephone.CodeGen.Processor
             return r;
         }
 
-        public CustomAttribute GetForType(TypeReference type)
+        public CustomAttribute GetModelHandler(TypeReference type)
         {
-            var r = new CustomAttribute(_forType);
+            var r = new CustomAttribute(_modelHandler);
             r.ConstructorArguments.Add(new CustomAttributeArgument(_type, type));
             return r;
         }

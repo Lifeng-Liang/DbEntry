@@ -31,6 +31,7 @@ namespace Lephone.CodeGen.Processor
             var handler = new KnownTypesHandler(module);
             foreach (var model in models)
             {
+                Console.WriteLine(model.FullName);
                 var type = module.GetType(model.FullName);
                 var processor = new ModelProcessor(type, handler);
                 processor.Process();

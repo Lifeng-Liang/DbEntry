@@ -326,23 +326,23 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        //public IlBuilder Br_S(Label label)
-        //{
-        //    il.Emit(OpCodes.Br_S, label));
-        //    return this;
-        //}
+        public IlBuilder Br_S(Instruction instruction)
+        {
+            _list.Add(_il.Emit(OpCodes.Br_S, instruction));
+            return this;
+        }
 
-        //public IlBuilder BrTrue_S(Label label)
-        //{
-        //    il.Emit(OpCodes.Brtrue_S, label));
-        //    return this;
-        //}
+        public IlBuilder BrTrue_S(Instruction instruction)
+        {
+            _list.Add(_il.Emit(OpCodes.Brtrue_S, instruction));
+            return this;
+        }
 
-        //public IlBuilder BrFalse_S(Label label)
-        //{
-        //    il.Emit(OpCodes.Brfalse_S, label));
-        //    return this;
-        //}
+        public IlBuilder BrFalse_S(Instruction instruction)
+        {
+            _list.Add(_il.Emit(OpCodes.Brfalse_S, instruction));
+            return this;
+        }
 
         //public Label DefineLabel()
         //{
@@ -361,11 +361,11 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        //public IlBuilder Bne_Un_S(Label label)
-        //{
-        //    il.Emit(OpCodes.Bne_Un_S, label));
-        //    return this;
-        //}
+        public IlBuilder Bne_Un_S(Instruction instruction)
+        {
+            _list.Add(_il.Emit(OpCodes.Bne_Un_S, instruction));
+            return this;
+        }
 
         public IlBuilder Conv_R4()
         {

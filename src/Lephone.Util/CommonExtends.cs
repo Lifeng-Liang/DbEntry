@@ -158,7 +158,7 @@ public static class CommonExtends
         return new List<string>(array).RemoveLast().ToArray();
     }
 
-    public static T First<T>(this List<T> list)
+    public static T First<T>(this IList<T> list)
     {
         if (list == null || list.Count == 0)
         {
@@ -167,13 +167,22 @@ public static class CommonExtends
         return list[0];
     }
 
-    public static T Last<T>(this List<T> list)
+    public static T Last<T>(this IList<T> list)
     {
         if (list == null || list.Count == 0)
         {
             return default(T);
         }
         return list[list.Count - 1];
+    }
+
+    public static T Last<T>(this T[] list)
+    {
+        if (list == null || list.Length == 0)
+        {
+            return default(T);
+        }
+        return list[list.Length - 1];
     }
 
     public static List<T> RemoveFirst<T>(this List<T> list)

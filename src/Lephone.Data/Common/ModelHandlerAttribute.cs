@@ -3,11 +3,11 @@
 namespace Lephone.Data.Common
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class ForTypeAttribute : Attribute
+    public class ModelHandlerAttribute : Attribute
     {
         public Type Type;
 
-        public ForTypeAttribute(Type type)
+        public ModelHandlerAttribute(Type type)
         {
             Type = type;
         }

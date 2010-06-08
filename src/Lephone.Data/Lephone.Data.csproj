@@ -128,10 +128,10 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DynamicQuery.cs" />
     <Compile Include="Common\DynamicRow.cs" />
     <Compile Include="Common\DynamicTable.cs" />
-    <Compile Include="Common\ForTypeAttribute.cs" />
     <Compile Include="Common\GroupBySumObject.cs" />
     <Compile Include="Common\AssemblyHandler.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
+    <Compile Include="Common\ModelHandlerAttribute.cs" />
     <Compile Include="Common\ModelUpdater.cs" />
     <Compile Include="Common\ObjectInfo_ctor.cs" />
     <Compile Include="Common\TimeSpanLessDataReader.cs" />

@@ -55,8 +55,7 @@ namespace Lephone.Data.Common
 
             MemoryTypeBuilder tb = MemoryAssembly.Instance.DefineType(
                 DynamicObjectTypeAttr, VhBaseType, new[] { typeof(IDbObjectHandler) },
-                new[]{new CustomAttributeBuilder(typeof(ForTypeAttribute).GetConstructor(new[] { typeof(Type) }),
-                            new object[] { srcType }) });
+                new CustomAttributeBuilder[]{});
 
             tb.DefineDefaultConstructor(MethodAttributes.Public);
             // implements CreateInstance

@@ -154,5 +154,18 @@ namespace Lephone.CodeGen.Processor
 
             return instance;
         }
+
+        public static bool BaseTypeIsDbObjectSmartUpdate(this TypeReference type)
+        {
+            if(type.FullName == KnownTypesHandler.DbObjectSmartUpdate)
+            {
+                return true;
+            }
+            if(type.FullName == KnownTypesHandler.Object)
+            {
+                return false;
+            }
+            return BaseTypeIsDbObjectSmartUpdate(type.Resolve().BaseType);
+        }
     }
 }
