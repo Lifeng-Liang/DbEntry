@@ -7,18 +7,32 @@ namespace Lephone.CodeGen.Processor
 {
     public class IlBuilder
     {
-        //private static readonly Type[] EmptyTypes = new Type[] { };
-        //private static readonly MethodDefinition DateEx = typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
-        //private static readonly MethodDefinition TimeEx = typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
-
+        private readonly MethodBody _body;
         private readonly ILProcessor _il;
 
         private readonly List<Instruction> _list;
 
-        public IlBuilder(ILProcessor il)
+        public IlBuilder(MethodBody body)
         {
-            this._il = il;
+            _body = body;
+            this._il = body.GetILProcessor();
             _list = new List<Instruction>();
+        }
+
+        public List<Instruction> Instructions
+        {
+            get
+            {
+                return _list;
+            }
+        }
+
+        public ILProcessor Processor
+        {
+            get
+            {
+                return _il;
+            }
         }
 
         public void Append()
@@ -49,11 +63,12 @@ namespace Lephone.CodeGen.Processor
             _list.Clear();
         }
 
-        //public IlBuilder DeclareLocal(Type t)
-        //{
-        //    il.DeclareLocal(t));
-        //    return this;
-        //}
+        public VariableDefinition DeclareLocal(TypeReference t)
+        {
+            var variable = new VariableDefinition(t);
+            _body.Variables.Add(variable);
+            return variable;
+        }
 
         public IlBuilder Emit(OpCode opCode)
         {
@@ -247,65 +262,67 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        //public IlBuilder CastOrUnbox(Type t)
-        //{
-        //    if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>))
-        //    {
-        //        Type inType = t.GetGenericArguments()[0];
-        //        if (ProcessDateAndTime(inType, typeof(DateTime?)))
-        //        {
-        //            return this;
-        //        }
-        //    }
-        //    if (t.IsValueType)
-        //    {
-        //        if (ProcessDateAndTime(t, typeof(DateTime)))
-        //        {
-        //            return this;
-        //        }
-        //        if (t == typeof(bool))
-        //        {
-        //            t = typeof(bool));
-        //        }
-        //        else if (t == typeof(uint))
-        //        {
-        //            t = typeof(int));
-        //        }
-        //        else if (t == typeof(ulong))
-        //        {
-        //            t = typeof(long));
-        //        }
-        //        else if (t == typeof(ushort))
-        //        {
-        //            t = typeof(short));
-        //        }
-        //        il.Emit(OpCodes.Unbox_Any, t));
-        //    }
-        //    else
-        //    {
-        //        il.Emit(OpCodes.Castclass, t));
-        //    }
-        //    return this;
-        //}
+        public IlBuilder CastOrUnbox(TypeReference t, KnownTypesHandler handler)
+        {
+            //TODO: refactor the types to KnownTypesHandler
+            if (t.IsGenericInstance && t.Name == "Nullable<>")
+            {
+                var inType = t.GenericParameters[0];
+                if (ProcessDateAndTime(inType, handler.Import(typeof(DateTime?)), handler))
+                {
+                    return this;
+                }
+            }
+            if (t.IsValueType)
+            {
+                if (ProcessDateAndTime(t, handler.Import(typeof(DateTime)), handler))
+                {
+                    return this;
+                }
+                if (t.FullName == typeof(bool).FullName)
+                {
+                    t = handler.Import(typeof(bool));
+                }
+                else if (t.FullName == typeof(uint).FullName)
+                {
+                    t = handler.Import(typeof(int));
+                }
+                else if (t.FullName == typeof(ulong).FullName)
+                {
+                    t = handler.Import(typeof(long));
+                }
+                else if (t.FullName == typeof(ushort).FullName)
+                {
+                    t = handler.Import(typeof(short));
+                }
+                _il.Emit(OpCodes.Unbox_Any, t);
+            }
+            else
+            {
+                _il.Emit(OpCodes.Castclass, t);
+            }
+            return this;
+        }
 
-        //private bool ProcessDateAndTime(Type inType, Type unboxType)
-        //{
-        //    if (inType == typeof(Date))
-        //    {
-        //        il.Emit(OpCodes.Unbox_Any, unboxType));
-        //        il.Emit(OpCodes.Call, DateEx));
-        //        return true;
-        //    }
-        //    if (inType == typeof(Time))
-        //    {
-        //        il.Emit(OpCodes.Unbox_Any, unboxType));
-        //        il.Emit(OpCodes.Call, TimeEx));
-        //        return true;
-        //    }
-        //    return false;
-        //}
+        private bool ProcessDateAndTime(TypeReference inType, TypeReference unboxType, KnownTypesHandler handler)
+        {
+            //TODO: refactor the types to KnownTypesHandler
+            if (inType.FullName == typeof(Date).FullName)
+            {
+                _il.Emit(OpCodes.Unbox_Any, unboxType);
+                _il.Emit(OpCodes.Call, handler.DateEx);
+                return true;
+            }
+            if (inType.FullName == typeof(Time).FullName)
+            {
+                _il.Emit(OpCodes.Unbox_Any, unboxType);
+                _il.Emit(OpCodes.Call, handler.TimeEx);
+                return true;
+            }
+            return false;
+        }
 
-        public IlBuilder Cast(TypeDefinition t)
+        public IlBuilder Cast(TypeReference t)
         {
             _list.Add(_il.Create(OpCodes.Castclass, t));
             return this;
@@ -328,19 +345,19 @@ namespace Lephone.CodeGen.Processor
 
         public IlBuilder Br_S(Instruction instruction)
         {
-            _list.Add(_il.Emit(OpCodes.Br_S, instruction));
+            _list.Add(_il.Create(OpCodes.Br_S, instruction));
             return this;
         }
 
         public IlBuilder BrTrue_S(Instruction instruction)
         {
-            _list.Add(_il.Emit(OpCodes.Brtrue_S, instruction));
+            _list.Add(_il.Create(OpCodes.Brtrue_S, instruction));
             return this;
         }
 
         public IlBuilder BrFalse_S(Instruction instruction)
         {
-            _list.Add(_il.Emit(OpCodes.Brfalse_S, instruction));
+            _list.Add(_il.Create(OpCodes.Brfalse_S, instruction));
             return this;
         }
 
@@ -355,15 +372,15 @@ namespace Lephone.CodeGen.Processor
         //    return this;
         //}
 
-        public IlBuilder LoadLocala_S(int index)
+        public IlBuilder LoadLocala_S(VariableDefinition variable)
         {
-            _list.Add(_il.Create(OpCodes.Ldloca_S, index));
+            _list.Add(_il.Create(OpCodes.Ldloca_S, variable));
             return this;
         }
 
         public IlBuilder Bne_Un_S(Instruction instruction)
         {
-            _list.Add(_il.Emit(OpCodes.Bne_Un_S, instruction));
+            _list.Add(_il.Create(OpCodes.Bne_Un_S, instruction));
             return this;
         }
 
@@ -379,13 +396,13 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        public IlBuilder ConvFloaty(Type type)
+        public IlBuilder ConvFloaty(string typeName)
         {
-            if (type == typeof(float))
+            if (typeName == typeof(float).FullName)
             {
                 _list.Add(_il.Create(OpCodes.Conv_R4));
             }
-            else if (type == typeof(double))
+            else if (typeName == typeof(double).FullName)
             {
                 _list.Add(_il.Create(OpCodes.Conv_R8));
             }

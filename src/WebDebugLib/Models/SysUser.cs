@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lephone.Data.Definition;
 
 namespace DebugLib.Models
@@ -16,5 +17,8 @@ namespace DebugLib.Models
         public int Age { get; set; }
         public Date Birthday { get; set; }
         public bool IsMale { get; set; }
+
+        [HasMany]
+        public IList<Book> Books { get; private set; }
     }
 }

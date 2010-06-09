@@ -10,6 +10,7 @@ namespace DebugLib.Models
         Story,
     }
 
+    [Serializable]
     public class Book : DbObjectModel<Book>
     {
         [Length(30)] public string Name { get; set; }
@@ -19,5 +20,11 @@ namespace DebugLib.Models
         public bool Read { get; set; }
         [SpecialName] public DateTime CreatedOn { get; set; }
         [SpecialName] public DateTime? UpdatedOn { get; set; }
+
+        [Exclude]
+        public string MyMy { get; set; }
+
+        [BelongsTo]
+        public SysUser User { get; set; }
     }
 }

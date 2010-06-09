@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
@@ -16,6 +18,7 @@ namespace Lephone.CodeGen.Processor
     {
         public static readonly string Object = typeof(object).FullName;
         public static readonly string String = typeof(string).FullName;
+        public static readonly string Decimal = typeof(decimal).FullName;
         public static readonly string DbObjectSmartUpdate = typeof(DbObjectSmartUpdate).FullName;
         public static readonly string DbColumnAttribute = typeof(DbColumnAttribute).FullName;
         public static readonly string HasOneAttribute = typeof(HasOneAttribute).FullName;
@@ -60,6 +63,19 @@ namespace Lephone.CodeGen.Processor
         public readonly TypeReference DictionaryStringObjectType;
         public readonly TypeReference ListKeyValuePairStringStringType;
         public readonly TypeReference KeyValueCollectionType;
+        public readonly TypeReference SerializableInterface;
+        public readonly TypeReference SerializationInfoType;
+        public readonly TypeReference StreamingContextType;
+
+        public readonly MethodReference DynamicObjectReferenceSerializeObject;
+        public readonly MethodReference SerializableGetObjectData;
+
+        public readonly Type[] EmptyTypes = new Type[] { };
+        public readonly MethodReference DateEx;
+        public readonly MethodReference TimeEx;
+
+
+        public readonly Dictionary<string, MethodReference> TypeDict;
 
         public KnownTypesHandler(ModuleDefinition module)
         {
@@ -86,6 +102,24 @@ namespace Lephone.CodeGen.Processor
             DictionaryStringObjectType = Import(typeof(Dictionary<string, object>));
             ListKeyValuePairStringStringType = Import(typeof(List<KeyValuePair<string, string>>));
             KeyValueCollectionType = Import(typeof(KeyValueCollection));
+            SerializableInterface = Import(typeof(ISerializable));
+            SerializationInfoType = Import(typeof(SerializationInfo));
+            StreamingContextType = Import(typeof(StreamingContext));
+
+            DynamicObjectReferenceSerializeObject =
+                Import(Import(typeof(DynamicObjectReference)).GetMethod("SerializeObject"));
+            SerializableGetObjectData = Import(Import(typeof(ISerializable)).GetMethod("GetObjectData"));
+
+            DateEx = _module.Import(typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
+            TimeEx = _module.Import(typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
+
+            TypeDict = new Dictionary<string, MethodReference>();
+            var types = new[] { typeof(Date), typeof(Time), typeof(DateTime), typeof(Guid), typeof(TimeSpan), typeof(decimal), typeof(string) };
+            foreach (var type in types)
+            {
+                var mi = _module.Import(type.GetMethod("op_Inequality", ClassHelper.AllFlag));
+                TypeDict.Add(type.FullName, mi);
+            }
         }
 
         static KnownTypesHandler()
@@ -136,6 +170,11 @@ namespace Lephone.CodeGen.Processor
         }
 
         public MethodReference Import(MethodReference type)
+        {
+            return _module.Import(type);
+        }
+
+        public MethodReference Import(MethodInfo type)
         {
             return _module.Import(type);
         }
