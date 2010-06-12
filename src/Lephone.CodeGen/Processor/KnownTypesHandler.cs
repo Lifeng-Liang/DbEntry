@@ -29,6 +29,7 @@ namespace Lephone.CodeGen.Processor
         public static readonly string OrderByAttribute = typeof(OrderByAttribute).FullName;
         public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
         public static readonly string ExcludeAttribute = typeof(ExcludeAttribute).FullName;
+        public static readonly string DbKeyAttribute = typeof(DbKeyAttribute).FullName;
         public static readonly string AllowNullAttribute = typeof(AllowNullAttribute).FullName;
         public static readonly string LengthAttribute = typeof(LengthAttribute).FullName;
         public static readonly string StringColumnAttribute = typeof(StringColumnAttribute).FullName;
@@ -41,6 +42,7 @@ namespace Lephone.CodeGen.Processor
         public readonly MethodReference InitUpdateColumns;
         public readonly TypeReference ModelHandlerBaseType;
         public readonly MethodReference ModelHandlerBaseTypeCtor;
+        public readonly MethodReference ModelHandlerBaseTypeGetNullable;
 
         private readonly ModuleDefinition _module;
 
@@ -74,8 +76,39 @@ namespace Lephone.CodeGen.Processor
         public readonly MethodReference DateEx;
         public readonly MethodReference TimeEx;
 
-
+        private static readonly Dictionary<string, string> DataReaderMethods;
         public readonly Dictionary<string, MethodReference> TypeDict;
+
+        static KnownTypesHandler()
+        {
+            Jar = new Dictionary<string, FieldType>
+                       {
+                           {HasOneAttribute, FieldType.HasOne},
+                           {BelongsToAttribute, FieldType.BelongsTo},
+                           {HasManyAttribute, FieldType.HasMany},
+                           {HasAndBelongsToManyAttribute, FieldType.HasAndBelongsToMany},
+                           {LazyLoadAttribute, FieldType.LazyLoad},
+                       };
+            DataReaderMethods = new Dictionary<string, string>
+                      {
+                          {typeof (long).FullName, "GetInt64"},
+                          {typeof (int).FullName, "GetInt32"},
+                          {typeof (short).FullName, "GetInt16"},
+                          {typeof (byte).FullName, "GetByte"},
+                          {typeof (bool).FullName, "GetBoolean"},
+                          {typeof (DateTime).FullName, "GetDateTime"},
+                          {typeof (Date).FullName, "GetDateTime"},
+                          {typeof (Time).FullName, "GetDateTime"},
+                          {typeof (string).FullName, "GetString"},
+                          {typeof (decimal).FullName, "GetDecimal"},
+                          {typeof (float).FullName, "GetFloat"},
+                          {typeof (double).FullName, "GetDouble"},
+                          {typeof (Guid).FullName, "GetGuid"},
+                          {typeof (ulong).FullName, "GetInt64"},
+                          {typeof (uint).FullName, "GetInt32"},
+                          {typeof (ushort).FullName, "GetInt16"}
+                      };
+        }
 
         public KnownTypesHandler(ModuleDefinition module)
         {
@@ -95,6 +128,7 @@ namespace Lephone.CodeGen.Processor
             InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
             ModelHandlerBaseType = _module.Import(typeof(EmitObjectHandlerBase));
             ModelHandlerBaseTypeCtor = Import(ModelHandlerBaseType.GetConstructor());
+            ModelHandlerBaseTypeGetNullable = Import(ModelHandlerBaseType.GetMethod("GetNullable"));
             ObjectType = Import(typeof(object));
             VoidType = Import(typeof(void));
             BoolType = Import(typeof(bool));
@@ -122,19 +156,36 @@ namespace Lephone.CodeGen.Processor
             }
         }
 
-        static KnownTypesHandler()
+        public MethodReference GetDataReaderMethod(TypeReference t)
         {
-            Jar = new Dictionary<string, FieldType>
-                       {
-                           {HasOneAttribute, FieldType.HasOne},
-                           {BelongsToAttribute, FieldType.BelongsTo},
-                           {HasManyAttribute, FieldType.HasMany},
-                           {HasAndBelongsToManyAttribute, FieldType.HasAndBelongsToMany},
-                           {LazyLoadAttribute, FieldType.LazyLoad},
-                       };
+            var typeName = t.FullName;
+            var drt = _module.Import(typeof(IDataRecord));
+            if (DataReaderMethods.ContainsKey(typeName))
+            {
+                string n = DataReaderMethods[typeName];
+                var mi = _module.Import(drt.GetMethod(n));
+                return mi;
+            }
+            if (t.Resolve().IsEnum)
+            {
+                return _module.Import(drt.GetMethod("GetInt32"));
+            }
+            return null;
         }
 
-        public static FieldType GetFieldType(PropertyDefinition pi)
+        public MethodReference GetDataReaderMethodInt()
+        {
+            var drt = _module.Import(typeof(IDataRecord));
+            return _module.Import(drt.GetMethod("get_Item", typeof(int)));
+        }
+
+        public MethodReference GetDataReaderMethodString()
+        {
+            var drt = _module.Import(typeof(IDataRecord));
+            return _module.Import(drt.GetMethod("get_Item", typeof(string)));
+        }
+
+        public static FieldType GetFieldType(IMemberDefinition pi)
         {
             foreach (CustomAttribute ca in pi.CustomAttributes)
             {
@@ -182,6 +233,12 @@ namespace Lephone.CodeGen.Processor
         public TypeReference Import(Type type)
         {
             return _module.Import(type);
+        }
+
+        public TypeDefinition Import(string fullName)
+        {
+            var type = Type.GetType(fullName);
+            return _module.Import(type).Resolve();
         }
 
         public CustomAttribute GetDbColumn(string name)

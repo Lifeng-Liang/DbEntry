@@ -150,8 +150,6 @@ namespace Lephone.Data.Common
         public readonly bool IsAutoSavedValue;
 	    public readonly bool IsSimpleField;
 	    public readonly bool IsRelationField;
-	    public readonly bool IsDataReaderInitalize;
-        public readonly int DataReaderInitalizeFieldCount;
         public readonly string OrderByString;
 	    public readonly string UniqueErrorMessage;
 	    public readonly string ShowString;
@@ -385,14 +383,6 @@ namespace Lephone.Data.Common
 
             var ss = fi.GetAttribute<ShowStringAttribute>(false);
             ShowString = ss != null ? ss.ShowString : Name;
-
-            var list = FieldType.GetInterfaces();
-            IsDataReaderInitalize = (list != null && list.Length > 0 && list[0] == typeof(IDataReaderInitalize));
-            if(IsDataReaderInitalize)
-            {
-                var d = (IDataReaderInitalize)ClassHelper.CreateInstance(FieldType);
-                DataReaderInitalizeFieldCount = d.FieldCount;
-            }
         }
 
         internal MemberHandler(MemberAdapter fi, FieldType ft, PropertyInfo pi)
@@ -412,14 +402,6 @@ namespace Lephone.Data.Common
             }
             IsRelationField = (IsHasOne || IsHasMany || IsHasAndBelongsToMany || IsBelongsTo);
             IsSimpleField = !(IsRelationField || IsLazyLoad);
-
-            var list = FieldType.GetInterfaces();
-            IsDataReaderInitalize = (list != null && list.Length > 0 && list[0] == typeof(IDataReaderInitalize));
-            if (IsDataReaderInitalize)
-            {
-                var d = (IDataReaderInitalize)ClassHelper.CreateInstance(FieldType);
-                DataReaderInitalizeFieldCount = d.FieldCount;
-            }
         }
 
         public void SetValue(object obj, object value)

@@ -5,7 +5,6 @@ using System.Reflection;
 using Lephone.Data.Builder;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Util;
 
 namespace Lephone.Data.Common
 {
@@ -13,19 +12,19 @@ namespace Lephone.Data.Common
     {
         private static readonly object[] os = new object[] { };
 
-        private readonly ConstructorInfo Creator;
-        private readonly ObjectInfo oi;
+        private readonly ConstructorInfo _creator;
+        private readonly ObjectInfo _oi;
 
         public ReflectionDbObjectHandler(Type srcType, ObjectInfo oi)
         {
             ConstructorInfo ci = srcType.GetConstructor(new Type[] { });
-            Creator = ci;
-            this.oi = oi;
+            _creator = ci;
+            this._oi = oi;
         }
 
         public object CreateInstance()
         {
-            return Creator.Invoke(os);
+            return _creator.Invoke(os);
         }
 
         public void LoadSimpleValues(object o, bool useIndex, IDataReader dr)
@@ -33,45 +32,26 @@ namespace Lephone.Data.Common
             if (useIndex)
             {
                 int i = 0;
-                foreach (MemberHandler f in oi.SimpleFields)
+                foreach (MemberHandler f in _oi.SimpleFields)
                 {
-                    if(f.IsDataReaderInitalize)
-                    {
-                        var d = (IDataReaderInitalize)ClassHelper.CreateInstance(f.FieldType);
-                        d.Initalize(dr, i);
-                        f.SetValue(o, d);
-                        i += f.DataReaderInitalizeFieldCount;
-                    }
-                    else
-                    {
-                        //SetValue(f, o, dr[i++]);
-                        f.SetValue(o, dr[i++]);
-                    }
+                    //SetValue(f, o, dr[i++]);
+                    f.SetValue(o, dr[i++]);
                 }
             }
             else
             {
-                foreach (MemberHandler f in oi.SimpleFields)
+                foreach (MemberHandler f in _oi.SimpleFields)
                 {
-                    if (f.IsDataReaderInitalize)
-                    {
-                        var d = (IDataReaderInitalize)ClassHelper.CreateInstance(f.FieldType);
-                        d.Initalize(dr, -1);
-                        f.SetValue(o, d);
-                    }
-                    else
-                    {
-                        //SetValue(f, o, dr[f.Name]);
-                        f.SetValue(o, dr[f.Name]);
-                    }
+                    //SetValue(f, o, dr[f.Name]);
+                    f.SetValue(o, dr[f.Name]);
                 }
             }
         }
 
         public void LoadRelationValues(object o, bool useIndex, IDataReader dr)
         {
-            int n = oi.SimpleFields.Length;
-            foreach (MemberHandler f in oi.RelationFields)
+            int n = _oi.SimpleFields.Length;
+            foreach (MemberHandler f in _oi.RelationFields)
             {
                 var ho = (ILazyLoading)f.GetValue(o);
                 if (f.IsLazyLoad)
@@ -81,7 +61,7 @@ namespace Lephone.Data.Common
                 else if (f.IsHasOne || f.IsHasMany)
                 {
                     ObjectInfo oi1 = ObjectInfo.GetInstance(f.FieldType.GetGenericArguments()[0]);
-                    MemberHandler h1 = oi1.GetBelongsTo(oi.HandleType);
+                    MemberHandler h1 = oi1.GetBelongsTo(_oi.HandleType);
                     if (h1 != null)
                     {
                         ho.Init(h1.Name);
@@ -94,7 +74,7 @@ namespace Lephone.Data.Common
                 else if (f.IsHasAndBelongsToMany)
                 {
                     ObjectInfo oi1 = ObjectInfo.GetInstance(f.FieldType.GetGenericArguments()[0]);
-                    MemberHandler h1 = oi1.GetHasAndBelongsToMany(oi.HandleType);
+                    MemberHandler h1 = oi1.GetHasAndBelongsToMany(_oi.HandleType);
                     if (h1 != null)
                     {
                         ho.Init(h1.Name);
@@ -115,7 +95,7 @@ namespace Lephone.Data.Common
         public Dictionary<string, object> GetKeyValues(object o)
         {
             var dic = new Dictionary<string,object>();
-            foreach (MemberHandler mh in oi.KeyFields)
+            foreach (MemberHandler mh in _oi.KeyFields)
             {
                 dic.Add(mh.Name, mh.GetValue(o));
             }
@@ -124,16 +104,16 @@ namespace Lephone.Data.Common
 
         public object GetKeyValue(object o)
         {
-            if (oi.KeyFields.Length != 1)
+            if (_oi.KeyFields.Length != 1)
             {
                 throw new DataException("The class must and just have one key");
             }
-            return oi.KeyFields[0].GetValue(o);
+            return _oi.KeyFields[0].GetValue(o);
         }
 
         public void SetValuesForSelect(ISqlKeys isv)
         {
-            foreach (MemberHandler fi in oi.Fields)
+            foreach (MemberHandler fi in _oi.Fields)
             {
                 if (!fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany && !fi.IsLazyLoad)
                 {
@@ -179,7 +159,7 @@ namespace Lephone.Data.Common
 
         public void SetValuesForInsert(ISqlValues isv, object obj)
         {
-            foreach (MemberHandler fi in oi.Fields)
+            foreach (MemberHandler fi in _oi.Fields)
             {
                 if (!fi.IsDbGenerate && !fi.IsHasOne && !fi.IsHasMany && !fi.IsHasAndBelongsToMany && !fi.IsUpdatedOn)
                 {
@@ -193,7 +173,7 @@ namespace Lephone.Data.Common
             var to = obj as DbObjectSmartUpdate;
             if (to != null && to.m_UpdateColumns != null)
             {
-                foreach (MemberHandler fi in oi.Fields)
+                foreach (MemberHandler fi in _oi.Fields)
                 {
                     if(!fi.IsKey)
                     {
@@ -206,7 +186,7 @@ namespace Lephone.Data.Common
             }
             else
             {
-                foreach (MemberHandler fi in oi.Fields)
+                foreach (MemberHandler fi in _oi.Fields)
                 {
                     if(!fi.IsKey)
                     {

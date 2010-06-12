@@ -23,12 +23,12 @@ namespace Lephone.Data.Common
             return new KeyValue(kv.Key, v, v.GetType());
         }
 
-        protected void AddKeyValue(KeyValueCollection values, DbObjectSmartUpdate o, string Key, int n, object v)
+        protected void AddKeyValue(KeyValueCollection values, DbObjectSmartUpdate o, string key, int n, object v)
         {
             Dictionary<string, object> kd = o.m_UpdateColumns;
             if (kd != null)
             {
-                if (kd.ContainsKey(Key))
+                if (kd.ContainsKey(key))
                 {
                     values.Add(NewKeyValue(n, v));
                 }
@@ -48,7 +48,7 @@ namespace Lephone.Data.Common
             kvc = ret.ToArray();
         }
 
-        private KeyValue GetKeyValue(MemberHandler fi)
+        private static KeyValue GetKeyValue(MemberHandler fi)
         {
             if (fi.IsBelongsTo)
             {
@@ -86,12 +86,6 @@ namespace Lephone.Data.Common
 
         protected abstract void LoadSimpleValuesByIndex(object o, IDataReader dr);
         protected abstract void LoadSimpleValuesByName(object o, IDataReader dr);
-
-        protected void InitDataReaderInitalize(object o, IDataReader dr, MemberHandler f, IDataReaderInitalize d, int index)
-        {
-            d.Initalize(dr, index);
-            f.SetValue(o, d);
-        }
 
         public void LoadRelationValues(object o, bool useIndex, IDataReader dr)
         {

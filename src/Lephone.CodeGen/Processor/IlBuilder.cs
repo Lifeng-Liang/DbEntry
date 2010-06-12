@@ -158,6 +158,24 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
+        public IlBuilder SetField(PropertyDefinition pi)
+        {
+            return CallVirtual(pi.SetMethod);
+        }
+
+        public IlBuilder SetMember(IMemberDefinition pi)
+        {
+            if(pi is FieldDefinition)
+            {
+                return SetField((FieldDefinition)pi);
+            }
+            if(pi is PropertyReference)
+            {
+                return SetField((PropertyDefinition)pi);
+            }
+            throw new ApplicationException();
+        }
+
         //private static ConstructorInfo GetConstructor(Type sourceType)
         //{
         //    Type t = sourceType;
@@ -295,11 +313,11 @@ namespace Lephone.CodeGen.Processor
                 {
                     t = handler.Import(typeof(short));
                 }
-                _il.Emit(OpCodes.Unbox_Any, t);
+                _list.Add(_il.Create(OpCodes.Unbox_Any, t));
             }
             else
             {
-                _il.Emit(OpCodes.Castclass, t);
+                _list.Add(_il.Create(OpCodes.Castclass, t));
             }
             return this;
         }
@@ -309,14 +327,14 @@ namespace Lephone.CodeGen.Processor
             //TODO: refactor the types to KnownTypesHandler
             if (inType.FullName == typeof(Date).FullName)
             {
-                _il.Emit(OpCodes.Unbox_Any, unboxType);
-                _il.Emit(OpCodes.Call, handler.DateEx);
+                _list.Add(_il.Create(OpCodes.Unbox_Any, unboxType));
+                _list.Add(_il.Create(OpCodes.Call, handler.DateEx));
                 return true;
             }
             if (inType.FullName == typeof(Time).FullName)
             {
-                _il.Emit(OpCodes.Unbox_Any, unboxType);
-                _il.Emit(OpCodes.Call, handler.TimeEx);
+                _list.Add(_il.Create(OpCodes.Unbox_Any, unboxType));
+                _list.Add(_il.Create(OpCodes.Call, handler.TimeEx));
                 return true;
             }
             return false;

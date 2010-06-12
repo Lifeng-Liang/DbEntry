@@ -89,40 +89,26 @@ namespace Lephone.Data.Common
                     foreach (MemberHandler f in simpleFields)
                     {
                         il.LoadLoc(0);
-                        if (f.IsDataReaderInitalize)
+                        if (f.AllowNull) { il.LoadArg(0); }
+                        il.LoadArg(2).LoadInt(n);
+                        MethodInfo mi1 = Helper.GetMethodInfo(f.FieldType);
+                        if (f.AllowNull || mi1 == null)
                         {
-                            il.NewObj(f.FieldType);
-                            il.LoadArg(2);
-                            il.LoadInt(n);
-                            MethodInfo miInit = f.FieldType.GetMethod("Initalize");
-                            il.Call(miInit);
-                            il.Cast(f.FieldType);
-                            f.MemberInfo.EmitSet(il);
-                            n += f.DataReaderInitalizeFieldCount;
+                            il.CallVirtual(mi);
+                            if (f.AllowNull)
+                            {
+                                Set2ndArgForGetNullable(f, il);
+                                il.Call(miGetNullable);
+                            }
+                            // cast or unbox
+                            il.CastOrUnbox(f.FieldType);
                         }
                         else
                         {
-                            if (f.AllowNull) { il.LoadArg(0); }
-                            il.LoadArg(2).LoadInt(n);
-                            MethodInfo mi1 = Helper.GetMethodInfo(f.FieldType);
-                            if (f.AllowNull || mi1 == null)
-                            {
-                                il.CallVirtual(mi);
-                                if (f.AllowNull)
-                                {
-                                    Set2ndArgForGetNullable(f, il);
-                                    il.Call(miGetNullable);
-                                }
-                                // cast or unbox
-                                il.CastOrUnbox(f.FieldType);
-                            }
-                            else
-                            {
-                                il.CallVirtual(mi1);
-                            }
-                            f.MemberInfo.EmitSet(il);
-                            n++;
+                            il.CallVirtual(mi1);
                         }
+                        f.MemberInfo.EmitSet(il);
+                        n++;
                     }
                 });
         }

@@ -60,14 +60,48 @@ namespace Lephone.CodeGen.Processor
             return type.GetCustomAttribute(KnownTypesHandler.ExcludeAttribute) != null;
         }
 
-        public static MethodDefinition GetMethod(this TypeReference type, string name)
+        public static bool IsDbKey(this IMemberDefinition type)
+        {
+            return type.GetCustomAttribute(KnownTypesHandler.DbKeyAttribute) != null;
+        }
+
+        public static bool IsAllowNull(this IMemberDefinition type)
+        {
+            if (type.Name == "Nullable`1")
+            {
+                return true;
+            }
+            return type.GetCustomAttribute(KnownTypesHandler.AllowNullAttribute) != null;
+        }
+
+        public static MethodDefinition GetMethod(this TypeReference type, string name, params Type[] types)
         {
             var realType = type.Resolve();
             foreach (var method in realType.Methods)
             {
                 if (method.Name == name)
                 {
-                    return method;
+                    if(types.Length == 0)
+                    {
+                        return method;
+                    }
+                    var pl = method.HasParameters ? method.Parameters.Count : 0;
+                    if(pl == types.Length)
+                    {
+                        bool find = true;
+                        for (int i = 0; i < pl; i++)
+                        {
+                            if(method.Parameters[i].ParameterType.FullName != types[i].FullName)
+                            {
+                                find = false;
+                                break;
+                            }
+                        }
+                        if(find)
+                        {
+                            return method;
+                        }
+                    }
                 }
             }
             if (type.FullName == KnownTypesHandler.Object)

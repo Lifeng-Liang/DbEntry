@@ -1,5 +1,4 @@
 ﻿using System;
-using Lephone.Data.Common;
 using Mono.Cecil;
 
 namespace Lephone.CodeGen.Processor
@@ -16,6 +15,8 @@ namespace Lephone.CodeGen.Processor
         private static int _index;
         private readonly TypeDefinition _result;
 
+        private readonly ModelInformation _info;
+
         public ModelHandlerGenerator(TypeDefinition model, KnownTypesHandler handler)
         {
             this._model = model;
@@ -24,13 +25,15 @@ namespace Lephone.CodeGen.Processor
             _result = new TypeDefinition("$Lephone", MemberPrifix + _index,
                 ClassTypeAttr, _handler.ModelHandlerBaseType);
             _model.CustomAttributes.Add(_handler.GetModelHandler(_result));
+
+            _info = new ModelInformation(model, _handler);
         }
 
         public TypeDefinition Generate()
         {
             GenerateConstructor();
             GenerateCreateInstance();
-            GenerateLoadSimpleValuesByIndex(null);
+            GenerateLoadSimpleValuesByIndex();
             GenerateLoadSimpleValuesByName();
             GenerateLoadRelationValuesByIndex();
             GenerateLoadRelationValuesByName();
@@ -64,7 +67,7 @@ namespace Lephone.CodeGen.Processor
             _result.Methods.Add(method);
         }
 
-        private void GenerateLoadSimpleValuesByIndex(MemberHandler[] simpleFields)
+        private void GenerateLoadSimpleValuesByIndex()
         {
             //TODO: implements this
             var method = new MethodDefinition("LoadSimpleValuesByIndex", MethodAttr, _handler.VoidType);
@@ -73,47 +76,33 @@ namespace Lephone.CodeGen.Processor
             var processor = new IlBuilder(method.Body);
 
             // User u = (User)o;
-            var v0 = processor.DeclareLocal(_model);
+            processor.DeclareLocal(_model);
             processor.LoadArg(1).Cast(_model).SetLoc(0);
             // set values
             int n = 0;
-            foreach (MemberHandler f in simpleFields)
+            foreach (var f in _info.SimpleMembers)
             {
                 processor.LoadLoc(0);
-                if (f.IsDataReaderInitalize)
+                if (f.AllowNull) { processor.LoadArg(0); }
+                processor.LoadArg(2).LoadInt(n);
+                var mi1 = _handler.GetDataReaderMethod(f.MemberType);
+                if (f.AllowNull || mi1 == null)
                 {
-                    processor.NewObj(_handler.Import(_handler.Import(f.FieldType).GetConstructor()));
-                    processor.LoadArg(2);
-                    processor.LoadInt(n);
-                    var miInit = f.FieldType.GetMethod("Initalize");
-                    processor.Call(_handler.Import(miInit));
-                    processor.Cast(_handler.Import(f.FieldType));
-                    //f.MemberInfo.EmitSet(il);
-                    n += f.DataReaderInitalizeFieldCount;
+                    processor.CallVirtual(_handler.GetDataReaderMethodInt());
+                    if (f.AllowNull)
+                    {
+                        SetSecendArgForGetNullable(f, processor);
+                        processor.Call(_handler.ModelHandlerBaseTypeGetNullable);
+                    }
+                    // cast or unbox
+                    processor.CastOrUnbox(f.MemberType, _handler);
                 }
                 else
                 {
-                    if (f.AllowNull) { processor.LoadArg(0); }
-                    processor.LoadArg(2).LoadInt(n);
-                    var mi1 = GetMethodInfo(f.FieldType);
-                    if (f.AllowNull || mi1 == null)
-                    {
-                        //processor.CallVirtual(mi);
-                        if (f.AllowNull)
-                        {
-                            //Set2ndArgForGetNullable(f, il);
-                            //processor.Call(miGetNullable);
-                        }
-                        // cast or unbox
-                        processor.CastOrUnbox(_handler.Import(f.FieldType), _handler);
-                    }
-                    else
-                    {
-                        processor.CallVirtual(mi1);
-                    }
-                    //f.MemberInfo.EmitSet(il);
-                    n++;
+                    processor.CallVirtual(mi1);
                 }
+                processor.SetMember(f.Member);
+                n++;
             }
 
             processor.Return();
@@ -121,22 +110,22 @@ namespace Lephone.CodeGen.Processor
             _result.Methods.Add(method);
         }
 
-        public MethodReference GetMethodInfo(Type t)
+        private static void SetSecendArgForGetNullable(ModelMember f, IlBuilder il)
         {
-            //TypeReference drt = _handler.Import(typeof(IDataRecord));
-            //if (_dic.ContainsKey(t))
-            //{
-            //    string n = _dic[t];
-            //    var mi = drt.GetMethod(n);
-            //    return mi;
-            //}
-            //if (t.IsEnum)
-            //{
-            //    return drt.GetMethod("GetInt32");
-            //}
-            return null;
+            //TODO: refactor this to KnownTypesHandler
+            if (f.MemberType.IsValueType && f.MemberType.GenericParameters[0].FullName == typeof(Guid).FullName)
+            {
+                il.LoadInt(1);
+            }
+            else if (f.MemberType.IsValueType && f.MemberType.GenericParameters[0].FullName == typeof(bool).FullName)
+            {
+                il.LoadInt(2);
+            }
+            else
+            {
+                il.LoadInt(0);
+            }
         }
-
 
         private void GenerateLoadSimpleValuesByName()
         {

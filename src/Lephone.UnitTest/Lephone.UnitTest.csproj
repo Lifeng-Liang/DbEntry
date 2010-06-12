@@ -104,7 +104,6 @@
     <Compile Include="Data\HasAndBelongsToManyAssociateTest.cs" />
     <Compile Include="Data\HasManyAssociateTest.cs" />
     <Compile Include="Data\HasOneAssociateTest.cs" />
-    <Compile Include="Data\DataReaderInitalizeTest.cs" />
     <Compile Include="Data\Inner\CommonTest.cs" />
     <Compile Include="Data\KeyGenTest.cs" />
     <Compile Include="Data\LazyLoadFieldTest.cs" />
