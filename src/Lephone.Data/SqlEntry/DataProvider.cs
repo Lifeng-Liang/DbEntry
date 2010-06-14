@@ -6,7 +6,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Data.Dialect;
 using Lephone.Data.Driver;
 using Lephone.Data.Common;

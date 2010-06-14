@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.UnitTest
 {

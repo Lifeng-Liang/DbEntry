@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using Lephone.Core;
 
 [assembly: AssemblyTitle("Lephone Framework MockSql")]
 [assembly: AssemblyDescription("Lephone Framework MockSql")]
@@ -9,10 +10,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
 [assembly: AssemblyTrademark("http://www.codeplex.com/DbEntry")]
 [assembly: AssemblyCulture("")]
-
 [assembly: ComVisible(false)]
+[assembly: AssemblyProcessed]
 
 [assembly: Guid("159753d8-3102-436e-b749-462a6113146b")]
 
-[assembly: AssemblyVersion("3.5.*")]
+[assembly: AssemblyVersion("3.9.*")]
 

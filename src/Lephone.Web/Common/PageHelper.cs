@@ -3,11 +3,11 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Data;
 using Lephone.Data.Common;
 using System.Collections.Generic;
-using Lephone.Util.Text;
+using Lephone.Core.Text;
 
 namespace Lephone.Web.Common
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Lephone.Data;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.CodeGen
 {

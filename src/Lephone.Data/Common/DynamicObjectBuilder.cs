@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.Data.Common
 {

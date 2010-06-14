@@ -1,6 +1,6 @@
 using System;
 using Lephone.Data.Common;
-using Lephone.Util.Text;
+using Lephone.Core.Text;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
 

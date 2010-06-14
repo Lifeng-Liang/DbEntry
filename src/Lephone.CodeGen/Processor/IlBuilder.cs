@@ -176,6 +176,25 @@ namespace Lephone.CodeGen.Processor
             throw new ApplicationException();
         }
 
+        public IlBuilder GetField(PropertyDefinition pi)
+        {
+            return CallVirtual(pi.SetMethod);
+        }
+
+        public IlBuilder GetMember(IMemberDefinition pi)
+        {
+            if (pi is FieldDefinition)
+            {
+                return LoadField((FieldDefinition)pi);
+            }
+            if (pi is PropertyReference)
+            {
+                var method = ((PropertyDefinition) pi).GetMethod;
+                return CallVirtual(method);
+            }
+            throw new ApplicationException();
+        }
+
         //private static ConstructorInfo GetConstructor(Type sourceType)
         //{
         //    Type t = sourceType;
@@ -346,7 +365,7 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        public IlBuilder Box(TypeDefinition t)
+        public IlBuilder Box(TypeReference t)
         {
             if (t.IsValueType)
             {

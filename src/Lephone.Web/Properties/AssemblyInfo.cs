@@ -7,7 +7,7 @@ using System.Reflection;
 [assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("WebEntry.Net")]
 [assembly: AssemblyCopyright("Copyright © Lephone Studio 2010")]
-[assembly: AssemblyTrademark("http://www.codeplex.com/DbEntry")]
+[assembly: AssemblyTrademark("http://dbentry.codeplex.com")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 

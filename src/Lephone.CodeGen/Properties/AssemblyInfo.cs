@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using Lephone.Core;
 
 [assembly: AssemblyTitle("Lephone.CodeGen")]
 [assembly: AssemblyDescription("")]
@@ -9,8 +10,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
 [assembly: ComVisible(false)]
+[assembly: AssemblyProcessed]
 
 [assembly: Guid("10c06f56-c3af-44a8-be69-568a4b3d2421")]
 

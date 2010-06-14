@@ -1,5 +1,5 @@
-﻿using Lephone.Util.Setting;
-using Lephone.Util.Text;
+﻿using Lephone.Core.Setting;
+using Lephone.Core.Text;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util

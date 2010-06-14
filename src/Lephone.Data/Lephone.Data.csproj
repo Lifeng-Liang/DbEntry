@@ -203,7 +203,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Linq\LinqQueryProvider.cs" />
     <Compile Include="QuerySyntax\QueryInterfaces.cs" />
     <Compile Include="SqlEntry\ColumnInfo.cs" />
-    <Compile Include="Logging\DatabaseLogRecorder.cs" />
     <Compile Include="Definition\AllowNullAttribute.cs" />
     <Compile Include="Definition\IndexAttribute.cs" />
     <Compile Include="Definition\LengthAttribute.cs" />
@@ -384,10 +383,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="DbEntry.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\DbEnum.cs" />
-    <Compile Include="Common\LephoneEnum.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Common\MemberHandler.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -408,25 +403,12 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="SqlEntry\KeyValueCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Logging\Log2db.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Logging\LephoneLog.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SqlEntry\SqlStatement.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SqlEntry\TimeConsumingSqlStatement.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lephone.Util\Lephone.Util.csproj">
-      <Name>Lephone.Util</Name>
-      <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="DbEntry.snk" />
@@ -463,6 +445,12 @@ copy *.dll ..\..\..\..\bin\
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lephone.Core\Lephone.Core.csproj">
+      <Project>{891EAD10-3C90-4478-A695-71F5537C2AA2}</Project>
+      <Name>Lephone.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

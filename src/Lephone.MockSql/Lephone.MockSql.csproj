@@ -94,12 +94,6 @@
     <Compile Include="Recorder\StaticRecorder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lephone.Util\Lephone.Util.csproj">
-      <Project>{F53E89FC-F364-4C7D-A20A-CACFBF11C196}</Project>
-      <Name>Lephone.Util</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -115,6 +109,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lephone.Core\Lephone.Core.csproj">
+      <Project>{891EAD10-3C90-4478-A695-71F5537C2AA2}</Project>
+      <Name>Lephone.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

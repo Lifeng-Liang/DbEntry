@@ -1,4 +1,4 @@
-﻿using Lephone.Util.Text;
+﻿using Lephone.Core.Text;
 
 namespace Lephone.UnitTest.util
 {

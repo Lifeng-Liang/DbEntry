@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Lephone.Data.Common;
 using Mono.Cecil;
 
@@ -6,17 +7,34 @@ namespace Lephone.CodeGen.Processor
 {
     public class ModelInformation
     {
+        private static readonly Dictionary<string, ModelInformation> Jar = new Dictionary<string, ModelInformation>(); 
+
+        public static ModelInformation GetInstance(TypeDefinition model, KnownTypesHandler handler)
+        {
+            if(Jar.ContainsKey(model.FullName))
+            {
+                return Jar[model.FullName];
+            }
+            var result = new ModelInformation(model, handler);
+            Jar[model.FullName] = result;
+            return result;
+        }
+
         public readonly List<ModelMember> KeyMembers = new List<ModelMember>();
         public readonly List<ModelMember> SimpleMembers = new List<ModelMember>();
         public readonly List<ModelMember> RelationMembers = new List<ModelMember>();
+        public readonly List<ModelMember> Members = new List<ModelMember>();
 
         private readonly Dictionary<string, string> _genericTypes = new Dictionary<string, string>();
         private readonly KnownTypesHandler _handler;
 
-        public ModelInformation(TypeDefinition model, KnownTypesHandler handler)
+        private ModelInformation(TypeDefinition model, KnownTypesHandler handler)
         {
             _handler = handler;
             SearchMember(model);
+            SimpleMembers.InsertRange(0, KeyMembers);
+            Members.AddRange(SimpleMembers);
+            Members.AddRange(RelationMembers);
         }
 
         private void SearchMember(TypeDefinition model)
@@ -59,30 +77,29 @@ namespace Lephone.CodeGen.Processor
 
         private void ProcessMember(FieldDefinition field)
         {
-            if((field.IsPublic || field.IsFamily) && !field.IsExclude())
+            if((field.IsPublic || field.IsFamilyAndAssembly) && !field.IsExclude())
             {
-                AddMember(field, field.FieldType);
+                var fieldType = KnownTypesHandler.GetFieldType(field);
+                AddMember(field, field.FieldType, fieldType);
             }
         }
 
         private void ProcessMember(PropertyDefinition property)
         {
-            if ((property.SetMethod != null && property.GetMethod != null) 
-                && (property.SetMethod.IsPublic || property.SetMethod.IsFamily)
-                && (property.GetMethod.IsPublic || property.GetMethod.IsFamily) 
-                && !property.IsExclude())
+            if (property.SetMethod != null && property.GetMethod != null
+                && property.SetMethod.IsPublic && property.GetMethod.IsPublic
+                && !property.IsHandlerExclude())
             {
-                AddMember(property, property.GetMethod.ReturnType);
+                AddMember(property, property.GetMethod.ReturnType, FieldType.Normal);
             }
         }
 
-        private void AddMember(IMemberDefinition member, TypeReference mt)
+        private void AddMember(IMemberDefinition member, TypeReference mt, FieldType fieldType)
         {
             TypeReference type = mt.IsGenericParameter 
                 ? _handler.Import(_genericTypes[mt.Name]) 
                 : mt;
-            var mm = new ModelMember(member, type);
-            var fieldType = KnownTypesHandler.GetFieldType(member);
+            var mm = new ModelMember(member, type, fieldType);
             if (mm.IsDbKey)
             {
                 KeyMembers.Add(mm);
@@ -95,6 +112,30 @@ namespace Lephone.CodeGen.Processor
             {
                 RelationMembers.Add(mm);
             }
+        }
+
+        public ModelMember GetBelongsTo(TypeReference type)
+        {
+            foreach (var member in RelationMembers)
+            {
+                if(member.IsBelongsTo && ((GenericInstanceType)member.MemberType).GenericArguments[0].FullName == type.FullName)
+                {
+                    return member;
+                }
+            }
+            throw new ApplicationException();
+        }
+
+        public ModelMember GetHasAndBelongsToMany(TypeReference type)
+        {
+            foreach (var member in RelationMembers)
+            {
+                if (member.IsHasAndBelongsToMany && member.MemberType.GenericParameters[0].FullName == type.FullName)
+                {
+                    return member;
+                }
+            }
+            throw new ApplicationException();
         }
     }
 }

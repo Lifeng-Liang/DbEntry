@@ -4,7 +4,7 @@ using System.Web;
 using System.Reflection;
 using System.IO;
 using System.Web.Compilation;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Web.Mvc;
 
 namespace Lephone.Web
@@ -59,7 +59,7 @@ namespace Lephone.Web
             switch(s)
             {
                 case "Lephone.Data":
-                case "Lephone.Util":
+                case "Lephone.Core":
                 case "Lephone.Web":
                 case "mscorlib":
                 case "System":

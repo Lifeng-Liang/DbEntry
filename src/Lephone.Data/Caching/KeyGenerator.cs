@@ -1,5 +1,5 @@
 ﻿using System;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Data.Common;
 
 namespace Lephone.Data.Caching

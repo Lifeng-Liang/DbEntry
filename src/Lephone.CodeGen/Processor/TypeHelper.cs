@@ -22,7 +22,7 @@ namespace Lephone.CodeGen.Processor
             return result;
         }
 
-        public static CustomAttribute GetCustomAttribute(this IMemberDefinition type, string attributeName)
+        public static CustomAttribute GetCustomAttribute(this ICustomAttributeProvider type, string attributeName)
         {
             if (!type.HasCustomAttributes)
                 return null;
@@ -50,6 +50,11 @@ namespace Lephone.CodeGen.Processor
             return null;
         }
 
+        public static CustomAttribute GetDbColumnAttribute(this IMemberDefinition type)
+        {
+            return type.GetCustomAttribute(KnownTypesHandler.DbColumnAttribute);
+        }
+
         public static bool IsCompilerGenerated(this IMemberDefinition type)
         {
             return type.GetCustomAttribute(KnownTypesHandler.CompilerGeneratedAttribute) != null;
@@ -60,9 +65,48 @@ namespace Lephone.CodeGen.Processor
             return type.GetCustomAttribute(KnownTypesHandler.ExcludeAttribute) != null;
         }
 
-        public static bool IsDbKey(this IMemberDefinition type)
+        public static bool IsAssemblyProcessed(this ModuleDefinition module)
         {
-            return type.GetCustomAttribute(KnownTypesHandler.DbKeyAttribute) != null;
+            return module.GetCustomAttribute(KnownTypesHandler.AssemblyProcessed) != null;
+        }
+
+        public static bool IsHandlerExclude(this PropertyDefinition type)
+        {
+            if(type.GetCustomAttribute(KnownTypesHandler.ExcludeAttribute) != null)
+            {
+                return true;
+            }
+            if(type.GetCustomAttribute(KnownTypesHandler.HasOneAttribute) != null)
+            {
+                return true;
+            }
+            if (type.GetCustomAttribute(KnownTypesHandler.HasManyAttribute) != null)
+            {
+                return true;
+            }
+            if (type.GetCustomAttribute(KnownTypesHandler.HasAndBelongsToManyAttribute) != null)
+            {
+                return true;
+            }
+            if (type.GetCustomAttribute(KnownTypesHandler.BelongsToAttribute) != null)
+            {
+                return true;
+            }
+            if (type.GetCustomAttribute(KnownTypesHandler.LazyLoadAttribute) != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static CustomAttribute GetDbKey(this IMemberDefinition type)
+        {
+            return type.GetCustomAttribute(KnownTypesHandler.DbKeyAttribute);
+        }
+
+        public static bool IsSpecialName(this IMemberDefinition type)
+        {
+            return type.GetCustomAttribute(KnownTypesHandler.SpecialNameAttribute) != null;
         }
 
         public static bool IsAllowNull(this IMemberDefinition type)
@@ -128,6 +172,10 @@ namespace Lephone.CodeGen.Processor
 
         private static bool IsParametersSame(MethodDefinition ctor, Type[] types)
         {
+            if(types.Length == 0)
+            {
+                return true;
+            }
             if(ctor.Parameters.Count == types.Length)
             {
                 for (int i = 0; i < ctor.Parameters.Count; i++)
@@ -150,27 +198,6 @@ namespace Lephone.CodeGen.Processor
                 return dbColumn.ConstructorArguments[0].Value.ToString();
             }
             return property.Name;
-        }
-
-        public static bool IsDbModel(TypeDefinition type)
-        {
-            //if(type.IsClass)
-            //{
-            //    if(type.HasInterfaces)
-            //    {
-            //        if(type.FullName == "System.Object")
-            //        {
-            //            return false;
-            //        }
-            //        var b = type.Interfaces.Any(p => p.FullName == "Lephone.Data.Definition.IDbObject");
-            //        if(b)
-            //        {
-            //            return true;
-            //        }
-            //        return IsDbModel(type.BaseType.);
-            //    }
-            //}
-            return true;
         }
 
         public static TypeReference MakeGenericType(TypeReference type, params TypeReference[] arguments)

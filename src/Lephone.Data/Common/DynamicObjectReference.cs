@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.Serialization;
 using Lephone.Data.Definition;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.Data.Common
 {

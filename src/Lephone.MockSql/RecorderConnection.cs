@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.MockSql.Recorder;
 
 namespace Lephone.MockSql

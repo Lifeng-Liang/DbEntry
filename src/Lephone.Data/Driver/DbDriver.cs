@@ -2,8 +2,8 @@
 using System.Data;
 using System.Data.Common;
 using System.Collections;
-using Lephone.Util;
-using Lephone.Util.Text;
+using Lephone.Core;
+using Lephone.Core.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 

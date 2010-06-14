@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Lephone.Data.Definition;
-using Lephone.Util.Setting;
+using Lephone.Core.Setting;
 
 namespace Lephone.Data.Common
 {

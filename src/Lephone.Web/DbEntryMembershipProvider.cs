@@ -2,9 +2,9 @@
 using System.Collections.Specialized;
 using System.Web.Security;
 using Lephone.Data;
-using Lephone.Util;
-using Lephone.Util.Setting;
-using Lephone.Util.Text;
+using Lephone.Core;
+using Lephone.Core.Setting;
+using Lephone.Core.Text;
 
 namespace Lephone.Web
 {

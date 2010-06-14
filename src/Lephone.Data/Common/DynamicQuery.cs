@@ -1,6 +1,6 @@
 ﻿using System.Dynamic;
 using Lephone.Data.Definition;
-using Lephone.Util.Text;
+using Lephone.Core.Text;
 
 namespace Lephone.Data.Common
 {

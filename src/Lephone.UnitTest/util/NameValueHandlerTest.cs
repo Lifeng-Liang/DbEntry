@@ -2,8 +2,8 @@
 using System.IO;
 using System.Text;
 using System.Xml;
-using Lephone.Util;
-using Lephone.Util.Setting;
+using Lephone.Core;
+using Lephone.Core.Setting;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
@@ -26,7 +26,7 @@ namespace Lephone.UnitTest.util
                 xd.Load(ms);
 
                 NameValueCollection l = (NameValueCollection)h.Create(null, null, xd["configuration"].ChildNodes[1]);
-                Assert.AreEqual("Lephone.Util.Logging.ConsoleMessageRecorder, Lephone.Util", l["SqlLogRecorder"]);
+                Assert.AreEqual("Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core", l["SqlLogRecorder"]);
                 Assert.AreEqual("@Access : @~test.mdb", l["1.DataBase"]);
             }
         }

@@ -4,10 +4,10 @@ using System.Data;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Util;
-using Lephone.Util.Logging;
-using Lephone.Util.Setting;
-using Lephone.Util.Text;
+using Lephone.Core;
+using Lephone.Core.Logging;
+using Lephone.Core.Setting;
+using Lephone.Core.Text;
 
 namespace Lephone.Data.Common
 {

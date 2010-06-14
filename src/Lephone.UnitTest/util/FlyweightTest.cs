@@ -1,5 +1,5 @@
 ﻿using System.Threading;
-using Lephone.Util;
+using Lephone.Core;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util

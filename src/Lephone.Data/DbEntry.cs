@@ -5,7 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Data.QuerySyntax;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;

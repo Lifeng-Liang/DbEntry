@@ -11,7 +11,7 @@ using Lephone.Data.Common;
 using Lephone.Data.Linq;
 using Lephone.Data.QuerySyntax;
 using Lephone.Web.Common;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Data.Definition;
 
 namespace Lephone.Web

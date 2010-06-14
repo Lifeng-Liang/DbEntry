@@ -1,5 +1,5 @@
 ﻿using System;
-using Lephone.Util.IoC;
+using Lephone.Core.Ioc;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util

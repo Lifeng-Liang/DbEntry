@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Security;
 using Lephone.Data.Definition;
-using Lephone.Util.Text;
+using Lephone.Core.Text;
 
 namespace Lephone.Web
 {

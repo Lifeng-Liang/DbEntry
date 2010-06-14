@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.Common;
 using System.Reflection;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.Data.Driver
 {

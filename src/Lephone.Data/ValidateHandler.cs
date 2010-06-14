@@ -2,8 +2,8 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Lephone.Util;
-using Lephone.Util.Text;
+using Lephone.Core;
+using Lephone.Core.Text;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 

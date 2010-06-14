@@ -5,13 +5,13 @@ namespace Lephone.Data.Definition
     [Serializable]
     public abstract class DbObject : DbObjectBase
 	{
-		private long m_Id;
+		private long _id;
 
         [DbKey]
         public long Id
 		{
-			get { return m_Id; }
-            set { m_Id = value; }
+			get { return _id; }
+            set { _id = value; }
 		}
 
         public DbObject()

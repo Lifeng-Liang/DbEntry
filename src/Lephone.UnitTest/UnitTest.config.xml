@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <configSections>
-    <section name="Lephone.Settings" type="Lephone.Util.Setting.NameValueSectionHandler, Lephone.Util" />
+    <section name="Lephone.Settings" type="Lephone.Core.Setting.NameValueSectionHandler, Lephone.Core" />
   </configSections>
 
   <Lephone.Settings>
     <add key="@Lephone_Log" value="System_Log" />
     
-    <add key="IOC.SearchAssembly.1" value="Lephone.UnitTest" />
+    <add key="Ioc.SearchAssembly.1" value="Lephone.UnitTest" />
     
-    <add key="SqlLogRecorder" value="Lephone.Util.Logging.ConsoleMessageRecorder, Lephone.Util" />
+    <add key="SqlLogRecorder" value="Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core" />
 
     <add key="ObjectHandlerType" value="Emit" />
 
     <add key="MiscProvider" value="Lephone.UnitTest.util.MockMiscProvider, Lephone.UnitTest" />
     <add key="CookiesHandler" value="Lephone.UnitTest.Web.MockCookiesHandler, Lephone.UnitTest" />
 
-    <add key="NameMapper" value="Lephone.Util.Text.UnderlineNameMapper, Lephone.Util" />
+    <add key="NameMapper" value="Lephone.Core.Text.UnderlineNameMapper, Lephone.Core" />
     <add key="DefaultContext" value="Development" />
     <add key="CacheEnabled" value="true" />
 

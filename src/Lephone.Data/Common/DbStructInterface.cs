@@ -9,19 +9,21 @@
         public string[] ViewsParams;
         public string TableNameString;
 
-        public DbStructInterface(string TablesTypeName, string[] TablesGetter, string ViewsTypeName, string[] ViewsGetter, string TableNameString)
-            : this(false, TablesTypeName, TablesGetter, ViewsTypeName, ViewsGetter, TableNameString)
+        public DbStructInterface(string tablesTypeName, string[] tablesGetter, string viewsTypeName, 
+            string[] viewsGetter, string tableNameString)
+            : this(false, tablesTypeName, tablesGetter, viewsTypeName, viewsGetter, tableNameString)
         {
         }
 
-        public DbStructInterface(bool FiltrateDatabaseName, string TablesTypeName, string[] TablesGetter, string ViewsTypeName, string[] ViewsGetter, string TableNameString)
+        public DbStructInterface(bool filtrateDatabaseName, string tablesTypeName, string[] tablesGetter,
+            string viewsTypeName, string[] viewsGetter, string tableNameString)
         {
-            this.FiltrateDatabaseName = FiltrateDatabaseName;
-            this.TablesTypeName = (TablesTypeName != null) ? TablesTypeName : "Tables";
-            this.TablesParams = (TablesGetter != null) ? TablesGetter : new string[] { };
-            this.ViewsTypeName = (ViewsTypeName != null) ? ViewsTypeName : "Views";
-            this.ViewsParams = (ViewsGetter != null) ? ViewsGetter : new string[] { };
-            this.TableNameString = (TableNameString != null) ? TableNameString : "TABLE_NAME";
+            this.FiltrateDatabaseName = filtrateDatabaseName;
+            this.TablesTypeName = tablesTypeName ?? "Tables";
+            this.TablesParams = tablesGetter ?? new string[] { };
+            this.ViewsTypeName = viewsTypeName ?? "Views";
+            this.ViewsParams = viewsGetter ?? new string[] { };
+            this.TableNameString = tableNameString ?? "TABLE_NAME";
         }
     }
 }

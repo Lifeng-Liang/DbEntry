@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
-using Lephone.Util.Setting;
+using Lephone.Core.Setting;
 
 namespace Lephone.UnitTest.util
 {

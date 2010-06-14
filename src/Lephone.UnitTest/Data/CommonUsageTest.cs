@@ -9,8 +9,10 @@ using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.CreateTable;
 using Lephone.UnitTest.Data.Objects;
-using Lephone.Util.Logging;
-using Lephone.Util.Text;
+using Lephone.Core.Logging;
+using Lephone.Core.Text;
+using Lephone.Utility;
+using Lephone.Utility.Logging;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -489,7 +491,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestTableNameMapOfConfig()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(Lephone.Data.Logging.LephoneLog));
+            ObjectInfo oi = ObjectInfo.GetInstance(typeof(LephoneLog));
             Assert.AreEqual("System_Log", oi.From.MainTableName);
 
             oi = ObjectInfo.GetInstance(typeof(LephoneEnum));

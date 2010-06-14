@@ -14,11 +14,12 @@ namespace DebugLib.Models
     {
         [Length(20)]
         public string Name { get; set; }
+        [DbColumn("TheAge")]
         public int Age { get; set; }
         public Date Birthday { get; set; }
         public bool IsMale { get; set; }
 
         [HasMany]
-        public IList<Book> Books { get; private set; }
+        public IList<Book> Books { get; set; }
     }
 }

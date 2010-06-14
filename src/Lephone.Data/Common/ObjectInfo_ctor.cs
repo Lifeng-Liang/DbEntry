@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
-using Lephone.Util;
-using Lephone.Util.Text;
+using Lephone.Core;
+using Lephone.Core.Text;
 
 namespace Lephone.Data.Common
 {

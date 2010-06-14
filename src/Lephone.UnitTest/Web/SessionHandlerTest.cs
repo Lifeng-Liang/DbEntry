@@ -1,5 +1,5 @@
 using Lephone.UnitTest.util;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Web.Mvc;
 using NUnit.Framework;
 

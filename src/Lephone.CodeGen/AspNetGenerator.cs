@@ -1,7 +1,7 @@
 ﻿using System;
 using Lephone.Data.Common;
 using Lephone.Web;
-using Lephone.Util.Text;
+using Lephone.Core.Text;
 
 namespace Lephone.CodeGen
 {

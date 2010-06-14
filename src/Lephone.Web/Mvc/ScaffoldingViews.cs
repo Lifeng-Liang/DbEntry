@@ -3,8 +3,8 @@ using System.Collections;
 using System.Web;
 using System.Reflection;
 using Lephone.Data.Common;
-using Lephone.Util;
-using Lephone.Util.Text;
+using Lephone.Core;
+using Lephone.Core.Text;
 
 namespace Lephone.Web.Mvc
 {

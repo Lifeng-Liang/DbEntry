@@ -4,7 +4,7 @@ using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
 using Lephone.Data.Common;
-using Lephone.Util.Logging;
+using Lephone.Core.Logging;
 
 namespace Lephone.Data.Dialect
 {

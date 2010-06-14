@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.Data.Common
 {

@@ -1,6 +1,6 @@
 ﻿using System;
-using Lephone.Util.TimingTask;
-using Lephone.Util.TimingTask.Timings;
+using Lephone.Core.TimingTask;
+using Lephone.Core.TimingTask.Timings;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util.timingTask

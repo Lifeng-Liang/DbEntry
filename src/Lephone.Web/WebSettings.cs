@@ -1,4 +1,4 @@
-using Lephone.Util.Setting;
+using Lephone.Core.Setting;
 
 namespace Lephone.Web
 {

@@ -1,4 +1,4 @@
-﻿using Lephone.Util;
+﻿using Lephone.Core;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
@@ -20,7 +20,7 @@ namespace Lephone.UnitTest.util
 		public void TestCallerFunctionName()
 		{
             string s = GetCallerFunctionName();
-			Assert.AreEqual("Lephone.Util.UnitTest.SystemHelperTest.TestCallerFunctionName()", s);
+			Assert.AreEqual("Lephone.Core.UnitTest.SystemHelperTest.TestCallerFunctionName()", s);
 		}
         */
 

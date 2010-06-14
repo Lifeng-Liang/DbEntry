@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using Lephone.Data.Definition;
-using Lephone.Util;
+using Lephone.Core;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util

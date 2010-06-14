@@ -5,7 +5,7 @@ using System.ComponentModel;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Web.Common;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Data.Definition;
 
 namespace Lephone.Web

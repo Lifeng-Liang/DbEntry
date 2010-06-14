@@ -6,8 +6,8 @@ using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Driver;
 using Lephone.Data.Builder;
-using Lephone.Util;
-using Lephone.Util.Text;
+using Lephone.Core;
+using Lephone.Core.Text;
 
 namespace Lephone.Data.Dialect
 {

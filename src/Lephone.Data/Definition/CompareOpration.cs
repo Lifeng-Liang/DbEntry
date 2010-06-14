@@ -1,5 +1,5 @@
 ﻿using System;
-using Lephone.Util.Text;
+using Lephone.Core.Text;
 
 namespace Lephone.Data.Definition
 {

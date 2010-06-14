@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.Data.Linq
 {

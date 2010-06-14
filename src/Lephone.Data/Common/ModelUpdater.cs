@@ -4,7 +4,7 @@ using Lephone.Data.Builder;
 using Lephone.Data.Caching;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.Data.Common
 {

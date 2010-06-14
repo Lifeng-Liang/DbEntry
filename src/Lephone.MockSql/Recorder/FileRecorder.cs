@@ -1,6 +1,6 @@
 ﻿using System.IO;
-using Lephone.Util;
-using Lephone.Util.Setting;
+using Lephone.Core;
+using Lephone.Core.Setting;
 
 namespace Lephone.MockSql.Recorder
 {

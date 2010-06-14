@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Collections;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common

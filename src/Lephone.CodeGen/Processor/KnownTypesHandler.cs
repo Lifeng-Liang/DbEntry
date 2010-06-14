@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Util;
+using Lephone.Core;
 using Mono.Cecil;
 using DataException = Lephone.Data.DataException;
 using SpecialNameAttribute = Lephone.Data.Definition.SpecialNameAttribute;
@@ -19,8 +19,11 @@ namespace Lephone.CodeGen.Processor
         public static readonly string Object = typeof(object).FullName;
         public static readonly string String = typeof(string).FullName;
         public static readonly string Decimal = typeof(decimal).FullName;
+        public static readonly string Bool = typeof(bool).FullName;
+        public static readonly string Guid = typeof(Guid).FullName;
         public static readonly string DbObjectSmartUpdate = typeof(DbObjectSmartUpdate).FullName;
         public static readonly string DbColumnAttribute = typeof(DbColumnAttribute).FullName;
+        public static readonly string DbTableAttribute = typeof(DbTableAttribute).FullName;
         public static readonly string HasOneAttribute = typeof(HasOneAttribute).FullName;
         public static readonly string BelongsToAttribute = typeof(BelongsToAttribute).FullName;
         public static readonly string HasManyAttribute = typeof(HasManyAttribute).FullName;
@@ -35,14 +38,25 @@ namespace Lephone.CodeGen.Processor
         public static readonly string StringColumnAttribute = typeof(StringColumnAttribute).FullName;
         public static readonly string IndexAttribute = typeof(IndexAttribute).FullName;
         public static readonly string SpecialNameAttribute = typeof(SpecialNameAttribute).FullName;
+        public static readonly string DbObjectInterface = typeof(IDbObject).FullName;
+        public static readonly string AssemblyProcessed = typeof(AssemblyProcessed).FullName;
 
-        private static readonly Dictionary<string, FieldType> Jar;
+        private static readonly Dictionary<string, FieldType> RelationAttributes;
+        private static readonly Dictionary<string, FieldType> Relations;
 
         public readonly MethodReference ColumnUpdated;
         public readonly MethodReference InitUpdateColumns;
         public readonly TypeReference ModelHandlerBaseType;
         public readonly MethodReference ModelHandlerBaseTypeCtor;
         public readonly MethodReference ModelHandlerBaseTypeGetNullable;
+        public readonly MethodReference ModelHandlerBaseTypeNewKeyValue;
+        public readonly MethodReference ModelHandlerBaseTypeNewKeyValueDirect;
+        public readonly MethodReference ModelHandlerBaseTypeAddKeyValue;
+
+        public readonly MethodReference DictionaryStringObjectAdd;
+        public readonly MethodReference KeyValuePairStringStringCtor;
+        public readonly MethodReference ListKeyValuePairStringStringAdd;
+        public readonly MethodReference KeyValueCollectionAdd;
 
         private readonly ModuleDefinition _module;
 
@@ -57,6 +71,7 @@ namespace Lephone.CodeGen.Processor
         private readonly MethodReference _dbColumn;
         private readonly MethodReference _crossTable;
         private readonly MethodReference _modelHandler;
+        private readonly MethodReference _assemblyProcessed;
 
         public readonly TypeReference ObjectType;
         public readonly TypeReference VoidType;
@@ -68,9 +83,12 @@ namespace Lephone.CodeGen.Processor
         public readonly TypeReference SerializableInterface;
         public readonly TypeReference SerializationInfoType;
         public readonly TypeReference StreamingContextType;
+        public readonly TypeReference AutoValueType;
 
         public readonly MethodReference DynamicObjectReferenceSerializeObject;
         public readonly MethodReference SerializableGetObjectData;
+        public readonly MethodReference BelongsToInterfaceSetForeignKey;
+        public readonly MethodReference LazyLoadingInterfaceInit;
 
         public readonly Type[] EmptyTypes = new Type[] { };
         public readonly MethodReference DateEx;
@@ -81,7 +99,7 @@ namespace Lephone.CodeGen.Processor
 
         static KnownTypesHandler()
         {
-            Jar = new Dictionary<string, FieldType>
+            RelationAttributes = new Dictionary<string, FieldType>
                        {
                            {HasOneAttribute, FieldType.HasOne},
                            {BelongsToAttribute, FieldType.BelongsTo},
@@ -89,6 +107,14 @@ namespace Lephone.CodeGen.Processor
                            {HasAndBelongsToManyAttribute, FieldType.HasAndBelongsToMany},
                            {LazyLoadAttribute, FieldType.LazyLoad},
                        };
+            Relations = new Dictionary<string, FieldType>
+                            {
+                                {typeof(HasOne<>).FullName, FieldType.HasOne},
+                                {typeof(BelongsTo<>).FullName, FieldType.BelongsTo},
+                                {typeof(HasMany<>).FullName, FieldType.HasMany},
+                                {typeof(HasAndBelongsToMany<>).FullName, FieldType.HasAndBelongsToMany},
+                                {typeof(LazyLoadField<>).FullName, FieldType.LazyLoad},
+                            };
             DataReaderMethods = new Dictionary<string, string>
                       {
                           {typeof (long).FullName, "GetInt64"},
@@ -123,26 +149,39 @@ namespace Lephone.CodeGen.Processor
             _dbColumn = Import(Import(typeof(DbColumnAttribute)).GetConstructor(typeof(string)));
             _crossTable = Import(Import(typeof(CrossTableNameAttribute)).GetConstructor(typeof(string)));
             _modelHandler = Import(Import(typeof(ModelHandlerAttribute)).GetConstructor(typeof(Type)));
+            _assemblyProcessed = Import(Import(typeof(AssemblyProcessed)).GetConstructor());
             var dbase = typeof(DbObjectSmartUpdate);
             ColumnUpdated = _module.Import(dbase.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag));
             InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
             ModelHandlerBaseType = _module.Import(typeof(EmitObjectHandlerBase));
             ModelHandlerBaseTypeCtor = Import(ModelHandlerBaseType.GetConstructor());
             ModelHandlerBaseTypeGetNullable = Import(ModelHandlerBaseType.GetMethod("GetNullable"));
+            ModelHandlerBaseTypeNewKeyValue = Import(ModelHandlerBaseType.GetMethod("NewKeyValue"));
+            ModelHandlerBaseTypeNewKeyValueDirect = Import(ModelHandlerBaseType.GetMethod("NewKeyValueDirect"));
+            ModelHandlerBaseTypeAddKeyValue = Import(ModelHandlerBaseType.GetMethod("AddKeyValue"));
+            var ci = typeof(KeyValuePair<string, string>).GetConstructor(new[] { typeof(string), typeof(string) });
+            KeyValuePairStringStringCtor = _module.Import(ci);
+            ListKeyValuePairStringStringAdd = Import(typeof(List<KeyValuePair<string, string>>).GetMethod("Add"));
             ObjectType = Import(typeof(object));
             VoidType = Import(typeof(void));
             BoolType = Import(typeof(bool));
             DataReaderInterface = Import(typeof(IDataReader));
             DictionaryStringObjectType = Import(typeof(Dictionary<string, object>));
+            DictionaryStringObjectAdd = Import(DictionaryStringObjectType.GetMethod("Add"));
             ListKeyValuePairStringStringType = Import(typeof(List<KeyValuePair<string, string>>));
             KeyValueCollectionType = Import(typeof(KeyValueCollection));
             SerializableInterface = Import(typeof(ISerializable));
             SerializationInfoType = Import(typeof(SerializationInfo));
             StreamingContextType = Import(typeof(StreamingContext));
+            AutoValueType = Import(typeof(AutoValue));
+
+            KeyValueCollectionAdd = Import(typeof(KeyValueCollection).GetMethod("Add", new[] {typeof(KeyValue)}));
 
             DynamicObjectReferenceSerializeObject =
                 Import(Import(typeof(DynamicObjectReference)).GetMethod("SerializeObject"));
             SerializableGetObjectData = Import(Import(typeof(ISerializable)).GetMethod("GetObjectData"));
+            BelongsToInterfaceSetForeignKey = Import(Import(typeof(IBelongsTo)).GetMethod("set_ForeignKey"));
+            LazyLoadingInterfaceInit = Import(Import(typeof(ILazyLoading)).GetMethod("Init"));
 
             DateEx = _module.Import(typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
             TimeEx = _module.Import(typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
@@ -190,9 +229,25 @@ namespace Lephone.CodeGen.Processor
             foreach (CustomAttribute ca in pi.CustomAttributes)
             {
                 var name = ca.Constructor.DeclaringType.FullName;
-                if(Jar.ContainsKey(name))
+                if(RelationAttributes.ContainsKey(name))
                 {
-                    return Jar[name];
+                    return RelationAttributes[name];
+                }
+            }
+            return FieldType.Normal;
+        }
+
+        public static FieldType GetFieldType(FieldDefinition field)
+        {
+            if(field.FieldType.IsGenericInstance)
+            {
+                if(field.FieldType is GenericInstanceType)
+                {
+                    var name = ((GenericInstanceType)field.FieldType).ElementType.FullName;
+                    if (Relations.ContainsKey(name))
+                    {
+                        return Relations[name];
+                    }
                 }
             }
             return FieldType.Normal;
@@ -260,6 +315,12 @@ namespace Lephone.CodeGen.Processor
             var r = new CustomAttribute(_modelHandler);
             r.ConstructorArguments.Add(new CustomAttributeArgument(_type, type));
             return r;
+        }
+
+        public CustomAttribute GetAssemblyProcessed()
+        {
+            var c = new CustomAttribute(_assemblyProcessed);
+            return c;
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Lephone.Data.SqlEntry;
-using Lephone.Util.Logging;
+using Lephone.Core.Logging;
 using Lephone.Data.Common;
 
 namespace Lephone.Data.Dialect

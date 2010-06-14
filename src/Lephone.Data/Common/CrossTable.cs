@@ -11,13 +11,13 @@ namespace Lephone.Data.Common
         public string ColumeName1;
         public string ColumeName2;
 
-        public CrossTable(Type HandleType, FromClause From, string Name, string ColumeName1, string ColumeName2)
+        public CrossTable(Type handleType, FromClause from, string name, string columeName1, string columeName2)
         {
-            this.HandleType = HandleType;
-            this.From = From;
-            this.Name = Name;
-            this.ColumeName1 = ColumeName1;
-            this.ColumeName2 = ColumeName2;
+            this.HandleType = handleType;
+            this.From = from;
+            this.Name = name;
+            this.ColumeName1 = columeName1;
+            this.ColumeName2 = columeName2;
         }
     }
 }

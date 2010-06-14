@@ -1,5 +1,4 @@
-﻿using Lephone.Util.Text;
-using Lephone.Util.Setting;
+﻿using Lephone.Core.Text;
 
 namespace Lephone.Data.Common
 {
@@ -41,7 +40,7 @@ namespace Lephone.Data.Common
 
         static DataSettings()
         {
-            ConfigHelper.DefaultSettings.InitClass(typeof(DataSettings));
+            typeof(DataSettings).Initalize();
         }
 	}
 }

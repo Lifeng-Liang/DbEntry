@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using Lephone.Data.Driver;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.Data.SqlEntry
 {

@@ -1,8 +1,8 @@
 using System;
 using System.Text;
 using Lephone.Data.Common;
-using Lephone.Util;
-using Lephone.Util.Text;
+using Lephone.Core;
+using Lephone.Core.Text;
 using Lephone.Web;
 using Lephone.Web.Mvc;
 

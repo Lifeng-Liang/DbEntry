@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using Lephone.Util;
+using Lephone.Core;
 using Lephone.Data.Definition;
 using Comm = Lephone.Data.Common;
-using Lephone.Util.Text;
+using Lephone.Core.Text;
 
 namespace Lephone.Data.Common
 {

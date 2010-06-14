@@ -422,7 +422,7 @@ namespace Lephone.CodeGen.Processor
             }
 
             var t = _handler.GetRealType(pi);
-            pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.FamORAssem, t);
+            pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.FamANDAssem, t);
             PopulateDbColumn(pi);
             GenerateCrossTableForHasManyAndBelongsTo(pi);
             PopulateCustomAttributeForLazyLoadColumn(pi);

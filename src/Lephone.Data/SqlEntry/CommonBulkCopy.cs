@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using Lephone.Data.Builder;
-using Lephone.Util;
+using Lephone.Core;
 
 namespace Lephone.Data.SqlEntry
 {
