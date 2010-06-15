@@ -21,7 +21,7 @@ namespace Lephone.CodeGen.Processor
             }
         }
 
-        public void Process(string name)
+        public void Process(string name, string sn)
         {
             var module = ModuleDefinition.ReadModule(name);
 
@@ -40,6 +40,7 @@ namespace Lephone.CodeGen.Processor
             }
 
             var handler = new KnownTypesHandler(module);
+
             foreach (var model in models)
             {
                 Console.WriteLine(model.FullName);
@@ -55,7 +56,14 @@ namespace Lephone.CodeGen.Processor
 
             module.CustomAttributes.Add(handler.GetAssemblyProcessed());
 
-            module.Write(name);
+            if(sn.IsNullOrEmpty())
+            {
+                module.Write(name + ".dll");
+            }
+            else
+            {
+                module.Write(name, new WriterParameters{ StrongNameKeyPair = new StrongNameKeyPair(sn)});
+            }
         }
 
         public static List<TypeDefinition> GetAllModels(ModuleDefinition assembly)

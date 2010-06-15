@@ -102,7 +102,7 @@ namespace Lephone.CodeGen.Processor
                 {
                     processor.CallVirtual(mi1);
                 }
-                processor.SetMember(f.Member);
+                processor.SetMember(f);
                 n++;
             }
 
@@ -152,7 +152,7 @@ namespace Lephone.CodeGen.Processor
                 // cast or unbox
                 processor.CastOrUnbox(f.MemberType, _handler);
                 // set field
-                processor.SetMember(f.Member);
+                processor.SetMember(f);
             }
 
             processor.Return();
@@ -176,7 +176,7 @@ namespace Lephone.CodeGen.Processor
             foreach (var f in _info.RelationMembers)
             {
                 processor.LoadLoc(0);
-                processor.GetMember(f.Member);
+                processor.GetMember(f);
                 if (f.IsLazyLoad)
                 {
                     processor.LoadString(f.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
@@ -232,7 +232,7 @@ namespace Lephone.CodeGen.Processor
             {
                 var h = _info.KeyMembers[0];
                 processor.LoadArg(1).Cast(_model);
-                processor.GetMember(h.Member);
+                processor.GetMember(h);
                 processor.Box(h.MemberType);
             }
             else
@@ -260,7 +260,7 @@ namespace Lephone.CodeGen.Processor
             foreach (var f in _info.KeyMembers)
             {
                 processor.LoadArg(1).LoadString(f.Name).LoadLoc(0);
-                processor.GetMember(f.Member);
+                processor.GetMember(f);
                 processor.Box(f.MemberType).CallVirtual(_handler.DictionaryStringObjectAdd);
             }
 
@@ -365,7 +365,7 @@ namespace Lephone.CodeGen.Processor
                         else
                         {
                             processor.LoadLoc(0);
-                            processor.GetMember(f.Member);
+                            processor.GetMember(f);
                             if (f.IsBelongsTo)
                             {
                                 processor.CallVirtual(f.MemberType.GetMethod("get_ForeignKey"));
@@ -410,7 +410,7 @@ namespace Lephone.CodeGen.Processor
                         else
                         {
                             il.LoadArg(0).LoadArg(1).LoadLoc(0).LoadString(f.Name).LoadInt(n).LoadLoc(0);
-                            il.GetMember(f.Member);
+                            il.GetMember(f);
                             if (f.IsBelongsTo)
                             {
                                 il.CallVirtual(f.MemberType.GetMethod("get_ForeignKey"));

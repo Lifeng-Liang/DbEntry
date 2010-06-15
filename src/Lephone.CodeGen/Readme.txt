@@ -1,7 +1,7 @@
 ﻿----------------------------------------------------------------------------
 
 Code Generator For DbEntry.Net
-http://www.codeplex.com/DbEntry
+http://dbentry.codeplex.com
 
 ----------------------------------------------------------------------------
 
@@ -58,10 +58,12 @@ Example:
 
 ----------------------------------------------------------------------------
 
-Usage for generate assembly dll:
-    Lephone.CodeGen dll FileName
+Usage for process the dll which models included:
+    Lephone.CodeGen dll ModelsFileName [KeyFileName]
 
-FileName:   The assembly file name who has the model classes.
+ModelsFileName: The assembly file name who has the model classes.
+KeyFileName:    The strong name key pair file name.
 
 Example:
     Lephone.CodeGen dll Models.dll
+    Lephone.CodeGen dll Models.dll models.snk

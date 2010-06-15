@@ -55,6 +55,7 @@ namespace Lephone.CodeGen.Processor
             SearchMember(baseType);
         }
 
+        //for Cecil's bug
         private TypeDefinition ProcessGeneric(TypeReference baseType)
         {
             var result = baseType.Resolve();
@@ -99,7 +100,20 @@ namespace Lephone.CodeGen.Processor
             TypeReference type = mt.IsGenericParameter 
                 ? _handler.Import(_genericTypes[mt.Name]) 
                 : mt;
-            var mm = new ModelMember(member, type, fieldType);
+            ModelMember mm;
+            if (member.DeclaringType.HasGenericParameters)
+            {
+                var dt = new GenericInstanceType(member.DeclaringType);
+                foreach(var parameter in member.DeclaringType.GenericParameters)
+                {
+                    dt.GenericArguments.Add(_handler.Import(_genericTypes[parameter.Name]));
+                }
+                mm = new ModelMember(member, type, fieldType, dt);
+            }
+            else
+            {
+                mm = new ModelMember(member, type, fieldType, null);
+            }
             if (mm.IsDbKey)
             {
                 KeyMembers.Add(mm);

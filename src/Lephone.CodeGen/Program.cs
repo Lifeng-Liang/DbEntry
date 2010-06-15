@@ -67,10 +67,12 @@ namespace Lephone.CodeGen
                 throw new ArgsErrorException(2, "The file you input doesn't exist!");
             }
 
-            if (args.Length == 2 && args[0].ToLower() == "dll")
+            if ((args.Length == 2 || args.Length == 3) && args[0].ToLower() == "dll")
             {
-                new AssemblyProcessor().Process(fileName);
+                var sn = args.Length == 2 ? null : Path.GetFullPath(args[2]);
+                new AssemblyProcessor().Process(fileName, sn);
                 Console.WriteLine("Assembly processed!");
+                Console.ReadLine();
                 return;
             }
 

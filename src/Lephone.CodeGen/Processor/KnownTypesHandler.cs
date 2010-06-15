@@ -292,6 +292,11 @@ namespace Lephone.CodeGen.Processor
 
         public TypeDefinition Import(string fullName)
         {
+            var t = _module.GetType(fullName);
+            if(t != null)
+            {
+                return t;
+            }
             var type = Type.GetType(fullName);
             return _module.Import(type).Resolve();
         }

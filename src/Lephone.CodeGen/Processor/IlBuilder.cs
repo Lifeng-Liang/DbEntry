@@ -158,22 +158,27 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        public IlBuilder SetField(PropertyDefinition pi)
+        public IlBuilder SetMember(ModelMember mm)
         {
-            return CallVirtual(pi.SetMethod);
-        }
-
-        public IlBuilder SetMember(IMemberDefinition pi)
-        {
-            if(pi is FieldDefinition)
+            if(mm.Member is FieldDefinition)
             {
-                return SetField((FieldDefinition)pi);
+                return SetField((FieldDefinition)mm.Member);
             }
-            if(pi is PropertyReference)
+            if(mm.Member is PropertyReference)
             {
-                return SetField((PropertyDefinition)pi);
+                return CallVirtual(GetInhritsSetMethod(mm));
             }
             throw new ApplicationException();
+        }
+
+        private static MethodReference GetInhritsSetMethod(ModelMember mm)
+        {
+            var method = (MethodReference)((PropertyDefinition)mm.Member).SetMethod;
+            if(mm.Member.DeclaringType.HasGenericParameters)
+            {
+                method.DeclaringType = mm.DeclaringType;
+            }
+            return method;
         }
 
         public IlBuilder GetField(PropertyDefinition pi)
@@ -181,18 +186,27 @@ namespace Lephone.CodeGen.Processor
             return CallVirtual(pi.SetMethod);
         }
 
-        public IlBuilder GetMember(IMemberDefinition pi)
+        public IlBuilder GetMember(ModelMember pi)
         {
-            if (pi is FieldDefinition)
+            if (pi.Member is FieldDefinition)
             {
-                return LoadField((FieldDefinition)pi);
+                return LoadField((FieldDefinition)pi.Member);
             }
-            if (pi is PropertyReference)
+            if (pi.Member is PropertyReference)
             {
-                var method = ((PropertyDefinition) pi).GetMethod;
-                return CallVirtual(method);
+                return CallVirtual(GetInhritsGetMethod(pi));
             }
             throw new ApplicationException();
+        }
+
+        private static MethodReference GetInhritsGetMethod(ModelMember mm)
+        {
+            var method = (MethodReference)((PropertyDefinition)mm.Member).GetMethod;
+            if (mm.Member.DeclaringType.HasGenericParameters)
+            {
+                method.DeclaringType = mm.DeclaringType;
+            }
+            return method;
         }
 
         //private static ConstructorInfo GetConstructor(Type sourceType)

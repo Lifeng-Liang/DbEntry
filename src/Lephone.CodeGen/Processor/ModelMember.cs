@@ -22,11 +22,13 @@ namespace Lephone.CodeGen.Processor
         public readonly bool IsUpdatedOn;
         public readonly bool IsSavedOn;
         public readonly bool IsCount;
+        public readonly TypeReference DeclaringType;
 
-        public ModelMember(IMemberDefinition member, TypeReference memberType, FieldType fieldType)
+        public ModelMember(IMemberDefinition member, TypeReference memberType, FieldType fieldType, TypeReference declaringType)
         {
             Member = member;
             MemberType = memberType;
+            DeclaringType = declaringType;
 
             #region Name
 
