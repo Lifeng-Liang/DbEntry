@@ -163,6 +163,12 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
         public int Age { get; set; }
 
+        public void SetAsLoadedObject()
+        {
+            this.Id = 1;
+            this.m_UpdateColumns.Clear();
+        }
+
         public Dictionary<string, object> GetUpdateColumns()
         {
             return this.m_UpdateColumns;
@@ -268,8 +274,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject()
         {
-            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
-            u.Id = 1; // Make it looks like read from database
+            var u = new asUser {Name = "Tom", Age = 18};
+            u.SetAsLoadedObject();
             de.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
@@ -278,8 +284,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject2()
         {
-            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("jerry", 18);
-            u.Id = 1; // Make it looks like read from database
+            var u = new asUser {Name = "jerry", Age = 18};
+            u.SetAsLoadedObject();
             u.Name = "Tom";
             de.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
@@ -289,8 +295,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject3()
         {
-            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
-            u.Id = 1; // Make it looks like read from database
+            var u = new asUser {Name = "Tom", Age = 18};
+            u.SetAsLoadedObject();
             u.Name = "Jerry";
             u.Age = 25;
             de.Save(u);
@@ -305,8 +311,8 @@ namespace Lephone.UnitTest.Data
             {
                 de.NewTransaction(delegate
                 {
-                    var u = DynamicObjectBuilder.Instance.NewObject<asUser>("jerry", 18);
-                    u.Id = 1; // Make it looks like read from database
+                    var u = new asUser {Name = "jerry", Age = 18};
+                    u.SetAsLoadedObject();
                     u.Name = "Tom";
                     de.Save(u);
                 });
@@ -318,8 +324,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateFieldAfterSave()
         {
-            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
-            u.Id = 1;
+            var u = new asUser {Name = "Tom", Age = 18};
+            u.SetAsLoadedObject();
             u.Name = "jerry";
             de.Save(u);
             u.Age = 25;
@@ -332,7 +338,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateFieldAfterInsert()
         {
-            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
+            var u = new asUser {Name = "Tom", Age = 18};
+            //u.GetUpdateColumns().Clear();
             de.Save(u);
             u.Age = 25;
             de.Save(u);

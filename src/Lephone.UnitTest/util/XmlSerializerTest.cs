@@ -40,7 +40,9 @@ namespace Lephone.UnitTest.util
         {
             var l = new MyList {new MyItem("tom")};
             string act = XmlSerializer<MyList>.Xml.Serialize(l);
-            Assert.AreEqual("<?xml version=\"1.0\"?>\r\n<List xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>", act);
+            bool b1 = act == "<?xml version=\"1.0\"?>\r\n<List xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>";
+            bool b2 = act == "<?xml version=\"1.0\"?>\r\n<List xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>";
+            Assert.IsTrue(b1 || b2);
         }
 
         [Test]
@@ -48,10 +50,12 @@ namespace Lephone.UnitTest.util
         {
             var l = new MyList2 {new MyItem("tom")};
             string act = XmlSerializer<MyList2>.Xml.Serialize(l);
-            Assert.AreEqual("<?xml version=\"1.0\"?>\r\n<List xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>", act);
+            bool b1 = act == "<?xml version=\"1.0\"?>\r\n<List xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>";
+            bool b2 = act == "<?xml version=\"1.0\"?>\r\n<List xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>";
+            Assert.IsTrue(b1 || b2);
         }
 
-        [Test, Ignore("waiting for a full supported ReadXml function, Maybe include GetSchema")]
+        [Test]
         public void Test3()
         {
             var s = new Sitex {Url = "ddd"};

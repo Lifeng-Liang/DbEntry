@@ -135,14 +135,14 @@ namespace Lephone.Data.Common
             SetValuesForInsertDirect(isv.Values, obj);
         }
 
-        protected abstract void SetValuesForInsertDirect(KeyValueCollection values, object obj);
+        protected abstract void SetValuesForInsertDirect(KeyValueCollection values, object o);
 
         public void SetValuesForUpdate(ISqlValues isv, object obj)
         {
             SetValuesForUpdateDirect(isv.Values, obj);
         }
 
-        protected abstract void SetValuesForUpdateDirect(KeyValueCollection values, object obj);
+        protected abstract void SetValuesForUpdateDirect(KeyValueCollection values, object o);
 
         protected object GetNullable(object o, int objType)
         {
@@ -150,13 +150,16 @@ namespace Lephone.Data.Common
             {
                 return null;
             }
-            if (objType == 1)
+            switch(objType)
             {
-                return new Guid(o.ToString());
-            }
-            if(objType == 2)
-            {
-                return Convert.ToBoolean(o);
+                case 1:
+                    return new Guid(o.ToString());
+                case 2:
+                    return Convert.ToBoolean(o);
+                case 3:
+                    return (Date)(DateTime)o;
+                case 4:
+                    return (Time)(DateTime)o;
             }
             return o;
         }

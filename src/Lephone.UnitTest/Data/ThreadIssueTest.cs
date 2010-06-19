@@ -44,55 +44,5 @@ namespace Lephone.UnitTest.Data
                 Exception = ex;
             }
         }
-
-        //=============================================================
-
-        public class FakeDynamicAssemblyHandler : AssemblyHandler.DynamicAssemblyHandler
-        {
-            public static new FakeDynamicAssemblyHandler Instance = new FakeDynamicAssemblyHandler();
-
-            public static Exception Exception;
-
-            public override Type GetImplementedType(Type sourceType)
-            {
-                Type t = base.GetImplementedType(sourceType);
-                Thread.Sleep(1000);
-                return t;
-            }
-        }
-
-        public class User2 : DbObjectModel<User2>
-        {
-            public string Name { get; set; }
-        }
-
-        [Test]
-        public void Test2()
-        {
-            var t1 = new Thread(DoWork2);
-            var t2 = new Thread(DoWork2);
-
-            t1.Start();
-            t2.Start();
-
-            Thread.Sleep(2000);
-
-            if (FakeDynamicAssemblyHandler.Exception != null)
-            {
-                throw FakeDynamicAssemblyHandler.Exception;
-            }
-        }
-
-        public static void DoWork2()
-        {
-            try
-            {
-                FakeDynamicAssemblyHandler.Instance.GetImplType(typeof(User2));
-            }
-            catch (Exception ex)
-            {
-                FakeDynamicAssemblyHandler.Exception = ex;
-            }
-        }
     }
 }

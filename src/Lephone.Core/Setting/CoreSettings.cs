@@ -15,7 +15,7 @@ namespace Lephone.Core.Setting
 
         static CoreSettings()
         {
-            typeof(CoreSettings).Initalize();
+            ConfigHelper.DefaultSettings.InitClass(typeof(CoreSettings));
         }
     }
 }

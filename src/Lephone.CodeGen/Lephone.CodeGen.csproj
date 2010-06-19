@@ -54,10 +54,13 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>CodeGen.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\Resources\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -75,22 +78,13 @@
   <ItemGroup>
     <Compile Include="ArgsErrorException.cs" />
     <Compile Include="AspNetGenerator.cs" />
-    <Compile Include="Processor\AssemblyProcessor.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="Processor\IlBuilder.cs" />
-    <Compile Include="Processor\KnownTypesHandler.cs" />
-    <Compile Include="Processor\ModelHandlerGenerator.cs" />
-    <Compile Include="Processor\ModelInformation.cs" />
-    <Compile Include="Processor\ModelMember.cs" />
-    <Compile Include="Processor\ModelProcessor.cs" />
     <Compile Include="ModelsGenerator.cs" />
-    <Compile Include="Processor\PropertyInformation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MvcActionGenerator.cs" />
     <Compile Include="MvcViewGenerator.cs" />
     <Compile Include="TypeComparer.cs" />
-    <Compile Include="Processor\TypeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lephone.Core\Lephone.Core.csproj">
@@ -110,7 +104,10 @@
     <EmbeddedResource Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="CodeGen.snk" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

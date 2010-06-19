@@ -1,7 +1,7 @@
 ﻿using Lephone.Data.Common;
 using Mono.Cecil;
 
-namespace Lephone.CodeGen.Processor
+namespace Lephone.Processor
 {
     public class PropertyInformation
     {

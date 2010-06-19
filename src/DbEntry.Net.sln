@@ -23,12 +23,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Data", "Lephone.Data\Lephone.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.UnitTest", "Lephone.UnitTest\Lephone.UnitTest.csproj", "{48E4289C-FABF-46F6-AC45-AAA4224F84D3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.MockSql", "Lephone.MockSql\Lephone.MockSql.csproj", "{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlRecorder", "SqlRecorder\SqlRecorder.csproj", "{92805D19-5BFD-4EC4-B485-BEF6598CD14A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debug", "Debug\Debug.csproj", "{EE0F0B59-1970-4929-A73D-1A89862F9B83}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebDebug", "WebDebug\", "{879D6E88-9A3B-43A2-AA04-9FEDE243EF2A}"
 	ProjectSection(WebsiteProperties) = preProject
@@ -55,16 +61,30 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebDebug", "WebDebug\", "{8
 		VWDPort = "1315"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Web", "Lephone.Web\Lephone.Web.csproj", "{A73147C3-73C4-4590-9EC4-250AC83F4EF5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\DebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.CodeGen", "Lephone.CodeGen\Lephone.CodeGen.csproj", "{B36CF407-9408-428D-A2B7-0245E58CDE17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Core", "Lephone.Core\Lephone.Core.csproj", "{891EAD10-3C90-4478-A695-71F5537C2AA2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Utility", "Lephone.Utility\Lephone.Utility.csproj", "{78E98965-E774-4299-BCEC-26FB3CA8ABBB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Processor", "Lephone.Processor\Lephone.Processor.csproj", "{F44CB5CA-3328-43C3-B640-443A1A57A745}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -210,6 +230,18 @@ Global
 		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|x86.ActiveCfg = Release|Any CPU
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|.NET.ActiveCfg = Debug|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|x86.ActiveCfg = Debug|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|x86.Build.0 = Debug|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|.NET.ActiveCfg = Release|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|Any CPU.ActiveCfg = Release|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|x86.ActiveCfg = Release|x86
+		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

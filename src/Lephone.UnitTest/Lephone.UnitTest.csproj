@@ -230,6 +230,20 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
+
+"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)"
+
+goto End
+:Release
+
+"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)"
+copy *.dll ..\..\..\..\bin\
+
+:End
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

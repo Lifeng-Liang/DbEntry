@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateAbstractClass()
         {
-            var c = DynamicObjectBuilder.Instance.NewObject<AbstractClass>();
+            var c = new AbstractClass();
             Assert.IsNotNull(c);
             c.Name = "Tom";
             Assert.AreEqual("Tom", c.Name);
@@ -20,7 +20,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateInheritedAbstractClass()
         {
-            var c = DynamicObjectBuilder.Instance.NewObject<AbstractClassOfAge>();
+            var c = new AbstractClassOfAge();
             Assert.IsNotNull(c);
             c.Name = "Tom";
             c.Age = 18;
@@ -31,7 +31,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateInheritsedAbstractClassWithImplProperty()
         {
-            var c = DynamicObjectBuilder.Instance.NewObject<AbstractClassWithOneImplProperty>();
+            var c = new AbstractClassWithOneImplProperty();
             Assert.IsNotNull(c);
             c.Name = "Tom";
             c.Age = 18;
@@ -40,33 +40,6 @@ namespace Lephone.UnitTest.Data
 
             c.Gender = true;
             Assert.AreEqual(false, c.Gender);
-        }
-
-        [Test]
-        public void TestTwoTimesAsTheSameType()
-        {
-            Type t1 = AssemblyHandler.Instance.GetImplType(typeof(AbstractClassWithOneImplProperty));
-            Type t2 = AssemblyHandler.Instance.GetImplType(typeof(AbstractClassWithOneImplProperty));
-            Assert.AreEqual(t1, t2);
-        }
-
-        [Test]
-        public void TestCreateObjectByParams()
-        {
-            var c = DynamicObjectBuilder.Instance.NewObject<AbstractClass>("abs");
-            Assert.IsNotNull(c);
-            Assert.AreEqual("abs", c.Name);
-        }
-
-        [Test]
-        public void TestSerializableClass()
-        {
-            Type t = AssemblyHandler.Instance.GetImplType(typeof(SerializableClass));
-
-            object[] ats = t.GetCustomAttributes(false);
-            Assert.IsNotNull(ats);
-            Assert.AreEqual(1, ats.Length);
-            Assert.IsTrue(ats[0] is SerializableAttribute);
         }
     }
 }

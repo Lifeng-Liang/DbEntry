@@ -12,7 +12,7 @@ using Mono.Cecil;
 using DataException = Lephone.Data.DataException;
 using SpecialNameAttribute = Lephone.Data.Definition.SpecialNameAttribute;
 
-namespace Lephone.CodeGen.Processor
+namespace Lephone.Processor
 {
     public class KnownTypesHandler
     {
@@ -84,11 +84,23 @@ namespace Lephone.CodeGen.Processor
         public readonly TypeReference SerializationInfoType;
         public readonly TypeReference StreamingContextType;
         public readonly TypeReference AutoValueType;
+        public readonly TypeReference DbObjectHandlerInterface;
 
         public readonly MethodReference DynamicObjectReferenceSerializeObject;
         public readonly MethodReference SerializableGetObjectData;
         public readonly MethodReference BelongsToInterfaceSetForeignKey;
         public readonly MethodReference LazyLoadingInterfaceInit;
+
+        public readonly MethodReference CreateInstance;
+        public readonly MethodReference LoadSimpleValuesByIndex;
+        public readonly MethodReference LoadSimpleValuesByName;
+        public readonly MethodReference LoadRelationValuesByIndex;
+        public readonly MethodReference LoadRelationValuesByName;
+        public readonly MethodReference GetKeyValueDirect;
+        public readonly MethodReference GetKeyValuesDirect;
+        public readonly MethodReference SetValuesForSelectDirect;
+        public readonly MethodReference SetValuesForInsertDirect;
+        public readonly MethodReference SetValuesForUpdateDirect;
 
         public readonly Type[] EmptyTypes = new Type[] { };
         public readonly MethodReference DateEx;
@@ -153,7 +165,8 @@ namespace Lephone.CodeGen.Processor
             var dbase = typeof(DbObjectSmartUpdate);
             ColumnUpdated = _module.Import(dbase.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag));
             InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
-            ModelHandlerBaseType = _module.Import(typeof(EmitObjectHandlerBase));
+            var emitBase = typeof(EmitObjectHandlerBase);
+            ModelHandlerBaseType = _module.Import(emitBase);
             ModelHandlerBaseTypeCtor = Import(ModelHandlerBaseType.GetConstructor());
             ModelHandlerBaseTypeGetNullable = Import(ModelHandlerBaseType.GetMethod("GetNullable"));
             ModelHandlerBaseTypeNewKeyValue = Import(ModelHandlerBaseType.GetMethod("NewKeyValue"));
@@ -167,13 +180,14 @@ namespace Lephone.CodeGen.Processor
             BoolType = Import(typeof(bool));
             DataReaderInterface = Import(typeof(IDataReader));
             DictionaryStringObjectType = Import(typeof(Dictionary<string, object>));
-            DictionaryStringObjectAdd = Import(DictionaryStringObjectType.GetMethod("Add"));
+            DictionaryStringObjectAdd = Import(typeof(Dictionary<string, object>).GetMethod("Add"));
             ListKeyValuePairStringStringType = Import(typeof(List<KeyValuePair<string, string>>));
             KeyValueCollectionType = Import(typeof(KeyValueCollection));
             SerializableInterface = Import(typeof(ISerializable));
             SerializationInfoType = Import(typeof(SerializationInfo));
             StreamingContextType = Import(typeof(StreamingContext));
             AutoValueType = Import(typeof(AutoValue));
+            DbObjectHandlerInterface = Import(typeof(IDbObjectHandler));
 
             KeyValueCollectionAdd = Import(typeof(KeyValueCollection).GetMethod("Add", new[] {typeof(KeyValue)}));
 
@@ -182,6 +196,17 @@ namespace Lephone.CodeGen.Processor
             SerializableGetObjectData = Import(Import(typeof(ISerializable)).GetMethod("GetObjectData"));
             BelongsToInterfaceSetForeignKey = Import(Import(typeof(IBelongsTo)).GetMethod("set_ForeignKey"));
             LazyLoadingInterfaceInit = Import(Import(typeof(ILazyLoading)).GetMethod("Init"));
+
+            CreateInstance = Import(emitBase.GetMethod("CreateInstance", ClassHelper.AllFlag));
+            LoadSimpleValuesByIndex = Import(emitBase.GetMethod("LoadSimpleValuesByIndex", ClassHelper.AllFlag));
+            LoadSimpleValuesByName = Import(emitBase.GetMethod("LoadSimpleValuesByName", ClassHelper.AllFlag));
+            LoadRelationValuesByIndex = Import(emitBase.GetMethod("LoadRelationValuesByIndex", ClassHelper.AllFlag));
+            LoadRelationValuesByName = Import(emitBase.GetMethod("LoadRelationValuesByName", ClassHelper.AllFlag));
+            GetKeyValueDirect = Import(emitBase.GetMethod("GetKeyValueDirect", ClassHelper.AllFlag));
+            GetKeyValuesDirect = Import(emitBase.GetMethod("GetKeyValuesDirect", ClassHelper.AllFlag));
+            SetValuesForSelectDirect = Import(emitBase.GetMethod("SetValuesForSelectDirect", ClassHelper.AllFlag));
+            SetValuesForInsertDirect = Import(emitBase.GetMethod("SetValuesForInsertDirect", ClassHelper.AllFlag));
+            SetValuesForUpdateDirect = Import(emitBase.GetMethod("SetValuesForUpdateDirect", ClassHelper.AllFlag));
 
             DateEx = _module.Import(typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
             TimeEx = _module.Import(typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) }));
@@ -281,6 +306,11 @@ namespace Lephone.CodeGen.Processor
         }
 
         public MethodReference Import(MethodInfo type)
+        {
+            return _module.Import(type);
+        }
+
+        public FieldReference Import(FieldInfo type)
         {
             return _module.Import(type);
         }

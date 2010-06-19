@@ -184,9 +184,13 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
-goto End
 
+"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)Web.snk"
+
+goto End
 :Release
+
+"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)Web.snk"
 copy *.dll ..\..\..\..\bin\
 
 :End

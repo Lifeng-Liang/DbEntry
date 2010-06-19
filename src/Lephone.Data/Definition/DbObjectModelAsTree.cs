@@ -4,10 +4,37 @@ namespace Lephone.Data.Definition
 {
     public abstract class DbObjectModelAsTree<T> : DbObjectModel<T> where T : DbObjectModelAsTree<T>
     {
+        protected DbObjectModelAsTree()
+        {
+            XChildren = new HasMany<T>(this, "Id");
+            XParent = new BelongsTo<T>(this);
+        }
+
+        public HasMany<T> XChildren;
+
+        [DbColumn("BelongsTo_Id")]
+        public BelongsTo<T> XParent;
+
         [HasMany(OrderBy = "Id")]
-        public IList<T> Children { get; set; }
+        public IList<T> Children
+        {
+            get
+            {
+                return XChildren;
+            }
+        }
 
         [BelongsTo, DbColumn("BelongsTo_Id")]
-        public T Parent { get; set; }
+        public T Parent
+        {
+            get
+            {
+                return XParent.Value;
+            }
+            set
+            {
+                XParent.Value = value;
+            }
+        }
     }
 }

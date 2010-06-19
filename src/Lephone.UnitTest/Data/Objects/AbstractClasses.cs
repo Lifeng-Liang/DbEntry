@@ -44,12 +44,6 @@ namespace Lephone.UnitTest.Data.Objects
         public string Title { get; set; }
     }
 
-    [JoinOn(1, typeof(NamedClass), "a1", typeof(AbstractClassOfAge), "a2", CompareOpration.LessOrEqual, JoinMode.Left)]
-    [JoinOn(2, typeof(NamedClass), "b1", typeof(SerializableClass), "b2", CompareOpration.Like, JoinMode.Right)]
-    public class JoinClass : AbstractClass
-    {
-    }
-
     [Serializable]
     public class SerializableClass : AbstractClass
     {

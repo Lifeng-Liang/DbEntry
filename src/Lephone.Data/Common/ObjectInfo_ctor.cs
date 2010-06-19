@@ -43,16 +43,6 @@ namespace Lephone.Data.Common
             {
                 _composer = new QueryComposer(this);
             }
-            // binding DbObjectHandler
-            if (DataSettings.ObjectHandlerType == HandlerType.Emit
-                || (DataSettings.ObjectHandlerType == HandlerType.Both && t.IsPublic))
-            {
-                _handler = AssemblyHandler.Instance.CreateDbObjectHandler(t, this);
-            }
-            else
-            {
-                _handler = new ReflectionDbObjectHandler(t, this);
-            }
             // get create tables
             if (From.PartOf != null)
             {
@@ -86,7 +76,7 @@ namespace Lephone.Data.Common
                     _cacheable = true;
                 }
             }
-            InitContext();
+            //InitContext();
         }
 
         internal ObjectInfo(Type t)

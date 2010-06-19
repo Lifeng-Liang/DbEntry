@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using Lephone.Data.Common;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using MethodBody = Mono.Cecil.Cil.MethodBody;
 
-namespace Lephone.CodeGen.Processor
+namespace Lephone.Processor
 {
     public class IlBuilder
     {
@@ -67,6 +70,7 @@ namespace Lephone.CodeGen.Processor
         {
             var variable = new VariableDefinition(t);
             _body.Variables.Add(variable);
+            _body.InitLocals = true;
             return variable;
         }
 
@@ -146,39 +150,26 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        public IlBuilder LoadField(FieldDefinition fi)
+        public IlBuilder LoadField(FieldReference fi)
         {
             _list.Add(_il.Create(OpCodes.Ldfld, fi));
             return this;
         }
 
-        public IlBuilder SetField(FieldDefinition fi)
+        public IlBuilder SetField(FieldReference fi)
         {
             _list.Add(_il.Create(OpCodes.Stfld, fi));
             return this;
         }
 
-        public IlBuilder SetMember(ModelMember mm)
+        public IlBuilder SetMember(MemberHandler mm, KnownTypesHandler handler)
         {
-            if(mm.Member is FieldDefinition)
+            if(mm.MemberInfo.IsProperty)
             {
-                return SetField((FieldDefinition)mm.Member);
+                var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetSetMethod();
+                return CallVirtual(handler.Import(method));
             }
-            if(mm.Member is PropertyReference)
-            {
-                return CallVirtual(GetInhritsSetMethod(mm));
-            }
-            throw new ApplicationException();
-        }
-
-        private static MethodReference GetInhritsSetMethod(ModelMember mm)
-        {
-            var method = (MethodReference)((PropertyDefinition)mm.Member).SetMethod;
-            if(mm.Member.DeclaringType.HasGenericParameters)
-            {
-                method.DeclaringType = mm.DeclaringType;
-            }
-            return method;
+            return SetField(handler.Import((FieldInfo)mm.MemberInfo.GetMemberInfo()));
         }
 
         public IlBuilder GetField(PropertyDefinition pi)
@@ -186,27 +177,14 @@ namespace Lephone.CodeGen.Processor
             return CallVirtual(pi.SetMethod);
         }
 
-        public IlBuilder GetMember(ModelMember pi)
+        public IlBuilder GetMember(MemberHandler mm, KnownTypesHandler handler)
         {
-            if (pi.Member is FieldDefinition)
+            if (mm.MemberInfo.IsProperty)
             {
-                return LoadField((FieldDefinition)pi.Member);
+                var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetGetMethod();
+                return CallVirtual(handler.Import(method));
             }
-            if (pi.Member is PropertyReference)
-            {
-                return CallVirtual(GetInhritsGetMethod(pi));
-            }
-            throw new ApplicationException();
-        }
-
-        private static MethodReference GetInhritsGetMethod(ModelMember mm)
-        {
-            var method = (MethodReference)((PropertyDefinition)mm.Member).GetMethod;
-            if (mm.Member.DeclaringType.HasGenericParameters)
-            {
-                method.DeclaringType = mm.DeclaringType;
-            }
-            return method;
+            return LoadField(handler.Import((FieldInfo)mm.MemberInfo.GetMemberInfo()));
         }
 
         //private static ConstructorInfo GetConstructor(Type sourceType)
@@ -316,17 +294,17 @@ namespace Lephone.CodeGen.Processor
         public IlBuilder CastOrUnbox(TypeReference t, KnownTypesHandler handler)
         {
             //TODO: refactor the types to KnownTypesHandler
-            if (t.IsGenericInstance && t.Name == "Nullable<>")
+            if (t.IsGenericInstance && t.Name == "Nullable`1")
             {
-                var inType = t.GenericParameters[0];
-                if (ProcessDateAndTime(inType, handler.Import(typeof(DateTime?)), handler))
+                var inType = ((GenericInstanceType)t).GenericArguments[0];
+                if (ProcessDateAndTime(inType, handler.Import(typeof(Date?)), handler.Import(typeof(Time?))))
                 {
                     return this;
                 }
             }
             if (t.IsValueType)
             {
-                if (ProcessDateAndTime(t, handler.Import(typeof(DateTime)), handler))
+                if (ProcessDateAndTime(t, handler.Import(typeof(Date)), handler.Import(typeof(Time))))
                 {
                     return this;
                 }
@@ -355,19 +333,17 @@ namespace Lephone.CodeGen.Processor
             return this;
         }
 
-        private bool ProcessDateAndTime(TypeReference inType, TypeReference unboxType, KnownTypesHandler handler)
+        private bool ProcessDateAndTime(TypeReference inType, TypeReference unboxDateType, TypeReference unboxTimeType)
         {
             //TODO: refactor the types to KnownTypesHandler
             if (inType.FullName == typeof(Date).FullName)
             {
-                _list.Add(_il.Create(OpCodes.Unbox_Any, unboxType));
-                _list.Add(_il.Create(OpCodes.Call, handler.DateEx));
+                _list.Add(_il.Create(OpCodes.Unbox_Any, unboxDateType));
                 return true;
             }
             if (inType.FullName == typeof(Time).FullName)
             {
-                _list.Add(_il.Create(OpCodes.Unbox_Any, unboxType));
-                _list.Add(_il.Create(OpCodes.Call, handler.TimeEx));
+                _list.Add(_il.Create(OpCodes.Unbox_Any, unboxTimeType));
                 return true;
             }
             return false;

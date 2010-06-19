@@ -11,8 +11,6 @@
     
     <add key="SqlLogRecorder" value="Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core" />
 
-    <add key="ObjectHandlerType" value="Emit" />
-
     <add key="MiscProvider" value="Lephone.UnitTest.util.MockMiscProvider, Lephone.UnitTest" />
     <add key="CookiesHandler" value="Lephone.UnitTest.Web.MockCookiesHandler, Lephone.UnitTest" />
 

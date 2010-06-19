@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Lephone.CodeGen.Processor;
 using Lephone.Core;
 
 namespace Lephone.CodeGen
@@ -65,15 +64,6 @@ namespace Lephone.CodeGen
             if (!File.Exists(fileName))
             {
                 throw new ArgsErrorException(2, "The file you input doesn't exist!");
-            }
-
-            if ((args.Length == 2 || args.Length == 3) && args[0].ToLower() == "dll")
-            {
-                var sn = args.Length == 2 ? null : Path.GetFullPath(args[2]);
-                new AssemblyProcessor().Process(fileName, sn);
-                Console.WriteLine("Assembly processed!");
-                Console.ReadLine();
-                return;
             }
 
             if (!ActionMatch(args[0]))

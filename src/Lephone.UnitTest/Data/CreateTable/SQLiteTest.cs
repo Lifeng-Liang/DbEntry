@@ -420,9 +420,10 @@ SELECT LAST_INSERT_ROWID();
 <Text><30>(@Name_0=tom:String)");
 
             c.Id = 2;
+            c.Name = "jerry";
             sqlite.Update(c);
             AssertSql(@"UPDATE [tom].[test_table] SET [Name]=@Name_0  WHERE [Id] = @Id_1;
-<Text><30>(@Name_0=tom:String,@Id_1=2:Int64)");
+<Text><30>(@Name_0=jerry:String,@Id_1=2:Int64)");
 
             sqlite.Delete(c);
             AssertSql(@"DELETE FROM [tom].[test_table] WHERE [Id] = @Id_0;

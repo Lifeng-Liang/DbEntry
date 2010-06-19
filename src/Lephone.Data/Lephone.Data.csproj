@@ -124,12 +124,12 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DeleteToQueryComposer.cs" />
     <Compile Include="Common\DynamicLinqObjectHandler.cs" />
-    <Compile Include="Common\DynamicObjectBuilder.cs" />
     <Compile Include="Common\DynamicQuery.cs" />
     <Compile Include="Common\DynamicRow.cs" />
     <Compile Include="Common\DynamicTable.cs" />
+    <Compile Include="Common\GroupbyObjectHandler.cs" />
     <Compile Include="Common\GroupBySumObject.cs" />
-    <Compile Include="Common\AssemblyHandler.cs" />
+    <Compile Include="Common\GroupbySumObjectHandler.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
     <Compile Include="Common\ModelHandlerAttribute.cs" />
     <Compile Include="Common\ModelUpdater.cs" />
@@ -145,9 +145,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\OptimisticLockingQueryComposer.cs" />
     <Compile Include="Common\QueryComposer.cs" />
     <Compile Include="Common\MemberAdapater.cs" />
-    <Compile Include="Common\MemoryAssembly.cs" />
-    <Compile Include="Common\MemoryTypeBuilder.cs" />
-    <Compile Include="Common\ReflectionDbObjectHandler.cs" />
     <Compile Include="Common\SoftDeleteQueryComposer.cs" />
     <Compile Include="Common\StaticPagedSelector.cs" />
     <Compile Include="Common\StupidDataReader.cs" />
@@ -412,7 +409,6 @@ copy *.dll ..\..\..\..\bin\
   </ItemGroup>
   <ItemGroup>
     <None Include="DbEntry.snk" />
-    <EmbeddedResource Include="dynamic.snk" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

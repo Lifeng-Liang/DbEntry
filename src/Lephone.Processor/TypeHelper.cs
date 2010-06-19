@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Mono.Cecil;
 
-namespace Lephone.CodeGen.Processor
+namespace Lephone.Processor
 {
     public static class TypeHelper
     {
@@ -118,7 +118,27 @@ namespace Lephone.CodeGen.Processor
             return type.GetCustomAttribute(KnownTypesHandler.AllowNullAttribute) != null;
         }
 
-        public static MethodDefinition GetMethod(this TypeReference type, string name, params Type[] types)
+        public static MethodReference GetMethod(this TypeReference type, string name, params Type[] types)
+        {
+            var method = InnerGetMethod(type, name, types);
+            if(type is GenericInstanceType)
+            {
+                var m = new MethodReference(method.Name, method.ReturnType)
+                            {
+                                DeclaringType = type,
+                                HasThis = method.HasThis,
+                                ExplicitThis = method.ExplicitThis
+                            };
+                foreach(var p in method.Parameters)
+                {
+                    m.Parameters.Add(p);
+                }
+                method = m;
+            }
+            return method;
+        }
+
+        private static MethodReference InnerGetMethod(TypeReference type, string name, params Type[] types)
         {
             var realType = type.Resolve();
             foreach (var method in realType.Methods)

@@ -4,9 +4,8 @@ using Lephone.Data;
 using Lephone.Data.Common;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using FieldAttributes = Mono.Cecil.FieldAttributes;
 
-namespace Lephone.CodeGen.Processor
+namespace Lephone.Processor
 {
     public class ModelProcessor
     {
@@ -287,7 +286,8 @@ namespace Lephone.CodeGen.Processor
             processor.LoadArg(0);
             processor.LoadField(pi.FieldDefinition);
             processor.LoadArg(1);
-            var setValue = _handler.Import(pi.FieldDefinition.FieldType.GetMethod("set_Value"));
+            var sv = pi.FieldDefinition.FieldType.GetMethod("set_Value");
+            var setValue = _handler.Import(sv);
             processor.CallVirtual(setValue);
             processor.Return();
             processor.Append();
@@ -422,8 +422,9 @@ namespace Lephone.CodeGen.Processor
             }
 
             var t = _handler.GetRealType(pi);
-            pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.FamANDAssem, t);
+            pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.FamORAssem, t);
             PopulateDbColumn(pi);
+            PopulateIndex(pi);
             GenerateCrossTableForHasManyAndBelongsTo(pi);
             PopulateCustomAttributeForLazyLoadColumn(pi);
         }
@@ -441,6 +442,20 @@ namespace Lephone.CodeGen.Processor
             {
                 var c = _handler.GetDbColumn(pi.PropertyDefinition.Name);
                 pi.FieldDefinition.CustomAttributes.Add(c);
+            }
+        }
+
+        private static void PopulateIndex(PropertyInformation pi)
+        {
+            var pd = pi.PropertyDefinition;
+            var bcs = pd.GetCustomAttributes(KnownTypesHandler.IndexAttribute);
+            if (bcs != null && bcs.Count > 0)
+            {
+                foreach(var bc in bcs)
+                {
+                    pd.CustomAttributes.Remove(bc);
+                    pi.FieldDefinition.CustomAttributes.Add(bc);
+                }
             }
         }
 

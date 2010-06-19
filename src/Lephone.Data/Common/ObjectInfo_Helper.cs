@@ -162,17 +162,12 @@ namespace Lephone.Data.Common
 
         internal MemberHandler GetBelongsTo(Type t)
         {
-            Type mt = t.IsAbstract ? AssemblyHandler.Instance.GetImplType(t) : t;
             foreach (MemberHandler mh in RelationFields)
             {
                 if (mh.IsBelongsTo)
                 {
                     Type st = mh.FieldType.GetGenericArguments()[0];
-                    if (st.IsAbstract)
-                    {
-                        st = AssemblyHandler.Instance.GetImplType(st);
-                    }
-                    if (st == mt)
+                    if (st == t)
                     {
                         return mh;
                     }
@@ -184,17 +179,12 @@ namespace Lephone.Data.Common
 
         internal MemberHandler GetHasAndBelongsToMany(Type t)
         {
-            Type mt = t.IsAbstract ? AssemblyHandler.Instance.GetImplType(t) : t;
             foreach (MemberHandler mh in RelationFields)
             {
                 if (mh.IsHasAndBelongsToMany)
                 {
                     Type st = mh.FieldType.GetGenericArguments()[0];
-                    if (st.IsAbstract)
-                    {
-                        st = AssemblyHandler.Instance.GetImplType(st);
-                    }
-                    if (st == mt)
+                    if (st == t)
                     {
                         return mh;
                     }
@@ -289,6 +279,32 @@ namespace Lephone.Data.Common
                     }
                 }
             }
+        }
+
+        public IDbObjectHandler CreateDbObjectHandler(Type sourceType)
+        {
+            if(sourceType.IsGenericType)
+            {
+                switch(sourceType.Name)
+                {
+                    case "GroupByObject`1":
+                        var t = typeof(GroupbyObjectHandler<>).MakeGenericType(sourceType.GetGenericArguments());
+                        return (IDbObjectHandler)ClassHelper.CreateInstance(t);
+                    case "GroupBySumObject`2":
+                        var ts = typeof(GroupbySumObjectHandler<,>).MakeGenericType(sourceType.GetGenericArguments());
+                        return (IDbObjectHandler)ClassHelper.CreateInstance(ts);
+                    default:
+                        throw new NotSupportedException();
+                }
+            }
+            var attr = ClassHelper.GetAttribute<ModelHandlerAttribute>(sourceType, false);
+            if (attr != null)
+            {
+                var o = (EmitObjectHandlerBase)ClassHelper.CreateInstance(attr.Type);
+                o.Init(this);
+                return o;
+            }
+            throw new DataException("Can not find ObjectHandler for: {0}", sourceType.FullName);
         }
 
         #endregion

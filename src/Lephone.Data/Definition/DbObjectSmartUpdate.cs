@@ -2,6 +2,7 @@
 using System.Xml.Serialization;
 using System.Xml.Schema;
 using System.Collections.Generic;
+using Lephone.Core;
 using Lephone.Data.Common;
 
 namespace Lephone.Data.Definition
@@ -16,7 +17,7 @@ namespace Lephone.Data.Definition
         [Exclude]
         internal bool m_InternalInit;
 
-        protected void m_InitUpdateColumns()
+        internal protected void m_InitUpdateColumns()
         {
             m_UpdateColumns = new Dictionary<string, object>();
         }
@@ -31,33 +32,36 @@ namespace Lephone.Data.Definition
 
         public XmlSchema GetSchema()
         {
-            //ObjectInfo Info = ObjectInfo.GetInstance(this.GetType());
-            //XmlSchema xs = new XmlSchema();
-            //XmlSchemaComplexType xct = new XmlSchemaComplexType();
-            //xct.Name = "DbObject";
-            //XmlSchemaSequence xss = new XmlSchemaSequence();
-            //foreach (MemberHandler mh in Info.SimpleFields)
+            //var info = ObjectInfo.GetInstance(this.GetType());
+            //var xs = new XmlSchema();
+            //var xct = new XmlSchemaComplexType { Name = "DbObject" };
+            //var xss = new XmlSchemaSequence();
+            //foreach (MemberHandler mh in info.SimpleFields)
             //{
-            //    XmlSchemaElement xe = new XmlSchemaElement();
-            //    xe.Name = mh.MemberInfo.Name;
-            //    xe.ElementSchemaType = XmlSchemaType.GetBuiltInSimpleType(XmlTypeCode.Int);
+            //    var xe = new XmlSchemaElement
+            //                 {
+            //                     Name = mh.MemberInfo.Name,
+            //                     SchemaType = XmlSchemaType.GetBuiltInSimpleType(XmlTypeCode.Int)
+            //                 };
             //    xss.Items.Add(xe);
             //}
-            //xct.ContentModel = xss;
+            //xct.Particle = xss;
             //xs.Items.Add(xct);
+            //return xs;
             return null;
         }
 
         public void ReadXml(System.Xml.XmlReader reader)
         {
-            //var oi = ObjectInfo.GetInstance(GetType());
-            //foreach (MemberHandler mh in oi.SimpleFields)
-            //{
-            //    var ns = reader.ReadElementString(mh.MemberInfo.Name);
-            //    object o = ClassHelper.ChangeType(ns, mh.FieldType);
-            //    mh.SetValue(this, o);
-            //}
-            throw new NotImplementedException(); // can not create instance of abstract class...
+            var oi = ObjectInfo.GetInstance(GetType());
+            reader.ReadStartElement();
+            foreach (MemberHandler mh in oi.SimpleFields)
+            {
+                var ns = reader.ReadElementString(mh.MemberInfo.Name);
+                object o = ClassHelper.ChangeType(ns, mh.FieldType);
+                mh.SetValue(this, o);
+            }
+            reader.ReadEndElement();
         }
 
         public void WriteXml(System.Xml.XmlWriter writer)

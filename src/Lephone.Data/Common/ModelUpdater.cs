@@ -117,6 +117,7 @@ namespace Lephone.Data.Common
                 oi.LogSql(sql);
                 _context.ExecuteNonQuery(sql);
             }
+            ClearUpdatedColumns(obj);
             if (DataSettings.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
             {
                 _context.SetCachedObject(obj);
@@ -160,15 +161,21 @@ namespace Lephone.Data.Common
             {
                 throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
             }
-            if (obj is DbObjectSmartUpdate)
-            {
-                ((DbObjectSmartUpdate)obj).m_UpdateColumns = new Dictionary<string, object>();
-            }
+            ClearUpdatedColumns(obj);
             oi.Composer.ProcessAfterSave(obj);
 
             if (DataSettings.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
             {
                 _context.SetCachedObject(obj);
+            }
+        }
+
+        private static void ClearUpdatedColumns(object obj)
+        {
+            if(obj is DbObjectSmartUpdate)
+            {
+                var o = (DbObjectSmartUpdate)obj;
+                o.m_InitUpdateColumns();
             }
         }
 

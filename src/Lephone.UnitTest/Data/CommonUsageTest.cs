@@ -31,26 +31,6 @@ namespace Lephone.UnitTest.Data
         [DbColumn("BelongsTo_Id")] public int n;
     }
 
-    public class NotDefineRelation : DbObjectModel<NotDefineRelation>
-    {
-        public AllowNullOnValueType Relation { get; set; }
-    }
-
-    public class AllowNullOnValueType : DbObjectModel<AllowNullOnValueType>
-    {
-        [AllowNull]
-        public int Age { get; set; }
-    }
-
-    public class t_user : DbObjectModel<t_user>
-    {
-        [Length(40)]
-        public string mc { get; set; }
-
-        [SpecialName, LazyLoad]
-        public DateTime CreatedOn { get; set; }
-    }
-
     [DbTable("People")]
     public class SinglePerson : DbObject
     {
@@ -609,20 +589,6 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestLazyLoadCreatedOn()
-        {
-            try
-            {
-                var d = new t_user {mc = "ÕÅÈý"};
-                d.Save();
-            }
-            catch(DataException ex)
-            {
-                Assert.AreEqual("SpecialName colomn could not be LazyLoad", ex.Message);
-            }
-        }
-
-        [Test]
         public void TestMkeyForUpdate()
         {
             var p = new MKEY { FirstName = "test", LastName = "next", Age = 11 };
@@ -733,35 +699,6 @@ namespace Lephone.UnitTest.Data
 
             n = FieldPerson.GetSum(null, "Id");
             Assert.AreEqual(6, n);
-        }
-
-        [Test]
-        public void TestAllowNowOnValueType()
-        {
-            try
-            {
-                ObjectInfo.GetInstance(typeof (AllowNullOnValueType));
-                Assert.IsTrue(false);
-            }
-            catch (DataException ex)
-            {
-                Assert.AreEqual("Don't set AllowNull to a value type field, instead of to use nullable", ex.Message);
-            }
-        }
-
-        [Test]
-        public void TestNotDefineRelation()
-        {
-            try
-            {
-                ObjectInfo.GetInstance(typeof(NotDefineRelation));
-                Assert.IsTrue(false);
-            }
-            catch (DataException ex)
-            {
-                Assert.AreEqual("The property 'Relation' should define as relation field and can not set lazy load attribute", ex.Message);
-            }
-
         }
 
         [Test]

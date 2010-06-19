@@ -55,7 +55,6 @@ namespace Lephone.Data.Definition
                             if (mh.IsHasOne || mh.IsHasMany)
                             {
                                 Type st = mh.FieldType.GetGenericArguments()[0];
-                                st = st.IsAbstract ? AssemblyHandler.Instance.GetImplType(st) : st;
                                 Type ot = Owner.GetType();
                                 if (st == ot)
                                 {

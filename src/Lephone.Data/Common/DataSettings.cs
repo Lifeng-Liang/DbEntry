@@ -1,18 +1,10 @@
-﻿using Lephone.Core.Text;
+﻿using Lephone.Core.Setting;
+using Lephone.Core.Text;
 
 namespace Lephone.Data.Common
 {
-    internal enum HandlerType
-    {
-        Emit,
-        Reflection,
-        Both,
-    }
-
     internal static class DataSettings
 	{
-        public static readonly HandlerType ObjectHandlerType = HandlerType.Emit;
-
         public static readonly string DefaultContext        = "";
 
 		public static readonly int SqlTimeOut               = 30;
@@ -40,7 +32,7 @@ namespace Lephone.Data.Common
 
         static DataSettings()
         {
-            typeof(DataSettings).Initalize();
+            ConfigHelper.DefaultSettings.InitClass(typeof(DataSettings));
         }
 	}
 }

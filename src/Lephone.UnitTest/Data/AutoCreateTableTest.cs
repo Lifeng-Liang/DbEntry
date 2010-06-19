@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
@@ -236,7 +235,7 @@ namespace Lephone.UnitTest.Data
         public void TestSmartUpdateForDynamicObject5()
         {
             // read from database, the updateColumns is empty
-            var u = DynamicObjectBuilder.Instance.NewObject<asUser>("Tom", 18);
+            var u = new asUser { Name = "Tom", Age = 18 };
             u.Save();
             asUser u1 = asUser.FindById(u.Id);
             Assert.AreEqual(0, u1.GetUpdateColumns().Count);

@@ -87,14 +87,7 @@ namespace Lephone.Data
                     if (callback(mt))
                     {
                         Debug.Assert(dbObjectType.Assembly.FullName != null);
-                        if (dbObjectType.Assembly.FullName.StartsWith(MemoryAssembly.DefaultAssemblyName))
-                        {
-                            CreateCrossTable(dbObjectType.BaseType, mt.HandleType);
-                        }
-                        else
-                        {
-                            CreateCrossTable(dbObjectType, mt.HandleType);
-                        }
+                        CreateCrossTable(dbObjectType, mt.HandleType);
                     }
                 }
             });

@@ -1,34 +1,43 @@
-﻿using Lephone.Data;
+﻿using System;
+using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 using Lephone.Core;
 using Mono.Cecil;
 
-namespace Lephone.CodeGen.Processor
+namespace Lephone.Processor
 {
     public class ModelHandlerGenerator
     {
+        private static readonly DataReaderEmitHelper Helper = new DataReaderEmitHelper();
+
         private const TypeAttributes ClassTypeAttr = TypeAttributes.Class | TypeAttributes.Public;
-        private const MethodAttributes MethodAttr = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual; //public hidebysig virtual instance
+        private const MethodAttributes CtMethodAttr = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual; //public hidebysig virtual instance
+        private const MethodAttributes MethodAttr = MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.Virtual; //public hidebysig virtual instance
         private const MethodAttributes CtorAttr = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
 
         private const string MemberPrifix = "$";
         private readonly TypeDefinition _model;
         private readonly KnownTypesHandler _handler;
-        private static int _index;
         private readonly TypeDefinition _result;
+        private static int _index;
 
-        private readonly ModelInformation _info;
+        private readonly ObjectInfo _info;
 
-        public ModelHandlerGenerator(TypeDefinition model, KnownTypesHandler handler)
+        private readonly Type _type;
+
+        public ModelHandlerGenerator(Type type, TypeDefinition model, KnownTypesHandler handler)
         {
+            this._type = type;
             this._model = model;
             this._handler = handler;
             _index++;
-            _result = new TypeDefinition("$Lephone", MemberPrifix + _index,
+            _result = new TypeDefinition(MemberPrifix + type.Namespace, MemberPrifix + _index + "_" + type.Name,
                 ClassTypeAttr, _handler.ModelHandlerBaseType);
+            _result.Interfaces.Add(_handler.DbObjectHandlerInterface);
             _model.CustomAttributes.Add(_handler.GetModelHandler(_result));
 
-            _info = ModelInformation.GetInstance(model, _handler);
+            _info = ObjectInfo.GetInstance(type);
         }
 
         public TypeDefinition Generate()
@@ -61,7 +70,8 @@ namespace Lephone.CodeGen.Processor
         private void GenerateCreateInstance()
         {
             var ctor = _model.GetConstructor();
-            var method = new MethodDefinition("CreateInstance", MethodAttr, _handler.ObjectType);
+            var method = new MethodDefinition("CreateInstance", CtMethodAttr, _handler.ObjectType);
+            method.Overrides.Add(_handler.CreateInstance);
             var processor = new IlBuilder(method.Body);
             processor.NewObj(ctor);
             processor.Return();
@@ -72,6 +82,7 @@ namespace Lephone.CodeGen.Processor
         private void GenerateLoadSimpleValuesByIndex()
         {
             var method = new MethodDefinition("LoadSimpleValuesByIndex", MethodAttr, _handler.VoidType);
+            method.Overrides.Add(_handler.LoadSimpleValuesByIndex);
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             method.Parameters.Add(new ParameterDefinition("dr", ParameterAttributes.None, _handler.DataReaderInterface));
             var processor = new IlBuilder(method.Body);
@@ -81,12 +92,12 @@ namespace Lephone.CodeGen.Processor
             processor.LoadArg(1).Cast(_model).SetLoc(0);
             // set values
             int n = 0;
-            foreach (var f in _info.SimpleMembers)
+            foreach (var f in _info.SimpleFields)
             {
                 processor.LoadLoc(0);
                 if (f.AllowNull) { processor.LoadArg(0); }
                 processor.LoadArg(2).LoadInt(n);
-                var mi1 = _handler.GetDataReaderMethod(f.MemberType);
+                var mi1 = Helper.GetMethodInfo(f.FieldType);
                 if (f.AllowNull || mi1 == null)
                 {
                     processor.CallVirtual(_handler.GetDataReaderMethodInt());
@@ -96,13 +107,13 @@ namespace Lephone.CodeGen.Processor
                         processor.Call(_handler.ModelHandlerBaseTypeGetNullable);
                     }
                     // cast or unbox
-                    processor.CastOrUnbox(f.MemberType, _handler);
+                    processor.CastOrUnbox(_handler.Import(f.FieldType), _handler);
                 }
                 else
                 {
-                    processor.CallVirtual(mi1);
+                    processor.CallVirtual(_handler.Import(mi1));
                 }
-                processor.SetMember(f);
+                processor.SetMember(f, _handler);
                 n++;
             }
 
@@ -111,15 +122,23 @@ namespace Lephone.CodeGen.Processor
             _result.Methods.Add(method);
         }
 
-        private static void SetSecendArgForGetNullable(ModelMember f, IlBuilder il)
+        private static void SetSecendArgForGetNullable(MemberHandler f, IlBuilder il)
         {
-            if (f.MemberType.IsValueType && f.MemberType.GenericParameters[0].FullName == KnownTypesHandler.Guid)
+            if (f.FieldType.IsValueType && f.FieldType == typeof(Guid?))
             {
                 il.LoadInt(1);
             }
-            else if (f.MemberType.IsValueType && f.MemberType.GenericParameters[0].FullName == KnownTypesHandler.Bool)
+            else if (f.FieldType.IsValueType && f.FieldType == typeof(bool?))
             {
                 il.LoadInt(2);
+            }
+            else if (f.FieldType.IsValueType && f.FieldType == typeof(Date?))
+            {
+                il.LoadInt(3);
+            }
+            else if (f.FieldType.IsValueType && f.FieldType == typeof(Time?))
+            {
+                il.LoadInt(4);
             }
             else
             {
@@ -130,6 +149,7 @@ namespace Lephone.CodeGen.Processor
         private void GenerateLoadSimpleValuesByName()
         {
             var method = new MethodDefinition("LoadSimpleValuesByName", MethodAttr, _handler.VoidType);
+            method.Overrides.Add(_handler.LoadSimpleValuesByName);
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             method.Parameters.Add(new ParameterDefinition("dr", ParameterAttributes.None, _handler.DataReaderInterface));
             var processor = new IlBuilder(method.Body);
@@ -138,7 +158,7 @@ namespace Lephone.CodeGen.Processor
             processor.DeclareLocal(_model);
             processor.LoadArg(1).Cast(_model).SetLoc(0);
             // set values
-            foreach (var f in _info.SimpleMembers)
+            foreach (var f in _info.SimpleFields)
             {
                 // get value
                 processor.LoadLoc(0);
@@ -150,9 +170,9 @@ namespace Lephone.CodeGen.Processor
                     processor.Call(_handler.ModelHandlerBaseTypeGetNullable);
                 }
                 // cast or unbox
-                processor.CastOrUnbox(f.MemberType, _handler);
+                processor.CastOrUnbox(_handler.Import(f.FieldType), _handler);
                 // set field
-                processor.SetMember(f);
+                processor.SetMember(f, _handler);
             }
 
             processor.Return();
@@ -162,57 +182,61 @@ namespace Lephone.CodeGen.Processor
 
         private void GenerateLoadRelationValues(bool useIndex)
         {
-            int index = _info.SimpleMembers.Count;
+            int index = _info.SimpleFields.Length;
             string methodName = useIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
             var method = new MethodDefinition(methodName, MethodAttr, _handler.VoidType);
+            method.Overrides.Add(useIndex ? _handler.LoadRelationValuesByIndex : _handler.LoadRelationValuesByName);
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             method.Parameters.Add(new ParameterDefinition("dr", ParameterAttributes.None, _handler.DataReaderInterface));
             var processor = new IlBuilder(method.Body);
 
-            // User u = (User)o;
-            processor.DeclareLocal(_model);
-            processor.LoadArg(1).Cast(_model).SetLoc(0);
-            // set values
-            foreach (var f in _info.RelationMembers)
+            if(_info.RelationFields.Length > 0)
             {
-                processor.LoadLoc(0);
-                processor.GetMember(f);
-                if (f.IsLazyLoad)
+                // User u = (User)o;
+                processor.DeclareLocal(_model);
+                processor.LoadArg(1).Cast(_model).SetLoc(0);
+                // set values
+                foreach (var f in _info.RelationFields)
                 {
-                    processor.LoadString(f.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
-                }
-                else if (f.IsHasOne || f.IsHasMany)
-                {
-                    var oi1 = ModelInformation.GetInstance(f.GetFirstGenericArgument(), _handler); //ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
-                    var mh = oi1.GetBelongsTo(_model);
-                    if (mh == null)
+                    processor.LoadLoc(0);
+                    processor.GetMember(f, _handler);
+                    if (f.IsLazyLoad)
                     {
-                        throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
+                        processor.LoadString(f.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
                     }
-                    processor.LoadString(mh.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
-                }
-                else if (f.IsHasAndBelongsToMany)
-                {
-                    var oi1 = ModelInformation.GetInstance(f.GetFirstGenericArgument(), _handler); // ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
-                    var mh = oi1.GetHasAndBelongsToMany(_model);
-                    if (mh == null)
+                    else if (f.IsHasOne || f.IsHasMany)
                     {
-                        throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
+                        var oi1 = ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
+                        var mh = oi1.GetBelongsTo(_type);
+                        if (mh == null)
+                        {
+                            throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
+                        }
+                        processor.LoadString(mh.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
                     }
-                    processor.LoadString(mh.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
-                }
-                else if (f.IsBelongsTo)
-                {
-                    processor.LoadArg(2);
-                    if (useIndex)
+                    else if (f.IsHasAndBelongsToMany)
                     {
-                        processor.LoadInt(index++).CallVirtual(_handler.GetDataReaderMethodInt());
+                        var oi1 = ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
+                        var mh = oi1.GetHasAndBelongsToMany(_type);
+                        if (mh == null)
+                        {
+                            throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
+                        }
+                        processor.LoadString(mh.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
                     }
-                    else
+                    else if (f.IsBelongsTo)
                     {
-                        processor.LoadString(f.Name).CallVirtual(_handler.GetDataReaderMethodString());
+                        processor.LoadArg(2);
+                        if (useIndex)
+                        {
+                            processor.LoadInt(index++).CallVirtual(_handler.GetDataReaderMethodInt());
+                        }
+                        else
+                        {
+                            processor.LoadString(f.Name).CallVirtual(_handler.GetDataReaderMethodString());
+                        }
+                        processor.CallVirtual(_handler.BelongsToInterfaceSetForeignKey);
                     }
-                    processor.CallVirtual(_handler.BelongsToInterfaceSetForeignKey);
                 }
             }
 
@@ -225,15 +249,16 @@ namespace Lephone.CodeGen.Processor
         {
             //TODO: implements this
             var method = new MethodDefinition("GetKeyValueDirect", MethodAttr, _handler.ObjectType);
+            method.Overrides.Add(_handler.GetKeyValueDirect);
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             var processor = new IlBuilder(method.Body);
 
-            if (_info.KeyMembers.Count == 1)
+            if (_info.KeyFields.Length == 1)
             {
-                var h = _info.KeyMembers[0];
+                var h = _info.KeyFields[0];
                 processor.LoadArg(1).Cast(_model);
-                processor.GetMember(h);
-                processor.Box(h.MemberType);
+                processor.GetMember(h, _handler);
+                processor.Box(_handler.Import(h.FieldType));
             }
             else
             {
@@ -249,6 +274,7 @@ namespace Lephone.CodeGen.Processor
         {
             //TODO: implements this
             var method = new MethodDefinition("GetKeyValuesDirect", MethodAttr, _handler.VoidType);
+            method.Overrides.Add(_handler.GetKeyValuesDirect);
             method.Parameters.Add(new ParameterDefinition("dic", ParameterAttributes.None, _handler.DictionaryStringObjectType));
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             var processor = new IlBuilder(method.Body);
@@ -257,11 +283,11 @@ namespace Lephone.CodeGen.Processor
             processor.DeclareLocal(_model);
             processor.LoadArg(2).Cast(_model).SetLoc(0);
             // set values
-            foreach (var f in _info.KeyMembers)
+            foreach (var f in _info.KeyFields)
             {
                 processor.LoadArg(1).LoadString(f.Name).LoadLoc(0);
-                processor.GetMember(f);
-                processor.Box(f.MemberType).CallVirtual(_handler.DictionaryStringObjectAdd);
+                processor.GetMember(f, _handler);
+                processor.Box(_handler.Import(f.FieldType)).CallVirtual(_handler.DictionaryStringObjectAdd);
             }
 
             processor.Return();
@@ -272,19 +298,20 @@ namespace Lephone.CodeGen.Processor
         private void GenerateSetValuesForSelectDirect()
         {
             var method = new MethodDefinition("SetValuesForSelectDirect", MethodAttr, _handler.VoidType);
+            method.Overrides.Add(_handler.SetValuesForSelectDirect);
             method.Parameters.Add(new ParameterDefinition("keys", ParameterAttributes.None, _handler.ListKeyValuePairStringStringType));
             var processor = new IlBuilder(method.Body);
 
-            foreach (var f in _info.Members)
+            foreach (var f in _info.Fields)
             {
                 if (!f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany && !f.IsLazyLoad)
                 {
                     processor.LoadArg(1);
 
                     processor.LoadString(f.Name);
-                    if (f.Name != f.Member.Name)
+                    if (f.Name != f.MemberInfo.Name)
                     {
-                        processor.LoadString(f.Member.Name);
+                        processor.LoadString(f.MemberInfo.Name);
                     }
                     else
                     {
@@ -305,8 +332,9 @@ namespace Lephone.CodeGen.Processor
         {
             //TODO: implements this
             var method = new MethodDefinition("SetValuesForInsertDirect", MethodAttr, _handler.VoidType);
+            method.Overrides.Add(_handler.SetValuesForInsertDirect);
             method.Parameters.Add(new ParameterDefinition("values", ParameterAttributes.None, _handler.KeyValueCollectionType));
-            method.Parameters.Add(new ParameterDefinition("obj", ParameterAttributes.None, _handler.ObjectType));
+            method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             var processor = new IlBuilder(method.Body);
 
             GenerateSetValuesDirect(processor,
@@ -322,8 +350,9 @@ namespace Lephone.CodeGen.Processor
         {
             //TODO: implements this
             var method = new MethodDefinition("SetValuesForUpdateDirect", MethodAttr, _handler.VoidType);
+            method.Overrides.Add(_handler.SetValuesForUpdateDirect);
             method.Parameters.Add(new ParameterDefinition("values", ParameterAttributes.None, _handler.KeyValueCollectionType));
-            method.Parameters.Add(new ParameterDefinition("obj", ParameterAttributes.None, _handler.ObjectType));
+            method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             var processor = new IlBuilder(method.Body);
 
             if (_model.BaseTypeIsDbObjectSmartUpdate())
@@ -333,7 +362,7 @@ namespace Lephone.CodeGen.Processor
             else
             {
                 GenerateSetValuesDirect(processor,
-                                        m => m.IsCreatedOn || m.IsDbKey,
+                                        m => m.IsCreatedOn || m.IsKey,
                                         m => m.IsUpdatedOn || m.IsSavedOn || m.IsCount);
             }
 
@@ -343,14 +372,14 @@ namespace Lephone.CodeGen.Processor
             _result.Methods.Add(method);
         }
 
-        private void GenerateSetValuesDirect(IlBuilder processor, CallbackReturnHandler<ModelMember, bool> cb1, CallbackReturnHandler<ModelMember, bool> cb2)
+        private void GenerateSetValuesDirect(IlBuilder processor, CallbackReturnHandler<MemberHandler, bool> cb1, CallbackReturnHandler<MemberHandler, bool> cb2)
         {
             // User u = (User)o;
             processor.DeclareLocal(_model);
             processor.LoadArg(2).Cast(_model).SetLoc(0);
             // set values
             int n = 0;
-            foreach (var f in _info.Members)
+            foreach (var f in _info.Fields)
             {
                 if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                 {
@@ -365,19 +394,20 @@ namespace Lephone.CodeGen.Processor
                         else
                         {
                             processor.LoadLoc(0);
-                            processor.GetMember(f);
+                            processor.GetMember(f, _handler);
                             if (f.IsBelongsTo)
                             {
-                                processor.CallVirtual(f.MemberType.GetMethod("get_ForeignKey"));
+                                processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_ForeignKey")));
                             }
                             else if (f.IsLazyLoad)
                             {
-                                var it = ((GenericInstanceType)f.MemberType).GenericArguments[0];
-                                processor.CallVirtual(f.MemberType.GetMethod("get_Value")).Box(it);
+                                var it = f.FieldType.GetGenericArguments()[0];
+                                processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_Value")));
+                                processor.Box(_handler.Import(it));
                             }
                             else
                             {
-                                processor.Box(f.MemberType);
+                                processor.Box(_handler.Import(f.FieldType));
                             }
                             processor.Call(_handler.ModelHandlerBaseTypeNewKeyValue);
                         }
@@ -388,43 +418,44 @@ namespace Lephone.CodeGen.Processor
             }
         }
 
-        private void GenerateSetValuesForPartialUpdate(IlBuilder il)
+        private void GenerateSetValuesForPartialUpdate(IlBuilder processor)
         {
             // User u = (User)o;
-            il.DeclareLocal(_model);
-            il.LoadArg(2).Cast(_model).SetLoc(0);
+            processor.DeclareLocal(_model);
+            processor.LoadArg(2).Cast(_model).SetLoc(0);
             // set values
             int n = 0;
-            foreach (var f in _info.Members)
+            foreach (var f in _info.Fields)
             {
                 if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                 {
-                    if (!f.IsDbKey && (f.IsUpdatedOn || f.IsSavedOn || !f.IsCreatedOn || f.IsCount))
+                    if (!f.IsKey && (f.IsUpdatedOn || f.IsSavedOn || !f.IsCreatedOn || f.IsCount))
                     {
                         if (f.IsUpdatedOn || f.IsSavedOn || f.IsCount)
                         {
-                            il.LoadArg(1).LoadArg(0).LoadInt(n)
+                            processor.LoadArg(1).LoadArg(0).LoadInt(n)
                                 .LoadInt((int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow)).Box(_handler.AutoValueType)
                                 .Call(_handler.ModelHandlerBaseTypeNewKeyValueDirect).CallVirtual(_handler.KeyValueCollectionAdd);
                         }
                         else
                         {
-                            il.LoadArg(0).LoadArg(1).LoadLoc(0).LoadString(f.Name).LoadInt(n).LoadLoc(0);
-                            il.GetMember(f);
+                            processor.LoadArg(0).LoadArg(1).LoadLoc(0).LoadString(f.Name).LoadInt(n).LoadLoc(0);
+                            processor.GetMember(f, _handler);
                             if (f.IsBelongsTo)
                             {
-                                il.CallVirtual(f.MemberType.GetMethod("get_ForeignKey"));
+                                processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_ForeignKey")));
                             }
                             else if (f.IsLazyLoad)
                             {
-                                var it = ((GenericInstanceType)f.MemberType).GenericArguments[0];
-                                il.CallVirtual(f.MemberType.GetMethod("get_Value")).Box(it);
+                                var it = f.FieldType.GetGenericArguments()[0];
+                                processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_Value")));
+                                processor.Box(_handler.Import(it));
                             }
                             else
                             {
-                                il.Box(f.MemberType);
+                                processor.Box(_handler.Import(f.FieldType));
                             }
-                            il.Call(_handler.ModelHandlerBaseTypeAddKeyValue);
+                            processor.Call(_handler.ModelHandlerBaseTypeAddKeyValue);
                         }
                     }
                     n++;

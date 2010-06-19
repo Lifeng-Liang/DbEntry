@@ -15,18 +15,13 @@ namespace Lephone.Data.Common
             {
                 throw new DataException("The model class should be public");
             }
-            Type t = (dbObjectType.IsAbstract) ? AssemblyHandler.Instance.GetImplType(dbObjectType) : dbObjectType;
-            var c = ClassHelper.GetArgumentlessConstructor(t);
+            var c = ClassHelper.GetArgumentlessConstructor(dbObjectType);
             if (c == null)
             {
-                string typeName = t.Name;
-                if (typeName.StartsWith(MemoryTypeBuilder.MemberPrifix))
-                {
-                    typeName = t.BaseType.Name;
-                }
+                string typeName = dbObjectType.Name;
                 throw new DataException("class {0} need a public/protected(DbObjectModel) argumentless constructor", typeName);
             }
-            return t;
+            return dbObjectType;
         }
 
         protected override ObjectInfo CreateInst(Type t)
@@ -37,12 +32,11 @@ namespace Lephone.Data.Common
 
         internal static ObjectInfo GetSimpleInstance(Type dbObjectType)
         {
-            Type t = (dbObjectType.IsAbstract) ? AssemblyHandler.Instance.GetImplType(dbObjectType) : dbObjectType;
-            if (Jar.ContainsKey(t))
+            if (Jar.ContainsKey(dbObjectType))
             {
-                return Jar[t];
+                return Jar[dbObjectType];
             }
-            var oi = new ObjectInfo(t);
+            var oi = new ObjectInfo(dbObjectType);
             return oi;
         }
 
@@ -81,7 +75,20 @@ namespace Lephone.Data.Common
 
         public IDbObjectHandler Handler
         {
-            get { return _handler; }
+            get
+            {
+                if (_handler == null)
+                {
+                    lock (this)
+                    {
+                        if(_handler == null)
+                        {
+                            _handler = CreateDbObjectHandler(_baseType);
+                        }
+                    }
+                }
+                return _handler;
+            }
         }
 
         internal QueryComposer Composer
@@ -191,7 +198,20 @@ namespace Lephone.Data.Common
 
         public DbContext Context
         {
-            get { return _context; }
+            get
+            {
+                if(_context == null)
+                {
+                    lock(this)
+                    {
+                        if(_context == null)
+                        {
+                            InitContext();
+                        }
+                    }
+                }
+                return _context;
+            }
         }
 
         #endregion
