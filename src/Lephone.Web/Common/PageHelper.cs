@@ -61,7 +61,7 @@ namespace Lephone.Web.Common
 
         private static WebControl GetWebControl(Page p, ObjectInfo oi, string Name)
         {
-            string cid = string.Format("{0}_{1}", oi.BaseType.Name, Name);
+            string cid = string.Format("{0}_{1}", oi.HandleType.Name, Name);
             var c = ClassHelper.GetValue(p, cid) as WebControl;
             return c;
         }
@@ -72,7 +72,7 @@ namespace Lephone.Web.Common
             {
                 if (!h.IsKey)
                 {
-                    string cid = string.Format("{0}_{1}", oi.BaseType.Name, h.MemberInfo.Name);
+                    string cid = string.Format("{0}_{1}", oi.HandleType.Name, h.MemberInfo.Name);
                     var c = ClassHelper.GetValue(p, cid) as WebControl;
                     if (c != null)
                     {

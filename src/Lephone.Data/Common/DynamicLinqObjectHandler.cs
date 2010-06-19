@@ -9,6 +9,8 @@ namespace Lephone.Data.Common
 {
     public class DynamicLinqObjectHandler : FlyweightBase<Type, DynamicLinqObjectHandler>
     {
+        public static readonly DynamicLinqObjectHandler Factory = new DynamicLinqObjectHandler();
+
         protected override DynamicLinqObjectHandler CreateInst(Type t)
         {
             return new DynamicLinqObjectHandler(t);

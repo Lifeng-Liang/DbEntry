@@ -190,7 +190,7 @@
 goto End
 :Release
 
-"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)Web.snk"
+"$(SolutionDir)..\bin\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)Web.snk"
 copy *.dll ..\..\..\..\bin\
 
 :End

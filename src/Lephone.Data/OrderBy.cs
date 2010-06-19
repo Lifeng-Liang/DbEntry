@@ -102,7 +102,7 @@ namespace Lephone.Data
                     return mh.Name;
                 }
             }
-            throw new DataException("Can not find field [" + Name + "] on [" + oi.BaseType.Name + "]");
+            throw new DataException("Can not find field [" + Name + "] on [" + oi.HandleType.Name + "]");
         }
     }
 }

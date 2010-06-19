@@ -206,7 +206,7 @@ namespace Lephone.Processor
                     }
                     else if (f.IsHasOne || f.IsHasMany)
                     {
-                        var oi1 = ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
+                        var oi1 = ObjectInfo.Factory.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
                         var mh = oi1.GetBelongsTo(_type);
                         if (mh == null)
                         {
@@ -216,7 +216,7 @@ namespace Lephone.Processor
                     }
                     else if (f.IsHasAndBelongsToMany)
                     {
-                        var oi1 = ObjectInfo.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
+                        var oi1 = ObjectInfo.Factory.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
                         var mh = oi1.GetHasAndBelongsToMany(_type);
                         if (mh == null)
                         {

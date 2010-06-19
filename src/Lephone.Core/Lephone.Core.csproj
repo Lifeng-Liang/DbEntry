@@ -58,7 +58,6 @@
     <Compile Include="CountViewer.cs" />
     <Compile Include="EncodingEx.cs" />
     <Compile Include="FlyweightBase.cs" />
-    <Compile Include="ILBuilder.cs" />
     <Compile Include="Ioc\DependenceEntryAttribute.cs" />
     <Compile Include="Ioc\ImplementationAttribute.cs" />
     <Compile Include="Ioc\InjectionAttribute.cs" />

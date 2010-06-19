@@ -21,7 +21,7 @@ namespace Lephone.CodeGen
 
         public override string ToString()
         {
-            string oibtName = _oi.BaseType.Name;
+            string oibtName = _oi.HandleType.Name;
             foreach (var m in _oi.SimpleFields)
             {
                 if (m.IsKey)

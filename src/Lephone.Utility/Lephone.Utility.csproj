@@ -75,7 +75,7 @@
 goto End
 :Release
 
-"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)Utility.snk"
+"$(SolutionDir)..\bin\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)Utility.snk"
 copy *.dll ..\..\..\..\bin\
 
 :End

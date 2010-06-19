@@ -102,7 +102,7 @@ namespace Lephone.UnitTest.Data.Inner
         public void TestBaseType()
         {
             ObjectInfo oi = ObjectInfo.GetInstance(typeof(People));
-            Assert.AreEqual("People", oi.BaseType.Name);
+            Assert.AreEqual("People", oi.HandleType.Name);
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace Lephone.UnitTest.Data.Inner
         {
             Type t = new People().GetType();
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            Assert.AreEqual("People", oi.BaseType.Name);
+            Assert.AreEqual("People", oi.HandleType.Name);
         }
 
         [Test]

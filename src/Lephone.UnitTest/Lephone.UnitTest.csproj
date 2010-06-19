@@ -238,8 +238,7 @@
 goto End
 :Release
 
-"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)"
-copy *.dll ..\..\..\..\bin\
+"$(SolutionDir)..\bin\Lephone.Processor" "$(TargetPath)"
 
 :End
 </PostBuildEvent>

@@ -80,7 +80,7 @@ namespace Lephone.Data.Linq
 
             var exNew = (NewExpression) ex.Body;
             var type = exNew.Constructor.DeclaringType;
-            var handler = DynamicLinqObjectHandler.GetInstance(type);
+            var handler = DynamicLinqObjectHandler.Factory.GetInstance(type);
             if(handler.IsJarNotInitialized)
             {
                 var list = new List<string>(exNew.Arguments.Count);

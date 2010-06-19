@@ -6,8 +6,6 @@ using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
 using Lephone.Core;
 using Lephone.Core.Logging;
-using Lephone.Core.Setting;
-using Lephone.Core.Text;
 
 namespace Lephone.Data.Common
 {
@@ -17,10 +15,10 @@ namespace Lephone.Data.Common
         {
             if(dbObjectType.Name.StartsWith("<"))
             {
-                return DynamicLinqObjectHandler.GetInstance(dbObjectType).CreateObject(dr, useIndex);
+                return DynamicLinqObjectHandler.Factory.GetInstance(dbObjectType).CreateObject(dr, useIndex);
             }
 
-            var oi = GetInstance(dbObjectType);
+            var oi = Factory.GetInstance(dbObjectType);
             object obj = oi.NewObject();
             var sudi = obj as DbObjectSmartUpdate;
             if (sudi != null)
@@ -46,14 +44,14 @@ namespace Lephone.Data.Common
 
         public static FromClause GetFromClause(Type dbObjectType)
         {
-            ObjectInfo oi = GetInstance(dbObjectType);
+            ObjectInfo oi = Factory.GetInstance(dbObjectType);
             return oi.From;
         }
 
         public static Condition GetKeyWhereClause(object obj)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = GetInstance(t);
+            ObjectInfo oi = Factory.GetInstance(t);
             if (oi.KeyFields == null)
             {
                 throw new DataException("dbobject not define key field : " + t);
@@ -70,7 +68,7 @@ namespace Lephone.Data.Common
         public static void SetKey(object obj, object key)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = GetInstance(t);
+            ObjectInfo oi = Factory.GetInstance(t);
             if (!oi.HasSystemKey)
             {
                 throw new DataException("dbobject not define SystemGeneration key field : " + t);
@@ -96,7 +94,7 @@ namespace Lephone.Data.Common
 
         internal static MemberHandler GetKeyField(Type tt)
         {
-            var oi = GetSimpleInstance(tt);
+            var oi = Factory.GetSimpleInstance(tt);
             if (oi.KeyFields.Length > 0)
             {
                 return oi.KeyFields[0];
@@ -104,94 +102,11 @@ namespace Lephone.Data.Common
             return null;
         }
 
-        internal static FromClause GetObjectFromClause(Type dbObjectType)
-        {
-            var userType = dbObjectType.Name.StartsWith("$") ? dbObjectType.BaseType : dbObjectType;
-            var dtas = (DbTableAttribute[]) userType.GetCustomAttributes(typeof (DbTableAttribute), false);
-            var joas = (JoinOnAttribute[]) userType.GetCustomAttributes(typeof (JoinOnAttribute), false);
-            if (dtas.Length != 0 && joas.Length != 0)
-            {
-                throw new ArgumentException(string.Format("class [{0}] defined DbTable and JoinOn. Only one allowed.",
-                                                          userType.Name));
-            }
-            if (dtas.Length == 0)
-            {
-                if (joas.Length == 0)
-                {
-                    string defaultName = NameMapper.Instance.MapName(userType.Name);
-                    return new FromClause(GetTableNameFromConfig(defaultName));
-                }
-                var jcs = new JoinClause[joas.Length];
-                for (int i = 0; i < joas.Length; i++)
-                {
-                    int n = joas[i].Index;
-                    if (n < 0)
-                    {
-                        n = i;
-                    }
-                    jcs[n] = joas[i].Joinner;
-                }
-                foreach (JoinClause jc in jcs)
-                {
-                    if (jc == null)
-                    {
-                        throw new ArgumentException(string.Format("class [{0}] JoinOnAttribute defined error.",
-                                                                  userType.Name));
-                    }
-                }
-                return new FromClause(jcs);
-            }
-            if (dtas[0].TableName == null)
-            {
-                return new FromClause(dtas[0].PartOf);
-            }
-            return new FromClause(GetTableNameFromConfig(dtas[0].TableName));
-        }
-
-        private static string GetTableNameFromConfig(string definedName)
-        {
-            return ConfigHelper.DefaultSettings.GetValue("@" + definedName, definedName);
-        }
-
         #region shortcut functions
 
         public object NewObject()
         {
             return Handler.CreateInstance();
-        }
-
-        internal MemberHandler GetBelongsTo(Type t)
-        {
-            foreach (MemberHandler mh in RelationFields)
-            {
-                if (mh.IsBelongsTo)
-                {
-                    Type st = mh.FieldType.GetGenericArguments()[0];
-                    if (st == t)
-                    {
-                        return mh;
-                    }
-                }
-            }
-            return null;
-            //throw new DbEntryException("Can't find belongs to field of type {0}", t);
-        }
-
-        internal MemberHandler GetHasAndBelongsToMany(Type t)
-        {
-            foreach (MemberHandler mh in RelationFields)
-            {
-                if (mh.IsHasAndBelongsToMany)
-                {
-                    Type st = mh.FieldType.GetGenericArguments()[0];
-                    if (st == t)
-                    {
-                        return mh;
-                    }
-                }
-            }
-            return null;
-            //throw new DbEntryException("Can't find belongs to field of type {0}", t);
         }
 
         public object GetPrimaryKeyDefaultValue()
@@ -219,7 +134,7 @@ namespace Lephone.Data.Common
         public static object CloneObject(object obj)
         {
             if (obj == null) { return null; }
-            var oi = GetInstance(obj.GetType());
+            var oi = Factory.GetInstance(obj.GetType());
             object o = oi.NewObject();
             var os = o as DbObjectSmartUpdate;
             if (os != null)
@@ -267,44 +182,18 @@ namespace Lephone.Data.Common
                     }
                     else if (f.IsHasOne || f.IsHasMany)
                     {
-                        ObjectInfo oi1 = GetInstance(f.FieldType.GetGenericArguments()[0]);
+                        ObjectInfo oi1 = Factory.GetInstance(f.FieldType.GetGenericArguments()[0]);
                         MemberHandler h1 = oi1.GetBelongsTo(oi.HandleType);
                         ho.Init(h1.Name);
                     }
                     else if (f.IsHasAndBelongsToMany)
                     {
-                        ObjectInfo oi1 = GetInstance(f.FieldType.GetGenericArguments()[0]);
+                        ObjectInfo oi1 = Factory.GetInstance(f.FieldType.GetGenericArguments()[0]);
                         MemberHandler h1 = oi1.GetHasAndBelongsToMany(oi.HandleType);
                         ho.Init(h1.Name);
                     }
                 }
             }
-        }
-
-        public IDbObjectHandler CreateDbObjectHandler(Type sourceType)
-        {
-            if(sourceType.IsGenericType)
-            {
-                switch(sourceType.Name)
-                {
-                    case "GroupByObject`1":
-                        var t = typeof(GroupbyObjectHandler<>).MakeGenericType(sourceType.GetGenericArguments());
-                        return (IDbObjectHandler)ClassHelper.CreateInstance(t);
-                    case "GroupBySumObject`2":
-                        var ts = typeof(GroupbySumObjectHandler<,>).MakeGenericType(sourceType.GetGenericArguments());
-                        return (IDbObjectHandler)ClassHelper.CreateInstance(ts);
-                    default:
-                        throw new NotSupportedException();
-                }
-            }
-            var attr = ClassHelper.GetAttribute<ModelHandlerAttribute>(sourceType, false);
-            if (attr != null)
-            {
-                var o = (EmitObjectHandlerBase)ClassHelper.CreateInstance(attr.Type);
-                o.Init(this);
-                return o;
-            }
-            throw new DataException("Can not find ObjectHandler for: {0}", sourceType.FullName);
         }
 
         #endregion

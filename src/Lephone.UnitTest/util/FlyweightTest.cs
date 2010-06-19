@@ -9,6 +9,8 @@ namespace Lephone.UnitTest.util
     {
         public class Flyweight : FlyweightBase<string, Flyweight>
         {
+            public static Flyweight Factory = new Flyweight();
+
             public static int Count;
 
             protected override Flyweight CreateInst(string t)
@@ -36,7 +38,7 @@ namespace Lephone.UnitTest.util
 
         public static void DoWork()
         {
-            Flyweight.GetInstance("test");
+            Flyweight.Factory.GetInstance("test");
         }
     }
 }

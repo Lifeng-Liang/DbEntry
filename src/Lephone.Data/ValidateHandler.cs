@@ -66,7 +66,7 @@ namespace Lephone.Data
 
             var t = obj.GetType();
             var oi = ObjectInfo.GetInstance(t);
-            string tn = oi.BaseType.Name;
+            string tn = oi.HandleType.Name;
             bool isNew = false;
             if (oi.KeyFields.Length > 0)
             {

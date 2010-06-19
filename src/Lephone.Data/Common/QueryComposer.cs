@@ -108,7 +108,7 @@ namespace Lephone.Data.Common
 
         private void SetSelectColumnsForDynamicLinqObject(SelectStatementBuilder sb, Type returnType)
         {
-            var handler = DynamicLinqObjectHandler.GetInstance(returnType);
+            var handler = DynamicLinqObjectHandler.Factory.GetInstance(returnType);
             handler.Init(Info);
             foreach (MemberHandler fi in handler.GetMembers())
             {

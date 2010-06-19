@@ -64,16 +64,6 @@ namespace Lephone.Data.Common
             {
                 return fi;
             }
-
-            public override void EmitSet(ILBuilder il)
-            {
-                il.SetField(fi);
-            }
-
-            public override void EmitGet(ILBuilder il)
-            {
-                il.LoadField(fi);
-            }
         }
 
         internal class PropertyAdapter : MemberAdapter
@@ -128,16 +118,6 @@ namespace Lephone.Data.Common
             public override MemberInfo GetMemberInfo()
             {
                 return pi;
-            }
-
-            public override void EmitSet(ILBuilder il)
-            {
-                il.CallVirtual(pi.GetSetMethod());
-            }
-
-            public override void EmitGet(ILBuilder il)
-            {
-                il.CallVirtual(pi.GetGetMethod());
             }
         }
 
@@ -200,8 +180,6 @@ namespace Lephone.Data.Common
         public abstract void SetValue(object obj, object value);
         public abstract object GetValue(object obj);
         public abstract MemberInfo GetMemberInfo();
-        public abstract void EmitSet(ILBuilder il);
-        public abstract void EmitGet(ILBuilder il);
 
         public static MemberAdapter NewObject(FieldInfo fi)
         {

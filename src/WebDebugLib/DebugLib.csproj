@@ -126,7 +126,7 @@
 goto End
 :Release
 
-"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)debuglib.snk"
+"$(SolutionDir)..\bin\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)debuglib.snk"
 
 :End
 </PostBuildEvent>

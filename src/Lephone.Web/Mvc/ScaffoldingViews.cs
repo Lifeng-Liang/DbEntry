@@ -74,7 +74,7 @@ namespace Lephone.Web.Mvc
         {
             Process(delegate(HtmlBuilder b)
                     {
-                        string cn = _oi.BaseType.Name;
+                        string cn = _oi.HandleType.Name;
                         object o = this["Item"];
                         object id = _oi.Handler.GetKeyValue(o);
                         b.h1.text(cn + " Edit").end.enter();
@@ -105,7 +105,7 @@ namespace Lephone.Web.Mvc
         {
             Process(delegate(HtmlBuilder b)
                     {
-                        string cn = _oi.BaseType.Name;
+                        string cn = _oi.HandleType.Name;
                         b.p.style("color: Green").text(Flash.Notice).end.enter().enter();
                         b.h1.text("Listing " + Inflector.Pluralize(cn)).end.enter().enter();
 
@@ -167,7 +167,7 @@ namespace Lephone.Web.Mvc
         {
             Process(delegate(HtmlBuilder b)
                     {
-                        string cn = _oi.BaseType.Name;
+                        string cn = _oi.HandleType.Name;
                         b.h1.text("New " + cn).end.enter();
                         b.form("post", UrlTo.Controller(ControllerName).Action("create")).enter();
 

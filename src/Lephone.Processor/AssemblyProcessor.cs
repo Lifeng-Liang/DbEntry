@@ -60,7 +60,7 @@ namespace Lephone.Processor
 
             if (models.Count <= 0)
             {
-                Console.WriteLine("Can not find any model!");
+                Console.WriteLine("Can not find any model to process !");
                 return;
             }
 
@@ -85,7 +85,7 @@ namespace Lephone.Processor
 
             if (models.Count <= 0)
             {
-                Console.WriteLine("Can not find any model!");
+                Console.WriteLine("Can not find any model to generate handler !");
                 return;
             }
 

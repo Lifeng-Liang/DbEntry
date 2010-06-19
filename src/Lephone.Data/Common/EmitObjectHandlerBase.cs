@@ -35,7 +35,7 @@ namespace Lephone.Data.Common
             }
         }
 
-        public void Init(ObjectInfo oi)
+        public void Init(ObjectInfoBase oi)
         {
             var ret = new List<KeyValue>();
             foreach (MemberHandler fi in oi.Fields)

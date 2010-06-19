@@ -2,15 +2,13 @@
 
 namespace Lephone.Core
 {
-    public abstract class FlyweightBase<TKey, TValue> where TValue : FlyweightBase<TKey, TValue>
+    public abstract class FlyweightBase<TKey, TValue>
     {
         protected static Dictionary<TKey, TValue> Jar = new Dictionary<TKey, TValue>();
 
-        private static readonly TValue Instance = ClassHelper.CreateInstance<TValue>();
-
-        public static TValue GetInstance(TKey t)
+        public TValue GetInstance(TKey t)
         {
-            return Instance.GetInst(t);
+            return GetInst(t);
         }
 
         protected virtual TValue GetInst(TKey tk)
