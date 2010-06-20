@@ -231,17 +231,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
-
-"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)"
-
-goto End
-:Release
-
-"$(SolutionDir)..\bin\Lephone.Processor" "$(TargetPath)"
-
-:End
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -250,4 +241,8 @@ goto End
   <Target Name="AfterBuild">
   </Target>
   -->
+  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(SolutionDir)\Lephone.MSBuild\bin\$(ConfigurationName)\Lephone.MSBuild.dll" />
+  <Target Name="AfterCompile">
+    <ProcessorTask TargetPath="$(TargetPath)" TargetDir="$(TargetDir)" ProjectPath="$(ProjectPath)" ProjectDir="$(ProjectDir)" SolutionDir="$(SolutionDir)" />
+  </Target>
 </Project>

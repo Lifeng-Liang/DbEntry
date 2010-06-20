@@ -90,17 +90,17 @@ public static class CommonExtends
 
     public static string ReadToEnd(this Stream s)
     {
-        return StringHelper.StreamReadToEnd(s);
+        return StringHelper.ReadToEnd(s);
     }
 
     public static string ReadToEnd(this Stream s, long position)
     {
-        return StringHelper.StreamReadToEnd(s, position);
+        return StringHelper.ReadToEnd(s, position);
     }
 
     public static string ReadToEnd(this StreamReader s)
     {
-        return StringHelper.StreamReadToEnd(s);
+        return StringHelper.ReadToEnd(s);
     }
 
     public static bool IsChildOf(this Type tc, Type tf)

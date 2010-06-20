@@ -375,7 +375,7 @@ namespace Lephone.Data.Dialect
             }
             if(n.Length > maxLength)
             {
-                var bytes = StringHelper.HashMD5(n);
+                var bytes = StringHelper.HashMd5(n);
                 var s = Base32StringCoding.Decode(bytes);
                 return s;
             }

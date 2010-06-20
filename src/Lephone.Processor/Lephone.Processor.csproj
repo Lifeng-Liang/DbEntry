@@ -74,6 +74,7 @@
     <Compile Include="KnownTypesHandler.cs" />
     <Compile Include="ModelHandlerGenerator.cs" />
     <Compile Include="ModelProcessor.cs" />
+    <Compile Include="ProcesssorSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyInformation.cs" />
@@ -118,12 +119,19 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
+
+copy ..\..\..\Resources\nunit.framework.dll
+copy ..\..\..\Resources\Mono.Cecil.dll
+copy ..\..\..\Resources\Mono.Cecil.Pdb.dll
+
 goto End
 
 :Release
 copy Lephone.Processor.exe ..\..\..\..\bin\
 copy Lephone.Processor.exe.config ..\..\..\..\bin\
 copy Mono.Cecil.dll ..\..\..\..\bin\
+copy ..\..\..\Resources\Mono.Cecil.Pdb.dll ..\..\..\..\bin\
+copy ..\..\..\Resources\Mono.Cecil.Mdb.dll ..\..\..\..\bin\
 
 :End
 </PostBuildEvent>

@@ -185,15 +185,18 @@
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
 
-"$(SolutionDir)Lephone.Processor\bin\Debug\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)Web.snk"
+copy Lephone.Web.dll ..\..\..\Lephone.Processor\bin\Debug\
 
 goto End
 :Release
 
-"$(SolutionDir)..\bin\Lephone.Processor" "$(TargetPath)" "$(ProjectDir)Web.snk"
 copy *.dll ..\..\..\..\bin\
 
 :End
 </PostBuildEvent>
   </PropertyGroup>
+  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(SolutionDir)\Lephone.MSBuild\bin\$(ConfigurationName)\Lephone.MSBuild.dll" />
+  <Target Name="AfterCompile">
+    <ProcessorTask TargetPath="$(TargetPath)" TargetDir="$(TargetDir)" ProjectPath="$(ProjectPath)" ProjectDir="$(ProjectDir)" SolutionDir="$(SolutionDir)" />
+  </Target>
 </Project>

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{78E98965-E774-4299-BCEC-26FB3CA8ABBB}</ProjectGuid>
+    <ProjectGuid>{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Lephone.Utility</RootNamespace>
-    <AssemblyName>Lephone.Utility</AssemblyName>
+    <RootNamespace>Lephone.MSBuild</RootNamespace>
+    <AssemblyName>Lephone.MSBuild</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,48 +30,24 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Utility.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbEnum.cs" />
-    <Compile Include="LephoneEnum.cs" />
-    <Compile Include="Logging\DatabaseLogRecorder.cs" />
-    <Compile Include="Logging\LephoneLog.cs" />
-    <Compile Include="Logging\LogToDatabase.cs" />
+    <Compile Include="ProcessorTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lephone.Core\Lephone.Core.csproj">
-      <Project>{891EAD10-3C90-4478-A695-71F5537C2AA2}</Project>
-      <Name>Lephone.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Lephone.Data\Lephone.Data.csproj">
-      <Project>{25AFD300-493A-4553-B4DC-129D3A9022A8}</Project>
-      <Name>Lephone.Data</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Utility.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
 goto End
-:Release
 
+:Release
 copy *.dll ..\..\..\..\bin\
 
 :End
@@ -84,8 +60,4 @@ copy *.dll ..\..\..\..\bin\
   <Target Name="AfterBuild">
   </Target>
   -->
-  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(SolutionDir)\Lephone.MSBuild\bin\$(ConfigurationName)\Lephone.MSBuild.dll" />
-  <Target Name="AfterCompile">
-    <ProcessorTask TargetPath="$(TargetPath)" TargetDir="$(TargetDir)" ProjectPath="$(ProjectPath)" ProjectDir="$(ProjectDir)" SolutionDir="$(SolutionDir)" />
-  </Target>
 </Project>

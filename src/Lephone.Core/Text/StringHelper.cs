@@ -189,18 +189,18 @@ namespace Lephone.Core.Text
             return name;
         }
 
-		public static string StreamReadToEnd(Stream s)
+		public static string ReadToEnd(Stream s)
 		{
-			return StreamReadToEnd( new StreamReader(s) );
+			return ReadToEnd( new StreamReader(s) );
 		}
 
-        public static string StreamReadToEnd(Stream s, long position)
+        public static string ReadToEnd(Stream s, long position)
         {
             s.Position = position;
-            return StreamReadToEnd(new StreamReader(s));
+            return ReadToEnd(new StreamReader(s));
         }
 
-        public static string StreamReadToEnd(StreamReader s)
+        public static string ReadToEnd(StreamReader s)
 		{
 			using ( s )
 			{
@@ -213,20 +213,16 @@ namespace Lephone.Core.Text
             return s[0].ToString().ToUpper() + s.Substring(1);
         }
 
-        private static readonly SHA512 hash = SHA512.Create();
-
         public static byte[] Hash(string s)
         {
             byte[] input = Encoding.Unicode.GetBytes(s);
-            return hash.ComputeHash(input);
+            return SHA512.Create().ComputeHash(input);
         }
 
-        private static readonly MD5 md5 = MD5.Create();
-
-        public static byte[] HashMD5(string s)
+        public static byte[] HashMd5(string s)
         {
             byte[] input = Encoding.Unicode.GetBytes(s);
-            return md5.ComputeHash(input);
+            return MD5.Create().ComputeHash(input);
         }
 
         public static string ProcessSymbol(string text, string left, string right,
@@ -258,6 +254,19 @@ namespace Lephone.Core.Text
                 break;
             }
             return ret.ToString();
+        }
+
+        public static string ReadToEnd(string fileName)
+        {
+            return ReadToEnd(fileName, Encoding.UTF8);
+        }
+
+        public static string ReadToEnd(string fileName, Encoding coding)
+        {
+            using(var sr = new StreamReader(fileName))
+            {
+                return sr.ReadToEnd();
+            }
         }
 	}
 }

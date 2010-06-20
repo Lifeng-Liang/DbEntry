@@ -62,6 +62,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebDebug", "WebDebug\", "{8
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
+		{78E98965-E774-4299-BCEC-26FB3CA8ABBB} = {78E98965-E774-4299-BCEC-26FB3CA8ABBB}
 		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
 	EndProjectSection
 EndProject
@@ -72,6 +73,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Web", "Lephone.Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugLib", "WebDebugLib\DebugLib.csproj", "{9293C04C-D2E7-449F-833E-6E6624DCD6F4}"
 	ProjectSection(ProjectDependencies) = postProject
+		{78E98965-E774-4299-BCEC-26FB3CA8ABBB} = {78E98965-E774-4299-BCEC-26FB3CA8ABBB}
 		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
 	EndProjectSection
 EndProject
@@ -85,6 +87,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Utility", "Lephone.
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Processor", "Lephone.Processor\Lephone.Processor.csproj", "{F44CB5CA-3328-43C3-B640-443A1A57A745}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.MSBuild", "Lephone.MSBuild\Lephone.MSBuild.csproj", "{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -242,6 +246,18 @@ Global
 		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|Mixed Platforms.Build.0 = Release|x86
 		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|x86.ActiveCfg = Release|x86
 		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Release|x86.Build.0 = Release|x86
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Release|.NET.ActiveCfg = Release|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{595F0E6C-6387-4BB0-A77C-BCB482FCDCDD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

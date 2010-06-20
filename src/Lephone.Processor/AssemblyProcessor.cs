@@ -25,7 +25,7 @@ namespace Lephone.Processor
 
         public AssemblyProcessor(string name, string sn)
         {
-            this._oldName = name + ".bak";
+            this._oldName = name.Substring(0, name.Length - 4) + ".bak";
             this._name = name;
             this._sn = sn;
         }
@@ -54,7 +54,12 @@ namespace Lephone.Processor
 
         private void ProcessAssembly()
         {
-            var module = ModuleDefinition.ReadModule(_oldName);
+            var module = ModuleDefinition.ReadModule(
+                _oldName, new ReaderParameters
+                              {
+                                  ReadSymbols = true,
+                                  SymbolReaderProvider = ProcesssorSettings.GetSymbolReaderProvider()
+                              });
 
             var models = GetAllModels(module);
 
@@ -78,7 +83,12 @@ namespace Lephone.Processor
 
         private void GenerateModelHandler()
         {
-            var module = ModuleDefinition.ReadModule(_oldName);
+            var module = ModuleDefinition.ReadModule(
+                _oldName, new ReaderParameters
+                              {
+                                  ReadSymbols = true,
+                                  SymbolReaderProvider = ProcesssorSettings.GetSymbolReaderProvider()
+                              });
 
             var assembly = Assembly.LoadFrom(_oldName);
             var models = DbEntry.GetAllModels(assembly);
@@ -107,15 +117,21 @@ namespace Lephone.Processor
 
         private void WriteAssembly(ModuleDefinition module, string name)
         {
+            var args = new WriterParameters
+                           {
+                               WriteSymbols = true,
+                               SymbolWriterProvider = ProcesssorSettings.GetSymbolWriterProvider(),
+                           };
             if (_sn.IsNullOrEmpty())
             {
-                module.Write(name);
+                module.Write(name, args);
             }
             else
             {
                 using(var s = new FileStream(_sn, FileMode.Open, FileAccess.Read))
                 {
-                    module.Write(name, new WriterParameters { StrongNameKeyPair = new StrongNameKeyPair(s) });
+                    args.StrongNameKeyPair = new StrongNameKeyPair(s);
+                    module.Write(name, args);
                 }
             }
         }
@@ -163,7 +179,7 @@ namespace Lephone.Processor
             {
                 return true;
             }
-            if(t.FullName == KnownTypesHandler.Object)
+            if(t.FullName == KnownTypesHandler.Object || t.BaseType.Namespace.ToLower().StartsWith("nunit."))
             {
                 return false;
             }

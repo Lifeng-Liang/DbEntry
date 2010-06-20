@@ -20,11 +20,5 @@ namespace DebugLib.Models
         public bool Read { get; set; }
         [SpecialName] public DateTime CreatedOn { get; set; }
         [SpecialName] public DateTime? UpdatedOn { get; set; }
-
-        [Exclude]
-        public string MyMy { get; set; }
-
-        [BelongsTo]
-        public SysUser User { get; set; }
     }
 }
