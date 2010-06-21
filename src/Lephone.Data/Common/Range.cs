@@ -5,11 +5,11 @@ namespace Lephone.Data.Common
 	[Serializable]
 	public class Range
 	{
-        internal long StartIndex = -1;
-        internal long EndIndex = -1;
+        public long StartIndex = -1;
+        public long EndIndex = -1;
 
-        internal long Offset = -1;
-        internal long Rows = -1;
+        public long Offset = -1;
+        public long Rows = -1;
 
         public Range(long startIndex, long endIndex)
 		{
