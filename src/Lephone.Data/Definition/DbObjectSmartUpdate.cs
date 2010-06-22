@@ -30,28 +30,30 @@ namespace Lephone.Data.Definition
             }
         }
 
-        public XmlSchema GetSchema()
+        XmlSchema IXmlSerializable.GetSchema()
         {
-            //var info = ObjectInfo.GetInstance(this.GetType());
-            //var xs = new XmlSchema();
-            //var xct = new XmlSchemaComplexType { Name = "DbObject" };
-            //var xss = new XmlSchemaSequence();
-            //foreach (MemberHandler mh in info.SimpleFields)
-            //{
-            //    var xe = new XmlSchemaElement
-            //                 {
-            //                     Name = mh.MemberInfo.Name,
-            //                     SchemaType = XmlSchemaType.GetBuiltInSimpleType(XmlTypeCode.Int)
-            //                 };
-            //    xss.Items.Add(xe);
-            //}
-            //xct.Particle = xss;
-            //xs.Items.Add(xct);
-            //return xs;
-            return null;
+            var info = ObjectInfo.GetInstance(this.GetType());
+            var xs = new XmlSchema();
+
+            var el = new XmlSchemaElement {Name = info.HandleType.Name};
+            var xct = new XmlSchemaComplexType();
+            var xss = new XmlSchemaSequence();
+            foreach (MemberHandler mh in info.SimpleFields)
+            {
+                var xe = new XmlSchemaElement
+                             {
+                                 Name = mh.MemberInfo.Name,
+                                 SchemaType = XmlSchemaTypeParser.GetSchemaType(mh.FieldType),
+                             };
+                xss.Items.Add(xe);
+            }
+            xct.Particle = xss;
+            el.SchemaType = xct;
+            xs.Items.Add(el);
+            return xs;
         }
 
-        public void ReadXml(System.Xml.XmlReader reader)
+        void IXmlSerializable.ReadXml(System.Xml.XmlReader reader)
         {
             var oi = ObjectInfo.GetInstance(GetType());
             reader.ReadStartElement();
@@ -64,7 +66,7 @@ namespace Lephone.Data.Definition
             reader.ReadEndElement();
         }
 
-        public void WriteXml(System.Xml.XmlWriter writer)
+        void IXmlSerializable.WriteXml(System.Xml.XmlWriter writer)
         {
             var oi = ObjectInfo.GetInstance(GetType());
             foreach (MemberHandler mh in oi.SimpleFields)

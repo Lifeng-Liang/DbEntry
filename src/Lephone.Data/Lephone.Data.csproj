@@ -136,7 +136,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\ObjectInfoBase.cs" />
     <Compile Include="Common\ObjectInfoFactory.cs" />
     <Compile Include="Common\TimeSpanLessDataReader.cs" />
-    <Compile Include="DataReaderEmitHelper.cs" />
+    <Compile Include="Common\XmlSchemaTypeParser.cs" />
     <Compile Include="Definition\CacheableAttribute.cs" />
     <Compile Include="Common\DynamicObjectReference.cs" />
     <Compile Include="Common\EmitObjectHandlerBase.cs" />

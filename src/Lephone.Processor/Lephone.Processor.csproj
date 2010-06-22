@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="ArgsErrorException.cs" />
     <Compile Include="AssemblyProcessor.cs" />
+    <Compile Include="DataReaderEmitHelper.cs" />
     <Compile Include="IlBuilder.cs" />
     <Compile Include="KnownTypesHandler.cs" />
     <Compile Include="ModelHandlerGenerator.cs" />

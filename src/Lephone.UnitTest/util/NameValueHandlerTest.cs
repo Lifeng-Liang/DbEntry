@@ -14,18 +14,20 @@ namespace Lephone.UnitTest.util
         [Test]
         public void Test1()
         {
-            NameValueSectionHandler h = new NameValueSectionHandler();
+            var h = new NameValueSectionHandler();
             string s = ResourceHelper.ReadToEnd(this.GetType(), "UnitTest.config.xml");
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 byte[] bs = Encoding.Default.GetBytes(s);
                 ms.Write(bs, 0, bs.Length);
                 ms.Flush();
                 ms.Position = 0;
-                XmlDocument xd = new XmlDocument();
+                var xd = new XmlDocument();
                 xd.Load(ms);
 
-                NameValueCollection l = (NameValueCollection)h.Create(null, null, xd["configuration"].ChildNodes[1]);
+                var config = xd["configuration"];
+                Assert.IsNotNull(config);
+                var l = (NameValueCollection)h.Create(null, null, config.ChildNodes[1]);
                 Assert.AreEqual("Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core", l["SqlLogRecorder"]);
                 Assert.AreEqual("@Access : @~test.mdb", l["1.DataBase"]);
             }

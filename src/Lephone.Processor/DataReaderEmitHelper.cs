@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 
-namespace Lephone.Data
+namespace Lephone.Processor
 {
     internal class DataReaderEmitHelper
     {

@@ -1,6 +1,4 @@
-﻿using System;
-using Lephone.Data.Common;
-using Lephone.UnitTest.Data.Objects;
+﻿using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data

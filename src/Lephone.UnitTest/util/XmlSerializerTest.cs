@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 using Lephone.Data.Definition;
 using Lephone.Core.Text;
@@ -68,6 +72,52 @@ namespace Lephone.UnitTest.util
 
             var f = XmlSerializer<Sitex>.Xml.Deserialize(c2);
             Assert.AreEqual("ddd", f.Url);
+        }
+
+        [Test]
+        public void TestSitexSchema()
+        {
+            var s = new Sitex {Url = "ddd"};
+            string c2 = XmlSerializer<Sitex>.Xml.Serialize(s);
+            var schema = ((IXmlSerializable)s).GetSchema();
+            var set = new XmlSchemaSet();
+            set.Add(schema);
+            var reader = XmlReader.Create(
+                new MemoryStream(Encoding.Default.GetBytes(c2)),
+                new XmlReaderSettings { ValidationType = ValidationType.Schema, Schemas = set });
+            while (reader.Read())
+            {
+            }
+        }
+
+        [Test]
+        public void TestSitexSchema2()
+        {
+            const string ss = @"<?xml version=""1.0""?>
+<xs:schema xmlns:xs=""http://www.w3.org/2001/XMLSchema"">
+
+<xs:element name=""Sitex"">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name=""Id"" type=""xs:long""/>
+      <xs:element name=""Url"" type=""xs:string""/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>";
+            var schema = XmlSchema.Read(new MemoryStream(Encoding.Default.GetBytes(ss)), null);
+
+            var s = new Sitex { Url = "ddd" };
+            string c2 = XmlSerializer<Sitex>.Xml.Serialize(s);
+            var set = new XmlSchemaSet();
+            set.Add(schema);
+            var reader = XmlReader.Create(
+                new MemoryStream(Encoding.Default.GetBytes(c2)),
+                new XmlReaderSettings { ValidationType = ValidationType.Schema, Schemas = set });
+            while (reader.Read())
+            {
+            }
         }
     }
 }
