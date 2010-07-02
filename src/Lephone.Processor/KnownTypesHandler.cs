@@ -40,6 +40,8 @@ namespace Lephone.Processor
         public static readonly string SpecialNameAttribute = typeof(SpecialNameAttribute).FullName;
         public static readonly string DbObjectInterface = typeof(IDbObject).FullName;
         public static readonly string AssemblyProcessed = typeof(AssemblyProcessed).FullName;
+        public static readonly string DbObjectModel1 = typeof(DbObjectModel<>).FullName;
+        public static readonly string DbObjectModel2 = typeof(DbObjectModel<,>).FullName;
 
         private static readonly Dictionary<string, FieldType> RelationAttributes;
         private static readonly Dictionary<string, FieldType> Relations;

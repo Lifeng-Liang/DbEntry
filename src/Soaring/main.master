@@ -1,0 +1,38 @@
+﻿<%@ Master Language="C#" Inherits="Lephone.Web.Mvc.MasterPageBase" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<script runat="server">
+</script>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <link href="/Soaring/themes/base/jquery.ui.all.css" type="text/css" rel="Stylesheet" />
+    <link href="/Soaring/styles/scaffolding.css" type="text/css" rel="Stylesheet" />
+    <link href="/Soaring/styles/studio.css" type="text/css" rel="Stylesheet" />
+    <script src="/Soaring/scripts/jquery-1.4.2.min.js" type="text/javascript"></script>
+    <script src="/Soaring/scripts/jquery-ui-1.8.1.custom.min.js" type="text/javascript"></script>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <div class="banner">
+    </div>
+    <div class="header">
+        <div id="navigator"> | 
+            <%= LinkTo.Controller("workitem").Action("new").Title("New") %> | 
+        </div>
+        <div id="oprator"> | 
+            <%= LinkTo.Controller("workitem").Title("List") %> | 
+            <%= LinkTo.Controller("workitem").Action("grid").Title("Grid") %> | 
+        </div>
+    </div>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+    </asp:ContentPlaceHolder>
+    <div class="footer">
+        版权所有 &copy; <a href="http://llf.hanzify.org">点睛工作室</a>·梁利锋 1999～<%=DateTime.Now.Year%> 所有权力保留<br />
+        Powered By <a href="http://dbentry.codeplex.com/">DbEntry.Net</a> :)
+    </div>
+</body>
+</html>

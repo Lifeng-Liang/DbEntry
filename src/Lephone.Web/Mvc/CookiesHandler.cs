@@ -21,7 +21,7 @@ namespace Lephone.Web.Mvc
             }
         }
 
-        private void SetCookies(HttpCookie c, string value, bool throwException)
+        private static void SetCookies(HttpCookie c, string value, bool throwException)
         {
             if (c == null)
             {

@@ -10,7 +10,6 @@ using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.CreateTable;
 using Lephone.UnitTest.Data.Objects;
 using Lephone.Core.Logging;
-using Lephone.Core.Text;
 using Lephone.Utility;
 using Lephone.Utility.Logging;
 using NUnit.Framework;
@@ -124,6 +123,17 @@ namespace Lephone.UnitTest.Data
         [DbColumn("FirstName")]
         public string Name { get; set; }
         public int Age { get; set; }
+    }
+
+    public abstract class Contentable<T> : DbObjectModel<T> where T : Contentable<T>
+    {
+        public string Content { get; set; }
+    }
+
+    [DbContext("SQLite")]
+    public class WithContent : Contentable<WithContent>
+    {
+        public string Name { get; set; }
     }
 
     #endregion
@@ -592,7 +602,7 @@ namespace Lephone.UnitTest.Data
         public void TestMkeyForUpdate()
         {
             var p = new MKEY { FirstName = "test", LastName = "next", Age = 11 };
-            sqlite.Update(p);
+            Sqlite.Update(p);
             AssertSql(@"UPDATE [MKEY] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
 <Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)");
         }
@@ -600,7 +610,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLowerFunction()
         {
-            sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower() == "tom").Select();
+            Sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower() == "tom").Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE LOWER([Name]) = @Name_0;
 <Text><60>(@Name_0=tom:String)");
         }
@@ -608,7 +618,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLowerForLike()
         {
-            sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower().Like("%tom%")).Select();
+            Sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower().Like("%tom%")).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE LOWER([Name]) LIKE @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
@@ -616,7 +626,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpperFunction()
         {
-            sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper() == "tom").Select();
+            Sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper() == "tom").Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE UPPER([Name]) = @Name_0;
 <Text><60>(@Name_0=tom:String)");
         }
@@ -624,7 +634,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpperForLike()
         {
-            sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper().Like("%tom%")).Select();
+            Sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper().Like("%tom%")).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE UPPER([Name]) LIKE @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
@@ -632,7 +642,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMax()
         {
-            sqlite.From<SinglePerson>().Where(Condition.Empty).GetMax("Id");
+            Sqlite.From<SinglePerson>().Where(Condition.Empty).GetMax("Id");
             AssertSql(@"SELECT MAX([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
@@ -646,7 +656,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMin()
         {
-            sqlite.From<SinglePerson>().Where(Condition.Empty).GetMin("Id");
+            Sqlite.From<SinglePerson>().Where(Condition.Empty).GetMin("Id");
             AssertSql(@"SELECT MIN([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
@@ -661,7 +671,7 @@ namespace Lephone.UnitTest.Data
         public void TestMaxDate()
         {
             StaticRecorder.CurRow.Add(new RowInfo(new DateTime()));
-            sqlite.From<DateAndTime>().Where(Condition.Empty).GetMaxDate("dtValue");
+            Sqlite.From<DateAndTime>().Where(Condition.Empty).GetMaxDate("dtValue");
             AssertSql(@"SELECT MAX([dtValue]) AS [dtValue] FROM [DateAndTime];
 <Text><60>()");
 
@@ -676,7 +686,7 @@ namespace Lephone.UnitTest.Data
         public void TestMinDate()
         {
             StaticRecorder.CurRow.Add(new RowInfo(new DateTime()));
-            sqlite.From<DateAndTime>().Where(Condition.Empty).GetMinDate("dtValue");
+            Sqlite.From<DateAndTime>().Where(Condition.Empty).GetMinDate("dtValue");
             AssertSql(@"SELECT MIN([dtValue]) AS [dtValue] FROM [DateAndTime];
 <Text><60>()");
 
@@ -690,7 +700,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSum()
         {
-            sqlite.From<SinglePerson>().Where(Condition.Empty).GetSum("Id");
+            Sqlite.From<SinglePerson>().Where(Condition.Empty).GetSum("Id");
             AssertSql(@"SELECT SUM([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
@@ -738,7 +748,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGroupbySum()
         {
-            sqlite.From<SinglePerson>().Where(Condition.Empty).GroupBySum<string, long>("Name", "Id");
+            Sqlite.From<SinglePerson>().Where(Condition.Empty).GroupBySum<string, long>("Name", "Id");
             AssertSql(@"SELECT [Name],SUM([Id]) AS [Id] FROM [People] GROUP BY [Name];
 <Text><60>()");
 
@@ -755,7 +765,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInClause()
         {
-            sqlite.From<SinglePerson>().Where(CK.K["Id"].In(1, 3, 5, 7)).Select();
+            Sqlite.From<SinglePerson>().Where(CK.K["Id"].In(1, 3, 5, 7)).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (1,3,5,7);
 <Text><60>()");
         }
@@ -831,6 +841,26 @@ Select * From PCs Order By Id;");
             Assert.AreEqual(3, set[1].Count);
             Assert.AreEqual("Tom", set[0][0].Name);
             Assert.AreEqual("IBM", set[1][0].Name);
+        }
+
+        [Test]
+        public void TestWithContent()
+        {
+            var c = new WithContent {Name = "tom", Content = "test"};
+            c.Save();
+            AssertSql(@"INSERT INTO [With_Content] ([Name],[Content]) VALUES (@Name_0,@Content_1);
+SELECT LAST_INSERT_ROWID();
+<Text><30>(@Name_0=tom:String,@Content_1=test:String)");
+
+            c.Name = "jerry";
+            c.Save();
+            AssertSql(string.Format(@"UPDATE [With_Content] SET [Name]=@Name_0  WHERE [Id] = @Id_1;
+<Text><30>(@Name_0=jerry:String,@Id_1={0}:Int64)", c.Id));
+
+            c.Content = "update";
+            c.Save();
+            AssertSql(string.Format(@"UPDATE [With_Content] SET [Content]=@Content_0  WHERE [Id] = @Id_1;
+<Text><30>(@Content_0=update:String,@Id_1={0}:Int64)", c.Id));
         }
     }
 }

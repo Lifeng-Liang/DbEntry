@@ -266,7 +266,7 @@ namespace Lephone.Web
             {
                 return null;
             }
-            throw new WebException(string.Format("The action {0} don't have view file!!!", actionName));
+            throw new WebException(string.Format("The action {0} doesn't have view file!!!", actionName));
         }
 
         protected static Type GetScaffoldingType(Type t)

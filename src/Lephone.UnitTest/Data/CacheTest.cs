@@ -350,22 +350,22 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLazyLoadColumn2()
         {
-            ClassHelper.CallFunction(sqlite, "TryCreateTable", typeof (LazyableSqlite));
+            ClassHelper.CallFunction(Sqlite, "TryCreateTable", typeof (LazyableSqlite));
             StaticRecorder.ClearMessages();
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Id", typeof(long), 2L));
             StaticRecorder.CurRow.Add(new RowInfo("Person_Id", typeof(int), 2));
 
-            var o1 = sqlite.GetObject<LazyableSqlite>(2);
+            var o1 = Sqlite.GetObject<LazyableSqlite>(2);
             Assert.AreEqual(2, o1.TestColumn);
 
-            var o2 = sqlite.GetObject<LazyableSqlite>(2);
+            var o2 = Sqlite.GetObject<LazyableSqlite>(2);
             Assert.AreEqual(2, o2.TestColumn);
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));
             Assert.AreEqual("IBM", o2.Content);
 
-            var o3 = sqlite.GetObject<LazyableSqlite>(2);
+            var o3 = Sqlite.GetObject<LazyableSqlite>(2);
             Assert.AreEqual(2, o3.TestColumn);
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));

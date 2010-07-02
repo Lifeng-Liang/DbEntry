@@ -152,12 +152,22 @@ namespace Lephone.Processor
 
         public IlBuilder LoadField(FieldReference fi)
         {
+            if(fi.DeclaringType.HasGenericParameters)
+            {
+                var test = TypeHelper.MakeGenericType(fi.DeclaringType, fi.DeclaringType.GenericParameters[0]);
+                fi = new FieldReference(fi.Name, fi.FieldType) {DeclaringType = test};
+            }
             _list.Add(_il.Create(OpCodes.Ldfld, fi));
             return this;
         }
 
         public IlBuilder SetField(FieldReference fi)
         {
+            if (fi.DeclaringType.HasGenericParameters)
+            {
+                var test = TypeHelper.MakeGenericType(fi.DeclaringType, fi.DeclaringType.GenericParameters[0]);
+                fi = new FieldReference(fi.Name, fi.FieldType) { DeclaringType = test };
+            }
             _list.Add(_il.Create(OpCodes.Stfld, fi));
             return this;
         }

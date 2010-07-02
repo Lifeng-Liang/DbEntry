@@ -7,7 +7,7 @@ namespace Lephone.UnitTest
 {
     public class SqlTestBase
     {
-        protected readonly DbContext sqlite = EntryConfig.NewContext("SQLite");
+        protected readonly DbContext Sqlite = EntryConfig.NewContext("SQLite");
 
         [SetUp]
         public void SetUp()
@@ -29,6 +29,7 @@ namespace Lephone.UnitTest
         protected static void AssertSql(string sql)
         {
             Assert.AreEqual(sql.Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+            StaticRecorder.ClearMessages();
         }
     }
 }

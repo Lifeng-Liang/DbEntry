@@ -96,7 +96,6 @@ namespace Lephone.Processor
             if (models.Count <= 0)
             {
                 Console.WriteLine("Can not find any model to generate handler !");
-                return;
             }
 
             var handler = new KnownTypesHandler(module);
@@ -104,7 +103,7 @@ namespace Lephone.Processor
             foreach (var type in models)
             {
                 Console.WriteLine(type.FullName);
-                var model = module.GetType(type.FullName);
+                var model = module.GetType(type.FullName.Replace('+', '/'));
                 var generator = new ModelHandlerGenerator(type, model, handler);
                 var mh = generator.Generate();
                 module.Types.Add(mh);
@@ -150,14 +149,11 @@ namespace Lephone.Processor
             {
                 foreach (var type in types)
                 {
-                    if (!type.IsGenericInstance && !type.IsAbstract)
+                    if (IsModel(type))
                     {
-                        if (IsModel(type))
-                        {
-                            ts.Add(type);
-                        }
-                        CollectModel(ts, type.NestedTypes);
+                        ts.Add(type);
                     }
+                    CollectModel(ts, type.NestedTypes);
                 }
             }
         }
@@ -175,15 +171,29 @@ namespace Lephone.Processor
                     return true;
                 }
             }
-            if(t.FullName == KnownTypesHandler.DbObjectSmartUpdate)
+            if (t.FullName == KnownTypesHandler.DbObjectSmartUpdate)
             {
                 return true;
             }
-            if(t.FullName == KnownTypesHandler.Object || t.BaseType.Namespace.ToLower().StartsWith("nunit."))
+            if (t.FullName == KnownTypesHandler.Object || t.BaseType == null || t.BaseType.Namespace.ToLower().StartsWith("nunit."))
             {
                 return false;
             }
-            return IsModel(t.BaseType.Resolve());
+
+            var baseType = t.BaseType;
+            if (baseType.FullName.StartsWith(KnownTypesHandler.DbObjectModel1))
+            {
+                return true;
+            }
+            if (baseType.FullName.StartsWith(KnownTypesHandler.DbObjectModel2))
+            {
+                return true;
+            }
+            if (baseType.FullName == KnownTypesHandler.DbObjectSmartUpdate)
+            {
+                return true;
+            }
+            return IsModel(baseType.Resolve());
         }
     }
 }

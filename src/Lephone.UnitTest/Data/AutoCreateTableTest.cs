@@ -282,7 +282,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPartOf()
         {
-            sqlite.From<DtPart>().Where(Condition.Empty).Select();
+            Sqlite.From<DtPart>().Where(Condition.Empty).Select();
             AssertSql(@"SELECT [Id],[dtValue] FROM [DateAndTime];
 <Text><60>()");
         }

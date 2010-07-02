@@ -101,7 +101,10 @@ namespace Lephone.Processor
                     ProcessGenericPropertyInConstructor(pi, processor);
                 }
             }
-            processor.LoadArg(0).Call(_handler.InitUpdateColumns);
+            if (!_model.IsAbstract)
+            {
+                processor.LoadArg(0).Call(_handler.InitUpdateColumns);
+            }
             var target = GetCallBaseCtor(constructor);
             processor.InsertAfter(target);
         }

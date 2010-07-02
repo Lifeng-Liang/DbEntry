@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Lephone.Core;
@@ -215,7 +216,12 @@ public static class CommonExtends
 
     public static bool IsNullOrEmpty(this string s)
     {
-        return string.IsNullOrEmpty(s);
+        return s == null || s.Trim() == string.Empty;
+    }
+
+    public static bool IsNullOrEmpty(this ICollection list)
+    {
+        return list == null || list.Count <= 0;
     }
 
     public static void Initalize(this Type type)

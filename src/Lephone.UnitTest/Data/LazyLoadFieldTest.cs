@@ -79,14 +79,14 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreate()
         {
-            sqlite.Create(typeof(lzUser));
+            Sqlite.Create(typeof(lzUser));
             Assert.AreEqual("CREATE TABLE [lz_User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Profile] NTEXT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestCreate1()
         {
-            sqlite.Create(typeof(lzpUser1));
+            Sqlite.Create(typeof(lzpUser1));
             Assert.AreEqual("CREATE TABLE [User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[MyTest] VARCHAR (10) NULL \n);\nCREATE UNIQUE INDEX [IX_User_test] ON [User] ([MyTest] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
@@ -103,7 +103,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRead()
         {
-            sqlite.GetObject<lzUser>(1);
+            Sqlite.GetObject<lzUser>(1);
             Assert.AreEqual("SELECT [Id],[Name] FROM [lz_User] WHERE [Id] = @Id_0;\n<Text><60>(@Id_0=1:Int32)", StaticRecorder.LastMessage);
         }
 
@@ -111,7 +111,7 @@ namespace Lephone.UnitTest.Data
         public void TestInsert()
         {
             var u = new lzUser {Name = "tom", Profile = "test"};
-            sqlite.Insert(u);
+            Sqlite.Insert(u);
             Assert.AreEqual("INSERT INTO [lz_User] ([Name],[Profile]) VALUES (@Name_0,@Profile_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String,@Profile_1=test:String)", StaticRecorder.LastMessage);
         }
 
@@ -207,7 +207,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLazyLoadFieldForCondition2()
         {
-            sqlite.From<lzpUser>().Where(p => p.Profile == "test").Select();
+            Sqlite.From<lzpUser>().Where(p => p.Profile == "test").Select();
             AssertSql("SELECT [Id],[Name] FROM [lzp_User] WHERE [Profile] = @Profile_0;\n<Text><60>(@Profile_0=test:String)");
         }
     }

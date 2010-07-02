@@ -10,7 +10,8 @@ namespace Lephone.Web
         protected override void OnLoad(EventArgs e)
         {
             var t = GetType();
-            var flag = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            const BindingFlags flag = BindingFlags.DeclaredOnly 
+                | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             foreach (var fieldInfo in t.GetFields(flag))
             {
                 var attr = ClassHelper.GetAttribute<HttpParameterAttribute>(fieldInfo, false);
