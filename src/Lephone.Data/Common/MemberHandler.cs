@@ -208,7 +208,7 @@ namespace Lephone.Data.Common
                     if (fn == null)
                     {
                         Type ot = fi.MemberType.GetGenericArguments()[0];
-                        string n = ObjectInfo.GetObjectFromClause(ot).MainTableName;
+                        string n = ObjectInfoBase.GetObjectFromClause(ot).MainTableName;
                         Name = NameMapper.Instance.UnmapName(n) + "_Id";
                     }
                 }
@@ -224,7 +224,7 @@ namespace Lephone.Data.Common
                     if (fn == null)
                     {
                         Type ot1 = fi.MemberType.GetGenericArguments()[0];
-                        string n1 = ObjectInfo.GetObjectFromClause(ot1).MainTableName;
+                        string n1 = ObjectInfoBase.GetObjectFromClause(ot1).MainTableName;
                         Name = NameMapper.Instance.UnmapName(n1) + "_Id";
                     }
                 }

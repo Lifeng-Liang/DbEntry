@@ -5,9 +5,21 @@ namespace Lephone.Processor
 {
     public class PropertyInformation
     {
-        public PropertyDefinition PropertyDefinition;
         public FieldType FieldType;
         public FieldDefinition FieldDefinition;
+        public string ColumnName;
+
+        private PropertyDefinition _propertyDefinition;
+
+        public PropertyDefinition PropertyDefinition
+        {
+            get { return _propertyDefinition; }
+            set
+            {
+                ColumnName = value.GetColumnName();
+                _propertyDefinition = value;
+            }
+        }
 
         public bool IsHasOne
         {

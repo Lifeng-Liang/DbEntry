@@ -154,7 +154,7 @@ namespace Lephone.Processor
         {
             if(fi.DeclaringType.HasGenericParameters)
             {
-                var test = TypeHelper.MakeGenericType(fi.DeclaringType, fi.DeclaringType.GenericParameters[0]);
+                var test = TypeHelper.MakeGenericType(fi.DeclaringType, fi.DeclaringType.GenericParameters.ToArray());
                 fi = new FieldReference(fi.Name, fi.FieldType) {DeclaringType = test};
             }
             _list.Add(_il.Create(OpCodes.Ldfld, fi));
@@ -165,7 +165,7 @@ namespace Lephone.Processor
         {
             if (fi.DeclaringType.HasGenericParameters)
             {
-                var test = TypeHelper.MakeGenericType(fi.DeclaringType, fi.DeclaringType.GenericParameters[0]);
+                var test = TypeHelper.MakeGenericType(fi.DeclaringType, fi.DeclaringType.GenericParameters.ToArray());
                 fi = new FieldReference(fi.Name, fi.FieldType) { DeclaringType = test };
             }
             _list.Add(_il.Create(OpCodes.Stfld, fi));

@@ -278,19 +278,18 @@ namespace Lephone.Data.Common
 
         internal static FromClause GetObjectFromClause(Type dbObjectType)
         {
-            var userType = dbObjectType.Name.StartsWith("$") ? dbObjectType.BaseType : dbObjectType;
-            var dtas = (DbTableAttribute[])userType.GetCustomAttributes(typeof(DbTableAttribute), false);
-            var joas = (JoinOnAttribute[])userType.GetCustomAttributes(typeof(JoinOnAttribute), false);
+            var dtas = (DbTableAttribute[])dbObjectType.GetCustomAttributes(typeof(DbTableAttribute), false);
+            var joas = (JoinOnAttribute[])dbObjectType.GetCustomAttributes(typeof(JoinOnAttribute), false);
             if (dtas.Length != 0 && joas.Length != 0)
             {
                 throw new ArgumentException(string.Format("class [{0}] defined DbTable and JoinOn. Only one allowed.",
-                                                          userType.Name));
+                                                          dbObjectType.Name));
             }
             if (dtas.Length == 0)
             {
                 if (joas.Length == 0)
                 {
-                    string defaultName = NameMapper.Instance.MapName(userType.Name);
+                    string defaultName = NameMapper.Instance.MapName(dbObjectType.Name);
                     return new FromClause(GetTableNameFromConfig(defaultName));
                 }
                 var jcs = new JoinClause[joas.Length];
@@ -308,7 +307,7 @@ namespace Lephone.Data.Common
                     if (jc == null)
                     {
                         throw new ArgumentException(string.Format("class [{0}] JoinOnAttribute defined error.",
-                                                                  userType.Name));
+                                                                  dbObjectType.Name));
                     }
                 }
                 return new FromClause(jcs);

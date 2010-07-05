@@ -49,7 +49,7 @@ namespace Lephone.Processor
 
         private void ProcessSerializable()
         {
-            if(_model.IsSerializable)
+            if(_model.IsSerializable && !_model.IsAbstract)
             {
                 _model.Interfaces.Add(_handler.SerializableInterface);
                 var method = new MethodDefinition("System.Runtime.Serialization.ISerializable.GetObjectData", FlagGetObjectData, _handler.VoidType);
@@ -305,7 +305,7 @@ namespace Lephone.Processor
         private void ProcessPropertySetCallUpdateColumn(PropertyInformation pi, IlBuilder processor)
         {
             processor.LoadArg(0);
-            processor.LoadString(pi.PropertyDefinition.GetColumnName());
+            processor.LoadString(pi.ColumnName);
             processor.Call(_handler.ColumnUpdated);
             processor.InsertBefore(pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
         }

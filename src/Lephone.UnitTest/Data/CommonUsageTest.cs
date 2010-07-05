@@ -125,9 +125,11 @@ namespace Lephone.UnitTest.Data
         public int Age { get; set; }
     }
 
+    [Serializable]
     public abstract class Contentable<T> : DbObjectModel<T> where T : Contentable<T>
     {
-        public string Content { get; set; }
+        [DbColumn("Content"), LazyLoad]
+        public string ItemContent { get; set; }
     }
 
     [DbContext("SQLite")]
@@ -846,7 +848,7 @@ Select * From PCs Order By Id;");
         [Test]
         public void TestWithContent()
         {
-            var c = new WithContent {Name = "tom", Content = "test"};
+            var c = new WithContent {Name = "tom", ItemContent = "test"};
             c.Save();
             AssertSql(@"INSERT INTO [With_Content] ([Name],[Content]) VALUES (@Name_0,@Content_1);
 SELECT LAST_INSERT_ROWID();
@@ -857,7 +859,7 @@ SELECT LAST_INSERT_ROWID();
             AssertSql(string.Format(@"UPDATE [With_Content] SET [Name]=@Name_0  WHERE [Id] = @Id_1;
 <Text><30>(@Name_0=jerry:String,@Id_1={0}:Int64)", c.Id));
 
-            c.Content = "update";
+            c.ItemContent = "update";
             c.Save();
             AssertSql(string.Format(@"UPDATE [With_Content] SET [Content]=@Content_0  WHERE [Id] = @Id_1;
 <Text><30>(@Content_0=update:String,@Id_1={0}:Int64)", c.Id));

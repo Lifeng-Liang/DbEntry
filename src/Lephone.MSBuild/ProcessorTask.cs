@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using Microsoft.Build.Framework;
@@ -42,7 +43,14 @@ namespace Lephone.MSBuild
             process.Start();
             var result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
-            RemoveBakFile();
+            try
+            {
+                RemoveBakFile();
+            }
+            catch(Exception ex)
+            {
+                Log.LogWarning(ex.ToString());
+            }
             if(process.ExitCode == 0)
             {
                 return true;
