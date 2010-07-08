@@ -149,7 +149,7 @@ namespace Lephone.Data.Common
             var lt = new List<Type>(t.GetInterfaces());
             if (!lt.Contains(typeof(IDbObject)))
             {
-                throw new DataException("The data object must implements IDbObject!");
+                throw new ModelException(t, "The data object must implements IDbObject!");
             }
 
             var ret = new List<MemberHandler>();
@@ -176,7 +176,7 @@ namespace Lephone.Data.Common
                 {
                     if (k.IsDbGenerate)
                     {
-                        throw new DataException("Multiple key do not allow SystemGeneration!");
+                        throw new ModelException(k.MemberInfo, "Multiple key do not allow to be SystemGeneration!");
                     }
                 }
             }
@@ -444,7 +444,7 @@ namespace Lephone.Data.Common
                 o.Init(this);
                 return o;
             }
-            throw new DataException("Can not find ObjectHandler for: {0}", sourceType.FullName);
+            throw new ModelException(sourceType, "Can not find ObjectHandler.");
         }
 
         internal void InitContext()

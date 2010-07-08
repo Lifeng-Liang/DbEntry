@@ -116,7 +116,7 @@ namespace Lephone.Data.Common
             object ret = GetKeyValueDirect(o);
             if (ret == null)
             {
-                throw new DataException("The class must and just have one key");
+                throw new ModelException(o.GetType(), "The class must and just have one key.");
             }
             return ret;
         }

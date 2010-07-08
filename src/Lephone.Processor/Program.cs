@@ -1,10 +1,14 @@
 ﻿using System;
 using System.IO;
+using Lephone.Data;
 
 namespace Lephone.Processor
 {
     class Program
     {
+        public static string Stage = "NONE";
+        public static string ModelClass = "<NULL>";
+
         static int Main(string[] args)
         {
             try
@@ -21,8 +25,14 @@ namespace Lephone.Processor
                 ShowHelp();
                 return ex.ReturnCode;
             }
+            catch (ModelException ex)
+            {
+                Console.WriteLine("{0} : {1}", Stage, ModelClass);
+                Console.WriteLine(ex.Message);
+            }
             catch (Exception ex)
             {
+                Console.WriteLine("{0} : {1}", Stage, ModelClass);
                 Console.WriteLine(ex);
             }
             return 999;

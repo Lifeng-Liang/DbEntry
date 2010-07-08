@@ -14,17 +14,14 @@ namespace Lephone.UnitTest.util
 			Assert.AreEqual(exp, s);
 		}
 
-        /*
-        // for some reason, it cann't get the right result under nunit;
-		[Test]
+        [Test, Ignore("for some reason, it cann't get the right result under nunit")]
 		public void TestCallerFunctionName()
 		{
             string s = GetCallerFunctionName();
 			Assert.AreEqual("Lephone.Core.UnitTest.SystemHelperTest.TestCallerFunctionName()", s);
 		}
-        */
 
-        private string GetCallerFunctionName()
+        private static string GetCallerFunctionName()
         {
             return SystemHelper.CallerFunctionName;
         }

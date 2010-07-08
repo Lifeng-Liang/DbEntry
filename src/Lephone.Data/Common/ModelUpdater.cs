@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Lephone.Data.Builder;
 using Lephone.Data.Caching;
 using Lephone.Data.Definition;
@@ -17,7 +16,7 @@ namespace Lephone.Data.Common
             this._context = context;
         }
 
-        private void UsingAvoidObjectList(CallbackVoidHandler callback)
+        private static void UsingAvoidObjectList(CallbackVoidHandler callback)
         {
             if (Scope<AvoidObjectList>.Current == null)
             {

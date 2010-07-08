@@ -70,6 +70,18 @@ namespace Lephone.Processor
             return module.GetCustomAttribute(KnownTypesHandler.AssemblyProcessed) != null;
         }
 
+        public static bool DontNeedToDoAnything(this ModuleDefinition module)
+        {
+            foreach (var reference in module.AssemblyReferences)
+            {
+                if(reference.FullName == KnownTypesHandler.LephoneData)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public static bool IsHandlerExclude(this PropertyDefinition type)
         {
             if(type.GetCustomAttribute(KnownTypesHandler.ExcludeAttribute) != null)

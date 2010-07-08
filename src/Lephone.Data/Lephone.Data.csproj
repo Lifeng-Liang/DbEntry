@@ -199,6 +199,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Linq\LinqHelper.cs" />
     <Compile Include="Linq\LinqOrderSyntax.cs" />
     <Compile Include="Linq\LinqQueryProvider.cs" />
+    <Compile Include="ModelException.cs" />
     <Compile Include="QuerySyntax\QueryInterfaces.cs" />
     <Compile Include="SqlEntry\ColumnInfo.cs" />
     <Compile Include="Definition\AllowNullAttribute.cs" />

@@ -4,6 +4,7 @@ using System.Data;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
@@ -16,6 +17,7 @@ namespace Lephone.Processor
 {
     public class KnownTypesHandler
     {
+        public static readonly string LephoneData = typeof(DbEntry).Assembly.FullName;
         public static readonly string Object = typeof(object).FullName;
         public static readonly string String = typeof(string).FullName;
         public static readonly string Decimal = typeof(decimal).FullName;

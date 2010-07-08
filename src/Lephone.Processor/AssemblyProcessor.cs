@@ -39,6 +39,12 @@ namespace Lephone.Processor
 
             _module = ModuleDefinition.ReadModule(_name);
 
+            if (_module.DontNeedToDoAnything())
+            {
+                Console.WriteLine("Don't need to do anything.");
+                return;
+            }
+
             if (_module.IsAssemblyProcessed())
             {
                 Console.WriteLine("Already processed!");
@@ -47,8 +53,9 @@ namespace Lephone.Processor
 
             File.Move(_name, _oldName);
 
+            Program.Stage = "Process Model";
             ProcessAssembly();
-            Console.WriteLine();
+            Program.Stage = "GenerateHandler for Model";
             GenerateModelHandler();
         }
 
@@ -73,7 +80,7 @@ namespace Lephone.Processor
 
             foreach (var type in models)
             {
-                Console.WriteLine(type.FullName);
+                Program.ModelClass = type.FullName;
                 var processor = new ModelProcessor(type, handler);
                 processor.Process();
             }
@@ -102,7 +109,7 @@ namespace Lephone.Processor
 
             foreach (var type in models)
             {
-                Console.WriteLine(type.FullName);
+                Program.ModelClass = type.FullName;
                 var model = module.GetType(type.FullName.Replace('+', '/'));
                 var generator = new ModelHandlerGenerator(type, model, handler);
                 var mh = generator.Generate();

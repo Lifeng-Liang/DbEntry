@@ -12,14 +12,14 @@ namespace Lephone.Data
 	{
 		public readonly List<ASC> OrderItems;
 
-        public OrderBy(string OrderName)
+        public OrderBy(string orderName)
         {
-            OrderItems = new List<ASC>(ParseClause(OrderName));
+            OrderItems = new List<ASC>(ParseClause(orderName));
         }
 
-		public OrderBy(params ASC[] OrderItems)
+		public OrderBy(params ASC[] orderItems)
 		{
-			this.OrderItems = new List<ASC>(OrderItems);
+			this.OrderItems = new List<ASC>(orderItems);
 		}
 
         public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd)
@@ -38,27 +38,27 @@ namespace Lephone.Data
             return "";
 		}
 
-        public static OrderBy Parse(string OrderByString)
+        public static OrderBy Parse(string orderByString)
         {
-            if(string.IsNullOrEmpty(OrderByString))
+            if(string.IsNullOrEmpty(orderByString))
             {
                 return null;
             }
-            return new OrderBy(ParseClause(OrderByString));
+            return new OrderBy(ParseClause(orderByString));
         }
 
-        public static OrderBy Parse(string OrderByString, Type t)
+        public static OrderBy Parse(string orderByString, Type t)
         {
-            if (string.IsNullOrEmpty(OrderByString))
+            if (string.IsNullOrEmpty(orderByString))
             {
                 return null;
             }
-            return new OrderBy(ParseClause(OrderByString, t));
+            return new OrderBy(ParseClause(orderByString, t));
         }
 
-        private static ASC[] ParseClause(string OrderByString)
+        private static ASC[] ParseClause(string orderByString)
         {
-            string[] ss = OrderByString.Split(',');
+            string[] ss = orderByString.Split(',');
             var ret = new List<ASC>();
             foreach (string s in ss)
             {
@@ -74,10 +74,10 @@ namespace Lephone.Data
             return ret.ToArray();
         }
 
-        private static ASC[] ParseClause(string OrderByString, Type t)
+        private static ASC[] ParseClause(string orderByString, Type t)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            string[] ss = OrderByString.Split(',');
+            string[] ss = orderByString.Split(',');
             var ret = new List<ASC>();
             foreach (string s in ss)
             {
@@ -93,16 +93,16 @@ namespace Lephone.Data
             return ret.ToArray();
         }
 
-        private static string GetColumnName(ObjectInfo oi, string Name)
+        private static string GetColumnName(ObjectInfo oi, string name)
         {
             foreach(MemberHandler mh in oi.Fields)
             {
-                if(mh.MemberInfo.Name == Name)
+                if(mh.MemberInfo.Name == name)
                 {
                     return mh.Name;
                 }
             }
-            throw new DataException("Can not find field [" + Name + "] on [" + oi.HandleType.Name + "]");
+            throw new DataException("Can not find field [" + name + "] on [" + oi.HandleType.Name + "]");
         }
     }
 }

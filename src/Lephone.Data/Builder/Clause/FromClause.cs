@@ -2,7 +2,6 @@ using System;
 using System.Collections.Specialized;
 using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
-using Lephone.Data.Definition;
 
 namespace Lephone.Data.Builder.Clause
 {

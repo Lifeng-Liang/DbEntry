@@ -14,13 +14,12 @@ namespace Lephone.Data.Common
         {
             if (dbObjectType.IsNotPublic)
             {
-                throw new DataException("The model class should be public");
+                throw new ModelException(dbObjectType, "The model class should be public.");
             }
             var c = ClassHelper.GetArgumentlessConstructor(dbObjectType);
             if (c == null)
             {
-                string typeName = dbObjectType.Name;
-                throw new DataException("class {0} need a public/protected(DbObjectModel) argumentless constructor", typeName);
+                throw new ModelException(dbObjectType, "The model need a public/protected(DbObjectModel) argumentless constructor");
             }
             return dbObjectType;
         }

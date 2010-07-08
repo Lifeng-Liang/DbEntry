@@ -239,7 +239,7 @@ namespace Lephone.Data.Common
             {
                 if(fi.MemberType.IsValueType)
                 {
-                    throw new DataException("Don't set AllowNull to a value type field, instead of to use nullable");
+                    throw new ModelException(fi, "Don't set AllowNull to a value type field, instead of to use nullable");
                 }
                 AllowNull = true;
             }
@@ -252,7 +252,7 @@ namespace Lephone.Data.Common
             {
                 if (IsLazyLoad)
                 {
-                    throw new DataException("SpecialName colomn could not be LazyLoad");
+                    throw new ModelException(fi, "SpecialName colomn could not be LazyLoad");
                 }
                 if (fi.Name == "CreatedOn")
                 {
@@ -262,7 +262,7 @@ namespace Lephone.Data.Common
                     }
                     else
                     {
-                        throw new DataException("CreatedOn must be datetime type.");
+                        throw new ModelException(fi, "CreatedOn must be datetime type.");
                     }
                 }
                 else if (fi.Name == "UpdatedOn")
@@ -273,7 +273,7 @@ namespace Lephone.Data.Common
                     }
                     else
                     {
-                        throw new DataException("UpdatedOn must be nullable datetime type.");
+                        throw new ModelException(fi, "UpdatedOn must be nullable datetime type.");
                     }
                 }
                 else if (fi.Name == "SavedOn")
@@ -284,7 +284,7 @@ namespace Lephone.Data.Common
                     }
                     else
                     {
-                        throw new DataException("SavedOn must be datetime type.");
+                        throw new ModelException(fi, "SavedOn must be datetime type.");
                     }
                 }
                 else if (fi.Name == "LockVersion")
@@ -295,7 +295,7 @@ namespace Lephone.Data.Common
                     }
                     else
                     {
-                        throw new DataException("LockVersion must be int type.");
+                        throw new ModelException(fi, "LockVersion must be int type.");
                     }
                 }
                 else if (fi.Name == "Count")
@@ -306,12 +306,12 @@ namespace Lephone.Data.Common
                     }
                     else
                     {
-                        throw new DataException("Count must be int type.");
+                        throw new ModelException(fi, "Count must be int type.");
                     }
                 }
                 else
                 {
-                    throw new DataException("Only CreatedOn and UpdatedOn are supported as special name.");
+                    throw new ModelException(fi, "Only CreatedOn and UpdatedOn are supported as special name.");
                 }
                 if (IsCreatedOn || IsUpdatedOn || IsSavedOn || IsCount || IsLockVersion)
                 {
@@ -324,7 +324,7 @@ namespace Lephone.Data.Common
             {
                 if (fi.MemberType.IsSubclassOf(typeof(ValueType)))
                 {
-                    throw new DataException("ValueType couldn't set LengthAttribute!");
+                    throw new ModelException(fi, "ValueType couldn't set LengthAttribute!");
                 }
                 MinLength = lengthAttribute.Min;
                 MaxLength = lengthAttribute.Max;
@@ -357,7 +357,7 @@ namespace Lephone.Data.Common
             {
                 if (!(fi.MemberType == typeof(string) || (IsLazyLoad && fi.MemberType.GetGenericArguments()[0] == typeof(string))))
                 {
-                    throw new DataException("StringFieldAttribute must set for String Type Field!");
+                    throw new ModelException(fi, "StringFieldAttribute must set for String Type Field!");
                 }
                 IsUnicode = sf.IsUnicode;
                 Regular = sf.Regular;

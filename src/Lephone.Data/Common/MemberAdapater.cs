@@ -10,49 +10,49 @@ namespace Lephone.Data.Common
 
         internal class FieldAdapter : MemberAdapter
         {
-            protected FieldInfo fi;
+            protected FieldInfo Info;
 
-            public FieldAdapter(FieldInfo fi)
+            public FieldAdapter(FieldInfo info)
             {
-                this.fi = fi;
+                this.Info = info;
             }
 
             public override Type MemberType
             {
                 get
                 {
-                    return fi.FieldType;
+                    return Info.FieldType;
                 }
             }
 
             public override void SetValue(object obj, object value)
             {
-                fi.SetValue(obj, value);
+                Info.SetValue(obj, value);
             }
 
             public override object GetValue(object obj)
             {
-                return fi.GetValue(obj);
+                return Info.GetValue(obj);
             }
 
             public override T[] GetAttributes<T>(bool inherit)
             {
-                return ClassHelper.GetAttributes<T>(fi, inherit);
+                return ClassHelper.GetAttributes<T>(Info, inherit);
             }
 
             public override T GetAttribute<T>(bool inherit)
             {
-                return ClassHelper.GetAttribute<T>(fi, inherit);
+                return ClassHelper.GetAttribute<T>(Info, inherit);
             }
 
             public override bool HasAttribute<T>(bool inherit)
             {
-                return ClassHelper.HasAttribute<T>(fi, inherit);
+                return ClassHelper.HasAttribute<T>(Info, inherit);
             }
 
             public override string Name
             {
-                get { return fi.Name; }
+                get { return Info.Name; }
             }
 
             public override bool IsProperty
@@ -62,52 +62,57 @@ namespace Lephone.Data.Common
 
             public override MemberInfo GetMemberInfo()
             {
-                return fi;
+                return Info;
+            }
+
+            public override Type DeclaringType
+            {
+                get { return Info.DeclaringType; }
             }
         }
 
         internal class PropertyAdapter : MemberAdapter
         {
-            protected PropertyInfo pi;
+            protected PropertyInfo Info;
 
-            public PropertyAdapter(PropertyInfo pi)
+            public PropertyAdapter(PropertyInfo info)
             {
-                this.pi = pi;
+                this.Info = info;
             }
 
             public override Type MemberType
             {
-                get { return pi.PropertyType; }
+                get { return Info.PropertyType; }
             }
 
             public override void SetValue(object obj, object value)
             {
-                pi.SetValue(obj, value, null);
+                Info.SetValue(obj, value, null);
             }
 
             public override object GetValue(object obj)
             {
-                return pi.GetValue(obj, null);
+                return Info.GetValue(obj, null);
             }
 
             public override T[] GetAttributes<T>(bool inherit)
             {
-                return ClassHelper.GetAttributes<T>(pi, inherit);
+                return ClassHelper.GetAttributes<T>(Info, inherit);
             }
 
             public override T GetAttribute<T>(bool inherit)
             {
-                return ClassHelper.GetAttribute<T>(pi, inherit);
+                return ClassHelper.GetAttribute<T>(Info, inherit);
             }
 
             public override bool HasAttribute<T>(bool inherit)
             {
-                return ClassHelper.HasAttribute<T>(pi, inherit);
+                return ClassHelper.HasAttribute<T>(Info, inherit);
             }
 
             public override string Name
             {
-                get { return pi.Name; }
+                get { return Info.Name; }
             }
 
             public override bool IsProperty
@@ -117,7 +122,12 @@ namespace Lephone.Data.Common
 
             public override MemberInfo GetMemberInfo()
             {
-                return pi;
+                return Info;
+            }
+
+            public override Type DeclaringType
+            {
+                get { return Info.DeclaringType; }
             }
         }
 
@@ -130,17 +140,17 @@ namespace Lephone.Data.Common
 
             public override void SetValue(object obj, object value)
             {
-                if (pi.PropertyType == typeof(ulong))
+                if (Info.PropertyType == typeof(ulong))
                 {
-                    pi.SetValue(obj, (ulong)(long)value, null);
+                    Info.SetValue(obj, (ulong)(long)value, null);
                 }
-                else if (pi.PropertyType == typeof(uint))
+                else if (Info.PropertyType == typeof(uint))
                 {
-                    pi.SetValue(obj, (uint)(int)value, null);
+                    Info.SetValue(obj, (uint)(int)value, null);
                 }
-                else if (pi.PropertyType == typeof(ushort))
+                else if (Info.PropertyType == typeof(ushort))
                 {
-                    pi.SetValue(obj, (ushort)(short)value, null);
+                    Info.SetValue(obj, (ushort)(short)value, null);
                 }
             }
         }
@@ -154,17 +164,17 @@ namespace Lephone.Data.Common
 
             public override void SetValue(object obj, object value)
             {
-                if (fi.FieldType == typeof(ulong))
+                if (Info.FieldType == typeof(ulong))
                 {
-                    fi.SetValue(obj, (ulong)(long)value);
+                    Info.SetValue(obj, (ulong)(long)value);
                 }
-                else if (fi.FieldType == typeof(uint))
+                else if (Info.FieldType == typeof(uint))
                 {
-                    fi.SetValue(obj, (uint)(int)value);
+                    Info.SetValue(obj, (uint)(int)value);
                 }
-                else if (fi.FieldType == typeof(ushort))
+                else if (Info.FieldType == typeof(ushort))
                 {
-                    fi.SetValue(obj, (ushort)(short)value);
+                    Info.SetValue(obj, (ushort)(short)value);
                 }
             }
         }
@@ -180,6 +190,7 @@ namespace Lephone.Data.Common
         public abstract void SetValue(object obj, object value);
         public abstract object GetValue(object obj);
         public abstract MemberInfo GetMemberInfo();
+        public abstract Type DeclaringType { get; }
 
         public static MemberAdapter NewObject(FieldInfo fi)
         {

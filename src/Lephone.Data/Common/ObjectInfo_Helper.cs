@@ -54,7 +54,7 @@ namespace Lephone.Data.Common
             ObjectInfo oi = Factory.GetInstance(t);
             if (oi.KeyFields == null)
             {
-                throw new DataException("dbobject not define key field : " + t);
+                throw new DataException("dbobject do not have key field : " + t);
             }
             Condition ret = null;
             Dictionary<string, object> dictionary = oi.Handler.GetKeyValues(obj);
@@ -71,7 +71,7 @@ namespace Lephone.Data.Common
             ObjectInfo oi = Factory.GetInstance(t);
             if (!oi.HasSystemKey)
             {
-                throw new DataException("dbobject not define SystemGeneration key field : " + t);
+                throw new DataException("dbobject do not have SystemGeneration key field : " + t);
             }
             MemberHandler fh = oi.KeyFields[0];
             object sKey;
