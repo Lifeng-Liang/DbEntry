@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Xml;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -9,26 +8,24 @@ namespace Lephone.MSBuild
 {
     public class ProcessorTask : Task
     {
-        [Required]
-        public string TargetPath { get; set; }
-
-        [Required]
-        public string TargetDir { get; set; }
-
-        [Required]
-        public string ProjectPath { get; set; }
+        public string KeyFile { get; set; }
 
         [Required]
         public string ProjectDir { get; set; }
+
+        [Required]
+        public string AssemblyName { get; set; }
 
         [Required]
         public string SolutionDir { get; set; }
 
         public string ProcessorPath { get; set; }
 
+        private string _targetPath;
+
         public override bool Execute()
         {
-            TargetPath = TargetPath.Replace("\\bin\\", "\\obj\\");
+            _targetPath = Path.Combine(ProjectDir, AssemblyName);
             var info = new ProcessStartInfo(GetProcessorPath())
                            {
                                Arguments = GetArguments(),
@@ -61,7 +58,7 @@ namespace Lephone.MSBuild
 
         private void RemoveBakFile()
         {
-            var fn = TargetPath.Substring(0, TargetPath.Length - 4) + ".bak";
+            var fn = _targetPath.Substring(0, _targetPath.Length - 4) + ".bak";
             if(File.Exists(fn))
             {
                 File.Delete(fn);
@@ -98,7 +95,7 @@ namespace Lephone.MSBuild
         private string GetArguments()
         {
             var keyPath = GetKeyPath();
-            var result = GetArgument(TargetPath);
+            var result = GetArgument(_targetPath);
             if(!string.IsNullOrEmpty(keyPath))
             {
                 result += " " + GetArgument(keyPath);
@@ -121,12 +118,9 @@ namespace Lephone.MSBuild
 
         private string GetKeyPath()
         {
-            var xml = new XmlDocument();
-            xml.Load(ProjectPath);
-            var keyElements = xml.GetElementsByTagName("AssemblyOriginatorKeyFile");
-            if (keyElements.Count > 0 && !string.IsNullOrEmpty(keyElements[0].InnerText))
+            if (!string.IsNullOrEmpty(KeyFile))
             {
-                return Path.Combine(ProjectDir, keyElements[0].InnerText);
+                return Path.Combine(ProjectDir, KeyFile);
             }
             return null;
         }

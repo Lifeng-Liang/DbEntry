@@ -1,17 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lephone.Data.Definition;
 
 namespace Soaring.Biz.Models
 {
-    public enum WorkitemStage
-    {
-        Proposed,
-        Working,
-        ReadyForTest,
-        Complated,
-    }
-
-    public class Workitem : DbObjectModel<Workitem>
+    public class Requirement : DbObjectModel<User>
     {
         [Length(1, 256)]
         public string Title { get; set; }
@@ -19,13 +12,16 @@ namespace Soaring.Biz.Models
         [AllowNull]
         public string Content { get; set; }
 
-        [DbColumn("Stage")]
-        public WorkitemStage Status { get; set; }
-
         [SpecialName]
         public DateTime CreatedOn { get; set; }
 
         [SpecialName]
         public DateTime? UpdatedOn { get; set; }
+
+        [HasMany]
+        public IList<Task> Tasks { get; set; }
+
+        [BelongsTo]
+        public Project Project { get; set; }
     }
 }

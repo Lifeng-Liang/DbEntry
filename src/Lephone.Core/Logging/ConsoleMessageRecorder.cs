@@ -11,7 +11,7 @@ namespace Lephone.Core.Logging
             get { return _count; }
         }
 
-        public void ProcessLog(LogType type, string source, string name, string message, Exception eException)
+        public void ProcessLog(SysLogType type, string source, string name, string message, Exception exception)
         {
             Console.WriteLine(message);
             Console.WriteLine();

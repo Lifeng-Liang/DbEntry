@@ -197,6 +197,6 @@ copy *.dll ..\..\..\..\bin\
   </PropertyGroup>
   <UsingTask TaskName="ProcessorTask" AssemblyFile="$(SolutionDir)\Lephone.MSBuild\bin\$(ConfigurationName)\Lephone.MSBuild.dll" />
   <Target Name="AfterCompile">
-    <ProcessorTask TargetPath="$(TargetPath)" TargetDir="$(TargetDir)" ProjectPath="$(ProjectPath)" ProjectDir="$(ProjectDir)" SolutionDir="$(SolutionDir)" />
+    <ProcessorTask KeyFile="$(KeyOriginatorFile)" ProjectDir="$(ProjectDir)" AssemblyName="@(IntermediateAssembly)" SolutionDir="$(SolutionDir)" />
   </Target>
 </Project>

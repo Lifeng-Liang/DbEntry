@@ -4,9 +4,9 @@ using Lephone.Core.Setting;
 namespace Lephone.Core.Logging
 {
     /// <summary>
-    /// the eException could be null
+    /// the exception could be null
     /// </summary>
-    public delegate void LogEventHandler(LogType type, string source, string name, string message, Exception eException);
+    public delegate void LogEventHandler(SysLogType type, string source, string name, string message, Exception exception);
 
     public class Logger : ILogDirect
 	{
@@ -57,26 +57,26 @@ namespace Lephone.Core.Logging
 
         #region ILogDirect
 
-        void ILogDirect.Log(LogType type, string name, string message)
+        void ILogDirect.Log(SysLogType type, string name, string message)
         {
             ((ILogDirect)this).Log(type, SystemHelper.CallerFunctionName, name, message, null);
         }
 
-        void ILogDirect.Log(LogType type, string source, string name, string message)
+        void ILogDirect.Log(SysLogType type, string source, string name, string message)
         {
             ((ILogDirect)this).Log(type, source, name, message, null);
         }
 
-        void ILogDirect.Log(LogType type, string name, string message, Exception eException)
+        void ILogDirect.Log(SysLogType type, string name, string message, Exception exception)
         {
-            ((ILogDirect)this).Log(type, SystemHelper.CallerFunctionName, name, message, eException);
+            ((ILogDirect)this).Log(type, SystemHelper.CallerFunctionName, name, message, exception);
         }
 
-        void ILogDirect.Log(LogType type, string source, string name, string message, Exception eException)
+        void ILogDirect.Log(SysLogType type, string source, string name, string message, Exception exception)
         {
             if (LogEvent != null)
             {
-                LogEvent(type, source, name, message, eException);
+                LogEvent(type, source, name, message, exception);
             }
         }
 
@@ -85,73 +85,73 @@ namespace Lephone.Core.Logging
         public void Debug(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Debug, "", _name, message.ToString());
+                ((ILogDirect)this).Log(SysLogType.Debug, "", _name, message.ToString());
         }
 
         public void Trace(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Trace, "", _name, message.ToString());
+                ((ILogDirect)this).Log(SysLogType.Trace, "", _name, message.ToString());
         }
 
         public void Info(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Info, "", _name, message.ToString());
+                ((ILogDirect)this).Log(SysLogType.Info, "", _name, message.ToString());
         }
 
         public void Warn(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Warn, SystemHelper.CallerFunctionName, _name, message.ToString());
+                ((ILogDirect)this).Log(SysLogType.Warn, SystemHelper.CallerFunctionName, _name, message.ToString());
         }
 
         public void Warn(Exception ex)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Warn, SystemHelper.CallerFunctionName, _name, ex.Message, ex);
+                ((ILogDirect)this).Log(SysLogType.Warn, SystemHelper.CallerFunctionName, _name, ex.Message, ex);
         }
 
         public void Warn(object message, Exception ex)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Warn, SystemHelper.CallerFunctionName, _name, message.ToString(), ex);
+                ((ILogDirect)this).Log(SysLogType.Warn, SystemHelper.CallerFunctionName, _name, message.ToString(), ex);
         }
 
         public void Error(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Error, SystemHelper.CallerFunctionName, _name, message.ToString());
+                ((ILogDirect)this).Log(SysLogType.Error, SystemHelper.CallerFunctionName, _name, message.ToString());
         }
 
         public void Error(Exception ex)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Error, SystemHelper.CallerFunctionName, _name, ex.Message, ex);
+                ((ILogDirect)this).Log(SysLogType.Error, SystemHelper.CallerFunctionName, _name, ex.Message, ex);
         }
 
         public void Error(object message, Exception ex)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Error, SystemHelper.CallerFunctionName, _name, message.ToString(), ex);
+                ((ILogDirect)this).Log(SysLogType.Error, SystemHelper.CallerFunctionName, _name, message.ToString(), ex);
         }
 
         public void Fatal(object message)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Fatal, SystemHelper.CallerFunctionName, _name, message.ToString());
+                ((ILogDirect)this).Log(SysLogType.Fatal, SystemHelper.CallerFunctionName, _name, message.ToString());
         }
 
         public void Fatal(Exception ex)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Fatal, SystemHelper.CallerFunctionName, _name, ex.Message, ex);
+                ((ILogDirect)this).Log(SysLogType.Fatal, SystemHelper.CallerFunctionName, _name, ex.Message, ex);
         }
 
         public void Fatal(object message, Exception ex)
         {
             if (LogEvent != null)
-                ((ILogDirect)this).Log(LogType.Fatal, SystemHelper.CallerFunctionName, _name, message.ToString(), ex);
+                ((ILogDirect)this).Log(SysLogType.Fatal, SystemHelper.CallerFunctionName, _name, message.ToString(), ex);
         }
     }
 }

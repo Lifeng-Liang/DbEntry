@@ -32,20 +32,20 @@ namespace Lephone.Core.Logging
                 SystemHelper.ExeFileName, SystemHelper.GetDateTimeString());
 		}
 
-        public void ProcessLog(LogType type, string source, string name, string message, Exception eException)
+        public void ProcessLog(SysLogType type, string source, string name, string message, Exception exception)
         {
             lock (SyncRoot)
             {
                 using (var sw = new StreamWriter(LogFileName, true, Encoding.Default))
                 {
-                	WriteLog(sw, type, source, name, message, eException);
+                	WriteLog(sw, type, source, name, message, exception);
                 }
             }
         }
 
-        protected virtual void WriteLog(StreamWriter sw, LogType type, string source, string name, string message, Exception eException)
+        protected virtual void WriteLog(StreamWriter sw, SysLogType type, string source, string name, string message, Exception exception)
         {
-            sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, source, name, message, eException, DateTime.Now);
+            sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, source, name, message, exception, DateTime.Now);
         }
     }
 }

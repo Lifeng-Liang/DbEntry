@@ -6,16 +6,16 @@ namespace Lephone.Utility.Logging
 {
     public class DatabaseLogRecorder : ILogRecorder
     {
-        public void ProcessLog(LogType type, string source, string name, string message, Exception eException)
+        public void ProcessLog(SysLogType type, string source, string name, string message, Exception exception)
         {
-            var li = new LephoneLog(type, source, name, message, eException);
+            var li = new LephoneLog(type, source, name, message, exception);
             try
             {
                 DbEntry.Save(li);
             }
             catch (Exception ex)
             {
-                string msg = (eException == null) ? message : message + "\n" + eException;
+                string msg = (exception == null) ? message : message + "\n" + exception;
                 ((ILogDirect)Logger.System).Log(type, source, name, msg, ex);
             }
         }

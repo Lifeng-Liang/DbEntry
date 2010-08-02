@@ -72,7 +72,7 @@
     <Compile Include="Logging\ILogRecorder.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LogRecorderProvider.cs" />
-    <Compile Include="Logging\LogType.cs" />
+    <Compile Include="Logging\SysLogType.cs" />
     <Compile Include="Logging\TextFileLogRecorder.cs" />
     <Compile Include="MiscProvider.cs" />
     <Compile Include="NullEncoding.cs" />

@@ -47,10 +47,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\WorkitemController.cs" />
+    <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Helpers\CommonExtends.cs" />
+    <Compile Include="Helpers\InitializeHelper.cs" />
     <Compile Include="Helpers\MembershipDispatcher.cs" />
-    <Compile Include="Models\Workitem.cs" />
+    <Compile Include="Models\Bug.cs" />
+    <Compile Include="Models\BugDescription.cs" />
+    <Compile Include="Models\Enums\BugStatus.cs" />
+    <Compile Include="Models\Enums\TaskStatus.cs" />
+    <Compile Include="Models\Enums\UserType.cs" />
+    <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\Requirement.cs" />
+    <Compile Include="Models\Task.cs" />
+    <Compile Include="Models\TaskDescription.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Wiki.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +96,6 @@
   -->
   <UsingTask TaskName="ProcessorTask" AssemblyFile="$(SolutionDir)\Lephone.MSBuild\bin\$(ConfigurationName)\Lephone.MSBuild.dll" />
   <Target Name="AfterCompile">
-    <ProcessorTask TargetPath="$(TargetPath)" TargetDir="$(TargetDir)" ProjectPath="$(ProjectPath)" ProjectDir="$(ProjectDir)" SolutionDir="$(SolutionDir)" />
+    <ProcessorTask KeyFile="$(KeyOriginatorFile)" ProjectDir="$(ProjectDir)" AssemblyName="@(IntermediateAssembly)" SolutionDir="$(SolutionDir)" />
   </Target>
 </Project>

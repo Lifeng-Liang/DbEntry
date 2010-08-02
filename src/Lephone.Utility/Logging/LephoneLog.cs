@@ -7,7 +7,7 @@ namespace Lephone.Utility.Logging
 	[DisableSqlLog]
 	public class LephoneLog : DbObject
 	{
-		public LogType Type;
+		public SysLogType Type;
 		public string Thread;
 		public string Source;
 		public string Name;
@@ -17,7 +17,7 @@ namespace Lephone.Utility.Logging
 
         public LephoneLog() {}
 
-        public LephoneLog(LogType type, string source, string name, string message, Exception exception)
+        public LephoneLog(SysLogType type, string source, string name, string message, Exception exception)
 		{
 			this.Type = type;
 			this.Thread = GetThreadInfo();

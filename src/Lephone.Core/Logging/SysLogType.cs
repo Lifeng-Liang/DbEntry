@@ -1,6 +1,6 @@
 ﻿namespace Lephone.Core.Logging
 {
-    public enum LogType
+    public enum SysLogType
     {
         Debug,
         Trace,
