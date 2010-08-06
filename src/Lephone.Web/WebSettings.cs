@@ -23,6 +23,8 @@ namespace Lephone.Web
 
         public static readonly string CookiesHandler = "Lephone.Web.Mvc.CookiesHandler, Lephone.Web";
 
+        public static readonly string TypeBinder = "Lephone.Web.Mvc.TypeBinder, Lephone.Web";
+
         static WebSettings()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(WebSettings));

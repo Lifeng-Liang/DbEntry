@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Web;
 using System.Reflection;
 using System.IO;
@@ -40,11 +41,11 @@ namespace Lephone.Web
 
         protected static void SearchControllers(Assembly a)
         {
-            foreach (Type t in a.GetTypes())
+            foreach (var t in a.GetTypes())
             {
                 if (t.IsSubclassOf(CbType))
                 {
-                    string tn = t.Name;
+                    var tn = t.Name;
                     if (tn.EndsWith("Controller"))
                     {
                         tn = tn.Substring(0, tn.Length - 10);
@@ -76,7 +77,7 @@ namespace Lephone.Web
 
         public virtual void ProcessRequest(HttpContext context)
         {
-            string url = context.Request.AppRelativeCurrentExecutionFilePath;
+            var url = context.Request.AppRelativeCurrentExecutionFilePath;
             url = url.Substring(2);
             
             if(WebSettings.MvcPostfix != "")
@@ -87,7 +88,7 @@ namespace Lephone.Web
                 }
             }
 
-            string[] ss = url.Split(Spliter, StringSplitOptions.RemoveEmptyEntries);
+            var ss = url.Split(Spliter, StringSplitOptions.RemoveEmptyEntries);
             for(int i = 0; i < ss.Length; i++)
             {
                 ss[i] = HttpUtility.UrlDecode(ss[i]);
@@ -128,6 +129,10 @@ namespace Lephone.Web
                     InvokeView(context, viewName, ctl, ci);
                 }
             }
+            catch(ThreadAbortException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 OnException(ex, ctl);
@@ -136,16 +141,16 @@ namespace Lephone.Web
 
         protected virtual string InvokeAction(HttpContext context, string controllerName, string actionName, string[] ss, ControllerBase ctl, ControllerInfo ci)
         {
-            MethodInfo mi = GetMethodInfo(ci.Type, actionName);
+            var mi = GetMethodInfo(ci.Type, actionName);
             if (mi == null)
             {
                 throw new WebException(string.Format("Action {0} doesn't exist!!!", actionName));
             }
-            List<object> parameters = GetParameters(ss, mi);
+            var parameters = GetParameters(ss, mi);
             object ret = CallAction(mi, ctl, parameters.ToArray()) ?? "";
 
             var va = ClassHelper.GetAttribute<ViewAttribute>(mi, false);
-            string viewName = (va == null) ? mi.Name : va.ViewName;
+            var viewName = (va == null) ? mi.Name : va.ViewName;
 
             if(string.IsNullOrEmpty(ret.ToString()))
             {
@@ -194,21 +199,31 @@ namespace Lephone.Web
         {
             ParameterInfo[] pis = mi.GetParameters();
             var parameters = new List<object>();
+            int x = 1;
             for (int i = 0; i < pis.Length; i++)
             {
-                if (i + 2 < ss.Length)
+                if (ClassHelper.HasAttribute<BindAttribute>(pis[i], false))
                 {
-                    if(pis[i].ParameterType.IsArray)
-                    {
-                        ProcessArray(parameters, ss, i + 2, pis, i);
-                        break;
-                    }
-                    object px = ChangeType(ss[i + 2], pis[i].ParameterType);
-                    parameters.Add(px);
+                    var obj = TypeBinder.Instance.GetObject(pis[i].Name, pis[i].ParameterType);
+                    parameters.Add(obj);
                 }
                 else
                 {
-                    parameters.Add(null);
+                    x++;
+                    if (x < ss.Length)
+                    {
+                        if (pis[i].ParameterType.IsArray)
+                        {
+                            ProcessArray(parameters, ss, x, pis, i);
+                            break;
+                        }
+                        object px = ChangeType(ss[x], pis[i].ParameterType);
+                        parameters.Add(px);
+                    }
+                    else
+                    {
+                        parameters.Add(null);
+                    }
                 }
             }
             return parameters;

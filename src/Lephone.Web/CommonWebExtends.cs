@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Lephone.Core;
 using Lephone.Data;
+using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;
 using Lephone.Web.Mvc;
@@ -48,5 +50,20 @@ public static class CommonWebExtends
             list.PageCount--;
         }
         return list;
+    }
+
+    public static T ParseFromRequst<T>(this T obj) where T : IDbObject
+    {
+        var request = System.Web.HttpContext.Current.Request;
+        var oi = ObjectInfo.GetInstance(typeof(T));
+        foreach(var field in oi.SimpleFields)
+        {
+            var value = request[field.Name];
+            if(!value.IsNullOrEmpty())
+            {
+                field.SetValue(obj, ClassHelper.ChangeType(value, field.FieldType));
+            }
+        }
+        return obj;
     }
 }

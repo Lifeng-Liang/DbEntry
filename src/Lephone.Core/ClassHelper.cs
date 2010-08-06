@@ -41,6 +41,23 @@ namespace Lephone.Core
                 object o = ChangeType(value, conversionType.GetGenericArguments()[0]);
                 return CreateInstance(conversionType, o);
             }
+            if(conversionType == typeof(bool))
+            {
+                if(value is bool)
+                {
+                    return (bool)value;
+                }
+                if(value == null)
+                {
+                    return false;
+                }
+                var vn = value.ToString().ToLower();
+                if(vn == "on" || vn == "true" || vn == "1")
+                {
+                    return true;
+                }
+                return false;
+            }
             return Convert.ChangeType(value, conversionType);
         }
 
@@ -316,6 +333,11 @@ namespace Lephone.Core
         }
 
         public static bool HasAttribute<T>(Type info, bool inherit) where T : Attribute
+        {
+            return GetAttribute<T>(info, inherit) != null;
+        }
+
+        public static bool HasAttribute<T>(ParameterInfo info, bool inherit) where T : Attribute
         {
             return GetAttribute<T>(info, inherit) != null;
         }

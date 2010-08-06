@@ -12,9 +12,9 @@ namespace Soaring.Biz.Helpers
             {
                 var u = new User
                             {
-                                Email = "lifeng.liang@gmail.com",
+                                Email = "test@163.com",
                                 Password = "123",
-                                Nick = "lifeng",
+                                Nick = "test",
                                 Mobile = "123456",
                                 Type = UserType.Adminstrator
                             };

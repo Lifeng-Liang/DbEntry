@@ -91,6 +91,7 @@
     <Compile Include="HtmlBuilder.cs" />
     <Compile Include="HttpParameterAttribute.cs" />
     <Compile Include="InMasterAttribute.cs" />
+    <Compile Include="Mvc\BindAttribute.cs" />
     <Compile Include="Mvc\ControllerHelper.cs" />
     <Compile Include="Mvc\ControllerInfo.cs" />
     <Compile Include="Mvc\CookiesHandler.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Mvc\MasterPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Mvc\TypeBinder.cs" />
     <Compile Include="Mvc\ScaffoldingAttribute.cs" />
     <Compile Include="Mvc\ScaffoldingViews.cs">
       <SubType>ASPXCodeBehind</SubType>

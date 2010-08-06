@@ -9,28 +9,47 @@ namespace Lephone.Core.Logging
 	{
         protected object SyncRoot = new object();
 
-		protected string LogFileName;
+	    private string _logFileName;
+	    private readonly string _logFileTemplate;
+	    private Date _lastDate = Date.MinValue;
+
+        protected string LogFileName
+        {
+            set { _logFileName = value; }
+            get
+            {
+                if (_lastDate != Date.Now)
+                {
+                    _logFileName = string.Format(_logFileTemplate, SystemHelper.BaseDirectory,
+                                                 SystemHelper.ExeFileName, SystemHelper.GetDateTimeString());
+                    _lastDate = Date.Now;
+                }
+                return _logFileName;
+            }
+        }
 
 		public TextFileLogRecorder()
 		{
-		    string s = CoreSettings.LogFileName;
-			Init(s);
+            _logFileTemplate = CoreSettings.LogFileName;
+			Init();
 		}
 
         public TextFileLogRecorder(string logFileName)
 		{
-			Init(logFileName);
+            _logFileTemplate = logFileName;
+            Init();
 		}
 
-		protected void Init(string logFileName)
+		protected void Init()
 		{
-			if ( logFileName == "" )
+            if (_logFileTemplate == "")
 			{
 				throw new SettingException();
 			}
-			this.LogFileName = string.Format(logFileName, SystemHelper.BaseDirectory,
-                SystemHelper.ExeFileName, SystemHelper.GetDateTimeString());
-		}
+            // ReSharper disable RedundantToStringCall
+            LogFileName.ToString(); // force to read LogFileName
+            // ReSharper restore RedundantToStringCall
+        }
 
         public void ProcessLog(SysLogType type, string source, string name, string message, Exception exception)
         {

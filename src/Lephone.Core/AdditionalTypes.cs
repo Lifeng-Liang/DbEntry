@@ -49,6 +49,9 @@
             get { return new Date(DateTime.Now); }
         }
 
+        public static Date MinValue = new Date(DateTime.MinValue);
+        public static Date MaxValue = new Date(DateTime.MaxValue);
+
         private DateTime dt;
 
         public int Year

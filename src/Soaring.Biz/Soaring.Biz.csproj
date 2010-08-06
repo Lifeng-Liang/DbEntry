@@ -47,8 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\BugController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Controllers\RequirementController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Exceptions\InvalidOperationException.cs" />
+    <Compile Include="Exceptions\PageNotFoundException.cs" />
+    <Compile Include="Exceptions\SessionInvalidException.cs" />
     <Compile Include="Helpers\CommonExtends.cs" />
+    <Compile Include="Helpers\CommonHelper.cs" />
+    <Compile Include="Helpers\Const.cs" />
     <Compile Include="Helpers\InitializeHelper.cs" />
     <Compile Include="Helpers\MembershipDispatcher.cs" />
     <Compile Include="Models\Bug.cs" />
