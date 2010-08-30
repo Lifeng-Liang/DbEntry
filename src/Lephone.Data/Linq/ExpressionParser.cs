@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
@@ -55,7 +56,28 @@ namespace Lephone.Data.Linq
             {
                 return ParseUnary((UnaryExpression)expr);
             }
+            if (IsBooleanFieldOrProperty(expr))
+            {
+                var key = GetColumnName(((MemberExpression)expr).Member.Name);
+                return new KeyValueClause(key, true, CompareOpration.Equal, ColumnFunction.None);
+            }
             throw new LinqException("Not supported operation!");
+        }
+
+        private static bool IsBooleanFieldOrProperty(Expression expr)
+        {
+            if (expr is MemberExpression)
+            {
+                var member = ((MemberExpression)expr);
+                if(member.Member.MemberType == MemberTypes.Field || member.Member.MemberType == MemberTypes.Property)
+                {
+                    if(member.Type == typeof(bool))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private static Condition ParseUnary(UnaryExpression expr)

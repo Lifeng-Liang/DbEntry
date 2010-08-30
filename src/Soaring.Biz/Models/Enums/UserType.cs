@@ -2,10 +2,10 @@
 {
     public enum UserType
     {
-        Adminstrator,
-        Leader,
-        Developer,
-        Tester,
         Vistor,
+        Tester,
+        Developer,
+        Leader,
+        Adminstrator,
     }
 }

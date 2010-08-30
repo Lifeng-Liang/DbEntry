@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Web;
 using Lephone.Web.Mvc;
 using Soaring.Biz.Helpers;
@@ -20,7 +21,8 @@ namespace Soaring.Biz.Controllers
                 Session[Const.LoginSession] = u;
                 if (rememberme)
                 {
-                    var cookie = new HttpCookie(Const.LoginCookie, User.SerializeToString(u.Email, password)) { Expires = DateTime.Now.AddDays(30) };
+                    var cookie = new HttpCookie(Const.LoginCookie, 
+                        User.SerializeToString(u.Email, password)) { Expires = DateTime.Now.AddDays(30) };
                     Ctx.Response.Cookies.Add(cookie);
                 }
                 return UrlTo.Controller("requirement");
@@ -42,8 +44,27 @@ namespace Soaring.Biz.Controllers
             return url ?? UrlTo.Controller("user").Action("login");
         }
 
-        public void Register()
+        public string Register([Bind]User user)
         {
+            if (user.Email.LikeNull() || user.Password.LikeNull() || user.Nick.LikeNull() || user.Email.IndexOf("@") < 0)
+            {
+                Flash.Warning = "Email密码以及显示名都是必填项";
+                return null;
+            }
+            var validater = user.Validate();
+            if(validater.IsValid)
+            {
+                user.Save();
+                Flash.Notice = "用户创建成功";
+                return UrlTo.Controller("user").Action("login");
+            }
+            var sb = new StringBuilder();
+            foreach (var message in validater.ErrorMessages)
+            {
+                sb.Append(message);
+            }
+            Flash.Warning = sb.ToString();
+            return null;
         }
     }
 }

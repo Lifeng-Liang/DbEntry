@@ -162,7 +162,7 @@ namespace Lephone.UnitTest.Data.Inner
             }
             catch (DataException ex)
             {
-                Assert.AreEqual("The model class should be public", ex.Message);
+                Assert.AreEqual("[Lephone.UnitTest.Data.Inner.NotPublic]The model class should be public.", ex.Message);
             }
         }
     }

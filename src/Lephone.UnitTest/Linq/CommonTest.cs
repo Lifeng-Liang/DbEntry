@@ -32,6 +32,12 @@ namespace Lephone.UnitTest.Linq
             public MyEnum Abc { get; set; }
         }
 
+        public class BoolTest : DbObjectModel<BoolTest>
+        {
+            public string Name;
+            public bool Available { get; set; }
+        }
+
         [Test]
         public void Test1()
         {
@@ -350,6 +356,20 @@ namespace Lephone.UnitTest.Linq
         {
             Sqlite.From<EnumTest>().Where(p => p.Abc == MyEnum.Test1).Select();
             AssertSql("SELECT [Id],[ccc] AS [Abc] FROM [Enum_Test] WHERE [ccc] = @ccc_0;\n<Text><60>(@ccc_0=0:Int32)");
+        }
+
+        [Test]
+        public void TestBoolOfDefault()
+        {
+            Sqlite.From<BoolTest>().Where(p => p.Available).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Available] = @Available_0;\n<Text><60>(@Available_0=True:Boolean)");
+        }
+
+        [Test]
+        public void TestBoolOfDefault2()
+        {
+            Sqlite.From<BoolTest>().Where(p => p.Available && p.Name == "tom").Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE ([Available] = @Available_0) AND ([Name] = @Name_1);\n<Text><60>(@Available_0=True:Boolean,@Name_1=tom:String)");
         }
     }
 }
