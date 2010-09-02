@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using Lephone.Core.Text;
 using Lephone.Data;
 
-namespace Lephone.Utility
+namespace Lephone.Extra
 {
     // order by [Id]
     public class DbEnum

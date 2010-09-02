@@ -10,8 +10,8 @@ using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.CreateTable;
 using Lephone.UnitTest.Data.Objects;
 using Lephone.Core.Logging;
-using Lephone.Utility;
-using Lephone.Utility.Logging;
+using Lephone.Extra;
+using Lephone.Extra.Logging;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data

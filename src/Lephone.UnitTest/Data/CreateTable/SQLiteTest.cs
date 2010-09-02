@@ -183,6 +183,11 @@ namespace Lephone.UnitTest.Data.CreateTable
 
         [Precision(10, 4)]
         public decimal TotalFee { get; set; }
+
+        public decimal? Price2 { get; set; }
+
+        [Precision(10, 4)]
+        public decimal? TotalFee2 { get; set; }
     }
 
     #endregion
@@ -472,7 +477,9 @@ SELECT LAST_INSERT_ROWID();
             AssertSql(@"CREATE TABLE [Pr_Decimal] (
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
     [Price] DECIMAL (16,2) NOT NULL ,
-    [TotalFee] DECIMAL (10,4) NOT NULL 
+    [TotalFee] DECIMAL (10,4) NOT NULL ,
+    [Price2] DECIMAL (16,2) NULL ,
+    [TotalFee2] DECIMAL (10,4) NULL 
 );
 <Text><30>()");
         }

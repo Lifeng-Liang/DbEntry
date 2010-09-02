@@ -36,11 +36,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.CodeGen", "Lephone.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Core", "Lephone.Core\Lephone.Core.csproj", "{891EAD10-3C90-4478-A695-71F5537C2AA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Utility", "Lephone.Utility\Lephone.Utility.csproj", "{78E98965-E774-4299-BCEC-26FB3CA8ABBB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Processor", "Lephone.Processor\Lephone.Processor.csproj", "{F44CB5CA-3328-43C3-B640-443A1A57A745}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Data.Oracle8", "Lephone.Data.Oracle8\Lephone.Data.Oracle8.csproj", "{EE035A63-2ABA-4B2C-B716-780CF8CFB631}"
@@ -72,6 +67,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Soaring", "Soaring\", "{A88
 		VWDPort = "2765"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Extra", "Lephone.Extra\Lephone.Extra.csproj", "{D009E584-9511-4243-9D2D-CD74079FB425}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -157,18 +154,6 @@ Global
 		{891EAD10-3C90-4478-A695-71F5537C2AA2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{891EAD10-3C90-4478-A695-71F5537C2AA2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{891EAD10-3C90-4478-A695-71F5537C2AA2}.Release|x86.ActiveCfg = Release|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|.NET.ActiveCfg = Release|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{78E98965-E774-4299-BCEC-26FB3CA8ABBB}.Release|x86.ActiveCfg = Release|Any CPU
 		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|.NET.ActiveCfg = Debug|x86
 		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{F44CB5CA-3328-43C3-B640-443A1A57A745}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
@@ -229,6 +214,18 @@ Global
 		{A8801ED6-2D55-4CB5-8153-1644462083C6}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{A8801ED6-2D55-4CB5-8153-1644462083C6}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
 		{A8801ED6-2D55-4CB5-8153-1644462083C6}.Release|x86.ActiveCfg = Debug|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Release|.NET.ActiveCfg = Release|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D009E584-9511-4243-9D2D-CD74079FB425}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

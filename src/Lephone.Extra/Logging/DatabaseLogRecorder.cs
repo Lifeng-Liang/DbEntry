@@ -2,7 +2,7 @@
 using Lephone.Core.Logging;
 using Lephone.Data;
 
-namespace Lephone.Utility.Logging
+namespace Lephone.Extra.Logging
 {
     public class DatabaseLogRecorder : ILogRecorder
     {

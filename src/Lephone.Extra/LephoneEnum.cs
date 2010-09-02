@@ -1,6 +1,6 @@
 ﻿using Lephone.Data.Definition;
 
-namespace Lephone.Utility
+namespace Lephone.Extra
 {
 	public class LephoneEnum : DbObject
 	{

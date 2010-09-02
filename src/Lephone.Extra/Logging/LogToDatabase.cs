@@ -1,6 +1,6 @@
 ﻿using Lephone.Core.Logging;
 
-namespace Lephone.Utility.Logging
+namespace Lephone.Extra.Logging
 {
 	public static class LogToDatabase
 	{

@@ -331,7 +331,7 @@ namespace Lephone.Data.Common
                 LengthErrorMessage = lengthAttribute.ErrorMessage;
             }
 
-            if(fi.MemberType == typeof(decimal))
+            if (fi.MemberType == typeof(decimal) || fi.MemberType == typeof(decimal?))
             {
                 var precisionAttribute = fi.GetAttribute<PrecisionAttribute>(false);
                 if (precisionAttribute != null)
