@@ -44,6 +44,7 @@ namespace Lephone.Processor
         public static readonly string AssemblyProcessed = typeof(AssemblyProcessed).FullName;
         public static readonly string DbObjectModel1 = typeof(DbObjectModel<>).FullName;
         public static readonly string DbObjectModel2 = typeof(DbObjectModel<,>).FullName;
+        public static readonly string ComposedOfAttribute = typeof(ComposedOfAttribute).FullName;
 
         private static readonly Dictionary<string, FieldType> RelationAttributes;
         private static readonly Dictionary<string, FieldType> Relations;
@@ -76,6 +77,7 @@ namespace Lephone.Processor
         private readonly MethodReference _crossTable;
         private readonly MethodReference _modelHandler;
         private readonly MethodReference _assemblyProcessed;
+        private readonly MethodReference _exclude;
 
         public readonly TypeReference ObjectType;
         public readonly TypeReference VoidType;
@@ -166,6 +168,7 @@ namespace Lephone.Processor
             _crossTable = Import(Import(typeof(CrossTableNameAttribute)).GetConstructor(typeof(string)));
             _modelHandler = Import(Import(typeof(ModelHandlerAttribute)).GetConstructor(typeof(Type)));
             _assemblyProcessed = Import(Import(typeof(AssemblyProcessed)).GetConstructor());
+            _exclude = Import(Import(typeof(ExcludeAttribute)).GetConstructor());
             var dbase = typeof(DbObjectSmartUpdate);
             ColumnUpdated = _module.Import(dbase.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag));
             InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
@@ -251,6 +254,19 @@ namespace Lephone.Processor
         {
             var drt = _module.Import(typeof(IDataRecord));
             return _module.Import(drt.GetMethod("get_Item", typeof(string)));
+        }
+
+        public static bool IsComposedOf(IMemberDefinition pi)
+        {
+            foreach (CustomAttribute ca in pi.CustomAttributes)
+            {
+                var name = ca.Constructor.DeclaringType.FullName;
+                if (ComposedOfAttribute == name)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static FieldType GetFieldType(IMemberDefinition pi)
@@ -359,6 +375,12 @@ namespace Lephone.Processor
         public CustomAttribute GetAssemblyProcessed()
         {
             var c = new CustomAttribute(_assemblyProcessed);
+            return c;
+        }
+
+        public CustomAttribute GetExclude()
+        {
+            var c = new CustomAttribute(_exclude);
             return c;
         }
     }

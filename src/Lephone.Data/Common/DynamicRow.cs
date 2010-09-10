@@ -26,7 +26,7 @@ namespace Lephone.Data.Common
 
         internal void SetMember(string name, object value)
         {
-            _jar[name] = value;
+            _jar[name] = value == DBNull.Value ? null : value;
         }
     }
 }

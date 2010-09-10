@@ -71,7 +71,11 @@ namespace Lephone.Processor
                 var t = pi.PropertyDefinition.PropertyType;
                 if (!t.IsValueType && !t.IsArray && t.FullName != KnownTypesHandler.String)
                 {
-                    if (pi.FieldType == FieldType.Normal || pi.FieldType == FieldType.LazyLoad)
+                    if(pi.IsComposedOf && pi.FieldType != FieldType.Normal)
+                    {
+                        throw new DataException("ComposedOf field could not be relation field.");
+                    }
+                    if (!pi.IsComposedOf && (pi.FieldType == FieldType.Normal || pi.FieldType == FieldType.LazyLoad))
                     {
                         throw new DataException("The property '{0}' should define as relation field and can not set lazy load attribute", pi.PropertyDefinition.Name);
                     }
@@ -185,7 +189,8 @@ namespace Lephone.Processor
                     && pi.GetMethod.IsCompilerGenerated())
                 {
                     var ft = KnownTypesHandler.GetFieldType(pi);
-                    result.Add(new PropertyInformation {PropertyDefinition = pi, FieldType = ft});
+                    var ico = KnownTypesHandler.IsComposedOf(pi);
+                    result.Add(new PropertyInformation {PropertyDefinition = pi, FieldType = ft, IsComposedOf = ico});
                 }
             }
             return result;
@@ -196,8 +201,30 @@ namespace Lephone.Processor
             DefineField(pi);
             _model.Fields.Add(pi.FieldDefinition);
 
+            if(pi.IsComposedOf)
+            {
+                ProcessComposedOfAttribute(pi);
+            }
+
             ProcessPropertyGet(pi);
             ProcessPropertySet(pi);
+        }
+
+        private void ProcessComposedOfAttribute(PropertyInformation pi)
+        {
+            var composedOf = pi.PropertyDefinition.PropertyType.Resolve();
+            var gen = new ComposedOfClassGenerator(_model, composedOf, _handler);
+            gen.Generate();
+
+            foreach(var attribute in pi.PropertyDefinition.CustomAttributes)
+            {
+                if(attribute.AttributeType.FullName == KnownTypesHandler.ComposedOfAttribute)
+                {
+                    pi.PropertyDefinition.CustomAttributes.Remove(attribute);
+                    break;
+                }
+            }
+            pi.PropertyDefinition.CustomAttributes.Add(_handler.GetExclude());
         }
 
         private static void RemovePropertyCompilerGeneratedAttribute(MethodDefinition method)

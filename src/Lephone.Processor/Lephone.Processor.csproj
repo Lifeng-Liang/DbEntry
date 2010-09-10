@@ -70,11 +70,13 @@
   <ItemGroup>
     <Compile Include="ArgsErrorException.cs" />
     <Compile Include="AssemblyProcessor.cs" />
+    <Compile Include="ComposedOfClassGenerator.cs" />
     <Compile Include="DataReaderEmitHelper.cs" />
     <Compile Include="IlBuilder.cs" />
     <Compile Include="KnownTypesHandler.cs" />
     <Compile Include="ModelHandlerGenerator.cs" />
     <Compile Include="ModelProcessor.cs" />
+    <Compile Include="TypeFactory.cs" />
     <Compile Include="ProcesssorSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

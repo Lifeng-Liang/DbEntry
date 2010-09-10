@@ -11,16 +11,13 @@ namespace Lephone.Processor
     {
         private static readonly DataReaderEmitHelper Helper = new DataReaderEmitHelper();
 
-        private const TypeAttributes ClassTypeAttr = TypeAttributes.Class | TypeAttributes.Public;
         private const MethodAttributes CtMethodAttr = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual; //public hidebysig virtual instance
         private const MethodAttributes MethodAttr = MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.Virtual; //public hidebysig virtual instance
         private const MethodAttributes CtorAttr = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
 
-        private const string MemberPrifix = "$";
         private readonly TypeDefinition _model;
         private readonly KnownTypesHandler _handler;
         private readonly TypeDefinition _result;
-        private static int _index;
 
         private readonly ObjectInfo _info;
 
@@ -31,9 +28,7 @@ namespace Lephone.Processor
             this._type = type;
             this._model = model;
             this._handler = handler;
-            _index++;
-            _result = new TypeDefinition(MemberPrifix + type.Namespace, MemberPrifix + _index + "_" + type.Name,
-                ClassTypeAttr, _handler.ModelHandlerBaseType);
+            _result = TypeFactory.CreateType(model, _handler.ModelHandlerBaseType);
             _result.Interfaces.Add(_handler.DbObjectHandlerInterface);
             _model.CustomAttributes.Add(_handler.GetModelHandler(_result));
 

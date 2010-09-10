@@ -8,6 +8,7 @@ namespace Lephone.Processor
         public FieldType FieldType;
         public FieldDefinition FieldDefinition;
         public string ColumnName;
+        public bool IsComposedOf { get; set; }
 
         private PropertyDefinition _propertyDefinition;
 

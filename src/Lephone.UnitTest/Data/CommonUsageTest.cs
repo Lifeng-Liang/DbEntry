@@ -834,6 +834,16 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
+        public void TestExecuteDynamicRowForNull()
+        {
+            dynamic row = DbEntry.Context.ExecuteDynamicRow("Select * From NullTest Where Id = 3");
+            Assert.AreEqual(3, row.Id);
+            Assert.IsNull(row.Name);
+            Assert.IsNull(row.MyInt);
+            Assert.IsNull(row.MyBool);
+        }
+
+        [Test]
         public void TestExecuteDynamicSet()
         {
             dynamic set = DbEntry.Context.ExecuteDynamicSet(@"Select * From People Order By Id;

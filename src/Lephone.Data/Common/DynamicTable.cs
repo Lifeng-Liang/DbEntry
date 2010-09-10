@@ -39,7 +39,7 @@ namespace Lephone.Data.Common
                 int i = _owner.GetIndex(name);
                 if (i >= 0)
                 {
-                    _jar.Insert(i, value);
+                    _jar.Insert(i, value == DBNull.Value ? null : value);
                 }
             }
 
