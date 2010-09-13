@@ -114,6 +114,22 @@ namespace Lephone.Data
             GetContext(obj.GetType()).Save(obj);
         }
 
+        public static void Save(params object[] objs)
+        {
+            if(objs != null && objs.Length > 0)
+            {
+                var context = GetContext(objs[0].GetType());
+                context.UsingTransaction(
+                    ()=>
+                        {
+                            foreach(var o in objs)
+                            {
+                                context.Save(o);
+                            }
+                        });
+            }
+        }
+
         public static void Update(object obj)
 		{
             GetContext(obj.GetType()).Update(obj);
