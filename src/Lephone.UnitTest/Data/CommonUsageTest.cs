@@ -22,6 +22,9 @@ namespace Lephone.UnitTest.Data
     public class SavePeople : DbObjectModel<SavePeople>
     {
         public string Name { get; set; }
+
+        [Exclude]
+        public UniquePerson ExcludeColumn { get; set; }
     }
 
     [DbTable("File")]

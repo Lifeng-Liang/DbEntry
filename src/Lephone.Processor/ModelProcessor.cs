@@ -75,7 +75,7 @@ namespace Lephone.Processor
                     {
                         throw new DataException("ComposedOf field could not be relation field.");
                     }
-                    if (!pi.IsComposedOf && (pi.FieldType == FieldType.Normal || pi.FieldType == FieldType.LazyLoad))
+                    if (!pi.IsExclude && !pi.IsComposedOf && (pi.FieldType == FieldType.Normal || pi.FieldType == FieldType.LazyLoad))
                     {
                         throw new DataException("The property '{0}' should define as relation field and can not set lazy load attribute", pi.PropertyDefinition.Name);
                     }
@@ -190,7 +190,13 @@ namespace Lephone.Processor
                 {
                     var ft = KnownTypesHandler.GetFieldType(pi);
                     var ico = KnownTypesHandler.IsComposedOf(pi);
-                    result.Add(new PropertyInformation {PropertyDefinition = pi, FieldType = ft, IsComposedOf = ico});
+                    result.Add(new PropertyInformation
+                                   {
+                                       PropertyDefinition = pi,
+                                       FieldType = ft,
+                                       IsComposedOf = ico,
+                                       IsExclude = KnownTypesHandler.IsExclude(pi)
+                                   });
                 }
             }
             return result;

@@ -16,7 +16,8 @@ namespace Lephone.UnitTest.Data
         {
             public string Name { get; set; }
 
-            [ComposedOf]
+            //[ComposedOf]
+            [Exclude]
             public ILocation Location { get; private set; }
         }
 

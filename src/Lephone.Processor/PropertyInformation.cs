@@ -9,6 +9,7 @@ namespace Lephone.Processor
         public FieldDefinition FieldDefinition;
         public string ColumnName;
         public bool IsComposedOf { get; set; }
+        public bool IsExclude { get; set; }
 
         private PropertyDefinition _propertyDefinition;
 

@@ -269,6 +269,19 @@ namespace Lephone.Processor
             return false;
         }
 
+        public static bool IsExclude(IMemberDefinition pi)
+        {
+            foreach (CustomAttribute ca in pi.CustomAttributes)
+            {
+                var name = ca.Constructor.DeclaringType.FullName;
+                if (ExcludeAttribute == name)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public static FieldType GetFieldType(IMemberDefinition pi)
         {
             foreach (CustomAttribute ca in pi.CustomAttributes)
