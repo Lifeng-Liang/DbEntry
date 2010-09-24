@@ -6,37 +6,37 @@ namespace Lephone.MockSql
 {
     public class RecorderDbTransaction : DbTransaction
     {
-        private readonly RecorderConnection conn;
-        private readonly IsolationLevel level;
-        internal List<string> sqls = new List<string>();
+        private readonly RecorderConnection _conn;
+        private readonly IsolationLevel _level;
+        internal List<string> Sqls = new List<string>();
 
         public RecorderDbTransaction(DbConnection c, IsolationLevel l)
         {
-            this.conn = (RecorderConnection)c;
-            this.level = l;
+            this._conn = (RecorderConnection)c;
+            this._level = l;
         }
 
         public override void Commit()
         {
-            foreach (string s in sqls)
+            foreach (string s in Sqls)
             {
-                conn.Recorder.Write(s);
+                _conn.Recorder.Write(s);
             }
         }
 
         protected override DbConnection DbConnection
         {
-            get { return conn; }
+            get { return _conn; }
         }
 
         public override IsolationLevel IsolationLevel
         {
-            get { return level; }
+            get { return _level; }
         }
 
         public override void Rollback()
         {
-            sqls.Clear();
+            Sqls.Clear();
         }
     }
 }

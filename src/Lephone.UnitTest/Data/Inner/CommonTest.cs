@@ -156,7 +156,7 @@ namespace Lephone.UnitTest.Data.Inner
         {
             try
             {
-                var obj = new NotPublic();
+                var obj = new NotPublic {Name = "tom"};
                 DbEntry.Context.Insert(obj);
                 Assert.IsTrue(false);
             }

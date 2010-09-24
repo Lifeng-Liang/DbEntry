@@ -19,7 +19,7 @@ namespace Lephone.UnitTest.DotNetFramework
         [Test]
         public void Test1()
         {
-            test o = new test();
+            test o = new test {n = null};
             Assert.IsFalse(o.n.HasValue);
         }
 

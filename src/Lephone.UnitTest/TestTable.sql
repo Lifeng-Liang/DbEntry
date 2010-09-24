@@ -165,3 +165,20 @@ CREATE TABLE [HRM_JOB_ROLES] (
 	[DESCRIPTION] ntext NOT NULL 
 );
 
+CREATE TABLE [Co_User1] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] NTEXT NOT NULL ,
+    [LocationPhone] NTEXT NOT NULL ,
+    [LocationAddress] NTEXT NOT NULL ,
+    [LocationNumber] INT NOT NULL ,
+    [LocationWow] INT NULL 
+);
+
+CREATE TABLE [Co_User] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] NTEXT NOT NULL ,
+    [LocationPhone] NTEXT NOT NULL ,
+    [LocationAddress] NTEXT NULL ,
+    [MyNumber] INT NOT NULL ,
+    [LocationWow] INT NULL 
+);

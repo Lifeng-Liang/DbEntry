@@ -64,6 +64,12 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>UnitTest.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -140,6 +146,7 @@
     <Compile Include="Data\Inner\DateParamterTest.cs" />
     <Compile Include="Data\Inner\TesterHelper.cs" />
     <Compile Include="Data\Inner\WhereConditionTest.cs" />
+    <Compile Include="InitTestDatabase.cs" />
     <Compile Include="Linq\CommonTest.cs" />
     <Compile Include="Linq\LinqObjectModelTest.cs" />
     <Compile Include="Linq\RealOperateTest.cs" />
@@ -230,6 +237,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UnitTest.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

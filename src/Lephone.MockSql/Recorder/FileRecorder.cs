@@ -6,18 +6,18 @@ namespace Lephone.MockSql.Recorder
 {
     public class FileRecorder : IRecorder
     {
-        private readonly string FileName;
+        private readonly string _fileName;
 
         public FileRecorder()
         {
-            FileName = ConfigHelper.AppSettings.GetValue("RecorderFileName");
+            _fileName = ConfigHelper.AppSettings.GetValue("RecorderFileName");
         }
 
-        public void Write(string Msg, params object[] os)
+        public void Write(string msg, params object[] os)
         {
-            using ( StreamWriter sw = new StreamWriter(FileName, true, EncodingEx.Default) )
+            using (var sw = new StreamWriter(_fileName, true, EncodingEx.Default))
             {
-                sw.WriteLine(Msg, os);
+                sw.WriteLine(msg, os);
             }
         }
     }

@@ -1,10 +1,18 @@
 ﻿using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Common;
+using Lephone.Data.Definition;
+using Lephone.MockSql.Recorder;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
+    [DbContext("SQLite")]
+    public class PagedForOtherDb : DbObjectModel<PagedForOtherDb>
+    {
+        public string Name { get; set; }
+    }
+
     [TestFixture]
     public class PagedSelectorTest : DataTestBase
     {
@@ -58,6 +66,21 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("Mike", ls[0].Name);
             Assert.AreEqual("Jerry", ls[1].Name);
             Assert.AreEqual("Tom", ls[2].Name);
+        }
+
+        [Test]
+        public void TestForOtherDb()
+        {
+            StaticRecorder.CurRow.Add(new RowInfo("__count__", 1L));
+            var selector = PagedForOtherDb.Where(Condition.Empty).OrderBy("Id").PageSize(10).GetPagedSelector();
+            var count = selector.GetResultCount();
+            Assert.AreEqual(1, count);
+            StaticRecorder.CurRow.Add(new RowInfo("Id", 1L));
+            StaticRecorder.CurRow.Add(new RowInfo("Name", "tom"));
+            var list = selector.GetCurrentPage(0);
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(1, ((PagedForOtherDb)list[0]).Id);
+            Assert.AreEqual("tom", ((PagedForOtherDb)list[0]).Name);
         }
     }
 }

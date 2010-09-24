@@ -2,6 +2,6 @@
 {
     public interface IRecorder
     {
-        void Write(string Msg, params object[] os);
+        void Write(string msg, params object[] os);
     }
 }

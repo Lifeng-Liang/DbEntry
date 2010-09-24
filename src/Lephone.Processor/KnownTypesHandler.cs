@@ -92,6 +92,8 @@ namespace Lephone.Processor
         public readonly TypeReference AutoValueType;
         public readonly TypeReference DbObjectHandlerInterface;
 
+        public readonly MethodReference ObjectTypeCtor;
+
         public readonly MethodReference DynamicObjectReferenceSerializeObject;
         public readonly MethodReference SerializableGetObjectData;
         public readonly MethodReference BelongsToInterfaceSetForeignKey;
@@ -195,6 +197,8 @@ namespace Lephone.Processor
             StreamingContextType = Import(typeof(StreamingContext));
             AutoValueType = Import(typeof(AutoValue));
             DbObjectHandlerInterface = Import(typeof(IDbObjectHandler));
+
+            ObjectTypeCtor = Import(ObjectType.GetConstructor());
 
             KeyValueCollectionAdd = Import(typeof(KeyValueCollection).GetMethod("Add", new[] {typeof(KeyValue)}));
 

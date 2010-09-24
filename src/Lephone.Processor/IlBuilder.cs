@@ -176,7 +176,7 @@ namespace Lephone.Processor
         {
             if(mm.MemberInfo.IsProperty)
             {
-                var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetSetMethod();
+                var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetSetMethod(true);
                 return CallVirtual(handler.Import(method));
             }
             return SetField(handler.Import((FieldInfo)mm.MemberInfo.GetMemberInfo()));
@@ -191,7 +191,7 @@ namespace Lephone.Processor
         {
             if (mm.MemberInfo.IsProperty)
             {
-                var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetGetMethod();
+                var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetGetMethod(true);
                 return CallVirtual(handler.Import(method));
             }
             return LoadField(handler.Import((FieldInfo)mm.MemberInfo.GetMemberInfo()));

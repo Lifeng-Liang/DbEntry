@@ -6,11 +6,11 @@ namespace Lephone.MockSql.Recorder
     {
         public static readonly List<RowInfo> CurRow = new List<RowInfo>();
 
-        private static string _LastMessage = "";
+        private static string _lastMessage = "";
 
         public static string LastMessage
         {
-            get { return _LastMessage; }
+            get { return _lastMessage; }
         }
 
         private static readonly List<string> _Messages = new List<string>();
@@ -22,14 +22,14 @@ namespace Lephone.MockSql.Recorder
 
         public static void ClearMessages()
         {
-            _LastMessage = "";
+            _lastMessage = "";
             _Messages.Clear();
         }
 
         public void Write(string msg, params object[] os)
         {
-            _LastMessage = string.Format(msg, os);
-            _Messages.Add(_LastMessage);
+            _lastMessage = string.Format(msg, os);
+            _Messages.Add(_lastMessage);
         }
     }
 }

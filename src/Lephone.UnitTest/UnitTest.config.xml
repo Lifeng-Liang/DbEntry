@@ -18,6 +18,10 @@
     <add key="DefaultContext" value="Development" />
     <add key="CacheEnabled" value="true" />
 
+    <add key="Init.AutoCreateTable" value="true" />
+    <add key="Init.DataBase" value="@SQLite : @{CurrentDirectory}..\..\UnitTest.db" />
+    <add key="Init.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
+
     <add key="Development.AutoCreateTable" value="true" />
     <add key="Development.DataBase" value="@SQLite : @{TempDirectory}UnitTest.db" />
     <add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />

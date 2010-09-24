@@ -8,13 +8,14 @@ namespace Lephone.Processor
         private const string NameSplitter = "$";
         private static int _index;
 
-        public static TypeDefinition CreateType(TypeDefinition model, TypeDefinition interfaceType)
+        public static TypeDefinition CreateType(KnownTypesHandler handler, TypeDefinition model, TypeDefinition interfaceType)
         {
             _index++;
             var result = new TypeDefinition(
                 GetNamespace(model),
                 GetClassName(model, interfaceType.Name),
-                ClassTypeAttr);
+                ClassTypeAttr,
+                handler.ObjectType);
             result.Interfaces.Add(interfaceType);
             return result;
         }
@@ -28,6 +29,15 @@ namespace Lephone.Processor
                 ClassTypeAttr,
                 baseType);
             return result;
+        }
+
+        public static PropertyDefinition CreateProperty(string name, MethodAttributes attr, TypeReference type, KnownTypesHandler handler)
+        {
+            var pd = new PropertyDefinition(name, PropertyAttributes.None, type);
+            pd.GetMethod = new MethodDefinition("get_" + name, attr, type);
+            pd.SetMethod = new MethodDefinition("set_" + name, attr, handler.VoidType);
+            pd.SetMethod.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, type));
+            return pd;
         }
 
         private static string GetNamespace(TypeDefinition model)

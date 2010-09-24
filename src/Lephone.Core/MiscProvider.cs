@@ -8,7 +8,7 @@ namespace Lephone.Core
     {
         public static readonly MiscProvider Instance = (MiscProvider)ClassHelper.CreateInstance(CoreSettings.MiscProvider);
 
-        protected MiscProvider() {}
+        protected MiscProvider() { }
 
         public virtual DateTime Now
         {
@@ -22,7 +22,9 @@ namespace Lephone.Core
 
         private static class TickProvider
         {
+            // ReSharper disable UnaccessedField.Local
             private static Timer _timer; // to avoid it to be collected by GC.
+            // ReSharper restore UnaccessedField.Local
 
             public static long Secends;
 
@@ -30,7 +32,6 @@ namespace Lephone.Core
             {
                 _timer = new Timer(o => { Secends++; }, null, 1000, 1000);
             }
-            
         }
 
         public virtual long Secends

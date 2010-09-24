@@ -1,59 +1,27 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using Lephone.MockSql.Recorder;
 
 namespace Lephone.MockSql
 {
     public class RecorderCommand : DbCommand
     {
-        private string _CommandText;
-        private int _CommandTimeout;
-        private System.Data.CommandType _CommandType;
-        private RecorderConnection _DbConnection;
-        private RecorderDbTransaction _DbTransaction;
-        private readonly DbParameterCollection _DbParameterCollection = new RecorderParameterCollection();
+        private RecorderConnection _dbConnection;
+        private RecorderDbTransaction _dbTransaction;
+        private readonly DbParameterCollection _dbParameterCollection = new RecorderParameterCollection();
 
-        private static int serial = 1;
+        private static int _serial = 1;
 
         public override void Cancel()
         {
             throw RecorderFactory.NotImplemented;
         }
 
-        public override string CommandText
-        {
-            get
-            {
-                return _CommandText;
-            }
-            set
-            {
-                _CommandText = value;
-            }
-        }
+        public override string CommandText { get; set; }
 
-        public override int CommandTimeout
-        {
-            get
-            {
-                return _CommandTimeout;
-            }
-            set
-            {
-                _CommandTimeout = value;
-            }
-        }
+        public override int CommandTimeout { get; set; }
 
-        public override System.Data.CommandType CommandType
-        {
-            get
-            {
-                return _CommandType;
-            }
-            set
-            {
-                _CommandType = value;
-            }
-        }
+        public override CommandType CommandType { get; set; }
 
         protected override DbParameter CreateDbParameter()
         {
@@ -64,28 +32,28 @@ namespace Lephone.MockSql
         {
             get
             {
-                return _DbConnection;
+                return _dbConnection;
             }
             set
             {
-                _DbConnection = (RecorderConnection)value;
+                _dbConnection = (RecorderConnection)value;
             }
         }
 
         protected override DbParameterCollection DbParameterCollection
         {
-            get { return _DbParameterCollection; }
+            get { return _dbParameterCollection; }
         }
 
         protected override DbTransaction DbTransaction
         {
             get
             {
-                return _DbTransaction;
+                return _dbTransaction;
             }
             set
             {
-                _DbTransaction = (RecorderDbTransaction)value;
+                _dbTransaction = (RecorderDbTransaction)value;
             }
         }
 
@@ -101,7 +69,7 @@ namespace Lephone.MockSql
             }
         }
 
-        protected override DbDataReader ExecuteDbDataReader(System.Data.CommandBehavior behavior)
+        protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
             Record();
             return new RecorderReader();
@@ -122,18 +90,18 @@ namespace Lephone.MockSql
                 StaticRecorder.CurRow.Clear();
                 return o;
             }
-            return serial++;
+            return _serial++;
         }
 
         private void Record()
         {
-            if (_DbTransaction == null)
+            if (_dbTransaction == null)
             {
-                _DbConnection.Recorder.Write(this.ToString());
+                _dbConnection.Recorder.Write(this.ToString());
             }
             else
             {
-                _DbTransaction.sqls.Add(this.ToString());
+                _dbTransaction.Sqls.Add(this.ToString());
             }
         }
 
@@ -142,7 +110,7 @@ namespace Lephone.MockSql
             throw RecorderFactory.NotImplemented;
         }
 
-        public override System.Data.UpdateRowSource UpdatedRowSource
+        public override UpdateRowSource UpdatedRowSource
         {
             get
             {

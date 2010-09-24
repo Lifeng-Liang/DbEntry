@@ -159,7 +159,7 @@ namespace Lephone.UnitTest.Data
         public void TestGetTableNames()
         {
             var tables = new List<string> { "Article", "BelongsMore", "Books", "Categories", "LockVersionTest",
-                "DateAndTime", "File", "NullTest", "PCs", "People", "R_Article_Reader", "Reader", "SoftDelete",
+                "Co_User", "Co_User1", "DateAndTime", "File", "NullTest", "PCs", "People", "R_Article_Reader", "Reader", "SoftDelete",
                 "DCS_USERS", "REF_ORG_UNIT", "HRM_EMPLOYEES", "DCS_PERSONS", "REL_EMP_JOB_ROLE", "REL_JOB_ROLE_ORG_UNIT", "HRM_JOB_ROLES" };
             tables.Sort();
             string[] ts = tables.ToArray();

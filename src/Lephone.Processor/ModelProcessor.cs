@@ -12,10 +12,11 @@ namespace Lephone.Processor
         private const MethodAttributes FlagGetObjectData
             = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.NewSlot
               | MethodAttributes.Virtual | MethodAttributes.Final;
-        private const string MemberPrifix = "$";
         private readonly TypeDefinition _model;
         private readonly KnownTypesHandler _handler;
         private readonly List<PropertyInformation> _properties;
+
+        private readonly List<KeyValuePair<TypeDefinition, FieldDefinition>> _coTypes = new List<KeyValuePair<TypeDefinition, FieldDefinition>>();
 
         public ModelProcessor(TypeDefinition model, KnownTypesHandler handler)
         {
@@ -109,8 +110,20 @@ namespace Lephone.Processor
             {
                 processor.LoadArg(0).Call(_handler.InitUpdateColumns);
             }
+            ProcessComposedOfInit(processor);
             var target = GetCallBaseCtor(constructor);
             processor.InsertAfter(target);
+        }
+
+        private void ProcessComposedOfInit(IlBuilder processor)
+        {
+            foreach(var kv in _coTypes)
+            {
+                processor.LoadArg(0);
+                processor.LoadArg(0);
+                processor.NewObj(kv.Key.GetConstructor());
+                processor.SetField(kv.Value);
+            }
         }
 
         private void ProcessGenericPropertyInConstructor(PropertyInformation pi, IlBuilder processor)
@@ -204,23 +217,20 @@ namespace Lephone.Processor
 
         private void ProcessProperty(PropertyInformation pi)
         {
-            DefineField(pi);
-            _model.Fields.Add(pi.FieldDefinition);
+            var pp = new PropertyProcessor(pi, _model, _handler);
+            pp.Process();
 
-            if(pi.IsComposedOf)
+            if (pi.IsComposedOf)
             {
                 ProcessComposedOfAttribute(pi);
             }
-
-            ProcessPropertyGet(pi);
-            ProcessPropertySet(pi);
         }
 
         private void ProcessComposedOfAttribute(PropertyInformation pi)
         {
             var composedOf = pi.PropertyDefinition.PropertyType.Resolve();
             var gen = new ComposedOfClassGenerator(_model, composedOf, _handler);
-            gen.Generate();
+            _coTypes.Add(new KeyValuePair<TypeDefinition, FieldDefinition>(gen.Generate(), pi.FieldDefinition));
 
             foreach(var attribute in pi.PropertyDefinition.CustomAttributes)
             {
@@ -231,305 +241,6 @@ namespace Lephone.Processor
                 }
             }
             pi.PropertyDefinition.CustomAttributes.Add(_handler.GetExclude());
-        }
-
-        private static void RemovePropertyCompilerGeneratedAttribute(MethodDefinition method)
-        {
-            foreach (var attribute in method.CustomAttributes)
-            {
-                if (attribute.Constructor.DeclaringType.FullName == KnownTypesHandler.CompilerGeneratedAttribute)
-                {
-                    method.CustomAttributes.Remove(attribute);
-                    return;
-                }
-            }
-        }
-
-        private static IlBuilder PreProcessPropertyMethod(MethodDefinition method)
-        {
-            RemovePropertyCompilerGeneratedAttribute(method);
-            method.Body.Instructions.Clear();
-            return new IlBuilder(method.Body);
-        }
-
-        private void ProcessPropertyGet(PropertyInformation pi)
-        {
-            var processor = PreProcessPropertyMethod(pi.PropertyDefinition.GetMethod);
-            processor.LoadArg(0);
-            processor.LoadField(pi.FieldDefinition);
-            if (pi.FieldType == FieldType.BelongsTo || pi.FieldType == FieldType.HasOne || pi.FieldType == FieldType.LazyLoad)
-            {
-                var getValue = _handler.Import(pi.FieldDefinition.FieldType.GetMethod("get_Value"));
-                processor.CallVirtual(getValue);
-            }
-            processor.Return();
-            processor.Append();
-        }
-
-        private void ProcessPropertySet(PropertyInformation pi)
-        {
-            var processor = PreProcessPropertyMethod(pi.PropertyDefinition.SetMethod);
-            var exclude = pi.PropertyDefinition.GetCustomAttribute(KnownTypesHandler.ExcludeAttribute);
-            if(exclude != null)
-            {
-                ProcessPropertySetExclude(pi, processor);
-                return;
-            }
-            switch (pi.FieldType)
-            {
-                case FieldType.Normal:
-                    ProcessPropertySetNormal(pi, processor);
-                    ProcessPropertySetCallUpdateColumn(pi, processor);
-                    break;
-                case FieldType.HasOne:
-                    ProcessPropertySetHasOneBelongsToLazyLoad(pi, processor);
-                    break;
-                case FieldType.BelongsTo:
-                    ProcessPropertySetHasOneBelongsToLazyLoad(pi, processor);
-                    break;
-                case FieldType.LazyLoad:
-                    ProcessPropertySetHasOneBelongsToLazyLoad(pi, processor);
-                    ProcessPropertySetCallUpdateColumn(pi, processor);
-                    break;
-                default:
-                    ProcessPropertySetElse(processor);
-                    break;
-            }
-        }
-
-        private static void ProcessPropertySetExclude(PropertyInformation pi, IlBuilder processor)
-        {
-            processor.LoadArg(0);
-            processor.LoadArg(1);
-            processor.SetField(pi.FieldDefinition);
-            processor.Return();
-            processor.Append();
-        }
-
-        private void ProcessPropertySetNormal(PropertyInformation pi, IlBuilder processor)
-        {
-            processor.Return();
-            processor.Append();
-            ProcessPropertySetNormalCompare(pi, processor);
-            processor.LoadArg(0);
-            processor.LoadArg(1);
-            processor.SetField(pi.FieldDefinition);
-            processor.InsertBefore(pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
-        }
-
-        private void ProcessPropertySetHasOneBelongsToLazyLoad(PropertyInformation pi, IlBuilder processor)
-        {
-            processor.LoadArg(0);
-            processor.LoadField(pi.FieldDefinition);
-            processor.LoadArg(1);
-            var sv = pi.FieldDefinition.FieldType.GetMethod("set_Value");
-            var setValue = _handler.Import(sv);
-            processor.CallVirtual(setValue);
-            processor.Return();
-            processor.Append();
-        }
-
-        private static void ProcessPropertySetElse(IlBuilder processor)
-        {
-            processor.Return();
-            processor.Append();
-        }
-
-        private void ProcessPropertySetCallUpdateColumn(PropertyInformation pi, IlBuilder processor)
-        {
-            processor.LoadArg(0);
-            processor.LoadString(pi.ColumnName);
-            processor.Call(_handler.ColumnUpdated);
-            processor.InsertBefore(pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
-        }
-
-        private void ProcessPropertySetNormalCompare(PropertyInformation pi, IlBuilder processor)
-        {
-            if(pi.PropertyDefinition.PropertyType.IsValueType)
-            {
-                if(pi.PropertyDefinition.PropertyType.IsGenericInstance)
-                {
-                    ProcessPropertySetNormalCompareGeneric(pi, processor);
-                }
-                else
-                {
-                    ProcessPropertySetNormalCompareValueType(pi, processor);
-                }
-            }
-            else if(pi.PropertyDefinition.PropertyType.FullName == KnownTypesHandler.String)
-            {
-                ProcessPropertySetNormalCompareString(pi, processor);
-            }
-        }
-
-        private void ProcessPropertySetNormalCompareValueType(PropertyInformation pi, IlBuilder processor)
-        {
-            processor.DeclareLocal(_handler.BoolType);
-            processor.LoadArg(1).LoadArg(0).LoadField(pi.FieldDefinition);
-            if (_handler.TypeDict.ContainsKey(pi.PropertyDefinition.PropertyType.FullName))
-            {
-                var mi = _handler.TypeDict[pi.PropertyDefinition.PropertyType.FullName];
-                processor.Call(mi).LoadInt(0);
-            }
-            processor.Ceq().SetLoc(0).LoadLoc(0);
-            processor.BrTrue_S(pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
-        }
-
-        private void ProcessPropertySetNormalCompareString(PropertyInformation pi, IlBuilder processor)
-        {
-            processor.DeclareLocal(_handler.BoolType);
-            processor.LoadArg(1);
-            processor.LoadArg(0);
-            processor.LoadField(pi.FieldDefinition);
-            var mi = _handler.TypeDict[pi.PropertyDefinition.PropertyType.FullName];
-            processor.Call(mi);
-            processor.LoadInt(0);
-            processor.Ceq();
-            processor.SetLoc(0);
-            processor.LoadLoc(0);
-            processor.BrTrue_S(pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
-        }
-
-        private void ProcessPropertySetNormalCompareGeneric(PropertyInformation pi, IlBuilder processor)
-        {
-            processor.LoadInt(1);
-            processor.LoadInt(0);
-            var l1 = processor.Instructions[0];
-            var l2 = processor.Instructions[1];
-            processor.Instructions.Clear();
-
-            var getValueOrDefault = _handler.Import(pi.PropertyDefinition.PropertyType.GetMethod("GetValueOrDefault"));
-            var getHasValue = _handler.Import(pi.PropertyDefinition.PropertyType.GetMethod("get_HasValue"));
-            var type = (GenericInstanceType) pi.PropertyDefinition.PropertyType;
-            var realType = type.GenericArguments[0].FullName;
-
-            var v0 = processor.DeclareLocal(pi.PropertyDefinition.PropertyType);
-            var v1 = processor.DeclareLocal(pi.PropertyDefinition.PropertyType);
-            processor.DeclareLocal(_handler.BoolType);
-            processor.LoadArg(1).SetLoc(0).LoadArg(0).LoadField(pi.FieldDefinition).SetLoc(1).LoadLocala_S(v0);
-
-            if (realType == KnownTypesHandler.Decimal)
-            {
-                processor.Call(getValueOrDefault).LoadLocala_S(v1).Call(getValueOrDefault)
-                    .Call(_handler.TypeDict[realType]);
-                processor.BrTrue_S(l1).LoadLocala_S(v0).Call(getHasValue).LoadLocala_S(v1).Call(getHasValue);
-                processor.Ceq().LoadInt(0).Ceq().Br_S(l2);
-            }
-            else if (_handler.TypeDict.ContainsKey(realType))
-            {
-                processor.LoadInt(0).Br_S(l2);
-                var l4 = processor.Instructions[processor.Instructions.Count - 2];
-                var l3 = processor.Instructions[processor.Instructions.Count - 1];
-                processor.Instructions.Remove(l3);
-                processor.Instructions.Remove(l4);
-                processor.Call(getHasValue).LoadLocala_S(v1).Call(getHasValue).Bne_Un_S(l1);
-                processor.LoadLocala_S(v0).Call(getHasValue).BrFalse_S(l4).LoadLocala_S(v0);
-                processor.Call(getValueOrDefault).LoadLocala_S(v1).Call(getValueOrDefault)
-                    .Call(_handler.TypeDict[realType]).Br_S(l3);
-                processor.Instructions.Add(l4);
-                processor.Instructions.Add(l3);
-            }
-            else
-            {
-                processor.Call(getValueOrDefault);
-                processor.ConvFloaty(realType);
-                processor.LoadLocala_S(v1).Call(getValueOrDefault);
-                processor.ConvFloaty(realType);
-                processor.Bne_Un_S(l1).LoadLocala_S(v0).Call(getHasValue).LoadLocala_S(v1).Call(getHasValue);
-                processor.Ceq().LoadInt(0).Ceq().Br_S(l2);
-            }
-
-            processor.Instructions.Add(l1);
-            processor.Instructions.Add(l2);
-            processor.Ceq().SetLoc(2).LoadLoc(2);
-            processor.BrTrue_S(pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
-        }
-
-        private void DefineField(PropertyInformation pi)
-        {
-            var pd = pi.PropertyDefinition;
-            var name = MemberPrifix + pd.Name;
-            var propertyType = pd.PropertyType;
-
-            if (pi.FieldType == FieldType.Normal)
-            {
-                pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.Private, propertyType);
-                return;
-            }
-
-            var t = _handler.GetRealType(pi);
-            pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.FamORAssem, t);
-            PopulateDbColumn(pi);
-            PopulateIndex(pi);
-            GenerateCrossTableForHasManyAndBelongsTo(pi);
-            PopulateCustomAttributeForLazyLoadColumn(pi);
-        }
-
-        private void PopulateDbColumn(PropertyInformation pi)
-        {
-            var pd = pi.PropertyDefinition;
-            var bc = pd.GetCustomAttribute(KnownTypesHandler.DbColumnAttribute);
-            if (bc != null)
-            {
-                pd.CustomAttributes.Remove(bc);
-                pi.FieldDefinition.CustomAttributes.Add(bc);
-            }
-            else if (pi.FieldType == FieldType.LazyLoad)
-            {
-                var c = _handler.GetDbColumn(pi.PropertyDefinition.Name);
-                pi.FieldDefinition.CustomAttributes.Add(c);
-            }
-        }
-
-        private static void PopulateIndex(PropertyInformation pi)
-        {
-            var pd = pi.PropertyDefinition;
-            var bcs = pd.GetCustomAttributes(KnownTypesHandler.IndexAttribute);
-            if (bcs != null && bcs.Count > 0)
-            {
-                foreach(var bc in bcs)
-                {
-                    pd.CustomAttributes.Remove(bc);
-                    pi.FieldDefinition.CustomAttributes.Add(bc);
-                }
-            }
-        }
-
-        private void GenerateCrossTableForHasManyAndBelongsTo(PropertyInformation pi)
-        {
-            var pd = pi.PropertyDefinition;
-            if (pi.FieldType == FieldType.HasAndBelongsToMany)
-            {
-                var mm = pd.GetCustomAttribute(KnownTypesHandler.HasAndBelongsToManyAttribute);
-                var ctName = (string)mm.GetField("CrossTableName");
-                if (!string.IsNullOrEmpty(ctName))
-                {
-                    var c = _handler.GetCrossTable(ctName);
-                    pi.FieldDefinition.CustomAttributes.Add(c);
-                }
-            }
-        }
-
-        private static void PopulateCustomAttributeForLazyLoadColumn(PropertyInformation pi)
-        {
-            if (pi.FieldType == FieldType.LazyLoad)
-            {
-                PopulateCustomAttribute(pi, KnownTypesHandler.AllowNullAttribute);
-                PopulateCustomAttribute(pi, KnownTypesHandler.LengthAttribute);
-                PopulateCustomAttribute(pi, KnownTypesHandler.StringColumnAttribute);
-                PopulateCustomAttribute(pi, KnownTypesHandler.IndexAttribute);
-                PopulateCustomAttribute(pi, KnownTypesHandler.SpecialNameAttribute);
-            }
-        }
-
-        private static void PopulateCustomAttribute(PropertyInformation pi, string attributeName)
-        {
-            var c = pi.PropertyDefinition.GetCustomAttribute(attributeName);
-            if(c != null)
-            {
-                pi.PropertyDefinition.CustomAttributes.Remove(c);
-                pi.FieldDefinition.CustomAttributes.Add(c);
-            }
         }
     }
 }

@@ -7,8 +7,8 @@ namespace Lephone.MockSql
 {
     public class RecorderConnection : DbConnection
     {
-        private string _ConnectionString;
-        private bool _IsOpened;
+        private string _connectionString;
+        private bool _isOpened;
         internal IRecorder Recorder;
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
@@ -23,19 +23,19 @@ namespace Lephone.MockSql
 
         public override void Close()
         {
-            _IsOpened = false;
+            _isOpened = false;
         }
 
         public override string ConnectionString
         {
             get
             {
-                return _ConnectionString;
+                return _connectionString;
             }
             set
             {
-                _ConnectionString = value;
-                Recorder = (IRecorder)ClassHelper.CreateInstance(_ConnectionString);
+                _connectionString = value;
+                Recorder = (IRecorder)ClassHelper.CreateInstance(_connectionString);
             }
         }
 
@@ -56,9 +56,9 @@ namespace Lephone.MockSql
 
         public override void Open()
         {
-            if (!_IsOpened)
+            if (!_isOpened)
             {
-                _IsOpened = true;
+                _isOpened = true;
             }
             else
             {

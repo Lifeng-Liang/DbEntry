@@ -177,11 +177,11 @@ namespace Lephone.MockSql
             throw new Exception("The method or operation is not implemented.");
         }
 
-        private int Index;
+        private int _index;
 
         public override bool Read()
         {
-            if (Index++ == 0)
+            if (_index++ == 0)
             {
                 return (CurRow.Count > 0);
             }

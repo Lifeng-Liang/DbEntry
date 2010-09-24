@@ -7,46 +7,46 @@ namespace Lephone.MockSql
 {
     public class RecorderParameterCollection : DbParameterCollection
     {
-        private readonly ArrayList Parameters = new ArrayList();
+        private readonly ArrayList _parameters = new ArrayList();
 
         public override int Add(object value)
         {
-            return Parameters.Add(value);
+            return _parameters.Add(value);
         }
 
         public override void AddRange(Array values)
         {
-            Parameters.AddRange(values);
+            _parameters.AddRange(values);
         }
 
         public override void Clear()
         {
-            Parameters.Clear();
+            _parameters.Clear();
         }
 
         public override bool Contains(string value)
         {
-            return Parameters.Contains(value);
+            return _parameters.Contains(value);
         }
 
         public override bool Contains(object value)
         {
-            return Parameters.Contains(value);
+            return _parameters.Contains(value);
         }
 
         public override void CopyTo(Array array, int index)
         {
-            Parameters.CopyTo(array, index);
+            _parameters.CopyTo(array, index);
         }
 
         public override int Count
         {
-            get { return Parameters.Count; }
+            get { return _parameters.Count; }
         }
 
         public override IEnumerator GetEnumerator()
         {
-            return Parameters.GetEnumerator();
+            return _parameters.GetEnumerator();
         }
 
         protected override DbParameter GetParameter(string parameterName)
@@ -56,42 +56,42 @@ namespace Lephone.MockSql
 
         protected override DbParameter GetParameter(int index)
         {
-            return (DbParameter)Parameters[index];
+            return (DbParameter)_parameters[index];
         }
 
         public override int IndexOf(string parameterName)
         {
-            return Parameters.IndexOf(parameterName);
+            return _parameters.IndexOf(parameterName);
         }
 
         public override int IndexOf(object value)
         {
-            return Parameters.IndexOf(value);
+            return _parameters.IndexOf(value);
         }
 
         public override void Insert(int index, object value)
         {
-            Parameters.Insert(index, value);
+            _parameters.Insert(index, value);
         }
 
         public override bool IsFixedSize
         {
-            get { return Parameters.IsFixedSize; }
+            get { return _parameters.IsFixedSize; }
         }
 
         public override bool IsReadOnly
         {
-            get { return Parameters.IsReadOnly; }
+            get { return _parameters.IsReadOnly; }
         }
 
         public override bool IsSynchronized
         {
-            get { return Parameters.IsSynchronized; }
+            get { return _parameters.IsSynchronized; }
         }
 
         public override void Remove(object value)
         {
-            Parameters.Remove(value);
+            _parameters.Remove(value);
         }
 
         public override void RemoveAt(string parameterName)
@@ -101,7 +101,7 @@ namespace Lephone.MockSql
 
         public override void RemoveAt(int index)
         {
-            Parameters.RemoveAt(index);
+            _parameters.RemoveAt(index);
         }
 
         protected override void SetParameter(string parameterName, DbParameter value)
@@ -111,17 +111,17 @@ namespace Lephone.MockSql
 
         protected override void SetParameter(int index, DbParameter value)
         {
-            Parameters[index] = value;
+            _parameters[index] = value;
         }
 
         public override object SyncRoot
         {
-            get { return Parameters.SyncRoot; }
+            get { return _parameters.SyncRoot; }
         }
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach(RecorderParameter p in this)
             {
                 sb.Append(p.ToString()).Append(",");

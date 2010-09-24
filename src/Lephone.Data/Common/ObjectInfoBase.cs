@@ -162,12 +162,16 @@ namespace Lephone.Data.Common
                     ProcessMember(m, ret, kfs);
                 }
             }
-            foreach (PropertyInfo pi in t.GetProperties(ClassHelper.InstancePublic))
+            foreach (PropertyInfo pi in t.GetProperties(ClassHelper.InstanceFlag))
             {
-                if (pi.CanRead && pi.CanWrite)
+                if (pi.CanRead && pi.CanWrite && pi.GetGetMethod(true) != null && !pi.GetGetMethod(true).IsPrivate)
                 {
-                    MemberAdapter m = MemberAdapter.NewObject(pi);
-                    ProcessMember(m, ret, kfs);
+                    var mi = pi.GetGetMethod(true);
+                    if(mi != null && !mi.IsPrivate)
+                    {
+                        MemberAdapter m = MemberAdapter.NewObject(pi);
+                        ProcessMember(m, ret, kfs);
+                    }
                 }
             }
             if (kfs.Count > 1)
