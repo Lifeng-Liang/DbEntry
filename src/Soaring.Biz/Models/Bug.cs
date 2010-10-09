@@ -6,6 +6,9 @@ namespace Soaring.Biz.Models
 {
     public class Bug : DbObjectModel<Bug>
     {
+        [Length(1, 256)]
+        public string Title { get; set; }
+
         public BugStatus Status { get; set; }
 
         [BelongsTo]

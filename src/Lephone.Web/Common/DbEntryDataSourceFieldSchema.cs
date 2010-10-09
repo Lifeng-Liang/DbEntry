@@ -5,52 +5,52 @@ namespace Lephone.Web.Common
 {
     public class DbEntryDataSourceFieldSchema : IDataSourceFieldSchema
     {
-        public DbEntryDataSourceFieldSchema(string Name, Type DataType,
-            bool Identity, bool PrimaryKey, bool Nullable)
+        public DbEntryDataSourceFieldSchema(string name, Type dataType,
+            bool identity, bool primaryKey, bool nullable)
         {
-            _Name = Name;
-            _DataType = DataType;
-            _Identity = Identity;
-            _PrimaryKey = PrimaryKey;
-            _Nullable = Nullable;
+            _name = name;
+            _dataType = dataType;
+            _identity = identity;
+            _primaryKey = primaryKey;
+            _nullable = nullable;
         }
 
-        private readonly Type _DataType;
+        private readonly Type _dataType;
 
         public Type DataType
         {
-            get { return _DataType; }
+            get { return _dataType; }
         }
 
-        private readonly bool _Identity;
+        private readonly bool _identity;
 
         public bool Identity
         {
-            get { return _Identity; }
+            get { return _identity; }
         }
 
-        private readonly string _Name;
+        private readonly string _name;
 
         public string Name
         {
-            get { return _Name; }
+            get { return _name; }
         }
 
-        private readonly bool _PrimaryKey;
+        private readonly bool _primaryKey;
 
         public bool PrimaryKey
         {
-            get { return _PrimaryKey; }
+            get { return _primaryKey; }
         }
 
         public bool IsReadOnly
         {
-            get { return _Identity; }
+            get { return _identity; }
         }
 
         public bool IsUnique
         {
-            get { return _PrimaryKey || _Identity; }
+            get { return _primaryKey || _identity; }
         }
 
         public int Length
@@ -58,11 +58,11 @@ namespace Lephone.Web.Common
             get { return 0; }
         }
 
-        private readonly bool _Nullable;
+        private readonly bool _nullable;
 
         public bool Nullable
         {
-            get { return _Nullable; }
+            get { return _nullable; }
         }
 
         public int Precision

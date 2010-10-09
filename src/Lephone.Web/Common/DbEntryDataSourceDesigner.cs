@@ -27,7 +27,7 @@ namespace Lephone.Web.Common
 
         public override string[] GetViewNames()
         {
-            return new string[] { "MainView" };
+            return new[] { "MainView" };
         }
 
         public override void RefreshSchema(bool preferSilent)

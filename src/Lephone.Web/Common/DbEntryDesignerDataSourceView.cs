@@ -8,16 +8,16 @@ namespace Lephone.Web.Common
 {
     public class DbEntryDesignerDataSourceView : DesignerDataSourceView
     {
-        private readonly DataSourceControl DataSource;
-        private readonly Type ModelType;
-        private readonly ObjectInfo oi;
+        private readonly DataSourceControl _dataSource;
+        private readonly Type _modelType;
+        private readonly ObjectInfo _oi;
 
         public DbEntryDesignerDataSourceView(DbEntryDataSourceDesigner owner)
             : base(owner, "MainView")
         {
-            DataSource = (DataSourceControl)owner.Component;
-            ModelType = DataSource.GetType().BaseType.GetGenericArguments()[0];
-            oi = ObjectInfo.GetInstance(ModelType);
+            _dataSource = (DataSourceControl)owner.Component;
+            _modelType = _dataSource.GetType().BaseType.GetGenericArguments()[0];
+            _oi = ObjectInfo.GetInstance(_modelType);
         }
 
         #region Visiable
@@ -62,8 +62,8 @@ namespace Lephone.Web.Common
 
             for (int i = 0; i < minimumRows; i++)
             {
-                object obj = oi.NewObject();
-                foreach (MemberHandler mh in oi.SimpleFields)
+                object obj = _oi.NewObject();
+                foreach (MemberHandler mh in _oi.SimpleFields)
                 {
                     object value = GetSampleValue(mh.FieldType, mh.AllowNull, i);
                     mh.SetValue(obj, value);
@@ -74,80 +74,80 @@ namespace Lephone.Web.Common
             return list;
         }
 
-        private object GetSampleValue(Type FieldType, bool AllowNull, int n)
+        private static object GetSampleValue(Type fieldType, bool allowNull, int n)
         {
-            if (FieldType == typeof(string))
+            if (fieldType == typeof(string))
             {
                 return "Sample Data " + n;
             }
-            if (AllowNull)
+            if (allowNull)
             {
-                return GetSampleValue(FieldType.GetGenericArguments()[0], false, n);
+                return GetSampleValue(fieldType.GetGenericArguments()[0], false, n);
             }
-            if (FieldType == typeof(int))
+            if (fieldType == typeof(int))
             {
                 return (int)(1 + n);
             }
-            if (FieldType == typeof(short))
+            if (fieldType == typeof(short))
             {
                 return (short)(1 + n);
             }
-            if (FieldType == typeof(long))
+            if (fieldType == typeof(long))
             {
                 return (long)(1 + n);
             }
-            if (FieldType == typeof(float))
+            if (fieldType == typeof(float))
             {
                 return (float)(0.1 + n);
             }
-            if (FieldType == typeof(double))
+            if (fieldType == typeof(double))
             {
                 return (double)(0.1 + n);
             }
-            if (FieldType == typeof(bool))
+            if (fieldType == typeof(bool))
             {
                 return (n % 2) == 0;
             }
-            if (FieldType == typeof(DateTime))
+            if (fieldType == typeof(DateTime))
             {
                 var dt = new DateTime(2008, 3, 6, 12, 24, 35);
                 return dt.AddDays(n);
             }
-            if (FieldType == typeof(Date))
+            if (fieldType == typeof(Date))
             {
                 var d = new Date(2008, 3, 17);
                 return d.AddDays(n);
             }
-            if (FieldType == typeof(Time))
+            if (fieldType == typeof(Time))
             {
                 var t = new Time(12, 24, 35);
                 return t.AddMinutes(n);
             }
-            if (FieldType == typeof(Guid))
+            if (fieldType == typeof(Guid))
             {
                 return Guid.NewGuid();
             }
-            if (FieldType == typeof(byte))
+            if (fieldType == typeof(byte))
             {
                 return (byte)n;
             }
-            if (FieldType == typeof(sbyte))
+            if (fieldType == typeof(sbyte))
             {
                 return (sbyte)n;
             }
-            if (FieldType == typeof(decimal))
+            if (fieldType == typeof(decimal))
             {
                 return (decimal)n;
             }
-            if (FieldType == typeof(byte[]))
+            if (fieldType == typeof(byte[]))
             {
                 return new byte[] { 61, 62, 63 };
             }
-            if (FieldType.IsEnum)
+            if (fieldType.IsEnum)
             {
-                string[] ss = Enum.GetNames(FieldType);
+                string[] ss = Enum.GetNames(fieldType);
                 string name = ss[n % ss.Length];
-                return Enum.Parse(FieldType, name);
+                return Enum.Parse(fieldType, name);
             }
             return null;
         }
@@ -156,7 +156,7 @@ namespace Lephone.Web.Common
         {
             get
             {
-                return new DbEntryDataSourceViewSchema(oi);
+                return new DbEntryDataSourceViewSchema(_oi);
             }
         }
     }

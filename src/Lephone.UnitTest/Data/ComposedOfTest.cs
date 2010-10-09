@@ -17,6 +17,12 @@ namespace Lephone.UnitTest.Data
         int? Wow { get; set; }
     }
 
+    public interface IAddress
+    {
+        string City { get; set; }
+        string Street { get; set; }
+    }
+
     [TestFixture]
     public class ComposedOfTest : DataTestBase
     {
@@ -26,6 +32,17 @@ namespace Lephone.UnitTest.Data
 
             [ComposedOf]
             public ILocation Location { get; private set; }
+        }
+
+        public class CoAddr : DbObjectModel<CoAddr>
+        {
+            public string Name { get; set; }
+
+            [ComposedOf]
+            public IAddress MyAddress { get; set; }
+
+            [ComposedOf]
+            public IAddress YourAddress { get; set; }
         }
 
         [Test]
@@ -75,6 +92,22 @@ namespace Lephone.UnitTest.Data
             var pn = ClassHelper.GetAttribute<DbColumnAttribute>(ph, false);
             Assert.AreEqual("LocationPhone", pn.Name);
             Assert.AreEqual(1, num.GetCustomAttributes(false).Length);
+        }
+
+        [Test]
+        public void Test4()
+        {
+            var type = typeof(CoAddr);
+
+            var city1 = type.GetProperty("$MyAddress$City", ClassHelper.AllFlag);
+            Assert.IsNotNull(city1);
+            var pn1 = ClassHelper.GetAttribute<DbColumnAttribute>(city1, false);
+            Assert.AreEqual("MyAddressCity", pn1.Name);
+
+            var city2 = type.GetProperty("$YourAddress$City", ClassHelper.AllFlag);
+            Assert.IsNotNull(city2);
+            var pn2 = ClassHelper.GetAttribute<DbColumnAttribute>(city2, false);
+            Assert.AreEqual("YourAddressCity", pn2.Name);
         }
     }
 }

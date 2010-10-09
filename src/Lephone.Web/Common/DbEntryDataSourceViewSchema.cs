@@ -6,11 +6,11 @@ namespace Lephone.Web.Common
 {
     public class DbEntryDataSourceViewSchema : IDataSourceViewSchema
     {
-        private readonly ObjectInfo oi;
+        private readonly ObjectInfo _oi;
 
         public DbEntryDataSourceViewSchema(ObjectInfo oi)
         {
-            this.oi = oi;
+            this._oi = oi;
         }
 
         public IDataSourceViewSchema[] GetChildren()
@@ -21,7 +21,7 @@ namespace Lephone.Web.Common
         public IDataSourceFieldSchema[] GetFields()
         {
             var list = new List<DbEntryDataSourceFieldSchema>();
-            foreach (MemberHandler mh in oi.SimpleFields)
+            foreach (MemberHandler mh in _oi.SimpleFields)
             {
                 var s = new DbEntryDataSourceFieldSchema(
                     mh.MemberInfo.Name,
@@ -37,7 +37,7 @@ namespace Lephone.Web.Common
 
         public string Name
         {
-            get { return "DbEntry_" + oi.HandleType.Name; }
+            get { return "DbEntry_" + _oi.HandleType.Name; }
         }
     }
 }

@@ -228,8 +228,7 @@ namespace Lephone.Processor
 
         private void ProcessComposedOfAttribute(PropertyInformation pi)
         {
-            var composedOf = pi.PropertyDefinition.PropertyType.Resolve();
-            var gen = new ComposedOfClassGenerator(_model, composedOf, _handler);
+            var gen = new ComposedOfClassGenerator(_model, pi, _handler);
             _coTypes.Add(new KeyValuePair<TypeDefinition, FieldDefinition>(gen.Generate(), pi.FieldDefinition));
 
             foreach(var attribute in pi.PropertyDefinition.CustomAttributes)

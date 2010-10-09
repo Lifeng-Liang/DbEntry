@@ -13,19 +13,19 @@ namespace Lephone.Web.Common
 {
     public static class PageHelper
     {
-        public static bool ValidateSave(Page p, object obj, NoticeLabel msg, string NoticeText)
+        public static bool ValidateSave(Page p, object obj, NoticeLabel msg, string noticeText)
         {
             var vh = new ValidateHandler();
-            return ValidateSave(p, vh, obj, msg, NoticeText, "ErrInput");
+            return ValidateSave(p, vh, obj, msg, noticeText, "ErrInput");
         }
 
-        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string NoticeText, string CssErrInput)
+        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string noticeText, string cssErrInput)
         {
-            return ValidateSave(p, vh, obj, msg, NoticeText, CssErrInput, () => DbEntry.Save(obj));
+            return ValidateSave(p, vh, obj, msg, noticeText, cssErrInput, () => DbEntry.Save(obj));
         }
 
-        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string NoticeText,
-            string CssErrInput, CallbackVoidHandler callback)
+        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string noticeText,
+            string cssErrInput, CallbackVoidHandler callback)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
             EnumControls(p, oi, delegate(MemberHandler mh, WebControl c)
@@ -38,7 +38,7 @@ namespace Lephone.Web.Common
                 callback();
                 if (msg != null)
                 {
-                    msg.AddNotice(NoticeText);
+                    msg.AddNotice(noticeText);
                 }
             }
             else
@@ -52,16 +52,16 @@ namespace Lephone.Web.Common
                     WebControl c = GetWebControl(p, oi, str);
                     if (c != null)
                     {
-                        c.CssClass = CssErrInput;
+                        c.CssClass = cssErrInput;
                     }
                 }
             }
             return vh.IsValid;
         }
 
-        private static WebControl GetWebControl(Page p, ObjectInfo oi, string Name)
+        private static WebControl GetWebControl(Page p, ObjectInfo oi, string name)
         {
-            string cid = string.Format("{0}_{1}", oi.HandleType.Name, Name);
+            string cid = string.Format("{0}_{1}", oi.HandleType.Name, name);
             var c = ClassHelper.GetValue(p, cid) as WebControl;
             return c;
         }
@@ -89,12 +89,12 @@ namespace Lephone.Web.Common
             }
         }
 
-        public static T GetObject<T>(Page p, string ParseErrorText)
+        public static T GetObject<T>(Page p, string parseErrorText)
         {
-            return (T)GetObject(typeof(T), p, ParseErrorText);
+            return (T)GetObject(typeof(T), p, parseErrorText);
         }
 
-        public static object GetObject(Type t, Page p, string ParseErrorText)
+        public static object GetObject(Type t, Page p, string parseErrorText)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(t);
             object obj = oi.NewObject();
@@ -122,7 +122,7 @@ namespace Lephone.Web.Common
                             }
                             else if(!h.IsCreatedOn && !h.IsSavedOn)
                             {
-                                throw new WebControlException(c, string.Format(ParseErrorText, h.Name, ""));
+                                throw new WebControlException(c, string.Format(parseErrorText, h.Name, ""));
                             }
                         }
                     }
@@ -135,7 +135,7 @@ namespace Lephone.Web.Common
                         }
                         catch (Exception ex)
                         {
-                            throw new WebControlException(c, string.Format(ParseErrorText, h.Name, ex.Message));
+                            throw new WebControlException(c, string.Format(parseErrorText, h.Name, ex.Message));
                         }
                     }
                 }
@@ -211,14 +211,14 @@ namespace Lephone.Web.Common
             else GetPropertyInfo(c).SetValue(c, v, null);
         }
 
-        public static ListItem[] GetItems(Type EnumType)
+        public static ListItem[] GetItems(Type enumType)
         {
-            if (!EnumType.IsEnum) throw new ArgumentOutOfRangeException();
+            if (!enumType.IsEnum) throw new ArgumentOutOfRangeException();
 
             var ret = new List<ListItem>();
-            foreach (string v in Enum.GetNames(EnumType))
+            foreach (string v in Enum.GetNames(enumType))
             {
-                string n = StringHelper.EnumToString(EnumType, v);
+                string n = StringHelper.EnumToString(enumType, v);
                 var li = new ListItem(n, v);
                 ret.Add(li);
             }

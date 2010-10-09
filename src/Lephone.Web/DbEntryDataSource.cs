@@ -9,7 +9,6 @@ using System.Security.Permissions;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Linq;
-using Lephone.Data.QuerySyntax;
 using Lephone.Web.Common;
 using Lephone.Core;
 using Lephone.Data.Definition;
@@ -39,15 +38,11 @@ namespace Lephone.Web
             }
         }
 
-        private DbEntryDataSourceView view;
+        private DbEntryDataSourceView _view;
 
         protected override DataSourceView GetView(string viewName)
         {
-            if (view == null)
-            {
-                view = new DbEntryDataSourceView(this, viewName);
-            }
-            return view;
+            return _view ?? (_view = new DbEntryDataSourceView(this, viewName));
         }
 
         protected override ICollection GetViewNames()
@@ -55,7 +50,7 @@ namespace Lephone.Web
             return new[] { "MainView" };
         }
 
-        private OrderBy m_OrderBy;
+        private OrderBy _mOrderBy;
 
         [Themeable(false), DefaultValue("Id DESC"), Category("Behavior")]
         public string DefaultOrderBy
@@ -93,18 +88,18 @@ namespace Lephone.Web
             }
         }
 
-        private Condition _Condition;
+        private Condition _condition;
 
         [Browsable(false)]
         public Condition Condition
         {
-            get { return _Condition; }
-            set { _Condition = value; }
+            get { return _condition; }
+            set { _condition = value; }
         }
 
         IEnumerable IExcuteableDataSource.Select(DataSourceSelectArguments arguments)
         {
-            m_OrderBy = string.IsNullOrEmpty(DefaultOrderBy) ? new OrderBy((DESC)"Id") : OrderBy.Parse(DefaultOrderBy);
+            _mOrderBy = string.IsNullOrEmpty(DefaultOrderBy) ? new OrderBy((DESC)"Id") : OrderBy.Parse(DefaultOrderBy);
 
             arguments.AddSupportedCapabilities(DataSourceCapabilities.Sort);
             arguments.AddSupportedCapabilities(DataSourceCapabilities.Page);
@@ -113,18 +108,18 @@ namespace Lephone.Web
             if (!string.IsNullOrEmpty(se))
             {
                 DefaultOrderBy = se;
-                m_OrderBy = OrderBy.Parse(se, typeof(T));
+                _mOrderBy = OrderBy.Parse(se, typeof(T));
             }
-            int PageIndex = (arguments.MaximumRows == 0) ? 0 : arguments.StartRowIndex / arguments.MaximumRows;
-            int TotalRowCount = arguments.TotalRowCount;
-            List<T> ret = ExecuteSelect(_Condition, m_OrderBy, arguments.MaximumRows, PageIndex, ref TotalRowCount);
-            arguments.TotalRowCount = TotalRowCount;
+            int pageIndex = (arguments.MaximumRows == 0) ? 0 : arguments.StartRowIndex / arguments.MaximumRows;
+            int totalRowCount = arguments.TotalRowCount;
+            List<T> ret = ExecuteSelect(_condition, _mOrderBy, arguments.MaximumRows, pageIndex, ref totalRowCount);
+            arguments.TotalRowCount = totalRowCount;
             return ret;
         }
 
-        public virtual List<T> ExecuteSelect(Condition condition, OrderBy order, int MaximumRows, int PageIndex, ref int TotalRowCount)
+        public virtual List<T> ExecuteSelect(Condition condition, OrderBy order, int maximumRows, int pageIndex, ref int totalRowCount)
         {
-            if (MaximumRows == 0)
+            if (maximumRows == 0)
             {
                 return DbEntry.From<T>().Where(condition).OrderBy(order).Select();
             }
@@ -132,10 +127,10 @@ namespace Lephone.Web
                 .From<T>()
                 .Where(condition)
                 .OrderBy(order)
-                .PageSize(MaximumRows);
+                .PageSize(maximumRows);
             IPagedSelector ps = IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
-            TotalRowCount = (int)ps.GetResultCount();
-            IList result = ps.GetCurrentPage(PageIndex);
+            totalRowCount = (int)ps.GetResultCount();
+            IList result = ps.GetCurrentPage(pageIndex);
             return (List<T>)result;
         }
 
@@ -273,12 +268,12 @@ namespace Lephone.Web
 
         public class DbEntryDataSourceView : DataSourceView
         {
-            readonly IExcuteableDataSource owner;
+            readonly IExcuteableDataSource _owner;
 
             public DbEntryDataSourceView(IDataSource owner, string viewName)
                 : base(owner, viewName)
             {
-                this.owner = (IExcuteableDataSource)owner;
+                this._owner = (IExcuteableDataSource)owner;
             }
 
             public override bool CanSort { get { return true; } }
@@ -287,28 +282,28 @@ namespace Lephone.Web
 
             protected override IEnumerable ExecuteSelect(DataSourceSelectArguments arguments)
             {
-                return owner.Select(arguments);
+                return _owner.Select(arguments);
             }
 
             public override bool CanDelete { get { return true; } }
 
             protected override int ExecuteDelete(IDictionary keys, IDictionary values)
             {
-                return owner.Delete(keys, values);
+                return _owner.Delete(keys, values);
             }
 
             public override bool CanInsert { get { return true; } }
 
             protected override int ExecuteInsert(IDictionary values)
             {
-                return owner.Insert(values);
+                return _owner.Insert(values);
             }
 
             public override bool CanUpdate { get { return true; } }
 
             protected override int ExecuteUpdate(IDictionary keys, IDictionary values, IDictionary oldValues)
             {
-                return owner.Update(keys, values, oldValues);
+                return _owner.Update(keys, values, oldValues);
             }
         }
     }

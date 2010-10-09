@@ -12,6 +12,8 @@ namespace Soaring.Biz.Models
 
         public TaskStatus Status { get; set; }
 
+        public int Score { get; set; }
+
         [SpecialName]
         public DateTime CreatedOn { get; set; }
 

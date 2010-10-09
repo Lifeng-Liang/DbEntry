@@ -7,10 +7,10 @@ namespace Lephone.Web.Common
 {
     public class NoticeLabel : Label
     {
-        private bool isInited;
-        private LabelType type;
-        private bool isModified;
-        private List<string> msgList;
+        private bool _isInited;
+        private LabelType _type;
+        private bool _isModified;
+        private List<string> _msgList;
 
         private enum LabelType
         {
@@ -28,8 +28,8 @@ namespace Lephone.Web.Common
         public void Reset()
         {
             Text = "";
-            isInited = false;
-            msgList = new List<string>();
+            _isInited = false;
+            _msgList = new List<string>();
             Visible = false;
         }
 
@@ -110,7 +110,7 @@ namespace Lephone.Web.Common
             if(SingleLine) { Reset(); }
             CheckType(LabelType.Warning);
             CssClass = CssWarning;
-            msgList.Add(text);
+            _msgList.Add(text);
         }
 
         public void AddNotice(string text)
@@ -118,7 +118,7 @@ namespace Lephone.Web.Common
             if (SingleLine) { Reset(); }
             CheckType(LabelType.Notice);
             CssClass = CssNotice;
-            msgList.Add(text);
+            _msgList.Add(text);
         }
 
         public void AddTip(string text)
@@ -126,24 +126,24 @@ namespace Lephone.Web.Common
             if (SingleLine) { Reset(); }
             CheckType(LabelType.Tip);
             CssClass = CssTip;
-            msgList.Add(text);
+            _msgList.Add(text);
         }
 
         private void CheckType(LabelType lt)
         {
-            if (isInited)
+            if (_isInited)
             {
-                if (type != lt)
+                if (_type != lt)
                 {
                     throw new WebException("You add other type text before. One process only support one type of text.");
                 }
             }
             else
             {
-                isInited = true;
-                type = lt;
+                _isInited = true;
+                _type = lt;
             }
-            isModified = true;
+            _isModified = true;
             Visible = true;
         }
 
@@ -152,15 +152,15 @@ namespace Lephone.Web.Common
             HtmlBuilder b = HtmlBuilder.New;
             if(SingleLine)
             {
-                if(msgList.Count > 0)
+                if(_msgList.Count > 0)
                 {
-                    b.text(msgList[0]).enter();
+                    b.text(_msgList[0]).enter();
                 }
             }
             else
             {
                 b.ul.enter();
-                foreach (var s in msgList)
+                foreach (var s in _msgList)
                 {
                     b.li.text(s).end.enter();
                 }
@@ -171,10 +171,10 @@ namespace Lephone.Web.Common
 
         private void PreShowText()
         {
-            if (!isInited) return;
-            if (!isModified) return;
+            if (!_isInited) return;
+            if (!_isModified) return;
             Text = GenerateText();
-            isModified = false;
+            _isModified = false;
         }
 
         public override string Text
@@ -194,7 +194,7 @@ namespace Lephone.Web.Common
         {
             get
             {
-                return msgList.Count;
+                return _msgList.Count;
             }
         }
     }

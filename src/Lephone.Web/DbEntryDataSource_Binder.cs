@@ -42,16 +42,16 @@ namespace Lephone.Web
         [Category("Data")]
         public event CallbackObjectHandler<T> OnObjectUpdated;
 
-        private Button SaveButton;
-        private Button DeleteButton;
-        private Label ContentTitle;
-        private NoticeLabel NoticeMessage;
+        private Button _saveButton;
+        private Button _deleteButton;
+        private Label _contentTitle;
+        private NoticeLabel _noticeMessage;
 
-        private bool _LastOprationSucceed;
+        private bool _lastOprationSucceed;
 
         public bool LastOprationSucceed
         {
-            get { return _LastOprationSucceed; }
+            get { return _lastOprationSucceed; }
         }
 
         [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false),
@@ -140,7 +140,7 @@ namespace Lephone.Web
 
         public T SaveObject()
         {
-            _LastOprationSucceed = false;
+            _lastOprationSucceed = false;
             try
             {
                 if (OnObjectLoading != null)
@@ -164,7 +164,7 @@ namespace Lephone.Web
                         {
                             OnObjectInserted(o);
                         }
-                        _LastOprationSucceed = true;
+                        _lastOprationSucceed = true;
                         return o;
                     }
                 }
@@ -181,7 +181,7 @@ namespace Lephone.Web
                         {
                             OnObjectUpdated(o);
                         }
-                        _LastOprationSucceed = true;
+                        _lastOprationSucceed = true;
                         return o;
                     }
                 }
@@ -199,9 +199,9 @@ namespace Lephone.Web
 
         public void AddNotice(string msg)
         {
-            if (NoticeMessage != null)
+            if (_noticeMessage != null)
             {
-                NoticeMessage.AddNotice(msg);
+                _noticeMessage.AddNotice(msg);
             }
         }
 
@@ -212,19 +212,19 @@ namespace Lephone.Web
 
         public void AddWarning(WebControl c, string msg)
         {
-            if (NoticeMessage != null)
+            if (_noticeMessage != null)
             {
                 if (c != null)
                 {
                     c.CssClass = CssErrInput;
                 }
-                NoticeMessage.AddWarning(msg);
+                _noticeMessage.AddWarning(msg);
             }
         }
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
-            _LastOprationSucceed = false;
+            _lastOprationSucceed = false;
             try
             {
                 object oid = ViewState["Id"];
@@ -246,7 +246,7 @@ namespace Lephone.Web
                     {
                         OnObjectDeleted(o);
                     }
-                    _LastOprationSucceed = true;
+                    _lastOprationSucceed = true;
                 }
             }
             catch (WebControlException ex)
@@ -259,7 +259,7 @@ namespace Lephone.Web
             }
         }
 
-        protected virtual bool ValidateSave(T obj, string NoticeText)
+        protected virtual bool ValidateSave(T obj, string noticeText)
         {
             if (OnValidateSave != null)
             {
@@ -270,7 +270,7 @@ namespace Lephone.Web
                                                      NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText,
                                                      SeparatorText);
 
-            return PageHelper.ValidateSave(Page, vh, obj, NoticeMessage, NoticeText, CssErrInput,
+            return PageHelper.ValidateSave(Page, vh, obj, _noticeMessage, noticeText, CssErrInput,
                 delegate
                    {
                        ObjectInfo oi =
@@ -290,23 +290,23 @@ namespace Lephone.Web
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            SaveButton = NamingContainer.FindControl(SaveButtonID) as Button;
-            DeleteButton = NamingContainer.FindControl(DeleteButtonID) as Button;
-            ContentTitle = NamingContainer.FindControl(ContentTitleID) as Label;
-            NoticeMessage = NamingContainer.FindControl(NoticeMessageID) as NoticeLabel;
+            _saveButton = NamingContainer.FindControl(SaveButtonID) as Button;
+            _deleteButton = NamingContainer.FindControl(DeleteButtonID) as Button;
+            _contentTitle = NamingContainer.FindControl(ContentTitleID) as Label;
+            _noticeMessage = NamingContainer.FindControl(NoticeMessageID) as NoticeLabel;
 
-            if (SaveButton != null)
+            if (_saveButton != null)
             {
-                SaveButton.Click += SaveButton_Click;
+                _saveButton.Click += SaveButton_Click;
                 if (!Page.IsPostBack)
                 {
                     string tn = typeof(T).Name;
                     T o = GetRequestObject();
                     if (o == null)
                     {
-                        if (DeleteButton != null)
+                        if (_deleteButton != null)
                         {
-                            DeleteButton.Visible = false;
+                            _deleteButton.Visible = false;
                         }
                         if (OnPageIsNew != null)
                         {
@@ -329,22 +329,21 @@ namespace Lephone.Web
                     }
                 }
             }
-            if (DeleteButton != null)
+            if (_deleteButton != null)
             {
-                DeleteButton.Click += DeleteButton_Click;
-                //TODO: why left like: T o = GetRequestObject();
+                _deleteButton.Click += DeleteButton_Click;
                 GetRequestObject();
             }
         }
 
         private void SetContentTitle(string textTemplate, string tn)
         {
-            if (ContentTitle != null)
+            if (_contentTitle != null)
             {
-                ContentTitle.Text = string.Format(textTemplate, tn);
+                _contentTitle.Text = string.Format(textTemplate, tn);
                 if (ChangePageTitleToo)
                 {
-                    Page.Title = ContentTitle.Text;
+                    Page.Title = _contentTitle.Text;
                 }
             }
         }
@@ -363,13 +362,13 @@ namespace Lephone.Web
             string sid = Page.Request["Id"];
             if (!string.IsNullOrEmpty(sid))
             {
-                object Id = ClassHelper.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
-                var o = DbEntry.GetObject<T>(Id);
+                object id = ClassHelper.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
+                var o = DbEntry.GetObject<T>(id);
                 if(o == null)
                 {
                     throw new DataException("The record doesn't exist.");
                 }
-                ViewState["Id"] = Id;
+                ViewState["Id"] = id;
                 ObjectInfo oi = ObjectInfo.GetInstance(typeof (T));
                 if(oi.LockVersion != null)
                 {
@@ -393,13 +392,13 @@ namespace Lephone.Web
 
         protected override void OnUnload(EventArgs e)
         {
-            if (SaveButton != null)
+            if (_saveButton != null)
             {
-                SaveButton.Click -= SaveButton_Click;
+                _saveButton.Click -= SaveButton_Click;
             }
-            if (DeleteButton != null)
+            if (_deleteButton != null)
             {
-                DeleteButton.Click -= DeleteButton_Click;
+                _deleteButton.Click -= DeleteButton_Click;
             }
             base.OnUnload(e);
         }

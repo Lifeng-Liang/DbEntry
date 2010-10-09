@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -18,9 +17,9 @@ namespace Lephone.Core.Setting
         {
             if (_xmlConfigs == null)
             {
+                _xmlConfigs = new Dictionary<string, NameValueCollection>();
                 InitAllXmlConfigFiles();
             }
-            Debug.Assert(_xmlConfigs != null);
             if (_xmlConfigs.ContainsKey(sectionName))
             {
                 return _xmlConfigs[sectionName];
@@ -30,7 +29,6 @@ namespace Lephone.Core.Setting
 
         private void InitAllXmlConfigFiles()
         {
-            _xmlConfigs = new Dictionary<string, NameValueCollection>();
             var ass = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly a in ass)
             {

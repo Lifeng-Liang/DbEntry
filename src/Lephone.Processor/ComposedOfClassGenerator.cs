@@ -14,23 +14,25 @@ namespace Lephone.Processor
         private readonly TypeDefinition _composedOfType;
         private readonly KnownTypesHandler _handler;
         private readonly TypeDefinition _result;
+        private readonly string _instanceName;
         private int _startIndex;
 
-        public ComposedOfClassGenerator(TypeDefinition model, TypeDefinition composedOfType, KnownTypesHandler handler)
+        public ComposedOfClassGenerator(TypeDefinition model, PropertyInformation pi, KnownTypesHandler handler)
         {
-            if (!composedOfType.IsInterface)
+            this._composedOfType = pi.PropertyDefinition.PropertyType.Resolve();
+            if (!_composedOfType.IsInterface)
             {
                 throw new DataException("ComposedOf type must be interface.");
             }
-            if(!composedOfType.HasProperties)
+            if (!_composedOfType.HasProperties)
             {
                 throw new DataException("ComposedOf type must has properties.");
             }
 
             this._model = model;
-            this._composedOfType = composedOfType;
             this._handler = handler;
-            _result = TypeFactory.CreateType(handler, model, composedOfType);
+            this._instanceName = pi.PropertyDefinition.Name;
+            _result = TypeFactory.CreateType(handler, model, _composedOfType);
         }
 
         public TypeDefinition Generate()
@@ -38,9 +40,8 @@ namespace Lephone.Processor
             _startIndex = _model.Properties.Count;
             foreach(var property in _composedOfType.Properties)
             {
-                var iname = GetInterfaceName(_composedOfType.Name);
-                var name = "$" + iname + "$" + property.Name;
-                var dbn = iname + property.Name;
+                var name = "$" + _instanceName + "$" + property.Name;
+                var dbn = _instanceName + property.Name;
                 var pd = TypeFactory.CreateProperty(name, PropAttr, property.PropertyType, _handler);
                 foreach (var attribute in property.CustomAttributes)
                 {
@@ -120,18 +121,6 @@ namespace Lephone.Processor
 
             _startIndex++;
             return p;
-        }
-
-        private static string GetInterfaceName(string name)
-        {
-            if(name.Length > 1)
-            {
-                if(name[0] == 'I' && name[1] >= 'A' && name[1] <= 'Z')
-                {
-                    return name.Substring(1);
-                }
-            }
-            return name;
         }
     }
 }
