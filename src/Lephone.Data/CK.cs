@@ -2,6 +2,7 @@
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
 using Lephone.Data.Common;
+using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data
 {
@@ -256,5 +257,10 @@ namespace Lephone.Data
 	    {
 	        return new InClause(ColumnName, args);
 	    }
-	}
+
+        public Condition InSql(string sql)
+        {
+            return new InClause(ColumnName, new SqlStatement(sql));
+        }
+    }
 }

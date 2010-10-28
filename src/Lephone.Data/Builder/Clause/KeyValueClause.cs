@@ -14,8 +14,8 @@ namespace Lephone.Data.Builder.Clause
 		protected string Comp;
 	    protected ColumnFunction function;
 
-        public KeyValueClause(string Key, object Value, CompareOpration co, ColumnFunction function)
-			: this(new KeyValue(Key, Value), co)
+        public KeyValueClause(string key, object value, CompareOpration co, ColumnFunction function)
+			: this(new KeyValue(key, value), co)
 		{
             this.function = function;
 		}
@@ -40,10 +40,7 @@ namespace Lephone.Data.Builder.Clause
         
         public override string ToSqlText(DataParameterCollection dpc, DbDialect dd)
         {
-            string dpStr 
-                = KV.Value == null 
-                ? "NULL" 
-                : GetValueString(dpc, dd);
+            string dpStr = GetValueString(dpc, dd, KV);
             string dkStr = dd.QuoteForColumnName(KV.Key);
             switch (function)
             {
@@ -56,28 +53,5 @@ namespace Lephone.Data.Builder.Clause
             }
             return string.Format("{0} {2} {1}", dkStr, dpStr, Comp);
         }
-
-	    protected virtual string GetValueString(DataParameterCollection dpc, DbDialect dd)
-        {
-            string dpStr;
-            if (DataSettings.UsingParameter)
-            {
-                dpStr = string.Format(dd.ParameterPrefix + "{0}_{1}", DataParameter.LegalKey(KV.Key), dpc.Count);
-                var dp = new DataParameter(dpStr, KV.NullableValue, KV.ValueType);
-                dpc.Add(dp);
-            }
-            else
-            {
-                dpStr = DataTypeParser.ParseToString(KV.Value, dd);
-            }
-            return dpStr;
-        }
-
-		/*
-		public override string ToString()
-		{
-			return string.Format("[{0}] {2} {1}", KV.Key, KV.ValueString, Comp);
-		}
-		*/
     }
 }

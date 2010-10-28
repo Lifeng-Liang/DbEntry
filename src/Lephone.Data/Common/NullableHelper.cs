@@ -54,30 +54,30 @@ namespace Lephone.Data.Common
             return NullableTypesToDataType.Contains(t);
         }
 
-        public static DataType GetDataType(Type NullableType)
+        public static DataType GetDataType(Type nullableType)
         {
-            return (DataType)NullableTypesToDataType[NullableType];
+            return (DataType)NullableTypesToDataType[nullableType];
         }
 
-        public static Type GetUnderlyingType(Type NullableType)
+        public static Type GetUnderlyingType(Type nullableType)
         {
-            return (Type)NullableTypesToUnderlyingType[NullableType];
+            return (Type)NullableTypesToUnderlyingType[nullableType];
         }
 
-        public static ConstructorInfo GetConstructorInfo(Type NullableType)
+        public static ConstructorInfo GetConstructorInfo(Type nullableType)
         {
-            if (!IsNullableType(NullableType))
+            if (!IsNullableType(nullableType))
             {
                 throw new ArgumentOutOfRangeException();
             }
-            ConstructorInfo ci = NullableType.GetConstructor(
-                new[] { GetUnderlyingType(NullableType) });
+            ConstructorInfo ci = nullableType.GetConstructor(
+                new[] { GetUnderlyingType(nullableType) });
             return ci;
         }
 
-        public static object CreateNullableObject(Type NullableType, object value)
+        public static object CreateNullableObject(Type nullableType, object value)
         {
-            ConstructorInfo ci = GetConstructorInfo(NullableType);
+            ConstructorInfo ci = GetConstructorInfo(nullableType);
             return ci.Invoke(new[] { value });
         }
     }

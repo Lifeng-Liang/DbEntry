@@ -157,6 +157,7 @@
     <Compile Include="util\FlyweightTest.cs" />
     <Compile Include="util\InflectorTest.cs" />
     <Compile Include="util\IocTest.cs" />
+    <Compile Include="util\LoggerTest.cs" />
     <Compile Include="util\NameMapperTest.cs" />
     <Compile Include="util\TestBOMChecker.cs" />
     <Compile Include="util\timingTask\DayTimingTest.cs" />

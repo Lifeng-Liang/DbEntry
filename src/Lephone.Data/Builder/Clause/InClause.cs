@@ -25,14 +25,22 @@ namespace Lephone.Data.Builder.Clause
             var sb = new StringBuilder();
             sb.Append(dd.QuoteForColumnName(_column));
             sb.Append(" IN (");
-            foreach (var o in _args)
+            if(_args.Length == 1 && _args[0].GetType() == typeof(SqlStatement))
             {
-                sb.Append(o);
-                sb.Append(",");
+                sb.Append(((SqlStatement)_args[0]).SqlCommandText);
             }
-            if(_args.Length > 0)
+            else
             {
-                sb.Length--;
+                foreach (var o in _args)
+                {
+                    var v = GetValueString(dpc, dd, new KeyValue("in", o));
+                    sb.Append(v);
+                    sb.Append(",");
+                }
+                if (_args.Length > 0)
+                {
+                    sb.Length--;
+                }
             }
             sb.Append(")");
             return sb.ToString();

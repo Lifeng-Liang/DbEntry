@@ -13,14 +13,18 @@ namespace Lephone.Data.Builder.Clause
         {
         }
 
-		public KeyKeyClause(string Key1, string Key2, CompareOpration co)
-            : base(new KeyValue(Key1, Key2), co)
+		public KeyKeyClause(string key1, string key2, CompareOpration co)
+            : base(new KeyValue(key1, key2), co)
 		{
         }
 
-        protected override string GetValueString(DataParameterCollection dpc, DbDialect dd)
+        protected override string GetValueString(DataParameterCollection dpc, DbDialect dd, KeyValue kv)
         {
-            return dd.QuoteForColumnName((string)KV.Value);
+            if(kv.Value == null)
+            {
+                return "NULL";
+            }
+            return dd.QuoteForColumnName((string)kv.Value);
         }
     }
 }

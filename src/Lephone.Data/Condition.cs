@@ -1,5 +1,7 @@
 using System;
 using Lephone.Data.Builder;
+using Lephone.Data.Common;
+using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder.Clause;
 
@@ -8,7 +10,7 @@ namespace Lephone.Data
     [Serializable]
 	public abstract class Condition : IClause
 	{
-        public static readonly Condition Empty = new Common.EmptyCondition();
+        public static readonly Condition Empty = new EmptyCondition();
         public static readonly ConstCondition True = new ConstCondition("(1=1)");
         public static readonly ConstCondition False = new ConstCondition("(1<>1)");
 
@@ -81,9 +83,29 @@ namespace Lephone.Data
 
         private static bool IsNullOrEmpty(Condition condition)
         {
-            return (condition == null || (condition is Common.EmptyCondition));
+            return (condition == null || (condition is EmptyCondition));
         }
 
-        public abstract string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd);
+        public abstract string ToSqlText(DataParameterCollection dpc, DbDialect dd);
+
+        protected virtual string GetValueString(DataParameterCollection dpc, DbDialect dd, KeyValue kv)
+        {
+            if(kv.Value == null)
+            {
+                return "NULL";
+            }
+            string dpStr;
+            if (DataSettings.UsingParameter)
+            {
+                dpStr = string.Format(dd.ParameterPrefix + "{0}_{1}", DataParameter.LegalKey(kv.Key), dpc.Count);
+                var dp = new DataParameter(dpStr, kv.NullableValue, kv.ValueType);
+                dpc.Add(dp);
+            }
+            else
+            {
+                dpStr = DataTypeParser.ParseToString(kv.Value, dd);
+            }
+            return dpStr;
+        }
 	}
 }

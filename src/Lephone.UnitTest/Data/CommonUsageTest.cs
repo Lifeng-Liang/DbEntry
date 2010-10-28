@@ -771,7 +771,15 @@ namespace Lephone.UnitTest.Data
         public void TestInClause()
         {
             Sqlite.From<SinglePerson>().Where(CK.K["Id"].In(1, 3, 5, 7)).Select();
-            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (1,3,5,7);
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);
+<Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
+        }
+
+        [Test]
+        public void TestInSql()
+        {
+            Sqlite.From<SinglePerson>().Where(CK.K["Id"].InSql("Select Id From Others")).Select();
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (Select Id From Others);
 <Text><60>()");
         }
 

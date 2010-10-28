@@ -11,6 +11,9 @@
     
     <add key="SqlLogRecorder" value="Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core" />
 
+    <add key="UnitLogRecorder" value=" @DtsFile # @Console"/>
+    <add key="Unit2LogRecorder" value="Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core"/>
+
     <add key="MiscProvider" value="Lephone.UnitTest.util.MockMiscProvider, Lephone.UnitTest" />
     <add key="CookiesHandler" value="Lephone.UnitTest.Web.MockCookiesHandler, Lephone.UnitTest" />
 

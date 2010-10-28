@@ -14,7 +14,7 @@ namespace Lephone.Core.Logging
         public static readonly Logger Default = new Logger("Default");
         public static readonly Logger System = new Logger("System");
 
-        public event LogEventHandler LogEvent;
+        public LogEventHandler LogEvent;
         private readonly string _name;
 
         #region Constructors
@@ -27,17 +27,24 @@ namespace Lephone.Core.Logging
 		public Logger(string settingName)
         {
             _name = settingName;
-            ILogRecorder ilc = null;
-            string s = ConfigHelper.DefaultSettings.GetValue(_name + "LogRecorder");
+		    string s = ConfigHelper.DefaultSettings.GetValue(_name + "LogRecorder");
             if (s != "")
             {
-                ilc = LogRecorderProvider.GetLogRecorder(s);
-                if (ilc == null)
+                var ss = s.Split('#');
+                foreach(var s1 in ss)
                 {
-                    throw new SettingException();
+                    var s2 = s1.Trim();
+                    if(s2 != "")
+                    {
+                        if(s2.StartsWith("@"))
+                        {
+                            s2 = string.Format("Lephone.Core.Logging.{0}LogRecorder, Lephone.Core", s2.Substring(1));
+                        }
+                        var ilc = LogRecorderProvider.GetLogRecorder(s2);
+                        Init(ilc);
+                    }
                 }
             }
-            Init(ilc);
         }
 
 		public Logger(ILogRecorder ilc)

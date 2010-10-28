@@ -15,6 +15,10 @@ namespace Lephone.Core.Logging
                     return Jar[name];
                 }
                 var ilc = (ILogRecorder)ClassHelper.CreateInstance(name);
+                if (ilc == null)
+                {
+                    throw new SettingException();
+                }
                 Jar[name] = ilc;
                 return ilc;
             }
