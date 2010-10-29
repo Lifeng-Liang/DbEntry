@@ -230,4 +230,14 @@ public static class CommonExtends
     }
 
     #endregion
+
+    public static bool In(this ValueType key, params object[] values)
+    {
+        throw new Exception("It's only for Linq");
+    }
+
+    public static bool In(this string key, params object[] values)
+    {
+        throw new Exception("It's only for Linq");
+    }
 }

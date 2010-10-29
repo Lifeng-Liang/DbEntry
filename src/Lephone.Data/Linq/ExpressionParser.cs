@@ -117,22 +117,38 @@ namespace Lephone.Data.Linq
 
         private static Condition ParseMethodCall(MethodCallExpression e)
         {
-            if (e.Arguments.Count == 1)
+            switch (e.Method.Name)
             {
-                ColumnFunction function;
-                string key = GetMemberName(e.Object, out function);
+                case "StartsWith":
+                    return ParseLikeCall(e, "", "%");
+                case "EndsWith":
+                    return ParseLikeCall(e, "%", "");
+                case "Contains":
+                    return ParseLikeCall(e, "%", "%");
+                case "In":
+                    return ParseInCall(e);
+            }
+            throw new LinqException("Unknown function : " + e.Method.Name);
+        }
+
+        private static Condition ParseInCall(MethodCallExpression e)
+        {
+            ColumnFunction function;
+            string key = GetMemberName(((UnaryExpression)e.Arguments[0]).Operand, out function);
+            var values = (object[])GetRightValue(e.Arguments[1]);
+            return new InClause(key, values);
+        }
+
+        private static Condition ParseLikeCall(MethodCallExpression e, string left, string right)
+        {
+            ColumnFunction function;
+            string key = GetMemberName(e.Object, out function);
+            if(e.Arguments.Count == 1)
+            {
                 object value = GetRightValue(e.Arguments[0]);
                 if (value != null && value.GetType() == typeof(string))
                 {
-                    switch (e.Method.Name)
-                    {
-                        case "StartsWith":
-                            return new KeyValueClause(key, value + "%", CompareOpration.Like, function);
-                        case "EndsWith":
-                            return new KeyValueClause(key, "%" + value, CompareOpration.Like, function);
-                        case "Contains":
-                            return new KeyValueClause(key, "%" + value + "%", CompareOpration.Like, function);
-                    }
+                    return new KeyValueClause(key, left + value + right, CompareOpration.Like, function);
                 }
             }
             throw new LinqException("'Like' clause only supported one Parameter and the Parameter should be string and not allow NULL.");

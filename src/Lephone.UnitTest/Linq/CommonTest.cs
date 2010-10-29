@@ -371,5 +371,12 @@ namespace Lephone.UnitTest.Linq
             Sqlite.From<BoolTest>().Where(p => p.Available && p.Name == "tom").Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE ([Available] = @Available_0) AND ([Name] = @Name_1);\n<Text><60>(@Available_0=True:Boolean,@Name_1=tom:String)");
         }
+
+        [Test]
+        public void TestInClause()
+        {
+            Sqlite.From<BoolTest>().Where(p => p.Id.In(1, 3, 5, 7)).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
+        }
     }
 }
