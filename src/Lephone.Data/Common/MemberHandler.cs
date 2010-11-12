@@ -127,6 +127,7 @@ namespace Lephone.Data.Common
         public readonly string Name;
         public readonly bool IsKey;
         public readonly bool IsDbGenerate;
+	    public readonly bool IsDbGenerateGuid;
         public readonly object UnsavedValue;
         public readonly bool AllowNull;
         public readonly int MinLength;
@@ -181,6 +182,7 @@ namespace Lephone.Data.Common
                     if (fi.MemberType == typeof(Guid))
                     {
                         IsDbGenerate = false;
+                        IsDbGenerateGuid = true;
                     }
                 }
                 else

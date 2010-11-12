@@ -229,52 +229,67 @@ namespace Lephone.Data.Common
                     {
                         if (f.IsHasOne)
                         {
-                            object llo = ho.Read();
-                            if (llo == null)
-                            {
-                                var ho1 = (IHasOne)ho;
-                                if (ho1.LastValue != null)
-                                {
-                                    RelationSave(ho1.LastValue);
-                                }
-                            }
-                            else
-                            {
-                                CommonHelper.TryEnumerate(llo, processChild);
-                            }
+                            ProcessHasOne(ho, processChild);
                         }
                         else if (f.IsHasMany)
                         {
-                            object llo = ho.Read();
-                            if (llo != null)
-                            {
-                                var ho1 = (IHasMany)ho;
-                                foreach (object item in ho1.RemovedValues)
-                                {
-                                    RelationSave(item);
-                                }
-                                CommonHelper.TryEnumerate(llo, processChild);
-                            }
+                            ProcessHasMany(ho, processChild);
                         }
                         else if (f.IsHasAndBelongsToMany)
                         {
-                            object llo = ho.Read();
-                            if (llo != null)
-                            {
-                                CommonHelper.TryEnumerate(llo, processChild);
-                            }
-                            var so = (IHasAndBelongsToManyRelations)ho;
-                            foreach (object n in so.SavedNewRelations)
-                            {
-                                SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
-                            }
-                            foreach (object n in so.RemovedRelations)
-                            {
-                                RemoveManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
-                            }
+                            ProcessHasAndBelongsToMany(oi, obj, f, ho, processChild);
                         }
                     }
                 }
+            }
+        }
+
+        private void ProcessHasAndBelongsToMany(ObjectInfo oi, object obj, MemberHandler f, ILazyLoading ho, CallbackObjectHandler<object> processChild)
+        {
+            object llo = ho.Read();
+            if (llo != null)
+            {
+                CommonHelper.TryEnumerate(llo, processChild);
+            }
+            var so = (IHasAndBelongsToManyRelations)ho;
+            foreach (object n in so.SavedNewRelations)
+            {
+                SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
+            }
+            foreach (object n in so.RemovedRelations)
+            {
+                RemoveManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
+            }
+        }
+
+        private void ProcessHasMany(ILazyLoading ho, CallbackObjectHandler<object> processChild)
+        {
+            object llo = ho.Read();
+            if (llo != null)
+            {
+                var ho1 = (IHasMany)ho;
+                foreach (object item in ho1.RemovedValues)
+                {
+                    RelationSave(item);
+                }
+                CommonHelper.TryEnumerate(llo, processChild);
+            }
+        }
+
+        private void ProcessHasOne(ILazyLoading ho, CallbackObjectHandler<object> processChild)
+        {
+            object llo = ho.Read();
+            if (llo == null)
+            {
+                var ho1 = (IHasOne)ho;
+                if (ho1.LastValue != null)
+                {
+                    RelationSave(ho1.LastValue);
+                }
+            }
+            else
+            {
+                CommonHelper.TryEnumerate(llo, processChild);
             }
         }
 

@@ -87,12 +87,15 @@ namespace Lephone.Data.Dialect
         {
             if (oi.HasOnePrimaryKey && oi.KeyFields[0].FieldType == typeof(Guid))
             {
-                Guid key = Guid.NewGuid();
-                sb.Values[0].Value = key;
+                if(oi.KeyFields[0].IsDbGenerateGuid)
+                {
+                    Guid key = Guid.NewGuid();
+                    sb.Values[0].Value = key;
+                }
                 SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
                 oi.LogSql(sql);
                 dp.ExecuteNonQuery(sql);
-                return key;
+                return sb.Values[0].Value;
             }
             return ExecuteInsertIntKey(dp, sb, oi);
         }

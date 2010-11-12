@@ -1,4 +1,5 @@
 ﻿using System;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
@@ -54,6 +55,14 @@ namespace Lephone.UnitTest.Data
         public string Weixiu { get; set; }//维修记录
     }
 
+    public class SelfGuid : IDbObject
+    {
+        [DbKey(IsDbGenerate = false)]
+        public Guid Id;
+
+        public string Name;
+    }
+
     [TestFixture]
     public class UserIssueTest : DataTestBase
     {
@@ -92,6 +101,17 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(new Date(2009, 5, 20), o1.DT1);
             Assert.AreEqual(new Date(1998, 12, 22), o1.DT);
         }
-    }
 
+        [Test]
+        public void Test3()
+        {
+            var gid = Guid.NewGuid();
+            var o1 = new SelfGuid {Id = gid, Name = "tom"};
+            DbEntry.Insert(o1);
+
+            var o2 = DbEntry.GetObject<SelfGuid>(gid);
+            Assert.IsNotNull(o2);
+            Assert.AreEqual("tom", o2.Name);
+        }
+    }
 }
