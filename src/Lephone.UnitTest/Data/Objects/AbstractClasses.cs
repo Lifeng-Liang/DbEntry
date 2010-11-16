@@ -192,7 +192,7 @@ namespace Lephone.UnitTest.Data.Objects
     [DbTable("People")]
     public class PeopleImp1 : DbObjectModel<PeopleImp1>
     {
-        public string Name;
+        public string Name { get; set; }
 
         public HasOne<PCsImp1> pc;
 
@@ -205,7 +205,7 @@ namespace Lephone.UnitTest.Data.Objects
     [DbTable("PCs")]
     public class PCsImp1 : DbObjectModel<PCsImp1>
     {
-        public string Name;
+        public string Name { get; set; }
 
         [DbColumn("Person_Id")]
         public BelongsTo<PeopleImp1> owner;
@@ -219,7 +219,7 @@ namespace Lephone.UnitTest.Data.Objects
     [DbTable("People")]
     public class PeopleImp2 : DbObjectModel<PeopleImp2>
     {
-        public string Name;
+        public string Name { get; set; }
 
         public HasOne<PCsImp2> pc;
 
@@ -232,7 +232,7 @@ namespace Lephone.UnitTest.Data.Objects
     [DbTable("PCs")]
     public class PCsImp2 : DbObjectModel<PCsImp2>
     {
-        public string Name;
+        public string Name { get; set; }
 
         [DbColumn("Person_Id")]
         public BelongsTo<PeopleImp2> owner;

@@ -1,6 +1,7 @@
 ﻿using System;
 using Lephone.Data;
 using Lephone.Data.Common;
+using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
 using Lephone.Core;
 using Mono.Cecil;
@@ -33,6 +34,23 @@ namespace Lephone.Processor
             _model.CustomAttributes.Add(_handler.GetModelHandler(_result));
 
             _info = ObjectInfo.GetInstance(type);
+
+            CheckType();
+        }
+
+        private void CheckType()
+        {
+            if (_type.IsSubclassOf(typeof(DbObjectSmartUpdate)))
+            {
+                foreach(var field in _info.SimpleFields)
+                {
+                    if(!field.MemberInfo.IsProperty)
+                    {
+                        throw new ModelException(
+                            _type, "The subclass of DbObjectModel can not has any fields, use property instead.");
+                    }
+                }
+            }
         }
 
         public TypeDefinition Generate()

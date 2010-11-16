@@ -34,7 +34,7 @@ namespace Lephone.UnitTest.Linq
 
         public class BoolTest : DbObjectModel<BoolTest>
         {
-            public string Name;
+            public string Name { get; set; }
             public bool Available { get; set; }
         }
 
