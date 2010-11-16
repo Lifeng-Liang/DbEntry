@@ -47,7 +47,8 @@ namespace Lephone.Processor
                     if(!field.MemberInfo.IsProperty)
                     {
                         throw new ModelException(
-                            _type, "The subclass of DbObjectModel can not has any fields, use property instead.");
+                            field.MemberInfo,
+                            "The subclass of DbObjectModel can not has any fields, use property instead.");
                     }
                 }
             }
