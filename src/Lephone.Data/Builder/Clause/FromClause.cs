@@ -8,6 +8,7 @@ namespace Lephone.Data.Builder.Clause
     public class FromClause : IClause
     {
         public readonly string MainTableName;
+        public readonly string MainOriginTableName;
         public readonly Type PartOf;
         public readonly JoinClause[] JoinClauseList;
         private readonly HybridDictionary _fromStrings = new HybridDictionary();
@@ -15,6 +16,13 @@ namespace Lephone.Data.Builder.Clause
         public FromClause(string tableName)
         {
             MainTableName = tableName;
+            MainOriginTableName = tableName;
+        }
+
+        public FromClause(string tableName, string mapTableName)
+        {
+            MainTableName = mapTableName;
+            MainOriginTableName = tableName;
         }
 
         public FromClause(Type partOf)

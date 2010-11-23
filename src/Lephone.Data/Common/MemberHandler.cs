@@ -210,8 +210,7 @@ namespace Lephone.Data.Common
                     if (fn == null)
                     {
                         Type ot = fi.MemberType.GetGenericArguments()[0];
-                        string n = ObjectInfoBase.GetObjectFromClause(ot).MainTableName;
-                        Name = NameMapper.Instance.UnmapName(n) + "_Id";
+                        Name = ObjectInfoBase.GetObjectFromClause(ot).MainOriginTableName + "_Id";
                     }
                 }
                 Type t2 = typeof(HasAndBelongsToMany<>);
@@ -226,8 +225,7 @@ namespace Lephone.Data.Common
                     if (fn == null)
                     {
                         Type ot1 = fi.MemberType.GetGenericArguments()[0];
-                        string n1 = ObjectInfoBase.GetObjectFromClause(ot1).MainTableName;
-                        Name = NameMapper.Instance.UnmapName(n1) + "_Id";
+                        Name = ObjectInfoBase.GetObjectFromClause(ot1).MainOriginTableName + "_Id";
                     }
                 }
                 Type t3 = typeof(LazyLoadField<>);

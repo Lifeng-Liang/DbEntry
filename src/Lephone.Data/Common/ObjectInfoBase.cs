@@ -204,7 +204,7 @@ namespace Lephone.Data.Common
             MemberHandler[] keys = kfs.ToArray();
 
             Init(t, GetObjectFromClause(t), keys, fields.ToArray(), DisableSqlLog(t));
-            SetManyToManyFrom(this, From.MainTableName, Fields);
+            SetManyToManyFrom(this, From.MainOriginTableName, Fields);
 
             RelationFields = rlfs.ToArray();
             SimpleFields = sifs.ToArray();
@@ -294,7 +294,7 @@ namespace Lephone.Data.Common
                 if (joas.Length == 0)
                 {
                     string defaultName = NameMapper.Instance.MapName(dbObjectType.Name);
-                    return new FromClause(GetTableNameFromConfig(defaultName));
+                    return new FromClause(dbObjectType.Name, GetTableNameFromConfig(defaultName));
                 }
                 var jcs = new JoinClause[joas.Length];
                 for (int i = 0; i < joas.Length; i++)
@@ -333,22 +333,20 @@ namespace Lephone.Data.Common
             return false;
         }
 
-        private static void SetManyToManyFrom(ObjectInfoBase oi, string mainTableName, IEnumerable<MemberHandler> fields)
+        private static void SetManyToManyFrom(ObjectInfoBase oi, string unmappedMainTableName, IEnumerable<MemberHandler> fields)
         {
             foreach (MemberHandler f in fields)
             {
                 if (f.IsHasAndBelongsToMany)
                 {
                     Type ft = f.FieldType.GetGenericArguments()[0];
-                    string slaveTableName = GetObjectFromClause(ft).MainTableName;
-
-                    string unmappedMainTableName = NameMapper.Instance.UnmapName(mainTableName);
-                    string unmappedSlaveTableName = NameMapper.Instance.UnmapName(slaveTableName);
+                    var slave = GetObjectFromClause(ft);
+                    string unmappedSlaveTableName = slave.MainOriginTableName;
 
                     string crossTableName = GetCrossTableName(f, unmappedMainTableName, unmappedSlaveTableName);
 
                     var fc = new FromClause(
-                        new JoinClause(crossTableName, unmappedSlaveTableName + "_Id", slaveTableName, "Id",
+                        new JoinClause(crossTableName, unmappedSlaveTableName + "_Id", slave.MainTableName, "Id",
                                        CompareOpration.Equal, JoinMode.Inner));
                     Type t2 = f.FieldType.GetGenericArguments()[0];
                     oi.CrossTables[t2]

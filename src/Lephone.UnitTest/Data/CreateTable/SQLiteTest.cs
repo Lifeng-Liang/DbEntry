@@ -391,11 +391,11 @@ CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([C
             Sqlite.CreateCrossTable(typeof(crxBook1), typeof(crxCategory1));
             AssertSql(
 @"CREATE TABLE [R_book_and_category] (
-    [crx_Book1_Id] BIGINT NOT NULL ,
-    [crx_Category1_Id] BIGINT NOT NULL 
+    [crxBook1_Id] BIGINT NOT NULL ,
+    [crxCategory1_Id] BIGINT NOT NULL 
 );
-CREATE INDEX [IX_R_book_and_category_crx_Book1_Id] ON [R_book_and_category] ([crx_Book1_Id] ASC);
-CREATE INDEX [IX_R_book_and_category_crx_Category1_Id] ON [R_book_and_category] ([crx_Category1_Id] ASC);
+CREATE INDEX [IX_R_book_and_category_crxBook1_Id] ON [R_book_and_category] ([crxBook1_Id] ASC);
+CREATE INDEX [IX_R_book_and_category_crxCategory1_Id] ON [R_book_and_category] ([crxCategory1_Id] ASC);
 <Text><30>()");
         }
 
@@ -453,7 +453,7 @@ SELECT LAST_INSERT_ROWID();
             AssertSql(@"CREATE TABLE [For_Table_Name] (
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
     [Name] NTEXT NOT NULL ,
-    [For_Table_Name2_Id] BIGINT NOT NULL 
+    [For_TableName2_Id] BIGINT NOT NULL 
 );
 <Text><30>()");
         }
