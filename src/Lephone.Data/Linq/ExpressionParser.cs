@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -134,9 +135,13 @@ namespace Lephone.Data.Linq
         private static Condition ParseInCall(MethodCallExpression e)
         {
             ColumnFunction function;
-            string key = GetMemberName(((UnaryExpression)e.Arguments[0]).Operand, out function);
-            var values = (object[])GetRightValue(e.Arguments[1]);
-            return new InClause(key, values);
+            string key = GetMemberName(e.Arguments[0], out function);
+            var list = new List<object>();
+            foreach (var obj in (IEnumerable)GetRightValue(e.Arguments[1]))
+            {
+                list.Add(obj);
+            }
+            return new InClause(key, list.ToArray());
         }
 
         private static Condition ParseLikeCall(MethodCallExpression e, string left, string right)

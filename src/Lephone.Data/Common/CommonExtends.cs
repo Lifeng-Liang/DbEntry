@@ -2,7 +2,7 @@
 
 public static class CommonExtends
 {
-    public static bool In(this ValueType key, params ValueType[] values)
+    public static bool In<T>(this T key, params T[] values) where T : struct 
     {
         throw new Exception("It's only for Linq");
     }

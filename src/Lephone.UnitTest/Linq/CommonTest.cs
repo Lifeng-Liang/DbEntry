@@ -376,7 +376,15 @@ namespace Lephone.UnitTest.Linq
         public void TestInClause()
         {
             Sqlite.From<BoolTest>().Where(p => p.Id.In(1, 3, 5, 7)).Select();
-            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int64,@in_1=3:Int64,@in_2=5:Int64,@in_3=7:Int64)");
+        }
+
+        [Test]
+        public void TestInClause2()
+        {
+            var list = new long[] { 1, 3, 5, 7 };
+            Sqlite.From<BoolTest>().Where(p => p.Id.In(list)).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int64,@in_1=3:Int64,@in_2=5:Int64,@in_3=7:Int64)");
         }
     }
 }
