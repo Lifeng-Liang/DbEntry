@@ -135,7 +135,8 @@ namespace Lephone.Data.Linq
         private static Condition ParseInCall(MethodCallExpression e)
         {
             ColumnFunction function;
-            string key = GetMemberName(e.Arguments[0], out function);
+            MemberExpression member;
+            string key = GetMemberName(e.Arguments[0], out function, out member);
             var list = new List<object>();
             foreach (var obj in (IEnumerable)GetRightValue(e.Arguments[1]))
             {
@@ -147,7 +148,8 @@ namespace Lephone.Data.Linq
         private static Condition ParseLikeCall(MethodCallExpression e, string left, string right)
         {
             ColumnFunction function;
-            string key = GetMemberName(e.Object, out function);
+            MemberExpression member;
+            string key = GetMemberName(e.Object, out function, out member);
             if(e.Arguments.Count == 1)
             {
                 object value = GetRightValue(e.Arguments[0]);
@@ -159,12 +161,27 @@ namespace Lephone.Data.Linq
             throw new LinqException("'Like' clause only supported one Parameter and the Parameter should be string and not allow NULL.");
         }
 
-        private static string GetMemberName(Expression expr, out ColumnFunction function)
+        private static string GetColumnName(MemberExpression expr)
         {
-            if(expr is MemberExpression)
+            string mn = expr.Member.Name;
+            if (expr.Expression is MemberExpression && mn == "Id")
+            {
+                mn = ((MemberExpression)expr.Expression).Member.Name;
+            }
+            return GetColumnName(mn);
+        }
+
+        private static string GetMemberName(Expression expr, out ColumnFunction function, out MemberExpression obj)
+        {
+            if (expr.NodeType == ExpressionType.Convert)
+            {
+                expr = ((UnaryExpression)expr).Operand;
+            }
+            if (expr is MemberExpression)
             {
                 function = ColumnFunction.None;
-                return GetColumnName(((MemberExpression)expr).Member.Name);
+                obj = (MemberExpression)expr;
+                return GetColumnName(obj);
             }
             if(expr is MethodCallExpression)
             {
@@ -172,77 +189,51 @@ namespace Lephone.Data.Linq
                 if(e.Method.Name == "ToLower" && e.Object is MemberExpression)
                 {
                     function = ColumnFunction.ToLower;
-                    return GetColumnName(((MemberExpression)e.Object).Member.Name);
+                    obj = (MemberExpression)e.Object;
+                    return GetColumnName(obj);
                 }
                 if (e.Method.Name == "ToUpper" && e.Object is MemberExpression)
                 {
                     function = ColumnFunction.ToUpper;
-                    return GetColumnName(((MemberExpression)e.Object).Member.Name);
+                    obj = (MemberExpression)e.Object;
+                    return GetColumnName(obj);
                 }
             }
-            throw new LinqException("'Like' clause only supported one Parameter and the Parameter should be string and not allow NULL.");
+            throw new LinqException("The expression must be 'Column op const' or 'Column op Column'");
         }
 
         private static Condition GetClause(BinaryExpression e, CompareOpration co)
         {
-            Expression l = e.Left;
-            if (l.NodeType == ExpressionType.Convert)
+            ColumnFunction function;
+            MemberExpression left;
+            var key = GetMemberName(e.Left, out function, out left);
+            string pn = left.Expression.ToString();
+
+            if (e.Right.NodeType == ExpressionType.MemberAccess)
             {
-                l = ((UnaryExpression)l).Operand;
-            }
-            ColumnFunction function = ColumnFunction.None;
-            if(l is MethodCallExpression)
-            {
-                var x = (MethodCallExpression) l;
-                if(x.Method.Name == "ToLower")
+                var right = (MemberExpression)e.Right;
+                if (right.Expression != null && right.Expression.ToString() == pn)
                 {
-                    l = x.Object;
-                    function = ColumnFunction.ToLower;
-                }
-                else if (x.Method.Name == "ToUpper")
-                {
-                    l = x.Object;
-                    function = ColumnFunction.ToUpper;
+                    string key2 = GetColumnName(right.Member.Name);
+                    return new KeyKeyClause(key, key2, co);
                 }
             }
-            if (l.NodeType == ExpressionType.MemberAccess)
+
+            object value = GetRightValue(e.Right);
+
+            if (value == null)
             {
-                var left = (MemberExpression)l;
-                string pn = left.Expression.ToString();
-                string mn = left.Member.Name;
-                if(left.Expression is MemberExpression && mn == "Id")
+                if (co == CompareOpration.Equal)
                 {
-                    mn = ((MemberExpression)left.Expression).Member.Name;
+                    return new KeyValueClause(key, null, CompareOpration.Is, ColumnFunction.None);
                 }
-                string key = GetColumnName(mn);
-
-                if (e.Right.NodeType == ExpressionType.MemberAccess)
+                if (co == CompareOpration.NotEqual)
                 {
-                    var right = (MemberExpression)e.Right;
-                    if (right.Expression != null && right.Expression.ToString() == pn)
-                    {
-                        string key2 = GetColumnName(right.Member.Name);
-                        return new KeyKeyClause(key, key2, co);
-                    }
+                    return new KeyValueClause(key, null, CompareOpration.IsNot, ColumnFunction.None);
                 }
-
-                object value = GetRightValue(e.Right);
-
-                if (value == null)
-                {
-                    if (co == CompareOpration.Equal)
-                    {
-                        return new KeyValueClause(key, null, CompareOpration.Is, ColumnFunction.None);
-                    }
-                    if (co == CompareOpration.NotEqual)
-                    {
-                        return new KeyValueClause(key, null, CompareOpration.IsNot, ColumnFunction.None);
-                    }
-                    throw new LinqException("NULL value only supported Equal and NotEqual!");
-                }
-                return new KeyValueClause(key, value, co, function);
+                throw new LinqException("NULL value only supported Equal and NotEqual!");
             }
-            throw new LinqException("The expression must be 'Column op const' or 'Column op Column'");
+            return new KeyValueClause(key, value, co, function);
         }
 
         private static object GetRightValue(Expression right)
