@@ -41,7 +41,7 @@ namespace Lephone.Processor
             for (int i = _model.Fields.Count - 1; i >= 0; i--)
             {
                 var field = _model.Fields[i];
-                if (field.IsCompilerGenerated())
+                if (!field.IsStatic && field.IsCompilerGenerated())
                 {
                     _model.Fields.RemoveAt(i);
                 }
