@@ -154,6 +154,7 @@ namespace Lephone.Data.Common
         public readonly string OrderByString;
 	    public readonly string UniqueErrorMessage;
 	    public readonly string ShowString;
+	    public readonly string Description;
 
         public Type FieldType
         {
@@ -383,6 +384,9 @@ namespace Lephone.Data.Common
 
             var ss = fi.GetAttribute<ShowStringAttribute>(false);
             ShowString = ss != null ? ss.ShowString : Name;
+
+            var da = fi.GetAttribute<DescriptionAttribute>(false);
+            Description = da != null ? da.Text : null;
         }
 
         internal MemberHandler(MemberAdapter fi, FieldType ft, PropertyInfo pi)

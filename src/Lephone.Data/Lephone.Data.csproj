@@ -150,7 +150,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\SoftDeleteQueryComposer.cs" />
     <Compile Include="Common\StaticPagedSelector.cs" />
     <Compile Include="Common\StupidDataReader.cs" />
-    <Compile Include="Common\VBHelper.cs" />
     <Compile Include="DbContext.cs" />
     <Compile Include="Definition\ComposedOfAttribute.cs" />
     <Compile Include="Definition\CrossTableNameAttribute.cs" />

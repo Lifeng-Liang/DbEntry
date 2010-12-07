@@ -9,6 +9,10 @@ namespace Lephone.Data.Definition
 
         public DescriptionAttribute(string text)
         {
+            if(text.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException("text");
+            }
             this.Text = text;
         }
     }

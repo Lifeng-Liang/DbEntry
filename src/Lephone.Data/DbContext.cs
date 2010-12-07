@@ -555,6 +555,7 @@ namespace Lephone.Data
             SqlStatement sql = oi.Composer.GetCreateStatement(Dialect);
             oi.LogSql(sql);
             ExecuteNonQuery(sql);
+            oi.Context.Dialect.ExecAddDescriptionSql(oi);
             if (Driver.AutoCreateTable && _tableNames != null)
             {
                 _tableNames.Add(oi.From.MainTableName.ToLower(), 1);
@@ -563,11 +564,11 @@ namespace Lephone.Data
 
         public void CreateDeleteToTable(Type dbObjectType)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            CreateTableStatementBuilder sb = oi.Composer.GetCreateTableStatementBuilder();
+            var oi = ObjectInfo.GetInstance(dbObjectType);
+            var sb = oi.Composer.GetCreateTableStatementBuilder();
             sb.TableName = oi.DeleteToTableName;
             sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0, 0));
-            SqlStatement sql = sb.ToSqlStatement(Dialect);
+            var sql = sb.ToSqlStatement(Dialect);
             oi.LogSql(sql);
             ExecuteNonQuery(sql);
             if (Driver.AutoCreateTable && _tableNames != null)

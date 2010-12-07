@@ -1,5 +1,8 @@
 using System.Data;
+using System.Text;
+using Lephone.Core;
 using Lephone.Data.Builder;
+using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Dialect
@@ -32,6 +35,30 @@ namespace Lephone.Data.Dialect
                 ssb.GetColumns(this, false, true)
                 );
             return new TimeConsumingSqlStatement(CommandType.Text, sqlString, dpc);
+        }
+
+        public override void ExecAddDescriptionSql(ObjectInfo oi)
+        {
+            const string template = "EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'{2}' ,@level0type=N'SCHEMA', @level0name=N'dbo', @level1type=N'TABLE', @level1name=N'{0}', @level2type=N'COLUMN', @level2name=N'{1}';\n";
+            var sb = new StringBuilder();
+            string table = oi.From.MainTableName;
+            foreach (var field in oi.SimpleFields)
+            {
+                if (!field.Description.IsNullOrEmpty())
+                {
+                    sb.Append(string.Format(template, table, field.Name, field.Description.Replace("'", "''")));
+                }
+            }
+            if (sb.Length > 0)
+            {
+                CommonHelper.CatchAll(
+                    () =>
+                        {
+                            var sql = new SqlStatement(sb.ToString());
+                            oi.Context.ExecuteNonQuery(sql);
+                            oi.LogSql(sql);
+                        });
+            }
         }
     }
 }

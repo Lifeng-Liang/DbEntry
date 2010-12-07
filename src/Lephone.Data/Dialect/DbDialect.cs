@@ -384,5 +384,9 @@ namespace Lephone.Data.Dialect
             }
             return null;
         }
+
+        public virtual void ExecAddDescriptionSql(ObjectInfo oi)
+        {
+        }
     }
 }
