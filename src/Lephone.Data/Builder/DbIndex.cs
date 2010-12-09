@@ -4,13 +4,13 @@
     {
         public string IndexName;
         public ASC[] Columns;
-        public bool UNIQUE;
+        public bool Unique;
 
-        public DbIndex(string IndexName, bool UNIQUE, params ASC[] Columns)
+        public DbIndex(string indexName, bool unique, params ASC[] columns)
         {
-            this.IndexName = IndexName;
-            this.Columns = Columns;
-            this.UNIQUE = UNIQUE;
+            this.IndexName = indexName;
+            this.Columns = columns;
+            this.Unique = unique;
         }
     }
 }

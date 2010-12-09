@@ -276,7 +276,7 @@ namespace Lephone.Data
             oi.LogSql(sql);
             var list = new DbObjectList<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list, dbObjectType);
-            DataLoadDirect(ip, typeof(GroupByObject<T1>), dbObjectType, sql, true);
+            DataLoadDirect(ip, typeof(GroupByObject<T1>), dbObjectType, sql, true, false);
             return list;
         }
 
@@ -287,7 +287,7 @@ namespace Lephone.Data
             oi.LogSql(sql);
             var list = new DbObjectList<GroupBySumObject<T1, T2>>();
             IProcessor ip = GetListProcessor(list, dbObjectType);
-            DataLoadDirect(ip, typeof(GroupBySumObject<T1, T2>), dbObjectType, sql, true);
+            DataLoadDirect(ip, typeof(GroupBySumObject<T1, T2>), dbObjectType, sql, true, false);
             return list;
         }
 
@@ -306,7 +306,7 @@ namespace Lephone.Data
             var ret = new DbObjectList<T>();
             var t = typeof(T);
             IProcessor ip = GetListProcessor(ret, t);
-            DataLoadDirect(ip, t, t, sql, false);
+            DataLoadDirect(ip, t, t, sql, false, false);
             return ret;
         }
 
@@ -323,43 +323,21 @@ namespace Lephone.Data
             return new LimitedListInserter(il);
         }
 
-        //public void FillCollection(IList list, Type dbObjectType, SqlStatement sql)
-        //{
-        //    IProcessor ip = GetListProcessor(list, dbObjectType);
-        //    DataLoad(ip, dbObjectType, sql);
-        //}
-
-        //public void FillCollection(IList list, Type dbObjectType, Condition iwc, OrderBy oc, Range lc)
-        //{
-        //    FillCollection(list, dbObjectType, iwc, oc, lc, false);
-        //}
-
-        //public void FillCollection(IList list, Type returnType, Type dbObjectType, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
-        //{
-        //    IProcessor ip = GetListProcessor(list, dbObjectType);
-        //    DataLoad(ip, returnType, dbObjectType, null, iwc, oc, lc, isDistinct);
-        //}
-
-        //public void FillCollection(IList list, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc)
-        //{
-        //    FillCollection(list, dbObjectType, from, iwc, oc, lc, false);
-        //}
-
-        public void FillCollection(IList list, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void FillCollection(IList list, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy = false)
         {
             IProcessor ip = GetListProcessor(list, dbObjectType);
-            DataLoad(ip, returnType, dbObjectType, from, iwc, oc, lc, isDistinct);
+            DataLoad(ip, returnType, dbObjectType, from, iwc, oc, lc, isDistinct, noLazy);
         }
 
-        public void DataLoad(IProcessor ip, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct)
+        public void DataLoad(IProcessor ip, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct, returnType);
+            SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct, noLazy, returnType);
             oi.LogSql(sql);
-            DataLoadDirect(ip, returnType, dbObjectType, sql, true);
+            DataLoadDirect(ip, returnType, dbObjectType, sql, true, noLazy);
         }
 
-        private void DataLoadDirect(IProcessor ip, Type returnType, Type dbObjectType, SqlStatement sql, bool useIndex)
+        private void DataLoadDirect(IProcessor ip, Type returnType, Type dbObjectType, SqlStatement sql, bool useIndex, bool noLazy)
         {
             TryCreateTable(dbObjectType);
             long startIndex = sql.StartIndex;
@@ -377,7 +355,7 @@ namespace Lephone.Data
                     count++;
                     if (count >= startIndex)
                     {
-                        object di = ObjectInfo.CreateObject(returnType, dr, useIndex);
+                        object di = ObjectInfo.CreateObject(returnType, dr, useIndex, noLazy);
                         if (!ip.Process(di))
                         {
                             break;

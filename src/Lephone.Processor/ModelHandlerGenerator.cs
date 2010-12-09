@@ -60,8 +60,10 @@ namespace Lephone.Processor
             GenerateCreateInstance();
             GenerateLoadSimpleValuesByIndex();
             GenerateLoadSimpleValuesByName();
-            GenerateLoadRelationValues(true);
-            GenerateLoadRelationValues(false);
+            GenerateLoadRelationValues(true, false);
+            GenerateLoadRelationValues(false, false);
+            GenerateLoadRelationValues(true, true);
+            GenerateLoadRelationValues(false, true);
             GenerateGetKeyValueDirect();
             GenerateGetKeyValuesDirect();
             GenerateSetValuesForSelectDirect();
@@ -194,12 +196,18 @@ namespace Lephone.Processor
             _result.Methods.Add(method);
         }
 
-        private void GenerateLoadRelationValues(bool useIndex)
+        private void GenerateLoadRelationValues(bool useIndex, bool noLazy)
         {
             int index = _info.SimpleFields.Length;
             string methodName = useIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
+            if (noLazy)
+            {
+                methodName = methodName + "NoLazy";
+            }
             var method = new MethodDefinition(methodName, MethodAttr, _handler.VoidType);
-            method.Overrides.Add(useIndex ? _handler.LoadRelationValuesByIndex : _handler.LoadRelationValuesByName);
+            method.Overrides.Add(useIndex
+                ? (noLazy ? _handler.LoadRelationValuesByIndexNoLazy : _handler.LoadRelationValuesByIndex)
+                : (noLazy ? _handler.LoadRelationValuesByNameNoLazy : _handler.LoadRelationValuesByName));
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             method.Parameters.Add(new ParameterDefinition("dr", ParameterAttributes.None, _handler.DataReaderInterface));
             var processor = new IlBuilder(method.Body);
@@ -217,6 +225,22 @@ namespace Lephone.Processor
                     if (f.IsLazyLoad)
                     {
                         processor.LoadString(f.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
+                        if(noLazy)
+                        {
+                            processor.LoadLoc(0);
+                            processor.GetMember(f, _handler);
+                            processor.LoadArg(2);
+                            if (useIndex)
+                            {
+                                processor.LoadInt(index++).CallVirtual(_handler.GetDataReaderMethodInt());
+                            }
+                            else
+                            {
+                                processor.LoadString(f.Name).CallVirtual(_handler.GetDataReaderMethodString());
+                            }
+                            processor.LoadInt(0);
+                            processor.CallVirtual(_handler.LazyLoadingInterfaceWrite);
+                        }
                     }
                     else if (f.IsHasOne || f.IsHasMany)
                     {
@@ -311,29 +335,38 @@ namespace Lephone.Processor
 
         private void GenerateSetValuesForSelectDirect()
         {
-            var method = new MethodDefinition("SetValuesForSelectDirect", MethodAttr, _handler.VoidType);
-            method.Overrides.Add(_handler.SetValuesForSelectDirect);
+            GenerateSetValuesForSelectDirectDirect("SetValuesForSelectDirect", false);
+            GenerateSetValuesForSelectDirectDirect("SetValuesForSelectDirectNoLazy", true);
+        }
+
+        private void GenerateSetValuesForSelectDirectDirect(string methodName, bool noLazy)
+        {
+            var method = new MethodDefinition(methodName, MethodAttr, _handler.VoidType);
+            method.Overrides.Add(noLazy ? _handler.SetValuesForSelectDirectNoLazy : _handler.SetValuesForSelectDirect);
             method.Parameters.Add(new ParameterDefinition("keys", ParameterAttributes.None, _handler.ListKeyValuePairStringStringType));
             var processor = new IlBuilder(method.Body);
 
             foreach (var f in _info.Fields)
             {
-                if (!f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany && !f.IsLazyLoad)
+                if (!f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
                 {
-                    processor.LoadArg(1);
-
-                    processor.LoadString(f.Name);
-                    if (f.Name != f.MemberInfo.Name)
+                    if (noLazy || !f.IsLazyLoad)
                     {
-                        processor.LoadString(f.MemberInfo.Name);
-                    }
-                    else
-                    {
-                        processor.LoadNull();
-                    }
-                    processor.NewObj(_handler.KeyValuePairStringStringCtor);
+                        processor.LoadArg(1);
 
-                    processor.CallVirtual(_handler.ListKeyValuePairStringStringAdd);
+                        processor.LoadString(f.Name);
+                        if (f.Name != f.MemberInfo.Name)
+                        {
+                            processor.LoadString(f.MemberInfo.Name);
+                        }
+                        else
+                        {
+                            processor.LoadNull();
+                        }
+                        processor.NewObj(_handler.KeyValuePairStringStringCtor);
+
+                        processor.CallVirtual(_handler.ListKeyValuePairStringStringAdd);
+                    }
                 }
             }
 

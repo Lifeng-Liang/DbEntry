@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using Lephone.Data;
 using Lephone.Data.Definition;
+using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data;
 using NUnit.Framework;
@@ -36,6 +38,18 @@ namespace Lephone.UnitTest.Linq
         {
             public string Name { get; set; }
             public bool Available { get; set; }
+        }
+
+        [DbContext("SQLite")]
+        public class Nolazy : DbObjectModel<Nolazy>
+        {
+            public int No { get; set; }
+
+            [LazyLoad]
+            public string Content { get; set; }
+
+            [Length(10)]
+            public string Name { get; set; }
         }
 
         [Test]
@@ -385,6 +399,38 @@ namespace Lephone.UnitTest.Linq
             var list = new long[] { 1, 3, 5, 7 };
             Sqlite.From<BoolTest>().Where(p => p.Id.In(list)).Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int64,@in_1=3:Int64,@in_2=5:Int64,@in_3=7:Int64)");
+        }
+
+        [Test]
+        public void TestNoLazy()
+        {
+            Nolazy.Where(Condition.Empty).Select();
+            AssertSql("SELECT [Id],[No],[Name] FROM [Nolazy];\n<Text><60>()");
+
+            Nolazy.Where(Condition.Empty).SelectDistinct();
+            AssertSql("SELECT DISTINCT [Id],[No],[Name] FROM [Nolazy];\n<Text><60>()");
+
+            Nolazy.Where(Condition.Empty).SelectNoLazy();
+            AssertSql("SELECT [Id],[No],[Name],[Content] AS [$Content] FROM [Nolazy];\n<Text><60>()");
+
+            Nolazy.Where(Condition.Empty).SelectDistinctNoLazy();
+            AssertSql("SELECT DISTINCT [Id],[No],[Name],[Content] AS [$Content] FROM [Nolazy];\n<Text><60>()");
+        }
+
+        [Test]
+        public void TestNoLazy2()
+        {
+            StaticRecorder.CurRow.Add(new RowInfo("Id", 1L));
+            StaticRecorder.CurRow.Add(new RowInfo("No", 2));
+            StaticRecorder.CurRow.Add(new RowInfo("Name", "aha"));
+            StaticRecorder.CurRow.Add(new RowInfo("Content", "I'm here"));
+
+            var list = Nolazy.Where(Condition.Empty).SelectNoLazy();
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(2, list[0].No);
+            Assert.AreEqual("aha", list[0].Name);
+            Assert.AreEqual("I'm here", list[0].Content);
+            AssertSql("SELECT [Id],[No],[Name],[Content] AS [$Content] FROM [Nolazy];\n<Text><60>()");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Lephone.Data.Common
 {
     public partial class ObjectInfo
     {
-        public static object CreateObject(Type dbObjectType, IDataReader dr, bool useIndex)
+        public static object CreateObject(Type dbObjectType, IDataReader dr, bool useIndex, bool noLazy)
         {
             if(dbObjectType.Name.StartsWith("<"))
             {
@@ -34,7 +34,7 @@ namespace Lephone.Data.Common
                 }
             }
             oi.Handler.LoadSimpleValues(obj, useIndex, dr);
-            oi.Handler.LoadRelationValues(obj, useIndex, dr);
+            oi.Handler.LoadRelationValues(obj, useIndex, noLazy, dr);
             if (sudi != null)
             {
                 sudi.m_InternalInit = false;

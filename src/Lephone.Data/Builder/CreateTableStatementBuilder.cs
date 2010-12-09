@@ -124,7 +124,7 @@ namespace Lephone.Data.Builder
                 {
                     n = "IX_" + gn; 
                 }
-                if (i.UNIQUE)
+                if (i.Unique)
                 {
                     sb.Append("CREATE UNIQUE ");
                 }

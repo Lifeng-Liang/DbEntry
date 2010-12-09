@@ -51,7 +51,7 @@ namespace Lephone.Data.Common
             sb.Where.Conditions = iwc;
             if(isDistinct)
             {
-                Info.Handler.SetValuesForSelect(sb);
+                Info.Handler.SetValuesForSelect(sb, false);
                 string cs = sb.GetColumns(dialect, true, false);
                 sb.SetCountColumn(cs);
                 sb.IsDistinct = false;
@@ -90,9 +90,9 @@ namespace Lephone.Data.Common
             return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, Type returnType)
+        public virtual SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType)
         {
-            var sb = new SelectStatementBuilder(from ?? Info.From, oc, lc) { IsDistinct = isDistinct };
+            var sb = new SelectStatementBuilder(from ?? Info.From, oc, lc) { IsDistinct = isDistinct, NoLazy = noLazy, };
             sb.Where.Conditions = iwc;
             if(returnType.Name.StartsWith("<"))
             {
@@ -100,7 +100,7 @@ namespace Lephone.Data.Common
             }
             else
             {
-                Info.Handler.SetValuesForSelect(sb);
+                Info.Handler.SetValuesForSelect(sb, noLazy);
             }
             // DataBase Process
             return sb.ToSqlStatement(dialect);

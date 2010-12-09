@@ -22,6 +22,7 @@ namespace Lephone.Data.Builder
 
         internal bool IsGroupBy;
         internal bool IsDistinct;
+	    internal bool NoLazy;
 
 		public SelectStatementBuilder(string tableName) : this(tableName, null, null)
 		{
@@ -108,23 +109,7 @@ namespace Lephone.Data.Builder
             }
 			foreach ( var k in _keys )
 			{
-                if (includeOrigin)
-                {
-                    columns.Append(dd.QuoteForColumnName(k.Key));
-                    if (includeAlias && k.Value != null) { columns.Append(" AS "); }
-                }
-                if (includeAlias)
-                {
-                    if (k.Value != null)
-                    {
-                        columns.Append(dd.QuoteForColumnName(k.Value));
-                    }
-                    else if (!includeOrigin)
-                    {
-                        columns.Append(dd.QuoteForColumnName(k.Key));
-                    }
-                }
-                columns.Append(",");
+                AddColumn(dd, columns, includeOrigin, includeAlias, k);
 			}
             //if(IsGroupBy)
             //{
@@ -168,7 +153,28 @@ namespace Lephone.Data.Builder
             return columns.ToString();
 		}
 
-        public Range Range
+	    private static void AddColumn(DbDialect dd, StringBuilder columns, bool includeOrigin, bool includeAlias, KeyValuePair<string, string> k)
+	    {
+	        if (includeOrigin)
+	        {
+	            columns.Append(dd.QuoteForColumnName(k.Key));
+	            if (includeAlias && k.Value != null) { columns.Append(" AS "); }
+	        }
+	        if (includeAlias)
+	        {
+	            if (k.Value != null)
+	            {
+	                columns.Append(dd.QuoteForColumnName(k.Value));
+	            }
+	            else if (!includeOrigin)
+	            {
+	                columns.Append(dd.QuoteForColumnName(k.Key));
+	            }
+	        }
+	        columns.Append(",");
+	    }
+
+	    public Range Range
         {
             get { return _limit; }
         }

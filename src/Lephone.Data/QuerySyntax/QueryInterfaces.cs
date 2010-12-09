@@ -9,6 +9,8 @@ namespace Lephone.Data.QuerySyntax
     {
         DbObjectList<T> Select();
         DbObjectList<T> SelectDistinct();
+        DbObjectList<T> SelectNoLazy();
+        DbObjectList<T> SelectDistinctNoLazy();
     }
 
     public interface IGetPagedSelector<T>

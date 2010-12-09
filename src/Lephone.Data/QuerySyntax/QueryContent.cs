@@ -86,6 +86,22 @@ namespace Lephone.Data.QuerySyntax
             return ret;
         }
 
+        public DbObjectList<T> SelectNoLazy()
+        {
+            var ret = new DbObjectList<T>();
+            var t = typeof(T);
+            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, false, true);
+            return ret;
+        }
+
+        public DbObjectList<T> SelectDistinctNoLazy()
+        {
+            var ret = new DbObjectList<T>();
+            var t = typeof(T);
+            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, true, true);
+            return ret;
+        }
+
         public DbObjectList<TResult> Select<TResult>()
         {
             var ret = new DbObjectList<TResult>();
@@ -221,7 +237,7 @@ namespace Lephone.Data.QuerySyntax
 
         #region Linq help methods
 
-        private IRangeable<T> AddOrderBy(QueryContent<T> me, Expression<Func<T, object>> expr, bool isAsc)
+        private static IRangeable<T> AddOrderBy(QueryContent<T> me, Expression<Func<T, object>> expr, bool isAsc)
         {
             string n = GetColumnName(expr);
             if (me.m_order == null)
@@ -234,7 +250,7 @@ namespace Lephone.Data.QuerySyntax
 
         private static string GetColumnName(Expression<Func<T, object>> expr)
         {
-            MemberExpression e = expr.GetMemberExpression();
+            var e = expr.GetMemberExpression();
             if (e != null)
             {
                 string n = ExpressionParser<T>.GetColumnName(e.Member.Name);

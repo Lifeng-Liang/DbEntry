@@ -49,11 +49,12 @@ Public Class CommonTest
         p2.FirstName = "uu"
 
         Try
-            DbEntry.UsingTransaction(Sub()
-                                         p1.Save()
-                                         p2.Save()
-                                         Throw New ApplicationException()
-                                     End Sub)
+            DbEntry.UsingTransaction(
+                Sub()
+                    p1.Save()
+                    p2.Save()
+                    Throw New ApplicationException()
+                End Sub)
         Catch ex As Exception
         End Try
 

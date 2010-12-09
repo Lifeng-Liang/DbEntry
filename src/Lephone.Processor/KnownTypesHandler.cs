@@ -98,15 +98,19 @@ namespace Lephone.Processor
         public readonly MethodReference SerializableGetObjectData;
         public readonly MethodReference BelongsToInterfaceSetForeignKey;
         public readonly MethodReference LazyLoadingInterfaceInit;
+        public readonly MethodReference LazyLoadingInterfaceWrite;
 
         public readonly MethodReference CreateInstance;
         public readonly MethodReference LoadSimpleValuesByIndex;
         public readonly MethodReference LoadSimpleValuesByName;
         public readonly MethodReference LoadRelationValuesByIndex;
         public readonly MethodReference LoadRelationValuesByName;
+        public readonly MethodReference LoadRelationValuesByIndexNoLazy;
+        public readonly MethodReference LoadRelationValuesByNameNoLazy;
         public readonly MethodReference GetKeyValueDirect;
         public readonly MethodReference GetKeyValuesDirect;
         public readonly MethodReference SetValuesForSelectDirect;
+        public readonly MethodReference SetValuesForSelectDirectNoLazy;
         public readonly MethodReference SetValuesForInsertDirect;
         public readonly MethodReference SetValuesForUpdateDirect;
 
@@ -207,15 +211,19 @@ namespace Lephone.Processor
             SerializableGetObjectData = Import(Import(typeof(ISerializable)).GetMethod("GetObjectData"));
             BelongsToInterfaceSetForeignKey = Import(Import(typeof(IBelongsTo)).GetMethod("set_ForeignKey"));
             LazyLoadingInterfaceInit = Import(Import(typeof(ILazyLoading)).GetMethod("Init"));
+            LazyLoadingInterfaceWrite = Import(Import(typeof(ILazyLoading)).GetMethod("Write"));
 
             CreateInstance = Import(emitBase.GetMethod("CreateInstance", ClassHelper.AllFlag));
             LoadSimpleValuesByIndex = Import(emitBase.GetMethod("LoadSimpleValuesByIndex", ClassHelper.AllFlag));
             LoadSimpleValuesByName = Import(emitBase.GetMethod("LoadSimpleValuesByName", ClassHelper.AllFlag));
             LoadRelationValuesByIndex = Import(emitBase.GetMethod("LoadRelationValuesByIndex", ClassHelper.AllFlag));
             LoadRelationValuesByName = Import(emitBase.GetMethod("LoadRelationValuesByName", ClassHelper.AllFlag));
+            LoadRelationValuesByIndexNoLazy = Import(emitBase.GetMethod("LoadRelationValuesByIndexNoLazy", ClassHelper.AllFlag));
+            LoadRelationValuesByNameNoLazy = Import(emitBase.GetMethod("LoadRelationValuesByNameNoLazy", ClassHelper.AllFlag));
             GetKeyValueDirect = Import(emitBase.GetMethod("GetKeyValueDirect", ClassHelper.AllFlag));
             GetKeyValuesDirect = Import(emitBase.GetMethod("GetKeyValuesDirect", ClassHelper.AllFlag));
             SetValuesForSelectDirect = Import(emitBase.GetMethod("SetValuesForSelectDirect", ClassHelper.AllFlag));
+            SetValuesForSelectDirectNoLazy = Import(emitBase.GetMethod("SetValuesForSelectDirectNoLazy", ClassHelper.AllFlag));
             SetValuesForInsertDirect = Import(emitBase.GetMethod("SetValuesForInsertDirect", ClassHelper.AllFlag));
             SetValuesForUpdateDirect = Import(emitBase.GetMethod("SetValuesForUpdateDirect", ClassHelper.AllFlag));
 

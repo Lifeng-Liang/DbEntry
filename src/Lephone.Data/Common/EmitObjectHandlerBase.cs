@@ -87,20 +87,36 @@ namespace Lephone.Data.Common
         protected abstract void LoadSimpleValuesByIndex(object o, IDataReader dr);
         protected abstract void LoadSimpleValuesByName(object o, IDataReader dr);
 
-        public void LoadRelationValues(object o, bool useIndex, IDataReader dr)
+        public void LoadRelationValues(object o, bool useIndex, bool noLazy, IDataReader dr)
         {
             if (useIndex)
             {
-                LoadRelationValuesByIndex(o, dr);
+                if(noLazy)
+                {
+                    LoadRelationValuesByIndexNoLazy(o, dr);
+                }
+                else
+                {
+                    LoadRelationValuesByIndex(o, dr);
+                }
             }
             else
             {
-                LoadRelationValuesByName(o, dr);
+                if(noLazy)
+                {
+                    LoadRelationValuesByNameNoLazy(o, dr);
+                }
+                else
+                {
+                    LoadRelationValuesByName(o, dr);
+                }
             }
         }
 
         protected abstract void LoadRelationValuesByIndex(object o, IDataReader dr);
         protected abstract void LoadRelationValuesByName(object o, IDataReader dr);
+        protected abstract void LoadRelationValuesByIndexNoLazy(object o, IDataReader dr);
+        protected abstract void LoadRelationValuesByNameNoLazy(object o, IDataReader dr);
 
         public Dictionary<string, object> GetKeyValues(object o)
         {
@@ -123,12 +139,20 @@ namespace Lephone.Data.Common
 
         protected virtual object GetKeyValueDirect(object o) { return null; }
 
-        public void SetValuesForSelect(ISqlKeys isv)
+        public void SetValuesForSelect(ISqlKeys isv, bool noLazy)
         {
-            SetValuesForSelectDirect(isv.Keys);
+            if (noLazy)
+            {
+                SetValuesForSelectDirectNoLazy(isv.Keys);
+            }
+            else
+            {
+                SetValuesForSelectDirect(isv.Keys);
+            }
         }
 
         protected abstract void SetValuesForSelectDirect(List<KeyValuePair<string, string>> keys);
+        protected abstract void SetValuesForSelectDirectNoLazy(List<KeyValuePair<string, string>> keys);
 
         public void SetValuesForInsert(ISqlValues isv, object obj)
         {

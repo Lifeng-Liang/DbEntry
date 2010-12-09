@@ -31,11 +31,23 @@ namespace Lephone.Data.Common
         {
         }
 
+        protected override void LoadRelationValuesByIndexNoLazy(object o, IDataReader dr)
+        {
+        }
+
+        protected override void LoadRelationValuesByNameNoLazy(object o, IDataReader dr)
+        {
+        }
+
         protected override void GetKeyValuesDirect(Dictionary<string, object> dic, object o)
         {
         }
 
         protected override void SetValuesForSelectDirect(List<KeyValuePair<string, string>> keys)
+        {
+        }
+
+        protected override void SetValuesForSelectDirectNoLazy(List<KeyValuePair<string, string>> keys)
         {
         }
 
