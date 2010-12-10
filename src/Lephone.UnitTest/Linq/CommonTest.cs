@@ -54,6 +54,24 @@ namespace Lephone.UnitTest.Linq
             public string Name { get; set; }
         }
 
+        [DbContext("SQLite")]
+        public class User : DbObjectModel<User>
+        {
+            public string Name { get; set; }
+
+            [HasMany]
+            public IList<Article> Articles { get; set; }
+        }
+
+        [DbContext("SQLite")]
+        public class Article : DbObjectModel<Article>
+        {
+            public string Title { get; set; }
+
+            [BelongsTo]
+            public User Writer { get; set; }
+        }
+
         [Test]
         public void Test1()
         {
@@ -415,6 +433,20 @@ namespace Lephone.UnitTest.Linq
         {
             BoolTest.Where(p => p.Id.InStatement(EnumTest.Where(x => x.Id >= 5).GetStatement(x => x.Id))).Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (SELECT [Id] FROM [Enum_Test] WHERE [Id] >= @Id_0);\n<Text><60>(@Id_0=5:Int64)");
+        }
+
+        [Test]
+        public void TestInClause5()
+        {
+            User.Where(p => p.Id.InStatement(Article.Where(x => x.Id >= 5).GetStatement(x => x.Writer.Id))).Select();
+            AssertSql("SELECT [Id],[Name] FROM [User] WHERE [Id] IN (SELECT [User_Id] FROM [Article] WHERE [Id] >= @Id_0);\n<Text><60>(@Id_0=5:Int64)");
+        }
+
+        [Test]
+        public void TestOrderByFk()
+        {
+            Article.Where(x => x.Id >= 5).OrderBy(x => x.Writer.Id).Select();
+            AssertSql("SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [Id] >= @Id_0 ORDER BY [User_Id] ASC;\n<Text><60>(@Id_0=5:Int64)");
         }
 
         [Test]

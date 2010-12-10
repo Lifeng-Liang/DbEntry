@@ -275,13 +275,10 @@ namespace Lephone.Data.QuerySyntax
 
         private static string GetColumnName(Expression<Func<T, object>> expr)
         {
-            var e = expr.GetMemberExpression();
-            if (e != null)
-            {
-                string n = ExpressionParser<T>.GetColumnName(e.Member.Name);
-                return n;
-            }
-            throw new LinqException("get column name error!");
+            ColumnFunction function;
+            MemberExpression obj;
+            var key = ExpressionParser<T>.GetMemberName(expr.Body, out function, out obj);
+            return key;
         }
 
         #endregion

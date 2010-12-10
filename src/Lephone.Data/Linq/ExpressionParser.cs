@@ -180,7 +180,7 @@ namespace Lephone.Data.Linq
             return GetColumnName(mn);
         }
 
-        private static string GetMemberName(Expression expr, out ColumnFunction function, out MemberExpression obj)
+        public static string GetMemberName(Expression expr, out ColumnFunction function, out MemberExpression obj)
         {
             if (expr.NodeType == ExpressionType.Convert)
             {
