@@ -4,14 +4,12 @@ namespace Lephone.Core.TimingTask.Timings
 {
 	public class WeekTiming : DayOfRangeTimingBase
 	{
-		public WeekTiming(TimeOfDayStructure timeOfDay, DayOfWeek dow) : base(timeOfDay, (int)dow) {}
-
-		public WeekTiming(TimeOfDayStructure timeOfDay, DayOfWeek dow, MiscProvider miscTimeProvider)
-			: base(timeOfDay, (int)dow, miscTimeProvider) {}
+		public WeekTiming(TimeOfDayStructure timeOfDay, DayOfWeek dow)
+			: base(timeOfDay, (int)dow) {}
 
 		protected override bool IsDayOfRange()
 		{
-			return ((int)miscTimeProvider.Now.DayOfWeek == DayOfRange);
+            return ((int)MiscProvider.Instance.Now.DayOfWeek == DayOfRange);
 		}
 	}
 }

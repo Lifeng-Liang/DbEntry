@@ -117,9 +117,9 @@ namespace Lephone.Data.Dialect
             dp.ExecuteNonQuery(sql);
         }
 
-        protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            SqlStatement sql = base.GetNormalSelectSqlStatement(ssb);
+            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this);
             sql.SqlCommandText = string.Format("SELECT * FROM ( SELECT ROW_.*, ROWNUM ROWNUM_ FROM ( {0} ) ROW_ WHERE ROWNUM <= {1} ) WHERE ROWNUM_ >= {2}",
                 sql.SqlCommandText, ssb.Range.EndIndex, ssb.Range.StartIndex);
             return sql;

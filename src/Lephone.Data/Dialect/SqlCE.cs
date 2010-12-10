@@ -5,9 +5,9 @@ namespace Lephone.Data.Dialect
 {
     public class SqlCE : SqlServer2000
     {
-        protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            return base.GetNormalSelectSqlStatement(ssb);
+            return ssb.GetNormalSelectSqlStatement(this);
         }
 
         public override string GetConnectionString(string connectionString)

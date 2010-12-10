@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Lephone.Data.Builder;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 
@@ -56,6 +57,11 @@ namespace Lephone.Data.QuerySyntax
         decimal? GetMin(Expression<Func<T, object>> expr);
         DateTime? GetMinDate(Expression<Func<T, object>> expr);
         decimal? GetSum(Expression<Func<T, object>> expr);
+
+        SelectStatementBuilder GetStatement(Expression<Func<T, object>> expr);
+        SelectStatementBuilder GetDistinctStatement(Expression<Func<T, object>> expr);
+        SelectStatementBuilder GetStatement(string columnName);
+        SelectStatementBuilder GetDistinctStatement(string columnName);
     }
 
     public interface IWhere<T> where T : class, IDbObject

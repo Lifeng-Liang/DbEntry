@@ -60,9 +60,9 @@ namespace Lephone.Data.Common
             return base.GetResultCountStatement(dialect, iwc, isDistinct);
         }
 
-        public override SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType)
+        public override SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType, string colName)
         {
-            return base.GetSelectStatement(dialect, from, iwc && _colExp, oc, lc, isDistinct, noLazy, returnType);
+            return base.GetSelectStatementBuilder(from, iwc && _colExp, oc, lc, isDistinct, noLazy, returnType, colName);
         }
 
         public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)

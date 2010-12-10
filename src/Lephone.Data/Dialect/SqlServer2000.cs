@@ -34,7 +34,7 @@ namespace Lephone.Data.Dialect
             get { return false; }
         }
 
-        protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             var dpc = new DataParameterCollection();
             string sqlString = string.Format("SELECT TOP {4} {0} FROM {1}{2}{3}",

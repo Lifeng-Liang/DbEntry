@@ -5,14 +5,15 @@ namespace Lephone.UnitTest.util
 {
     public class MockMiscProvider : MiscProvider
     {
-        private DateTime _now = DateTime.MinValue;
-
-        public MockMiscProvider() {}
-
-        public MockMiscProvider(DateTime dt)
+        public static MockMiscProvider Me
         {
-            SetNow(dt);
+            get
+            {
+                return (MockMiscProvider)Instance;
+            }
         }
+
+        private DateTime _now = DateTime.MinValue;
 
         public override DateTime Now
         {

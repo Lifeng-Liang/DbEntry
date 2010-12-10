@@ -123,6 +123,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\ColumnFunction.cs" />
     <Compile Include="Common\CommonExtends.cs" />
     <Compile Include="Common\DbStructInterface.cs" />
+    <Compile Include="Common\DbTimeProvider.cs" />
     <Compile Include="Common\DeleteToQueryComposer.cs" />
     <Compile Include="Common\DynamicLinqObjectHandler.cs" />
     <Compile Include="Common\DynamicQuery.cs" />

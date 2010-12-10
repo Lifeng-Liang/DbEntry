@@ -106,6 +106,7 @@
     <Compile Include="Data\DateTimeTest.cs" />
     <Compile Include="Data\DbNowTest.cs" />
     <Compile Include="Data\DbObjectListTest.cs" />
+    <Compile Include="Data\DbTimeProviderTest.cs" />
     <Compile Include="Data\DeleteToTest.cs" />
     <Compile Include="Data\FirebirdTest.cs" />
     <Compile Include="Data\FullTypesTest.cs" />

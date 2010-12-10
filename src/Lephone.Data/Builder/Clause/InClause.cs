@@ -29,6 +29,10 @@ namespace Lephone.Data.Builder.Clause
             {
                 sb.Append(((SqlStatement)_args[0]).SqlCommandText);
             }
+            else if (_args.Length == 1 && _args[0].GetType() == typeof(SelectStatementBuilder))
+            {
+                sb.Append(((SelectStatementBuilder)_args[0]).ToSqlText(dpc, dd));
+            }
             else
             {
                 foreach (var o in _args)

@@ -28,12 +28,14 @@ namespace Lephone.UnitTest.Linq
             Test2,
         }
 
+        [DbContext("SQLite")]
         public class EnumTest : DbObjectModel<EnumTest>
         {
             [DbColumn("ccc")]
             public MyEnum Abc { get; set; }
         }
 
+        [DbContext("SQLite")]
         public class BoolTest : DbObjectModel<BoolTest>
         {
             public string Name { get; set; }
@@ -399,6 +401,20 @@ namespace Lephone.UnitTest.Linq
             var list = new long[] { 1, 3, 5, 7 };
             Sqlite.From<BoolTest>().Where(p => p.Id.In(list)).Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int64,@in_1=3:Int64,@in_2=5:Int64,@in_3=7:Int64)");
+        }
+
+        [Test]
+        public void TestInClause3()
+        {
+            BoolTest.Where(p => p.Id.InStatement(BoolTest.Where(x => x.Id > 10).GetStatement(x => x.Id))).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (SELECT [Id] FROM [Bool_Test] WHERE [Id] > @Id_0);\n<Text><60>(@Id_0=10:Int64)");
+        }
+
+        [Test]
+        public void TestInClause4()
+        {
+            BoolTest.Where(p => p.Id.InStatement(EnumTest.Where(x => x.Id >= 5).GetStatement(x => x.Id))).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (SELECT [Id] FROM [Enum_Test] WHERE [Id] >= @Id_0);\n<Text><60>(@Id_0=5:Int64)");
         }
 
         [Test]

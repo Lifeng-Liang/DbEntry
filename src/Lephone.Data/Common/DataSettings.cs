@@ -30,6 +30,8 @@ namespace Lephone.Data.Common
 
         public static readonly bool CacheClearWhenError     = false;
 
+        public static readonly int DbTimeCheckMinutes       = 10;
+
         static DataSettings()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(DataSettings));

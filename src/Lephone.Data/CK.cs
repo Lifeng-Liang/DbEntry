@@ -1,4 +1,5 @@
 ﻿using System;
+using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
 using Lephone.Data.Common;
@@ -261,6 +262,11 @@ namespace Lephone.Data
         public Condition InSql(string sql)
         {
             return new InClause(ColumnName, new SqlStatement(sql));
+        }
+
+        public Condition InStatement(SelectStatementBuilder ssb)
+        {
+            return new InClause(ColumnName, ssb);
         }
     }
 }

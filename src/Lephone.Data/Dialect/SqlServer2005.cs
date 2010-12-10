@@ -14,7 +14,7 @@ namespace Lephone.Data.Dialect
             get { return true; }
         }
 
-        protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             if (ssb.Order == null || ssb.Keys.Count == 0)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Lephone.Data.Builder;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.Linq;
@@ -80,25 +81,29 @@ namespace Lephone.Data.QuerySyntax
 
         public DbObjectList<T> Select()
         {
-            var ret = new DbObjectList<T>();
-            var t = typeof(T);
-            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, false);
-            return ret;
+            return InnerSelect(false, false);
         }
 
         public DbObjectList<T> SelectNoLazy()
         {
-            var ret = new DbObjectList<T>();
-            var t = typeof(T);
-            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, false, true);
-            return ret;
+            return InnerSelect(false, true);
+        }
+
+        public DbObjectList<T> SelectDistinct()
+        {
+            return InnerSelect(true, false);
         }
 
         public DbObjectList<T> SelectDistinctNoLazy()
         {
+            return InnerSelect(true, true);
+        }
+
+        private DbObjectList<T> InnerSelect(bool distinct, bool noLazy)
+        {
             var ret = new DbObjectList<T>();
             var t = typeof(T);
-            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, true, true);
+            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, distinct, noLazy);
             return ret;
         }
 
@@ -111,12 +116,32 @@ namespace Lephone.Data.QuerySyntax
             return ret;
         }
 
-        public DbObjectList<T> SelectDistinct()
+        public SelectStatementBuilder GetStatement(Expression<Func<T, object>> expr)
         {
-            var ret = new DbObjectList<T>();
+            return InnerGetSelectStatement(false, GetColumnName(expr));
+        }
+
+        public SelectStatementBuilder GetDistinctStatement(Expression<Func<T, object>> expr)
+        {
+            return InnerGetSelectStatement(true, GetColumnName(expr));
+        }
+
+        public SelectStatementBuilder GetStatement(string columnName)
+        {
+            return InnerGetSelectStatement(false, columnName);
+        }
+
+        public SelectStatementBuilder GetDistinctStatement(string columnName)
+        {
+            return InnerGetSelectStatement(true, columnName);
+        }
+
+        private SelectStatementBuilder InnerGetSelectStatement(bool distinct, string colName)
+        {
             var t = typeof(T);
-            m_entry.FillCollection(ret, t, t, null, m_where, m_order, m_range, true);
-            return ret;
+            var oi = ObjectInfo.GetInstance(t);
+            var smt = oi.Composer.GetSelectStatementBuilder(null, m_where, m_order, m_range, distinct, false, t, colName);
+            return smt;
         }
 
         public IPagedSelector GetPagedSelector()

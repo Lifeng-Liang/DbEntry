@@ -80,9 +80,9 @@ namespace Lephone.Data.Dialect
             dp.ExecuteNonQuery(sql);
         }
 
-        protected override SqlStatement GetPagedSelectSqlStatement(Builder.SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(Builder.SelectStatementBuilder ssb)
         {
-            SqlStatement sql = base.GetNormalSelectSqlStatement(ssb);
+            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this);
             sql.SqlCommandText = string.Format("{0} ROWS {1} TO {2}",
                 sql.SqlCommandText, ssb.Range.StartIndex, ssb.Range.EndIndex);
             return sql;

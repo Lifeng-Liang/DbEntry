@@ -127,6 +127,7 @@ namespace Lephone.Data.Linq
                 case "Contains":
                     return ParseLikeCall(e, "%", "%");
                 case "In":
+                case "InStatement":
                     return ParseInCall(e);
             }
             throw new LinqException("Unknown function : " + e.Method.Name);
@@ -138,9 +139,17 @@ namespace Lephone.Data.Linq
             MemberExpression member;
             string key = GetMemberName(e.Arguments[0], out function, out member);
             var list = new List<object>();
-            foreach (var obj in (IEnumerable)GetRightValue(e.Arguments[1]))
+            var ie = GetRightValue(e.Arguments[1]);
+            if (ie is IEnumerable)
             {
-                list.Add(obj);
+                foreach (var obj in (IEnumerable)GetRightValue(e.Arguments[1]))
+                {
+                    list.Add(obj);
+                }
+            }
+            else
+            {
+                list.Add(ie);
             }
             return new InClause(key, list.ToArray());
         }

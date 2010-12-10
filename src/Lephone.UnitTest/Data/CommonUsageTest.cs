@@ -885,5 +885,25 @@ SELECT LAST_INSERT_ROWID();
             AssertSql(string.Format(@"UPDATE [With_Content] SET [Content]=@Content_0  WHERE [Id] = @Id_1;
 <Text><30>(@Content_0=update:String,@Id_1={0}:Int64)", c.Id));
         }
+
+        [Test]
+        public void TestInCluse()
+        {
+            var smt = DbEntry.From<PCs>().Where(p => p.Id >= 2).GetStatement(p => p.Id);
+            var list = DbEntry.From<Person>().Where(CK.K["Id"].InStatement(smt)).OrderBy(p => p.Id).Select();
+            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual("Jerry", list[0].Name);
+            Assert.AreEqual("Mike", list[1].Name);
+        }
+
+        [Test]
+        public void TestInCluse2()
+        {
+            var smt = DbEntry.From<PCs>().Where(p => p.Id >= 2).GetStatement("Id");
+            var list = DbEntry.From<Person>().Where(CK.K["Id"].InStatement(smt)).OrderBy(p => p.Id).Select();
+            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual("Jerry", list[0].Name);
+            Assert.AreEqual("Mike", list[1].Name);
+        }
     }
 }

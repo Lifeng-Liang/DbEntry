@@ -6,15 +6,10 @@ namespace Lephone.Core.TimingTask.Timings
 	{
 		protected TimeSpan TimeOfDay;
 		protected int DayOfRange;
-		protected MiscProvider miscTimeProvider;
 		protected DateTime LastCheckTime = DateTime.Now;
 
 	    protected DayOfRangeTimingBase(TimeOfDayStructure timeOfDay, int dayOfRange)
-			: this(timeOfDay, dayOfRange, MiscProvider.Instance) {}
-
-	    protected DayOfRangeTimingBase(TimeOfDayStructure timeOfDay, int dayOfRange, MiscProvider miscTimeProvider)
 		{
-			this.miscTimeProvider = miscTimeProvider;
 			this.TimeOfDay = timeOfDay.TimeSpanFromMidNight;
 			this.DayOfRange = dayOfRange;
 		}
@@ -26,11 +21,11 @@ namespace Lephone.Core.TimingTask.Timings
 			{
 				long ts = TimeSpanFromNowOn().Ticks;
 				// using recode last check stat
-				bRet = ( ts <= 0 && LastCheckTime < miscTimeProvider.Now.Date.Add(TimeOfDay) );
+				bRet = ( ts <= 0 && LastCheckTime < MiscProvider.Instance.Now.Date.Add(TimeOfDay) );
 			}
 			catch ( ArgumentException ) {}
 
-			LastCheckTime = miscTimeProvider.Now;
+            LastCheckTime = MiscProvider.Instance.Now;
 
 			return bRet;
 		}
@@ -38,11 +33,11 @@ namespace Lephone.Core.TimingTask.Timings
 		// return today TimeSpan only.
 		public TimeSpan TimeSpanFromNowOn()
 		{
-			DateTime itsDate = miscTimeProvider.Now.Date;
+            DateTime itsDate = MiscProvider.Instance.Now.Date;
 			if ( IsDayOfRange() )
 			{
 				DateTime dt = itsDate.Add(TimeOfDay);
-				TimeSpan ts = dt.Subtract(miscTimeProvider.Now);
+                TimeSpan ts = dt.Subtract(MiscProvider.Instance.Now);
 				return ts;
 			}
 			// return new TimeSpan(1, 0, 0, 0);

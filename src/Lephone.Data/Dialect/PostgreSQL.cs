@@ -12,9 +12,12 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Time] = "TIME";
         }
 
-        protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            return base.GetNormalSelectSqlStatement(ssb);
+            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this);
+            sql.SqlCommandText = string.Format("{0} LIMIT {2} OFFSET {1}",
+                sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
+            return sql;
         }
 
         public override DbStructInterface GetDbStructInterface()

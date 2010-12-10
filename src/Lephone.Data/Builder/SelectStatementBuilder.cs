@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
@@ -7,7 +8,7 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data.Builder
 {
-	public class SelectStatementBuilder : ISqlStatementBuilder, ISqlKeys, ISqlWhere
+	public class SelectStatementBuilder : ISqlStatementBuilder, IClause, ISqlKeys, ISqlWhere
 	{
         private readonly OrderBy _order;
         private readonly Range _limit;
@@ -80,13 +81,38 @@ namespace Lephone.Data.Builder
             IsGroupBy = true;
         }
 
+        public string ToSqlText(DataParameterCollection dpc, DbDialect dd)
+        {
+            CheckInput();
+            string sqlString = string.Format("SELECT {0} FROM {1}{2}{3}{4}",
+                GetColumns(dd),
+                From.ToSqlText(dpc, dd),
+                Where.ToSqlText(dpc, dd),
+                IsGroupBy ? " GROUP BY " + GetFunctionArgs(dd) : "",
+                (Order == null || Keys.Count == 0) ? "" : Order.ToSqlText(dpc, dd)
+                );
+            return sqlString;
+        }
+
+        private string GetFunctionArgs(DbDialect dd)
+        {
+            var ret = new StringBuilder();
+            foreach (string s in GroupbyArgs)
+            {
+                ret.Append(dd.QuoteForColumnName(s));
+                ret.Append(",");
+            }
+            if (ret.Length > 1)
+            {
+                ret.Length--;
+            }
+            return ret.ToString();
+        }
+
         public SqlStatement ToSqlStatement(DbDialect dd)
 		{
-            if (Keys.Count == 0 && _limit != null)
-            {
-                throw new DataException("When Values is empty, It means Get Count, Limit must be null.");
-            }
-            SqlStatement sql = dd.GetSelectSqlStatement(this);
+            CheckInput();
+            SqlStatement sql = GetSelectSqlStatement(dd);
             if (_limit != null)
             {
                 sql.StartIndex = _limit.StartIndex;
@@ -95,7 +121,31 @@ namespace Lephone.Data.Builder
             return sql;
 		}
 
-        internal string GetColumns(DbDialect dd)
+        private SqlStatement GetSelectSqlStatement(DbDialect dd)
+        {
+            SqlStatement sql = (Range == null) ?
+                GetNormalSelectSqlStatement(dd) :
+                dd.GetPagedSelectSqlStatement(this);
+            sql.SqlCommandText += ";\n";
+            return sql;
+        }
+
+        public SqlStatement GetNormalSelectSqlStatement(DbDialect dd)
+        {
+            var dpc = new DataParameterCollection();
+            var sqlString = ToSqlText(dpc, dd);
+            return new TimeConsumingSqlStatement(CommandType.Text, sqlString, dpc);
+        }
+
+	    private void CheckInput()
+	    {
+	        if (Keys.Count == 0 && _limit != null)
+	        {
+	            throw new DataException("It means Get Count if Values is empty. In this case Limit must be null.");
+	        }
+	    }
+
+	    internal string GetColumns(DbDialect dd)
         {
             return GetColumns(dd, true, true);
         }

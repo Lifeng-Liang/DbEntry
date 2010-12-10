@@ -2,14 +2,12 @@
 {
 	public class MonthTiming : DayOfRangeTimingBase
 	{
-		public MonthTiming(TimeOfDayStructure timeOfDay, int dayOfMonth) : base(timeOfDay, dayOfMonth) {}
-
-		public MonthTiming(TimeOfDayStructure timeOfDay, int dayOfMonth, MiscProvider miscTimeProvider)
-			: base(timeOfDay, dayOfMonth, miscTimeProvider) {}
+		public MonthTiming(TimeOfDayStructure timeOfDay, int dayOfMonth)
+			: base(timeOfDay, dayOfMonth) {}
 
 		protected override bool IsDayOfRange()
 		{
-			return (miscTimeProvider.Now.Day == DayOfRange);
+            return (MiscProvider.Instance.Now.Day == DayOfRange);
 		}
 	}
 }

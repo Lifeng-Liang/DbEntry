@@ -20,9 +20,9 @@ namespace Lephone.Data.Dialect
             return new MySqlDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
-        protected override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
-            SqlStatement sql = base.GetNormalSelectSqlStatement(ssb);
+            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this);
             sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
                 sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
             return sql;

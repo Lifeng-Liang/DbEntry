@@ -90,11 +90,21 @@ namespace Lephone.Data.Common
             return sb.ToSqlStatement(dialect);
         }
 
-        public virtual SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType)
+        public SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType)
+        {
+            var sb = GetSelectStatementBuilder(from, iwc, oc, lc, isDistinct, noLazy, returnType, null);
+            return sb.ToSqlStatement(dialect);
+        }
+
+        public virtual SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType, string colName)
         {
             var sb = new SelectStatementBuilder(from ?? Info.From, oc, lc) { IsDistinct = isDistinct, NoLazy = noLazy, };
             sb.Where.Conditions = iwc;
-            if(returnType.Name.StartsWith("<"))
+            if (!colName.IsNullOrEmpty())
+            {
+                sb.Keys.Add(new KeyValuePair<string, string>(colName, null));
+            }
+            else if (returnType.Name.StartsWith("<"))
             {
                 SetSelectColumnsForDynamicLinqObject(sb, returnType);
             }
@@ -102,8 +112,7 @@ namespace Lephone.Data.Common
             {
                 Info.Handler.SetValuesForSelect(sb, noLazy);
             }
-            // DataBase Process
-            return sb.ToSqlStatement(dialect);
+            return sb;
         }
 
         private void SetSelectColumnsForDynamicLinqObject(SelectStatementBuilder sb, Type returnType)

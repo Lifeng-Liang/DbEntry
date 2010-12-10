@@ -6,25 +6,16 @@ namespace Lephone.Core.TimingTask.Timings
 	{
 		protected int SpanSeconds;
 		protected DateTime LastActiveTime;
-		protected MiscProvider MiscTimeProvider;
 
-        public TimeSpanTiming(TimeSpan span) : this(span, MiscProvider.Instance) { }
-
-		public TimeSpanTiming(TimeSpan span, MiscProvider miscTimeProvider)
-            : this(span, true, miscTimeProvider)
+		public TimeSpanTiming(TimeSpan span)
+            : this(span, true)
 		{
 		}
 
         public TimeSpanTiming(TimeSpan span, bool startImmediately)
-            : this(span, startImmediately, MiscProvider.Instance)
-        {
-        }
-
-        public TimeSpanTiming(TimeSpan span, bool startImmediately, MiscProvider miscTimeProvider)
         {
             this.SpanSeconds = (int)span.TotalSeconds;
-            this.MiscTimeProvider = miscTimeProvider;
-            LastActiveTime = startImmediately ? DateTime.MinValue : MiscTimeProvider.Now;
+            LastActiveTime = startImmediately ? DateTime.MinValue : MiscProvider.Instance.Now;
         }
 
         public virtual bool TimesUp()
@@ -36,13 +27,13 @@ namespace Lephone.Core.TimingTask.Timings
 		public virtual TimeSpan TimeSpanFromNowOn()
 		{
 			var dt = GetNextActiveTime();
-            var ts = dt.Subtract(MiscTimeProvider.Now);
+            var ts = dt.Subtract(MiscProvider.Instance.Now);
 			return ts;
 		}
 
 		public virtual void Reset()
 		{
-            LastActiveTime = MiscTimeProvider.Now;
+            LastActiveTime = MiscProvider.Instance.Now;
 		}
 
 		protected DateTime GetNextActiveTime()

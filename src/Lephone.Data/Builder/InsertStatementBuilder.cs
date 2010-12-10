@@ -9,24 +9,24 @@ namespace Lephone.Data.Builder
 	{
 		private const string StatementTemplate = "INSERT INTO {0} {1};\n";
 		internal string TableName;
-		private readonly ValuesClause _ValuesOptions = new ValuesClause();
+		private readonly ValuesClause _valuesOptions = new ValuesClause();
 
-        public InsertStatementBuilder(string TableName)
+        public InsertStatementBuilder(string tableName)
 		{
-			this.TableName = TableName;
+			this.TableName = tableName;
 		}
 
 		public SqlStatement ToSqlStatement(DbDialect dd)
 		{
 			var dpc = new DataParameterCollection();
-			string SqlString = string.Format(StatementTemplate, dd.QuoteForTableName(TableName), _ValuesOptions.ToSqlText(dpc, dd));
-			var Sql = new SqlStatement(CommandType.Text, SqlString, dpc);
-			return Sql;
+			string sqlString = string.Format(StatementTemplate, dd.QuoteForTableName(TableName), _valuesOptions.ToSqlText(dpc, dd));
+			var sql = new SqlStatement(CommandType.Text, sqlString, dpc);
+			return sql;
 		}
 
 		public KeyValueCollection Values
 		{
-			get { return _ValuesOptions; }
+			get { return _valuesOptions; }
 		}
 	}
 }

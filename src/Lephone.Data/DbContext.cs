@@ -19,13 +19,18 @@ namespace Lephone.Data
 {
     public class DbContext : DataProvider
     {
+        public readonly DbTimeProvider DbTime;
+
         private Dictionary<string, int> _tableNames;
         // for remoting only
         public DbContext() : this(DataSettings.DefaultContext) { }
 
         protected internal DbContext(string prefix) : this(EntryConfig.GetDriver(prefix)) { }
 
-        protected internal DbContext(DbDriver driver) : base(driver) { }
+        protected internal DbContext(DbDriver driver) : base(driver)
+        {
+            DbTime = new DbTimeProvider(this);
+        }
 
         public static DbContext GetInstance(string prefix)
         {
@@ -34,7 +39,7 @@ namespace Lephone.Data
 
         public DateTime GetDatabaseTime()
         {
-            string sqlstr = "select " + Dialect.DbNowString;
+            string sqlstr = "SELECT " + Dialect.DbNowString;
             DateTime dt = Convert.ToDateTime(ExecuteScalar(sqlstr));
             return dt;
         }

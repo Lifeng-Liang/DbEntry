@@ -11,116 +11,116 @@ namespace Lephone.UnitTest.util.timingTask
 		[Test]
 		public void TestForSecends()
 		{
-			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
-			ITiming t = new TimeSpanTiming(new TimeSpan(0, 0, 3), ntp);
+            MockMiscProvider.Me.SetNow(new DateTime(2004, 3, 5, 10, 5, 10, 0));
+			ITiming t = new TimeSpanTiming(new TimeSpan(0, 0, 3));
 
 			Assert.AreEqual(true, t.TimesUp());
 			t.Reset();
 
-			ntp.Add(new TimeSpan(0,0,1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,0,1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,0,1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
 			Assert.AreEqual(true, t.TimesUp());
 			t.Reset();
 
-			ntp.Add(new TimeSpan(0,0,1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,0,4));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 4));
 			Assert.AreEqual(true, t.TimesUp());
 		}
 
         [Test]
         public void TestForSecends2()
         {
-            var ntp = new MockMiscProvider(new DateTime(2004, 3, 5, 10, 5, 10, 0));
-            ITiming t = new TimeSpanTiming(new TimeSpan(0, 0, 3), false, ntp);
+            MockMiscProvider.Me.SetNow(new DateTime(2004, 3, 5, 10, 5, 10, 0));
+            ITiming t = new TimeSpanTiming(new TimeSpan(0, 0, 3), false);
 
             Assert.AreEqual(false, t.TimesUp());
             t.Reset();
 
-            ntp.Add(new TimeSpan(0, 0, 1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
             Assert.AreEqual(false, t.TimesUp());
 
-            ntp.Add(new TimeSpan(0, 0, 1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
             Assert.AreEqual(false, t.TimesUp());
 
-            ntp.Add(new TimeSpan(0, 0, 1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
             Assert.AreEqual(true, t.TimesUp());
             t.Reset();
 
-            ntp.Add(new TimeSpan(0, 0, 1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
             Assert.AreEqual(false, t.TimesUp());
 
-            ntp.Add(new TimeSpan(0, 0, 4));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 4));
             Assert.AreEqual(true, t.TimesUp());
         }
 
         [Test]
 		public void TestForMinutes()
 		{
-			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
-			ITiming t = new TimeSpanTiming(new TimeSpan(0, 5, 0), ntp);
+            MockMiscProvider.Me.SetNow(new DateTime(2004, 3, 5, 10, 5, 10, 0));
+			ITiming t = new TimeSpanTiming(new TimeSpan(0, 5, 0));
 
 			Assert.AreEqual(true, t.TimesUp());
 			t.Reset();
 
-			ntp.Add(new TimeSpan(0,0,1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,1,0));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 1, 0));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,3,0));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 3, 0));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,0,58));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 58));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,0,1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
 			Assert.AreEqual(true, t.TimesUp());
 			t.Reset();
 
-			ntp.Add(new TimeSpan(0,0,1));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,5,10));
+            MockMiscProvider.Me.Add(new TimeSpan(0, 5, 10));
 			Assert.AreEqual(true, t.TimesUp());
 		}
 
 		[Test]
 		public void TestForHours()
 		{
-			var ntp = new MockMiscProvider(new DateTime(2004,3,5,10,5,10,0));
-			ITiming t = new TimeSpanTiming(new TimeSpan(6, 0, 0), ntp);
+            MockMiscProvider.Me.SetNow(new DateTime(2004, 3, 5, 10, 5, 10, 0));
+			ITiming t = new TimeSpanTiming(new TimeSpan(6, 0, 0));
 
 			Assert.AreEqual(true, t.TimesUp());
 			t.Reset();
 
-			ntp.Add(new TimeSpan(0,0,1));
+			MockMiscProvider.Me.Add(new TimeSpan(0,0,1));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,1,0));
+			MockMiscProvider.Me.Add(new TimeSpan(0,1,0));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(1,3,0));
+			MockMiscProvider.Me.Add(new TimeSpan(1,3,0));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(4,55,58));
+			MockMiscProvider.Me.Add(new TimeSpan(4,55,58));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(0,0,1));
+			MockMiscProvider.Me.Add(new TimeSpan(0,0,1));
 			Assert.AreEqual(true, t.TimesUp());
 			t.Reset();
 
-			ntp.Add(new TimeSpan(0,0,1));
+			MockMiscProvider.Me.Add(new TimeSpan(0,0,1));
 			Assert.AreEqual(false, t.TimesUp());
 
-			ntp.Add(new TimeSpan(6,0,8));
+			MockMiscProvider.Me.Add(new TimeSpan(6,0,8));
 			Assert.AreEqual(true, t.TimesUp());
 		}
 	}

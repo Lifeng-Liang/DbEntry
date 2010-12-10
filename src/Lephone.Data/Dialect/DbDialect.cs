@@ -195,44 +195,7 @@ namespace Lephone.Data.Dialect
             get { return true; }
         }
 
-        public virtual SqlStatement GetSelectSqlStatement(SelectStatementBuilder ssb)
-        {
-            SqlStatement sql = (ssb.Range == null) ?
-                GetNormalSelectSqlStatement(ssb) :
-                GetPagedSelectSqlStatement(ssb);
-            sql.SqlCommandText += ";\n";
-            return sql;
-        }
-
-        protected virtual SqlStatement GetNormalSelectSqlStatement(SelectStatementBuilder ssb)
-        {
-            var dpc = new DataParameterCollection();
-            string sqlString = string.Format("SELECT {0} FROM {1}{2}{3}{4}",
-                ssb.GetColumns(this),
-                ssb.From.ToSqlText(dpc, this),
-                ssb.Where.ToSqlText(dpc, this),
-                ssb.IsGroupBy ? " GROUP BY " + GetFunctionArgs(ssb) : "",
-                (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this)
-                );
-            return new TimeConsumingSqlStatement(CommandType.Text, sqlString, dpc);
-        }
-
-        private string GetFunctionArgs(SelectStatementBuilder ssb)
-        {
-            var ret = new StringBuilder();
-            foreach (string s in ssb.GroupbyArgs)
-            {
-                ret.Append(QuoteForColumnName(s));
-                ret.Append(",");
-            }
-            if(ret.Length > 1)
-            {
-                ret.Length--;
-            }
-            return ret.ToString();
-        }
-
-        protected virtual SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public virtual SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
         {
             throw DoesNotSupportPagedSelect;
         }
