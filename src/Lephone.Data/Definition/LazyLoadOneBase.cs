@@ -6,9 +6,10 @@
         protected string RelationName;
         protected T m_Value;
 
-        protected LazyLoadOneBase(object owner)
+        protected LazyLoadOneBase(object owner, string relationName)
         {
             this.Owner = owner;
+            this.RelationName = relationName;
         }
 
         public bool IsLoaded { get; set; }
@@ -43,11 +44,6 @@
             {
                 ((ILazyLoading)this).Write(value, false);
             }
-        }
-
-        void ILazyLoading.Init(string relationName)
-        {
-            this.RelationName = relationName;
         }
 
         void ILazyLoading.Load()

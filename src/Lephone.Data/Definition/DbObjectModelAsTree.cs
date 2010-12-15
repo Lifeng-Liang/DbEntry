@@ -6,8 +6,8 @@ namespace Lephone.Data.Definition
     {
         protected DbObjectModelAsTree()
         {
-            XChildren = new HasMany<T>(this, "Id");
-            XParent = new BelongsTo<T>(this);
+            XChildren = new HasMany<T>(this, "Id", "BelongsTo_Id");
+            XParent = new BelongsTo<T>(this, "BelongsTo_Id");
         }
 
         public HasMany<T> XChildren;

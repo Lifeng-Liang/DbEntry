@@ -76,7 +76,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public ImpPeople()
         {
-            _pc = new HasOne<ImpPCs>(this, "Id");
+            _pc = new HasOne<ImpPCs>(this, "Id", "Person_Id");
             m_InitUpdateColumns();
         }
     }
@@ -95,7 +95,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public ImpPCs()
         {
-            _owner = new BelongsTo<ImpPeople>(this);
+            _owner = new BelongsTo<ImpPeople>(this, "Person_Id");
             m_InitUpdateColumns();
         }
     }
@@ -113,7 +113,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public ImpPeople1()
         {
-            _pcs = new HasMany<ImpPCs1>(this, "Id DESC");
+            _pcs = new HasMany<ImpPCs1>(this, "Id DESC", "Person_Id");
             m_InitUpdateColumns();
         }
     }
@@ -132,7 +132,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public ImpPCs1()
         {
-            _owner = new BelongsTo<ImpPeople1>(this);
+            _owner = new BelongsTo<ImpPeople1>(this, "Person_Id");
             m_InitUpdateColumns();
         }
     }
@@ -198,7 +198,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public PeopleImp1()
         {
-            pc = new HasOne<PCsImp1>(this, "Id");
+            pc = new HasOne<PCsImp1>(this, "Id", "Person_Id");
         }
     }
 
@@ -212,7 +212,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public PCsImp1()
         {
-            owner = new BelongsTo<PeopleImp1>(this);
+            owner = new BelongsTo<PeopleImp1>(this, "Person_Id");
         }
     }
 
@@ -225,7 +225,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public PeopleImp2()
         {
-            pc = new HasOne<PCsImp2>(this, "Id DESC");
+            pc = new HasOne<PCsImp2>(this, "Id DESC", "Person_Id");
         }
     }
 
@@ -239,7 +239,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public PCsImp2()
         {
-            owner = new BelongsTo<PeopleImp2>(this);
+            owner = new BelongsTo<PeopleImp2>(this, "Person_Id");
         }
     }
 

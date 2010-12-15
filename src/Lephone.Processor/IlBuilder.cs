@@ -80,6 +80,12 @@ namespace Lephone.Processor
             return this;
         }
 
+        public IlBuilder Nop()
+        {
+            _list.Add(_il.Create(OpCodes.Nop));
+            return this;
+        }
+
         public IlBuilder LoadInt(int n)
         {
             switch (n)

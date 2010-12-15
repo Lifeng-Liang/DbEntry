@@ -97,7 +97,6 @@ namespace Lephone.Processor
         public readonly MethodReference DynamicObjectReferenceSerializeObject;
         public readonly MethodReference SerializableGetObjectData;
         public readonly MethodReference BelongsToInterfaceSetForeignKey;
-        public readonly MethodReference LazyLoadingInterfaceInit;
         public readonly MethodReference LazyLoadingInterfaceWrite;
 
         public readonly MethodReference CreateInstance;
@@ -210,7 +209,6 @@ namespace Lephone.Processor
                 Import(Import(typeof(DynamicObjectReference)).GetMethod("SerializeObject"));
             SerializableGetObjectData = Import(Import(typeof(ISerializable)).GetMethod("GetObjectData"));
             BelongsToInterfaceSetForeignKey = Import(Import(typeof(IBelongsTo)).GetMethod("set_ForeignKey"));
-            LazyLoadingInterfaceInit = Import(Import(typeof(ILazyLoading)).GetMethod("Init"));
             LazyLoadingInterfaceWrite = Import(Import(typeof(ILazyLoading)).GetMethod("Write"));
 
             CreateInstance = Import(emitBase.GetMethod("CreateInstance", ClassHelper.AllFlag));

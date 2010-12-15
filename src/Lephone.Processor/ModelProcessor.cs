@@ -133,7 +133,7 @@ namespace Lephone.Processor
             var ft = (GenericInstanceType)pi.FieldDefinition.FieldType;
             if (pi.IsHasOne || pi.IsHasMany || pi.IsHasAndBelongsToMany)
             {
-                ci1 = ft.GetConstructor(typeof(object), typeof(string));
+                ci1 = ft.GetConstructor(typeof(object), typeof(string), typeof(string));
                 var ob = GetOrderByString(pi);
                 if (string.IsNullOrEmpty(ob))
                 {
@@ -146,8 +146,9 @@ namespace Lephone.Processor
             }
             else
             {
-                ci1 = ft.GetConstructor(typeof(object));
+                ci1 = ft.GetConstructor(typeof(object), typeof(string));
             }
+            processor.Nop().Nop().Nop().Nop().LoadString(pi.FieldDefinition.Name);
             var ctor = _handler.Import(ci1);
             ctor.DeclaringType = ft; //NOTE: might be a bug of Cecil
             processor.NewObj(ctor);

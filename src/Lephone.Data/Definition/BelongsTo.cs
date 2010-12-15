@@ -11,11 +11,10 @@ namespace Lephone.Data.Definition
         private object _foreignKey;
         private ObjectInfo oi;
 
-        public BelongsTo(object owner) : base(owner)
+        public BelongsTo(object owner, string relationName)
+            : base(owner, relationName)
         {
             oi = ObjectInfo.GetInstance(owner.GetType());
-            MemberHandler mh = oi.GetBelongsTo(typeof(T));
-            RelationName = mh.Name;
             var oi1 = ObjectInfo.GetInstance(typeof(T));
             _foreignKey = oi1.GetPrimaryKeyDefaultValue();
             _osu = owner as DbObjectSmartUpdate;

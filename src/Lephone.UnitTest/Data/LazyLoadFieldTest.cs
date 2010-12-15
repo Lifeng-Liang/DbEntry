@@ -13,7 +13,7 @@ namespace Lephone.UnitTest.Data
 
         public lzUser1()
         {
-            Profile = new LazyLoadField<string>(this);
+            Profile = new LazyLoadField<string>(this, "Profile");
         }
     }
 
@@ -40,7 +40,7 @@ namespace Lephone.UnitTest.Data
 
         public lzUser()
         {
-            _Profile = new LazyLoadField<string>(this);
+            _Profile = new LazyLoadField<string>(this, "Profile");
         }
     }
 

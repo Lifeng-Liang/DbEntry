@@ -10,9 +10,10 @@ namespace Lephone.Data.Definition
         protected object Owner;
         protected IList<T> InnerList = new DbObjectList<T>();
 
-        protected LazyLoadListBase(object owner)
+        protected LazyLoadListBase(object owner, string foreignKeyName)
         {
             this.Owner = owner;
+            this.ForeignKeyName = foreignKeyName;
         }
 
         #region ILazyLoad members
@@ -41,11 +42,6 @@ namespace Lephone.Data.Definition
         {
             IsLoaded = true;
             InnerWrite(item, false);
-        }
-
-        void ILazyLoading.Init(string foreignKeyName)
-        {
-            this.ForeignKeyName = foreignKeyName;
         }
 
         void ILazyLoading.Load()

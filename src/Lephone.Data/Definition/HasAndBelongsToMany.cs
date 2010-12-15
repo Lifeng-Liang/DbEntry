@@ -13,32 +13,10 @@ namespace Lephone.Data.Definition
         private readonly List<object> _removedRelations = new List<object>();
         List<object> IHasAndBelongsToManyRelations.RemovedRelations { get { return _removedRelations; } }
 
-        internal HasAndBelongsToMany(object owner)
-            : base(owner)
-        {
-            _order = new OrderBy();
-            InitForeignKeyName();
-        }
-
-        public HasAndBelongsToMany(object owner, OrderBy order)
-            : base(owner)
-        {
-            this._order = order;
-            InitForeignKeyName();
-        }
-
-        public HasAndBelongsToMany(object owner, string orderByString)
-            : base(owner)
+        public HasAndBelongsToMany(object owner, string orderByString, string foreignKeyName)
+            : base(owner, foreignKeyName)
         {
             _order = OrderBy.Parse(orderByString);
-            InitForeignKeyName();
-        }
-
-        private void InitForeignKeyName()
-        {
-            ObjectInfo oi = ObjectInfo.GetInstance(Owner.GetType());
-            MemberHandler mh = oi.GetHasAndBelongsToMany(typeof(T));
-            ForeignKeyName = mh.Name;
         }
 
         protected override void InnerWrite(object item, bool isLoad)

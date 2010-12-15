@@ -15,24 +15,8 @@ namespace Lephone.Data.Definition
 
         object IHasOne.LastValue { get; set; }
 
-        internal HasOne(object owner) : base(owner) { }
-
-        public HasOne(object owner, OrderBy order)
-            : base(owner)
-        {
-            this._order = order;
-            if (_order == null)
-            {
-                var oi = ObjectInfo.GetInstance(Owner.GetType());
-                if (oi.HasSystemKey)
-                {
-                    _order = new OrderBy(oi.KeyFields[0].Name);
-                }
-            }
-        }
-
-        public HasOne(object owner, string orderByString)
-            : base(owner)
+        public HasOne(object owner, string orderByString, string relationName)
+            : base(owner, relationName)
         {
             this._order = OrderBy.Parse(orderByString);
         }

@@ -109,7 +109,7 @@ namespace Lephone.UnitTest.Data.CreateTable
 
         public crxBook()
         {
-            Categories = new HasAndBelongsToMany<crxCategory>(this, "Id");
+            Categories = new HasAndBelongsToMany<crxCategory>(this, "Id", "Books_Id");
         }
     }
 
@@ -126,7 +126,7 @@ namespace Lephone.UnitTest.Data.CreateTable
 
         public crxCategory()
         {
-            Books = new HasAndBelongsToMany<crxBook>(this, "Id");
+            Books = new HasAndBelongsToMany<crxBook>(this, "Id", "Categories_Id");
         }
     }
 

@@ -114,6 +114,8 @@ namespace Lephone.Processor
                 var generator = new ModelHandlerGenerator(type, model, handler);
                 var mh = generator.Generate();
                 module.Types.Add(mh);
+
+                new ModelRelationFixer(type, model).Process();
             }
 
             module.CustomAttributes.Add(handler.GetAssemblyProcessed());

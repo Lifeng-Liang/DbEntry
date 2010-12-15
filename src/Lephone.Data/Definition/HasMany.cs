@@ -18,20 +18,8 @@ namespace Lephone.Data.Definition
 
         List<object> IHasMany.RemovedValues { get { return _removedValues; } }
 
-        internal HasMany(object owner)
-            : base(owner)
-        {
-            this._order = new OrderBy();
-        }
-
-        public HasMany(object owner, OrderBy order)
-            : base(owner)
-        {
-            this._order = order;
-        }
-
-        public HasMany(object owner, string orderByString)
-            : base(owner)
+        public HasMany(object owner, string orderByString, string foreignKeyName)
+            : base(owner, foreignKeyName)
         {
             this._order = OrderBy.Parse(orderByString);
         }

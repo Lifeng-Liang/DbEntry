@@ -8,8 +8,8 @@ namespace Lephone.Data.Definition
 {
     public class LazyLoadField<T> : LazyLoadOneBase<T>
     {
-        public LazyLoadField(object owner)
-            : base(owner)
+        public LazyLoadField(object owner, string relationName)
+            : base(owner, relationName)
         {
         }
 

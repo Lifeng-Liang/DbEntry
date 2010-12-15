@@ -24,7 +24,7 @@ namespace Lephone.UnitTest.Data
 
         public ctUser()
         {
-            info = new HasOne<ctInfo>(this, "");
+            info = new HasOne<ctInfo>(this, null, "user_id");
         }
     }
 
@@ -36,7 +36,7 @@ namespace Lephone.UnitTest.Data
 
         public ctInfo()
         {
-            user = new BelongsTo<ctUser>(this);
+            user = new BelongsTo<ctUser>(this, "user_id");
         }
     }
 
@@ -47,7 +47,7 @@ namespace Lephone.UnitTest.Data
 
         public ctmUser()
         {
-            infos = new HasMany<ctmInfo>(this, new OrderBy("Id"));
+            infos = new HasMany<ctmInfo>(this, "Id", "user_id");
         }
     }
 
@@ -59,7 +59,7 @@ namespace Lephone.UnitTest.Data
 
         public ctmInfo()
         {
-            user = new BelongsTo<ctmUser>(this);
+            user = new BelongsTo<ctmUser>(this, "user_id");
         }
         public ctmInfo(string msg) : this()
         {
@@ -75,7 +75,7 @@ namespace Lephone.UnitTest.Data
         public HasAndBelongsToMany<cmmArticle> arts;
         public cmmReader()
         {
-            arts = new HasAndBelongsToMany<cmmArticle>(this, new OrderBy("Id"));
+            arts = new HasAndBelongsToMany<cmmArticle>(this, "Id", "cmmReader_id");
         }
         public cmmReader(string name) : this() { this.Name = name; }
     }
@@ -88,7 +88,7 @@ namespace Lephone.UnitTest.Data
         public HasAndBelongsToMany<cmmReader> rads;
         public cmmArticle()
         {
-            rads = new HasAndBelongsToMany<cmmReader>(this, new OrderBy("Id"));
+            rads = new HasAndBelongsToMany<cmmReader>(this, "Id", "cmmArticle_id");
         }
         public cmmArticle(string title) : this() { this.Title = title; }
     }

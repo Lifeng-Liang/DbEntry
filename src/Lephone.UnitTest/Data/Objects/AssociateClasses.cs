@@ -13,7 +13,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public Person()
         {
-            PC = new HasOne<PersonalComputer>(this, "");
+            PC = new HasOne<PersonalComputer>(this, null, "Person_Id");
         }
     }
 
@@ -27,7 +27,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public PersonalComputer()
         {
-            Owner = new BelongsTo<Person>(this);
+            Owner = new BelongsTo<Person>(this, "Person_Id");
         }
     }
 
@@ -39,7 +39,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public PersonSql()
         {
-            PC = new HasOne<PersonalComputerSql>(this, "");
+            PC = new HasOne<PersonalComputerSql>(this, null, "Person_Id");
         }
     }
 
@@ -53,7 +53,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public PersonalComputerSql()
         {
-            Owner = new BelongsTo<PersonSql>(this);
+            Owner = new BelongsTo<PersonSql>(this, "Person_Id");
         }
     }
 
@@ -69,7 +69,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public Book()
         {
-            CurCategory = new BelongsTo<Category>(this);
+            CurCategory = new BelongsTo<Category>(this, "Category_Id");
         }
     }
 
@@ -81,7 +81,7 @@ namespace Lephone.UnitTest.Data.Objects
 
         public Category()
         {
-            Books = new HasMany<Book>(this, "Id");
+            Books = new HasMany<Book>(this, "Id", "Category_Id");
         }
     }
 

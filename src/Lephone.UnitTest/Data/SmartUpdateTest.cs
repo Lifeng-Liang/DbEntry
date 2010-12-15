@@ -92,13 +92,13 @@ namespace Lephone.UnitTest.Data
 
         public rUser()
         {
-            Articles = new HasMany<rArticle>(this, "");
+            Articles = new HasMany<rArticle>(this, null, "Reader_Id");
             m_InitUpdateColumns();
         }
 
         public rUser(string Name, int Age)
         {
-            Articles = new HasMany<rArticle>(this, "");
+            Articles = new HasMany<rArticle>(this, null, "Reader_Id");
             this.Name = Name;
             this.Age = Age;
             m_InitUpdateColumns();
@@ -144,13 +144,13 @@ namespace Lephone.UnitTest.Data
 
         public rArticle()
         {
-            _Reader = new BelongsTo<rUser>(this);
+            _Reader = new BelongsTo<rUser>(this, "Reader_Id");
             m_InitUpdateColumns();
         }
 
         public rArticle(string Name, int Age)
         {
-            _Reader = new BelongsTo<rUser>(this);
+            _Reader = new BelongsTo<rUser>(this, "Reader_Id");
             this.Name = Name;
             this.Price = Age;
             m_InitUpdateColumns();

@@ -25,14 +25,6 @@ namespace Lephone.Data.Common
             {
                 sudi.m_InternalInit = true;
             }
-            foreach (MemberHandler mh in oi.RelationFields)
-            {
-                if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
-                {
-                    var bt = (ILazyLoading) mh.GetValue(obj);
-                    bt.Init(mh.Name);
-                }
-            }
             oi.Handler.LoadSimpleValues(obj, useIndex, dr);
             oi.Handler.LoadRelationValues(obj, useIndex, noLazy, dr);
             if (sudi != null)
@@ -152,14 +144,6 @@ namespace Lephone.Data.Common
 
         private static void InnerCloneObject(object obj, ObjectInfo oi, object o)
         {
-            foreach (var mh in oi.RelationFields)
-            {
-                if (mh.IsBelongsTo || mh.IsHasAndBelongsToMany)
-                {
-                    var bt = (ILazyLoading)mh.GetValue(o);
-                    bt.Init(mh.Name);
-                }
-            }
             foreach (var m in oi.SimpleFields)
             {
                 object v = m.GetValue(obj);
@@ -172,26 +156,6 @@ namespace Lephone.Data.Common
                     var os = (IBelongsTo)f.GetValue(obj);
                     var od = (IBelongsTo)f.GetValue(o);
                     od.ForeignKey = os.ForeignKey;
-                }
-                else
-                {
-                    var ho = (ILazyLoading)f.GetValue(o);
-                    if (f.IsLazyLoad)
-                    {
-                        ho.Init(f.Name);
-                    }
-                    else if (f.IsHasOne || f.IsHasMany)
-                    {
-                        ObjectInfo oi1 = Factory.GetInstance(f.FieldType.GetGenericArguments()[0]);
-                        MemberHandler h1 = oi1.GetBelongsTo(oi.HandleType);
-                        ho.Init(h1.Name);
-                    }
-                    else if (f.IsHasAndBelongsToMany)
-                    {
-                        ObjectInfo oi1 = Factory.GetInstance(f.FieldType.GetGenericArguments()[0]);
-                        MemberHandler h1 = oi1.GetHasAndBelongsToMany(oi.HandleType);
-                        ho.Init(h1.Name);
-                    }
                 }
             }
         }

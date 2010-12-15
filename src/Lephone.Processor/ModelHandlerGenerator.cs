@@ -224,7 +224,6 @@ namespace Lephone.Processor
                     processor.GetMember(f, _handler);
                     if (f.IsLazyLoad)
                     {
-                        processor.LoadString(f.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
                         if(noLazy)
                         {
                             processor.LoadLoc(0);
@@ -241,26 +240,6 @@ namespace Lephone.Processor
                             processor.LoadInt(0);
                             processor.CallVirtual(_handler.LazyLoadingInterfaceWrite);
                         }
-                    }
-                    else if (f.IsHasOne || f.IsHasMany)
-                    {
-                        var oi1 = ObjectInfo.Factory.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
-                        var mh = oi1.GetBelongsTo(_type);
-                        if (mh == null)
-                        {
-                            throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
-                        }
-                        processor.LoadString(mh.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
-                    }
-                    else if (f.IsHasAndBelongsToMany)
-                    {
-                        var oi1 = ObjectInfo.Factory.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
-                        var mh = oi1.GetHasAndBelongsToMany(_type);
-                        if (mh == null)
-                        {
-                            throw new DataException("HasOne/HasMany and BelongsTo must be paired.");
-                        }
-                        processor.LoadString(mh.Name).CallVirtual(_handler.LazyLoadingInterfaceInit);
                     }
                     else if (f.IsBelongsTo)
                     {
