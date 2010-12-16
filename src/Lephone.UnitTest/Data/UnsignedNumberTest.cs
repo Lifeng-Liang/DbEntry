@@ -8,7 +8,7 @@ namespace Lephone.UnitTest.Data
     public class UnsignedPC : DbObjectModel<UnsignedPC>
     {
         public string Name { get; set; }
-        public uint Person_Id { get; set; }
+        public ulong Person_Id { get; set; }
     }
 
     [DbTable("PCs")]

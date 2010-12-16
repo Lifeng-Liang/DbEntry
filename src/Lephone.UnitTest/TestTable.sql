@@ -1,5 +1,5 @@
 CREATE TABLE [People] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL);
-CREATE TABLE [PCs] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, Person_Id INT NOT NULL);
+CREATE TABLE [PCs] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, Person_Id BIGINT NOT NULL);
 
 INSERT INTO [People] ([Id],[Name]) VALUES (1, 'Tom');
 INSERT INTO [People] ([Id],[Name]) VALUES (2, 'Jerry');
@@ -12,7 +12,7 @@ INSERT INTO [PCs] ([Id],[Name],[Person_Id]) VALUES (3, 'HP', 3);
 --------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE [Categories] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL);
-CREATE TABLE [Books] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, Category_Id INT NOT NULL);
+CREATE TABLE [Books] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, Category_Id BIGINT NOT NULL);
 
 INSERT INTO [Categories] ([Id],[Name]) VALUES (1, 'Tech');
 INSERT INTO [Categories] ([Id],[Name]) VALUES (2, 'Game');
@@ -28,7 +28,7 @@ INSERT INTO [Books] ([Id],[Name],[Category_Id]) VALUES (5, 'Wow', 2);
 
 CREATE TABLE Article ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL);
 CREATE TABLE Reader ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL);
-CREATE TABLE R_Article_Reader (Article_Id INTEGER NOT NULL, Reader_Id INTEGER NOT NULL);
+CREATE TABLE R_Article_Reader (Article_Id BIGINT NOT NULL, Reader_Id BIGINT NOT NULL);
 
 INSERT INTO Article ([Id],[Name]) VALUES (1, 'The lovely bones');
 INSERT INTO Article ([Id],[Name]) VALUES (2, 'The world is float');
@@ -47,7 +47,7 @@ INSERT INTO R_Article_Reader (Article_Id,Reader_Id) VALUES (3, 1);
 
 --------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE [File] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, BelongsTo_Id INT NOT NULL);
+CREATE TABLE [File] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, BelongsTo_Id BIGINT NOT NULL);
 
 INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (1, 'Root', 0);
 INSERT INTO [File] ([Id],[Name],[BelongsTo_Id]) VALUES (2, 'Windows', 1);
@@ -81,7 +81,7 @@ INSERT INTO [NullTest] ([Id],[Name],[MyInt],[MyBool]) VALUES (4, 'tom', 1, 1);
 
 --------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE [BelongsMore] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, Article_Id INTEGER NOT NULL, Reader_Id INTEGER NOT NULL);
+CREATE TABLE [BelongsMore] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL, Article_Id BIGINT NOT NULL, Reader_Id BIGINT NOT NULL);
 
 INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (1, 'f1', 1, 2);
 INSERT INTO [BelongsMore] ([Id],[Name],[Article_Id],[Reader_Id]) VALUES (2, 'f2', 2, 3);

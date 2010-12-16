@@ -88,14 +88,14 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
 
         [DbColumn("Person_Id")]
-        protected internal BelongsTo<ImpPeople> _owner;
+        protected internal BelongsTo<ImpPeople, long> _owner;
 
         [BelongsTo, DbColumn("Person_Id")]
         public ImpPeople owner { get { return _owner.Value; } set { _owner.Value = value; } }
 
         public ImpPCs()
         {
-            _owner = new BelongsTo<ImpPeople>(this, "Person_Id");
+            _owner = new BelongsTo<ImpPeople, long>(this, "Person_Id");
             m_InitUpdateColumns();
         }
     }
@@ -125,14 +125,14 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
 
         [DbColumn("Person_Id")]
-        protected internal BelongsTo<ImpPeople1> _owner;
+        protected internal BelongsTo<ImpPeople1, long> _owner;
 
         [BelongsTo, DbColumn("Person_Id")]
         public ImpPeople1 owner { get { return _owner.Value; } set { _owner.Value = value; } }
 
         public ImpPCs1()
         {
-            _owner = new BelongsTo<ImpPeople1>(this, "Person_Id");
+            _owner = new BelongsTo<ImpPeople1, long>(this, "Person_Id");
             m_InitUpdateColumns();
         }
     }
@@ -208,11 +208,11 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [DbColumn("Person_Id")]
-        public BelongsTo<PeopleImp1> owner;
+        public BelongsTo<PeopleImp1, long> owner;
 
         public PCsImp1()
         {
-            owner = new BelongsTo<PeopleImp1>(this, "Person_Id");
+            owner = new BelongsTo<PeopleImp1, long>(this, "Person_Id");
         }
     }
 
@@ -235,11 +235,11 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [DbColumn("Person_Id")]
-        public BelongsTo<PeopleImp2> owner;
+        public BelongsTo<PeopleImp2, long> owner;
 
         public PCsImp2()
         {
-            owner = new BelongsTo<PeopleImp2>(this, "Person_Id");
+            owner = new BelongsTo<PeopleImp2, long>(this, "Person_Id");
         }
     }
 

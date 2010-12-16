@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.Linq
         public class Book : DbObjectModel<Book>
         {
             public string Name { get; set; }
-            public int Category_Id { get; set; }
+            public long Category_Id { get; set; }
         }
 
         [Test]

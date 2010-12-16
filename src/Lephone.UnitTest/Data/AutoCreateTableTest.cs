@@ -32,11 +32,11 @@ namespace Lephone.UnitTest.Data
     {
         public string iMsg;
         [DbColumn("user_id")]
-        public BelongsTo<ctUser> user;
+        public BelongsTo<ctUser, long> user;
 
         public ctInfo()
         {
-            user = new BelongsTo<ctUser>(this, "user_id");
+            user = new BelongsTo<ctUser, long>(this, "user_id");
         }
     }
 
@@ -55,11 +55,11 @@ namespace Lephone.UnitTest.Data
     {
         public string iMsg;
         [DbColumn("user_id")]
-        public BelongsTo<ctmUser> user;
+        public BelongsTo<ctmUser, long> user;
 
         public ctmInfo()
         {
-            user = new BelongsTo<ctmUser>(this, "user_id");
+            user = new BelongsTo<ctmUser, long>(this, "user_id");
         }
         public ctmInfo(string msg) : this()
         {

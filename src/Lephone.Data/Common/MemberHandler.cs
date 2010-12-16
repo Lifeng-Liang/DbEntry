@@ -204,7 +204,7 @@ namespace Lephone.Data.Common
                 {
                     IsHasMany = true;
                 }
-                Type t1 = typeof(BelongsTo<>);
+                Type t1 = typeof(BelongsTo<,>);
                 if (fi.MemberType.GetGenericTypeDefinition() == t1)
                 {
                     IsBelongsTo = true;

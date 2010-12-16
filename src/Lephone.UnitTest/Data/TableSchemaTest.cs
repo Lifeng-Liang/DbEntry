@@ -24,7 +24,7 @@ namespace Lephone.UnitTest.Data
 
             Assert.AreEqual("BelongsTo_Id", ls[2].ColumnName);
             Assert.AreEqual(false, ls[1].IsKey);
-            Assert.AreEqual(typeof(int), ls[2].DataType);
+            Assert.AreEqual(typeof(long), ls[2].DataType);
         }
     }
 }

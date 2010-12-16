@@ -1,22 +1,17 @@
 ﻿using System;
 using Lephone.Data.Common;
-using Lephone.Core;
 
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class BelongsTo<T> : LazyLoadOneBase<T>, IBelongsTo where T : class, IDbObject
+    public class BelongsTo<T, TKey> : LazyLoadOneBase<T>, IBelongsTo where T : class, IDbObject where TKey : struct
     {
         private readonly DbObjectSmartUpdate _osu;
-        private object _foreignKey;
-        private ObjectInfo oi;
+        private TKey _foreignKey;
 
         public BelongsTo(object owner, string relationName)
             : base(owner, relationName)
         {
-            oi = ObjectInfo.GetInstance(owner.GetType());
-            var oi1 = ObjectInfo.GetInstance(typeof(T));
-            _foreignKey = oi1.GetPrimaryKeyDefaultValue();
             _osu = owner as DbObjectSmartUpdate;
         }
 
@@ -31,7 +26,10 @@ namespace Lephone.Data.Definition
         public object ForeignKey
         {
             get { return _foreignKey; }
-            set { _foreignKey = value; }
+            set
+            {
+                _foreignKey = (TKey)Convert.ChangeType(value, typeof(TKey));
+            }
         }
 
         protected override void DoWrite(object oldValue, bool isLoad)
@@ -39,7 +37,14 @@ namespace Lephone.Data.Definition
             var oi = ObjectInfo.GetInstance(typeof(T));
             if (oi.HasOnePrimaryKey)
             {
-                _foreignKey = (m_Value == null) ? CommonHelper.GetEmptyValue(oi.KeyFields[0].FieldType) : oi.KeyFields[0].GetValue(m_Value);
+                if (m_Value != null)
+                {
+                    _foreignKey = (TKey)oi.KeyFields[0].GetValue(m_Value);
+                }
+                else
+                {
+                    _foreignKey = default(TKey);
+                }
                 if (!isLoad)
                 {
                     ForeignKeyChanged();
@@ -77,6 +82,7 @@ namespace Lephone.Data.Definition
 
         protected override void DoLoad()
         {
+            var oi = ObjectInfo.GetInstance(Owner.GetType());
             m_Value = oi.Context.GetObject<T>(_foreignKey);
             if (m_Value != null)
             {

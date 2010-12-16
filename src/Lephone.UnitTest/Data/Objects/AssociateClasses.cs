@@ -23,11 +23,11 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Person_Id")]
-        public BelongsTo<Person> Owner;
+        public BelongsTo<Person, long> Owner;
 
         public PersonalComputer()
         {
-            Owner = new BelongsTo<Person>(this, "Person_Id");
+            Owner = new BelongsTo<Person, long>(this, "Person_Id");
         }
     }
 
@@ -49,11 +49,11 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Person_Id")]
-        public BelongsTo<PersonSql> Owner;
+        public BelongsTo<PersonSql, long> Owner;
 
         public PersonalComputerSql()
         {
-            Owner = new BelongsTo<PersonSql>(this, "Person_Id");
+            Owner = new BelongsTo<PersonSql, long>(this, "Person_Id");
         }
     }
 
@@ -65,11 +65,11 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name = null;
 
         [DbColumn("Category_Id")]
-        public BelongsTo<Category> CurCategory;
+        public BelongsTo<Category, long> CurCategory;
 
         public Book()
         {
-            CurCategory = new BelongsTo<Category>(this, "Category_Id");
+            CurCategory = new BelongsTo<Category, long>(this, "Category_Id");
         }
     }
 

@@ -140,17 +140,17 @@ namespace Lephone.UnitTest.Data
         }
 
         [DbColumn("Reader_Id")]
-        public BelongsTo<rUser> _Reader;
+        public BelongsTo<rUser, long> _Reader;
 
         public rArticle()
         {
-            _Reader = new BelongsTo<rUser>(this, "Reader_Id");
+            _Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
             m_InitUpdateColumns();
         }
 
         public rArticle(string Name, int Age)
         {
-            _Reader = new BelongsTo<rUser>(this, "Reader_Id");
+            _Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
             this.Name = Name;
             this.Price = Age;
             m_InitUpdateColumns();

@@ -2,18 +2,18 @@
 
 namespace Lephone.Data.Definition
 {
-    public abstract class DbObjectModelAsTree<T> : DbObjectModel<T> where T : DbObjectModelAsTree<T>
+    public abstract class DbObjectModelAsTree<T, TKey> : DbObjectModel<T, TKey> where T : DbObjectModelAsTree<T, TKey> where TKey : struct
     {
         protected DbObjectModelAsTree()
         {
             XChildren = new HasMany<T>(this, "Id", "BelongsTo_Id");
-            XParent = new BelongsTo<T>(this, "BelongsTo_Id");
+            XParent = new BelongsTo<T, TKey>(this, "BelongsTo_Id");
         }
 
         public HasMany<T> XChildren;
 
         [DbColumn("BelongsTo_Id")]
-        public BelongsTo<T> XParent;
+        public BelongsTo<T, TKey> XParent;
 
         [HasMany(OrderBy = "Id")]
         public IList<T> Children
@@ -36,5 +36,9 @@ namespace Lephone.Data.Definition
                 XParent.Value = value;
             }
         }
+    }
+
+    public abstract class DbObjectModelAsTree<T> : DbObjectModelAsTree<T, long> where T : DbObjectModelAsTree<T, long>
+    {
     }
 }

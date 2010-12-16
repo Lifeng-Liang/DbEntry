@@ -133,7 +133,7 @@ namespace Lephone.Processor
             Relations = new Dictionary<string, FieldType>
                             {
                                 {typeof(HasOne<>).FullName, FieldType.HasOne},
-                                {typeof(BelongsTo<>).FullName, FieldType.BelongsTo},
+                                {typeof(BelongsTo<,>).FullName, FieldType.BelongsTo},
                                 {typeof(HasMany<>).FullName, FieldType.HasMany},
                                 {typeof(HasAndBelongsToMany<>).FullName, FieldType.HasAndBelongsToMany},
                                 {typeof(LazyLoadField<>).FullName, FieldType.LazyLoad},
@@ -164,7 +164,7 @@ namespace Lephone.Processor
             this._module = module;
             _hasOne = _module.Import(typeof(HasOne<>));
             _hasMany = _module.Import(typeof(HasMany<>));
-            _belongsTo = _module.Import(typeof(BelongsTo<>));
+            _belongsTo = _module.Import(typeof(BelongsTo<,>));
             _hasAndBelongsToMany = _module.Import(typeof(HasAndBelongsToMany<>));
             _lazyLoadField = _module.Import(typeof(LazyLoadField<>));
             _string = _module.Import(typeof(string));
@@ -332,7 +332,7 @@ namespace Lephone.Processor
                     return TypeHelper.MakeGenericType(_hasMany, 
                         ((GenericInstanceType)propertyType).GenericArguments[0]);
                 case FieldType.BelongsTo:
-                    return TypeHelper.MakeGenericType(_belongsTo, propertyType);
+                    return TypeHelper.MakeGenericType(_belongsTo, propertyType, GetKeyType(propertyType));
                 case FieldType.HasAndBelongsToMany:
                     return TypeHelper.MakeGenericType(_hasAndBelongsToMany,
                         ((GenericInstanceType)propertyType).GenericArguments[0]);
@@ -341,6 +341,19 @@ namespace Lephone.Processor
                 default:
                     throw new DataException("Impossible");
             }
+        }
+
+        private static TypeReference GetKeyType(TypeReference model)
+        {
+            if (model.IsGenericInstance && model.Namespace == "Lephone.Data.Definition")
+            {
+                var m = (GenericInstanceType)model;
+                if (m.GenericArguments.Count == 2)
+                {
+                    return m.GenericArguments[1];
+                }
+            }
+            return GetKeyType(model.Resolve().BaseType);
         }
 
         public MethodReference Import(MethodReference type)
