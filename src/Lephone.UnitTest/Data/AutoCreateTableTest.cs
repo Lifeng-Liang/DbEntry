@@ -17,9 +17,10 @@ namespace Lephone.UnitTest.Data
         public DateTime Birthday;
     }
 
-    public class ctUser : DbObject
+    public class ctUser : DbObjectModel<ctUser>
     {
-        public string Name;
+        public string Name { get; set; }
+
         public HasOne<ctInfo> info;
 
         public ctUser()
@@ -28,9 +29,10 @@ namespace Lephone.UnitTest.Data
         }
     }
 
-    public class ctInfo : DbObject
+    public class ctInfo : DbObjectModel<ctInfo>
     {
-        public string iMsg;
+        public string iMsg { get; set; }
+
         [DbColumn("user_id")]
         public BelongsTo<ctUser, long> user;
 
@@ -40,9 +42,10 @@ namespace Lephone.UnitTest.Data
         }
     }
 
-    public class ctmUser : DbObject
+    public class ctmUser : DbObjectModel<ctmUser>
     {
-        public string Name;
+        public string Name { get; set; }
+
         public HasMany<ctmInfo> infos;
 
         public ctmUser()
@@ -51,9 +54,10 @@ namespace Lephone.UnitTest.Data
         }
     }
 
-    public class ctmInfo : DbObject
+    public class ctmInfo : DbObjectModel<ctmInfo>
     {
-        public string iMsg;
+        public string iMsg { get; set; }
+
         [DbColumn("user_id")]
         public BelongsTo<ctmUser, long> user;
 

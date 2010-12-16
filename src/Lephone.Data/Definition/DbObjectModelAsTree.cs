@@ -2,7 +2,9 @@
 
 namespace Lephone.Data.Definition
 {
-    public abstract class DbObjectModelAsTree<T, TKey> : DbObjectModel<T, TKey> where T : DbObjectModelAsTree<T, TKey> where TKey : struct
+    public abstract class DbObjectModelAsTree<T, TKey> : DbObjectModel<T, TKey>
+        where T : DbObjectModelAsTree<T, TKey>, new()
+        where TKey : struct
     {
         protected DbObjectModelAsTree()
         {
@@ -38,7 +40,8 @@ namespace Lephone.Data.Definition
         }
     }
 
-    public abstract class DbObjectModelAsTree<T> : DbObjectModelAsTree<T, long> where T : DbObjectModelAsTree<T, long>
+    public abstract class DbObjectModelAsTree<T> : DbObjectModelAsTree<T, long>
+        where T : DbObjectModelAsTree<T, long>, new()
     {
     }
 }

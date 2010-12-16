@@ -4,7 +4,7 @@ using Lephone.Data.Definition;
 
 namespace Soaring.Biz.Models
 {
-    public class Requirement : DbObjectModel<User>
+    public class Requirement : DbObjectModel<Requirement>
     {
         [Length(1, 256)]
         public string Title { get; set; }

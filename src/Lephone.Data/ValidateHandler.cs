@@ -11,24 +11,24 @@ namespace Lephone.Data
 {
     public class ValidateHandler
     {
-        private readonly string _InvalidFieldText;
-        private readonly string _NotAllowNullText;
-        private readonly string _NotMatchedText;
-        private readonly string _LengthText;
-        private readonly string _ShouldBeUniqueText;
-        private readonly string _SeparatorText;
+        private readonly string _invalidFieldText;
+        private readonly string _notAllowNullText;
+        private readonly string _notMatchedText;
+        private readonly string _lengthText;
+        private readonly string _shouldBeUniqueText;
+        private readonly string _separatorText;
 
-        private readonly int _SeparatorTextLength;
+        private readonly int _separatorTextLength;
 
-        private readonly bool EmptyAsNull;
-        private readonly bool IncludeClassName;
+        private readonly bool _emptyAsNull;
+        private readonly bool _includeClassName;
         public bool IsValid;
 
-        private readonly Dictionary<string, string> _ErrorMessages;
+        private readonly Dictionary<string, string> _errorMessages;
 
         public Dictionary<string, string> ErrorMessages
         {
-            get { return _ErrorMessages; }
+            get { return _errorMessages; }
         }
 
         public ValidateHandler()
@@ -44,25 +44,25 @@ namespace Lephone.Data
         public ValidateHandler(bool emptyAsNull, bool includeClassName, string invalidFieldText, string notAllowNullText, string notMatchedText, string lengthText, string shouldBeUniqueText, string separatorText)
         {
             IsValid = true;
-            EmptyAsNull = emptyAsNull;
-            IncludeClassName = includeClassName;
+            _emptyAsNull = emptyAsNull;
+            _includeClassName = includeClassName;
 
-            _InvalidFieldText = invalidFieldText;
-            _NotAllowNullText = notAllowNullText;
-            _NotMatchedText = notMatchedText;
-            _LengthText = lengthText;
-            _ShouldBeUniqueText = shouldBeUniqueText;
-            _SeparatorText = separatorText;
+            _invalidFieldText = invalidFieldText;
+            _notAllowNullText = notAllowNullText;
+            _notMatchedText = notMatchedText;
+            _lengthText = lengthText;
+            _shouldBeUniqueText = shouldBeUniqueText;
+            _separatorText = separatorText;
 
-            _SeparatorTextLength = _SeparatorText.Length;
+            _separatorTextLength = _separatorText.Length;
 
-            _ErrorMessages = new Dictionary<string, string>();
+            _errorMessages = new Dictionary<string, string>();
         }
 
         public bool ValidateObject(object obj)
         {
             IsValid = true;
-            _ErrorMessages.Clear();
+            _errorMessages.Clear();
 
             var t = obj.GetType();
             var oi = ObjectInfo.GetInstance(t);
@@ -104,11 +104,11 @@ namespace Lephone.Data
 
         private void SetErrorMessage(MemberHandler fh, StringBuilder errMsg, bool isValid, string tableName)
         {
-            if (errMsg.Length > _SeparatorTextLength) { errMsg.Length -= _SeparatorTextLength; }
+            if (errMsg.Length > _separatorTextLength) { errMsg.Length -= _separatorTextLength; }
             if (!isValid)
             {
-                string n = (IncludeClassName ? tableName + "." + fh.ShowString : fh.ShowString);
-                _ErrorMessages[fh.Name] = string.Format(_InvalidFieldText, n, errMsg);
+                string n = (_includeClassName ? tableName + "." + fh.ShowString : fh.ShowString);
+                _errorMessages[fh.Name] = string.Format(_invalidFieldText, n, errMsg);
             }
             IsValid &= isValid;
         }
@@ -153,21 +153,21 @@ namespace Lephone.Data
                         }
                         c &= (CK.K[h.Name] == v);
                         n += h.Name;
-                        sn.Append(h.ShowString).Append(_SeparatorText);
+                        sn.Append(h.ShowString).Append(_separatorText);
                     }
                 }
                 if (c != null)
                 {
                     if (oi.Context.GetResultCountAvoidSoftDelete(t, c && editCondition, false) != 0)
                     {
-                        sn.Length -= _SeparatorTextLength;
+                        sn.Length -= _separatorTextLength;
                         IsValid = false;
                         string uniqueErrMsg = string.IsNullOrEmpty(mhs[0].UniqueErrorMessage)
-                                                  ? _ShouldBeUniqueText
+                                                  ? _shouldBeUniqueText
                                                   : mhs[0].UniqueErrorMessage;
-                        _ErrorMessages[n] = _ErrorMessages.ContainsKey(n)
-                                  ? string.Format("{0}{1}{2}", _ErrorMessages[n], _SeparatorText, uniqueErrMsg)
-                                  : string.Format(_InvalidFieldText, sn, uniqueErrMsg);
+                        _errorMessages[n] = _errorMessages.ContainsKey(n)
+                                  ? string.Format("{0}{1}{2}", _errorMessages[n], _separatorText, uniqueErrMsg)
+                                  : string.Format(_invalidFieldText, sn, uniqueErrMsg);
                     }
                 }
             }
@@ -181,14 +181,14 @@ namespace Lephone.Data
                 {
                     return true;
                 }
-                errMsg.Append(_NotAllowNullText).Append(_SeparatorText);
+                errMsg.Append(_notAllowNullText).Append(_separatorText);
                 return false;
             }
             bool isValid = true;
             if(fh.MaxLength > 0)
             {
                 string errorText = string.IsNullOrEmpty(fh.LengthErrorMessage)
-                                          ? _LengthText
+                                          ? _lengthText
                                           : fh.LengthErrorMessage;
 
                 isValid &= IsValidField(field.Length, fh.MinLength, fh.MaxLength, errMsg, errorText);
@@ -198,13 +198,13 @@ namespace Lephone.Data
 
         private bool ValidateStringField(string field, MemberHandler fh, StringBuilder errMsg)
         {
-            if (field == null || (field == "" && EmptyAsNull))
+            if (field == null || (field == "" && _emptyAsNull))
             {
                 if (fh.AllowNull)
                 {
                     return true;
                 }
-                errMsg.Append(_NotAllowNullText).Append(_SeparatorText);
+                errMsg.Append(_notAllowNullText).Append(_separatorText);
                 return false;
             }
             bool isValid = true;
@@ -212,7 +212,7 @@ namespace Lephone.Data
             if (fh.MaxLength > 0)
             {
                 isValid &= IsValidStringField(field, fh.MinLength, fh.MaxLength, !fh.IsUnicode,
-                    string.IsNullOrEmpty(fh.LengthErrorMessage) ? _LengthText : fh.LengthErrorMessage, errMsg);
+                    string.IsNullOrEmpty(fh.LengthErrorMessage) ? _lengthText : fh.LengthErrorMessage, errMsg);
             }
             if (!string.IsNullOrEmpty(fh.Regular))
             {
@@ -221,11 +221,11 @@ namespace Lephone.Data
                 {
                     if (string.IsNullOrEmpty(fh.RegularErrorMessage))
                     {
-                        errMsg.Append(_NotMatchedText).Append(_SeparatorText);
+                        errMsg.Append(_notMatchedText).Append(_separatorText);
                     }
                     else
                     {
-                        errMsg.Append(fh.RegularErrorMessage).Append(_SeparatorText);
+                        errMsg.Append(fh.RegularErrorMessage).Append(_separatorText);
                     }
                 }
                 isValid &= iv;
@@ -243,7 +243,7 @@ namespace Lephone.Data
         {
             if (length < min || length > max)
             {
-                errMsg.Append(string.Format(errorText, min, max, length)).Append(_SeparatorText);
+                errMsg.Append(string.Format(errorText, min, max, length)).Append(_separatorText);
                 return false;
             }
             return true;

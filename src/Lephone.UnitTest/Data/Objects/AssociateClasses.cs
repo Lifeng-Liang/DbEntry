@@ -6,9 +6,10 @@ namespace Lephone.UnitTest.Data.Objects
     // HasOne
 
     [DbTable("People")]
-    public class Person : DbObject
+    public class Person : DbObjectModel<Person>
     {
-        public string Name = null;
+        public string Name { get; set; }
+
         public HasOne<PersonalComputer> PC;
 
         public Person()
@@ -18,9 +19,9 @@ namespace Lephone.UnitTest.Data.Objects
     }
 
     [DbTable("PCs")]
-    public class PersonalComputer : DbObject
+    public class PersonalComputer : DbObjectModel<PersonalComputer>
     {
-        public string Name = null;
+        public string Name { get; set; }
 
         [DbColumn("Person_Id")]
         public BelongsTo<Person, long> Owner;
@@ -32,9 +33,10 @@ namespace Lephone.UnitTest.Data.Objects
     }
 
     [DbTable("People"), DbContext("SqlServerMock")]
-    public class PersonSql : DbObject
+    public class PersonSql : DbObjectModel<PersonSql>
     {
-        public string Name = null;
+        public string Name { get; set; }
+
         public HasOne<PersonalComputerSql> PC;
 
         public PersonSql()
@@ -44,9 +46,9 @@ namespace Lephone.UnitTest.Data.Objects
     }
 
     [DbTable("PCs"), DbContext("SqlServerMock")]
-    public class PersonalComputerSql : DbObject
+    public class PersonalComputerSql : DbObjectModel<PersonalComputerSql>
     {
-        public string Name = null;
+        public string Name { get; set; }
 
         [DbColumn("Person_Id")]
         public BelongsTo<PersonSql, long> Owner;
@@ -60,9 +62,9 @@ namespace Lephone.UnitTest.Data.Objects
     // HasMany
 
     [DbTable("Books")]
-    public class Book : DbObject
+    public class Book : DbObjectModel<Book>
     {
-        public string Name = null;
+        public string Name { get; set; }
 
         [DbColumn("Category_Id")]
         public BelongsTo<Category, long> CurCategory;
@@ -74,9 +76,10 @@ namespace Lephone.UnitTest.Data.Objects
     }
 
     [DbTable("Categories")]
-    public class Category : DbObject
+    public class Category : DbObjectModel<Category>
     {
-        public string Name = null;
+        public string Name { get; set; }
+
         public HasMany<Book> Books;
 
         public Category()
@@ -89,6 +92,7 @@ namespace Lephone.UnitTest.Data.Objects
     public class Acategory : DbObjectModel<Acategory>
     {
         public string Name { get; set; }
+
         [HasMany]
         public IList<Abook> Books { get; set; }
     }
@@ -97,6 +101,7 @@ namespace Lephone.UnitTest.Data.Objects
     public class Abook : DbObjectModel<Abook>
     {
         public string Name { get; set; }
+
         [BelongsTo, DbColumn("Category_Id")]
         public Acategory CurCategory { get; set; }
     }

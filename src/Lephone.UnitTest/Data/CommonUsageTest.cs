@@ -129,7 +129,7 @@ namespace Lephone.UnitTest.Data
     }
 
     [Serializable]
-    public abstract class Contentable<T> : DbObjectModel<T> where T : Contentable<T>
+    public abstract class Contentable<T> : DbObjectModel<T> where T : Contentable<T>, new()
     {
         [DbColumn("Content"), LazyLoad]
         public string ItemContent { get; set; }
@@ -884,6 +884,19 @@ SELECT LAST_INSERT_ROWID();
             c.Save();
             AssertSql(string.Format(@"UPDATE [With_Content] SET [Content]=@Content_0  WHERE [Id] = @Id_1;
 <Text><30>(@Content_0=update:String,@Id_1={0}:Int64)", c.Id));
+        }
+
+        [Test]
+        public void TestWithContentSelect()
+        {
+            StaticRecorder.CurRow.Add(new RowInfo("Id", 1L));
+            StaticRecorder.CurRow.Add(new RowInfo("Name", "tom"));
+            var c = WithContent.FindById(1);
+            Assert.AreEqual("tom", c.Name);
+            StaticRecorder.CurRow.Add(new RowInfo("Content", "test"));
+            Assert.AreEqual("test", c.ItemContent);
+            AssertSql(@"SELECT [Content] FROM [With_Content] WHERE [Id] = @Id_0;
+<Text><60>(@Id_0=1:Int64)");
         }
 
         [Test]

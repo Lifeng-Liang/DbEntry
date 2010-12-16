@@ -76,6 +76,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.UnitTest.NoConfig",
 	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Lephone.UnitTest.VB", "Lephone.UnitTest.VB\Lephone.UnitTest.VB.vbproj", "{68D482CB-3284-42B4-9641-2DC146730FED}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

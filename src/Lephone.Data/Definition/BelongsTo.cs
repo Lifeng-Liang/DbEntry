@@ -4,7 +4,7 @@ using Lephone.Data.Common;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class BelongsTo<T, TKey> : LazyLoadOneBase<T>, IBelongsTo where T : class, IDbObject where TKey : struct
+    public class BelongsTo<T, TKey> : LazyLoadOneBase<T>, IBelongsTo where T : DbObjectModel<T, TKey>, new() where TKey : struct
     {
         private readonly DbObjectSmartUpdate _osu;
         private TKey _foreignKey;

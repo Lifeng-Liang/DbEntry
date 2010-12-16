@@ -10,7 +10,7 @@ namespace Lephone.UnitTest.Data.CreateTable
 {
     #region objects
 
-    public class CCC1 : DbObjectModel<IndexTestClass> {}
+    public class CCC1 : DbObjectModel<CCC1> { }
 
     public class IndexTestClass : DbObjectModel<IndexTestClass>
     {

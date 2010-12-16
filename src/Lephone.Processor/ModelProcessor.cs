@@ -148,7 +148,14 @@ namespace Lephone.Processor
             {
                 ci1 = ft.GetConstructor(typeof(object), typeof(string));
             }
-            processor.Nop().Nop().Nop().Nop().LoadString(pi.FieldDefinition.Name);
+            if(pi.IsLazyLoad)
+            {
+                processor.LoadString(pi.ColumnName);
+            }
+            else
+            {
+                processor.Nop().Nop().Nop().Nop().LoadString(pi.FieldDefinition.Name);
+            }
             var ctor = _handler.Import(ci1);
             ctor.DeclaringType = ft; //NOTE: might be a bug of Cecil
             processor.NewObj(ctor);

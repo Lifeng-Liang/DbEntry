@@ -46,5 +46,13 @@ namespace Lephone.Processor
                 return FieldType == FieldType.HasAndBelongsToMany;
             }
         }
+
+        public bool IsLazyLoad
+        {
+            get
+            {
+                return FieldType == FieldType.LazyLoad;
+            }
+        }
     }
 }

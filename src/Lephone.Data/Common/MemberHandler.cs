@@ -163,7 +163,7 @@ namespace Lephone.Data.Common
 
         protected MemberHandler(MemberAdapter fi)
         {
-            var fn = fi.GetAttribute<DbColumnAttribute>(false);
+            var fn = fi.GetAttribute<DbColumnAttribute>(true);
             string memberName = (fn == null) ? fi.Name : fn.Name;
 
             MemberInfo = fi;
