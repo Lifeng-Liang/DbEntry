@@ -220,11 +220,9 @@ namespace Lephone.Processor
                 // set values
                 foreach (var f in _info.RelationFields)
                 {
-                    processor.LoadLoc(0);
-                    processor.GetMember(f, _handler);
                     if (f.IsLazyLoad)
                     {
-                        if(noLazy)
+                        if (noLazy)
                         {
                             processor.LoadLoc(0);
                             processor.GetMember(f, _handler);
@@ -243,6 +241,8 @@ namespace Lephone.Processor
                     }
                     else if (f.IsBelongsTo)
                     {
+                        processor.LoadLoc(0);
+                        processor.GetMember(f, _handler);
                         processor.LoadArg(2);
                         if (useIndex)
                         {
