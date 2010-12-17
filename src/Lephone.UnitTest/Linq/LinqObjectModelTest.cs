@@ -134,6 +134,28 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual("Beijing", l[1].Name);
         }
 
+        [Test, Ignore]
+        public void TestPartialSelect0()
+        {
+            var l = from book in Book.Table where book.Category_Id == 2 orderby book.Id select book.Name;
+            var list = l.ToList();
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual("Diablo", list[0]);
+            Assert.AreEqual("Pal95", list[1]);
+            Assert.AreEqual("Wow", list[2]);
+        }
+
+        [Test]
+        public void TestPartialSelect1()
+        {
+            var l = from book in Book.Table where book.Category_Id == 2 orderby book.Id select new { book.Id };
+            var list = l.ToArray();
+            Assert.AreEqual(3, list.Length);
+            Assert.AreEqual(1, list[0].Id);
+            Assert.AreEqual(4, list[1].Id);
+            Assert.AreEqual(5, list[2].Id);
+        }
+
         [Test]
         public void TestPartialSelect()
         {

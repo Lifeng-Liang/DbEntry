@@ -276,6 +276,7 @@ namespace Lephone.Data
 
         public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type dbObjectType, Condition iwc, OrderBy order, string columnName)
         {
+            TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             SqlStatement sql = oi.Composer.GetGroupByStatement(Dialect, iwc, order, columnName);
             oi.LogSql(sql);
@@ -287,6 +288,7 @@ namespace Lephone.Data
 
         public DbObjectList<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Type dbObjectType, Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
         {
+            TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             SqlStatement sql = oi.Composer.GetGroupBySumStatement(Dialect, iwc, order, groupbyColumnName, sumColumnName);
             oi.LogSql(sql);
@@ -308,8 +310,9 @@ namespace Lephone.Data
 
         public DbObjectList<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
         {
-            var ret = new DbObjectList<T>();
             var t = typeof(T);
+            TryCreateTable(t);
+            var ret = new DbObjectList<T>();
             IProcessor ip = GetListProcessor(ret, t);
             DataLoadDirect(ip, t, t, sql, false, false);
             return ret;
@@ -336,6 +339,7 @@ namespace Lephone.Data
 
         public void DataLoad(IProcessor ip, Type returnType, Type dbObjectType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy)
         {
+            TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct, noLazy, returnType);
             oi.LogSql(sql);
@@ -344,7 +348,6 @@ namespace Lephone.Data
 
         private void DataLoadDirect(IProcessor ip, Type returnType, Type dbObjectType, SqlStatement sql, bool useIndex, bool noLazy)
         {
-            TryCreateTable(dbObjectType);
             long startIndex = sql.StartIndex;
             long endIndex = sql.EndIndex;
             if (Dialect.SupportsRangeStartIndex && endIndex > 0)

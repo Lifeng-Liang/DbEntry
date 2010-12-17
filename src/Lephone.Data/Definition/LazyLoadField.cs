@@ -16,9 +16,9 @@ namespace Lephone.Data.Definition
         protected override void DoLoad()
         {
             ObjectInfo oi = ObjectInfo.GetInstance(Owner.GetType());
-            string kn = oi.KeyFields[0].Name;
-            object key = oi.KeyFields[0].GetValue(Owner);
+            object key = oi.Handler.GetKeyValue(Owner);
             var sb = new SelectStatementBuilder(oi.From, null, null);
+            string kn = oi.KeyFields[0].Name;
             sb.Where.Conditions = CK.K[kn] == key;
             sb.Keys.Add(new KeyValuePair<string, string>(RelationName, null));
             SqlStatement sql = sb.ToSqlStatement(oi.Context.Dialect);

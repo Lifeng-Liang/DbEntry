@@ -78,6 +78,7 @@ namespace Lephone.Processor
         private readonly MethodReference _modelHandler;
         private readonly MethodReference _assemblyProcessed;
         private readonly MethodReference _exclude;
+        private readonly MethodReference _specialName;
 
         public readonly TypeReference ObjectType;
         public readonly TypeReference VoidType;
@@ -97,6 +98,7 @@ namespace Lephone.Processor
         public readonly MethodReference DynamicObjectReferenceSerializeObject;
         public readonly MethodReference SerializableGetObjectData;
         public readonly MethodReference BelongsToInterfaceSetForeignKey;
+        public readonly MethodReference BelongsToInterfaceGetForeignKey;
         public readonly MethodReference LazyLoadingInterfaceWrite;
 
         public readonly MethodReference CreateInstance;
@@ -174,6 +176,7 @@ namespace Lephone.Processor
             _modelHandler = Import(Import(typeof(ModelHandlerAttribute)).GetConstructor(typeof(Type)));
             _assemblyProcessed = Import(Import(typeof(AssemblyProcessed)).GetConstructor());
             _exclude = Import(Import(typeof(ExcludeAttribute)).GetConstructor());
+            _specialName = Import(Import(typeof(SpecialNameAttribute)).GetConstructor());
             var dbase = typeof(DbObjectSmartUpdate);
             ColumnUpdated = _module.Import(dbase.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag));
             InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
@@ -209,6 +212,7 @@ namespace Lephone.Processor
                 Import(Import(typeof(DynamicObjectReference)).GetMethod("SerializeObject"));
             SerializableGetObjectData = Import(Import(typeof(ISerializable)).GetMethod("GetObjectData"));
             BelongsToInterfaceSetForeignKey = Import(Import(typeof(IBelongsTo)).GetMethod("set_ForeignKey"));
+            BelongsToInterfaceGetForeignKey = Import(Import(typeof(IBelongsTo)).GetMethod("get_ForeignKey"));
             LazyLoadingInterfaceWrite = Import(Import(typeof(ILazyLoading)).GetMethod("Write"));
 
             CreateInstance = Import(emitBase.GetMethod("CreateInstance", ClassHelper.AllFlag));
@@ -417,6 +421,12 @@ namespace Lephone.Processor
         public CustomAttribute GetExclude()
         {
             var c = new CustomAttribute(_exclude);
+            return c;
+        }
+
+        public CustomAttribute GetSpecialName()
+        {
+            var c = new CustomAttribute(_specialName);
             return c;
         }
     }

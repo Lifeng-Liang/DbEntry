@@ -92,7 +92,7 @@ namespace Lephone.Processor
             }
         }
 
-        private static IlBuilder PreProcessPropertyMethod(MethodDefinition method)
+        public static IlBuilder PreProcessPropertyMethod(MethodDefinition method)
         {
             RemovePropertyCompilerGeneratedAttribute(method);
             method.Body.Instructions.Clear();
@@ -131,7 +131,7 @@ namespace Lephone.Processor
             processor.Append();
         }
 
-        private static void ProcessPropertySetElse(IlBuilder processor)
+        public static void ProcessPropertySetElse(IlBuilder processor)
         {
             processor.Return();
             processor.Append();

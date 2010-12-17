@@ -39,6 +39,14 @@ namespace Lephone.Processor
             }
         }
 
+        public bool IsBelongsTo
+        {
+            get
+            {
+                return FieldType == FieldType.BelongsTo;
+            }
+        }
+
         public bool IsHasAndBelongsToMany
         {
             get
@@ -52,6 +60,16 @@ namespace Lephone.Processor
             get
             {
                 return FieldType == FieldType.LazyLoad;
+            }
+        }
+
+        public bool IsSpecialForeignKey
+        {
+            get
+            {
+                return _propertyDefinition.Name.Length > 3 &&
+                       _propertyDefinition.Name.EndsWith("Id") &&
+                       _propertyDefinition.IsSpecialName();
             }
         }
     }

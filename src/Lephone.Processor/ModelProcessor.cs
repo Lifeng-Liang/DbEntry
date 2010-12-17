@@ -83,6 +83,47 @@ namespace Lephone.Processor
                 }
                 ProcessProperty(pi);
             }
+            foreach(var property in _properties)
+            {
+                if(property.IsSpecialForeignKey)
+                {
+                    ProcessSpecialForeignKey(property);
+                }
+            }
+        }
+
+        private void ProcessSpecialForeignKey(PropertyInformation property)
+        {
+            // process set
+            var processor = PropertyProcessor.PreProcessPropertyMethod(property.PropertyDefinition.SetMethod);
+            PropertyProcessor.ProcessPropertySetElse(processor);
+            // remove field
+            _model.Fields.Remove(property.FieldDefinition);
+            // process get
+            var name = property.PropertyDefinition.Name;
+            name = name.Substring(0, name.Length - 2);
+            var pi = FindProperty(name);
+            processor = PropertyProcessor.PreProcessPropertyMethod(property.PropertyDefinition.GetMethod);
+            processor.LoadArg(0);
+            processor.LoadField(pi.FieldDefinition);
+            processor.CallVirtual(_handler.BelongsToInterfaceGetForeignKey);
+            processor.CastOrUnbox(property.PropertyDefinition.PropertyType, _handler);
+            processor.Return();
+            processor.Append();
+            // add exclude
+            property.PropertyDefinition.CustomAttributes.Add(_handler.GetExclude());
+        }
+
+        private PropertyInformation FindProperty(string name)
+        {
+            foreach(var property in _properties)
+            {
+                if(property.PropertyDefinition.Name == name && property.IsBelongsTo)
+                {
+                    return property;
+                }
+            }
+            throw new DataException("Can not find BelongsTo property named : " + name + " in " + _model.Name);
         }
 
         private void ProcessConstructors()

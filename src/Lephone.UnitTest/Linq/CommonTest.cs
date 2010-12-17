@@ -70,6 +70,9 @@ namespace Lephone.UnitTest.Linq
 
             [BelongsTo]
             public User Writer { get; set; }
+
+            [SpecialName]
+            public long WriterId { get; set; }
         }
 
         [Test]
@@ -479,6 +482,20 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual("aha", list[0].Name);
             Assert.AreEqual("I'm here", list[0].Content);
             AssertSql("SELECT [Id],[No],[Name],[Content] AS [$Content] FROM [Nolazy];\n<Text><60>()");
+        }
+
+        [Test]
+        public void TestSpecialFk()
+        {
+            StaticRecorder.CurRow.Add(new RowInfo("Id", 1L));
+            StaticRecorder.CurRow.Add(new RowInfo("Title", "tom"));
+            StaticRecorder.CurRow.Add(new RowInfo("$Writer", 8L));
+            var obj = Article.FindById(1);
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [Id] = @Id_0;
+<Text><60>(@Id_0=1:Int64)");
+            Assert.AreEqual("tom", obj.Title);
+            Assert.AreEqual(8, obj.WriterId);
+            AssertSql(string.Empty);
         }
     }
 }
