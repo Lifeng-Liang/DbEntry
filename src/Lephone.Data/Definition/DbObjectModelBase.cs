@@ -217,6 +217,11 @@ namespace Lephone.Data.Definition
             return DbEntry.Delete<T>(ExpressionParser<T>.Parse(condition));
         }
 
+        public static Condition Parse(Expression<Func<T, bool>> expr)
+        {
+            return ExpressionParser<T>.Parse(expr);
+        }
+
 	    #endregion
     }
 }
