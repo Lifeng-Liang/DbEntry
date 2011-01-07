@@ -9,6 +9,7 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class PartialUpdateTest
     {
+        [DbContext("SQLite")]
         public class User : DbObjectModel<User>
         {
             public string Name { get; set; }

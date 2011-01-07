@@ -8,7 +8,7 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data.Builder
 {
-	public class SelectStatementBuilder : ISqlStatementBuilder, IClause, ISqlKeys, ISqlWhere
+	public class SelectStatementBuilder : SqlStatementBuilder, IClause, ISqlKeys, ISqlWhere
 	{
         private readonly OrderBy _order;
         private readonly Range _limit;
@@ -109,7 +109,7 @@ namespace Lephone.Data.Builder
             return ret.ToString();
         }
 
-        public SqlStatement ToSqlStatement(DbDialect dd)
+        protected override SqlStatement ToSqlStatement(DbDialect dd)
 		{
             CheckInput();
             SqlStatement sql = GetSelectSqlStatement(dd);

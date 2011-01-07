@@ -1,5 +1,4 @@
-﻿using Lephone.Data.Dialect;
-using Lephone.Data.SqlEntry;
+﻿using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
 
 namespace Lephone.Data.Common
@@ -16,7 +15,7 @@ namespace Lephone.Data.Common
         //    return sb.ToSqlStatement(Dialect);
         //}
 
-        public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)
+        public override SqlStatement GetUpdateStatement(object obj, Condition iwc)
         {
             var sb = new UpdateStatementBuilder(Info.From.MainTableName);
             Info.Handler.SetValuesForUpdate(sb, obj);
@@ -36,7 +35,7 @@ namespace Lephone.Data.Common
             {
                 sb.Values.Add(new KeyValue(Info.LockVersion.Name, lv + 1));
             }
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
         public override void ProcessAfterSave(object obj)

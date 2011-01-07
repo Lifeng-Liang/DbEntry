@@ -14,6 +14,7 @@ namespace Lephone.Data.SqlEntry
 		public CommandType SqlCommandType;
         internal long StartIndex;
         internal long EndIndex;
+	    public bool NeedLog = true;
 
 		internal protected static CommandType GetCommandType(string sqlCommandText)
 		{
@@ -71,11 +72,11 @@ namespace Lephone.Data.SqlEntry
 
 		public override bool Equals(object obj)
 		{
-			var Sql = (SqlStatement)obj;
-			bool b = (this.SqlCommandText == Sql.SqlCommandText)
-				&& (this.SqlTimeOut == Sql.SqlTimeOut)
-				&& (this.Parameters.Equals(Sql.Parameters)
-				&& (this.SqlCommandType == Sql.SqlCommandType));
+			var sql = (SqlStatement)obj;
+			var b = (this.SqlCommandText == sql.SqlCommandText)
+				&& (this.SqlTimeOut == sql.SqlTimeOut)
+				&& (this.Parameters.Equals(sql.Parameters)
+				&& (this.SqlCommandType == sql.SqlCommandType));
 			return b;
 		}
 

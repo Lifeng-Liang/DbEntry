@@ -21,8 +21,7 @@ namespace Lephone.Data.Definition
             string kn = oi.KeyFields[0].Name;
             sb.Where.Conditions = CK.K[kn] == key;
             sb.Keys.Add(new KeyValuePair<string, string>(RelationName, null));
-            SqlStatement sql = sb.ToSqlStatement(oi.Context.Dialect);
-            oi.LogSql(sql);
+            SqlStatement sql = sb.ToSqlStatement(oi);
             object o = oi.Context.ExecuteScalar(sql);
             if (o == DBNull.Value)
             {

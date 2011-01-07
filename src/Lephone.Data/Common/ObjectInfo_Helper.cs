@@ -110,14 +110,6 @@ namespace Lephone.Data.Common
             return CommonHelper.GetEmptyValue(KeyFields[0].FieldType, false, "only supported int long guid as primary key.");
         }
 
-        public void LogSql(SqlStatement sql)
-        {
-            if (AllowSqlLog)
-            {
-                Logger.SQL.Trace(sql);
-            }
-        }
-
         public bool IsNewObject(object obj)
         {
             return KeyFields[0].UnsavedValue.Equals(Handler.GetKeyValue(obj));

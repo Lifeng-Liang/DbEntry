@@ -44,6 +44,15 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [DbContext("SQLite")]
+    public class lzUser2 : DbObjectModel<lzUser2>
+    {
+        public string Name { get; set; }
+
+        [LazyLoad]
+        public string Profile { get; set; }
+    }
+
     public class lzpUser : DbObjectModel<lzpUser>
     {
         public string Name { get; set; }
@@ -110,9 +119,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInsert()
         {
-            var u = new lzUser {Name = "tom", Profile = "test"};
+            var u = new lzUser2 {Name = "tom", Profile = "test"};
             Sqlite.Insert(u);
-            Assert.AreEqual("INSERT INTO [lz_User] ([Name],[Profile]) VALUES (@Name_0,@Profile_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String,@Profile_1=test:String)", StaticRecorder.LastMessage);
+            Assert.AreEqual("INSERT INTO [lz_User2] ([Name],[Profile]) VALUES (@Name_0,@Profile_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String,@Profile_1=test:String)", StaticRecorder.LastMessage);
         }
 
         [Test]

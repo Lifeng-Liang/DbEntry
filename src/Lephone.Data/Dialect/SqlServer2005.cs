@@ -56,7 +56,6 @@ namespace Lephone.Data.Dialect
                         {
                             var sql = new SqlStatement(sb.ToString());
                             oi.Context.ExecuteNonQuery(sql);
-                            oi.LogSql(sql);
                         });
             }
         }

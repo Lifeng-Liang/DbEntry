@@ -148,7 +148,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public IList<crxBook1> Books { get; set; }
     }
 
-    [DbTable("tom:test_table")]
+    [DbTable("tom:test_table"), DbContext("SQLite")]
     public class compTableName : DbObjectModel<compTableName>
     {
         public string Name { get; set; }

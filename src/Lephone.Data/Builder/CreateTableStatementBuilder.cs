@@ -7,7 +7,7 @@ using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Builder
 {
-    public class CreateTableStatementBuilder : ISqlStatementBuilder
+    public class CreateTableStatementBuilder : SqlStatementBuilder
     {
         internal string TableName;
         private readonly List<ColumnInfo> _columns;
@@ -20,7 +20,7 @@ namespace Lephone.Data.Builder
             _indexes = new List<DbIndex>();
         }
 
-        public SqlStatement ToSqlStatement(DbDialect dd)
+        protected override SqlStatement ToSqlStatement(DbDialect dd)
         {
             bool isMutiKey = IsMutiKey();
             string keys = "";
@@ -124,14 +124,7 @@ namespace Lephone.Data.Builder
                 {
                     n = "IX_" + gn; 
                 }
-                if (i.Unique)
-                {
-                    sb.Append("CREATE UNIQUE ");
-                }
-                else
-                {
-                    sb.Append("CREATE ");
-                }
+                sb.Append(i.Unique ? "CREATE UNIQUE " : "CREATE ");
                 if (!dd.SupportDirctionOfEachColumnInIndex)
                 {
                     if (i.Columns[0] is DESC)

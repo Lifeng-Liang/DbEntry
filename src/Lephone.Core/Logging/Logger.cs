@@ -30,7 +30,7 @@ namespace Lephone.Core.Logging
 		    string s = ConfigHelper.DefaultSettings.GetValue(_name + "LogRecorder");
             if (s != "")
             {
-                var ss = s.Split('#');
+                var ss = s.Split('|');
                 foreach(var s1 in ss)
                 {
                     var s2 = s1.Trim();

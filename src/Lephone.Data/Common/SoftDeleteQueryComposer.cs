@@ -1,7 +1,6 @@
 ﻿using System;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
-using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
 
 namespace Lephone.Data.Common
@@ -25,22 +24,22 @@ namespace Lephone.Data.Common
             return cts;
         }
 
-        public override SqlStatement GetDeleteStatement(DbDialect dialect, object obj)
+        public override SqlStatement GetDeleteStatement(object obj)
         {
             var sb = new UpdateStatementBuilder(Info.From.MainTableName);
             sb.Values.Add(new KeyValue(_columnName, true));
             sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj) && _colExp;
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public override SqlStatement GetDeleteStatement(DbDialect dialect, Condition iwc)
+        public override SqlStatement GetDeleteStatement(Condition iwc)
         {
-            return base.GetDeleteStatement(dialect, iwc && _colExp);
+            return base.GetDeleteStatement(iwc && _colExp);
         }
 
-        public override SqlStatement GetGroupByStatement(DbDialect dialect, Condition iwc, OrderBy order, string columnName)
+        public override SqlStatement GetGroupByStatement(Condition iwc, OrderBy order, string columnName)
         {
-            return base.GetGroupByStatement(dialect, iwc && _colExp, order, columnName);
+            return base.GetGroupByStatement(iwc && _colExp, order, columnName);
         }
 
         public override InsertStatementBuilder GetInsertStatementBuilder(object obj)
@@ -50,14 +49,14 @@ namespace Lephone.Data.Common
             return sb;
         }
 
-        public override SqlStatement GetResultCountStatement(DbDialect dialect, Condition iwc, bool isDistinct)
+        public override SqlStatement GetResultCountStatement(Condition iwc, bool isDistinct)
         {
-            return base.GetResultCountStatement(dialect, iwc && _colExp, isDistinct);
+            return base.GetResultCountStatement(iwc && _colExp, isDistinct);
         }
 
-        public SqlStatement GetResultCountStatementWithoutDeleteCheck(DbDialect dialect, Condition iwc, bool isDistinct)
+        public SqlStatement GetResultCountStatementWithoutDeleteCheck(Condition iwc, bool isDistinct)
         {
-            return base.GetResultCountStatement(dialect, iwc, isDistinct);
+            return base.GetResultCountStatement(iwc, isDistinct);
         }
 
         public override SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType, string colName)
@@ -65,9 +64,9 @@ namespace Lephone.Data.Common
             return base.GetSelectStatementBuilder(from, iwc && _colExp, oc, lc, isDistinct, noLazy, returnType, colName);
         }
 
-        public override SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)
+        public override SqlStatement GetUpdateStatement(object obj, Condition iwc)
         {
-            return base.GetUpdateStatement(dialect, obj, iwc && _colExp);
+            return base.GetUpdateStatement(obj, iwc && _colExp);
         }
     }
 }

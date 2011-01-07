@@ -1,5 +1,4 @@
 ﻿using Lephone.Data.SqlEntry;
-using Lephone.Core.Logging;
 using Lephone.Data.Common;
 
 namespace Lephone.Data.Dialect
@@ -76,7 +75,6 @@ namespace Lephone.Data.Dialect
         public override void ExecuteDropSequence(DataProvider dp, string tableName)
         {
             string sql = string.Format("DROP GENERATOR GEN_{0}_ID;\n", tableName.ToUpper());
-            Logger.SQL.Trace(sql);
             dp.ExecuteNonQuery(sql);
         }
 

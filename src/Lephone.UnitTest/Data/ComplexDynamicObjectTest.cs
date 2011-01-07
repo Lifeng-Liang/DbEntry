@@ -12,18 +12,18 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCross()
         {
-            var de = EntryConfig.NewContext("SQLite");
-            de.From<ImpPeople>().Where(Condition.Empty).Select();
-            StaticRecorder.ClearMessages();
+            SqlRecorder.Start();
 
             ImpPeople p = ImpPeople.FindById(1);
             p.Save();
-            Assert.AreEqual(0, StaticRecorder.Messages.Count);
+            Assert.AreEqual(1, SqlRecorder.List.Count);
 
             p.Name = "abc";
-            de.Save(p);
-            Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("UPDATE [People] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=abc:String,@Id_1=1:Int64)", StaticRecorder.Messages[0]);
+            p.Save();
+            Assert.AreEqual(2, SqlRecorder.List.Count);
+            Assert.AreEqual("UPDATE [People] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=abc:String,@Id_1=1:Int64)", SqlRecorder.LastMessage);
+
+            SqlRecorder.Stop();
         }
 
         [Test]

@@ -7,16 +7,14 @@ namespace Lephone.Data.Dialect
 {
     public abstract class SequencedDialect : DbDialect
     {
-        protected override object ExecuteInsertIntKey(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
+        protected override object ExecuteInsertIntKey(InsertStatementBuilder sb, ObjectInfo oi)
         {
             string seqStr = GetSelectSequenceSql(oi.From.MainTableName);
             var seq = new SqlStatement(CommandType.Text, seqStr);
-            oi.LogSql(seq);
-            object key = dp.ExecuteScalar(seq);
+            object key = oi.Context.ExecuteScalar(seq);
             sb.Values.Add(new KeyValue(oi.KeyFields[0].Name, key));
-            SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
-            oi.LogSql(sql);
-            dp.ExecuteNonQuery(sql);
+            SqlStatement sql = sb.ToSqlStatement(oi);
+            oi.Context.ExecuteNonQuery(sql);
             return key;
         }
 

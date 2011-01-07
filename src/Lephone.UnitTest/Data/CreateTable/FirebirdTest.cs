@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data.CreateTable
 {
+    [DbContext("Firebird")]
     public class fbLongName : DbObjectModel<fbLongName>
     {
         // use guid to gen index name and encode it into base32
@@ -14,12 +15,14 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string N123456789012345678901234567890 { get; set; }
     }
 
+    [DbContext("Firebird")]
     public class fbLongName2 : DbObjectModel<fbLongName2>
     {
         [Index]
         public string Name { get; set; }
     }
 
+    [DbContext("Firebird")]
     public class fbBlob : DbObjectModel<fbBlob>
     {
         [Length(64)]
@@ -36,6 +39,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name2 { get; set; }
     }
 
+    [DbContext("Firebird")]
     public class fbTime : DbObjectModel<fbTime>
     {
         [Length(50)]

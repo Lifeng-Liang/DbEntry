@@ -92,20 +92,18 @@ namespace Lephone.Data.Dialect
                     Guid key = Guid.NewGuid();
                     sb.Values[0].Value = key;
                 }
-                SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
-                oi.LogSql(sql);
+                SqlStatement sql = sb.ToSqlStatement(oi);
                 dp.ExecuteNonQuery(sql);
                 return sb.Values[0].Value;
             }
-            return ExecuteInsertIntKey(dp, sb, oi);
+            return ExecuteInsertIntKey(sb, oi);
         }
 
-	    protected virtual object ExecuteInsertIntKey(DataProvider dp, InsertStatementBuilder sb, ObjectInfo oi)
+	    protected virtual object ExecuteInsertIntKey(InsertStatementBuilder sb, ObjectInfo oi)
         {
-            SqlStatement sql = sb.ToSqlStatement(dp.Dialect);
+            SqlStatement sql = sb.ToSqlStatement(oi);
             sql.SqlCommandText = AddIdentitySelectToInsert(sql.SqlCommandText);
-            oi.LogSql(sql);
-            return dp.ExecuteScalar(sql);
+            return oi.Context.ExecuteScalar(sql);
         }
 
         public virtual void ExecuteDropSequence(DataProvider dp, string tableName)

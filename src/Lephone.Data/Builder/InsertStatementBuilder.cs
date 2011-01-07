@@ -5,7 +5,7 @@ using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Builder
 {
-	public class InsertStatementBuilder : ISqlStatementBuilder, ISqlValues
+	public class InsertStatementBuilder : SqlStatementBuilder, ISqlValues
 	{
 		private const string StatementTemplate = "INSERT INTO {0} {1};\n";
 		internal string TableName;
@@ -16,7 +16,7 @@ namespace Lephone.Data.Builder
 			this.TableName = tableName;
 		}
 
-		public SqlStatement ToSqlStatement(DbDialect dd)
+        protected override SqlStatement ToSqlStatement(DbDialect dd)
 		{
 			var dpc = new DataParameterCollection();
 			string sqlString = string.Format(StatementTemplate, dd.QuoteForTableName(TableName), _valuesOptions.ToSqlText(dpc, dd));

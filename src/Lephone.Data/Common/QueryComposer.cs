@@ -13,46 +13,50 @@ namespace Lephone.Data.Common
 
         public QueryComposer(ObjectInfo oi)
         {
+            if(oi == null)
+            {
+                throw new ArgumentNullException("oi");
+            }
             Info = oi;
         }
 
-        public virtual SqlStatement GetMaxStatement(DbDialect dialect, Condition iwc, string columnName)
+        public virtual SqlStatement GetMaxStatement(Condition iwc, string columnName)
         {
             var sb = new SelectStatementBuilder(Info.From, null, null);
             sb.Where.Conditions = iwc;
             sb.SetMaxColumn(columnName);
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public virtual SqlStatement GetMinStatement(DbDialect dialect, Condition iwc, string columnName)
+        public virtual SqlStatement GetMinStatement(Condition iwc, string columnName)
         {
             var sb = new SelectStatementBuilder(Info.From, null, null);
             sb.Where.Conditions = iwc;
             sb.SetMinColumn(columnName);
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public virtual SqlStatement GetSumStatement(DbDialect dialect, Condition iwc, string columnName)
+        public virtual SqlStatement GetSumStatement(Condition iwc, string columnName)
         {
             var sb = new SelectStatementBuilder(Info.From, null, null);
             sb.Where.Conditions = iwc;
             sb.SetSumColumn(columnName);
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public SqlStatement GetResultCountStatement(DbDialect dialect, Condition iwc)
+        public SqlStatement GetResultCountStatement(Condition iwc)
         {
-            return GetResultCountStatement(dialect, iwc, false);
+            return GetResultCountStatement(iwc, false);
         }
 
-        public virtual SqlStatement GetResultCountStatement(DbDialect dialect, Condition iwc, bool isDistinct)
+        public virtual SqlStatement GetResultCountStatement(Condition iwc, bool isDistinct)
         {
             var sb = new SelectStatementBuilder(Info.From, null, null) {IsDistinct = isDistinct};
             sb.Where.Conditions = iwc;
             if(isDistinct)
             {
                 Info.Handler.SetValuesForSelect(sb, false);
-                string cs = sb.GetColumns(dialect, true, false);
+                string cs = sb.GetColumns(Info.Context.Dialect, true, false);
                 sb.SetCountColumn(cs);
                 sb.IsDistinct = false;
                 sb.Keys.Clear();
@@ -61,10 +65,10 @@ namespace Lephone.Data.Common
             {
                 sb.SetCountColumn("*");
             }
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public virtual SqlStatement GetGroupByStatement(DbDialect dialect, Condition iwc, OrderBy order, string columnName)
+        public virtual SqlStatement GetGroupByStatement(Condition iwc, OrderBy order, string columnName)
         {
             var sb = new SelectStatementBuilder(Info.From, order, null);
             sb.Where.Conditions = iwc;
@@ -74,10 +78,10 @@ namespace Lephone.Data.Common
                 sb.Keys.Add(new KeyValuePair<string, string>(s, null));
                 sb.SetAsGroupBy(s);
             }
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public virtual SqlStatement GetGroupBySumStatement(DbDialect dialect, Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
+        public virtual SqlStatement GetGroupBySumStatement(Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
         {
             var sb = new SelectStatementBuilder(Info.From, order, null);
             sb.Where.Conditions = iwc;
@@ -87,13 +91,13 @@ namespace Lephone.Data.Common
                 sb.Keys.Add(new KeyValuePair<string, string>(s, null));
                 sb.SetAsGroupBySum(groupbyColumnName, sumColumnName);
             }
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public SqlStatement GetSelectStatement(DbDialect dialect, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType)
+        public SqlStatement GetSelectStatement(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType)
         {
             var sb = GetSelectStatementBuilder(from, iwc, oc, lc, isDistinct, noLazy, returnType, null);
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
         public virtual SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType, string colName)
@@ -130,10 +134,10 @@ namespace Lephone.Data.Common
             }
         }
 
-        public virtual SqlStatement GetInsertStatement(DbDialect dialect, object obj)
+        public virtual SqlStatement GetInsertStatement(object obj)
         {
             InsertStatementBuilder sb = GetInsertStatementBuilder(obj);
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
         public virtual InsertStatementBuilder GetInsertStatementBuilder(object obj)
@@ -143,32 +147,32 @@ namespace Lephone.Data.Common
             return sb;
         }
 
-        public virtual SqlStatement GetUpdateStatement(DbDialect dialect, object obj, Condition iwc)
+        public virtual SqlStatement GetUpdateStatement(object obj, Condition iwc)
         {
             var sb = new UpdateStatementBuilder(Info.From.MainTableName);
             Info.Handler.SetValuesForUpdate(sb, obj);
             sb.Where.Conditions = iwc;
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public virtual SqlStatement GetDeleteStatement(DbDialect dialect, object obj)
+        public virtual SqlStatement GetDeleteStatement(object obj)
         {
             var sb = new DeleteStatementBuilder(Info.From.MainTableName);
             sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj);
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public virtual SqlStatement GetDeleteStatement(DbDialect dialect, Condition iwc)
+        public virtual SqlStatement GetDeleteStatement(Condition iwc)
         {
             var sb = new DeleteStatementBuilder(Info.From.MainTableName);
             sb.Where.Conditions = iwc;
-            return sb.ToSqlStatement(dialect);
+            return sb.ToSqlStatement(Info);
         }
 
-        public virtual SqlStatement GetCreateStatement(DbDialect dialect)
+        public virtual SqlStatement GetCreateStatement()
         {
             CreateTableStatementBuilder cts = GetCreateTableStatementBuilder();
-            return cts.ToSqlStatement(dialect);
+            return cts.ToSqlStatement(Info);
         }
 
         public virtual CreateTableStatementBuilder GetCreateTableStatementBuilder()

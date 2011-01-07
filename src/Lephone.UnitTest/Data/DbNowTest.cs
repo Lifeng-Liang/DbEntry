@@ -14,7 +14,7 @@ namespace Lephone.UnitTest.Data
     {
         #region Init
 
-        [DbTable("DateTable")]
+        [DbTable("DateTable"), DbContext("SQLite")]
         public class DateTable : DbObjectModel<DateTable>
         {
             [SpecialName]
@@ -26,7 +26,7 @@ namespace Lephone.UnitTest.Data
             public string Name { get; set; }
         }
 
-        [DbTable("DateTable")]
+        [DbTable("DateTable"), DbContext("SQLite")]
         public class DateTable2 : DbObject
         {
             [SpecialName]
@@ -38,7 +38,7 @@ namespace Lephone.UnitTest.Data
             public string Name;
         }
 
-        [DbTable("DateTable")]
+        [DbTable("DateTable"), DbContext("SQLite")]
         public class DateTable3 : DbObject
         {
             [SpecialName]
@@ -47,7 +47,7 @@ namespace Lephone.UnitTest.Data
             public string Name;
         }
 
-        [DbTable("DateTable")]
+        [DbTable("DateTable"), DbContext("SQLite")]
         public class DateTable4 : DbObjectModel<DateTable4>
         {
             [SpecialName]

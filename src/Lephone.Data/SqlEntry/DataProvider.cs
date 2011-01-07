@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using Lephone.Core;
+using Lephone.Core.Logging;
 using Lephone.Data.Dialect;
 using Lephone.Data.Driver;
 using Lephone.Data.Common;
@@ -15,7 +16,7 @@ namespace Lephone.Data.SqlEntry
 {
 	public partial class DataProvider : IHasConnection
 	{
-		internal DbDriver m_Driver;
+		internal DbDriver InnerDriver;
 
         ConnectionContext IHasConnection.ConnectionProvider
         {
@@ -30,7 +31,7 @@ namespace Lephone.Data.SqlEntry
                 {
                     return Scope<ConnectionContext>.Current;
                 }
-                return new ConnectionContext(m_Driver);
+                return new ConnectionContext(InnerDriver);
             }
         }
 
@@ -38,24 +39,24 @@ namespace Lephone.Data.SqlEntry
 
         public DataProvider(DbDriver driver)
 		{
-            m_Driver = driver;
+            InnerDriver = driver;
 		}
 
 		public DbDialect Dialect
 		{
-			get { return m_Driver.Dialect; }
+			get { return InnerDriver.Dialect; }
 		}
 
         public DbDriver Driver
         {
-            get { return m_Driver; }
+            get { return InnerDriver; }
         }
 
         #region utils
 
         public List<DbColumnInfo> GetDbColumnInfoList(string tableName)
         {
-            string sqlStr = "select * from " + Dialect.QuoteForTableName(tableName) + " where 1<>1";
+            string sqlStr = "SELECT * FROM " + Dialect.QuoteForTableName(tableName) + " WHERE 1<>1";
             var sql = new SqlStatement(CommandType.Text, sqlStr);
             var ret = new List<DbColumnInfo>();
             ExecuteDataReader(sql, CommandBehavior.KeyInfo | CommandBehavior.SchemaOnly, delegate(IDataReader dr)
@@ -132,7 +133,7 @@ namespace Lephone.Data.SqlEntry
             {
                 using (IDbCommand e = GetDbCommand(sql))
                 {
-                    IDbDataAdapter d = m_Driver.GetDbAdapter(e);
+                    IDbDataAdapter d = InnerDriver.GetDbAdapter(e);
                     if (Dialect.ExecuteEachLine)
                     {
                         int i = 0;
@@ -162,8 +163,8 @@ namespace Lephone.Data.SqlEntry
             int ret = 0;
             UsingConnection(delegate
             {
-                var d = (DbDataAdapter)m_Driver.GetDbAdapter(GetDbCommand(selectSql));
-                var cb = m_Driver.GetCommandBuilder();
+                var d = (DbDataAdapter)InnerDriver.GetDbAdapter(GetDbCommand(selectSql));
+                var cb = InnerDriver.GetCommandBuilder();
                 cb.QuotePrefix = Dialect.OpenQuote.ToString();
                 cb.QuoteSuffix = Dialect.CloseQuote.ToString();
                 cb.DataAdapter = d;
@@ -189,7 +190,7 @@ namespace Lephone.Data.SqlEntry
             int ret = 0;
             UsingConnection(delegate
             {
-                IDbDataAdapter d = m_Driver.GetDbAdapter();
+                IDbDataAdapter d = InnerDriver.GetDbAdapter();
                 if(insertSql != null)
                 {
                     d.InsertCommand = GetDbCommandForUpdate(insertSql);
@@ -311,8 +312,12 @@ namespace Lephone.Data.SqlEntry
 
         public IDbCommand GetDbCommand(SqlStatement sql)
         {
+            if(sql.NeedLog)
+            {
+                Logger.SQL.Trace(sql);
+            }
             ConnectionContext et = ConProvider;
-            IDbCommand e = m_Driver.GetDbCommand(sql, et.Connection);
+            IDbCommand e = InnerDriver.GetDbCommand(sql, et.Connection);
             if (et.Transaction != null)
             {
                 e.Transaction = et.Transaction;
@@ -517,7 +522,7 @@ namespace Lephone.Data.SqlEntry
 
         public void NewConnection(CallbackVoidHandler callback)
         {
-            using (var cc = new ConnectionContext(m_Driver))
+            using (var cc = new ConnectionContext(InnerDriver))
             {
                 using (new Scope<ConnectionContext>(cc))
                 {

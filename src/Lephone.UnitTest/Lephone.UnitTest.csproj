@@ -133,6 +133,7 @@
     <Compile Include="Data\SerializeTest.cs" />
     <Compile Include="Data\SmartUpdateTest.cs" />
     <Compile Include="Data\SoftDeleteTest.cs" />
+    <Compile Include="Data\SqlLogTest.cs" />
     <Compile Include="Data\TableSchemaTest.cs" />
     <Compile Include="Data\ThreadIssueTest.cs" />
     <Compile Include="Data\UnsignedNumberTest.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Linq\RealOperateTest.cs" />
     <Compile Include="Linq\FunctionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlRecorder.cs" />
     <Compile Include="SqlTestBase.cs" />
     <Compile Include="util\Base32StringCodingTest.cs" />
     <Compile Include="util\DateAndTimeTest.cs" />

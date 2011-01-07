@@ -121,6 +121,18 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbContext("SQLite")]
+    public class MKEY2 : IDbObject
+    {
+        [DbKey(IsDbGenerate = false)]
+        public string FirstName;
+
+        [DbKey(IsDbGenerate = false)]
+        public string LastName;
+
+        public int Age;
+    }
+
+    [DbContext("SQLite")]
     public class FindByModel : DbObjectModel<FindByModel>
     {
         [DbColumn("FirstName")]
@@ -606,9 +618,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMkeyForUpdate()
         {
-            var p = new MKEY { FirstName = "test", LastName = "next", Age = 11 };
+            var p = new MKEY2 { FirstName = "test", LastName = "next", Age = 11 };
             Sqlite.Update(p);
-            AssertSql(@"UPDATE [MKEY] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
+            AssertSql(@"UPDATE [MKEY2] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
 <Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)");
         }
 

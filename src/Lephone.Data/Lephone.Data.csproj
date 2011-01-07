@@ -234,7 +234,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\InsertStatementBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Builder\ISqlStatementBuilder.cs">
+    <Compile Include="Builder\SqlStatementBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Builder\ISqlValues.cs">

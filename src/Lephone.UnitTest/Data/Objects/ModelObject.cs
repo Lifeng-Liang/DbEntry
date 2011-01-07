@@ -20,6 +20,13 @@ namespace Lephone.UnitTest.Data.Objects
         }
     }
 
+    [DbTable("People"), DbContext("Firebird")]
+    public class PeopleModel2 : DbObjectModel<PeopleModel2>
+    {
+        [Length(5)]
+        public string Name { get; set; }
+    }
+
     public class GuidKey : DbObjectModel<GuidKey, Guid>
     {
         public string Name { get; set; }

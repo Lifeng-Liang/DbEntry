@@ -9,6 +9,18 @@ namespace Lephone.UnitTest.Data
 {
     #region objects
 
+    public class asUser2 : DbObjectModel<asUser2>
+    {
+        [DbColumn("theName")]
+        public string Name { get; set; }
+        public int Age { get; set; }
+
+        public Dictionary<string, object> GetUpdateColumns()
+        {
+            return this.m_UpdateColumns;
+        }
+    }
+
     public class MyTestTable : DbObject
     {
         public string Name;
@@ -239,15 +251,15 @@ namespace Lephone.UnitTest.Data
         public void TestSmartUpdateForDynamicObject5()
         {
             // read from database, the updateColumns is empty
-            var u = new asUser { Name = "Tom", Age = 18 };
+            var u = new asUser2 { Name = "Tom", Age = 18 };
             u.Save();
-            asUser u1 = asUser.FindById(u.Id);
+            var u1 = asUser2.FindById(u.Id);
             Assert.AreEqual(0, u1.GetUpdateColumns().Count);
             u1.Name = "Jerry";
             Assert.AreEqual(1, u1.GetUpdateColumns().Count);
             Assert.IsTrue(u1.GetUpdateColumns().ContainsKey("theName"));
             u1.Save();
-            asUser u2 = asUser.FindById(u.Id);
+            var u2 = asUser2.FindById(u.Id);
             Assert.AreEqual("Jerry", u2.Name);
         }
 

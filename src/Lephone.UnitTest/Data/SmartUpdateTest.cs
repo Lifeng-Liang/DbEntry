@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
@@ -10,6 +9,7 @@ namespace Lephone.UnitTest.Data
 {
     #region objects
 
+    [DbContext("SQLite")]
     public class sUser : DbObjectModel<sUser>
     {
         private string _Name;
@@ -157,6 +157,7 @@ namespace Lephone.UnitTest.Data
         }
     }
 
+    [DbContext("SQLite")]
     public class asUser : DbObjectModel<asUser>
     {
         [DbColumn("theName")]
@@ -167,11 +168,6 @@ namespace Lephone.UnitTest.Data
         {
             this.Id = 1;
             this.m_UpdateColumns.Clear();
-        }
-
-        public Dictionary<string, object> GetUpdateColumns()
-        {
-            return this.m_UpdateColumns;
         }
     }
 

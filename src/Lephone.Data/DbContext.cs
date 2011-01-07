@@ -180,8 +180,7 @@ namespace Lephone.Data
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetResultCountStatement(Dialect, iwc, isDistinct);
-            oi.LogSql(sql);
+            SqlStatement sql = oi.Composer.GetResultCountStatement(iwc, isDistinct);
             object ro = ExecuteScalar(sql);
             return Convert.ToInt64(ro);
         }
@@ -193,13 +192,12 @@ namespace Lephone.Data
             SqlStatement sql;
             if (oi.Composer is SoftDeleteQueryComposer)
             {
-                sql = ((SoftDeleteQueryComposer)oi.Composer).GetResultCountStatementWithoutDeleteCheck(Dialect, iwc, isDistinct);
+                sql = ((SoftDeleteQueryComposer)oi.Composer).GetResultCountStatementWithoutDeleteCheck(iwc, isDistinct);
             }
             else
             {
-                sql = oi.Composer.GetResultCountStatement(Dialect, iwc, isDistinct);
+                sql = oi.Composer.GetResultCountStatement(iwc, isDistinct);
             }
-            oi.LogSql(sql);
             object ro = ExecuteScalar(sql);
             return Convert.ToInt64(ro);
         }
@@ -222,8 +220,7 @@ namespace Lephone.Data
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetMaxStatement(Dialect, iwc, columnName);
-            oi.LogSql(sql);
+            SqlStatement sql = oi.Composer.GetMaxStatement(iwc, columnName);
             object ro = ExecuteScalar(sql);
             if (ro == DBNull.Value)
             {
@@ -250,8 +247,7 @@ namespace Lephone.Data
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetMinStatement(Dialect, iwc, columnName);
-            oi.LogSql(sql);
+            SqlStatement sql = oi.Composer.GetMinStatement(iwc, columnName);
             object ro = ExecuteScalar(sql);
             if (ro == DBNull.Value)
             {
@@ -264,8 +260,7 @@ namespace Lephone.Data
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetSumStatement(Dialect, iwc, columnName);
-            oi.LogSql(sql);
+            SqlStatement sql = oi.Composer.GetSumStatement(iwc, columnName);
             object ro = ExecuteScalar(sql);
             if (ro == DBNull.Value)
             {
@@ -278,11 +273,10 @@ namespace Lephone.Data
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetGroupByStatement(Dialect, iwc, order, columnName);
-            oi.LogSql(sql);
+            SqlStatement sql = oi.Composer.GetGroupByStatement(iwc, order, columnName);
             var list = new DbObjectList<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list, dbObjectType);
-            DataLoadDirect(ip, typeof(GroupByObject<T1>), dbObjectType, sql, true, false);
+            DataLoadDirect(ip, typeof(GroupByObject<T1>), sql, true, false);
             return list;
         }
 
@@ -290,11 +284,10 @@ namespace Lephone.Data
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetGroupBySumStatement(Dialect, iwc, order, groupbyColumnName, sumColumnName);
-            oi.LogSql(sql);
+            SqlStatement sql = oi.Composer.GetGroupBySumStatement(iwc, order, groupbyColumnName, sumColumnName);
             var list = new DbObjectList<GroupBySumObject<T1, T2>>();
             IProcessor ip = GetListProcessor(list, dbObjectType);
-            DataLoadDirect(ip, typeof(GroupBySumObject<T1, T2>), dbObjectType, sql, true, false);
+            DataLoadDirect(ip, typeof(GroupBySumObject<T1, T2>), sql, true, false);
             return list;
         }
 
@@ -314,7 +307,7 @@ namespace Lephone.Data
             TryCreateTable(t);
             var ret = new DbObjectList<T>();
             IProcessor ip = GetListProcessor(ret, t);
-            DataLoadDirect(ip, t, t, sql, false, false);
+            DataLoadDirect(ip, t, sql, false, false);
             return ret;
         }
 
@@ -341,12 +334,11 @@ namespace Lephone.Data
         {
             TryCreateTable(dbObjectType);
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetSelectStatement(Dialect, from, iwc, oc, lc, isDistinct, noLazy, returnType);
-            oi.LogSql(sql);
-            DataLoadDirect(ip, returnType, dbObjectType, sql, true, noLazy);
+            SqlStatement sql = oi.Composer.GetSelectStatement(from, iwc, oc, lc, isDistinct, noLazy, returnType);
+            DataLoadDirect(ip, returnType, sql, true, noLazy);
         }
 
-        private void DataLoadDirect(IProcessor ip, Type returnType, Type dbObjectType, SqlStatement sql, bool useIndex, bool noLazy)
+        private void DataLoadDirect(IProcessor ip, Type returnType, SqlStatement sql, bool useIndex, bool noLazy)
         {
             long startIndex = sql.StartIndex;
             long endIndex = sql.EndIndex;
@@ -440,25 +432,25 @@ namespace Lephone.Data
 
         public void Save(object obj)
         {
-            var o = new ModelUpdater(this);
+            var o = new ModelUpdater();
             o.Save(obj);
         }
 
         public void Insert(object obj)
         {
-            var o = new ModelUpdater(this);
+            var o = new ModelUpdater();
             o.Insert(obj);
         }
 
         public void Update(object obj)
         {
-            var o = new ModelUpdater(this);
+            var o = new ModelUpdater();
             o.Update(obj);
         }
 
         public int Delete(object obj)
         {
-            var o = new ModelUpdater(this);
+            var o = new ModelUpdater();
             return o.Delete(obj);
         }
 
@@ -467,8 +459,7 @@ namespace Lephone.Data
             Type t = typeof(T);
             TryCreateTable(t);
             ObjectInfo oi = ObjectInfo.GetInstance(t);
-            SqlStatement sql = oi.Composer.GetDeleteStatement(Dialect, iwc);
-            oi.LogSql(sql);
+            SqlStatement sql = oi.Composer.GetDeleteStatement(iwc);
             return ExecuteNonQuery(sql);
         }
 
@@ -489,7 +480,7 @@ namespace Lephone.Data
                                       {
                                           return false;
                                       }
-                                      DropTable(mt.Name, true, oi);
+                                      DropTable(mt.Name, true);
                                       ctlist.Add(mt.Name);
                                       return true;
                                   });
@@ -506,22 +497,21 @@ namespace Lephone.Data
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
             string tn = oi.From.MainTableName;
-            DropTable(tn, catchException, oi);
+            DropTable(tn, catchException);
             if (oi.HasSystemKey)
             {
                 CommonHelper.CatchAll(() => Dialect.ExecuteDropSequence(this, tn));
             }
             foreach (CrossTable mt in oi.CrossTables.Values)
             {
-                DropTable(mt.Name, catchException, oi);
+                DropTable(mt.Name, catchException);
             }
         }
 
-        private void DropTable(string tableName, bool catchException, ObjectInfo oi)
+        private void DropTable(string tableName, bool catchException)
         {
             string s = "DROP TABLE " + Dialect.QuoteForTableName(tableName);
             var sql = new SqlStatement(s);
-            oi.LogSql(sql);
             CommonHelper.IfCatchException(catchException, () => ExecuteNonQuery(sql));
             if (Driver.AutoCreateTable && _tableNames != null)
             {
@@ -538,8 +528,7 @@ namespace Lephone.Data
         public void Create(Type dbObjectType)
         {
             ObjectInfo oi = ObjectInfo.GetInstance(dbObjectType);
-            SqlStatement sql = oi.Composer.GetCreateStatement(Dialect);
-            oi.LogSql(sql);
+            SqlStatement sql = oi.Composer.GetCreateStatement();
             ExecuteNonQuery(sql);
             oi.Context.Dialect.ExecAddDescriptionSql(oi);
             if (Driver.AutoCreateTable && _tableNames != null)
@@ -554,8 +543,7 @@ namespace Lephone.Data
             var sb = oi.Composer.GetCreateTableStatementBuilder();
             sb.TableName = oi.DeleteToTableName;
             sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0, 0));
-            var sql = sb.ToSqlStatement(Dialect);
-            oi.LogSql(sql);
+            var sql = sb.ToSqlStatement(oi);
             ExecuteNonQuery(sql);
             if (Driver.AutoCreateTable && _tableNames != null)
             {
@@ -585,8 +573,7 @@ namespace Lephone.Data
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName1));
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName2));
             // execute
-            SqlStatement sql = cts.ToSqlStatement(Dialect);
-            oi1.LogSql(sql);
+            SqlStatement sql = cts.ToSqlStatement(oi1);
             ExecuteNonQuery(sql);
             if (Driver.AutoCreateTable && _tableNames != null)
             {

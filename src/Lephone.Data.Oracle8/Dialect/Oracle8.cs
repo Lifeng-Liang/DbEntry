@@ -3,7 +3,6 @@ using System.Data;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
 using Lephone.Data.Common;
-using Lephone.Core.Logging;
 using Lephone.Data.Driver;
 
 namespace Lephone.Data.Dialect
@@ -113,7 +112,6 @@ namespace Lephone.Data.Dialect
         public override void ExecuteDropSequence(DataProvider dp, string tableName)
         {
             string sql = string.Format("DROP SEQUENCE {0}_SEQ;\n", tableName.ToUpper());
-            Logger.SQL.Trace(sql);
             dp.ExecuteNonQuery(sql);
         }
 

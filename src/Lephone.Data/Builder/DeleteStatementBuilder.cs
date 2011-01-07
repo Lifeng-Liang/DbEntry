@@ -5,28 +5,28 @@ using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Builder
 {
-	public class DeleteStatementBuilder : ISqlStatementBuilder, ISqlWhere
+	public class DeleteStatementBuilder : SqlStatementBuilder, ISqlWhere
 	{
 		private const string StatementTemplate = "DELETE FROM {0}{1};\n";
-		private readonly string TableName;
-        private readonly WhereClause _WhereOptions = new WhereClause();
+		private readonly string _tableName;
+        private readonly WhereClause _whereOptions = new WhereClause();
 
-		public DeleteStatementBuilder(string TableName)
+		public DeleteStatementBuilder(string tableName)
 		{
-			this.TableName = TableName;
+			this._tableName = tableName;
 		}
 
-		public SqlStatement ToSqlStatement(DbDialect dd)
+        protected override SqlStatement ToSqlStatement(DbDialect dd)
 		{
 			var dpc = new DataParameterCollection();
-			string SqlString = string.Format(StatementTemplate, dd.QuoteForTableName(TableName), Where.ToSqlText(dpc, dd));
-			var Sql = new SqlStatement(CommandType.Text, SqlString, dpc);
-			return Sql;
+			string sqlString = string.Format(StatementTemplate, dd.QuoteForTableName(_tableName), Where.ToSqlText(dpc, dd));
+			var sql = new SqlStatement(CommandType.Text, sqlString, dpc);
+			return sql;
 		}
 
 		public WhereClause Where
 		{
-			get { return _WhereOptions; }
+			get { return _whereOptions; }
 		}
 	}
 }

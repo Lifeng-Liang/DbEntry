@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
-    [DeleteTo("UnregUser")]
+    [DeleteTo("UnregUser"), DbContext("SQLite")]
     public class DeleteToUser : DbObjectModel<DeleteToUser>
     {
         public string Name { get; set; }
