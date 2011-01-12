@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="AdditionalTypes.cs" />
     <Compile Include="AssemblyProcessed.cs" />
-    <Compile Include="AvoidList.cs" />
     <Compile Include="ClassHelper.cs" />
     <Compile Include="CommonExtends.cs" />
     <Compile Include="CommonHelper.cs" />

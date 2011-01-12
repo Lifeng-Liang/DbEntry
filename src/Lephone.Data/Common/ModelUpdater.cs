@@ -1,9 +1,9 @@
 ﻿using System;
+using Lephone.Core;
 using Lephone.Data.Builder;
 using Lephone.Data.Caching;
 using Lephone.Data.Definition;
 using Lephone.Data.SqlEntry;
-using Lephone.Core;
 
 namespace Lephone.Data.Common
 {
@@ -11,9 +11,9 @@ namespace Lephone.Data.Common
     {
         private static void UsingAvoidObjectList(CallbackVoidHandler callback)
         {
-            if (Scope<AvoidObjectList>.Current == null)
+            if (Scope<SavedObjectList>.Current == null)
             {
-                using (new Scope<AvoidObjectList>(new AvoidObjectList()))
+                using (new Scope<SavedObjectList>(new SavedObjectList()))
                 {
                     callback();
                 }
@@ -45,7 +45,7 @@ namespace Lephone.Data.Common
 
         private void InnerSave(object obj)
         {
-            if (!Scope<AvoidObjectList>.Current.Contains(obj))
+            if (!Scope<SavedObjectList>.Current.Contains(obj))
             {
                 ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
                 if (!oi.HasOnePrimaryKey)
@@ -190,9 +190,9 @@ namespace Lephone.Data.Common
                             }
                         }
                     }
-                    if (!Scope<AvoidObjectList>.Current.Contains(obj))
+                    if (!Scope<SavedObjectList>.Current.Contains(obj))
                     {
-                        Scope<AvoidObjectList>.Current.Add(obj);
+                        Scope<SavedObjectList>.Current.Add(obj);
                         processParent(oi.Context);
                         ProcessChildren(oi, obj, o =>
                         {

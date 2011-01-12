@@ -2,16 +2,16 @@
 {
 	public class DESC : ASC
 	{
-		public DESC(string Key) : base(Key) {}
+		public DESC(string key) : base(key) {}
 
 		public override string ToString(Dialect.DbDialect dd)
 		{
 			return dd.QuoteForColumnName( Key ) + " DESC";
 		}
 
-		public static explicit operator DESC (string Key)
+		public static explicit operator DESC (string key)
 		{
-			return new DESC(Key);
+			return new DESC(key);
 		}
 	}
 }

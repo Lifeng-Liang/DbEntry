@@ -76,6 +76,7 @@ copy *.dll ..\..\..\..\bin\
     <ErrorReport>prompt</ErrorReport>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -137,6 +138,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\ModelUpdater.cs" />
     <Compile Include="Common\ObjectInfoBase.cs" />
     <Compile Include="Common\ObjectInfoFactory.cs" />
+    <Compile Include="Common\SavedObjectList.cs" />
     <Compile Include="Common\TimeSpanLessDataReader.cs" />
     <Compile Include="Common\XmlSchemaTypeParser.cs" />
     <Compile Include="Definition\CacheableAttribute.cs" />

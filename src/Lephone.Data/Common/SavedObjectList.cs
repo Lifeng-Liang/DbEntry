@@ -1,22 +1,22 @@
 ﻿using System.Collections.Specialized;
 
-namespace Lephone.Core
+namespace Lephone.Data.Common
 {
-    public class AvoidObjectList
+    public class SavedObjectList
     {
         private readonly HybridDictionary _dict;
 
-        public AvoidObjectList()
+        public SavedObjectList()
         {
             _dict = new HybridDictionary();
         }
 
-        public AvoidObjectList(int initialSize)
+        public SavedObjectList(int initialSize)
         {
             _dict = new HybridDictionary(initialSize);
         }
 
-        public AvoidObjectList(int initialSize, bool caseInsensitive)
+        public SavedObjectList(int initialSize, bool caseInsensitive)
         {
             _dict = new HybridDictionary(initialSize, caseInsensitive);
         }

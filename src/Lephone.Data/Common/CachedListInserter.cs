@@ -6,22 +6,22 @@ namespace Lephone.Data.Common
 {
     public class CachedListInserter : IProcessor
     {
-		private readonly IList list;
-        private readonly ObjectInfo oi;
+		private readonly IList _list;
+        private readonly ObjectInfo _oi;
 
         public CachedListInserter(IList list, Type t)
 		{
-			this.list = list;
-            oi = ObjectInfo.GetInstance(t);
+			this._list = list;
+            _oi = ObjectInfo.GetInstance(t);
 		}
 
 		public bool Process(object obj)
 		{
-            if (oi.HasOnePrimaryKey && oi.Cacheable)
+            if (_oi.HasOnePrimaryKey && _oi.Cacheable)
             {
                 CacheProvider.Instance[KeyGenerator.Instance[obj]] = ObjectInfo.CloneObject(obj);
             }
-			list.Add( obj );
+			_list.Add( obj );
 			return true;
 		}
     }
