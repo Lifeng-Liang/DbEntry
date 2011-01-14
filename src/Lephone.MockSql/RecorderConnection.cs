@@ -59,6 +59,7 @@ namespace Lephone.MockSql
             if (!_isOpened)
             {
                 _isOpened = true;
+                StaticRecorder.ConnectionOpendTimes++;
             }
             else
             {

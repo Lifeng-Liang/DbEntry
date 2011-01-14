@@ -83,6 +83,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestBlob()
         {
+            StaticRecorder.Messages.Clear();
             var de = EntryConfig.NewContext("Firebird");
             de.Create(typeof(fbBlob));
             Assert.AreEqual(@"CREATE TABLE ""FB_BLOB"" (

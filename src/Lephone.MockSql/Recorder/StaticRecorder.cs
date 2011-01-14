@@ -4,6 +4,8 @@ namespace Lephone.MockSql.Recorder
 {
     public class StaticRecorder : IRecorder
     {
+        public static int ConnectionOpendTimes;
+
         public static readonly List<RowInfo> CurRow = new List<RowInfo>();
 
         private static string _lastMessage = "";

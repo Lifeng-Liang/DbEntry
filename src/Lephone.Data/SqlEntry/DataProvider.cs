@@ -316,13 +316,7 @@ namespace Lephone.Data.SqlEntry
             {
                 Logger.SQL.Trace(sql);
             }
-            ConnectionContext et = ConProvider;
-            IDbCommand e = InnerDriver.GetDbCommand(sql, et.Connection);
-            if (et.Transaction != null)
-            {
-                e.Transaction = et.Transaction;
-            }
-            return e;
+            return ConProvider.GetDbCommand(sql);
         }
 
         protected void PopulateOutParams(SqlStatement sql, IDbCommand e)

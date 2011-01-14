@@ -5,33 +5,33 @@ namespace Lephone.Data
 {
     public class PagedCollection : ICollection
     {
-        private readonly ICollection list;
-        private readonly long PageIndex;
-        private readonly int PageSize;
-        private readonly long MaxSize;
+        private readonly ICollection _list;
+        private readonly long _pageIndex;
+        private readonly int _pageSize;
+        private readonly long _maxSize;
 
-        public PagedCollection(ICollection list, long PageIndex, int PageSize, long MaxSize)
+        public PagedCollection(ICollection list, long pageIndex, int pageSize, long maxSize)
         {
-            this.list = list;
-            this.PageIndex = PageIndex;
-            this.PageSize = PageSize;
-            this.MaxSize = MaxSize;
+            this._list = list;
+            this._pageIndex = pageIndex;
+            this._pageSize = pageSize;
+            this._maxSize = maxSize;
         }
 
-        public PagedCollection(IPagedSelector ps, int PageIndex)
+        public PagedCollection(IPagedSelector ps, int pageIndex)
         {
-            this.list = ps.GetCurrentPage(PageIndex);
-            this.PageIndex = PageIndex;
-            this.PageSize = ps.PageSize;
-            this.MaxSize = ps.GetResultCount();
+            this._list = ps.GetCurrentPage(pageIndex);
+            this._pageIndex = pageIndex;
+            this._pageSize = ps.PageSize;
+            this._maxSize = ps.GetResultCount();
         }
 
         public void CopyTo(Array array, int index)
         {
             int l = array.Length - index;
-            if (l >= PageSize)
+            if (l >= _pageSize)
             {
-                list.CopyTo(array, index);
+                _list.CopyTo(array, index);
             }
             else
             {
@@ -41,43 +41,43 @@ namespace Lephone.Data
 
         int ICollection.Count
         {
-            get { return (int)MaxSize; }
+            get { return (int)_maxSize; }
         }
 
         public long Count
         {
-            get { return MaxSize; }
+            get { return _maxSize; }
         }
 
         public bool IsSynchronized
         {
-            get { return list.IsSynchronized; }
+            get { return _list.IsSynchronized; }
         }
 
         public object SyncRoot
         {
-            get { return list.SyncRoot; }
+            get { return _list.SyncRoot; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return new PagedCollectionEnumerator(list.GetEnumerator(), PageIndex, PageSize, MaxSize);
+            return new PagedCollectionEnumerator(_list.GetEnumerator(), _pageIndex, _pageSize, _maxSize);
         }
 
         public class PagedCollectionEnumerator : IEnumerator
         {
-            private readonly IEnumerator ListEnum;
-            private readonly long MaxSize;
-            private readonly long StartIndex;
-            private readonly long EndIndex;
-            private long CurrentIndex;
+            private readonly IEnumerator _listEnum;
+            private readonly long _maxSize;
+            private readonly long _startIndex;
+            private readonly long _endIndex;
+            private long _currentIndex;
 
-            public PagedCollectionEnumerator(IEnumerator ListEnum, long PageIndex, int PageSize, long MaxSize)
+            public PagedCollectionEnumerator(IEnumerator listEnum, long pageIndex, int pageSize, long maxSize)
             {
-                this.ListEnum = ListEnum;
-                this.MaxSize = MaxSize;
-                this.StartIndex = PageIndex * PageSize;
-                this.EndIndex = StartIndex + PageSize;
+                this._listEnum = listEnum;
+                this._maxSize = maxSize;
+                this._startIndex = pageIndex * pageSize;
+                this._endIndex = _startIndex + pageSize;
                 Reset();
             }
 
@@ -85,9 +85,9 @@ namespace Lephone.Data
             {
                 get
                 {
-                    if (CurrentIndex >= StartIndex && CurrentIndex < EndIndex)
+                    if (_currentIndex >= _startIndex && _currentIndex < _endIndex)
                     {
-                        return ListEnum.Current;
+                        return _listEnum.Current;
                     }
                     return null;
                 }
@@ -95,18 +95,18 @@ namespace Lephone.Data
 
             public bool MoveNext()
             {
-                CurrentIndex++;
-                if (CurrentIndex >= StartIndex && CurrentIndex <= EndIndex)
+                _currentIndex++;
+                if (_currentIndex >= _startIndex && _currentIndex <= _endIndex)
                 {
-                    ListEnum.MoveNext();
+                    _listEnum.MoveNext();
                 }
-                return CurrentIndex < MaxSize;
+                return _currentIndex < _maxSize;
             }
 
             public void Reset()
             {
-                ListEnum.Reset();
-                CurrentIndex = -1;
+                _listEnum.Reset();
+                _currentIndex = -1;
             }
         }
     }

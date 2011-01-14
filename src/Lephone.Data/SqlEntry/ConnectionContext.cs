@@ -5,82 +5,143 @@ using Lephone.Core;
 
 namespace Lephone.Data.SqlEntry
 {
+    public enum ConnectionContextState
+    {
+        NoConnection,
+        ConnectionOpen,
+        TransactionStart,
+        TransactionEnd,
+    }
+
+    public enum ConnectionContextTransactionState
+    {
+        NoTransaction,
+        UnspecifiedTransaction,
+        SpecifiedTransaciton,
+    }
+
     public class ConnectionContext : IDisposable
     {
-        private readonly IDbConnection _Connection;
+        #region properties
+
+        private IDbConnection _connection;
 
         public IDbConnection Connection
         {
-            get { return _Connection; }
+            get
+            {
+                if (_state == ConnectionContextState.NoConnection)
+                {
+                    _connection = _driver.GetDbConnection();
+                    _connection.Open();
+                    _state = ConnectionContextState.ConnectionOpen;
+                }
+                return _connection;
+            }
         }
 
-        private IDbTransaction _Transaction;
+        private IDbTransaction _transaction;
 
         public IDbTransaction Transaction
         {
-            get { return _Transaction; }
+            get
+            {
+                if (_state == ConnectionContextState.ConnectionOpen || _state == ConnectionContextState.TransactionEnd)
+                {
+                    switch (_transactionState)
+                    {
+                        case ConnectionContextTransactionState.UnspecifiedTransaction:
+                            _transaction = Connection.BeginTransaction();
+                            _state = ConnectionContextState.TransactionStart;
+                            break;
+                        case ConnectionContextTransactionState.SpecifiedTransaciton:
+                            _transaction = Connection.BeginTransaction(_isolationLevel);
+                            _state = ConnectionContextState.TransactionStart;
+                            break;
+                    }
+                }
+                return _transaction;
+            }
         }
 
-        private bool IsProcessed;
+        private IsolationLevel _isolationLevel;
 
         internal IsolationLevel IsolationLevel
         {
-            get { return _Transaction.IsolationLevel; }
+            get { return _isolationLevel; }
         }
+
+        private ConnectionContextState _state;
+        private ConnectionContextTransactionState _transactionState;
+        private readonly DbDriver _driver;
+
+        #endregion
 
         public ConnectionContext(DbDriver dd)
         {
-            _Connection = dd.GetDbConnection();
-            _Connection.Open();
+            _driver = dd;
         }
 
         public void BeginTransaction()
         {
-            _Transaction = _Connection.BeginTransaction();
-            IsProcessed = false;
+            _transactionState = ConnectionContextTransactionState.UnspecifiedTransaction;
         }
 
         public void BeginTransaction(IsolationLevel il)
         {
-            _Transaction = _Connection.BeginTransaction(il);
+            _transactionState = ConnectionContextTransactionState.SpecifiedTransaciton;
+            _isolationLevel = il;
+        }
+
+        public IDbCommand GetDbCommand(SqlStatement sql)
+        {
+            var e = _driver.GetDbCommand(sql, Connection);
+            if(Transaction != null)
+            {
+                e.Transaction = _transaction;
+            }
+            return e;
         }
 
         public void Commit()
         {
-            if (!IsProcessed)
+            if (_state == ConnectionContextState.TransactionStart)
             {
-                _Transaction.Commit();
-                IsProcessed = true;
+                _transaction.Commit();
+                _state = ConnectionContextState.TransactionEnd;
             }
         }
 
         public void Rollback()
         {
-            if (!IsProcessed)
+            if (_state == ConnectionContextState.TransactionStart)
             {
-                _Transaction.Rollback();
-                IsProcessed = true;
+                _transaction.Rollback();
+                _state = ConnectionContextState.TransactionEnd;
             }
         }
 
         public void Close()
         {
-            _Connection.Close();
+            if (_state != ConnectionContextState.NoConnection)
+            {
+                _connection.Close();
+            }
         }
 
         public void Dispose()
         {
-            if (_Transaction != null)
+            if (_transaction != null)
             {
-                if (!IsProcessed)
+                if (_state == ConnectionContextState.TransactionStart)
                 {
-                    CommonHelper.CatchAll(() => _Transaction.Rollback());
+                    CommonHelper.CatchAll(() => _transaction.Rollback());
                 }
-                _Transaction.Dispose();
+                _transaction.Dispose();
             }
-            if (_Connection != null)
+            if (_connection != null)
             {
-                _Connection.Dispose();
+                _connection.Dispose();
             }
         }
     }

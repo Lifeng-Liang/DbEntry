@@ -1,0 +1,46 @@
+﻿using Lephone.Data;
+using Lephone.MockSql.Recorder;
+using NUnit.Framework;
+
+namespace Lephone.UnitTest.Data
+{
+    [TestFixture]
+    public class ConnectionTest
+    {
+        [Test]
+        public void Test1()
+        {
+            StaticRecorder.ConnectionOpendTimes = 0;
+            var ctx = DbEntry.GetContext("SQLite");
+            ctx.UsingTransaction(delegate
+            {
+            });
+            Assert.AreEqual(0, StaticRecorder.ConnectionOpendTimes);
+        }
+
+        [Test]
+        public void Test2()
+        {
+            StaticRecorder.ConnectionOpendTimes = 0;
+            var ctx = DbEntry.GetContext("SQLite");
+            ctx.UsingTransaction(delegate
+            {
+                ctx.ExecuteNonQuery("select * from test");
+            });
+            Assert.AreEqual(1, StaticRecorder.ConnectionOpendTimes);
+        }
+
+        [Test]
+        public void Test3()
+        {
+            StaticRecorder.ConnectionOpendTimes = 0;
+            var ctx = DbEntry.GetContext("SQLite");
+            ctx.UsingTransaction(delegate
+            {
+                ctx.ExecuteNonQuery("select * from test");
+                ctx.ExecuteNonQuery("select * from test");
+            });
+            Assert.AreEqual(1, StaticRecorder.ConnectionOpendTimes);
+        }
+    }
+}
