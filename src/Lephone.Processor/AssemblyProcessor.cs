@@ -34,7 +34,7 @@ namespace Lephone.Processor
 
         public void Process()
         {
-            if(File.Exists(_oldName))
+            if (File.Exists(_oldName))
             {
                 File.Delete(_oldName);
             }
@@ -64,16 +64,22 @@ namespace Lephone.Processor
 
         private void InitRefFiles()
         {
-            var list = new List<string>();
-            foreach (var file in _refFiles)
+            if(_refFiles != null)
             {
-                var p = Path.GetDirectoryName(file);
-                if (!list.Contains(p))
+                var list = new List<string>();
+                foreach (var file in _refFiles)
                 {
-                    list.Add(p);
-                    ((DefaultAssemblyResolver)GlobalAssemblyResolver.Instance).AddSearchDirectory(p);
+                    var p = Path.GetDirectoryName(file);
+                    if (!list.Contains(p))
+                    {
+                        list.Add(p);
+                        ((DefaultAssemblyResolver)GlobalAssemblyResolver.Instance).AddSearchDirectory(p);
+                    }
+                    if (!file.EndsWith("Lephone.Core.dll") && !file.EndsWith("Lephone.Data.dll"))
+                    {
+                        Assembly.LoadFrom(file);
+                    }
                 }
-                Assembly.LoadFrom(file);
             }
         }
 
