@@ -48,8 +48,8 @@ ModelsFileName: The assembly file name who has the model classes.
 KeyFileName:    The strong name key pair file name.
 
 Example:
-    Lephone.Processor Models.dll
-    Lephone.Processor Models.dll models.snk
+    Lephone.Processor Models.dll [@ReferenceFile1;ReferenceFile2...]
+    Lephone.Processor Models.dll models.snk [@ReferenceFile1;ReferenceFile2...]
 ");
         }
 
@@ -62,20 +62,30 @@ Example:
                 throw new ArgsErrorException(2, "The file you input doesn't exist!");
             }
 
-            if (args.Length == 1 || args.Length == 2)
+            if (args.Length == 1 || args.Length == 2 || args.Length == 3)
             {
-                var sn = args.Length == 1 ? null : Path.GetFullPath(args[1]);
+                var sn = args.Length == 1 ? null : (args[1].StartsWith("@") ? null : Path.GetFullPath(args[1]));
 
                 if (!sn.IsNullOrEmpty() && !File.Exists(sn))
                 {
                     throw new ArgsErrorException(3, "The sn file you input doesn't exist!");
                 }
 
-                new AssemblyProcessor(fileName, sn).Process();
+                new AssemblyProcessor(fileName, sn, GetReferenceFiles(args[args.Length - 1])).Process();
                 Console.WriteLine("Assembly processed!");
                 return;
             }
         }
 
+        private static string[] GetReferenceFiles(string files)
+        {
+            if(files.StartsWith("@"))
+            {
+                files = files.Substring(1);
+                var fs = files.Split(';');
+                return fs;
+            }
+            return null;
+        }
     }
 }

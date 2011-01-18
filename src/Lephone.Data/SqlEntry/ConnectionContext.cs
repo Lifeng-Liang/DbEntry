@@ -8,9 +8,9 @@ namespace Lephone.Data.SqlEntry
     public enum ConnectionContextState
     {
         NoConnection,
-        ConnectionOpen,
-        TransactionStart,
-        TransactionEnd,
+        ConnectionOpened,
+        TransactionStarted,
+        TransactionEnded,
     }
 
     public enum ConnectionContextTransactionState
@@ -34,7 +34,7 @@ namespace Lephone.Data.SqlEntry
                 {
                     _connection = _driver.GetDbConnection();
                     _connection.Open();
-                    _state = ConnectionContextState.ConnectionOpen;
+                    _state = ConnectionContextState.ConnectionOpened;
                 }
                 return _connection;
             }
@@ -46,17 +46,17 @@ namespace Lephone.Data.SqlEntry
         {
             get
             {
-                if (_state == ConnectionContextState.ConnectionOpen || _state == ConnectionContextState.TransactionEnd)
+                if (_state == ConnectionContextState.ConnectionOpened || _state == ConnectionContextState.TransactionEnded)
                 {
                     switch (_transactionState)
                     {
                         case ConnectionContextTransactionState.UnspecifiedTransaction:
                             _transaction = Connection.BeginTransaction();
-                            _state = ConnectionContextState.TransactionStart;
+                            _state = ConnectionContextState.TransactionStarted;
                             break;
                         case ConnectionContextTransactionState.SpecifiedTransaciton:
                             _transaction = Connection.BeginTransaction(_isolationLevel);
-                            _state = ConnectionContextState.TransactionStart;
+                            _state = ConnectionContextState.TransactionStarted;
                             break;
                     }
                 }
@@ -105,19 +105,19 @@ namespace Lephone.Data.SqlEntry
 
         public void Commit()
         {
-            if (_state == ConnectionContextState.TransactionStart)
+            if (_state == ConnectionContextState.TransactionStarted)
             {
                 _transaction.Commit();
-                _state = ConnectionContextState.TransactionEnd;
+                _state = ConnectionContextState.TransactionEnded;
             }
         }
 
         public void Rollback()
         {
-            if (_state == ConnectionContextState.TransactionStart)
+            if (_state == ConnectionContextState.TransactionStarted)
             {
                 _transaction.Rollback();
-                _state = ConnectionContextState.TransactionEnd;
+                _state = ConnectionContextState.TransactionEnded;
             }
         }
 
@@ -133,7 +133,7 @@ namespace Lephone.Data.SqlEntry
         {
             if (_transaction != null)
             {
-                if (_state == ConnectionContextState.TransactionStart)
+                if (_state == ConnectionContextState.TransactionStarted)
                 {
                     CommonHelper.CatchAll(() => _transaction.Rollback());
                 }

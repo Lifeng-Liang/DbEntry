@@ -14,6 +14,7 @@ namespace Lephone.Processor
         private readonly string _oldName;
         private readonly string _name;
         private readonly string _sn;
+        private readonly string[] _refFiles;
 
         public static ModuleDefinition Module
         {
@@ -23,11 +24,12 @@ namespace Lephone.Processor
             }
         }
 
-        public AssemblyProcessor(string name, string sn)
+        public AssemblyProcessor(string name, string sn, string[] refFiles)
         {
             this._oldName = name.Substring(0, name.Length - 4) + ".bak";
             this._name = name;
             this._sn = sn;
+            this._refFiles = refFiles;
         }
 
         public void Process()
@@ -36,7 +38,6 @@ namespace Lephone.Processor
             {
                 File.Delete(_oldName);
             }
-
             _module = ModuleDefinition.ReadModule(_name);
 
             if (_module.DontNeedToDoAnything())
@@ -53,10 +54,27 @@ namespace Lephone.Processor
 
             File.Move(_name, _oldName);
 
+            InitRefFiles();
+
             Program.Stage = "Process Model";
             ProcessAssembly();
             Program.Stage = "GenerateHandler for Model";
             GenerateModelHandler();
+        }
+
+        private void InitRefFiles()
+        {
+            var list = new List<string>();
+            foreach (var file in _refFiles)
+            {
+                var p = Path.GetDirectoryName(file);
+                if (!list.Contains(p))
+                {
+                    list.Add(p);
+                    ((DefaultAssemblyResolver)GlobalAssemblyResolver.Instance).AddSearchDirectory(p);
+                }
+                Assembly.LoadFrom(file);
+            }
         }
 
         private void ProcessAssembly()

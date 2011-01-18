@@ -42,5 +42,15 @@ namespace Lephone.UnitTest.Data
             });
             Assert.AreEqual(1, StaticRecorder.ConnectionOpendTimes);
         }
+
+        [Test]
+        public void Test4()
+        {
+            StaticRecorder.ConnectionOpendTimes = 0;
+            var ctx = DbEntry.GetContext("SQLite");
+            ctx.ExecuteNonQuery("select * from test");
+            ctx.ExecuteNonQuery("select * from test");
+            Assert.AreEqual(2, StaticRecorder.ConnectionOpendTimes);
+        }
     }
 }

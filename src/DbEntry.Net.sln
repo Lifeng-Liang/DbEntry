@@ -43,6 +43,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Soaring Projects", "Soaring Projects", "{12CB8C04-711F-484B-BA8B-C2A7FD688592}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soaring.Biz", "Soaring.Biz\Soaring.Biz.csproj", "{2BC955EE-377B-42CD-B189-2A17AF99D9AD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soaring.UnitTest", "Soaring.UnitTest\Soaring.UnitTest.csproj", "{60C6E25A-4FCA-4C02-92E4-111BD45555CB}"
 EndProject
@@ -69,6 +72,9 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Soaring", "Soaring\", "{A88
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Extra", "Lephone.Extra\Lephone.Extra.csproj", "{D009E584-9511-4243-9D2D-CD74079FB425}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.UnitTest.NoConfig", "Lephone.UnitTest.NoConfig\Lephone.UnitTest.NoConfig.csproj", "{77F62E15-6EBD-4E19-BE39-D9D823717B50}"
 	ProjectSection(ProjectDependencies) = postProject

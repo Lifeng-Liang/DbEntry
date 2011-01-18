@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -22,6 +23,9 @@ namespace Lephone.MSBuild
         public string ProcessorPath { get; set; }
 
         private string _targetPath;
+
+        [Required]
+        public string[] ReferenceFiles { get; set; }
 
         public override bool Execute()
         {
@@ -100,7 +104,23 @@ namespace Lephone.MSBuild
             {
                 result += " " + GetArgument(keyPath);
             }
+            result += " " + GetRefFiles();
             return result;
+        }
+
+        private string GetRefFiles()
+        {
+            var sb = new StringBuilder("@\"");
+            foreach (var file in ReferenceFiles)
+            {
+                sb.Append(file).Append(";");
+            }
+            if(sb.Length > 1)
+            {
+                sb.Length--;
+            }
+            sb.Append("\"");
+            return sb.ToString();
         }
 
         private static string GetArgument(string arg)
