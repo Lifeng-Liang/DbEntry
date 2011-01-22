@@ -19,7 +19,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPagedSelecor()
         {
-            var ps = new PagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 2, DbEntry.Context);
+            var ps = new PagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 2);
             Assert.AreEqual(3, ps.GetResultCount());
             var ls = (List<SinglePerson>)ps.GetCurrentPage(0);
             Assert.AreEqual(2, ls.Count);
@@ -33,7 +33,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPagedSelecor2()
         {
-            var ps = new PagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 3, DbEntry.Context);
+            var ps = new PagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 3);
             Assert.AreEqual(3, ps.GetResultCount());
             var ls = (List<SinglePerson>)ps.GetCurrentPage(0);
             Assert.AreEqual(3, ls.Count);
@@ -45,7 +45,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestStaticPagedSelecor()
         {
-            var ps = new StaticPagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 2, DbEntry.Context);
+            var ps = new StaticPagedSelector<SinglePerson>(null, new OrderBy((DESC)"Id"), 2);
             Assert.AreEqual(3, ps.GetResultCount());
             var ls = (List<SinglePerson>)ps.GetCurrentPage(1);
             Assert.AreEqual(1, ls.Count);

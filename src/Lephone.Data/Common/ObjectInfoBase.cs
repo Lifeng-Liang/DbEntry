@@ -13,8 +13,6 @@ namespace Lephone.Data.Common
     {
         #region properties
 
-        private IDbObjectHandler _handler;
-
         private Type _handleType;
         private FromClause _from;
         private bool _hasSystemKey;
@@ -30,30 +28,12 @@ namespace Lephone.Data.Common
         private readonly Dictionary<string, List<MemberHandler>> _uniqueIndexes = new Dictionary<string, List<MemberHandler>>();
         private readonly Dictionary<Type, CrossTable> _crossTables = new Dictionary<Type, CrossTable>();
 
-        private DbContext _context;
+        public readonly string ContextName;
 
         public readonly string DeleteToTableName;
         public readonly string SoftDeleteColumnName;
         public readonly MemberHandler[] SimpleFields;
         public readonly MemberHandler[] RelationFields;
-
-        public IDbObjectHandler Handler
-        {
-            get
-            {
-                if (_handler == null)
-                {
-                    lock (this)
-                    {
-                        if (_handler == null)
-                        {
-                            _handler = CreateDbObjectHandler(_handleType);
-                        }
-                    }
-                }
-                return _handler;
-            }
-        }
 
         public Type HandleType
         {
@@ -120,29 +100,7 @@ namespace Lephone.Data.Common
             get { return _crossTables; }
         }
 
-        public DbContext Context
-        {
-            get
-            {
-                if (_context == null)
-                {
-                    lock (this)
-                    {
-                        if (_context == null)
-                        {
-                            InitContext();
-                        }
-                    }
-                }
-                return _context;
-            }
-        }
-
         #endregion
-
-        protected ObjectInfoBase()
-        {
-        }
 
         internal ObjectInfoBase(Type t)
         {
@@ -221,6 +179,9 @@ namespace Lephone.Data.Common
             }
 
             GetIndexes();
+
+            var attr = ClassHelper.GetAttribute<DbContextAttribute>(_handleType, true);
+            ContextName = attr == null ? null : attr.ContextName;
         }
 
         private static void ProcessMember(MemberAdapter m, IList<MemberHandler> ret, ICollection<MemberHandler> kfs)
@@ -421,38 +382,6 @@ namespace Lephone.Data.Common
         private static string GetTableNameFromConfig(string definedName)
         {
             return ConfigHelper.DefaultSettings.GetValue("@" + definedName, definedName);
-        }
-
-        public IDbObjectHandler CreateDbObjectHandler(Type sourceType)
-        {
-            if (sourceType.IsGenericType)
-            {
-                switch (sourceType.Name)
-                {
-                    case "GroupByObject`1":
-                        var t = typeof(GroupbyObjectHandler<>).MakeGenericType(sourceType.GetGenericArguments());
-                        return (IDbObjectHandler)ClassHelper.CreateInstance(t);
-                    case "GroupBySumObject`2":
-                        var ts = typeof(GroupbySumObjectHandler<,>).MakeGenericType(sourceType.GetGenericArguments());
-                        return (IDbObjectHandler)ClassHelper.CreateInstance(ts);
-                    default:
-                        throw new NotSupportedException();
-                }
-            }
-            var attr = ClassHelper.GetAttribute<ModelHandlerAttribute>(sourceType, false);
-            if (attr != null)
-            {
-                var o = (EmitObjectHandlerBase)ClassHelper.CreateInstance(attr.Type);
-                o.Init(this);
-                return o;
-            }
-            throw new ModelException(sourceType, "Can not find ObjectHandler.");
-        }
-
-        internal void InitContext()
-        {
-            var attr = ClassHelper.GetAttribute<DbContextAttribute>(_handleType, true);
-            _context = DbEntry.GetContext(attr == null ? null : attr.ContextName);
         }
 
         internal MemberHandler GetBelongsTo(Type t)

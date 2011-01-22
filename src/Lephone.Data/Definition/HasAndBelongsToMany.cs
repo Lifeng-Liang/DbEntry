@@ -13,7 +13,7 @@ namespace Lephone.Data.Definition
         private readonly List<object> _removedRelations = new List<object>();
         List<object> IHasAndBelongsToManyRelations.RemovedRelations { get { return _removedRelations; } }
 
-        public HasAndBelongsToMany(object owner, string orderByString, string foreignKeyName)
+        public HasAndBelongsToMany(DbObjectSmartUpdate owner, string orderByString, string foreignKeyName)
             : base(owner, foreignKeyName)
         {
             _order = OrderBy.Parse(orderByString);
@@ -23,11 +23,11 @@ namespace Lephone.Data.Definition
         {
             if (IsLoaded)
             {
-                var oi = ObjectInfo.GetInstance(item.GetType());
-                if (oi.HasOnePrimaryKey)
+                var ctx = ModelContext.GetInstance(item.GetType());
+                if (ctx.Info.HasOnePrimaryKey)
                 {
-                    object key = oi.Handler.GetKeyValue(item);
-                    if (!key.Equals(oi.KeyFields[0].UnsavedValue))
+                    object key = ctx.Handler.GetKeyValue(item);
+                    if (!key.Equals(ctx.Info.KeyFields[0].UnsavedValue))
                     {
                         _savedNewRelations.Add(key);
                     }
@@ -41,20 +41,21 @@ namespace Lephone.Data.Definition
 
         protected override IList<T> InnerLoad()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(Owner.GetType());
-            object key = oi.KeyFields[0].GetValue(Owner);
+            var ctx = Owner.Context;
+            object key = ctx.Info.KeyFields[0].GetValue(Owner);
             var il = new DbObjectList<T>();
             var t = typeof(T);
-            oi.Context.FillCollection(il, t, t, oi.CrossTables[t].From,
+            var ctx0 = ModelContext.GetInstance(typeof(T));
+            ctx0.Operator.FillCollection(il, t, ctx.Info.CrossTables[t].From,
                 CK.K[ForeignKeyName] == key, _order, null, false);
             return il;
         }
 
         protected override void OnRemoveItem(T item)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(item.GetType());
-            object key = oi.Handler.GetKeyValue(item);
-            if (key == oi.KeyFields[0].UnsavedValue)
+            var ctx = ModelContext.GetInstance(item.GetType());
+            object key = ctx.Handler.GetKeyValue(item);
+            if (key == ctx.Info.KeyFields[0].UnsavedValue)
             {
                 _savedNewRelations.Remove(key);
             }

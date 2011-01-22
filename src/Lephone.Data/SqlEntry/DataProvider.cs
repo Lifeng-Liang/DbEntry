@@ -31,16 +31,22 @@ namespace Lephone.Data.SqlEntry
                 {
                     return Scope<ConnectionContext>.Current;
                 }
-                return new ConnectionContext(InnerDriver);
+                return new ConnectionContext();
             }
         }
 
-		protected DataProvider() {}
+        public readonly DbTimeProvider DbTime;
+
+        public DataProvider(string prefix)
+            : this(DbDriverFactory.Instance.GetInstance(prefix))
+        {
+        }
 
         public DataProvider(DbDriver driver)
 		{
             InnerDriver = driver;
-		}
+            DbTime = new DbTimeProvider(this);
+        }
 
 		public DbDialect Dialect
 		{
@@ -77,7 +83,7 @@ namespace Lephone.Data.SqlEntry
             string userId = Dialect.GetUserId(Driver.ConnectionString);
             NewConnection(delegate
             {
-                var c = (DbConnection)ConProvider.Connection;
+                var c = (DbConnection)ConProvider.GetConnection(Driver);
                 foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
                 {
                     if (si.FiltrateDatabaseName)
@@ -101,7 +107,7 @@ namespace Lephone.Data.SqlEntry
             {
                 if (Scope<ConnectionContext>.Current != null)
                 {
-                    var c = (SqlConnection)Scope<ConnectionContext>.Current.Connection;
+                    var c = (SqlConnection)Scope<ConnectionContext>.Current.GetConnection(Driver);
                     return new SqlServerBulkCopy(c);
                 }
                 throw new DataException("It must have current connection.");
@@ -316,7 +322,7 @@ namespace Lephone.Data.SqlEntry
             {
                 Logger.SQL.Trace(sql);
             }
-            return ConProvider.GetDbCommand(sql);
+            return ConProvider.GetDbCommand(sql, Driver);
         }
 
         protected void PopulateOutParams(SqlStatement sql, IDbCommand e)
@@ -516,7 +522,7 @@ namespace Lephone.Data.SqlEntry
 
         public void NewConnection(CallbackVoidHandler callback)
         {
-            using (var cc = new ConnectionContext(InnerDriver))
+            using (var cc = new ConnectionContext())
             {
                 using (new Scope<ConnectionContext>(cc))
                 {
@@ -543,5 +549,12 @@ namespace Lephone.Data.SqlEntry
         }
 
         #endregion
-    }
+
+        public DateTime GetDatabaseTime()
+        {
+            string sqlstr = "SELECT " + Dialect.DbNowString;
+            DateTime dt = Convert.ToDateTime(ExecuteScalar(sqlstr));
+            return dt;
+        }
+	}
 }

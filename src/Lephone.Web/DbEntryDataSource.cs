@@ -26,8 +26,8 @@ namespace Lephone.Web
             Condition &= c;
         }
 
-        private static readonly ObjectInfo ObjInfo = ObjectInfo.GetInstance(typeof(T));
-        protected static readonly string KeyName = ObjInfo.KeyFields[0].Name;
+        private static readonly ModelContext Ctx = ModelContext.GetInstance(typeof(T));
+        protected static readonly string KeyName = Ctx.Info.KeyFields[0].Name;
         public event EventHandler DataSourceChanged;
 
         protected void RaiseDataSourceChanged()
@@ -136,7 +136,7 @@ namespace Lephone.Web
 
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
         {
-            object key = ClassHelper.ChangeType(keys[KeyName], ObjInfo.KeyFields[0].FieldType);
+            object key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyFields[0].FieldType);
             var obj = DbEntry.GetObject<T>(key);
             int n = ExecuteDelete(obj);
             if (OnObjectDeleted != null)
@@ -228,17 +228,17 @@ namespace Lephone.Web
             object key = null;
             if (keys != null)
             {
-                key = ClassHelper.ChangeType(keys[KeyName], ObjInfo.KeyFields[0].FieldType);
+                key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyFields[0].FieldType);
             }
-            if (key == null || key.Equals(ObjInfo.KeyFields[0].UnsavedValue))
+            if (key == null || key.Equals(Ctx.Info.KeyFields[0].UnsavedValue))
             {
-                obj = (T)ObjInfo.NewObject();
+                obj = (T)Ctx.NewObject();
             }
             else
             {
                 obj = DbEntry.GetObject<T>(key);
             }
-            foreach (MemberHandler mh in ObjInfo.SimpleFields)
+            foreach (MemberHandler mh in Ctx.Info.SimpleFields)
             {
                 string name = mh.MemberInfo.IsProperty ? mh.MemberInfo.Name : mh.Name;
                 if (name != KeyName)

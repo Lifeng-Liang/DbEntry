@@ -84,9 +84,9 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("cmmReader")]
-    public class cmmReader : DbObject
+    public class cmmReader : DbObjectModel<cmmReader>
     {
-        public string Name;
+        public string Name { get; set; }
         [DbColumn("cmmArticle_id")]
         public HasAndBelongsToMany<cmmArticle> arts;
         public cmmReader()
@@ -97,9 +97,9 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbTable("cmmArticle")]
-    public class cmmArticle : DbObject
+    public class cmmArticle : DbObjectModel<cmmArticle>
     {
-        public string Title;
+        public string Title { get; set; }
         [DbColumn("cmmReader_id")]
         public HasAndBelongsToMany<cmmReader> rads;
         public cmmArticle()
@@ -160,7 +160,7 @@ namespace Lephone.UnitTest.Data
         public string PcName;
     }
 
-    [DbTable(typeof(DateAndTime))]
+    [DbTable(typeof(DateAndTimeSqlite)), DbContext("SQLite")]
     public class DtPart : DbObjectModel<DtPart>
     {
         public DateTime dtValue { get; set; }
@@ -180,7 +180,7 @@ namespace Lephone.UnitTest.Data
             tables.Sort();
             string[] ts = tables.ToArray();
 
-            List<string> li = DbEntry.Context.GetTableNames();
+            List<string> li = DbEntry.Provider.GetTableNames();
             li.Sort();
             Assert.AreEqual(ts, li.ToArray());
         }
@@ -298,7 +298,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPartOf()
         {
-            Sqlite.From<DtPart>().Where(Condition.Empty).Select();
+            DbEntry.From<DtPart>().Where(Condition.Empty).Select();
             AssertSql(@"SELECT [Id],[dtValue] FROM [DateAndTime];
 <Text><60>()");
         }

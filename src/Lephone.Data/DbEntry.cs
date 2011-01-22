@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using Lephone.Core;
 using Lephone.Data.QuerySyntax;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data
 {
@@ -18,113 +17,78 @@ namespace Lephone.Data
 
         #region NewTransaction
 
+        public static readonly DataProvider Provider = new DataProvider("");
+
         public static void UsingTransaction(CallbackVoidHandler callback)
         {
-            Context.UsingTransaction(callback);
+            Provider.UsingTransaction(callback);
         }
 
         public static void UsingTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
-            Context.UsingTransaction(il, callback);
+            Provider.UsingTransaction(il, callback);
         }
 
         public static void NewTransaction(CallbackVoidHandler callback)
         {
-            Context.NewTransaction(callback);
+            Provider.NewTransaction(callback);
         }
 
         public static void NewTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
-            Context.NewTransaction(il, callback);
-        }
-
-        #endregion
-
-        #region Instance
-
-        public static readonly DbContext Context;
-        private static readonly HybridDictionary Jar;
-
-        static DbEntry()
-	    {
-            Jar = new HybridDictionary();
-            Context = GetContext(DataSettings.DefaultContext);
-	    }
-
-        public static DbContext GetContext(string prefix)
-        {
-            if (string.IsNullOrEmpty(prefix) && Context != null)
-            {
-                return Context;
-            }
-            Debug.Assert(prefix != null);
-            if(Jar.Contains(prefix))
-            {
-                return (DbContext) Jar[prefix];
-            }
-            lock (Jar.SyncRoot)
-            {
-                if (Jar.Contains(prefix))
-                {
-                    return (DbContext)Jar[prefix];
-                }
-                var ctx = new DbContext(prefix);
-                Jar[prefix] = ctx;
-                return ctx;
-            }
-        }
-
-        public static DbContext GetContext(Type type)
-        {
-            var oi = ObjectInfo.GetInstance(type);
-            return oi.Context;
+            Provider.NewTransaction(il, callback);
         }
 
         #endregion
 
         #region Shortcut
 
+        private static ModelOperator GetOperator(Type type)
+        {
+            var ctx = ModelContext.GetInstance(type);
+            return ctx.Operator;
+        }
+
         public static IWhere<T> From<T>() where T : class, IDbObject
         {
-            return GetContext(typeof(T)).From<T>();
+            return ModelContext.GetInstance(typeof(T)).From<T>();
         }
 
         public static T GetObject<T>(object key) where T : class, IDbObject
         {
-            return GetContext(typeof(T)).GetObject<T>(key);
+            return GetOperator(typeof(T)).GetObject<T>(key);
         }
 
         public static T GetObject<T>(Condition c) where T : class, IDbObject
         {
-            return GetContext(typeof(T)).GetObject<T>(c);
+            return GetOperator(typeof(T)).GetObject<T>(c);
         }
 
         public static T GetObject<T>(Condition c, OrderBy ob) where T : class, IDbObject
         {
-            return GetContext(typeof(T)).GetObject<T>(c, ob);
+            return GetOperator(typeof(T)).GetObject<T>(c, ob);
         }
 
         public static T GetObject<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
         {
-            return GetContext(typeof(T)).GetObject(expr);
+            return GetOperator(typeof(T)).GetObject(expr);
         }
 
         public static void Save(object obj)
         {
-            GetContext(obj.GetType()).Save(obj);
+            GetOperator(obj.GetType()).Save(obj);
         }
 
         public static void Save(params object[] objs)
         {
             if(objs != null && objs.Length > 0)
             {
-                var context = GetContext(objs[0].GetType());
-                context.UsingTransaction(
-                    ()=>
+                UsingTransaction(
+                    () =>
                         {
                             foreach(var o in objs)
                             {
-                                context.Save(o);
+                                Save(o);
                             }
                         });
             }
@@ -132,25 +96,138 @@ namespace Lephone.Data
 
         public static void Update(object obj)
 		{
-            GetContext(obj.GetType()).Update(obj);
+            GetOperator(obj.GetType()).Update(obj);
 		}
 
         public static void Insert(object obj)
 		{
-            GetContext(obj.GetType()).Insert(obj);
+            GetOperator(obj.GetType()).Insert(obj);
 		}
 
         public static int Delete(object obj)
 		{
-            return GetContext(obj.GetType()).Delete(obj);
+            return GetOperator(obj.GetType()).Delete(obj);
 		}
 
-        public static int Delete<T>(Condition iwc) where T : class, IDbObject
+        public static long GetResultCount(Type dbObjectType, Condition iwc)
         {
-            return GetContext(typeof(T)).Delete<T>(iwc);
+            return GetOperator(dbObjectType).GetResultCount(iwc);
         }
 
-        #endregion
+        public static long GetResultCount(Type dbObjectType, Condition iwc, bool isDistinct)
+        {
+            return GetOperator(dbObjectType).GetResultCount(iwc, isDistinct);
+        }
+
+        public static decimal? GetMax(Type dbObjectType, Condition iwc, string columnName)
+        {
+            return GetOperator(dbObjectType).GetMax(iwc, columnName);
+        }
+
+        public static DateTime? GetMaxDate(Type dbObjectType, Condition iwc, string columnName)
+        {
+            return GetOperator(dbObjectType).GetMaxDate(iwc, columnName);
+        }
+
+        public static object GetMaxObject(Type dbObjectType, Condition iwc, string columnName)
+        {
+            return GetOperator(dbObjectType).GetMaxObject(iwc, columnName);
+        }
+
+        public static decimal? GetMin(Type dbObjectType, Condition iwc, string columnName)
+        {
+            return GetOperator(dbObjectType).GetMin(iwc, columnName);
+        }
+
+        public static DateTime? GetMinDate(Type dbObjectType, Condition iwc, string columnName)
+        {
+            return GetOperator(dbObjectType).GetMinDate(iwc, columnName);
+        }
+
+        public static object GetMinObject(Type dbObjectType, Condition iwc, string columnName)
+        {
+            return GetOperator(dbObjectType).GetMinObject(iwc, columnName);
+        }
+
+        public static decimal? GetSum(Type dbObjectType, Condition iwc, string columnName)
+        {
+            return GetOperator(dbObjectType).GetSum(iwc, columnName);
+        }
+
+        public static DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type dbObjectType, Condition iwc, OrderBy order, string columnName)
+        {
+            return GetOperator(dbObjectType).GetGroupBy<T1>(iwc, order, columnName);
+        }
+
+        public static DbObjectList<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Type dbObjectType, Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
+        {
+            return GetOperator(dbObjectType).GetGroupBySum<T1, T2>(iwc, order, groupbyColumnName, sumColumnName);
+        }
+
+        public static DbObjectList<T> ExecuteList<T>(string sqlStr, params object[] os) where T : class, IDbObject
+        {
+            return GetOperator(typeof(T)).ExecuteList<T>(sqlStr, os);
+        }
+
+        public static DbObjectList<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
+        {
+            return GetOperator(typeof(T)).ExecuteList<T>(sql);
+        }
+
+        public static void RebuildTables(Assembly assembly)
+        {
+            var list = GetAllModels(assembly);
+            var ctlist = new List<string>();
+            foreach (var type in list)
+            {
+                var ctx = ModelContext.GetInstance(type);
+                if (!string.IsNullOrEmpty(ctx.Info.From.MainTableName))
+                {
+                    ctx.Operator.DropTable(true);
+                    ctx.Operator.CreateTableAndRelations(
+                        ctx.Info, ctx.Operator, mt =>
+                        {
+                            if (ctlist.Contains(mt.Name))
+                            {
+                                return false;
+                            }
+                            ctx.Operator.DropTable(mt.Name, true);
+                            ctlist.Add(mt.Name);
+                            return true;
+                        });
+                }
+            }
+        }
+
+        public static void DropTable(Type dbObjectType, bool catchException)
+        {
+            GetOperator(dbObjectType).DropTable(catchException);
+        }
+
+        public static void DropAndCreate(Type dbObjectType)
+        {
+            GetOperator(dbObjectType).DropAndCreate();
+        }
+
+        public static void Create(Type dbObjectType)
+        {
+            GetOperator(dbObjectType).Create();
+        }
+
+        public static void CreateCrossTable(Type t1, Type t2)
+        {
+            GetOperator(t1).CreateCrossTable(t2);
+        }
+
+        public static int Delete<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
+        {
+            return GetOperator(typeof(T)).Delete(expr);
+        }
+
+        public static void CreateDeleteToTable(Type type)
+        {
+            GetOperator(type).CreateDeleteToTable();
+        }
 
         public static List<Type> GetAllModels(Assembly assembly)
         {
@@ -172,5 +249,7 @@ namespace Lephone.Data
             ts.Sort((x, y) => x.FullName.CompareTo(y.FullName));
             return ts;
         }
+
+        #endregion
     }
 }

@@ -199,7 +199,7 @@ namespace Lephone.Processor
                     }
                 }
             }
-            throw new ApplicationException("Can not find ctor");
+            throw new ApplicationException("Can not find ctor : " + type.FullName);
         }
 
         private static bool IsParametersSame(MethodDefinition ctor, Type[] types)

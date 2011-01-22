@@ -15,7 +15,7 @@ namespace Lephone.Data.Definition
 
         object IHasOne.LastValue { get; set; }
 
-        public HasOne(object owner, string orderByString, string relationName)
+        public HasOne(DbObjectSmartUpdate owner, string orderByString, string relationName)
             : base(owner, relationName)
         {
             this._order = OrderBy.Parse(orderByString);
@@ -27,8 +27,8 @@ namespace Lephone.Data.Definition
             {
                 if (oldValue != null)
                 {
-                    var oi = ObjectInfo.GetInstance(typeof(T));
-                    MemberHandler mh = oi.GetBelongsTo(Owner.GetType());
+                    var ctx = ModelContext.GetInstance(typeof(T));
+                    var mh = ctx.Info.GetBelongsTo(Owner.GetType());
                     if (mh != null)
                     {
                         var ll = (ILazyLoading)mh.GetValue(oldValue);
@@ -38,8 +38,8 @@ namespace Lephone.Data.Definition
             }
             else
             {
-                var oi = ObjectInfo.GetInstance(typeof(T));
-                MemberHandler mh = oi.GetBelongsTo(Owner.GetType());
+                var ctx = ModelContext.GetInstance(typeof(T));
+                MemberHandler mh = ctx.Info.GetBelongsTo(Owner.GetType());
                 if (mh != null)
                 {
                     var ll = (ILazyLoading)mh.GetValue(m_Value);
@@ -52,14 +52,13 @@ namespace Lephone.Data.Definition
         protected override void DoLoad()
         {
             if (RelationName == null) { return; }
-            var oi = ObjectInfo.GetInstance(Owner.GetType());
-            object key = oi.KeyFields[0].GetValue(Owner);
-            m_Value = oi.Context.GetObject<T>(CK.K[RelationName] == key, _order);
+            object key = Owner.Context.Info.KeyFields[0].GetValue(Owner);
+            m_Value = DbEntry.GetObject<T>(CK.K[RelationName] == key, _order);
 
             if (m_Value != null)
             {
-                var ti = ObjectInfo.GetInstance(typeof(T));
-                MemberHandler mh = ti.GetBelongsTo(Owner.GetType());
+                var ctx0 = ModelContext.GetInstance(typeof(T));
+                MemberHandler mh = ctx0.Info.GetBelongsTo(Owner.GetType());
                 if (mh != null)
                 {
                     var ll = (ILazyLoading)mh.GetValue(m_Value);

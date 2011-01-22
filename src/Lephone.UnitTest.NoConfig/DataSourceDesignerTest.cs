@@ -1,4 +1,4 @@
-﻿using Lephone.Data.Common;
+﻿using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Web;
 using Lephone.Web.Common;
@@ -19,13 +19,13 @@ namespace Lephone.UnitTest.NoConfig
     [TestFixture]
     public class DataSourceDesignerTest
     {
-        [Test]
+        [Test, Ignore("It should test in design mode to find out if it needed.")]
         public void Test1()
         {
-            var info = ObjectInfo.GetInstance(typeof(User));
-            Assert.IsNotNull(info);
+            var ctx = ModelContext.GetInstance(typeof(User));
+            Assert.IsNotNull(ctx);
 
-            var o = info.NewObject();
+            var o = ctx.NewObject();
             Assert.IsNotNull(o);
         }
 
@@ -38,6 +38,7 @@ namespace Lephone.UnitTest.NoConfig
             var vs = d.GetViewNames();
             Assert.AreEqual(1, vs.Length);
             var v = d.GetView(vs[0]);
+            Assert.IsNotNull(v);
             bool b;
             var dd = v.GetDesignTimeData(10, out b);
             Assert.IsTrue(b);
@@ -51,6 +52,7 @@ namespace Lephone.UnitTest.NoConfig
             }
 
             var s = v.Schema;
+            Assert.IsNotNull(s);
             Assert.AreEqual("DbEntry_User", s.Name);
             var fs = s.GetFields();
             Assert.IsNotNull(fs);

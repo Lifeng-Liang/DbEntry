@@ -1,25 +1,28 @@
-﻿using Lephone.Data.Dialect;
-using Lephone.Data.Driver;
-using Lephone.Core;
-using Lephone.Core.Text;
+﻿using Lephone.Core;
 using Lephone.Core.Setting;
+using Lephone.Core.Text;
+using Lephone.Data.Common;
+using Lephone.Data.Dialect;
 
-namespace Lephone.Data.Common
+namespace Lephone.Data.Driver
 {
-	public static class EntryConfig
-	{
-        public static DbContext NewContext(string prefix)
+    public class DbDriverFactory : FlyweightBase<string, DbDriver>
+    {
+        public static readonly DbDriverFactory Instance = new DbDriverFactory();
+
+        protected override DbDriver GetInst(string tk)
         {
-            return new DbContext(prefix);
+            var name = tk.IsNullOrEmpty() ? DataSettings.DefaultContext : tk;
+            return base.GetInst(name);
         }
 
-        public static DbDriver GetDriver(int index)
-		{
-			return GetDriver(index.ToString());
-		}
+        protected override DbDriver CreateInst(string t)
+        {
+            return GetDriver(t);
+        }
 
-        public static DbDriver GetDriver(string prefix)
-		{
+        private static DbDriver GetDriver(string prefix)
+        {
             if (prefix != "") { prefix += "."; }
             string pd = prefix + "DataBase";
             string ds = ConfigHelper.DefaultSettings.GetValue(pd);
@@ -39,9 +42,9 @@ namespace Lephone.Data.Common
             string dcn = ConfigHelper.DefaultSettings.GetValue(prefix + "DbDriver");
             string act = ConfigHelper.DefaultSettings.GetValue(prefix + "AutoCreateTable");
             return CreateDbDriver(d, dcn, cs, pf, act);
-		}
+        }
 
-        public static DbDriver CreateDbDriver(DbDialect dialectClass, string driverClassName, string connectionString, string dbProviderFactoryName, string act)
+        private static DbDriver CreateDbDriver(DbDialect dialectClass, string driverClassName, string connectionString, string dbProviderFactoryName, string act)
         {
             bool autoCreateTable = string.IsNullOrEmpty(act) ? false : bool.Parse(act);
             CheckProperty(dialectClass, connectionString);
@@ -54,11 +57,11 @@ namespace Lephone.Data.Common
         }
 
         private static void CheckProperty(DbDialect dialectClass, string connectionString)
-		{
+        {
             if (dialectClass == null || connectionString == "")
-			{
+            {
                 throw new SettingException("DialectClass or ConnectionString not defined in the App.config file.");
-			}
-		}
-	}
+            }
+        }
+    }
 }

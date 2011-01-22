@@ -8,8 +8,6 @@ namespace Lephone.Data.Common
     [Serializable]
 	public class DbObjectList<T> : List<T>, IXmlSerializable
 	{
-        public DbObjectList() { }
-
         public System.Xml.Schema.XmlSchema GetSchema()
         {
             return null;
@@ -37,9 +35,9 @@ namespace Lephone.Data.Common
 
         public DataTable ToDataTable()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            var dt = new DataTable(oi.From.MainTableName);
-            foreach (MemberHandler m in oi.SimpleFields)
+            var ctx = ModelContext.GetInstance(typeof(T));
+            var dt = new DataTable(ctx.Info.From.MainTableName);
+            foreach (MemberHandler m in ctx.Info.SimpleFields)
             {
                 DataColumn dc 
                     = m.FieldType.IsGenericType 
@@ -54,7 +52,7 @@ namespace Lephone.Data.Common
             foreach (object o in this)
             {
                 DataRow dr = dt.NewRow();
-                foreach (MemberHandler m in oi.SimpleFields)
+                foreach (MemberHandler m in ctx.Info.SimpleFields)
                 {
                     object ov = m.GetValue(o);
                     if (ov == null)

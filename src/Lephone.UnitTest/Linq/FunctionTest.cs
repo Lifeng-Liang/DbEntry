@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Linq
 {
+    [DbContext("SQLite")]
     public class User : DbObjectModel<User>
     {
         public string Name { get; set; }
@@ -12,6 +14,7 @@ namespace Lephone.UnitTest.Linq
         public IList<Article> Articles { get; set; }
     }
 
+    [DbContext("SQLite")]
     public class Article : DbObjectModel<Article>
     {
         public string Title { get; set; }
@@ -26,21 +29,21 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test1()
         {
-            Sqlite.From<Article>().Where(p => p.User.Id.In(1)).Select();
+            DbEntry.From<Article>().Where(p => p.User.Id.In(1)).Select();
             AssertSql("SELECT [Id],[Title],[User_Id] AS [$User] FROM [Article] WHERE [User_Id] IN (@in_0);\n<Text><60>(@in_0=1:Int64)");
         }
 
         [Test]
         public void Test2()
         {
-            Sqlite.From<Article>().Where(p => p.Title.StartsWith("tom")).Select();
+            DbEntry.From<Article>().Where(p => p.Title.StartsWith("tom")).Select();
             AssertSql("SELECT [Id],[Title],[User_Id] AS [$User] FROM [Article] WHERE [Title] LIKE @Title_0;\n<Text><60>(@Title_0=tom%:String)");
         }
 
         [Test]
         public void Test3()
         {
-            Sqlite.From<Article>().Where(p => p.Title.ToLower() == "tom").Select();
+            DbEntry.From<Article>().Where(p => p.Title.ToLower() == "tom").Select();
             AssertSql("SELECT [Id],[Title],[User_Id] AS [$User] FROM [Article] WHERE LOWER([Title]) = @Title_0;\n<Text><60>(@Title_0=tom:String)");
         }
     }

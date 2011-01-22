@@ -2,11 +2,11 @@
 {
     public abstract class LazyLoadOneBase<T> : ILazyLoading
     {
-        protected object Owner;
+        protected DbObjectSmartUpdate Owner;
         protected string RelationName;
         protected T m_Value;
 
-        protected LazyLoadOneBase(object owner, string relationName)
+        protected LazyLoadOneBase(DbObjectSmartUpdate owner, string relationName)
         {
             this.Owner = owner;
             this.RelationName = relationName;

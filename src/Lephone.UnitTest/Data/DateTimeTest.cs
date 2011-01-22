@@ -20,6 +20,22 @@ namespace Lephone.UnitTest.Data
         public Time? tnValue { get; set; }
     }
 
+    [DbTable("DateAndTime"), DbContext("SQLite")]
+    public class DateAndTimeSqlite : DbObjectModel<DateAndTimeSqlite>
+    {
+        public DateTime dtValue { get; set; }
+
+        public Date dValue { get; set; }
+
+        public Time tValue { get; set; }
+
+        public DateTime? dtnValue { get; set; }
+
+        public Date? dnValue { get; set; }
+
+        public Time? tnValue { get; set; }
+    }
+
     public class DateAndTime2 : DbObjectModel<DateAndTime2>
     {
         public Date StartDate { get; set; }

@@ -32,10 +32,10 @@ namespace Lephone.Data.SqlEntry
         {
             if (fh.IsBelongsTo)
             {
-                var oi = ObjectInfo.GetInstance(fh.FieldType.GetGenericArguments()[0]);
-                if (oi.KeyFields != null && oi.KeyFields.Length == 1)
+                var ctx = ModelContext.GetInstance(fh.FieldType.GetGenericArguments()[0]);
+                if (ctx.Info.KeyFields != null && ctx.Info.KeyFields.Length == 1)
                 {
-                    return oi.KeyFields[0].FieldType;
+                    return ctx.Info.KeyFields[0].FieldType;
                 }
             }
             else if(fh.IsLazyLoad)

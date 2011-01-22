@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using Lephone.Data;
 using Lephone.Data.Definition;
-using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data;
 using NUnit.Framework;
@@ -17,6 +15,13 @@ namespace Lephone.UnitTest.Linq
 
         [DbTable("People")]
         public class Person : DbObjectModel<Person>
+        {
+            [DbColumn("Name")]
+            public string FirstName { get; set; }
+        }
+
+        [DbTable("People"), DbContext("SQLite")]
+        public class PersonSqlite : DbObjectModel<PersonSqlite>
         {
             [DbColumn("Name")]
             public string FirstName { get; set; }
@@ -78,7 +83,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test1()
         {
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.FirstName.StartsWith("T") && (p.Id >= 1 || p.Id == 15) && p.FirstName != null && p.FirstName == p.FirstName)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -89,7 +94,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test2()
         {
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.FirstName.EndsWith("T")).Select();
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE [Name] LIKE @Name_0;\n<Text><60>(@Name_0=%T:String)", StaticRecorder.LastMessage);
         }
@@ -97,7 +102,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test3()
         {
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.FirstName.Contains("T")).Select();
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE [Name] LIKE @Name_0;\n<Text><60>(@Name_0=%T%:String)", StaticRecorder.LastMessage);
         }
@@ -105,21 +110,21 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test4()
         {
-            Sqlite.GetObject<Person>(p => p.FirstName == "Tom");
+            DbEntry.GetObject<PersonSqlite>(p => p.FirstName == "Tom");
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE [Name] = @Name_0;\n<Text><60>(@Name_0=Tom:String)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void Test5()
         {
-            Sqlite.From<Person>().Where(Condition.Empty).OrderBy(p => p.FirstName).ThenBy(p => p.Id).Select();
+            DbEntry.From<PersonSqlite>().Where(Condition.Empty).OrderBy(p => p.FirstName).ThenBy(p => p.Id).Select();
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] ORDER BY [Name] ASC,[Id] ASC;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void Test6()
         {
-            Sqlite.From<Person>().Where(Condition.Empty).OrderByDescending(p => p.FirstName).ThenBy(p => p.Id).Select();
+            DbEntry.From<PersonSqlite>().Where(Condition.Empty).OrderByDescending(p => p.FirstName).ThenBy(p => p.Id).Select();
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] ORDER BY [Name] DESC,[Id] ASC;\n<Text><60>()", StaticRecorder.LastMessage);
         }
 
@@ -129,7 +134,7 @@ namespace Lephone.UnitTest.Linq
             const int id1 = 1;
             const int id2 = 15;
 
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.FirstName.StartsWith("T") && (p.Id >= id1 || p.Id == id2) && p.FirstName != null && p.FirstName == p.FirstName)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -146,7 +151,7 @@ namespace Lephone.UnitTest.Linq
 
         private void TestMember(int id1, int id2)
         {
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.FirstName.StartsWith("T") && (p.Id >= id1 || p.Id == id2) && p.FirstName != null && p.FirstName == p.FirstName)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -161,7 +166,7 @@ namespace Lephone.UnitTest.Linq
 
         private void TestMember2(int id1, int id2)
         {
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.Id >= id1 + 2)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -170,13 +175,13 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test10()
         {
-            TestMember3(Sqlite, 3, 15);
+            TestMember3(3, 15);
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE [Id] >= @Id_0 ORDER BY [Id] ASC;\n<Text><60>(@Id_0=3:Int64)", StaticRecorder.LastMessage);
         }
 
-        private static void TestMember3(DbContext de, int id1, int id2)
+        private static void TestMember3(int id1, int id2)
         {
-            de.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.Id >= id1)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -185,13 +190,13 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void Test11()
         {
-            TestMember4(Sqlite, this, 3);
+            TestMember4(this, 3);
             Assert.AreEqual("SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE [Id] >= @Id_0 ORDER BY [Id] ASC;\n<Text><60>(@Id_0=27:Int64)", StaticRecorder.LastMessage);
         }
 
-        private static void TestMember4(DbContext de, CommonTest tt, int id1)
+        private static void TestMember4(CommonTest tt, int id1)
         {
-            de.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.Id >= tt.nnn - id1)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -202,7 +207,7 @@ namespace Lephone.UnitTest.Linq
         {
             const string name1 = "tom";
 
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.FirstName.StartsWith(name1))
                 .OrderBy(p => p.Id)
                 .Select();
@@ -215,7 +220,7 @@ namespace Lephone.UnitTest.Linq
         {
             const string name1 = "tom";
 
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.FirstName != name1)
                 .OrderBy(p => p.Id)
                 .Select();
@@ -228,7 +233,7 @@ namespace Lephone.UnitTest.Linq
         {
             const string name1 = "tom";
 
-            Sqlite.From<Person>()
+            DbEntry.From<PersonSqlite>()
                 .Where(p => p.FirstName != name1 + " cat")
                 .OrderBy(p => p.Id)
                 .Select();
@@ -287,7 +292,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestLowerFunction()
         {
-            Sqlite.From<Person>().Where(p => p.FirstName.ToLower() == "tom").Select();
+            DbEntry.From<PersonSqlite>().Where(p => p.FirstName.ToLower() == "tom").Select();
             AssertSql(@"SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE LOWER([Name]) = @Name_0;
 <Text><60>(@Name_0=tom:String)");
         }
@@ -295,7 +300,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestLowerForLike()
         {
-            Sqlite.From<Person>().Where(p => p.FirstName.ToLower().Contains("tom")).Select();
+            DbEntry.From<PersonSqlite>().Where(p => p.FirstName.ToLower().Contains("tom")).Select();
             AssertSql(@"SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE LOWER([Name]) LIKE @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
@@ -303,7 +308,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestUpperFunction()
         {
-            Sqlite.From<Person>().Where(p => p.FirstName.ToUpper() == "tom").Select();
+            DbEntry.From<PersonSqlite>().Where(p => p.FirstName.ToUpper() == "tom").Select();
             AssertSql(@"SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE UPPER([Name]) = @Name_0;
 <Text><60>(@Name_0=tom:String)");
         }
@@ -311,7 +316,7 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestUpperForLike()
         {
-            Sqlite.From<Person>().Where(p => p.FirstName.ToUpper().Contains("tom")).Select();
+            DbEntry.From<PersonSqlite>().Where(p => p.FirstName.ToUpper().Contains("tom")).Select();
             AssertSql(@"SELECT [Id],[Name] AS [FirstName] FROM [People] WHERE UPPER([Name]) LIKE @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
@@ -384,35 +389,35 @@ namespace Lephone.UnitTest.Linq
         [Test]
         public void TestDelete()
         {
-            Sqlite.Delete<Person>(p => p.FirstName.EndsWith("T"));
+            DbEntry.Delete<PersonSqlite>(p => p.FirstName.EndsWith("T"));
             Assert.AreEqual("DELETE FROM [People] WHERE [Name] LIKE @Name_0;\n<Text><30>(@Name_0=%T:String)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestEnum()
         {
-            Sqlite.From<EnumTest>().Where(p => p.Abc == MyEnum.Test1).Select();
+            DbEntry.From<EnumTest>().Where(p => p.Abc == MyEnum.Test1).Select();
             AssertSql("SELECT [Id],[ccc] AS [Abc] FROM [Enum_Test] WHERE [ccc] = @ccc_0;\n<Text><60>(@ccc_0=0:Int32)");
         }
 
         [Test]
         public void TestBoolOfDefault()
         {
-            Sqlite.From<BoolTest>().Where(p => p.Available).Select();
+            DbEntry.From<BoolTest>().Where(p => p.Available).Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Available] = @Available_0;\n<Text><60>(@Available_0=True:Boolean)");
         }
 
         [Test]
         public void TestBoolOfDefault2()
         {
-            Sqlite.From<BoolTest>().Where(p => p.Available && p.Name == "tom").Select();
+            DbEntry.From<BoolTest>().Where(p => p.Available && p.Name == "tom").Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE ([Available] = @Available_0) AND ([Name] = @Name_1);\n<Text><60>(@Available_0=True:Boolean,@Name_1=tom:String)");
         }
 
         [Test]
         public void TestInClause()
         {
-            Sqlite.From<BoolTest>().Where(p => p.Id.In(1, 3, 5, 7)).Select();
+            DbEntry.From<BoolTest>().Where(p => p.Id.In(1, 3, 5, 7)).Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int64,@in_1=3:Int64,@in_2=5:Int64,@in_3=7:Int64)");
         }
 
@@ -420,7 +425,7 @@ namespace Lephone.UnitTest.Linq
         public void TestInClause2()
         {
             var list = new long[] { 1, 3, 5, 7 };
-            Sqlite.From<BoolTest>().Where(p => p.Id.In(list)).Select();
+            DbEntry.From<BoolTest>().Where(p => p.Id.In(list)).Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int64,@in_1=3:Int64,@in_2=5:Int64,@in_3=7:Int64)");
         }
 

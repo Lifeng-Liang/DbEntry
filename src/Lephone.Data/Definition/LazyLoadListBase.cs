@@ -7,10 +7,10 @@ namespace Lephone.Data.Definition
     public abstract class LazyLoadListBase<T> : IList<T>, ILazyLoading
     {
         protected string ForeignKeyName;
-        protected object Owner;
+        protected DbObjectSmartUpdate Owner;
         protected IList<T> InnerList = new DbObjectList<T>();
 
-        protected LazyLoadListBase(object owner, string foreignKeyName)
+        protected LazyLoadListBase(DbObjectSmartUpdate owner, string foreignKeyName)
         {
             this.Owner = owner;
             this.ForeignKeyName = foreignKeyName;
@@ -55,7 +55,7 @@ namespace Lephone.Data.Definition
 
         protected void AddToInnerList(IList<T> l)
         {
-            MemberHandler af = ObjectInfo.GetInstance(typeof(T)).KeyFields[0];
+            MemberHandler af = ModelContext.GetInstance(typeof(T)).Info.KeyFields[0];
             object tkey = null;
             if (InnerList.Count == 1)
             {
@@ -187,8 +187,8 @@ namespace Lephone.Data.Definition
 
         private bool RemoveItem(T item)
         {
-            var oi = ObjectInfo.GetInstance(typeof(T));
-            var kh = oi.KeyFields[0];
+            var ctx = ModelContext.GetInstance(typeof(T));
+            var kh = ctx.Info.KeyFields[0];
             var id = kh.GetValue(item);
             foreach (var obj in InnerList)
             {

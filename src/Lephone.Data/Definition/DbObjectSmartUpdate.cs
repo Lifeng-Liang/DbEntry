@@ -9,8 +9,11 @@ namespace Lephone.Data.Definition
 {
     [Serializable]
     [XmlRoot("DbObject")]
-    public class DbObjectSmartUpdate : DbObjectBase, IXmlSerializable
+    public abstract class DbObjectSmartUpdate : DbObjectBase, IXmlSerializable
     {
+        [Exclude]
+        internal abstract ModelContext Context { get; }
+
         [Exclude]
         internal protected Dictionary<string, object> m_UpdateColumns;
 
@@ -32,13 +35,13 @@ namespace Lephone.Data.Definition
 
         XmlSchema IXmlSerializable.GetSchema()
         {
-            var info = ObjectInfo.GetInstance(this.GetType());
+            var ctx = ModelContext.GetInstance(this.GetType());
             var xs = new XmlSchema();
 
-            var el = new XmlSchemaElement {Name = info.HandleType.Name};
+            var el = new XmlSchemaElement {Name = ctx.Info.HandleType.Name};
             var xct = new XmlSchemaComplexType();
             var xss = new XmlSchemaSequence();
-            foreach (MemberHandler mh in info.SimpleFields)
+            foreach (MemberHandler mh in ctx.Info.SimpleFields)
             {
                 var xe = new XmlSchemaElement
                              {
@@ -55,9 +58,9 @@ namespace Lephone.Data.Definition
 
         void IXmlSerializable.ReadXml(System.Xml.XmlReader reader)
         {
-            var oi = ObjectInfo.GetInstance(GetType());
+            var ctx = ModelContext.GetInstance(GetType());
             reader.ReadStartElement();
-            foreach (MemberHandler mh in oi.SimpleFields)
+            foreach (MemberHandler mh in ctx.Info.SimpleFields)
             {
                 var ns = reader.ReadElementString(mh.MemberInfo.Name);
                 object o = ClassHelper.ChangeType(ns, mh.FieldType);
@@ -68,8 +71,8 @@ namespace Lephone.Data.Definition
 
         void IXmlSerializable.WriteXml(System.Xml.XmlWriter writer)
         {
-            var oi = ObjectInfo.GetInstance(GetType());
-            foreach (MemberHandler mh in oi.SimpleFields)
+            var ctx = ModelContext.GetInstance(GetType());
+            foreach (MemberHandler mh in ctx.Info.SimpleFields)
             {
                 object o = mh.GetValue(this);
                 if (o != null)

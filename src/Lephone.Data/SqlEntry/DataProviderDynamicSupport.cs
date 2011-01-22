@@ -29,7 +29,7 @@ namespace Lephone.Data.SqlEntry
         public List<DynamicRow> ExecuteDynamicList(SqlStatement sql)
         {
             var list = new List<DynamicRow>();
-            DbEntry.Context.ExecuteDataReader(sql, dr =>
+            DbEntry.Provider.ExecuteDataReader(sql, dr =>
             {
                 while (dr.Read())
                 {
@@ -47,7 +47,7 @@ namespace Lephone.Data.SqlEntry
         public DynamicTable ExecuteDynamicTable(SqlStatement sql)
         {
             var table = new DynamicTable();
-            DbEntry.Context.ExecuteDataReader(sql, dr =>
+            DbEntry.Provider.ExecuteDataReader(sql, dr =>
             {
                 while (dr.Read())
                 {
@@ -76,7 +76,7 @@ namespace Lephone.Data.SqlEntry
         public List<List<DynamicRow>> ExecuteDynamicSet(SqlStatement sql)
         {
             var set = new List<List<DynamicRow>>();
-            DbEntry.Context.ExecuteDataReader(sql, dr =>
+            DbEntry.Provider.ExecuteDataReader(sql, dr =>
             {
                 do
                 {

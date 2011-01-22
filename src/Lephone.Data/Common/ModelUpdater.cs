@@ -3,13 +3,18 @@ using Lephone.Core;
 using Lephone.Data.Builder;
 using Lephone.Data.Caching;
 using Lephone.Data.Definition;
+using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Common
 {
-    public class ModelUpdater
+    public abstract class ModelUpdater : DataProvider
     {
-        private static void UsingAvoidObjectList(CallbackVoidHandler callback)
+        protected ModelUpdater(DbDriver driver) : base(driver)
+        {
+        }
+
+        private static void UsingSavedObjectList(CallbackVoidHandler callback)
         {
             if (Scope<SavedObjectList>.Current == null)
             {
@@ -28,7 +33,7 @@ namespace Lephone.Data.Common
 
         public void Save(object obj)
         {
-            UsingAvoidObjectList(() => InnerSave(obj));
+            UsingSavedObjectList(() => InnerSave(obj));
         }
 
         private void RelationSave(object obj)
@@ -47,13 +52,13 @@ namespace Lephone.Data.Common
         {
             if (!Scope<SavedObjectList>.Current.Contains(obj))
             {
-                ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
-                if (!oi.HasOnePrimaryKey)
+                var ctx = ModelContext.GetInstance(obj.GetType());
+                if (!ctx.Info.HasOnePrimaryKey)
                 {
                     throw new DataException("To call this function, the table must have one primary key.");
                 }
-                MemberHandler k = oi.KeyFields[0];
-                if (oi.HasSystemKey)
+                MemberHandler k = ctx.Info.KeyFields[0];
+                if (ctx.Info.HasSystemKey)
                 {
                     if (k.UnsavedValue == null)
                     {
@@ -63,7 +68,7 @@ namespace Lephone.Data.Common
                 }
                 else
                 {
-                    InnerSave(null == oi.Context.GetObject(obj.GetType(), k.GetValue(obj)), obj);
+                    InnerSave(null == ctx.Operator.GetObject(k.GetValue(obj)), obj);
                 }
             }
         }
@@ -82,82 +87,73 @@ namespace Lephone.Data.Common
 
         public void Insert(object obj)
         {
-            UsingAvoidObjectList(() => InnerInsert(obj));
+            UsingSavedObjectList(() => InnerInsert(obj));
         }
 
-        private void InnerInsert(object obj)
+        protected virtual void InnerInsert(object obj)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            oi.Context.TryCreateTable(t);
-            InsertStatementBuilder sb = oi.Composer.GetInsertStatementBuilder(obj);
-            if (oi.HasSystemKey)
+            var ctx = ModelContext.GetInstance(t);
+            ctx.Operator.TryCreateTable();
+            InsertStatementBuilder sb = ctx.Composer.GetInsertStatementBuilder(obj);
+            if (ctx.Info.HasSystemKey)
             {
-                ProcessRelation(oi, obj, delegate(DataProvider dp)
+                ProcessRelation(ctx, obj, delegate(DataProvider dp)
                 {
-                    object key = dp.Dialect.ExecuteInsert(dp, sb, oi);
-                    ObjectInfo.SetKey(obj, key);
-                    foreach (Type t2 in oi.CrossTables.Keys)
+                    object key = dp.Dialect.ExecuteInsert(dp, sb, ctx);
+                    ModelContext.SetKey(obj, key);
+                    foreach (Type t2 in ctx.Info.CrossTables.Keys)
                     {
-                        SetManyToManyRelation(oi, t2, key, Scope<object>.Current);
+                        SetManyToManyRelation(ctx, t2, key, Scope<object>.Current);
                     }
                 });
             }
             else
             {
-                SqlStatement sql = sb.ToSqlStatement(oi);
-                oi.Context.ExecuteNonQuery(sql);
+                SqlStatement sql = sb.ToSqlStatement(ctx);
+                ctx.Operator.ExecuteNonQuery(sql);
             }
             ClearUpdatedColumns(obj);
-            if (DataSettings.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
-            {
-                oi.Context.SetCachedObject(obj);
-            }
         }
 
         public void Update(object obj)
         {
-            UsingAvoidObjectList(() => InnerUpdate(obj));
+            UsingSavedObjectList(() => InnerUpdate(obj));
         }
 
         private void InnerUpdate(object obj)
         {
-            var iwc = ObjectInfo.GetKeyWhereClause(obj);
+            var iwc = ModelContext.GetKeyWhereClause(obj);
             Type t = obj.GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            oi.Context.TryCreateTable(t);
-            ProcessRelation(oi, obj, delegate(DataProvider dp)
+            var ctx = ModelContext.GetInstance(t);
+            ctx.Operator.TryCreateTable();
+            ProcessRelation(ctx, obj, delegate(DataProvider dp)
             {
                 var to = obj as DbObjectSmartUpdate;
                 if (to != null && to.m_UpdateColumns != null)
                 {
                     if (to.m_UpdateColumns.Count > 0)
                     {
-                        InnerUpdate(obj, iwc, oi, dp);
+                        InnerUpdate(obj, iwc, ctx, dp);
                     }
                 }
                 else
                 {
-                    InnerUpdate(obj, iwc, oi, dp);
+                    InnerUpdate(obj, iwc, ctx, dp);
                 }
             });
         }
 
-        private static void InnerUpdate(object obj, Condition iwc, ObjectInfo oi, DataProvider dp)
+        protected virtual void InnerUpdate(object obj, Condition iwc, ModelContext ctx, DataProvider dp)
         {
-            SqlStatement sql = oi.Composer.GetUpdateStatement(obj, iwc);
+            SqlStatement sql = ctx.Composer.GetUpdateStatement(obj, iwc);
             int n = dp.ExecuteNonQuery(sql);
             if (n == 0)
             {
                 throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
             }
             ClearUpdatedColumns(obj);
-            oi.Composer.ProcessAfterSave(obj);
-
-            if (DataSettings.CacheEnabled && oi.Cacheable && oi.HasOnePrimaryKey)
-            {
-                oi.Context.SetCachedObject(obj);
-            }
+            ctx.Composer.ProcessAfterSave(obj);
         }
 
         private static void ClearUpdatedColumns(object obj)
@@ -169,13 +165,13 @@ namespace Lephone.Data.Common
             }
         }
 
-        private void ProcessRelation(ObjectInfo oi, object obj, CallbackObjectHandler<DataProvider> processParent)
+        private void ProcessRelation(ModelContext ctx, object obj, CallbackObjectHandler<DataProvider> processParent)
         {
-            if (oi.HasAssociate)
+            if (ctx.Info.HasAssociate)
             {
-                oi.Context.UsingTransaction(delegate
+                DbEntry.UsingTransaction(delegate
                 {
-                    foreach (var f in oi.RelationFields)
+                    foreach (var f in ctx.Info.RelationFields)
                     {
                         if (f.IsBelongsTo)
                         {
@@ -193,10 +189,10 @@ namespace Lephone.Data.Common
                     if (!Scope<SavedObjectList>.Current.Contains(obj))
                     {
                         Scope<SavedObjectList>.Current.Add(obj);
-                        processParent(oi.Context);
-                        ProcessChildren(oi, obj, o =>
+                        processParent(ctx.Operator);
+                        ProcessChildren(ctx, obj, o =>
                         {
-                            SetBelongsToForeignKey(obj, o, oi.Handler.GetKeyValue(obj));
+                            SetBelongsToForeignKey(obj, o, ctx.Handler.GetKeyValue(obj));
                             RelationSave(o);
                         });
                     }
@@ -204,16 +200,16 @@ namespace Lephone.Data.Common
             }
             else
             {
-                processParent(oi.Context);
+                processParent(ctx.Operator);
             }
         }
 
-        private void ProcessChildren(ObjectInfo oi, object obj, CallbackObjectHandler<object> processChild)
+        private void ProcessChildren(ModelContext ctx, object obj, CallbackObjectHandler<object> processChild)
         {
-            object mkey = oi.Handler.GetKeyValue(obj);
+            object mkey = ctx.Handler.GetKeyValue(obj);
             using (new Scope<object>(mkey))
             {
-                foreach (MemberHandler f in oi.RelationFields)
+                foreach (MemberHandler f in ctx.Info.RelationFields)
                 {
                     var ho = (ILazyLoading)f.GetValue(obj);
                     if (ho.IsLoaded)
@@ -228,14 +224,14 @@ namespace Lephone.Data.Common
                         }
                         else if (f.IsHasAndBelongsToMany)
                         {
-                            ProcessHasAndBelongsToMany(oi, obj, f, ho, processChild);
+                            ProcessHasAndBelongsToMany(ctx, obj, f, ho, processChild);
                         }
                     }
                 }
             }
         }
 
-        private static void ProcessHasAndBelongsToMany(ObjectInfo oi, object obj, MemberHandler f, ILazyLoading ho, CallbackObjectHandler<object> processChild)
+        private static void ProcessHasAndBelongsToMany(ModelContext ctx, object obj, MemberHandler f, ILazyLoading ho, CallbackObjectHandler<object> processChild)
         {
             object llo = ho.Read();
             if (llo != null)
@@ -245,11 +241,11 @@ namespace Lephone.Data.Common
             var so = (IHasAndBelongsToManyRelations)ho;
             foreach (object n in so.SavedNewRelations)
             {
-                SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
+                SetManyToManyRelation(ctx, f.FieldType.GetGenericArguments()[0], ctx.Handler.GetKeyValue(obj), n);
             }
             foreach (object n in so.RemovedRelations)
             {
-                RemoveManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
+                RemoveManyToManyRelation(ctx, f.FieldType.GetGenericArguments()[0], ctx.Handler.GetKeyValue(obj), n);
             }
         }
 
@@ -291,61 +287,61 @@ namespace Lephone.Data.Common
         public int Delete(object obj)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            oi.Context.TryCreateTable(t);
-            SqlStatement sql = oi.Composer.GetDeleteStatement(obj);
+            var ctx = ModelContext.GetInstance(t);
+            ctx.Operator.TryCreateTable();
+            SqlStatement sql = ctx.Composer.GetDeleteStatement(obj);
             int ret = 0;
-            ProcessRelation2(oi, obj, delegate(DataProvider dp)
+            ProcessRelation2(ctx, obj, delegate(DataProvider dp)
             {
                 ret += dp.ExecuteNonQuery(sql);
-                if (DataSettings.CacheEnabled && oi.Cacheable)
+                if (DataSettings.CacheEnabled && ctx.Info.Cacheable)
                 {
                     CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
                 }
-                ret += DeleteRelation(oi, obj);
+                ret += DeleteRelation(ctx, obj);
             });
-            if (oi.KeyFields[0].UnsavedValue != null)
+            if (ctx.Info.KeyFields[0].UnsavedValue != null)
             {
-                oi.KeyFields[0].SetValue(obj, oi.KeyFields[0].UnsavedValue);
+                ctx.Info.KeyFields[0].SetValue(obj, ctx.Info.KeyFields[0].UnsavedValue);
             }
             return ret;
         }
 
-        private static int DeleteRelation(ObjectInfo oi, object obj)
+        private static int DeleteRelation(ModelContext ctx, object obj)
         {
             int ret = 0;
-            foreach (CrossTable mt in oi.CrossTables.Values)
+            foreach (CrossTable mt in ctx.Info.CrossTables.Values)
             {
                 var sb = new DeleteStatementBuilder(mt.Name);
-                sb.Where.Conditions = CK.K[mt.ColumeName1] == oi.Handler.GetKeyValue(obj);
-                SqlStatement sql = sb.ToSqlStatement(oi);
-                ret += oi.Context.ExecuteNonQuery(sql);
+                sb.Where.Conditions = CK.K[mt.ColumeName1] == ctx.Handler.GetKeyValue(obj);
+                SqlStatement sql = sb.ToSqlStatement(ctx);
+                ret += ctx.Operator.ExecuteNonQuery(sql);
             }
             return ret;
         }
 
-        private void ProcessRelation2(ObjectInfo oi, object obj, CallbackObjectHandler<DataProvider> processParent)
+        private void ProcessRelation2(ModelContext ctx, object obj, CallbackObjectHandler<DataProvider> processParent)
         {
-            if (oi.HasAssociate)
+            if (ctx.Info.HasAssociate)
             {
-                oi.Context.UsingTransaction(delegate
+                DbEntry.UsingTransaction(delegate
                 {
-                    ProcessChildren2(oi, obj, o => Delete(o));
-                    processParent(oi.Context);
+                    ProcessChildren2(ctx, obj, o => Delete(o));
+                    processParent(ctx.Operator);
                 });
             }
             else
             {
-                processParent(oi.Context);
+                processParent(ctx.Operator);
             }
         }
 
-        private void ProcessChildren2(ObjectInfo oi, object obj, CallbackObjectHandler<object> processChild)
+        private void ProcessChildren2(ModelContext ctx, object obj, CallbackObjectHandler<object> processChild)
         {
-            object mkey = oi.Handler.GetKeyValue(obj);
+            object mkey = ctx.Handler.GetKeyValue(obj);
             using (new Scope<object>(mkey))
             {
-                foreach (MemberHandler f in oi.RelationFields)
+                foreach (MemberHandler f in ctx.Info.RelationFields)
                 {
                     var ho = (ILazyLoading)f.GetValue(obj);
                     if (ho.IsLoaded)
@@ -384,11 +380,11 @@ namespace Lephone.Data.Common
                             var so = (IHasAndBelongsToManyRelations)ho;
                             foreach (object n in so.SavedNewRelations)
                             {
-                                SetManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
+                                SetManyToManyRelation(ctx, f.FieldType.GetGenericArguments()[0], ctx.Handler.GetKeyValue(obj), n);
                             }
                             foreach (object n in so.RemovedRelations)
                             {
-                                RemoveManyToManyRelation(oi, f.FieldType.GetGenericArguments()[0], oi.Handler.GetKeyValue(obj), n);
+                                RemoveManyToManyRelation(ctx, f.FieldType.GetGenericArguments()[0], ctx.Handler.GetKeyValue(obj), n);
                             }
                         }
                     }
@@ -400,37 +396,37 @@ namespace Lephone.Data.Common
 
         #region Help functions
 
-        private static void SetManyToManyRelation(ObjectInfo oi, Type t, object key1, object key2)
+        private static void SetManyToManyRelation(ModelContext ctx, Type t, object key1, object key2)
         {
-            if (oi.CrossTables.ContainsKey(t) && key1 != null && key2 != null)
+            if (ctx.Info.CrossTables.ContainsKey(t) && key1 != null && key2 != null)
             {
-                CrossTable mt = oi.CrossTables[t];
+                CrossTable mt = ctx.Info.CrossTables[t];
                 var sb = new InsertStatementBuilder(mt.Name);
                 sb.Values.Add(new KeyValue(mt.ColumeName1, key1));
                 sb.Values.Add(new KeyValue(mt.ColumeName2, key2));
-                SqlStatement sql = sb.ToSqlStatement(oi);
-                oi.Context.ExecuteNonQuery(sql);
+                SqlStatement sql = sb.ToSqlStatement(ctx);
+                ctx.Operator.ExecuteNonQuery(sql);
             }
         }
 
-        private static void RemoveManyToManyRelation(ObjectInfo oi, Type t, object key1, object key2)
+        private static void RemoveManyToManyRelation(ModelContext ctx, Type t, object key1, object key2)
         {
-            if (oi.CrossTables.ContainsKey(t) && key1 != null && key2 != null)
+            if (ctx.Info.CrossTables.ContainsKey(t) && key1 != null && key2 != null)
             {
-                CrossTable mt = oi.CrossTables[t];
+                CrossTable mt = ctx.Info.CrossTables[t];
                 var sb = new DeleteStatementBuilder(mt.Name);
                 Condition c = CK.K[mt.ColumeName1] == key1;
                 c &= CK.K[mt.ColumeName2] == key2;
                 sb.Where.Conditions = c;
-                SqlStatement sql = sb.ToSqlStatement(oi);
-                oi.Context.ExecuteNonQuery(sql);
+                SqlStatement sql = sb.ToSqlStatement(ctx);
+                ctx.Operator.ExecuteNonQuery(sql);
             }
         }
 
         private static void SetBelongsToForeignKey(object obj, object subobj, object foreignKey)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(subobj.GetType());
-            MemberHandler mh = oi.GetBelongsTo(obj.GetType());
+            var ctx = ModelContext.GetInstance(subobj.GetType());
+            var mh = ctx.Info.GetBelongsTo(obj.GetType());
             if (mh != null)
             {
                 var ho = mh.GetValue(subobj) as IBelongsTo;

@@ -20,7 +20,7 @@ namespace Lephone.Processor
             {
                 if (ex.ReturnCode != 0)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex);
                 }
                 ShowHelp();
                 return ex.ReturnCode;
@@ -28,7 +28,7 @@ namespace Lephone.Processor
             catch (ModelException ex)
             {
                 Console.WriteLine("{0} : {1}", Stage, ModelClass);
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
             }
             catch (Exception ex)
             {

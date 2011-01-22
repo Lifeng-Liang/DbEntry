@@ -209,10 +209,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test10()
         {
-            DbContext de = DbEntry.Context;
-            de.DropAndCreate(typeof(TableC));
-            de.DropAndCreate(typeof(TableD));
-            de.CreateCrossTable(typeof(TableC), typeof(TableD));
+            DbEntry.DropAndCreate(typeof(TableC));
+            DbEntry.DropAndCreate(typeof(TableD));
+            DbEntry.CreateCrossTable(typeof(TableC), typeof(TableD));
 
             var t1 = new TableC {Title = "Article1"};
             t1.Save();

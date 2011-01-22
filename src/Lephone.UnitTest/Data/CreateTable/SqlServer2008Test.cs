@@ -26,8 +26,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestForCreatedOn()
         {
-            var context = DbEntry.GetContext("SqlServer2008");
-            context.Create(typeof(Ss2008));
+            ModelContext.GetInstance(typeof(Ss2008)).Operator.Create();
             AssertSql(@"CREATE TABLE [Ss2008] (
     [Id] BIGINT IDENTITY NOT FOR REPLICATION NOT NULL PRIMARY KEY,
     [Name] NTEXT NOT NULL ,

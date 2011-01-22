@@ -1,49 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Lephone.Data.Builder.Clause;
 using Lephone.Core;
 using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common
 {
-    public partial class ObjectInfo : ObjectInfoBase
+    public class ObjectInfo : ObjectInfoBase
     {
-        public static readonly ObjectInfoFactory Factory = new ObjectInfoFactory();
-
-        public static ObjectInfo GetInstance(Type type)
-        {
-            return Factory.GetInstance(type);
-        }
-
-        internal QueryComposer Composer;
         public Type[] CreateTables;
         public bool Cacheable;
-
-        internal ObjectInfo(Type handleType, FromClause from, MemberHandler[] keyFields, MemberHandler[] fields, bool disableSqlLog)
-        {
-            Init(handleType, from, keyFields, fields, disableSqlLog);
-        }
 
         internal protected ObjectInfo(Type t)
             : base(t)
         {
-            // binding QueryComposer
-            if (!string.IsNullOrEmpty(SoftDeleteColumnName))
-            {
-                Composer = new SoftDeleteQueryComposer(this, SoftDeleteColumnName);
-            }
-            else if (!string.IsNullOrEmpty(DeleteToTableName))
-            {
-                Composer = new DeleteToQueryComposer(this);
-            }
-            else if (LockVersion != null)
-            {
-                Composer = new OptimisticLockingQueryComposer(this);
-            }
-            else
-            {
-                Composer = new QueryComposer(this);
-            }
+            CheckType(t);
             // get create tables
             if (From.PartOf != null)
             {
@@ -73,7 +43,30 @@ namespace Lephone.Data.Common
             {
                 Cacheable = true;
             }
-            //InitContext();
+        }
+
+        private static void CheckType(Type t)
+        {
+            if (t.IsNotPublic)
+            {
+                throw new ModelException(t, "The model class should be public.");
+            }
+            var c = ClassHelper.GetArgumentlessConstructor(t);
+            if (c == null)
+            {
+                throw new ModelException(t, "The model need a public/protected(DbObjectModel) argumentless constructor");
+            }
+        }
+
+        internal static MemberHandler GetKeyField(Type type)
+        {
+            // TODO: change the way to use cached ObjectInfo first
+            var oi = new ObjectInfoBase(type);
+            if (oi.KeyFields.Length > 0)
+            {
+                return oi.KeyFields[0];
+            }
+            return null;
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using Lephone.Core;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
@@ -12,32 +12,32 @@ namespace Lephone.UnitTest.Data
     [DbContext("SQLite")]
     public class sUser : DbObjectModel<sUser>
     {
-        private string _Name;
+        private string _name;
 
         public string Name
         {
             get
             {
-                return _Name;
+                return _name;
             }
             set
             {
-                _Name = value;
+                _name = value;
                 m_ColumnUpdated("Name");
             }
         }
 
-        private int _Age;
+        private int _age;
 
         public int Age
         {
             get
             {
-                return _Age;
+                return _age;
             }
             set
             {
-                _Age = value;
+                _age = value;
                 m_ColumnUpdated("Age");
             }
         }
@@ -47,10 +47,10 @@ namespace Lephone.UnitTest.Data
             m_InitUpdateColumns();
         }
 
-        public sUser(string Name, int Age)
+        public sUser(string name, int age)
         {
-            this.Name = Name;
-            this.Age = Age;
+            this.Name = name;
+            this.Age = age;
             m_InitUpdateColumns();
         }
     }
@@ -58,32 +58,32 @@ namespace Lephone.UnitTest.Data
     [DbContext("SQLite")]
     public class rUser : DbObjectModel<rUser>
     {
-        private string _Name;
+        private string _name;
 
         public string Name
         {
             get
             {
-                return _Name;
+                return _name;
             }
             set
             {
-                _Name = value;
+                _name = value;
                 m_ColumnUpdated("Name");
             }
         }
 
-        private int _Age;
+        private int _age;
 
         public int Age
         {
             get
             {
-                return _Age;
+                return _age;
             }
             set
             {
-                _Age = value;
+                _age = value;
                 m_ColumnUpdated("Age");
             }
         }
@@ -96,11 +96,11 @@ namespace Lephone.UnitTest.Data
             m_InitUpdateColumns();
         }
 
-        public rUser(string Name, int Age)
+        public rUser(string name, int age)
         {
             Articles = new HasMany<rArticle>(this, null, "Reader_Id");
-            this.Name = Name;
-            this.Age = Age;
+            this.Name = name;
+            this.Age = age;
             m_InitUpdateColumns();
         }
     }
@@ -108,51 +108,51 @@ namespace Lephone.UnitTest.Data
     [DbContext("SQLite")]
     public class rArticle : DbObjectModel<rArticle>
     {
-        private string _Name;
+        private string _name;
 
         public string Name
         {
             get
             {
-                return _Name;
+                return _name;
             }
             set
             {
-                _Name = value;
+                _name = value;
                 m_ColumnUpdated("Name");
             }
         }
 
-        private int _Price;
+        private int _price;
 
         [DbColumn("thePrice")]
         public int Price
         {
             get
             {
-                return _Price;
+                return _price;
             }
             set
             {
-                _Price = value;
+                _price = value;
                 m_ColumnUpdated("thePrice");
             }
         }
 
         [DbColumn("Reader_Id")]
-        public BelongsTo<rUser, long> _Reader;
+        public BelongsTo<rUser, long> Reader;
 
         public rArticle()
         {
-            _Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
+            Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
             m_InitUpdateColumns();
         }
 
-        public rArticle(string Name, int Age)
+        public rArticle(string name, int age)
         {
-            _Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
-            this.Name = Name;
-            this.Price = Age;
+            Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
+            this.Name = name;
+            this.Price = age;
             m_InitUpdateColumns();
         }
     }
@@ -178,15 +178,13 @@ namespace Lephone.UnitTest.Data
     {
         #region init
 
-        private readonly DbContext de = DbEntry.GetContext("SQLite");
-
         public SmartUpdateTest()
         {
             // raise AutoCreateTable once.
-            de.From<sUser>().Where(Condition.Empty).Select();
-            de.From<rUser>().Where(Condition.Empty).Select();
-            de.From<rArticle>().Where(Condition.Empty).Select();
-            de.From<asUser>().Where(Condition.Empty).Select();
+            DbEntry.From<sUser>().Where(Condition.Empty).Select();
+            DbEntry.From<rUser>().Where(Condition.Empty).Select();
+            DbEntry.From<rArticle>().Where(Condition.Empty).Select();
+            DbEntry.From<asUser>().Where(Condition.Empty).Select();
         }
 
         [SetUp]
@@ -200,7 +198,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDropManyToManyMedi()
         {
-            de.DropTable(typeof(Objects.DArticle));
+            DbEntry.DropTable(typeof(Objects.DArticleSqlite), true);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
             Assert.AreEqual("DROP TABLE [Article]<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("DROP TABLE [R_Article_Reader]<Text><30>()", StaticRecorder.Messages[1]);
@@ -210,7 +208,7 @@ namespace Lephone.UnitTest.Data
         public void TestDontUpdateIfNotSetValue()
         {
             var u = new sUser("Tom", 18) {Id = 1};
-            de.Save(u);
+            DbEntry.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
         }
@@ -219,7 +217,7 @@ namespace Lephone.UnitTest.Data
         public void TestPartialUpdateThatSetValue()
         {
             var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
-            de.Save(u);
+            DbEntry.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("UPDATE [s_User] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
@@ -227,10 +225,10 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPartialUpdateThatSetValueByTransaction()
         {
-            de.NewTransaction(delegate
+            DbEntry.NewTransaction(delegate
             {
                 var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
-                de.Save(u);
+                DbEntry.Save(u);
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("UPDATE [s_User] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
@@ -239,16 +237,13 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPartialUpdateThatSetedValueByTransactionWithException()
         {
-            try
-            {
-                de.NewTransaction(delegate
+            CommonHelper.CatchAll(() =>
+                DbEntry.NewTransaction(delegate
                 {
                     var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
-                    de.Save(u);
+                    DbEntry.Save(u);
                     throw new Exception(); // emulate exception
-                });
-            }
-            catch { }
+                }));
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
         }
@@ -261,7 +256,7 @@ namespace Lephone.UnitTest.Data
             u.Articles.Add(new rArticle("sos", 199));
             var a = new rArticle("haha", 299) {Id = 1, Price = 180};
             u.Articles.Add(a);
-            de.Save(u);
+            DbEntry.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
             Assert.AreEqual("INSERT INTO [r_Article] ([Name],[thePrice],[Reader_Id]) VALUES (@Name_0,@thePrice_1,@Reader_Id_2);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=sos:String,@thePrice_1=199:Int32,@Reader_Id_2=1:Int64)", StaticRecorder.Messages[0]);
             Assert.AreEqual("UPDATE [r_Article] SET [thePrice]=@thePrice_0,[Reader_Id]=@Reader_Id_1  WHERE [Id] = @Id_2;\n<Text><30>(@thePrice_0=180:Int32,@Reader_Id_1=1:Int64,@Id_2=1:Int64)", StaticRecorder.Messages[1]);
@@ -272,7 +267,7 @@ namespace Lephone.UnitTest.Data
         {
             var u = new asUser {Name = "Tom", Age = 18};
             u.SetAsLoadedObject();
-            de.Save(u);
+            DbEntry.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
         }
@@ -283,7 +278,7 @@ namespace Lephone.UnitTest.Data
             var u = new asUser {Name = "jerry", Age = 18};
             u.SetAsLoadedObject();
             u.Name = "Tom";
-            de.Save(u);
+            DbEntry.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("UPDATE [as_User] SET [theName]=@theName_0  WHERE [Id] = @Id_1;\n<Text><30>(@theName_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
@@ -295,7 +290,7 @@ namespace Lephone.UnitTest.Data
             u.SetAsLoadedObject();
             u.Name = "Jerry";
             u.Age = 25;
-            de.Save(u);
+            DbEntry.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("UPDATE [as_User] SET [theName]=@theName_0,[Age]=@Age_1  WHERE [Id] = @Id_2;\n<Text><30>(@theName_0=Jerry:String,@Age_1=25:Int32,@Id_2=1:Int64)", StaticRecorder.LastMessage);
         }
@@ -305,12 +300,12 @@ namespace Lephone.UnitTest.Data
         {
             DbEntry.NewTransaction(delegate
             {
-                de.NewTransaction(delegate
+                DbEntry.NewTransaction(delegate
                 {
                     var u = new asUser {Name = "jerry", Age = 18};
                     u.SetAsLoadedObject();
                     u.Name = "Tom";
-                    de.Save(u);
+                    DbEntry.Save(u);
                 });
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
@@ -323,9 +318,9 @@ namespace Lephone.UnitTest.Data
             var u = new asUser {Name = "Tom", Age = 18};
             u.SetAsLoadedObject();
             u.Name = "jerry";
-            de.Save(u);
+            DbEntry.Save(u);
             u.Age = 25;
-            de.Save(u);
+            DbEntry.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
             Assert.AreEqual("UPDATE [as_User] SET [theName]=@theName_0  WHERE [Id] = @Id_1;\n<Text><30>(@theName_0=jerry:String,@Id_1=1:Int64)", StaticRecorder.Messages[0]);
             Assert.AreEqual("UPDATE [as_User] SET [Age]=@Age_0  WHERE [Id] = @Id_1;\n<Text><30>(@Age_0=25:Int32,@Id_1=1:Int64)", StaticRecorder.Messages[1]);
@@ -336,9 +331,9 @@ namespace Lephone.UnitTest.Data
         {
             var u = new asUser {Name = "Tom", Age = 18};
             //u.GetUpdateColumns().Clear();
-            de.Save(u);
+            DbEntry.Save(u);
             u.Age = 25;
-            de.Save(u);
+            DbEntry.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
             Assert.AreEqual("INSERT INTO [as_User] ([theName],[Age]) VALUES (@theName_0,@Age_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@theName_0=Tom:String,@Age_1=18:Int32)", StaticRecorder.Messages[0]);
             string exp =

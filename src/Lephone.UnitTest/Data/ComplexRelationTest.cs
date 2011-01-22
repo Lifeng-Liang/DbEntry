@@ -11,15 +11,15 @@ namespace Lephone.UnitTest.Data
         protected override void OnSetUp()
         {
             base.OnSetUp();
-            DbEntry.Context.DropAndCreate(typeof(Cls1));
-            DbEntry.Context.DropAndCreate(typeof(Cls2));
-            DbEntry.Context.DropAndCreate(typeof(Cls3));
-            DbEntry.Context.DropAndCreate(typeof(Cls4));
-            DbEntry.Context.DropAndCreate(typeof(Cls5));
-            DbEntry.Context.DropAndCreate(typeof(OverSave));
-            DbEntry.Context.DropAndCreate(typeof(OverSave2));
-            DbEntry.Context.DropAndCreate(typeof(OverSave3));
-            DbEntry.Context.DropAndCreate(typeof(OverSave4));
+            DbEntry.DropAndCreate(typeof(Cls1));
+            DbEntry.DropAndCreate(typeof(Cls2));
+            DbEntry.DropAndCreate(typeof(Cls3));
+            DbEntry.DropAndCreate(typeof(Cls4));
+            DbEntry.DropAndCreate(typeof(Cls5));
+            DbEntry.DropAndCreate(typeof(OverSave));
+            DbEntry.DropAndCreate(typeof(OverSave2));
+            DbEntry.DropAndCreate(typeof(OverSave3));
+            DbEntry.DropAndCreate(typeof(OverSave4));
         }
 
         public class Cls1 : DbObjectModel<Cls1>

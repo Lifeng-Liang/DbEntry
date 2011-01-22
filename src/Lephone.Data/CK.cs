@@ -10,13 +10,13 @@ namespace Lephone.Data
     [Serializable]
     public class FieldNameGetter<T>
     {
-        private static readonly ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
+        private static readonly ModelContext Ctx = ModelContext.GetInstance(typeof(T));
 
         public CK this[string fieldName]
         {
             get
             {
-                foreach (MemberHandler m in oi.Fields)
+                foreach (MemberHandler m in Ctx.Info.Fields)
                 {
                     if (m.IsLazyLoad)
                     {

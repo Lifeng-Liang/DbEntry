@@ -214,7 +214,7 @@ namespace Lephone.CodeGen
 
         public List<string> GetTableList()
         {
-            return DbEntry.Context.GetTableNames();
+            return DbEntry.Provider.GetTableNames();
         }
 
         public string GenerateModelFromDatabase(string tableName)
@@ -235,7 +235,7 @@ namespace Lephone.CodeGen
 
         private static string GetModel(string tableName)
         {
-            var list = DbEntry.Context.GetDbColumnInfoList(tableName);
+            var list = DbEntry.Provider.GetDbColumnInfoList(tableName);
             foreach (var info in list)
             {
                 if (info.IsKey && info.IsAutoIncrement && info.ColumnName.ToLower() == "id")

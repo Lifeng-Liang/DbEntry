@@ -1,15 +1,16 @@
 ﻿using System;
 using Lephone.Core;
+using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Common
 {
     public class DbTimeProvider
     {
-        private readonly DbContext _context;
+        private readonly DataProvider _context;
         private DateTime _lastCheckTime;
         private TimeSpan _timeDiff;
 
-        public DbTimeProvider(DbContext context)
+        public DbTimeProvider(DataProvider context)
         {
             _context = context;
         }

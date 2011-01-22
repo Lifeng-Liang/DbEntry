@@ -18,7 +18,7 @@ namespace Lephone.Data.Definition
 
         List<object> IHasMany.RemovedValues { get { return _removedValues; } }
 
-        public HasMany(object owner, string orderByString, string foreignKeyName)
+        public HasMany(DbObjectSmartUpdate owner, string orderByString, string foreignKeyName)
             : base(owner, foreignKeyName)
         {
             this._order = OrderBy.Parse(orderByString);
@@ -26,8 +26,8 @@ namespace Lephone.Data.Definition
 
         protected override void InnerWrite(object item, bool isLoad)
         {
-            var oi = ObjectInfo.GetInstance(typeof(T));
-            MemberHandler mh = oi.GetBelongsTo(Owner.GetType());
+            var ctx = ModelContext.GetInstance(typeof(T));
+            MemberHandler mh = ctx.Info.GetBelongsTo(Owner.GetType());
             if (mh != null)
             {
                 var ll = (ILazyLoading)mh.GetValue(item);
@@ -37,9 +37,8 @@ namespace Lephone.Data.Definition
 
         protected override IList<T> InnerLoad()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(Owner.GetType());
-            object key = oi.KeyFields[0].GetValue(Owner);
-            IList<T> l = oi.Context
+            object key = Owner.Context.Info.KeyFields[0].GetValue(Owner);
+            IList<T> l = DbEntry
                 .From<T>()
                 .Where(CK.K[ForeignKeyName] == key)
                 .OrderBy(_order)
@@ -49,11 +48,11 @@ namespace Lephone.Data.Definition
 
         protected override void OnRemoveItem(T item)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            if (!oi.IsNewObject(item))
+            var ctx = ModelContext.GetInstance(typeof(T));
+            if (!ctx.IsNewObject(item))
             {
                 Type ot = Owner.GetType();
-                MemberHandler mh = oi.GetBelongsTo(ot);
+                MemberHandler mh = ctx.Info.GetBelongsTo(ot);
                 var o = (IBelongsTo)mh.GetValue(item);
                 o.ForeignKey = CommonHelper.GetEmptyValue(o.ForeignKey.GetType());
                 o.ForeignKeyChanged();

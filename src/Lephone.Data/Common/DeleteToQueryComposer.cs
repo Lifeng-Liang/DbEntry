@@ -5,7 +5,7 @@ namespace Lephone.Data.Common
 {
     internal class DeleteToQueryComposer : QueryComposer
     {
-        public DeleteToQueryComposer(ObjectInfo oi) : base(oi)
+        public DeleteToQueryComposer(ModelContext ctx) : base(ctx)
         {
         }
 
@@ -14,8 +14,8 @@ namespace Lephone.Data.Common
             SqlStatement sql = base.GetDeleteStatement(obj);
             InsertStatementBuilder sb = GetInsertStatementBuilder(obj);
             sb.Values.Add(new KeyValue("DeletedOn", AutoValue.DbNow));
-            sb.TableName = Info.DeleteToTableName;
-            SqlStatement isql = sb.ToSqlStatement(Info);
+            sb.TableName = Context.Info.DeleteToTableName;
+            SqlStatement isql = sb.ToSqlStatement(Context);
             sql.SqlCommandText += isql.SqlCommandText;
             sql.Parameters.Add(isql.Parameters);
             return sql;

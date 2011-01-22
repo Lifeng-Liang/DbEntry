@@ -4,7 +4,9 @@ using Lephone.Core.Text;
 namespace Lephone.Data.Common
 {
     internal static class DataSettings
-	{
+    {
+        public static readonly bool LoadHandler             = true; // for Lephone.Processor only.
+
         public static readonly string DefaultContext        = "";
 
 		public static readonly int SqlTimeOut               = 30;

@@ -209,7 +209,7 @@ namespace Lephone.UnitTest.Data
         {
             bArticle.FindById(1).Delete();
             // it's don't need to be.
-            // Assert.AreEqual(0, DbEntry.Context.ExecuteScalar("select [Article_Id] from [BelongsMore] Where [Id] = 1"));
+            // Assert.AreEqual(0, DbEntry.Provider.ExecuteScalar("select [Article_Id] from [BelongsMore] Where [Id] = 1"));
         }
 
         [Test]
@@ -226,7 +226,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateTable()
         {
-            DbEntry.Context.DropAndCreate(typeof(BelongsMore));
+            DbEntry.DropAndCreate(typeof(BelongsMore));
             bArticle a = bArticle.FindById(1);
             Assert.AreEqual(0, a.bms.Count);
 

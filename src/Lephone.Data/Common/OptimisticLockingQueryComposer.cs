@@ -5,26 +5,20 @@ namespace Lephone.Data.Common
 {
     internal class OptimisticLockingQueryComposer : QueryComposer
     {
-        public OptimisticLockingQueryComposer(ObjectInfo oi) : base(oi) { }
-
-        //public override SqlStatement GetDeleteStatement(DbDialect Dialect, object obj)
-        //{
-        //    DeleteStatementBuilder sb = new DeleteStatementBuilder(Info.From.MainTableName);
-        //    sb.Where.Conditions = DbObjectHelper.GetKeyWhereClause(obj)
-        //        && (CK.K[Info.LockVersion.Name] == Info.LockVersion.GetValue(obj));
-        //    return sb.ToSqlStatement(Dialect);
-        //}
+        public OptimisticLockingQueryComposer(ModelContext ctx) : base(ctx)
+        {
+        }
 
         public override SqlStatement GetUpdateStatement(object obj, Condition iwc)
         {
-            var sb = new UpdateStatementBuilder(Info.From.MainTableName);
-            Info.Handler.SetValuesForUpdate(sb, obj);
-            var lv = (int)Info.LockVersion.GetValue(obj);
-            sb.Where.Conditions = iwc && (CK.K[Info.LockVersion.Name] == lv);
+            var sb = new UpdateStatementBuilder(Context.Info.From.MainTableName);
+            Context.Handler.SetValuesForUpdate(sb, obj);
+            var lv = (int)Context.Info.LockVersion.GetValue(obj);
+            sb.Where.Conditions = iwc && (CK.K[Context.Info.LockVersion.Name] == lv);
             bool find = false;
             foreach (KeyValue kv in sb.Values)
             {
-                if (kv.Key == Info.LockVersion.Name)
+                if (kv.Key == Context.Info.LockVersion.Name)
                 {
                     kv.Value = lv + 1;
                     find = true;
@@ -33,16 +27,16 @@ namespace Lephone.Data.Common
             }
             if (!find)
             {
-                sb.Values.Add(new KeyValue(Info.LockVersion.Name, lv + 1));
+                sb.Values.Add(new KeyValue(Context.Info.LockVersion.Name, lv + 1));
             }
-            return sb.ToSqlStatement(Info);
+            return sb.ToSqlStatement(Context);
         }
 
         public override void ProcessAfterSave(object obj)
         {
-            var lv = (int)Info.LockVersion.GetValue(obj);
+            var lv = (int)Context.Info.LockVersion.GetValue(obj);
             lv++;
-            Info.LockVersion.SetValue(obj, lv);
+            Context.Info.LockVersion.SetValue(obj, lv);
         }
     }
 }

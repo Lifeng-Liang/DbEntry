@@ -114,6 +114,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\Clause\ConstCondition.cs" />
     <Compile Include="Builder\Clause\InClause.cs" />
     <Compile Include="Builder\ISqlKeys.cs" />
+    <Compile Include="Common\CachedModelOperator.cs" />
     <Compile Include="Caching\CacheProvider.cs" />
     <Compile Include="Caching\KeyGenerator.cs" />
     <Compile Include="Caching\StaticHashCacheProvider.cs" />
@@ -135,6 +136,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\GroupbySumObjectHandler.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
     <Compile Include="Common\ModelHandlerAttribute.cs" />
+    <Compile Include="Common\ModelOperator.cs" />
     <Compile Include="Common\ModelUpdater.cs" />
     <Compile Include="Common\ObjectInfoBase.cs" />
     <Compile Include="Common\ObjectInfoFactory.cs" />
@@ -153,7 +155,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\SoftDeleteQueryComposer.cs" />
     <Compile Include="Common\StaticPagedSelector.cs" />
     <Compile Include="Common\StupidDataReader.cs" />
-    <Compile Include="DbContext.cs" />
     <Compile Include="Definition\ComposedOfAttribute.cs" />
     <Compile Include="Definition\CrossTableNameAttribute.cs" />
     <Compile Include="Definition\DbContextAttribute.cs" />
@@ -193,6 +194,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Dialect\SequencedDialect.cs" />
     <Compile Include="Dialect\SqlCE.cs" />
     <Compile Include="Dialect\SqlServer2008.cs" />
+    <Compile Include="Driver\DbDriverFactory.cs" />
     <Compile Include="Driver\DbFactory.cs" />
     <Compile Include="Driver\MySqlDriver.cs" />
     <Compile Include="Driver\OracleDriver.cs" />
@@ -203,6 +205,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Linq\LinqHelper.cs" />
     <Compile Include="Linq\LinqOrderSyntax.cs" />
     <Compile Include="Linq\LinqQueryProvider.cs" />
+    <Compile Include="ModelContext.cs" />
     <Compile Include="ModelException.cs" />
     <Compile Include="QuerySyntax\QueryInterfaces.cs" />
     <Compile Include="SqlEntry\ColumnInfo.cs" />
@@ -343,9 +346,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Driver\DbDriver.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\EntryConfig.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Driver\OdbcDriver.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -378,9 +378,6 @@ copy *.dll ..\..\..\..\bin\
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\DbObjectList.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\ObjectInfo_Helper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DbEntry.cs">

@@ -17,7 +17,7 @@ namespace Lephone.Processor
         {
             this._type = type;
             this._model = model;
-            _info = ObjectInfo.GetInstance(_type);
+            _info = ObjectInfoFactory.Instance.GetInstance(_type);
         }
 
         public void Process()
@@ -83,7 +83,7 @@ namespace Lephone.Processor
             }
             if (f.IsHasOne || f.IsHasMany)
             {
-                var oi1 = ObjectInfo.Factory.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
+                var oi1 = new ObjectInfoBase(f.FieldType.GetGenericArguments()[0]);
                 var mh = oi1.GetBelongsTo(_type);
                 if (mh == null)
                 {
@@ -93,7 +93,7 @@ namespace Lephone.Processor
             }
             if (f.IsHasAndBelongsToMany)
             {
-                var oi1 = ObjectInfo.Factory.GetSimpleInstance(f.FieldType.GetGenericArguments()[0]);
+                var oi1 = new ObjectInfoBase(f.FieldType.GetGenericArguments()[0]);
                 var mh = oi1.GetHasAndBelongsToMany(_type);
                 if (mh == null)
                 {

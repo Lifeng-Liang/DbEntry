@@ -3,7 +3,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.ComponentModel;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Web.Common;
 using Lephone.Core;
 using Lephone.Data.Definition;
@@ -170,7 +169,7 @@ namespace Lephone.Web
                 }
                 else // Edit
                 {
-                    ObjInfo.KeyFields[0].SetValue(o, oid);
+                    Ctx.Info.KeyFields[0].SetValue(o, oid);
                     if (OnObjectUpdating != null)
                     {
                         OnObjectUpdating(o);
@@ -273,10 +272,8 @@ namespace Lephone.Web
             return PageHelper.ValidateSave(Page, vh, obj, _noticeMessage, noticeText, CssErrInput,
                 delegate
                    {
-                       ObjectInfo oi =
-                           ObjectInfo.GetInstance(
-                               obj.GetType());
-                       if (oi.IsNewObject(obj))
+                       var ctx = ModelContext.GetInstance(obj.GetType());
+                       if (ctx.IsNewObject(obj))
                        {
                            ExecuteInsert(obj);
                        }
@@ -362,17 +359,17 @@ namespace Lephone.Web
             string sid = Page.Request["Id"];
             if (!string.IsNullOrEmpty(sid))
             {
-                object id = ClassHelper.ChangeType(sid, ObjInfo.KeyFields[0].FieldType);
+                object id = ClassHelper.ChangeType(sid, Ctx.Info.KeyFields[0].FieldType);
                 var o = DbEntry.GetObject<T>(id);
                 if(o == null)
                 {
                     throw new DataException("The record doesn't exist.");
                 }
                 ViewState["Id"] = id;
-                ObjectInfo oi = ObjectInfo.GetInstance(typeof (T));
-                if(oi.LockVersion != null)
+                var ctx = ModelContext.GetInstance(typeof(T));
+                if(ctx.Info.LockVersion != null)
                 {
-                    var lv = (int)oi.LockVersion.GetValue(o);
+                    var lv = (int)ctx.Info.LockVersion.GetValue(o);
                     if (Page.IsPostBack)
                     {
                         if(lv != ObjectLockVersion)

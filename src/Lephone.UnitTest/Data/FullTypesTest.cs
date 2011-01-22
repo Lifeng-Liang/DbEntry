@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Reflection;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
-using Lephone.Core;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
+    [DbContext("SQLite")]
     public class FullType : DbObjectModel<FullType>
     {
         public string c1 { get; set; }
@@ -25,6 +24,7 @@ namespace Lephone.UnitTest.Data
         public byte[] c15 { get; set; }
     }
 
+    [DbContext("SQLite")]
     public class FullType2 : DbObjectModel<FullType2>
     {
         public string c1 { get; set; }
@@ -44,13 +44,14 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class FullTypesTest
     {
-        private static readonly DbContext sqlite = EntryConfig.NewContext("SQLite");
         private static readonly Guid guid = Guid.NewGuid();
 
         static FullTypesTest()
         {
-            ClassHelper.CallFunction(sqlite, "TryCreateTable", typeof(FullType));
-            ClassHelper.CallFunction(sqlite, "TryCreateTable", typeof(FullType2));
+            var ft = ModelContext.GetInstance(typeof(FullType));
+            ft.Operator.TryCreateTable();
+            var ft2 = ModelContext.GetInstance(typeof(FullType2));
+            ft2.Operator.TryCreateTable();
         }
 
         [SetUp]
@@ -85,7 +86,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var ls = sqlite.From<FullType>().Where(Condition.Empty).Select();
+            var ls = DbEntry.From<FullType>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             var o = ls[0];
             Assert.IsNotNull(o);
@@ -107,7 +108,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            var ls = sqlite.From<FullType2>().Where(Condition.Empty).Select();
+            var ls = DbEntry.From<FullType2>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             var o = ls[0];
             Assert.IsNotNull(o);
@@ -129,7 +130,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSameValueIsNotChange()
         {
-            var ls = sqlite.From<FullType>().Where(Condition.Empty).Select();
+            var ls = DbEntry.From<FullType>().Where(Condition.Empty).Select();
             StaticRecorder.ClearMessages();
             Assert.AreEqual(1, ls.Count);
             var ft = ls[0];
@@ -144,14 +145,14 @@ namespace Lephone.UnitTest.Data
             ft.c9 = 9.1;
             ft.c10 = guid;
             ft.c11 = 11;
-            sqlite.Save(ft);
+            ft.Save();
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
         }
 
         [Test]
         public void TestSameValueIsNotChange2()
         {
-            var ls = sqlite.From<FullType2>().Where(Condition.Empty).Select();
+            var ls = DbEntry.From<FullType2>().Where(Condition.Empty).Select();
             StaticRecorder.ClearMessages();
             Assert.AreEqual(1, ls.Count);
             var ft = ls[0];
@@ -166,7 +167,7 @@ namespace Lephone.UnitTest.Data
             ft.c9 = 9.1;
             ft.c10 = guid;
             ft.c11 = 11;
-            sqlite.Save(ft);
+            ft.Save();
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
         }
     }

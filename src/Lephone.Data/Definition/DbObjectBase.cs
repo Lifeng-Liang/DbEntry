@@ -7,15 +7,11 @@ namespace Lephone.Data.Definition
     [Serializable]
     public class DbObjectBase : IDbObject
     {
-        public DbObjectBase()
-        {
-        }
-
         public override string ToString()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(this.GetType());
+            var ctx = ModelContext.GetInstance(this.GetType());
             var sb = new StringBuilder("{ ");
-            foreach (MemberHandler m in oi.Fields)
+            foreach (MemberHandler m in ctx.Info.Fields)
             {
                 if (!(m.IsHasMany || m.IsHasAndBelongsToMany || m.IsHasOne))
                 {

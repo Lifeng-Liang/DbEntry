@@ -1,14 +1,13 @@
-﻿using Lephone.Data.Common;
-using Lephone.Data.Dialect;
+﻿using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Builder
 {
 	public abstract class SqlStatementBuilder
 	{
-        public SqlStatement ToSqlStatement(ObjectInfo info)
+        public SqlStatement ToSqlStatement(ModelContext ctx)
         {
-            var sql = ToSqlStatement(info.Context.Dialect, info.AllowSqlLog);
+            var sql = ToSqlStatement(ctx.Operator.Dialect, ctx.Info.AllowSqlLog);
             return sql;
         }
 

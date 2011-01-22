@@ -1,5 +1,4 @@
-﻿using Lephone.Data;
-using Lephone.Data.SqlEntry;
+﻿using Lephone.Data.SqlEntry;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
@@ -12,7 +11,7 @@ namespace Lephone.UnitTest.Data
         {
             SqlRecorder.Start();
 
-            var de = DbContext.GetInstance("SQLite");
+            var de = new DataProvider("SQLite");
 
             var sql = new SqlStatement("test log") {NeedLog = false};
             de.ExecuteNonQuery(sql);

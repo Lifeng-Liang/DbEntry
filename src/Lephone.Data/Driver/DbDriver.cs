@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Collections;
@@ -20,6 +21,8 @@ namespace Lephone.Data.Driver
         protected DbFactory ProviderFactory;
 
 	    public readonly bool AutoCreateTable;
+
+        internal Dictionary<string, int> TableNames;
 
 	    protected DbDriver(DbDialect dialect, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
 		{

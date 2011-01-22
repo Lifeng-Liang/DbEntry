@@ -1,4 +1,5 @@
 ﻿using System;
+using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Web;
 using Lephone.Core.Text;
@@ -8,21 +9,21 @@ namespace Lephone.CodeGen
     public class AspNetGenerator
     {
         private readonly Type _type;
-        private readonly ObjectInfo _oi;
+        private readonly ModelContext _oi;
         private readonly HtmlBuilder _b;
         string _title, _id;
 
         public AspNetGenerator(Type type)
         {
             this._type = type;
-            _oi = ObjectInfo.GetInstance(type);
+            _oi = ModelContext.GetInstance(type);
             _b = HtmlBuilder.New.table.attr("border", 0).enter();
         }
 
         public override string ToString()
         {
-            string oibtName = _oi.HandleType.Name;
-            foreach (var m in _oi.SimpleFields)
+            string oibtName = _oi.Info.HandleType.Name;
+            foreach (var m in _oi.Info.SimpleFields)
             {
                 if (m.IsKey)
                 {

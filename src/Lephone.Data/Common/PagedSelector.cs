@@ -9,22 +9,22 @@ namespace Lephone.Data.Common
         protected Condition iwc;
         protected OrderBy oc;
         internal int _PageSize;
-        protected DbContext Entry;
+        protected ModelContext Entry;
         internal bool isDistinct;
         protected long ResultCount = -1;
         protected long PageCount = -1;
 
-        public PagedSelector(Condition iwc, OrderBy oc, int pageSize, DbContext ds)
-            : this(iwc, oc, pageSize, ds, false)
+        public PagedSelector(Condition iwc, OrderBy oc, int pageSize)
+            : this(iwc, oc, pageSize, false)
         {
         }
 
-        public PagedSelector(Condition iwc, OrderBy oc, int pageSize, DbContext ds, bool isDistinct)
+        public PagedSelector(Condition iwc, OrderBy oc, int pageSize, bool isDistinct)
         {
             this.iwc = iwc;
             this.oc = oc;
             this._PageSize = pageSize;
-            this.Entry = ds;
+            this.Entry = ModelContext.GetInstance(typeof(T));
             this.isDistinct = isDistinct;
         }
 
@@ -37,7 +37,7 @@ namespace Lephone.Data.Common
         {
             if (ResultCount < 0)
             {
-                ResultCount = Entry.GetResultCount(typeof(T), iwc, isDistinct);
+                ResultCount = Entry.Operator.GetResultCount(iwc, isDistinct);
             }
             return ResultCount;
         }

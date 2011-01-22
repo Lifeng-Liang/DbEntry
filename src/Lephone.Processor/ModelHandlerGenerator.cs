@@ -33,7 +33,7 @@ namespace Lephone.Processor
             _result.Interfaces.Add(_handler.DbObjectHandlerInterface);
             _model.CustomAttributes.Add(_handler.GetModelHandler(_result));
 
-            _info = ObjectInfo.GetInstance(type);
+            _info = ObjectInfoFactory.Instance.GetInstance(type);
 
             CheckType();
         }

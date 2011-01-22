@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            List<DbColumnInfo> ls = DbEntry.Context.GetDbColumnInfoList("File");
+            List<DbColumnInfo> ls = DbEntry.Provider.GetDbColumnInfoList("File");
             Assert.AreEqual(3, ls.Count);
 
             Assert.AreEqual("Id", ls[0].ColumnName);

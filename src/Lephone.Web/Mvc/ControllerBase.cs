@@ -90,9 +90,9 @@ namespace Lephone.Web.Mvc
 
         public virtual string Create()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            var obj = (T)oi.NewObject();
-            foreach(MemberHandler m in oi.Fields)
+            var ctx = ModelContext.GetInstance(typeof(T));
+            var obj = (T)ctx.NewObject();
+            foreach(MemberHandler m in ctx.Info.Fields)
             {
                 if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                 {
@@ -151,9 +151,9 @@ namespace Lephone.Web.Mvc
 
         public virtual string Update(long n)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
+            var ctx = ModelContext.GetInstance(typeof(T));
             var obj = DbEntry.GetObject<T>(n);
-            foreach (MemberHandler m in oi.Fields)
+            foreach (MemberHandler m in ctx.Info.Fields)
             {
                 if (m.IsRelationField) { continue; }
                 if (!m.IsAutoSavedValue && !m.IsDbGenerate)

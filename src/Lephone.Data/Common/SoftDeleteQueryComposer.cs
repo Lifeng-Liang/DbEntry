@@ -10,8 +10,8 @@ namespace Lephone.Data.Common
         private readonly string _columnName;
         private readonly KeyValueClause _colExp;
 
-        public SoftDeleteQueryComposer(ObjectInfo oi, string columnName)
-            : base(oi)
+        public SoftDeleteQueryComposer(ModelContext ctx, string columnName)
+            : base(ctx)
         {
             this._columnName = columnName;
             _colExp = (CK.K[columnName] == false);
@@ -26,10 +26,10 @@ namespace Lephone.Data.Common
 
         public override SqlStatement GetDeleteStatement(object obj)
         {
-            var sb = new UpdateStatementBuilder(Info.From.MainTableName);
+            var sb = new UpdateStatementBuilder(Context.Info.From.MainTableName);
             sb.Values.Add(new KeyValue(_columnName, true));
-            sb.Where.Conditions = ObjectInfo.GetKeyWhereClause(obj) && _colExp;
-            return sb.ToSqlStatement(Info);
+            sb.Where.Conditions = ModelContext.GetKeyWhereClause(obj) && _colExp;
+            return sb.ToSqlStatement(Context);
         }
 
         public override SqlStatement GetDeleteStatement(Condition iwc)

@@ -6,21 +6,16 @@ namespace Lephone.Data.Definition
     [Serializable]
     public class BelongsTo<T, TKey> : LazyLoadOneBase<T>, IBelongsTo where T : DbObjectModel<T, TKey>, new() where TKey : struct
     {
-        private readonly DbObjectSmartUpdate _osu;
         private TKey _foreignKey;
 
-        public BelongsTo(object owner, string relationName)
+        public BelongsTo(DbObjectSmartUpdate owner, string relationName)
             : base(owner, relationName)
         {
-            _osu = owner as DbObjectSmartUpdate;
         }
 
         public void ForeignKeyChanged()
         {
-            if (_osu != null)
-            {
-                _osu.m_ColumnUpdated(RelationName);
-            }
+            Owner.m_ColumnUpdated(RelationName);
         }
 
         public object ForeignKey
@@ -34,12 +29,12 @@ namespace Lephone.Data.Definition
 
         protected override void DoWrite(object oldValue, bool isLoad)
         {
-            var oi = ObjectInfo.GetInstance(typeof(T));
-            if (oi.HasOnePrimaryKey)
+            var ctx = ModelContext.GetInstance(typeof(T));
+            if (ctx.Info.HasOnePrimaryKey)
             {
                 if (m_Value != null)
                 {
-                    _foreignKey = (TKey)oi.KeyFields[0].GetValue(m_Value);
+                    _foreignKey = (TKey)ctx.Info.KeyFields[0].GetValue(m_Value);
                 }
                 else
                 {
@@ -54,7 +49,7 @@ namespace Lephone.Data.Definition
                     }
                     else if (m_Value != null && m_Value != oldValue)
                     {
-                        foreach (var mh in oi.RelationFields)
+                        foreach (var mh in ctx.Info.RelationFields)
                         {
                             if (mh.IsHasOne || mh.IsHasMany)
                             {
@@ -82,12 +77,11 @@ namespace Lephone.Data.Definition
 
         protected override void DoLoad()
         {
-            var oi = ObjectInfo.GetInstance(Owner.GetType());
-            m_Value = oi.Context.GetObject<T>(_foreignKey);
+            m_Value = DbEntry.GetObject<T>(_foreignKey);
             if (m_Value != null)
             {
-                var oi1 = ObjectInfo.GetInstance(typeof(T));
-                foreach (MemberHandler f in oi1.RelationFields)
+                var ctx1 = ModelContext.GetInstance(typeof(T));
+                foreach (MemberHandler f in ctx1.Info.RelationFields)
                 {
                     if (f.IsHasOne || f.IsHasMany)
                     {

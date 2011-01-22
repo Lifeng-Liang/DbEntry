@@ -32,6 +32,12 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
     }
 
+    [DbContext("SQLite")]
+    public class GuidKeySqlite : DbObjectModel<GuidKeySqlite, Guid>
+    {
+        public string Name { get; set; }
+    }
+
     public class GuidColumn : DbObjectModel<GuidColumn>
     {
         public Guid TheGuid { get; set; }

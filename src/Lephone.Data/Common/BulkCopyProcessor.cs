@@ -8,8 +8,8 @@ namespace Lephone.Data.Common
 {
     public abstract class BulkCopyProcessor
     {
-        protected readonly DbContext Src = DbContext.GetInstance("Source");
-        protected readonly DbContext Dest = DbContext.GetInstance("Destination");
+        protected readonly DataProvider Src = new DataProvider("Source");
+        protected readonly DataProvider Dest = new DataProvider("Destination");
 
         public static void CopyAll(Type t)
         {
@@ -91,7 +91,7 @@ namespace Lephone.Data.Common
     {
         public override void Run()
         {
-            DestinationTableName = ObjectInfo.GetInstance(typeof(T)).From.MainTableName;
+            DestinationTableName = ModelContext.GetInstance(typeof(T)).Info.From.MainTableName;
             Copy();
         }
 

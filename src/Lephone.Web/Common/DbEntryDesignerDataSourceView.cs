@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Web.UI.Design;
 using System.Web.UI;
+using Lephone.Core;
 using Lephone.Data.Common;
+using Lephone.Processor;
 
 namespace Lephone.Web.Common
 {
@@ -10,14 +12,14 @@ namespace Lephone.Web.Common
     {
         private readonly DataSourceControl _dataSource;
         private readonly Type _modelType;
-        private readonly ObjectInfo _oi;
+        private readonly ObjectInfo _info;
 
         public DbEntryDesignerDataSourceView(DbEntryDataSourceDesigner owner)
             : base(owner, "MainView")
         {
             _dataSource = (DataSourceControl)owner.Component;
             _modelType = _dataSource.GetType().BaseType.GetGenericArguments()[0];
-            _oi = ObjectInfo.GetInstance(_modelType);
+            _info = ObjectInfoFactory.Instance.GetInstance(_modelType);
         }
 
         #region Visiable
@@ -62,8 +64,8 @@ namespace Lephone.Web.Common
 
             for (int i = 0; i < minimumRows; i++)
             {
-                object obj = _oi.NewObject();
-                foreach (MemberHandler mh in _oi.SimpleFields)
+                object obj = ClassHelper.CreateInstance(_info.HandleType);
+                foreach (MemberHandler mh in _info.SimpleFields)
                 {
                     object value = GetSampleValue(mh.FieldType, mh.AllowNull, i);
                     mh.SetValue(obj, value);
@@ -156,7 +158,7 @@ namespace Lephone.Web.Common
         {
             get
             {
-                return new DbEntryDataSourceViewSchema(_oi);
+                return new DbEntryDataSourceViewSchema(_info);
             }
         }
     }

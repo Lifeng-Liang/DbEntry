@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Core;
 using Lephone.Core.Text;
@@ -117,8 +118,8 @@ namespace Lephone.CodeGen
                 b.h1.text("New " + cn).end.enter().enter();
                 b.form("post", "<%= UrlTo.Action(\"create\") %>").enter();
 
-                var oi = ObjectInfo.GetInstance(ClassType);
-                foreach (MemberHandler m in oi.Fields)
+                var ctx = ModelContext.GetInstance(ClassType);
+                foreach (MemberHandler m in ctx.Info.Fields)
                 {
                     if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                     {
@@ -152,8 +153,8 @@ namespace Lephone.CodeGen
 
                 b.table.enter().tr.enter();
 
-                var oi = ObjectInfo.GetInstance(ClassType);
-                foreach (MemberHandler m in oi.SimpleFields)
+                var ctx = ModelContext.GetInstance(ClassType);
+                foreach (var m in ctx.Info.SimpleFields)
                 {
                     b.include("  ").th.text(m.Name).end.enter();
                 }
@@ -162,7 +163,7 @@ namespace Lephone.CodeGen
 
                 b.include("<% foreach (var o in ItemList.List) { %>");
                 b.enter().tr.enter();
-                foreach (MemberHandler m in oi.SimpleFields)
+                foreach (MemberHandler m in ctx.Info.SimpleFields)
                 {
                     b.include("  ").td.include("<%= o.").include(m.Name).include(" %>").end.enter();
                 }
@@ -190,8 +191,8 @@ namespace Lephone.CodeGen
             {
                 b.p.style("color: Green").include("<%= Flash.Notice %>").end.enter().enter();
 
-                var oi = ObjectInfo.GetInstance(ClassType);
-                foreach (MemberHandler m in oi.Fields)
+                var ctx = ModelContext.GetInstance(ClassType);
+                foreach (MemberHandler m in ctx.Info.Fields)
                 {
                     if (!m.IsRelationField)
                     {
@@ -215,8 +216,8 @@ namespace Lephone.CodeGen
                 b.h1.text(ClassType.Name + " Edit").end.enter().enter();
                 b.form("post", "<%= UrlTo.Action(\"update\").Parameters(Item.Id) %>").enter();
 
-                var oi = ObjectInfo.GetInstance(ClassType);
-                foreach (MemberHandler m in oi.Fields)
+                var ctx = ModelContext.GetInstance(ClassType);
+                foreach (MemberHandler m in ctx.Info.Fields)
                 {
                     if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                     {

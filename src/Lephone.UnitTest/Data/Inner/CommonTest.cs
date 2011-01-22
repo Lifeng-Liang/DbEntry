@@ -79,12 +79,12 @@ namespace Lephone.UnitTest.Data.Inner
             Assert.IsNull(OrderBy.Parse(null));
 
             const string s = "Id desc, Name";
-            var Exp = new OrderBy((DESC)"Id", (ASC)"Name");
-            var Dst = OrderBy.Parse(s);
+            var exp = new OrderBy((DESC)"Id", (ASC)"Name");
+            var dst = OrderBy.Parse(s);
             var ds = new DataParameterCollection();
-            string ExpStr = Exp.ToSqlText(ds, DbEntry.Context.Dialect);
-            string DstStr = Dst.ToSqlText(ds, DbEntry.Context.Dialect);
-            Assert.AreEqual(ExpStr, DstStr);
+            string expStr = exp.ToSqlText(ds, DbEntry.Provider.Dialect);
+            string dstStr = dst.ToSqlText(ds, DbEntry.Provider.Dialect);
+            Assert.AreEqual(expStr, dstStr);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Lephone.UnitTest.Data.Inner
         {
             var p = new People {Id = 10, Name = "abc", pc = new PCs {Name = "uuu"}};
 
-            var p1 = (People)ObjectInfo.CloneObject(p);
+            var p1 = (People)ModelContext.CloneObject(p);
             Assert.AreEqual(10, p1.Id);
             Assert.AreEqual("abc", p1.Name);
             // Assert.IsNull(p1.pc);
@@ -101,7 +101,7 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void TestBaseType()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(People));
+            var oi = ModelContext.GetInstance(typeof(People)).Info;
             Assert.AreEqual("People", oi.HandleType.Name);
         }
 
@@ -109,7 +109,7 @@ namespace Lephone.UnitTest.Data.Inner
         public void TestBaseType2()
         {
             Type t = new People().GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
+            ObjectInfo oi = ModelContext.GetInstance(t).Info;
             Assert.AreEqual("People", oi.HandleType.Name);
         }
 
@@ -138,9 +138,8 @@ namespace Lephone.UnitTest.Data.Inner
         [Test]
         public void TestX()
         {
-            DbContext de = DbEntry.Context;
-            de.DropAndCreate(typeof(TableA));
-            de.DropAndCreate(typeof(TableB));
+            DbEntry.DropAndCreate(typeof(TableA));
+            DbEntry.DropAndCreate(typeof(TableB));
 
             var t1 = new TableA {Name = "TestName1"};
             t1.Save();
@@ -157,7 +156,7 @@ namespace Lephone.UnitTest.Data.Inner
             try
             {
                 var obj = new NotPublic {Name = "tom"};
-                DbEntry.Context.Insert(obj);
+                DbEntry.Insert(obj);
                 Assert.IsTrue(false);
             }
             catch (DataException ex)

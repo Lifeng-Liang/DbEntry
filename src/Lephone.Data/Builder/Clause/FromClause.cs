@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Specialized;
-using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Builder.Clause
@@ -65,7 +64,7 @@ namespace Lephone.Data.Builder.Clause
 
             if (PartOf != null)
             {
-                ret = dd.QuoteForLimitTableName(ObjectInfo.GetInstance(PartOf).From.MainTableName);
+                ret = dd.QuoteForLimitTableName(ModelContext.GetInstance(PartOf).Info.From.MainTableName);
             }
             else
             {

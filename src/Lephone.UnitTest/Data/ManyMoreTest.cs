@@ -38,6 +38,36 @@ namespace Lephone.UnitTest.Data
         public IList<ManyMore> m { get; set; }
     }
 
+    [DbTable("ManyMore"), DbContext("SQLite")]
+    public class ManyMoreSqlite : DbObjectModel<ManyMoreSqlite>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany]
+        public IList<ManyMore1Sqlite> m1 { get; set; }
+
+        [HasAndBelongsToMany]
+        public IList<ManyMore2Sqlite> m2 { get; set; }
+    }
+
+    [DbTable("ManyMore1"), DbContext("SQLite")]
+    public class ManyMore1Sqlite : DbObjectModel<ManyMore1Sqlite>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany]
+        public IList<ManyMoreSqlite> m { get; set; }
+    }
+
+    [DbTable("ManyMore2"), DbContext("SQLite")]
+    public class ManyMore2Sqlite : DbObjectModel<ManyMore2Sqlite>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany]
+        public IList<ManyMoreSqlite> m { get; set; }
+    }
+
     #endregion
 
     [TestFixture]
@@ -117,9 +147,9 @@ namespace Lephone.UnitTest.Data
             o2 = ManyMore2.FindById(o2.Id);
             Assert.AreEqual(0, o2.m.Count);
 
-            int n = Convert.ToInt32(DbEntry.Context.ExecuteScalar("select count(*) from [R_ManyMore_ManyMore1]"));
+            int n = Convert.ToInt32(DbEntry.Provider.ExecuteScalar("select count(*) from [R_ManyMore_ManyMore1]"));
             Assert.AreEqual(0, n);
-            n = Convert.ToInt32(DbEntry.Context.ExecuteScalar("select count(*) from [R_ManyMore_ManyMore2]"));
+            n = Convert.ToInt32(DbEntry.Provider.ExecuteScalar("select count(*) from [R_ManyMore_ManyMore2]"));
             Assert.AreEqual(0, n);
         }
     }

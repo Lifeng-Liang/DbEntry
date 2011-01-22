@@ -32,6 +32,33 @@ namespace Lephone.UnitTest.Data.Objects
         }
     }
 
+    [DbTable("People"), DbContext("SQLite")]
+    public class PersonSqlite : DbObjectModel<PersonSqlite>
+    {
+        public string Name { get; set; }
+
+        public HasOne<PersonalComputerSqlite> PC;
+
+        public PersonSqlite()
+        {
+            PC = new HasOne<PersonalComputerSqlite>(this, null, "Person_Id");
+        }
+    }
+
+    [DbTable("PCs"), DbContext("SQLite")]
+    public class PersonalComputerSqlite : DbObjectModel<PersonalComputerSqlite>
+    {
+        public string Name { get; set; }
+
+        [DbColumn("Person_Id")]
+        public BelongsTo<PersonSqlite, long> Owner;
+
+        public PersonalComputerSqlite()
+        {
+            Owner = new BelongsTo<PersonSqlite, long>(this, "Person_Id");
+        }
+    }
+
     [DbTable("People"), DbContext("SqlServerMock")]
     public class PersonSql : DbObjectModel<PersonSql>
     {
@@ -88,6 +115,33 @@ namespace Lephone.UnitTest.Data.Objects
         }
     }
 
+    [DbTable("Books"), DbContext("SQLite")]
+    public class BookSqlite : DbObjectModel<BookSqlite>
+    {
+        public string Name { get; set; }
+
+        [DbColumn("Category_Id")]
+        public BelongsTo<CategorySqlite, long> CurCategory;
+
+        public BookSqlite()
+        {
+            CurCategory = new BelongsTo<CategorySqlite, long>(this, "Category_Id");
+        }
+    }
+
+    [DbTable("Categories"), DbContext("SQLite")]
+    public class CategorySqlite : DbObjectModel<CategorySqlite>
+    {
+        public string Name { get; set; }
+
+        public HasMany<BookSqlite> Books;
+
+        public CategorySqlite()
+        {
+            Books = new HasMany<BookSqlite>(this, "Id", "Category_Id");
+        }
+    }
+
     [DbTable("Categories")]
     public class Acategory : DbObjectModel<Acategory>
     {
@@ -120,6 +174,24 @@ namespace Lephone.UnitTest.Data.Objects
 
         [HasAndBelongsToMany(OrderBy = "Id")]
         public IList<Article> Articles { get; set; }
+    }
+
+    [DbTable("Article"), DbContext("SQLite")]
+    public class ArticleSqlite : DbObjectModel<ArticleSqlite>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany(OrderBy = "Id")]
+        public IList<ReaderSqlite> Readers { get; set; }
+    }
+
+    [DbTable("Reader"), DbContext("SQLite")]
+    public class ReaderSqlite : DbObjectModel<ReaderSqlite>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany(OrderBy = "Id")]
+        public IList<ArticleSqlite> Articles { get; set; }
     }
 
     public class Article_Reader : IDbObject

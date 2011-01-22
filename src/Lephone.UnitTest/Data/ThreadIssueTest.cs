@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using Lephone.Data.Common;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
@@ -37,7 +37,7 @@ namespace Lephone.UnitTest.Data
         {
             try
             {
-                ObjectInfo.GetInstance(typeof(User1));
+                ModelContext.GetInstance(typeof(User1));
             }
             catch (Exception ex)
             {

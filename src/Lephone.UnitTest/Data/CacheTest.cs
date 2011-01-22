@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Lephone.Data;
 using Lephone.Data.Caching;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.util;
@@ -146,7 +146,7 @@ namespace Lephone.UnitTest.Data
             var p = new SinglePerson {Id = 15, Name = "tom"};
 
             string key = KeyGenerator.Instance.GetKey(p.GetType(), p.Id);
-            c[key] = ObjectInfo.CloneObject(p);
+            c[key] = ModelContext.CloneObject(p);
 
             var act = (SinglePerson)c[key];
 
@@ -155,7 +155,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("tom", act.Name);
 
             p.Name = "jerry";
-            c[key] = ObjectInfo.CloneObject(p);
+            c[key] = ModelContext.CloneObject(p);
 
             act = (SinglePerson)c[key];
             p.Name = "mike"; // By using ObjectInfo.CloneObject, it doesn't change cached object.
@@ -350,22 +350,24 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLazyLoadColumn2()
         {
-            ClassHelper.CallFunction(Sqlite, "TryCreateTable", typeof (LazyableSqlite));
+            var ctx = ModelContext.GetInstance(typeof(LazyableSqlite));
+            ctx.Operator.TryCreateTable();
+
             StaticRecorder.ClearMessages();
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Id", typeof(long), 2L));
             StaticRecorder.CurRow.Add(new RowInfo("Person_Id", typeof(int), 2));
 
-            var o1 = Sqlite.GetObject<LazyableSqlite>(2);
+            var o1 = DbEntry.GetObject<LazyableSqlite>(2);
             Assert.AreEqual(2, o1.TestColumn);
 
-            var o2 = Sqlite.GetObject<LazyableSqlite>(2);
+            var o2 = DbEntry.GetObject<LazyableSqlite>(2);
             Assert.AreEqual(2, o2.TestColumn);
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));
             Assert.AreEqual("IBM", o2.Content);
 
-            var o3 = Sqlite.GetObject<LazyableSqlite>(2);
+            var o3 = DbEntry.GetObject<LazyableSqlite>(2);
             Assert.AreEqual(2, o3.TestColumn);
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));

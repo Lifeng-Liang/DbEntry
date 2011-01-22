@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Lephone.Core;
@@ -65,24 +64,24 @@ namespace Lephone.Data
             _errorMessages.Clear();
 
             var t = obj.GetType();
-            var oi = ObjectInfo.GetInstance(t);
-            string tn = oi.HandleType.Name;
+            var ctx = ModelContext.GetInstance(t);
+            string tn = ctx.Info.HandleType.Name;
             bool isNew = false;
-            if (oi.KeyFields.Length > 0)
+            if (ctx.Info.KeyFields.Length > 0)
             {
-                isNew = oi.IsNewObject(obj);
+                isNew = ctx.IsNewObject(obj);
             }
 
-            ValidateCommon(obj, oi, tn);
-            ValidateUnique(obj, t, oi, isNew);
+            ValidateCommon(obj, ctx, tn);
+            ValidateUnique(obj, ctx, isNew);
             return IsValid;
         }
 
-        private void ValidateCommon(object obj, ObjectInfo oi, string tableName)
+        private void ValidateCommon(object obj, ModelContext ctx, string tableName)
         {
             var stringType = typeof(string);
             var byteArrayType = typeof(byte[]);
-            foreach (MemberHandler fh in oi.Fields)
+            foreach (MemberHandler fh in ctx.Info.Fields)
             {
                 var realType = fh.IsLazyLoad ? fh.FieldType.GetGenericArguments()[0] : fh.FieldType;
                 if (realType == stringType)
@@ -113,7 +112,7 @@ namespace Lephone.Data
             IsValid &= isValid;
         }
 
-        private void ValidateUnique(object obj, Type t, ObjectInfo oi, bool isNew)
+        private void ValidateUnique(object obj, ModelContext ctx, bool isNew)
         {
             Dictionary<string, object> updatedColumns = null;
             if(obj is DbObjectSmartUpdate)
@@ -121,8 +120,8 @@ namespace Lephone.Data
                 updatedColumns = ((DbObjectSmartUpdate)obj).m_UpdateColumns;
             }
 
-            Condition editCondition = isNew ? null : !ObjectInfo.GetKeyWhereClause(obj);
-            foreach (List<MemberHandler> mhs in oi.UniqueIndexes.Values)
+            Condition editCondition = isNew ? null : !ModelContext.GetKeyWhereClause(obj);
+            foreach (List<MemberHandler> mhs in ctx.Info.UniqueIndexes.Values)
             {
                 Condition c = null;
                 string n = "";
@@ -158,7 +157,7 @@ namespace Lephone.Data
                 }
                 if (c != null)
                 {
-                    if (oi.Context.GetResultCountAvoidSoftDelete(t, c && editCondition, false) != 0)
+                    if (ctx.Operator.GetResultCountAvoidSoftDelete(c && editCondition, false) != 0)
                     {
                         sn.Length -= _separatorTextLength;
                         IsValid = false;

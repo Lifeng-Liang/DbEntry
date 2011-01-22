@@ -189,6 +189,24 @@ namespace Lephone.UnitTest.Data.Objects
         public IList<DArticle> arts { get; set; }
     }
 
+    [DbTable("Article"), DbContext("SQLite")]
+    public class DArticleSqlite : DbObjectModel<DArticleSqlite>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany(OrderBy = "Id")]
+        public IList<DReaderSqlite> readers { get; set; }
+    }
+
+    [DbTable("Reader"), DbContext("SQLite")]
+    public class DReaderSqlite : DbObjectModel<DReaderSqlite>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany(OrderBy = "Id")]
+        public IList<DArticleSqlite> arts { get; set; }
+    }
+
     [DbTable("People")]
     public class PeopleImp1 : DbObjectModel<PeopleImp1>
     {

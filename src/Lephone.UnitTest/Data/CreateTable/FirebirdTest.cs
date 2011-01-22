@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Lephone.Data.Common;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
@@ -53,8 +53,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestToAvoidMoreThan31CharsIndexName()
         {
-            var de = EntryConfig.NewContext("Firebird");
-            de.Create(typeof(fbLongName));
+            DbEntry.Create(typeof(fbLongName));
             string s = getIndexName();
             Debug.Assert(s != null);
             Assert.AreEqual(29, s.Length);
@@ -73,8 +72,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestForNormalIndexName()
         {
-            var de = EntryConfig.NewContext("Firebird");
-            de.Create(typeof(fbLongName2));
+            DbEntry.Create(typeof(fbLongName2));
             string s = getIndexName();
             Debug.Assert(s != null);
             Assert.AreEqual("IX_FB_LONG_NAME2_NAME", s);
@@ -84,8 +82,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void TestBlob()
         {
             StaticRecorder.Messages.Clear();
-            var de = EntryConfig.NewContext("Firebird");
-            de.Create(typeof(fbBlob));
+            DbEntry.Create(typeof(fbBlob));
             Assert.AreEqual(@"CREATE TABLE ""FB_BLOB"" (
     ""ID"" BIGINT NOT NULL PRIMARY KEY,
     ""BLOB1"" BLOB (64) NOT NULL ,
@@ -100,8 +97,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestTime()
         {
-            var de = EntryConfig.NewContext("Firebird");
-            de.Create(typeof(fbTime));
+            DbEntry.Create(typeof(fbTime));
             Assert.AreEqual(@"CREATE TABLE ""FB_TIME"" (
     ""ID"" BIGINT NOT NULL PRIMARY KEY,
     ""NAME"" VARCHAR (50) CHARACTER SET UNICODE_FSS NOT NULL ,

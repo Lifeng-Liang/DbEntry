@@ -1,6 +1,6 @@
 ﻿using System;
-using Lephone.Data;
 using Lephone.Data.Common;
+using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.util;
 using NUnit.Framework;
@@ -14,7 +14,7 @@ namespace Lephone.UnitTest.Data
         public void Test1()
         {
             MockMiscProvider.Me.SetNow(new DateTime(2010, 12, 10, 10, 9 , 8));
-            var provider = new DbTimeProvider(DbEntry.GetContext("SQLite"));
+            var provider = new DbTimeProvider(new DataProvider("SQLite"));
 
             StaticRecorder.CurRow.Add(new RowInfo("now", new DateTime(2010, 12, 10, 9, 8, 7)));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 8, 7), provider.Now);
@@ -31,7 +31,7 @@ namespace Lephone.UnitTest.Data
         public void Test2()
         {
             MockMiscProvider.Me.SetNow(new DateTime(2010, 12, 10, 10, 9, 8));
-            var provider = new DbTimeProvider(DbEntry.GetContext("SQLite"));
+            var provider = new DbTimeProvider(new DataProvider("SQLite"));
 
             StaticRecorder.CurRow.Add(new RowInfo("now", new DateTime(2010, 12, 10, 9, 8, 7)));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 8, 7), provider.Now);

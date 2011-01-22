@@ -1,5 +1,4 @@
 using System;
-using Lephone.Data.Common;
 using Lephone.Core.Text;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Definition;
@@ -21,8 +20,8 @@ namespace Lephone.Data.Builder.Clause
         {
             this.Type1 = type1;
             this.Type2 = type2;
-            this.Table1 = ObjectInfo.GetInstance(type1).From.MainTableName;
-            this.Table2 = ObjectInfo.GetInstance(type2).From.MainTableName;
+            this.Table1 = ModelContext.GetInstance(type1).Info.From.MainTableName;
+            this.Table2 = ModelContext.GetInstance(type2).Info.From.MainTableName;
             this.Key1 = key1;
             this.Key2 = key2;
             this.Comp = comp;

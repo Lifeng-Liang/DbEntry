@@ -1,5 +1,4 @@
 ﻿using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.Objects;
@@ -22,8 +21,6 @@ namespace Lephone.UnitTest.Data
     [TestFixture]
     public class FirebirdTest
     {
-        private readonly DbContext _firebird = EntryConfig.NewContext("Firebird");
-
         [SetUp]
         public void SetUp()
         {
@@ -33,8 +30,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreateAndInsert()
         {
+            var ctx = ModelContext.GetInstance(typeof(PeopleModel2));
             var o = new PeopleModel2 {Name = "tom"};
-            _firebird.Save(o);
+            ctx.Operator.Save(o);
 
             Assert.AreEqual(4, StaticRecorder.Messages.Count);
             Assert.AreEqual("CREATE TABLE \"PEOPLE\" (\"ID\" BIGINT NOT NULL PRIMARY KEY,\"NAME\" VARCHAR (5) CHARACTER SET UNICODE_FSS NOT NULL);<Text><30>()", StaticRecorder.Messages[0]);
@@ -47,14 +45,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSelect()
         {
-            _firebird.From<PeopleModel2>().Where(CK.K["Name"] == "tom" && CK.K["Age"] > 18).Select();
+            DbEntry.From<PeopleModel2>().Where(CK.K["Name"] == "tom" && CK.K["Age"] > 18).Select();
             Assert.AreEqual("SELECT \"ID\",\"NAME\" FROM \"PEOPLE\" WHERE (\"NAME\" = @Name_0) AND (\"AGE\" > @Age_1);<Text><60>(@Name_0=tom:String,@Age_1=18:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestCreate()
         {
-            _firebird.Create(typeof(LephoneEnum2));
+            var ctx = ModelContext.GetInstance(typeof(LephoneEnum2));
+            ctx.Operator.Create();
             const string exp = "CREATE TABLE \"LEPHONE_ENUM2\" (" +
                                "\"ID\" BIGINT NOT NULL PRIMARY KEY," +
                                "\"TYPE\" INT NOT NULL ," +
@@ -68,7 +67,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDrop()
         {
-            _firebird.DropTable(typeof(LephoneEnum2));
+            var ctx = ModelContext.GetInstance(typeof(LephoneEnum2));
+            ctx.Operator.DropTable();
             Assert.AreEqual("DROP TABLE \"LEPHONE_ENUM2\"<Text><30>()", StaticRecorder.Messages[0]);
             Assert.AreEqual("DROP GENERATOR GEN_LEPHONE_ENUM2_ID;<Text><30>()", StaticRecorder.Messages[1]);
         }

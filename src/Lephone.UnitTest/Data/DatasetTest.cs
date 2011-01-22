@@ -12,7 +12,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateDatasetDirect1()
         {
-            var dc = DbEntry.Context;
+            var dc = DbEntry.Provider;
             DataSet ds = dc.ExecuteDataset(new SqlStatement("select [Name] from [People] where 1=0"));
 
             dc.UsingConnection(delegate
@@ -35,7 +35,7 @@ namespace Lephone.UnitTest.Data
                 ds.AcceptChanges();
             });
 
-            var list = dc.From<SinglePerson>().Where(Condition.Empty).OrderBy("Id").Select();
+            var list = DbEntry.From<SinglePerson>().Where(Condition.Empty).OrderBy("Id").Select();
             Assert.AreEqual(13, list.Count);
             Assert.AreEqual("Tom", list[0].Name);
             Assert.AreEqual("jxf", list[3].Name);
@@ -45,7 +45,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateDatasetDirect2()
         {
-            var dc = DbEntry.Context;
+            var dc = DbEntry.Provider;
             var sql = new SqlStatement("select [Id],[Name] from [People] where 1=0");
             DataSet ds = dc.ExecuteDataset(sql);
 
@@ -67,7 +67,7 @@ namespace Lephone.UnitTest.Data
                 ds.AcceptChanges();
             });
 
-            var list = dc.From<SinglePerson>().Where(Condition.Empty).OrderBy("Id").Select();
+            var list = DbEntry.From<SinglePerson>().Where(Condition.Empty).OrderBy("Id").Select();
             Assert.AreEqual(13, list.Count);
             Assert.AreEqual("Tom", list[0].Name);
             Assert.AreEqual("jxf", list[3].Name);
@@ -77,7 +77,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateDataset1()
         {
-            var dc = DbEntry.Context;
+            var dc = DbEntry.Provider;
             DataSet ds = dc.ExecuteDataset(new SqlStatement("select [Name] from [People] where 1=0"));
 
             var sql = new SqlStatement("insert into [People] ([Name]) VALUES (@name)");
@@ -93,7 +93,7 @@ namespace Lephone.UnitTest.Data
 
             dc.UpdateDataset(sql, null, null, ds);
 
-            var list = dc.From<SinglePerson>().Where(Condition.Empty).OrderBy("Id").Select();
+            var list = DbEntry.From<SinglePerson>().Where(Condition.Empty).OrderBy("Id").Select();
             Assert.AreEqual(13, list.Count);
             Assert.AreEqual("Tom", list[0].Name);
             Assert.AreEqual("jxf", list[3].Name);
@@ -103,7 +103,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateDataset2()
         {
-            var dc = DbEntry.Context;
+            var dc = DbEntry.Provider;
             var sql = new SqlStatement("select [Name] from [People] where 1=0");
             DataSet ds = dc.ExecuteDataset(sql);
 
@@ -117,7 +117,7 @@ namespace Lephone.UnitTest.Data
 
             dc.UpdateDataset(sql, ds);
 
-            var list = dc.From<SinglePerson>().Where(Condition.Empty).OrderBy("Id").Select();
+            var list = DbEntry.From<SinglePerson>().Where(Condition.Empty).OrderBy("Id").Select();
             Assert.AreEqual(13, list.Count);
             Assert.AreEqual("Tom", list[0].Name);
             Assert.AreEqual("jxf", list[3].Name);

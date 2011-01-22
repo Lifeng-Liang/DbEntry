@@ -41,7 +41,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            var ls = DbEntry.Context.ExecuteList<UnsignedPC>("select * from PCs where [Id] = 1");
+            var ls = DbEntry.ExecuteList<UnsignedPC>("select * from PCs where [Id] = 1");
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("IBM", ls[0].Name);
             Assert.AreEqual(2, ls[0].Person_Id);

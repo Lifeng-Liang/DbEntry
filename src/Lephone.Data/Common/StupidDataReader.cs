@@ -20,9 +20,9 @@ namespace Lephone.Data.Common
             {
                 _indexType = new Dictionary<int, Type>();
                 _nameType = new Dictionary<string, Type>();
-                ObjectInfo oi = ObjectInfo.GetInstance(returnType);
+                var ctx = ModelContext.GetInstance(returnType);
                 int n = 0;
-                foreach (MemberHandler mh in oi.SimpleFields)
+                foreach (MemberHandler mh in ctx.Info.SimpleFields)
                 {
                     _indexType.Add(n++, mh.FieldType);
                     if (!_nameType.ContainsKey(mh.Name))
@@ -30,13 +30,13 @@ namespace Lephone.Data.Common
                         _nameType.Add(mh.Name, mh.FieldType);
                     }
                 }
-                foreach (MemberHandler mh in oi.RelationFields)
+                foreach (MemberHandler mh in ctx.Info.RelationFields)
                 {
                     if (mh.IsBelongsTo)
                     {
-                        ObjectInfo oi1 = ObjectInfo.GetInstance(mh.FieldType.GetGenericArguments()[0]);
-                        _indexType.Add(n++, oi1.KeyFields[0].FieldType);
-                        _nameType.Add(mh.Name, oi1.KeyFields[0].FieldType);
+                        var ctx1 = ModelContext.GetInstance(mh.FieldType.GetGenericArguments()[0]);
+                        _indexType.Add(n++, ctx1.Info.KeyFields[0].FieldType);
+                        _nameType.Add(mh.Name, ctx1.Info.KeyFields[0].FieldType);
                     }
                 }
             }

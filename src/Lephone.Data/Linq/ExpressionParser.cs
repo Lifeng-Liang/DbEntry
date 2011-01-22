@@ -16,8 +16,8 @@ namespace Lephone.Data.Linq
         static ExpressionParser()
         {
             Jar = new Dictionary<string, string>();
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(T));
-            foreach (MemberHandler m in oi.Fields)
+            var ctx = ModelContext.GetInstance(typeof(T));
+            foreach (MemberHandler m in ctx.Info.Fields)
             {
                 string key = m.MemberInfo.Name;
                 if(key.StartsWith("$"))

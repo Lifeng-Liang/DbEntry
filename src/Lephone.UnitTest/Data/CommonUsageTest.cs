@@ -39,6 +39,12 @@ namespace Lephone.UnitTest.Data
         public string Name;
     }
 
+    [DbTable("People"), DbContext("SQLite")]
+    public class SinglePersonSqlite : DbObject
+    {
+        public string Name;
+    }
+
     [DbTable("People")]
     public class UniquePerson : DbObjectModel<UniquePerson>
     {
@@ -316,9 +322,9 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSql()
         {
-            PeopleModel p1 = DbEntry.Context.ExecuteList<PeopleModel>("Select [Id],[Name] From [People] Where [Id] = 2")[0];
+            PeopleModel p1 = DbEntry.ExecuteList<PeopleModel>("Select [Id],[Name] From [People] Where [Id] = 2")[0];
             Assert.AreEqual("Jerry", p1.Name);
-            p1 = DbEntry.Context.ExecuteList<PeopleModel>(new SqlStatement("Select [Name],[Id] From [People] Where [Id] = 1"))[0];
+            p1 = DbEntry.ExecuteList<PeopleModel>(new SqlStatement("Select [Name],[Id] From [People] Where [Id] = 1"))[0];
             Assert.AreEqual("Tom", p1.Name);
             p1 = PeopleModel.FindBySql("Select [Id],[Name] From [People] Where [Id] = 2")[0];
             Assert.AreEqual("Jerry", p1.Name);
@@ -345,7 +351,7 @@ namespace Lephone.UnitTest.Data
             //Condition c = CK.K["Age"] > CK.K["Count"];
             var c = CK.K["Age"].Gt(CK.K["Count"]);
             var dpc = new DataParameterCollection();
-            string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
         }
@@ -355,7 +361,7 @@ namespace Lephone.UnitTest.Data
         {
             var c = CK.K["Age"] > CK.K["Count"];
             var dpc = new DataParameterCollection();
-            string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
         }
@@ -365,7 +371,7 @@ namespace Lephone.UnitTest.Data
         {
             var c = CK.K["Age"] > CK.K["Count"] && CK.K["Name"] == CK.K["theName"] || CK.K["Age"] <= CK.K["Num"];
             var dpc = new DataParameterCollection();
-            string s = c.ToSqlText(dpc, DbEntry.Context.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("(([Age] > [Count]) AND ([Name] = [theName])) OR ([Age] <= [Num])", s);
         }
@@ -373,7 +379,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGetSqlStetement()
         {
-            SqlStatement sql = DbEntry.Context.GetSqlStatement("SELECT * FROM User WHERE Age > ? AND Age < ?", 18, 23);
+            SqlStatement sql = DbEntry.Provider.GetSqlStatement("SELECT * FROM User WHERE Age > ? AND Age < ?", 18, 23);
             Assert.AreEqual("SELECT * FROM User WHERE Age > @p0 AND Age < @p1", sql.SqlCommandText);
             Assert.AreEqual("@p0", sql.Parameters[0].Key);
             Assert.AreEqual(18, sql.Parameters[0].Value);
@@ -384,7 +390,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGetSqlStetement2()
         {
-            SqlStatement sql = DbEntry.Context.GetSqlStatement("SELECT * FROM User WHERE Id = ? Name LIKE '%?%' Age > ? AND Age < ? ", 1, 18, 23);
+            SqlStatement sql = DbEntry.Provider.GetSqlStatement("SELECT * FROM User WHERE Id = ? Name LIKE '%?%' Age > ? AND Age < ? ", 1, 18, 23);
             Assert.AreEqual("SELECT * FROM User WHERE Id = @p0 Name LIKE '%?%' Age > @p1 AND Age < @p2 ", sql.SqlCommandText);
             Assert.AreEqual("@p0", sql.Parameters[0].Key);
             Assert.AreEqual(1, sql.Parameters[0].Value);
@@ -397,7 +403,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGetSqlStetementByExecuteList()
         {
-            List<Person> ls = DbEntry.Context.ExecuteList<Person>("SELECT * FROM [People] WHERE Id > ? AND Id < ?", 1, 3);
+            List<Person> ls = DbEntry.ExecuteList<Person>("SELECT * FROM [People] WHERE Id > ? AND Id < ?", 1, 3);
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("Jerry", ls[0].Name);
         }
@@ -475,7 +481,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestFindOneWithSqlServer2005()
         {
-            var p = DbEntry.GetObject<Person>(CK.K["Name"] == "test", null);
+            var p = DbEntry.GetObject<Person>(o => o.Name == "test");
             Assert.IsNull(p);
         }
 
@@ -498,10 +504,10 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestTableNameMapOfConfig()
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(typeof(LephoneLog));
+            ObjectInfo oi = ModelContext.GetInstance(typeof(LephoneLog)).Info;
             Assert.AreEqual("System_Log", oi.From.MainTableName);
 
-            oi = ObjectInfo.GetInstance(typeof(LephoneEnum));
+            oi = ModelContext.GetInstance(typeof(LephoneEnum)).Info;
             Assert.AreEqual("Lephone_Enum", oi.From.MainTableName);
         }
 
@@ -600,7 +606,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMkey()
         {
-            DbEntry.Context.Create(typeof(MKEY));
+            DbEntry.Create(typeof(MKEY));
 
             var p1 = new MKEY {FirstName = "test", LastName = "next", Age = 11};
             DbEntry.Insert(p1);
@@ -619,7 +625,7 @@ namespace Lephone.UnitTest.Data
         public void TestMkeyForUpdate()
         {
             var p = new MKEY2 { FirstName = "test", LastName = "next", Age = 11 };
-            Sqlite.Update(p);
+            DbEntry.Update(p);
             AssertSql(@"UPDATE [MKEY2] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
 <Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)");
         }
@@ -627,7 +633,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLowerFunction()
         {
-            Sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower() == "tom").Select();
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Name"].ToLower() == "tom").Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE LOWER([Name]) = @Name_0;
 <Text><60>(@Name_0=tom:String)");
         }
@@ -635,7 +641,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLowerForLike()
         {
-            Sqlite.From<SinglePerson>().Where(CK.K["Name"].ToLower().Like("%tom%")).Select();
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Name"].ToLower().Like("%tom%")).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE LOWER([Name]) LIKE @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
@@ -643,7 +649,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpperFunction()
         {
-            Sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper() == "tom").Select();
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Name"].ToUpper() == "tom").Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE UPPER([Name]) = @Name_0;
 <Text><60>(@Name_0=tom:String)");
         }
@@ -651,7 +657,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpperForLike()
         {
-            Sqlite.From<SinglePerson>().Where(CK.K["Name"].ToUpper().Like("%tom%")).Select();
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Name"].ToUpper().Like("%tom%")).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE UPPER([Name]) LIKE @Name_0;
 <Text><60>(@Name_0=%tom%:String)");
         }
@@ -659,7 +665,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMax()
         {
-            Sqlite.From<SinglePerson>().Where(Condition.Empty).GetMax("Id");
+            DbEntry.From<SinglePersonSqlite>().Where(Condition.Empty).GetMax("Id");
             AssertSql(@"SELECT MAX([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
@@ -673,7 +679,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMin()
         {
-            Sqlite.From<SinglePerson>().Where(Condition.Empty).GetMin("Id");
+            DbEntry.From<SinglePersonSqlite>().Where(Condition.Empty).GetMin("Id");
             AssertSql(@"SELECT MIN([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
@@ -688,7 +694,7 @@ namespace Lephone.UnitTest.Data
         public void TestMaxDate()
         {
             StaticRecorder.CurRow.Add(new RowInfo(new DateTime()));
-            Sqlite.From<DateAndTime>().Where(Condition.Empty).GetMaxDate("dtValue");
+            DbEntry.From<DateAndTimeSqlite>().Where(Condition.Empty).GetMaxDate("dtValue");
             AssertSql(@"SELECT MAX([dtValue]) AS [dtValue] FROM [DateAndTime];
 <Text><60>()");
 
@@ -703,7 +709,7 @@ namespace Lephone.UnitTest.Data
         public void TestMinDate()
         {
             StaticRecorder.CurRow.Add(new RowInfo(new DateTime()));
-            Sqlite.From<DateAndTime>().Where(Condition.Empty).GetMinDate("dtValue");
+            DbEntry.From<DateAndTimeSqlite>().Where(Condition.Empty).GetMinDate("dtValue");
             AssertSql(@"SELECT MIN([dtValue]) AS [dtValue] FROM [DateAndTime];
 <Text><60>()");
 
@@ -717,7 +723,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSum()
         {
-            Sqlite.From<SinglePerson>().Where(Condition.Empty).GetSum("Id");
+            DbEntry.From<SinglePersonSqlite>().Where(Condition.Empty).GetSum("Id");
             AssertSql(@"SELECT SUM([Id]) AS [Id] FROM [People];
 <Text><60>()");
 
@@ -765,7 +771,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestGroupbySum()
         {
-            Sqlite.From<SinglePerson>().Where(Condition.Empty).GroupBySum<string, long>("Name", "Id");
+            DbEntry.From<SinglePersonSqlite>().Where(Condition.Empty).GroupBySum<string, long>("Name", "Id");
             AssertSql(@"SELECT [Name],SUM([Id]) AS [Id] FROM [People] GROUP BY [Name];
 <Text><60>()");
 
@@ -782,7 +788,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInClause()
         {
-            Sqlite.From<SinglePerson>().Where(CK.K["Id"].In(1, 3, 5, 7)).Select();
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Id"].In(1, 3, 5, 7)).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);
 <Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
         }
@@ -790,7 +796,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestInSql()
         {
-            Sqlite.From<SinglePerson>().Where(CK.K["Id"].InSql("Select Id From Others")).Select();
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Id"].InSql("Select Id From Others")).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (Select Id From Others);
 <Text><60>()");
         }
@@ -826,7 +832,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestExecuteDynamicTable()
         {
-            dynamic table = DbEntry.Context.ExecuteDynamicTable("Select * From People Order By Id");
+            dynamic table = DbEntry.Provider.ExecuteDynamicTable("Select * From People Order By Id");
             Assert.AreEqual(3, table.Count);
             Assert.AreEqual(1, table[0].Id);
             Assert.AreEqual("Tom", table[0].Name);
@@ -839,7 +845,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestExecuteDynamicList()
         {
-            dynamic list = DbEntry.Context.ExecuteDynamicList("Select * From People Order By Id");
+            dynamic list = DbEntry.Provider.ExecuteDynamicList("Select * From People Order By Id");
             Assert.AreEqual(3, list.Count);
             Assert.AreEqual(1, list[0].Id);
             Assert.AreEqual("Tom", list[0].Name);
@@ -852,14 +858,14 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestExecuteDynamicRow()
         {
-            dynamic row = DbEntry.Context.ExecuteDynamicRow("Select * From People Where Id = 1");
+            dynamic row = DbEntry.Provider.ExecuteDynamicRow("Select * From People Where Id = 1");
             Assert.AreEqual("Tom", row.Name);
         }
 
         [Test]
         public void TestExecuteDynamicRowForNull()
         {
-            dynamic row = DbEntry.Context.ExecuteDynamicRow("Select * From NullTest Where Id = 3");
+            dynamic row = DbEntry.Provider.ExecuteDynamicRow("Select * From NullTest Where Id = 3");
             Assert.AreEqual(3, row.Id);
             Assert.IsNull(row.Name);
             Assert.IsNull(row.MyInt);
@@ -869,7 +875,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestExecuteDynamicSet()
         {
-            dynamic set = DbEntry.Context.ExecuteDynamicSet(@"Select * From People Order By Id;
+            dynamic set = DbEntry.Provider.ExecuteDynamicSet(@"Select * From People Order By Id;
 Select * From PCs Order By Id;");
             Assert.AreEqual(2, set.Count);
             Assert.AreEqual(3, set[0].Count);

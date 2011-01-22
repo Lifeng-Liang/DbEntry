@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Lephone.Core;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;
 using Lephone.Web.Mvc;
@@ -55,8 +54,8 @@ public static class CommonWebExtends
     public static T ParseFromRequst<T>(this T obj) where T : IDbObject
     {
         var request = System.Web.HttpContext.Current.Request;
-        var oi = ObjectInfo.GetInstance(typeof(T));
-        foreach(var field in oi.SimpleFields)
+        var ctx = ModelContext.GetInstance(typeof(T));
+        foreach(var field in ctx.Info.SimpleFields)
         {
             var value = request[field.Name];
             if(!value.IsNullOrEmpty())

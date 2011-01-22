@@ -76,18 +76,18 @@ namespace Lephone.Data
 
         private static ASC[] ParseClause(string orderByString, Type t)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
+            var ctx = ModelContext.GetInstance(t);
             string[] ss = orderByString.Split(',');
             var ret = new List<ASC>();
             foreach (string s in ss)
             {
                 if (s.ToLower().EndsWith(" desc"))
                 {
-                    ret.Add(new DESC(GetColumnName(oi, s.Substring(0, s.Length - 5).Trim())));
+                    ret.Add(new DESC(GetColumnName(ctx.Info, s.Substring(0, s.Length - 5).Trim())));
                 }
                 else
                 {
-                    ret.Add(new ASC(GetColumnName(oi, s.Trim())));
+                    ret.Add(new ASC(GetColumnName(ctx.Info, s.Trim())));
                 }
             }
             return ret.ToArray();

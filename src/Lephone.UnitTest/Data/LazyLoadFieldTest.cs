@@ -1,14 +1,13 @@
 ﻿using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.MockSql.Recorder;
-using Lephone.Core;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
-    public class lzUser1 : DbObject
+    public class lzUser1 : DbObjectModel<lzUser1>
     {
-        public string Name;
+        public string Name { get; set; }
         public LazyLoadField<string> Profile;
 
         public lzUser1()
@@ -61,7 +60,16 @@ namespace Lephone.UnitTest.Data
         public string Profile { get; set; }
     }
 
-    [DbTable("User")]
+    [DbContext("SQLite")]
+    public class lzpUserSqlite : DbObjectModel<lzpUserSqlite>
+    {
+        public string Name { get; set; }
+
+        [LazyLoad]
+        public string Profile { get; set; }
+    }
+
+    [DbTable("User"), DbContext("SQLite")]
     public class lzpUser1 : DbObjectModel<lzpUser1>
     {
         public string Name { get; set; }
@@ -80,7 +88,7 @@ namespace Lephone.UnitTest.Data
         protected override void OnSetUp()
         {
             base.OnSetUp();
-            ClassHelper.SetValue(DbEntry.Context, "_tableNames", null);
+            DbEntry.Provider.Driver.TableNames = null;
         }
 
         #endregion
@@ -88,23 +96,25 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestCreate()
         {
-            Sqlite.Create(typeof(lzUser));
-            Assert.AreEqual("CREATE TABLE [lz_User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Profile] NTEXT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+            DbEntry.Create(typeof(lzUser2));
+            Assert.AreEqual("CREATE TABLE [lz_User2] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Profile] NTEXT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestCreate1()
         {
-            Sqlite.Create(typeof(lzpUser1));
+            DbEntry.Create(typeof(lzpUser1));
             Assert.AreEqual("CREATE TABLE [User] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[MyTest] VARCHAR (10) NULL \n);\nCREATE UNIQUE INDEX [IX_User_test] ON [User] ([MyTest] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestValidate()
         {
+            StaticRecorder.CurRow.Add(new RowInfo(0));
             var u = new lzpUser1 {Name = "tom", Profile = "xxx"};
             Assert.IsFalse(u.IsValid());
 
+            StaticRecorder.CurRow.Add(new RowInfo(0));
             u.Profile = "a@b.c";
             Assert.IsTrue(u.IsValid());
         }
@@ -112,15 +122,15 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRead()
         {
-            Sqlite.GetObject<lzUser>(1);
-            Assert.AreEqual("SELECT [Id],[Name] FROM [lz_User] WHERE [Id] = @Id_0;\n<Text><60>(@Id_0=1:Int32)", StaticRecorder.LastMessage);
+            DbEntry.GetObject<lzUser2>(1);
+            Assert.AreEqual("SELECT [Id],[Name] FROM [lz_User2] WHERE [Id] = @Id_0;\n<Text><60>(@Id_0=1:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void TestInsert()
         {
             var u = new lzUser2 {Name = "tom", Profile = "test"};
-            Sqlite.Insert(u);
+            DbEntry.Insert(u);
             Assert.AreEqual("INSERT INTO [lz_User2] ([Name],[Profile]) VALUES (@Name_0,@Profile_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String,@Profile_1=test:String)", StaticRecorder.LastMessage);
         }
 
@@ -208,7 +218,7 @@ namespace Lephone.UnitTest.Data
         //{
         //    Condition c = CK<lzpUser>.Field["Profile"] == "test";
         //    var dpc = new DataParameterCollection();
-        //    Assert.AreEqual("[Profile] = @Profile_0", c.ToSqlText(dpc, DbEntry.Context.Dialect));
+        //    Assert.AreEqual("[Profile] = @Profile_0", c.ToSqlText(dpc, DbEntry.Provider.Dialect));
         //    Assert.AreEqual(1, dpc.Count);
         //    Assert.AreEqual("test", dpc[0].Value);
         //}
@@ -216,8 +226,8 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestLazyLoadFieldForCondition2()
         {
-            Sqlite.From<lzpUser>().Where(p => p.Profile == "test").Select();
-            AssertSql("SELECT [Id],[Name] FROM [lzp_User] WHERE [Profile] = @Profile_0;\n<Text><60>(@Profile_0=test:String)");
+            DbEntry.From<lzpUserSqlite>().Where(p => p.Profile == "test").Select();
+            AssertSql("SELECT [Id],[Name] FROM [lzp_User_Sqlite] WHERE [Profile] = @Profile_0;\n<Text><60>(@Profile_0=test:String)");
         }
     }
 }

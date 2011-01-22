@@ -27,8 +27,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestAddDescription()
         {
-            var ctx = DbEntry.GetContext(typeof(User));
-            ctx.Create(typeof(User));
+            ModelContext.GetInstance(typeof(User)).Operator.Create();
             AssertSql(
 @"EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'This''s the name' ,@level0type=N'SCHEMA', @level0name=N'dbo', @level1type=N'TABLE', @level1name=N'MyGod', @level2type=N'COLUMN', @level2name=N'Name';
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Age of user' ,@level0type=N'SCHEMA', @level0name=N'dbo', @level1type=N'TABLE', @level1name=N'MyGod', @level2type=N'COLUMN', @level2name=N'Age';

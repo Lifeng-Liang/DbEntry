@@ -24,44 +24,40 @@ namespace Lephone.Data.SqlEntry
     {
         #region properties
 
+        public object Jar;
+
         private IDbConnection _connection;
 
-        public IDbConnection Connection
+        public IDbConnection GetConnection(DbDriver driver)
         {
-            get
+            if (_state == ConnectionContextState.NoConnection)
             {
-                if (_state == ConnectionContextState.NoConnection)
-                {
-                    _connection = _driver.GetDbConnection();
-                    _connection.Open();
-                    _state = ConnectionContextState.ConnectionOpened;
-                }
-                return _connection;
+                _connection = GetDriver(driver).GetDbConnection();
+                _connection.Open();
+                _state = ConnectionContextState.ConnectionOpened;
             }
+            return _connection;
         }
 
         private IDbTransaction _transaction;
 
-        public IDbTransaction Transaction
+        private IDbTransaction GetTransaction(DbDriver driver)
         {
-            get
+            if (_state == ConnectionContextState.ConnectionOpened || _state == ConnectionContextState.TransactionEnded)
             {
-                if (_state == ConnectionContextState.ConnectionOpened || _state == ConnectionContextState.TransactionEnded)
+                switch (_transactionState)
                 {
-                    switch (_transactionState)
-                    {
-                        case ConnectionContextTransactionState.UnspecifiedTransaction:
-                            _transaction = Connection.BeginTransaction();
-                            _state = ConnectionContextState.TransactionStarted;
-                            break;
-                        case ConnectionContextTransactionState.SpecifiedTransaciton:
-                            _transaction = Connection.BeginTransaction(_isolationLevel);
-                            _state = ConnectionContextState.TransactionStarted;
-                            break;
-                    }
+                    case ConnectionContextTransactionState.UnspecifiedTransaction:
+                        _transaction = GetConnection(driver).BeginTransaction();
+                        _state = ConnectionContextState.TransactionStarted;
+                        break;
+                    case ConnectionContextTransactionState.SpecifiedTransaciton:
+                        _transaction = GetConnection(driver).BeginTransaction(_isolationLevel);
+                        _state = ConnectionContextState.TransactionStarted;
+                        break;
                 }
-                return _transaction;
             }
+            return _transaction;
         }
 
         private IsolationLevel _isolationLevel;
@@ -73,14 +69,14 @@ namespace Lephone.Data.SqlEntry
 
         private ConnectionContextState _state;
         private ConnectionContextTransactionState _transactionState;
-        private readonly DbDriver _driver;
+        private DbDriver _driver;
+
+        private DbDriver GetDriver(DbDriver driver)
+        {
+            return _driver ?? (_driver = driver);
+        }
 
         #endregion
-
-        public ConnectionContext(DbDriver dd)
-        {
-            _driver = dd;
-        }
 
         public void BeginTransaction()
         {
@@ -93,10 +89,14 @@ namespace Lephone.Data.SqlEntry
             _isolationLevel = il;
         }
 
-        public IDbCommand GetDbCommand(SqlStatement sql)
+        public IDbCommand GetDbCommand(SqlStatement sql, DbDriver driver)
         {
-            var e = _driver.GetDbCommand(sql, Connection);
-            if(Transaction != null)
+            if(_driver == null)
+            {
+                _driver = driver;
+            }
+            var e = _driver.GetDbCommand(sql, GetConnection(driver));
+            if(GetTransaction(driver) != null)
             {
                 e.Transaction = _transaction;
             }

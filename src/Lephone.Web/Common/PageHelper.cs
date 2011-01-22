@@ -27,8 +27,8 @@ namespace Lephone.Web.Common
         public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string noticeText,
             string cssErrInput, CallbackVoidHandler callback)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
-            EnumControls(p, oi, delegate(MemberHandler mh, WebControl c)
+            var ctx = ModelContext.GetInstance(obj.GetType());
+            EnumControls(p, ctx.Info, delegate(MemberHandler mh, WebControl c)
             {
                 c.CssClass = "";
             });
@@ -49,7 +49,7 @@ namespace Lephone.Web.Common
                     {
                         msg.AddWarning(vh.ErrorMessages[str]);
                     }
-                    WebControl c = GetWebControl(p, oi, str);
+                    WebControl c = GetWebControl(p, ctx.Info, str);
                     if (c != null)
                     {
                         c.CssClass = cssErrInput;
@@ -96,9 +96,9 @@ namespace Lephone.Web.Common
 
         public static object GetObject(Type t, Page p, string parseErrorText)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            object obj = oi.NewObject();
-            EnumControls(p, oi, delegate(MemberHandler h, WebControl c)
+            var ctx = ModelContext.GetInstance(t);
+            object obj = ctx.NewObject();
+            EnumControls(p, ctx.Info, delegate(MemberHandler h, WebControl c)
             {
                 string v = GetValue(c);
                 if (h.FieldType.IsEnum)
@@ -181,8 +181,8 @@ namespace Lephone.Web.Common
         public static void SetObject(object obj, Page p)
         {
             Type t = obj.GetType();
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            EnumControls(p, oi, delegate(MemberHandler h, WebControl c)
+            var ctx = ModelContext.GetInstance(t);
+            EnumControls(p, ctx.Info, delegate(MemberHandler h, WebControl c)
             {
                 object v = h.GetValue(obj);
                 SetValue(c, v);

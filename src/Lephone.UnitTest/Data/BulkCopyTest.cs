@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
@@ -53,11 +52,12 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(3, rcs[0]);
         }
 #endif
+        private readonly DataProvider _sqlite = new DataProvider("SQLite");
 
         [Test]
         public void TestGetTheRightCopier()
         {
-            IDbBulkCopy c = DbEntry.Context.GetDbBulkCopy(false);
+            IDbBulkCopy c = DbEntry.Provider.GetDbBulkCopy(false);
             Assert.IsNotNull(c);
             Assert.IsTrue(c is CommonBulkCopy);
         }
@@ -65,8 +65,8 @@ namespace Lephone.UnitTest.Data
         [Test, ExpectedException(typeof(InvalidCastException))]
         public void TestGetTheRightCopier2()
         {
-            var dc = EntryConfig.NewContext("SqlServerMock");
-            dc.NewTransaction(delegate
+            var dc = new DataProvider("SqlServerMock");
+            DbEntry.NewTransaction(delegate
             {
                 IDbBulkCopy c = dc.GetDbBulkCopy(false); // exception
                 Assert.IsNotNull(c);
@@ -79,11 +79,11 @@ namespace Lephone.UnitTest.Data
         {
             var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             var rcs = new List<long>();
-            DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
+            DbEntry.Provider.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                Sqlite.NewConnection(delegate
+                _sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = Sqlite.GetDbBulkCopy(false);
+                    IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
@@ -108,10 +108,10 @@ namespace Lephone.UnitTest.Data
         {
             var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             var rcs = new List<long>();
-            DataSet ds = DbEntry.Context.ExecuteDataset(sql);
-            Sqlite.NewConnection(delegate
+            DataSet ds = DbEntry.Provider.ExecuteDataset(sql);
+            _sqlite.NewConnection(delegate
             {
-                IDbBulkCopy c = Sqlite.GetDbBulkCopy(false);
+                IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                 c.BatchSize = 2;
                 c.DestinationTableName = "test";
                 c.NotifyAfter = 3;
@@ -135,10 +135,10 @@ namespace Lephone.UnitTest.Data
         {
             var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             var rcs = new List<long>();
-            DataSet ds = DbEntry.Context.ExecuteDataset(sql);
-            Sqlite.NewConnection(delegate
+            DataSet ds = DbEntry.Provider.ExecuteDataset(sql);
+            _sqlite.NewConnection(delegate
             {
-                IDbBulkCopy c = Sqlite.GetDbBulkCopy(false);
+                IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                 c.BatchSize = 2;
                 c.DestinationTableName = "test";
                 c.NotifyAfter = 2;
@@ -162,11 +162,11 @@ namespace Lephone.UnitTest.Data
         public void TestCommonBulkCopyAbort()
         {
             var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
-            DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
+            DbEntry.Provider.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                Sqlite.NewConnection(delegate
+                _sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = Sqlite.GetDbBulkCopy(false);
+                    IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
@@ -188,11 +188,11 @@ namespace Lephone.UnitTest.Data
         public void TestBulkCopyWithNullValue()
         {
             var sql = new SqlStatement("SELECT [Id],[Name],[MyInt],[MyBool] FROM [NullTest] ORDER BY [Id]");
-            DbEntry.Context.ExecuteDataReader(sql, delegate(IDataReader dr)
+            DbEntry.Provider.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                Sqlite.NewConnection(delegate
+                _sqlite.NewConnection(delegate
                 {
-                    IDbBulkCopy c = Sqlite.GetDbBulkCopy(false);
+                    IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;

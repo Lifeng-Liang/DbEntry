@@ -30,7 +30,7 @@ namespace Lephone.Core
             }
         }
 
-        protected virtual  TKey CheckKey(TKey t)
+        protected virtual TKey CheckKey(TKey t)
         {
             return t;
         }

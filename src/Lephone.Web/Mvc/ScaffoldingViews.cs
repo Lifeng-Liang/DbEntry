@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Web;
 using System.Reflection;
+using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Core;
 using Lephone.Core.Text;
@@ -10,7 +11,7 @@ namespace Lephone.Web.Mvc
 {
     internal class ScaffoldingViews : PageBase
     {
-        private readonly ObjectInfo _oi;
+        private readonly ModelContext _dctx;
         private readonly HttpContext _ctx;
 
         private const string HeaderTemplate = @"
@@ -35,7 +36,7 @@ namespace Lephone.Web.Mvc
         public ScaffoldingViews(ControllerInfo ci, Type t, HttpContext context)
         {
             _style = ci.ListStyle;
-            _oi = ObjectInfo.GetInstance(t);
+            _dctx = ModelContext.GetInstance(t);
             _ctx = context;
         }
 
@@ -74,13 +75,13 @@ namespace Lephone.Web.Mvc
         {
             Process(delegate(HtmlBuilder b)
                     {
-                        string cn = _oi.HandleType.Name;
+                        string cn = _dctx.Info.HandleType.Name;
                         object o = this["Item"];
-                        object id = _oi.Handler.GetKeyValue(o);
+                        object id = _dctx.Handler.GetKeyValue(o);
                         b.h1.text(cn + " Edit").end.enter();
                         b.form("post", UrlTo.Action("update").Parameters(id)).enter();
 
-                        foreach (MemberHandler m in _oi.Fields)
+                        foreach (MemberHandler m in _dctx.Info.Fields)
                         {
                             if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                             {
@@ -105,13 +106,13 @@ namespace Lephone.Web.Mvc
         {
             Process(delegate(HtmlBuilder b)
                     {
-                        string cn = _oi.HandleType.Name;
+                        string cn = _dctx.Info.HandleType.Name;
                         b.p.style("color: Green").text(Flash.Notice).end.enter().enter();
                         b.h1.text("Listing " + Inflector.Pluralize(cn)).end.enter().enter();
 
                         b.table.tr.enter();
 
-                        foreach (MemberHandler m in _oi.SimpleFields)
+                        foreach (MemberHandler m in _dctx.Info.SimpleFields)
                         {
                             b.th.text(m.Name).end.enter();
                         }
@@ -125,8 +126,8 @@ namespace Lephone.Web.Mvc
                             foreach (object o in objlist)
                             {
                                 b.tr.over();
-                                object id = _oi.Handler.GetKeyValue(o);
-                                foreach (MemberHandler m in _oi.SimpleFields)
+                                object id = _dctx.Handler.GetKeyValue(o);
+                                foreach (MemberHandler m in _dctx.Info.SimpleFields)
                                 {
                                     b.td.text(m.GetValue(o) ?? "<NULL>").end.enter();
                                 }
@@ -167,11 +168,11 @@ namespace Lephone.Web.Mvc
         {
             Process(delegate(HtmlBuilder b)
                     {
-                        string cn = _oi.HandleType.Name;
+                        string cn = _dctx.Info.HandleType.Name;
                         b.h1.text("New " + cn).end.enter();
                         b.form("post", UrlTo.Controller(ControllerName).Action("create")).enter();
 
-                        foreach (MemberHandler m in _oi.Fields)
+                        foreach (MemberHandler m in _dctx.Info.Fields)
                         {
                             if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                             {
@@ -192,11 +193,11 @@ namespace Lephone.Web.Mvc
             Process(delegate(HtmlBuilder b)
                     {
                         object o = this["Item"];
-                        object id = _oi.Handler.GetKeyValue(o);
+                        object id = _dctx.Handler.GetKeyValue(o);
 
                         b.p.style("color: Green").text(Flash.Notice).end.enter().enter();
 
-                        foreach (MemberHandler m in _oi.Fields)
+                        foreach (MemberHandler m in _dctx.Info.Fields)
                         {
                             if(!m.IsRelationField)
                             {

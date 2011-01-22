@@ -12,15 +12,15 @@ namespace Lephone.Data.Caching
         {
             get
             {
-                ObjectInfo oi = ObjectInfo.GetInstance(obj.GetType());
-                return GetKey(oi.HandleType, oi.Handler.GetKeyValue(obj));
+                var type = obj.GetType();
+                var ctx = ModelContext.GetInstance(type);
+                return GetKey(type, ctx.Handler.GetKeyValue(obj));
             }
         }
 
         public virtual string GetKey(Type t, object dbKey)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            string s = string.Format("{0},{1}", oi.HandleType.FullName, dbKey);
+            string s = string.Format("{0},{1}", t.FullName, dbKey);
             return s;
         }
     }
@@ -29,8 +29,7 @@ namespace Lephone.Data.Caching
     {
         public override string GetKey(Type t, object dbKey)
         {
-            ObjectInfo oi = ObjectInfo.GetInstance(t);
-            string s = string.Format("{0},{1},{2}", oi.HandleType.Assembly.FullName, oi.HandleType.FullName, dbKey);
+            string s = string.Format("{0},{1},{2}", t.Assembly.FullName, t.FullName, dbKey);
             return s;
         }
     }

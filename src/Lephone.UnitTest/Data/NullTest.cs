@@ -118,7 +118,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3WithSql()
         {
-            List<NullableTable> ls = DbEntry.Context.ExecuteList<NullableTable>(
+            List<NullableTable> ls = DbEntry.ExecuteList<NullableTable>(
                 "select * from NullTest where Id = 3");
             Assert.AreEqual(1, ls.Count);
             NullableTable o = ls[0];

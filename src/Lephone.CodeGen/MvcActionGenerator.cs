@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 
@@ -72,8 +73,8 @@ namespace Lephone.CodeGen
     {
 ");
             sb.Append("        var").Append(" obj = ").Append(_classType.Name).Append(".New;\n\n");
-            ObjectInfo oi = ObjectInfo.GetInstance(_classType);
-            foreach (MemberHandler m in oi.Fields)
+            var ctx = ModelContext.GetInstance(_classType);
+            foreach (MemberHandler m in ctx.Info.Fields)
             {
                 if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
                 {
@@ -218,8 +219,8 @@ namespace Lephone.CodeGen
                 sb.Append("DbEntry.GetObject<").Append(_classType.Name).Append(">(n);\n\n");
             }
 
-            ObjectInfo oi = ObjectInfo.GetInstance(_classType);
-            foreach (MemberHandler m in oi.Fields)
+            var ctx = ModelContext.GetInstance(_classType);
+            foreach (MemberHandler m in ctx.Info.Fields)
             {
                 if (m.IsRelationField) { continue; }
                 if (!m.IsAutoSavedValue && !m.IsDbGenerate)
