@@ -78,11 +78,11 @@ namespace Lephone.Data.Common
             });
         }
 
-        private void IfUsingTransaction(bool isUsing, CallbackVoidHandler callback)
+        private static void IfUsingTransaction(bool isUsing, CallbackVoidHandler callback)
         {
             if (isUsing)
             {
-                NewTransaction(callback);
+                DbEntry.NewTransaction(callback);
             }
             else
             {

@@ -114,14 +114,14 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\Clause\ConstCondition.cs" />
     <Compile Include="Builder\Clause\InClause.cs" />
     <Compile Include="Builder\ISqlKeys.cs" />
-    <Compile Include="Common\CachedModelOperator.cs" />
+    <Compile Include="Caching\CachedModelOperator.cs" />
     <Compile Include="Caching\CacheProvider.cs" />
     <Compile Include="Caching\KeyGenerator.cs" />
     <Compile Include="Caching\StaticHashCacheProvider.cs" />
     <Compile Include="Caching\TimeValue.cs" />
     <Compile Include="Common\AccessDataReader.cs" />
     <Compile Include="Common\BulkCopyProcessor.cs" />
-    <Compile Include="Common\CachedListInserter.cs" />
+    <Compile Include="Caching\CachedListInserter.cs" />
     <Compile Include="Common\ColumnFunction.cs" />
     <Compile Include="Common\CommonExtends.cs" />
     <Compile Include="Common\DbStructInterface.cs" />
@@ -221,7 +221,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="SqlEntry\DbColumnInfo.cs" />
     <Compile Include="SqlEntry\AutoValue.cs" />
     <Compile Include="SqlEntry\IDbBulkCopy.cs" />
-    <Compile Include="SqlEntry\IHasConnection.cs" />
     <Compile Include="Common\LimitedListInserter.cs" />
     <Compile Include="Definition\NamedDbObject.cs" />
     <Compile Include="QuerySyntax\QueryContent.cs" />

@@ -1,4 +1,5 @@
-﻿using Lephone.Data.SqlEntry;
+﻿using Lephone.Data;
+using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using NUnit.Framework;
 
@@ -11,8 +12,7 @@ namespace Lephone.UnitTest.Data
         public void Test1()
         {
             StaticRecorder.ConnectionOpendTimes = 0;
-            var ctx = new DataProvider("SQLite");
-            ctx.UsingTransaction(delegate
+            DbEntry.UsingTransaction(delegate
             {
             });
             Assert.AreEqual(0, StaticRecorder.ConnectionOpendTimes);
@@ -23,7 +23,7 @@ namespace Lephone.UnitTest.Data
         {
             StaticRecorder.ConnectionOpendTimes = 0;
             var ctx = new DataProvider("SQLite");
-            ctx.UsingTransaction(() => ctx.ExecuteNonQuery("select * from test"));
+            DbEntry.UsingTransaction(() => ctx.ExecuteNonQuery("select * from test"));
             Assert.AreEqual(1, StaticRecorder.ConnectionOpendTimes);
         }
 
@@ -32,7 +32,7 @@ namespace Lephone.UnitTest.Data
         {
             StaticRecorder.ConnectionOpendTimes = 0;
             var ctx = new DataProvider("SQLite");
-            ctx.UsingTransaction(delegate
+            DbEntry.UsingTransaction(delegate
             {
                 ctx.ExecuteNonQuery("select * from test");
                 ctx.ExecuteNonQuery("select * from test");

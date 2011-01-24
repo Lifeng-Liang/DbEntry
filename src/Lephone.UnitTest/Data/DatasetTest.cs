@@ -15,7 +15,7 @@ namespace Lephone.UnitTest.Data
             var dc = DbEntry.Provider;
             DataSet ds = dc.ExecuteDataset(new SqlStatement("select [Name] from [People] where 1=0"));
 
-            dc.UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 var da = (DbDataAdapter)dc.Driver.GetDbAdapter();
                 var sql = new SqlStatement("insert into [People] ([Name]) VALUES (@name)");
@@ -49,7 +49,7 @@ namespace Lephone.UnitTest.Data
             var sql = new SqlStatement("select [Id],[Name] from [People] where 1=0");
             DataSet ds = dc.ExecuteDataset(sql);
 
-            dc.UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 var da = (DbDataAdapter)dc.Driver.GetDbAdapter(dc.GetDbCommand(sql));
                 var cb = dc.Driver.GetCommandBuilder();

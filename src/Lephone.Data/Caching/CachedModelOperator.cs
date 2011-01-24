@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Lephone.Core;
-using Lephone.Data.Caching;
+using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 
-namespace Lephone.Data.Common
+namespace Lephone.Data.Caching
 {
     public class CachedModelOperator : ModelOperator
     {
@@ -13,49 +13,37 @@ namespace Lephone.Data.Common
         {
         }
 
-        protected internal override void OnBeginTransaction()
-        {
-            Scope<ConnectionContext>.Current.Jar = new List<string>();
-        }
-
-        protected internal override void OnCommittedTransaction()
-        {
-            Scope<ConnectionContext>.Current.Jar = null;
-        }
-
-        protected internal override void OnTransactionError()
-        {
-            if (DataSettings.CacheClearWhenError)
-            {
-                CacheProvider.Instance.Clear();
-            }
-            else
-            {
-                var keyList = (List<string>)Scope<ConnectionContext>.Current.Jar;
-                foreach (string key in keyList)
-                {
-                    CacheProvider.Instance.Remove(key);
-                }
-            }
-        }
-
         protected internal virtual void SetCachedObject(object obj)
         {
             string key = KeyGenerator.Instance[obj];
-            CacheProvider.Instance[key] = ModelContext.CloneObject(obj);
-            if (Scope<ConnectionContext>.Current != null)
+            if (Scope<ConnectionContext>.Current != null && Scope<ConnectionContext>.Current.IsInTransaction)
             {
-                if (Scope<ConnectionContext>.Current.Jar != null)
+                if (Scope<ConnectionContext>.Current.Jar == null)
                 {
-                    var keyList = (List<string>)Scope<ConnectionContext>.Current.Jar;
-                    keyList.Add(key);
+                    Scope<ConnectionContext>.Current.Jar = new Dictionary<string, object>();
                 }
+                Scope<ConnectionContext>.Current.Jar.Add(key, obj);
             }
+            else
+            {
+                SetObjectToCache(key, obj);
+            }
+        }
+
+        private static void SetObjectToCache(string key, object obj)
+        {
+            CacheProvider.Instance[key] = ModelContext.CloneObject(obj);
         }
 
         protected override object InnerGetObject(object key)
         {
-            object co = CacheProvider.Instance[KeyGenerator.Instance.GetKey(Info.HandleType, key)];
+            var sk = KeyGenerator.Instance.GetKey(Info.HandleType, key);
+
+            object co = Scope<ConnectionContext>.Current != null 
+                && Scope<ConnectionContext>.Current.Jar != null 
+                && Scope<ConnectionContext>.Current.Jar.ContainsKey(sk) 
+                            ? Scope<ConnectionContext>.Current.Jar[sk] 
+                            : CacheProvider.Instance[sk];
             if (co != null)
             {
                 object objInCache = ModelContext.CloneObject(co);

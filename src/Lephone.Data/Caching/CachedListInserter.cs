@@ -1,6 +1,6 @@
-﻿using Lephone.Data.Caching;
+﻿using Lephone.Data.Common;
 
-namespace Lephone.Data.Common
+namespace Lephone.Data.Caching
 {
     public class CachedListInserter : IProcessor
     {

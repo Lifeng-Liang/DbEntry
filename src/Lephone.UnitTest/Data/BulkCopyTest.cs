@@ -81,7 +81,7 @@ namespace Lephone.UnitTest.Data
             var rcs = new List<long>();
             DbEntry.Provider.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                _sqlite.NewConnection(delegate
+                DbEntry.NewConnection(delegate
                 {
                     IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;
@@ -109,7 +109,7 @@ namespace Lephone.UnitTest.Data
             var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             var rcs = new List<long>();
             DataSet ds = DbEntry.Provider.ExecuteDataset(sql);
-            _sqlite.NewConnection(delegate
+            DbEntry.NewConnection(delegate
             {
                 IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                 c.BatchSize = 2;
@@ -136,7 +136,7 @@ namespace Lephone.UnitTest.Data
             var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             var rcs = new List<long>();
             DataSet ds = DbEntry.Provider.ExecuteDataset(sql);
-            _sqlite.NewConnection(delegate
+            DbEntry.NewConnection(delegate
             {
                 IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                 c.BatchSize = 2;
@@ -164,7 +164,7 @@ namespace Lephone.UnitTest.Data
             var sql = new SqlStatement("SELECT [Id],[Name] FROM [Books] ORDER BY [Id]");
             DbEntry.Provider.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                _sqlite.NewConnection(delegate
+                DbEntry.NewConnection(delegate
                 {
                     IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;
@@ -190,7 +190,7 @@ namespace Lephone.UnitTest.Data
             var sql = new SqlStatement("SELECT [Id],[Name],[MyInt],[MyBool] FROM [NullTest] ORDER BY [Id]");
             DbEntry.Provider.ExecuteDataReader(sql, delegate(IDataReader dr)
             {
-                _sqlite.NewConnection(delegate
+                DbEntry.NewConnection(delegate
                 {
                     IDbBulkCopy c = _sqlite.GetDbBulkCopy(false);
                     c.BatchSize = 2;

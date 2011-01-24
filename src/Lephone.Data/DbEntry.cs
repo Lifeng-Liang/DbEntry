@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
 using Lephone.Core;
+using Lephone.Data.Caching;
 using Lephone.Data.QuerySyntax;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
@@ -15,28 +16,101 @@ namespace Lephone.Data
     {
         public const string CountColumn = "it__count__";
 
-        #region NewTransaction
-
         public static readonly DataProvider Provider = new DataProvider("");
+
+        #region Transaction
 
         public static void UsingTransaction(CallbackVoidHandler callback)
         {
-            Provider.UsingTransaction(callback);
+            if (Scope<ConnectionContext>.Current != null)
+            {
+                callback();
+                return;
+            }
+            NewTransaction(callback);
         }
 
         public static void UsingTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
-            Provider.UsingTransaction(il, callback);
+            if (Scope<ConnectionContext>.Current != null)
+            {
+                ConnectionContext et = Scope<ConnectionContext>.Current;
+                if (et.IsolationLevel == il)
+                {
+                    callback();
+                    return;
+                }
+            }
+            NewTransaction(callback);
         }
 
         public static void NewTransaction(CallbackVoidHandler callback)
         {
-            Provider.NewTransaction(callback);
+            NewTransaction(IsolationLevel.ReadCommitted, callback);
         }
 
         public static void NewTransaction(IsolationLevel il, CallbackVoidHandler callback)
         {
-            Provider.NewTransaction(il, callback);
+            NewConnection(delegate
+            {
+                ConnectionContext cc = ConnectionContext.Current;
+                cc.BeginTransaction(il);
+                try
+                {
+                    callback();
+                    cc.Commit();
+                    OnTransactionCommitted();
+                }
+                catch
+                {
+                    cc.Rollback();
+                    throw;
+                }
+            });
+        }
+
+        private static void OnTransactionCommitted()
+        {
+            if(DataSettings.CacheEnabled)
+            {
+                if (Scope<ConnectionContext>.Current.Jar != null && Scope<ConnectionContext>.Current.Jar.Count > 0)
+                {
+                    foreach (var obj in Scope<ConnectionContext>.Current.Jar.Values)
+                    {
+                        string key = KeyGenerator.Instance[obj];
+                        CacheProvider.Instance[key] = ModelContext.CloneObject(obj);
+                    }
+                }
+                Scope<ConnectionContext>.Current.Jar = null;
+            }
+        }
+
+        public static void NewConnection(CallbackVoidHandler callback)
+        {
+            using (var cc = new ConnectionContext())
+            {
+                using (new Scope<ConnectionContext>(cc))
+                {
+                    try
+                    {
+                        callback();
+                    }
+                    finally
+                    {
+                        cc.Close();
+                    }
+                }
+            }
+        }
+
+        public static void UsingConnection(CallbackVoidHandler callback)
+        {
+            if (Scope<ConnectionContext>.Current != null)
+            {
+                callback();
+                return;
+            }
+            NewConnection(callback);
         }
 
         #endregion

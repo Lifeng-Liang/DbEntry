@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Lephone.Core;
+using Lephone.Data.Caching;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;

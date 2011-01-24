@@ -64,7 +64,7 @@ namespace Lephone.Data.SqlEntry
 
         public void Close()
         {
-            _provider.ConProvider.Close();
+            ConnectionContext.Current.Close();
         }
 
         public void WriteToServer(DataRow[] rows)
@@ -141,7 +141,7 @@ namespace Lephone.Data.SqlEntry
 
         private void ProcessWrite(CallbackVoidHandler callback)
         {
-            _provider.NewTransaction(() =>
+            DbEntry.NewTransaction(() =>
             {
                 if(_identityInsert)
                 {

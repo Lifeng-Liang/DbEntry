@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Lephone.Data.Driver;
 using Lephone.Core;
@@ -24,7 +25,7 @@ namespace Lephone.Data.SqlEntry
     {
         #region properties
 
-        public object Jar;
+        public Dictionary<string, object> Jar;
 
         private IDbConnection _connection;
 
@@ -76,7 +77,24 @@ namespace Lephone.Data.SqlEntry
             return _driver ?? (_driver = driver);
         }
 
+        public bool IsInTransaction
+        {
+            get { return _state == ConnectionContextState.TransactionStarted; }
+        }
+
         #endregion
+
+        public static ConnectionContext Current
+        {
+            get
+            {
+                if (Scope<ConnectionContext>.Current != null)
+                {
+                    return Scope<ConnectionContext>.Current;
+                }
+                return new ConnectionContext();
+            }
+        }
 
         public void BeginTransaction()
         {

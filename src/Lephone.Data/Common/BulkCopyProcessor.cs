@@ -71,7 +71,7 @@ namespace Lephone.Data.Common
         {
             Src.ExecuteDataReader(new SqlStatement(sql), dr =>
             {
-                Dest.NewConnection(delegate
+                DbEntry.NewConnection(delegate
                 {
                     IDbBulkCopy c = Dest.GetDbBulkCopy(identityInsert);
                     c.BatchSize = _batchSize;

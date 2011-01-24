@@ -14,26 +14,9 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data.SqlEntry
 {
-	public partial class DataProvider : IHasConnection
+	public partial class DataProvider
 	{
 		internal DbDriver InnerDriver;
-
-        ConnectionContext IHasConnection.ConnectionProvider
-        {
-            get { return ConProvider; }
-        }
-
-        internal ConnectionContext ConProvider
-        {
-            get
-            {
-                if (Scope<ConnectionContext>.Current != null)
-                {
-                    return Scope<ConnectionContext>.Current;
-                }
-                return new ConnectionContext();
-            }
-        }
 
         public readonly DbTimeProvider DbTime;
 
@@ -81,9 +64,9 @@ namespace Lephone.Data.SqlEntry
             var ret = new List<string>();
             DbStructInterface si = Dialect.GetDbStructInterface();
             string userId = Dialect.GetUserId(Driver.ConnectionString);
-            NewConnection(delegate
+            DbEntry.NewConnection(delegate
             {
-                var c = (DbConnection)ConProvider.GetConnection(Driver);
+                var c = (DbConnection)ConnectionContext.Current.GetConnection(Driver);
                 foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
                 {
                     if (si.FiltrateDatabaseName)
@@ -135,7 +118,7 @@ namespace Lephone.Data.SqlEntry
 
 		private void ExecuteDataset(SqlStatement sql, DataSet ds)
 		{
-            UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(sql))
                 {
@@ -167,7 +150,7 @@ namespace Lephone.Data.SqlEntry
         public int UpdateDataset(SqlStatement selectSql, DataSet ds, int updateBatchSize)
         {
             int ret = 0;
-            UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 var d = (DbDataAdapter)InnerDriver.GetDbAdapter(GetDbCommand(selectSql));
                 var cb = InnerDriver.GetCommandBuilder();
@@ -194,7 +177,7 @@ namespace Lephone.Data.SqlEntry
         private int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize, bool throwException)
         {
             int ret = 0;
-            UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 IDbDataAdapter d = InnerDriver.GetDbAdapter();
                 if(insertSql != null)
@@ -236,7 +219,7 @@ namespace Lephone.Data.SqlEntry
         public object ExecuteScalar(SqlStatement sql)
 		{
             object obj = null;
-            UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(sql))
                 {
@@ -254,7 +237,7 @@ namespace Lephone.Data.SqlEntry
 		public int ExecuteNonQuery(SqlStatement sql)
 		{
             int i = 0;
-            UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(sql))
                 {
@@ -276,7 +259,7 @@ namespace Lephone.Data.SqlEntry
 
         public void ExecuteDataReader(SqlStatement sql, CommandBehavior behavior, CallbackObjectHandler<IDataReader> callback)
         {
-            UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(sql))
                 {
@@ -296,7 +279,7 @@ namespace Lephone.Data.SqlEntry
         // It's only for stupid oracle
         internal void ExecuteDataReader(SqlStatement sql, Type returnType, CallbackObjectHandler<IDataReader> callback)
         {
-            UsingConnection(delegate
+            DbEntry.UsingConnection(delegate
             {
                 using (IDbCommand e = GetDbCommand(sql))
                 {
@@ -322,7 +305,7 @@ namespace Lephone.Data.SqlEntry
             {
                 Logger.SQL.Trace(sql);
             }
-            return ConProvider.GetDbCommand(sql, Driver);
+            return ConnectionContext.Current.GetDbCommand(sql, Driver);
         }
 
         protected void PopulateOutParams(SqlStatement sql, IDbCommand e)
@@ -445,107 +428,6 @@ namespace Lephone.Data.SqlEntry
         public int ExecuteNonQuery(string sqlCommandText, params object[] os)
         {
             return ExecuteNonQuery(GetSqlStatement(sqlCommandText, os));
-        }
-
-        #endregion
-
-        #region IUsingTransaction
-
-        public void UsingTransaction(CallbackVoidHandler callback)
-        {
-            if (Scope<ConnectionContext>.Current != null)
-            {
-                callback();
-                return;
-            }
-            NewTransaction(callback);
-        }
-
-        public void UsingTransaction(IsolationLevel il, CallbackVoidHandler callback)
-        {
-            if (Scope<ConnectionContext>.Current != null)
-            {
-                ConnectionContext et = Scope<ConnectionContext>.Current;
-                if (et.IsolationLevel == il)
-                {
-                    callback();
-                    return;
-                }
-            }
-            NewTransaction(callback);
-        }
-
-        public void NewTransaction(CallbackVoidHandler callback)
-        {
-            NewTransaction(IsolationLevel.ReadCommitted, callback);
-        }
-
-        public void NewTransaction(IsolationLevel il, CallbackVoidHandler callback)
-        {
-            NewConnection(delegate
-            {
-                ConnectionContext cc = ConProvider;
-                cc.BeginTransaction(il);
-                try
-                {
-                    OnBeginTransaction();
-                    callback();
-                    cc.Commit();
-                    OnCommittedTransaction();
-                }
-                catch
-                {
-                    try
-                    {
-                        cc.Rollback();
-                    }
-                    finally
-                    {
-                        OnTransactionError();
-                    }
-                    throw;
-                }
-            });
-        }
-
-        protected internal virtual void OnBeginTransaction()
-        {
-        }
-
-        protected internal virtual void OnCommittedTransaction()
-        {
-        }
-
-        protected internal virtual void OnTransactionError()
-        {
-        }
-
-        public void NewConnection(CallbackVoidHandler callback)
-        {
-            using (var cc = new ConnectionContext())
-            {
-                using (new Scope<ConnectionContext>(cc))
-                {
-                    try
-                    {
-                        callback();
-                    }
-                    finally
-                    {
-                        cc.Close();
-                    }
-                }
-            }
-        }
-
-        public void UsingConnection(CallbackVoidHandler callback)
-        {
-            if (Scope<ConnectionContext>.Current != null)
-            {
-                callback();
-                return;
-            }
-            NewConnection(callback);
         }
 
         #endregion
