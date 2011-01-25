@@ -3,15 +3,17 @@ using Lephone.Core;
 using Lephone.Data.Builder;
 using Lephone.Data.Caching;
 using Lephone.Data.Definition;
-using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Common
 {
-    public abstract class ModelUpdater : DataProvider
+    public abstract class ModelUpdater
     {
-        protected ModelUpdater(DbDriver driver) : base(driver)
+        protected DataProvider Provider;
+
+        protected ModelUpdater(DataProvider provider)
         {
+            this.Provider = provider;
         }
 
         private static void UsingSavedObjectList(CallbackVoidHandler callback)
@@ -111,7 +113,7 @@ namespace Lephone.Data.Common
             else
             {
                 SqlStatement sql = sb.ToSqlStatement(ctx);
-                ctx.Operator.ExecuteNonQuery(sql);
+                ctx.Provider.ExecuteNonQuery(sql);
             }
             ClearUpdatedColumns(obj);
         }
@@ -189,7 +191,7 @@ namespace Lephone.Data.Common
                     if (!Scope<SavedObjectList>.Current.Contains(obj))
                     {
                         Scope<SavedObjectList>.Current.Add(obj);
-                        processParent(ctx.Operator);
+                        processParent(ctx.Provider);
                         ProcessChildren(ctx, obj, o =>
                         {
                             SetBelongsToForeignKey(obj, o, ctx.Handler.GetKeyValue(obj));
@@ -200,7 +202,7 @@ namespace Lephone.Data.Common
             }
             else
             {
-                processParent(ctx.Operator);
+                processParent(ctx.Provider);
             }
         }
 
@@ -315,7 +317,7 @@ namespace Lephone.Data.Common
                 var sb = new DeleteStatementBuilder(mt.Name);
                 sb.Where.Conditions = CK.K[mt.ColumeName1] == ctx.Handler.GetKeyValue(obj);
                 SqlStatement sql = sb.ToSqlStatement(ctx);
-                ret += ctx.Operator.ExecuteNonQuery(sql);
+                ret += ctx.Provider.ExecuteNonQuery(sql);
             }
             return ret;
         }
@@ -327,12 +329,12 @@ namespace Lephone.Data.Common
                 DbEntry.UsingTransaction(delegate
                 {
                     ProcessChildren2(ctx, obj, o => Delete(o));
-                    processParent(ctx.Operator);
+                    processParent(ctx.Provider);
                 });
             }
             else
             {
-                processParent(ctx.Operator);
+                processParent(ctx.Provider);
             }
         }
 
@@ -405,7 +407,7 @@ namespace Lephone.Data.Common
                 sb.Values.Add(new KeyValue(mt.ColumeName1, key1));
                 sb.Values.Add(new KeyValue(mt.ColumeName2, key2));
                 SqlStatement sql = sb.ToSqlStatement(ctx);
-                ctx.Operator.ExecuteNonQuery(sql);
+                ctx.Provider.ExecuteNonQuery(sql);
             }
         }
 
@@ -419,7 +421,7 @@ namespace Lephone.Data.Common
                 c &= CK.K[mt.ColumeName2] == key2;
                 sb.Where.Conditions = c;
                 SqlStatement sql = sb.ToSqlStatement(ctx);
-                ctx.Operator.ExecuteNonQuery(sql);
+                ctx.Provider.ExecuteNonQuery(sql);
             }
         }
 

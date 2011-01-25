@@ -8,8 +8,8 @@ namespace Lephone.Data.Caching
 {
     public class CachedModelOperator : ModelOperator
     {
-        internal CachedModelOperator(ObjectInfo info, QueryComposer composer)
-            : base(info, composer)
+        internal CachedModelOperator(ObjectInfo info, QueryComposer composer, DataProvider provider)
+            : base(info, composer, provider)
         {
         }
 

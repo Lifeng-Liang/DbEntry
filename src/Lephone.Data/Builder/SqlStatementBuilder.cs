@@ -7,7 +7,7 @@ namespace Lephone.Data.Builder
 	{
         public SqlStatement ToSqlStatement(ModelContext ctx)
         {
-            var sql = ToSqlStatement(ctx.Operator.Dialect, ctx.Info.AllowSqlLog);
+            var sql = ToSqlStatement(ctx.Provider.Dialect, ctx.Info.AllowSqlLog);
             return sql;
         }
 

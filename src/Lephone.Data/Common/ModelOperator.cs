@@ -8,7 +8,6 @@ using Lephone.Core;
 using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
-using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Common
@@ -18,8 +17,8 @@ namespace Lephone.Data.Common
         protected readonly ObjectInfo Info;
         internal readonly QueryComposer Composer;
 
-        internal ModelOperator(ObjectInfo info, QueryComposer composer)
-            : base(DbDriverFactory.Instance.GetInstance(info.ContextName))
+        internal ModelOperator(ObjectInfo info, QueryComposer composer, DataProvider provider)
+            : base(provider)
         {
             this.Info = info;
             this.Composer = composer;
@@ -27,13 +26,13 @@ namespace Lephone.Data.Common
 
         internal void TryCreateTable()
         {
-            if (Driver.AutoCreateTable)
+            if (Provider.Driver.AutoCreateTable)
             {
-                if (Driver.TableNames == null)
+                if (Provider.Driver.TableNames == null)
                 {
                     InitTableNames();
                 }
-                Debug.Assert(Driver.TableNames != null);
+                Debug.Assert(Provider.Driver.TableNames != null);
                 if(Info.CreateTables != null)
                 {
                     foreach(var type in Info.CreateTables)
@@ -52,15 +51,15 @@ namespace Lephone.Data.Common
         private void InnerTryCreateTable(ObjectInfo oi, ModelOperator op)
         {
             string name = oi.From.MainTableName;
-            if (name != null && !Driver.TableNames.ContainsKey(name.ToLower()))
+            if (name != null && !Provider.Driver.TableNames.ContainsKey(name.ToLower()))
             {
-                CreateTableAndRelations(oi, op, mt => !Driver.TableNames.ContainsKey(mt.Name.ToLower()));
+                CreateTableAndRelations(oi, op, mt => !Provider.Driver.TableNames.ContainsKey(mt.Name.ToLower()));
             }
         }
 
         internal void CreateTableAndRelations(ObjectInfo oi, ModelOperator op, CallbackReturnHandler<CrossTable, bool> callback)
         {
-            IfUsingTransaction(Dialect.NeedCommitCreateFirst, delegate
+            IfUsingTransaction(Provider.Dialect.NeedCommitCreateFirst, delegate
             {
                 op.Create();
                 if (!string.IsNullOrEmpty(oi.DeleteToTableName))
@@ -92,10 +91,10 @@ namespace Lephone.Data.Common
 
         private void InitTableNames()
         {
-            Driver.TableNames = new Dictionary<string, int>();
-            foreach (string s in GetTableNames())
+            Provider.Driver.TableNames = new Dictionary<string, int>();
+            foreach (string s in Provider.GetTableNames())
             {
-                Driver.TableNames.Add(s.ToLower(), 1);
+                Provider.Driver.TableNames.Add(s.ToLower(), 1);
             }
         }
 
@@ -108,7 +107,7 @@ namespace Lephone.Data.Common
         {
             TryCreateTable();
             SqlStatement sql = Composer.GetResultCountStatement(iwc, isDistinct);
-            object ro = ExecuteScalar(sql);
+            object ro = Provider.ExecuteScalar(sql);
             return Convert.ToInt64(ro);
         }
 
@@ -124,7 +123,7 @@ namespace Lephone.Data.Common
             {
                 sql = Composer.GetResultCountStatement(iwc, isDistinct);
             }
-            object ro = ExecuteScalar(sql);
+            object ro = Provider.ExecuteScalar(sql);
             return Convert.ToInt64(ro);
         }
 
@@ -146,7 +145,7 @@ namespace Lephone.Data.Common
         {
             TryCreateTable();
             SqlStatement sql = Composer.GetMaxStatement(iwc, columnName);
-            object ro = ExecuteScalar(sql);
+            object ro = Provider.ExecuteScalar(sql);
             if (ro == DBNull.Value) { return null; }
             return ro;
         }
@@ -169,7 +168,7 @@ namespace Lephone.Data.Common
         {
             TryCreateTable();
             SqlStatement sql = Composer.GetMinStatement(iwc, columnName);
-            object ro = ExecuteScalar(sql);
+            object ro = Provider.ExecuteScalar(sql);
             if (ro == DBNull.Value)
             {
                 return null;
@@ -181,7 +180,7 @@ namespace Lephone.Data.Common
         {
             TryCreateTable();
             SqlStatement sql = Composer.GetSumStatement(iwc, columnName);
-            object ro = ExecuteScalar(sql);
+            object ro = Provider.ExecuteScalar(sql);
             if (ro == DBNull.Value)
             {
                 return null;
@@ -216,7 +215,7 @@ namespace Lephone.Data.Common
 
         public DbObjectList<T> ExecuteList<T>(string sqlStr, params object[] os) where T : class, IDbObject
         {
-            return ExecuteList<T>(GetSqlStatement(sqlStr, os));
+            return ExecuteList<T>(Provider.GetSqlStatement(sqlStr, os));
         }
 
         public DbObjectList<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
@@ -254,12 +253,12 @@ namespace Lephone.Data.Common
         {
             long startIndex = sql.StartIndex;
             long endIndex = sql.EndIndex;
-            if (Dialect.SupportsRangeStartIndex && endIndex > 0)
+            if (Provider.Dialect.SupportsRangeStartIndex && endIndex > 0)
             {
                 endIndex = endIndex - startIndex + 1;
                 startIndex = 1;
             }
-            ExecuteDataReader(sql, returnType, delegate(IDataReader dr)
+            Provider.ExecuteDataReader(sql, returnType, delegate(IDataReader dr)
             {
                 int count = 0;
                 while (dr.Read())
@@ -332,7 +331,7 @@ namespace Lephone.Data.Common
         {
             TryCreateTable();
             var sql = Composer.GetDeleteStatement(iwc);
-            return ExecuteNonQuery(sql);
+            return Provider.ExecuteNonQuery(sql);
         }
 
         public void DropTable()
@@ -346,7 +345,7 @@ namespace Lephone.Data.Common
             DropTable(tn, catchException);
             if (Info.HasSystemKey)
             {
-                CommonHelper.CatchAll(() => Dialect.ExecuteDropSequence(this, tn));
+                CommonHelper.CatchAll(() => Provider.Dialect.ExecuteDropSequence(Provider, tn));
             }
             foreach (CrossTable mt in Info.CrossTables.Values)
             {
@@ -356,12 +355,12 @@ namespace Lephone.Data.Common
 
         internal void DropTable(string tableName, bool catchException)
         {
-            string s = "DROP TABLE " + Dialect.QuoteForTableName(tableName);
+            string s = "DROP TABLE " + Provider.Dialect.QuoteForTableName(tableName);
             var sql = new SqlStatement(s);
-            CommonHelper.IfCatchException(catchException, () => ExecuteNonQuery(sql));
-            if (Driver.AutoCreateTable && Driver.TableNames != null)
+            CommonHelper.IfCatchException(catchException, () => Provider.ExecuteNonQuery(sql));
+            if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
             {
-                Driver.TableNames.Remove(tableName.ToLower());
+                Provider.Driver.TableNames.Remove(tableName.ToLower());
             }
         }
 
@@ -374,15 +373,15 @@ namespace Lephone.Data.Common
         public void Create()
         {
             SqlStatement sql = Composer.GetCreateStatement();
-            ExecuteNonQuery(sql);
-            var descSql = Dialect.GetAddDescriptionSql(Info);
+            Provider.ExecuteNonQuery(sql);
+            var descSql = Provider.Dialect.GetAddDescriptionSql(Info);
             if(descSql != null)
             {
-                CommonHelper.CatchAll(()=> ExecuteNonQuery(descSql));
+                CommonHelper.CatchAll(() => Provider.ExecuteNonQuery(descSql));
             }
-            if (Driver.AutoCreateTable && Driver.TableNames != null)
+            if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
             {
-                Driver.TableNames.Add(Info.From.MainTableName.ToLower(), 1);
+                Provider.Driver.TableNames.Add(Info.From.MainTableName.ToLower(), 1);
             }
         }
 
@@ -391,11 +390,11 @@ namespace Lephone.Data.Common
             var sb = Composer.GetCreateTableStatementBuilder();
             sb.TableName = Info.DeleteToTableName;
             sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0, 0));
-            var sql = sb.ToSqlStatement(Dialect, Info.AllowSqlLog);
-            ExecuteNonQuery(sql);
-            if (Driver.AutoCreateTable && Driver.TableNames != null)
+            var sql = sb.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
+            Provider.ExecuteNonQuery(sql);
+            if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
             {
-                Driver.TableNames.Add(Info.DeleteToTableName.ToLower(), 1);
+                Provider.Driver.TableNames.Add(Info.DeleteToTableName.ToLower(), 1);
             }
         }
 
@@ -420,11 +419,11 @@ namespace Lephone.Data.Common
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName1));
             cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName2));
             // execute
-            SqlStatement sql = cts.ToSqlStatement(Dialect, Info.AllowSqlLog);
-            ExecuteNonQuery(sql);
-            if (Driver.AutoCreateTable && Driver.TableNames != null)
+            SqlStatement sql = cts.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
+            Provider.ExecuteNonQuery(sql);
+            if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
             {
-                Driver.TableNames.Add(mt1.Name.ToLower(), 1);
+                Provider.Driver.TableNames.Add(mt1.Name.ToLower(), 1);
             }
         }
 

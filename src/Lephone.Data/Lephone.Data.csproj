@@ -218,6 +218,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="SqlEntry\CommonBulkCopy.cs" />
     <Compile Include="SqlEntry\ConnectionContext.cs" />
     <Compile Include="SqlEntry\DataProviderDynamicSupport.cs" />
+    <Compile Include="SqlEntry\DataProviderFactory.cs" />
     <Compile Include="SqlEntry\DbColumnInfo.cs" />
     <Compile Include="SqlEntry\AutoValue.cs" />
     <Compile Include="SqlEntry\IDbBulkCopy.cs" />

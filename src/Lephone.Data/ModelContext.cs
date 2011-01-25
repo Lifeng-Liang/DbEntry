@@ -6,6 +6,7 @@ using Lephone.Data.Caching;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.QuerySyntax;
+using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data
 {
@@ -33,13 +34,15 @@ namespace Lephone.Data
         #region ctor
 
         public readonly ObjectInfo Info;
-        public readonly ModelOperator Operator;
+        public readonly DataProvider Provider;
         internal QueryComposer Composer;
-        public IDbObjectHandler Handler;
+        public readonly IDbObjectHandler Handler;
+        public readonly ModelOperator Operator;
 
         private ModelContext(Type t)
         {
             Info = new ObjectInfo(t);
+            Provider = DataProviderFactory.Instance.GetInstance(Info.ContextName);
             Composer = GetQueryComposer();
             if(DataSettings.LoadHandler)
             {
@@ -47,11 +50,11 @@ namespace Lephone.Data
             }
             if(DataSettings.CacheEnabled && Info.HasOnePrimaryKey && Info.Cacheable)
             {
-                Operator = new CachedModelOperator(Info, Composer);
+                Operator = new CachedModelOperator(Info, Composer, Provider);
             }
             else
             {
-                Operator = new ModelOperator(Info, Composer);
+                Operator = new ModelOperator(Info, Composer, Provider);
             }
         }
 

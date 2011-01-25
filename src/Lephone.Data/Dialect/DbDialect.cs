@@ -103,7 +103,7 @@ namespace Lephone.Data.Dialect
         {
             SqlStatement sql = sb.ToSqlStatement(ctx);
             sql.SqlCommandText = AddIdentitySelectToInsert(sql.SqlCommandText);
-            return ctx.Operator.ExecuteScalar(sql);
+            return ctx.Provider.ExecuteScalar(sql);
         }
 
         public virtual void ExecuteDropSequence(DataProvider dp, string tableName)

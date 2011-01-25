@@ -55,7 +55,7 @@ namespace Lephone.Data.Common
             if(isDistinct)
             {
                 Context.Handler.SetValuesForSelect(sb, false);
-                string cs = sb.GetColumns(Context.Operator.Dialect, true, false);
+                string cs = sb.GetColumns(Context.Provider.Dialect, true, false);
                 sb.SetCountColumn(cs);
                 sb.IsDistinct = false;
                 sb.Keys.Clear();
