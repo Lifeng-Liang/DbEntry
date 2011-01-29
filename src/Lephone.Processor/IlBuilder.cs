@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Lephone.Data.Common;
+using Lephone.Data.Model.Member;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MethodBody = Mono.Cecil.Cil.MethodBody;

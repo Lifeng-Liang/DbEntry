@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Web.UI.Design;
 using System.Web.UI;
 using Lephone.Core;
-using Lephone.Data.Common;
-using Lephone.Processor;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Web.Common
 {
@@ -65,9 +65,9 @@ namespace Lephone.Web.Common
             for (int i = 0; i < minimumRows; i++)
             {
                 object obj = ClassHelper.CreateInstance(_info.HandleType);
-                foreach (MemberHandler mh in _info.SimpleFields)
+                foreach (MemberHandler mh in _info.SimpleMembers)
                 {
-                    object value = GetSampleValue(mh.FieldType, mh.AllowNull, i);
+                    object value = GetSampleValue(mh.FieldType, mh.Is.AllowNull, i);
                     mh.SetValue(obj, value);
                 }
                 list.Add(obj);

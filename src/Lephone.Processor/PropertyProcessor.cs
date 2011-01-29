@@ -116,7 +116,7 @@ namespace Lephone.Processor
             processor.LoadArg(0);
             processor.LoadArg(1);
             processor.SetField(_pi.FieldDefinition);
-            processor.InsertBefore(_pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
+            processor.InsertBefore(_pi.PropertyDefinition.SetMethod.Body.Instructions.LastItem());
         }
 
         private void ProcessPropertySetHasOneBelongsToLazyLoad(IlBuilder processor)
@@ -142,7 +142,7 @@ namespace Lephone.Processor
             processor.LoadArg(0);
             processor.LoadString(_pi.ColumnName);
             processor.Call(_handler.ColumnUpdated);
-            processor.InsertBefore(_pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
+            processor.InsertBefore(_pi.PropertyDefinition.SetMethod.Body.Instructions.LastItem());
         }
 
         private static void RemovePropertyCompilerGeneratedAttribute(MethodDefinition method)
@@ -186,7 +186,7 @@ namespace Lephone.Processor
                 processor.Call(mi).LoadInt(0);
             }
             processor.Ceq().SetLoc(0).LoadLoc(0);
-            processor.BrTrue_S(_pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
+            processor.BrTrue_S(_pi.PropertyDefinition.SetMethod.Body.Instructions.LastItem());
         }
 
         private void ProcessPropertySetNormalCompareString(IlBuilder processor)
@@ -201,7 +201,7 @@ namespace Lephone.Processor
             processor.Ceq();
             processor.SetLoc(0);
             processor.LoadLoc(0);
-            processor.BrTrue_S(_pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
+            processor.BrTrue_S(_pi.PropertyDefinition.SetMethod.Body.Instructions.LastItem());
         }
 
         private void ProcessPropertySetNormalCompareGeneric(IlBuilder processor)
@@ -256,7 +256,7 @@ namespace Lephone.Processor
             processor.Instructions.Add(l1);
             processor.Instructions.Add(l2);
             processor.Ceq().SetLoc(2).LoadLoc(2);
-            processor.BrTrue_S(_pi.PropertyDefinition.SetMethod.Body.Instructions.Last());
+            processor.BrTrue_S(_pi.PropertyDefinition.SetMethod.Body.Instructions.LastItem());
         }
 
         private void PopulateDbColumn()

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Lephone.Core;
 using Lephone.Data;
 using Lephone.Data.Definition;
-using Lephone.Data.QuerySyntax;
+using Lephone.Data.Model.QuerySyntax;
 using Lephone.Web.Mvc;
 
 public static class CommonWebExtends
@@ -55,7 +55,7 @@ public static class CommonWebExtends
     {
         var request = System.Web.HttpContext.Current.Request;
         var ctx = ModelContext.GetInstance(typeof(T));
-        foreach(var field in ctx.Info.SimpleFields)
+        foreach(var field in ctx.Info.SimpleMembers)
         {
             var value = request[field.Name];
             if(!value.IsNullOrEmpty())

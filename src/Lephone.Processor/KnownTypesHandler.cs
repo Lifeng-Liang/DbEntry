@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.Model.Handler;
 using Lephone.Data.SqlEntry;
 using Lephone.Core;
 using Mono.Cecil;

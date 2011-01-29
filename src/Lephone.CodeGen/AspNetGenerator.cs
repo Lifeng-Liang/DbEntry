@@ -1,6 +1,6 @@
 ﻿using System;
 using Lephone.Data;
-using Lephone.Data.Common;
+using Lephone.Data.Model.Member;
 using Lephone.Web;
 using Lephone.Core.Text;
 
@@ -23,9 +23,9 @@ namespace Lephone.CodeGen
         public override string ToString()
         {
             string oibtName = _oi.Info.HandleType.Name;
-            foreach (var m in _oi.Info.SimpleFields)
+            foreach (var m in _oi.Info.SimpleMembers)
             {
-                if (m.IsKey)
+                if (m.Is.Key)
                 {
                     continue;
                 }
@@ -112,7 +112,7 @@ namespace Lephone.CodeGen
         {
             _b.asp("TextBox", _id).attr("Columns", 23);
 
-            if (m.IsCreatedOn || m.IsUpdatedOn)
+            if (m.Is.CreatedOn || m.Is.UpdatedOn)
             {
                 _b.attr("Enabled", "False");
             }

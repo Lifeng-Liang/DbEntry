@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Core;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Web.Mvc
 {
@@ -92,12 +92,12 @@ namespace Lephone.Web.Mvc
         {
             var ctx = ModelContext.GetInstance(typeof(T));
             var obj = (T)ctx.NewObject();
-            foreach(MemberHandler m in ctx.Info.Fields)
+            foreach(MemberHandler m in ctx.Info.Members)
             {
-                if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
+                if (!m.Is.RelationField && !m.Is.DbGenerate && !m.Is.AutoSavedValue)
                 {
                     string s = Ctx.Request.Form[ControllerName + "[" + m.Name.ToLower() + "]"];
-                    if (m.IsLazyLoad)
+                    if (m.Is.LazyLoad)
                     {
                         object ll = m.MemberInfo.GetValue(obj);
                         PropertyInfo pi = m.MemberInfo.MemberType.GetProperty("Value");
@@ -153,13 +153,13 @@ namespace Lephone.Web.Mvc
         {
             var ctx = ModelContext.GetInstance(typeof(T));
             var obj = DbEntry.GetObject<T>(n);
-            foreach (MemberHandler m in ctx.Info.Fields)
+            foreach (MemberHandler m in ctx.Info.Members)
             {
-                if (m.IsRelationField) { continue; }
-                if (!m.IsAutoSavedValue && !m.IsDbGenerate)
+                if (m.Is.RelationField) { continue; }
+                if (!m.Is.AutoSavedValue && !m.Is.DbGenerate)
                 {
                     string s = Ctx.Request.Form[ControllerName + "[" + m.Name.ToLower() + "]"];
-                    if (m.IsLazyLoad)
+                    if (m.Is.LazyLoad)
                     {
                         object ll = m.MemberInfo.GetValue(obj);
                         PropertyInfo pi = m.MemberInfo.MemberType.GetProperty("Value");
@@ -188,7 +188,7 @@ namespace Lephone.Web.Mvc
 
         public virtual string Destroy(long n)
         {
-            object o = DbEntry.GetObject<T>(n);
+            IDbObject o = DbEntry.GetObject<T>(n);
             if (o != null)
             {
                 if (o is DbObjectSmartUpdate)

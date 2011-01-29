@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.Model;
 using Lephone.Data.SqlEntry;
 using Lephone.UnitTest.Data.Objects;
 using Lephone.Core;

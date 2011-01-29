@@ -110,6 +110,7 @@
     <Compile Include="Data\DbTimeProviderTest.cs" />
     <Compile Include="Data\DeleteToTest.cs" />
     <Compile Include="Data\FirebirdTest.cs" />
+    <Compile Include="Data\ForeignKeyTest.cs" />
     <Compile Include="Data\FullTypesTest.cs" />
     <Compile Include="Data\HasAndBelongsToManyAssociateTest.cs" />
     <Compile Include="Data\HasManyAssociateTest.cs" />

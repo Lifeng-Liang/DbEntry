@@ -13,6 +13,7 @@ namespace Lephone.Processor
         {
             try
             {
+                ModelContext.LoadHandler = false;
                 Process(args);
                 return 0;
             }

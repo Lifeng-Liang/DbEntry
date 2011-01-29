@@ -40,9 +40,9 @@ namespace Lephone.Data.Dialect
             get { return "SYSDATE"; }
         }
 
-        public override DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
         {
-            return new Oracle8Driver(this, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new Oracle8Driver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         public override string GetUserId(string connectionString)

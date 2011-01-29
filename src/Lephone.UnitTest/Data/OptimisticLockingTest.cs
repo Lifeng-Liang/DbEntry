@@ -4,30 +4,29 @@ using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
-    [DbTable("Books"), Cacheable]
+    [Cacheable, DbTable("Lock_Book")]
     public class CachedLockBook : DbObjectModel<CachedLockBook>
     {
         public string Name { get; set; }
 
-        [DbColumn("Category_Id"), SpecialName]
+        [SpecialName]
         public int LockVersion { get; set; }
     }
 
-    [DbTable("Books")]
     public class LockBook : DbObjectModel<LockBook>
     {
         public string Name { get; set; }
 
-        [DbColumn("Category_Id"), SpecialName]
+        [SpecialName]
         public int LockVersion { get; set; }
     }
 
-    [DbTable("Books")]
+    [DbTable("Lock_Book")]
     public class LBook : DbObject
     {
         public string Name;
 
-        [DbColumn("Category_Id"), SpecialName]
+        [SpecialName]
         public int LockVersion;
     }
 

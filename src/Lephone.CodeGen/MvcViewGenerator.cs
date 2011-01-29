@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Core;
 using Lephone.Core.Text;
+using Lephone.Data.Model.Member;
 using Lephone.Web;
 using Lephone.Web.Mvc;
 
@@ -119,9 +119,9 @@ namespace Lephone.CodeGen
                 b.form("post", "<%= UrlTo.Action(\"create\") %>").enter();
 
                 var ctx = ModelContext.GetInstance(ClassType);
-                foreach (MemberHandler m in ctx.Info.Fields)
+                foreach (MemberHandler m in ctx.Info.Members)
                 {
-                    if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
+                    if (!m.Is.RelationField && !m.Is.DbGenerate && !m.Is.AutoSavedValue)
                     {
                         string n = cn.ToLower() + "_" + m.Name.ToLower();
                         string n1 = cn.ToLower() + "[" + m.Name.ToLower() + "]";
@@ -154,7 +154,7 @@ namespace Lephone.CodeGen
                 b.table.enter().tr.enter();
 
                 var ctx = ModelContext.GetInstance(ClassType);
-                foreach (var m in ctx.Info.SimpleFields)
+                foreach (var m in ctx.Info.SimpleMembers)
                 {
                     b.include("  ").th.text(m.Name).end.enter();
                 }
@@ -163,7 +163,7 @@ namespace Lephone.CodeGen
 
                 b.include("<% foreach (var o in ItemList.List) { %>");
                 b.enter().tr.enter();
-                foreach (MemberHandler m in ctx.Info.SimpleFields)
+                foreach (MemberHandler m in ctx.Info.SimpleMembers)
                 {
                     b.include("  ").td.include("<%= o.").include(m.Name).include(" %>").end.enter();
                 }
@@ -192,9 +192,9 @@ namespace Lephone.CodeGen
                 b.p.style("color: Green").include("<%= Flash.Notice %>").end.enter().enter();
 
                 var ctx = ModelContext.GetInstance(ClassType);
-                foreach (MemberHandler m in ctx.Info.Fields)
+                foreach (MemberHandler m in ctx.Info.Members)
                 {
-                    if (!m.IsRelationField)
+                    if (!m.Is.RelationField)
                     {
                         b.p.tag("b").text(m.Name + ":").end.include("<%= Item.").include(m.Name).include(" %>").end.enter();
                     }
@@ -217,9 +217,9 @@ namespace Lephone.CodeGen
                 b.form("post", "<%= UrlTo.Action(\"update\").Parameters(Item.Id) %>").enter();
 
                 var ctx = ModelContext.GetInstance(ClassType);
-                foreach (MemberHandler m in ctx.Info.Fields)
+                foreach (MemberHandler m in ctx.Info.Members)
                 {
-                    if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
+                    if (!m.Is.RelationField && !m.Is.DbGenerate && !m.Is.AutoSavedValue)
                     {
                         string n = ClassType.Name.ToLower() + "_" + m.Name.ToLower();
                         string n1 = ClassType.Name.ToLower() + "[" + m.Name.ToLower() + "]";

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Lephone.Data;
-using Lephone.Data.Common;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Member;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -22,7 +23,7 @@ namespace Lephone.Processor
 
         public void Process()
         {
-            if(_info.RelationFields.Length > 0)
+            if(_info.RelationMembers.Length > 0)
             {
                 foreach(var c in _model.Methods)
                 {
@@ -66,7 +67,7 @@ namespace Lephone.Processor
         private void ProcessLoadString(Instruction instruction)
         {
             var key = (string)instruction.Operand;
-            foreach(var field in _info.RelationFields)
+            foreach(var field in _info.RelationMembers)
             {
                 if(field.MemberInfo.Name == key)
                 {
@@ -77,13 +78,13 @@ namespace Lephone.Processor
 
         private string GetName(MemberHandler f)
         {
-            if(f.IsLazyLoad)
+            if(f.Is.LazyLoad)
             {
                 return f.Name;
             }
-            if (f.IsHasOne || f.IsHasMany)
+            if (f.Is.HasOne || f.Is.HasMany)
             {
-                var oi1 = new ObjectInfoBase(f.FieldType.GetGenericArguments()[0]);
+                var oi1 = ObjectInfoFactory.Instance.GetInstance(f.FieldType.GetGenericArguments()[0]);
                 var mh = oi1.GetBelongsTo(_type);
                 if (mh == null)
                 {
@@ -91,9 +92,9 @@ namespace Lephone.Processor
                 }
                 return mh.Name;
             }
-            if (f.IsHasAndBelongsToMany)
+            if (f.Is.HasAndBelongsToMany)
             {
-                var oi1 = new ObjectInfoBase(f.FieldType.GetGenericArguments()[0]);
+                var oi1 = ObjectInfoFactory.Instance.GetInstance(f.FieldType.GetGenericArguments()[0]);
                 var mh = oi1.GetHasAndBelongsToMany(_type);
                 if (mh == null)
                 {
@@ -101,7 +102,7 @@ namespace Lephone.Processor
                 }
                 return mh.Name;
             }
-            if (f.IsBelongsTo)
+            if (f.Is.BelongsTo)
             {
                 return f.Name;
             }

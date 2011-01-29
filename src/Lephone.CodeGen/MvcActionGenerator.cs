@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.CodeGen
 {
@@ -74,12 +74,12 @@ namespace Lephone.CodeGen
 ");
             sb.Append("        var").Append(" obj = ").Append(_classType.Name).Append(".New;\n\n");
             var ctx = ModelContext.GetInstance(_classType);
-            foreach (MemberHandler m in ctx.Info.Fields)
+            foreach (MemberHandler m in ctx.Info.Members)
             {
-                if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
+                if (!m.Is.RelationField && !m.Is.DbGenerate && !m.Is.AutoSavedValue)
                 {
                     string s = "Ctx.Request.Form[\"" + _classType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
-                    Type t = m.IsLazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
+                    Type t = m.Is.LazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
                     sb.Append("        obj.").Append(m.Name).Append(" = ");
                     GetFieldCode(sb, t, s);
                     sb.Append(";\n");
@@ -220,13 +220,13 @@ namespace Lephone.CodeGen
             }
 
             var ctx = ModelContext.GetInstance(_classType);
-            foreach (MemberHandler m in ctx.Info.Fields)
+            foreach (MemberHandler m in ctx.Info.Members)
             {
-                if (m.IsRelationField) { continue; }
-                if (!m.IsAutoSavedValue && !m.IsDbGenerate)
+                if (m.Is.RelationField) { continue; }
+                if (!m.Is.AutoSavedValue && !m.Is.DbGenerate)
                 {
                     string s = "Ctx.Request.Form[\"" + _classType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
-                    Type t = m.IsLazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
+                    Type t = m.Is.LazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
                     sb.Append("        obj.").Append(m.Name).Append(" = ");
                     GetFieldCode(sb, t, s);
                     sb.Append(";\n");

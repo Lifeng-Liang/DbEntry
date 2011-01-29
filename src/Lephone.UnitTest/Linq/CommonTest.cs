@@ -245,15 +245,15 @@ namespace Lephone.UnitTest.Linq
         public void Test15()
         {
             string[] ss = null;
-            string s = ss.First();
+            string s = ss.FirstItem();
             Assert.IsNull(s);
 
-            s = ss.Last();
+            s = ss.LastItem();
             Assert.IsNull(s);
 
             ss = new[]{"1st", "2nd", "3rd"};
-            Assert.AreEqual("1st", ss.First());
-            Assert.AreEqual("3rd", ss.Last());
+            Assert.AreEqual("1st", ss.FirstItem());
+            Assert.AreEqual("3rd", ss.LastItem());
 
             ss = ss.RemoveFirst();
             Assert.AreEqual(2, ss.Length);
@@ -269,15 +269,15 @@ namespace Lephone.UnitTest.Linq
         public void Test16()
         {
             List<string> list = null;
-            string s = list.Last();
+            string s = list.LastItem();
             Assert.IsNull(s);
 
-            s = list.First();
+            s = list.FirstItem();
             Assert.IsNull(s);
 
             list = new List<string> {"1st", "2nd", "3rd"};
-            Assert.AreEqual("1st", list.First());
-            Assert.AreEqual("3rd", list.Last());
+            Assert.AreEqual("1st", list.FirstItem());
+            Assert.AreEqual("3rd", list.LastItem());
 
             list.RemoveFirst();
             Assert.AreEqual(2, list.Count);

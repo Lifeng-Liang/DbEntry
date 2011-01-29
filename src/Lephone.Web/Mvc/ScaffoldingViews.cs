@@ -3,9 +3,9 @@ using System.Collections;
 using System.Web;
 using System.Reflection;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Core;
 using Lephone.Core.Text;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Web.Mvc
 {
@@ -81,14 +81,14 @@ namespace Lephone.Web.Mvc
                         b.h1.text(cn + " Edit").end.enter();
                         b.form("post", UrlTo.Action("update").Parameters(id)).enter();
 
-                        foreach (MemberHandler m in _dctx.Info.Fields)
+                        foreach (MemberHandler m in _dctx.Info.Members)
                         {
-                            if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
+                            if (!m.Is.RelationField && !m.Is.DbGenerate && !m.Is.AutoSavedValue)
                             {
                                 string n = cn + "_" + m.Name;
                                 string n1 = cn + "[" + m.Name + "]";
                                 object v = m.GetValue(o);
-                                if(m.IsLazyLoad)
+                                if(m.Is.LazyLoad)
                                 {
                                     v = m.FieldType.GetProperty("Value").GetValue(v, null);
                                 }
@@ -112,7 +112,7 @@ namespace Lephone.Web.Mvc
 
                         b.table.tr.enter();
 
-                        foreach (MemberHandler m in _dctx.Info.SimpleFields)
+                        foreach (MemberHandler m in _dctx.Info.SimpleMembers)
                         {
                             b.th.text(m.Name).end.enter();
                         }
@@ -127,7 +127,7 @@ namespace Lephone.Web.Mvc
                             {
                                 b.tr.over();
                                 object id = _dctx.Handler.GetKeyValue(o);
-                                foreach (MemberHandler m in _dctx.Info.SimpleFields)
+                                foreach (MemberHandler m in _dctx.Info.SimpleMembers)
                                 {
                                     b.td.text(m.GetValue(o) ?? "<NULL>").end.enter();
                                 }
@@ -172,9 +172,9 @@ namespace Lephone.Web.Mvc
                         b.h1.text("New " + cn).end.enter();
                         b.form("post", UrlTo.Controller(ControllerName).Action("create")).enter();
 
-                        foreach (MemberHandler m in _dctx.Info.Fields)
+                        foreach (MemberHandler m in _dctx.Info.Members)
                         {
-                            if (!m.IsRelationField && !m.IsDbGenerate && !m.IsAutoSavedValue)
+                            if (!m.Is.RelationField && !m.Is.DbGenerate && !m.Is.AutoSavedValue)
                             {
                                 string n = cn + "_" + m.Name;
                                 string n1 = cn + "[" + m.Name + "]";
@@ -197,12 +197,12 @@ namespace Lephone.Web.Mvc
 
                         b.p.style("color: Green").text(Flash.Notice).end.enter().enter();
 
-                        foreach (MemberHandler m in _dctx.Info.Fields)
+                        foreach (MemberHandler m in _dctx.Info.Members)
                         {
-                            if(!m.IsRelationField)
+                            if(!m.Is.RelationField)
                             {
                                 object v = m.GetValue(o);
-                                if(m.IsLazyLoad)
+                                if(m.Is.LazyLoad)
                                 {
                                     v = m.FieldType.GetProperty("Value").GetValue(v, null);
                                 }

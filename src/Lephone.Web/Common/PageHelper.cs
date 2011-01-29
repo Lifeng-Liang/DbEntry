@@ -5,21 +5,23 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Lephone.Core;
 using Lephone.Data;
-using Lephone.Data.Common;
 using System.Collections.Generic;
 using Lephone.Core.Text;
+using Lephone.Data.Definition;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Web.Common
 {
     public static class PageHelper
     {
-        public static bool ValidateSave(Page p, object obj, NoticeLabel msg, string noticeText)
+        public static bool ValidateSave(Page p, IDbObject obj, NoticeLabel msg, string noticeText)
         {
             var vh = new ValidateHandler();
             return ValidateSave(p, vh, obj, msg, noticeText, "ErrInput");
         }
 
-        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string noticeText, string cssErrInput)
+        public static bool ValidateSave(Page p, ValidateHandler vh, IDbObject obj, NoticeLabel msg, string noticeText, string cssErrInput)
         {
             return ValidateSave(p, vh, obj, msg, noticeText, cssErrInput, () => DbEntry.Save(obj));
         }
@@ -68,9 +70,9 @@ namespace Lephone.Web.Common
 
         private static void EnumControls(Page p, ObjectInfo oi, CallbackObjectHandler2<MemberHandler, WebControl> callback)
         {
-            foreach (MemberHandler h in oi.SimpleFields)
+            foreach (MemberHandler h in oi.SimpleMembers)
             {
-                if (!h.IsKey)
+                if (!h.Is.Key)
                 {
                     string cid = string.Format("{0}_{1}", oi.HandleType.Name, h.MemberInfo.Name);
                     var c = ClassHelper.GetValue(p, cid) as WebControl;
@@ -80,7 +82,7 @@ namespace Lephone.Web.Common
                     }
                     else
                     {
-                        if (!h.IsAutoSavedValue && !h.AllowNull)
+                        if (!h.Is.AutoSavedValue && !h.Is.AllowNull)
                         {
                             throw new DataException(string.Format("Control {0} not find!", cid));
                         }
@@ -110,7 +112,7 @@ namespace Lephone.Web.Common
                 {
                     if (string.IsNullOrEmpty(v))
                     {
-                        if (h.AllowNull)
+                        if (h.Is.AllowNull)
                         {
                             h.SetValue(obj, null);
                         }
@@ -120,7 +122,7 @@ namespace Lephone.Web.Common
                             {
                                 h.SetValue(obj, "");
                             }
-                            else if(!h.IsCreatedOn && !h.IsSavedOn)
+                            else if(!h.Is.CreatedOn && !h.Is.SavedOn)
                             {
                                 throw new WebControlException(c, string.Format(parseErrorText, h.Name, ""));
                             }
@@ -166,7 +168,7 @@ namespace Lephone.Web.Common
 
         private static PropertyInfo GetPropertyInfo(object c)
         {
-            var attr = ClassHelper.GetAttribute<DefaultPropertyAttribute>(c.GetType(), false);
+            var attr = c.GetType().GetAttribute<DefaultPropertyAttribute>(false);
             if (attr != null)
             {
                 var pi = c.GetType().GetProperty(attr.Name);

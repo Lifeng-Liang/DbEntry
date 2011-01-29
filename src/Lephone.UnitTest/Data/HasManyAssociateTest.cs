@@ -111,20 +111,22 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasMany5()
         {
-            // A.Delete will delete itself, and delete B *
-            var c = DbEntry.GetObject<Category>(2);
+            // A.Delete will delete itself, and set B.A_Id to null *
+            var c = Category.FindById(2);
             Assert.IsNotNull(c);
             Assert.IsTrue(3 == c.Books.Count);
             long bid1 = c.Books[0].Id;
             long bid2 = c.Books[1].Id;
             long bid3 = c.Books[2].Id;
             // do delete
-            DbEntry.Delete(c);
-            var c1 = DbEntry.GetObject<Category>(2);
+            c.Delete();
+            var c1 = Category.FindById(2);
             Assert.IsNull(c1);
-            Assert.IsNull(DbEntry.GetObject<Book>(bid1));
-            Assert.IsNull(DbEntry.GetObject<Book>(bid2));
-            Assert.IsNull(DbEntry.GetObject<Book>(bid3));
+            var bs = Book.Find(CK.K["Category_Id"] == null, "Id");
+            Assert.AreEqual(3, bs.Count);
+            Assert.AreEqual(bid1, bs[0].Id);
+            Assert.AreEqual(bid2, bs[1].Id);
+            Assert.AreEqual(bid3, bs[2].Id);
         }
 
         [Test]
@@ -230,28 +232,6 @@ namespace Lephone.UnitTest.Data
             Assert.IsNotNull(c1);
             Assert.IsTrue(0 == c1.Books.Count);
             Assert.AreEqual(c.Name, c1.Name);
-        }
-
-        [Test, Ignore("Looks like a bad idea, may should just remove such feature.")]
-        public void TestHasMany13()
-        {
-            // DbEntry.Save(c.Books) will save all data in the list,
-            var c = DbEntry.GetObject<Category>(3);
-            Assert.AreEqual("Tour", c.Name);
-            Assert.AreEqual(2, c.Books.Count);
-            c.Name = "Sport";
-            c.Books[0].Name = "Hongkong";
-            c.Books[1].Name = "Luoyang";
-            var b = new Book {Name = "Pingxiang"};
-            c.Books.Add(b);
-            DbEntry.Save(c.Books);
-
-            var c1 = DbEntry.GetObject<Category>(3);
-            Assert.AreEqual("Tour", c1.Name);
-            Assert.AreEqual(3, c1.Books.Count);
-            Assert.AreEqual("Hongkong", c1.Books[0].Name);
-            Assert.AreEqual("Luoyang", c1.Books[1].Name);
-            Assert.AreEqual("Pingxiang", c1.Books[2].Name);
         }
 
         [Test]

@@ -5,6 +5,7 @@ using System.Linq;
 using Lephone.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.Model;
 using Lephone.Data.SqlEntry;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data.CreateTable;
@@ -30,7 +31,7 @@ namespace Lephone.UnitTest.Data
     [DbTable("File")]
     public class DistinctTest : IDbObject
     {
-        [DbColumn("BelongsTo_Id")] public int n;
+        [DbColumn("BelongsTo_Id")] public long? n;
     }
 
     [DbTable("People")]
@@ -342,7 +343,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("{ Id = 0, Name = long }", a.ToString());
 
             var c = new ImpPCs {Name = "HP"};
-            Assert.AreEqual("{ Id = 0, Name = HP, Person_Id = 0 }", c.ToString());
+            Assert.AreEqual("{ Id = 0, Name = HP, Person_Id = <NULL> }", c.ToString());
         }
 
         [Test]
@@ -740,7 +741,7 @@ namespace Lephone.UnitTest.Data
             var list = DbEntry.From<DistinctTest>().Where(Condition.Empty).OrderBy(p => p.n).SelectDistinct();
             Assert.AreEqual(9, list.Count);
             var exps = new[] {0, 1, 2, 3, 4, 9, 11, 15, 16};
-            for(int i = 0; i < 9; i++)
+            for(int i = 1; i < 9; i++)
             {
                 Assert.AreEqual(exps[i], list[i].n);
             }
@@ -750,7 +751,7 @@ namespace Lephone.UnitTest.Data
         public void TestDistinctPagedSelector()
         {
             var query = DbEntry.From<DistinctTest>().Where(Condition.Empty).OrderBy(p => p.n).PageSize(3).GetDistinctPagedSelector();
-            Assert.AreEqual(9, query.GetResultCount());
+            Assert.AreEqual(8, query.GetResultCount());
             var list = (List<DistinctTest>)query.GetCurrentPage(1);
             Assert.AreEqual(3, list.Count);
             var exps = new[] { 3, 4, 9 };

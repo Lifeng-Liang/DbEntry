@@ -1,29 +1,29 @@
 ﻿using System;
-using Lephone.Data.Common;
 using Lephone.Core.Text;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Web.Mvc
 {
     public class ControlMapper
     {
-        private readonly string id;
-        private readonly string name;
-        private readonly HtmlBuilder b;
+        private readonly string _id;
+        private readonly string _name;
+        private readonly HtmlBuilder _html;
 
         public static HtmlBuilder Map(MemberHandler m, string id, string name, object value)
         {
             var c = new ControlMapper(m, id, name, value);
-            return c.b;
+            return c._html;
         }
 
         public ControlMapper(MemberHandler m, string id, string name, object value)
         {
-            this.id = id;
-            this.name = name;
+            this._id = id;
+            this._name = name;
 
-            b = HtmlBuilder.New;
+            _html = HtmlBuilder.New;
 
-            if(m.IsLazyLoad)
+            if(m.Is.LazyLoad)
             {
                 ProcessField(m.FieldType.GetGenericArguments()[0], m, value);
             }
@@ -33,33 +33,33 @@ namespace Lephone.Web.Mvc
             }
         }
 
-        private void ProcessField(Type FieldType, MemberHandler m, object value)
+        private void ProcessField(Type fieldType, MemberHandler m, object value)
         {
-            if (FieldType.IsEnum)
+            if (fieldType.IsEnum)
             {
                 ProcessEnum(m, value);
             }
-            else if (FieldType == typeof(bool))
+            else if (fieldType == typeof(bool))
             {
                 ProcessBoolean(value);
             }
-            else if (FieldType == typeof(string))
+            else if (fieldType == typeof(string))
             {
                 ProcessString(m, value);
             }
-            else if (FieldType == typeof(DateTime))
+            else if (fieldType == typeof(DateTime))
             {
                 ProcessDateTime(m, value);
             }
-            else if (FieldType == typeof(Date))
+            else if (fieldType == typeof(Date))
             {
                 ProcessDateTime(m, value);
             }
-            else if (FieldType == typeof(Time))
+            else if (fieldType == typeof(Time))
             {
                 ProcessDateTime(m, value);
             }
-            else if (FieldType.IsValueType)
+            else if (fieldType.IsValueType)
             {
                 ProcessValueType(value);
             }
@@ -71,7 +71,7 @@ namespace Lephone.Web.Mvc
 
         public override string ToString()
         {
-            return b.ToString();
+            return _html.ToString();
         }
 
         private void ProcessEnum(MemberHandler m, object value)
@@ -81,22 +81,22 @@ namespace Lephone.Web.Mvc
             {
                 v = "";
             }
-            b.tag("select").id(id).name(name);
+            _html.tag("select").id(_id).name(_name);
             foreach (string s in Enum.GetNames(m.FieldType))
             {
                 object e = Enum.Parse(m.FieldType, s);
-                b.tag("option").attr("value", s);
+                _html.tag("option").attr("value", s);
                 if (s == v)
                 {
-                    b.attr("selected", "true");
+                    _html.attr("selected", "true");
                 }
-                b.text(StringHelper.EnumToString(e)).end.over();
+                _html.text(StringHelper.EnumToString(e)).end.over();
             }
-            b.end.over();
+            _html.end.over();
             if (value != null && value.GetType() == typeof(string))
             {
-                b.include("<script type=\"text/javascript\">document.getElementById(\"")
-                    .include(id)
+                _html.include("<script type=\"text/javascript\">document.getElementById(\"")
+                    .include(_id)
                     .include("\").value = '")
                     .include(value.ToString())
                     .include("';</script>");
@@ -105,68 +105,68 @@ namespace Lephone.Web.Mvc
 
         private void ProcessBoolean(object value)
         {
-            b.input.id(id).name(name).type("checkbox");
+            _html.input.id(_id).name(_name).type("checkbox");
             if (value != null)
             {
                 if(value.GetType() == typeof(string))
                 {
                     var s = (string)value;
                     s = s.Substring(0, s.Length - 2) + "? \"checked\" : \"\" " + s.Substring(s.Length - 2);
-                    b.attr(s, null);
+                    _html.attr(s, null);
                 }
                 else
                 {
                     if ((bool)value)
                     {
-                        b.attr("checked", null);
+                        _html.attr("checked", null);
                     }
                 }
             }
-            b.end.over();
+            _html.end.over();
         }
 
         private void ProcessString(MemberHandler m, object value)
         {
             if (m.MaxLength < 256 && m.MaxLength > 0)
             {
-                b.input.id(id).name(name).type("text");
+                _html.input.id(_id).name(_name).type("text");
                 int size = m.MaxLength > 100 ? 100 : m.MaxLength;
-                b.attr("maxlength", m.MaxLength).attr("size", size);
+                _html.attr("maxlength", m.MaxLength).attr("size", size);
                 if (value != null)
                 {
-                    b.value(value);
+                    _html.value(value);
                 }
-                b.end.over();
+                _html.end.over();
             }
             else
             {
                 string s = (value == null) ? "" : value.ToString();
-                b.tag("textarea").id(id).name(name).attr("cols", 50).attr("rows", 5).include(s).end.over();
+                _html.tag("textarea").id(_id).name(_name).attr("cols", 50).attr("rows", 5).include(s).end.over();
             }
         }
 
         private void ProcessDateTime(MemberHandler m, object value)
         {
-            b.input.id(id).name(name).type("text").attr("cols", 19).attr("onclick", "PickDate(this)");
-            if (m.IsAutoSavedValue)
+            _html.input.id(_id).name(_name).type("text").attr("cols", 19).attr("onclick", "PickDate(this)");
+            if (m.Is.AutoSavedValue)
             {
-                b.attr("disabled", "true");
+                _html.attr("disabled", "true");
             }
             if (value != null)
             {
-                b.value(value);
+                _html.value(value);
             }
-            b.end.over();
+            _html.end.over();
         }
 
         private void ProcessValueType(object value)
         {
-            b.input.id(id).name(name).attr("maxlength", 20).attr("cols", 20);
+            _html.input.id(_id).name(_name).attr("maxlength", 20).attr("cols", 20);
             if (value != null)
             {
-                b.value(value);
+                _html.value(value);
             }
-            b.end.over();
+            _html.end.over();
         }
     }
 }

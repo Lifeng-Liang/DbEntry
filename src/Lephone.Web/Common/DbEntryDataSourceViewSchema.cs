@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.UI.Design;
-using Lephone.Data.Common;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Web.Common
 {
@@ -21,14 +22,14 @@ namespace Lephone.Web.Common
         public IDataSourceFieldSchema[] GetFields()
         {
             var list = new List<DbEntryDataSourceFieldSchema>();
-            foreach (MemberHandler mh in _oi.SimpleFields)
+            foreach (MemberHandler mh in _oi.SimpleMembers)
             {
                 var s = new DbEntryDataSourceFieldSchema(
                     mh.MemberInfo.Name,
                     mh.FieldType,
-                    mh.IsDbGenerate,
-                    mh.IsKey,
-                    mh.AllowNull
+                    mh.Is.DbGenerate,
+                    mh.Is.Key,
+                    mh.Is.AllowNull
                     );
                 list.Add(s);
             }

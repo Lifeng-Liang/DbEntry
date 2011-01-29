@@ -7,8 +7,8 @@ using System.Web.UI;
 using System.ComponentModel;
 using System.Security.Permissions;
 using Lephone.Data;
-using Lephone.Data.Common;
-using Lephone.Data.Linq;
+using Lephone.Data.Model.Linq;
+using Lephone.Data.Model.Member;
 using Lephone.Web.Common;
 using Lephone.Core;
 using Lephone.Data.Definition;
@@ -27,7 +27,7 @@ namespace Lephone.Web
         }
 
         private static readonly ModelContext Ctx = ModelContext.GetInstance(typeof(T));
-        protected static readonly string KeyName = Ctx.Info.KeyFields[0].Name;
+        protected static readonly string KeyName = Ctx.Info.KeyMembers[0].Name;
         public event EventHandler DataSourceChanged;
 
         protected void RaiseDataSourceChanged()
@@ -136,7 +136,7 @@ namespace Lephone.Web
 
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
         {
-            object key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyFields[0].FieldType);
+            object key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyMembers[0].FieldType);
             var obj = DbEntry.GetObject<T>(key);
             int n = ExecuteDelete(obj);
             if (OnObjectDeleted != null)
@@ -228,9 +228,9 @@ namespace Lephone.Web
             object key = null;
             if (keys != null)
             {
-                key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyFields[0].FieldType);
+                key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyMembers[0].FieldType);
             }
-            if (key == null || key.Equals(Ctx.Info.KeyFields[0].UnsavedValue))
+            if (key == null || key.Equals(Ctx.Info.KeyMembers[0].UnsavedValue))
             {
                 obj = (T)Ctx.NewObject();
             }
@@ -238,7 +238,7 @@ namespace Lephone.Web
             {
                 obj = DbEntry.GetObject<T>(key);
             }
-            foreach (MemberHandler mh in Ctx.Info.SimpleFields)
+            foreach (MemberHandler mh in Ctx.Info.SimpleMembers)
             {
                 string name = mh.MemberInfo.IsProperty ? mh.MemberInfo.Name : mh.Name;
                 if (name != KeyName)
@@ -253,7 +253,7 @@ namespace Lephone.Web
                         }
                         else
                         {
-                            mo = !mh.AllowNull ? "" : null;
+                            mo = !mh.Is.AllowNull ? "" : null;
                         }
                         object ho = mh.GetValue(obj);
                         if(!CommonHelper.AreEqual(ho, mo))

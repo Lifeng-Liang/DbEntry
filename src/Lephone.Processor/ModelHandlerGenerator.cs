@@ -1,7 +1,8 @@
 ﻿using System;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Member;
 using Lephone.Data.SqlEntry;
 using Lephone.Core;
 using Mono.Cecil;
@@ -42,7 +43,7 @@ namespace Lephone.Processor
         {
             if (_type.IsSubclassOf(typeof(DbObjectSmartUpdate)))
             {
-                foreach(var field in _info.SimpleFields)
+                foreach(var field in _info.SimpleMembers)
                 {
                     if(!field.MemberInfo.IsProperty)
                     {
@@ -108,16 +109,16 @@ namespace Lephone.Processor
             processor.LoadArg(1).Cast(_model).SetLoc(0);
             // set values
             int n = 0;
-            foreach (var f in _info.SimpleFields)
+            foreach (var f in _info.SimpleMembers)
             {
                 processor.LoadLoc(0);
-                if (f.AllowNull) { processor.LoadArg(0); }
+                if (f.Is.AllowNull) { processor.LoadArg(0); }
                 processor.LoadArg(2).LoadInt(n);
                 var mi1 = Helper.GetMethodInfo(f.FieldType);
-                if (f.AllowNull || mi1 == null)
+                if (f.Is.AllowNull || mi1 == null)
                 {
                     processor.CallVirtual(_handler.GetDataReaderMethodInt());
-                    if (f.AllowNull)
+                    if (f.Is.AllowNull)
                     {
                         SetSecendArgForGetNullable(f, processor);
                         processor.Call(_handler.ModelHandlerBaseTypeGetNullable);
@@ -174,13 +175,13 @@ namespace Lephone.Processor
             processor.DeclareLocal(_model);
             processor.LoadArg(1).Cast(_model).SetLoc(0);
             // set values
-            foreach (var f in _info.SimpleFields)
+            foreach (var f in _info.SimpleMembers)
             {
                 // get value
                 processor.LoadLoc(0);
-                if (f.AllowNull) { processor.LoadArg(0); }
+                if (f.Is.AllowNull) { processor.LoadArg(0); }
                 processor.LoadArg(2).LoadString(f.Name).CallVirtual(_handler.GetDataReaderMethodString());
-                if (f.AllowNull)
+                if (f.Is.AllowNull)
                 {
                     SetSecendArgForGetNullable(f, processor);
                     processor.Call(_handler.ModelHandlerBaseTypeGetNullable);
@@ -198,7 +199,7 @@ namespace Lephone.Processor
 
         private void GenerateLoadRelationValues(bool useIndex, bool noLazy)
         {
-            int index = _info.SimpleFields.Length;
+            int index = _info.SimpleMembers.Length;
             string methodName = useIndex ? "LoadRelationValuesByIndex" : "LoadRelationValuesByName";
             if (noLazy)
             {
@@ -212,15 +213,15 @@ namespace Lephone.Processor
             method.Parameters.Add(new ParameterDefinition("dr", ParameterAttributes.None, _handler.DataReaderInterface));
             var processor = new IlBuilder(method.Body);
 
-            if(_info.RelationFields.Length > 0)
+            if(_info.RelationMembers.Length > 0)
             {
                 // User u = (User)o;
                 processor.DeclareLocal(_model);
                 processor.LoadArg(1).Cast(_model).SetLoc(0);
                 // set values
-                foreach (var f in _info.RelationFields)
+                foreach (var f in _info.RelationMembers)
                 {
-                    if (f.IsLazyLoad)
+                    if (f.Is.LazyLoad)
                     {
                         if (noLazy)
                         {
@@ -239,7 +240,7 @@ namespace Lephone.Processor
                             processor.CallVirtual(_handler.LazyLoadingInterfaceWrite);
                         }
                     }
-                    else if (f.IsBelongsTo)
+                    else if (f.Is.BelongsTo)
                     {
                         processor.LoadLoc(0);
                         processor.GetMember(f, _handler);
@@ -270,9 +271,9 @@ namespace Lephone.Processor
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             var processor = new IlBuilder(method.Body);
 
-            if (_info.KeyFields.Length == 1)
+            if (_info.KeyMembers.Length == 1)
             {
-                var h = _info.KeyFields[0];
+                var h = _info.KeyMembers[0];
                 processor.LoadArg(1).Cast(_model);
                 processor.GetMember(h, _handler);
                 processor.Box(_handler.Import(h.FieldType));
@@ -300,7 +301,7 @@ namespace Lephone.Processor
             processor.DeclareLocal(_model);
             processor.LoadArg(2).Cast(_model).SetLoc(0);
             // set values
-            foreach (var f in _info.KeyFields)
+            foreach (var f in _info.KeyMembers)
             {
                 processor.LoadArg(1).LoadString(f.Name).LoadLoc(0);
                 processor.GetMember(f, _handler);
@@ -325,11 +326,11 @@ namespace Lephone.Processor
             method.Parameters.Add(new ParameterDefinition("keys", ParameterAttributes.None, _handler.ListKeyValuePairStringStringType));
             var processor = new IlBuilder(method.Body);
 
-            foreach (var f in _info.Fields)
+            foreach (var f in _info.Members)
             {
-                if (!f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
+                if (!f.Is.HasOne && !f.Is.HasMany && !f.Is.HasAndBelongsToMany)
                 {
-                    if (noLazy || !f.IsLazyLoad)
+                    if (noLazy || !f.Is.LazyLoad)
                     {
                         processor.LoadArg(1);
 
@@ -364,8 +365,8 @@ namespace Lephone.Processor
             var processor = new IlBuilder(method.Body);
 
             GenerateSetValuesDirect(processor,
-                                    m => m.IsUpdatedOn,
-                                    m => m.IsCreatedOn || m.IsSavedOn || m.IsCount);
+                                    m => m.Is.UpdatedOn,
+                                    m => m.Is.CreatedOn || m.Is.SavedOn || m.Is.Count);
 
             processor.Return();
             processor.Append();
@@ -388,8 +389,8 @@ namespace Lephone.Processor
             else
             {
                 GenerateSetValuesDirect(processor,
-                                        m => m.IsCreatedOn || m.IsKey,
-                                        m => m.IsUpdatedOn || m.IsSavedOn || m.IsCount);
+                                        m => m.Is.CreatedOn || m.Is.Key,
+                                        m => m.Is.UpdatedOn || m.Is.SavedOn || m.Is.Count);
             }
 
 
@@ -405,27 +406,27 @@ namespace Lephone.Processor
             processor.LoadArg(2).Cast(_model).SetLoc(0);
             // set values
             int n = 0;
-            foreach (var f in _info.Fields)
+            foreach (var f in _info.Members)
             {
-                if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
+                if (!f.Is.DbGenerate && !f.Is.HasOne && !f.Is.HasMany && !f.Is.HasAndBelongsToMany)
                 {
                     if (!cb1(f))
                     {
                         processor.LoadArg(1).LoadArg(0).LoadInt(n);
                         if (cb2(f))
                         {
-                            processor.LoadInt((int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow))
+                            processor.LoadInt((int)(f.Is.Count ? AutoValue.Count : AutoValue.DbNow))
                                 .Box(_handler.AutoValueType).Call(_handler.ModelHandlerBaseTypeNewKeyValueDirect);
                         }
                         else
                         {
                             processor.LoadLoc(0);
                             processor.GetMember(f, _handler);
-                            if (f.IsBelongsTo)
+                            if (f.Is.BelongsTo)
                             {
                                 processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_ForeignKey")));
                             }
-                            else if (f.IsLazyLoad)
+                            else if (f.Is.LazyLoad)
                             {
                                 var it = f.FieldType.GetGenericArguments()[0];
                                 processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_Value")));
@@ -451,27 +452,27 @@ namespace Lephone.Processor
             processor.LoadArg(2).Cast(_model).SetLoc(0);
             // set values
             int n = 0;
-            foreach (var f in _info.Fields)
+            foreach (var f in _info.Members)
             {
-                if (!f.IsDbGenerate && !f.IsHasOne && !f.IsHasMany && !f.IsHasAndBelongsToMany)
+                if (!f.Is.DbGenerate && !f.Is.HasOne && !f.Is.HasMany && !f.Is.HasAndBelongsToMany)
                 {
-                    if (!f.IsKey && (f.IsUpdatedOn || f.IsSavedOn || !f.IsCreatedOn || f.IsCount))
+                    if (!f.Is.Key && (f.Is.UpdatedOn || f.Is.SavedOn || !f.Is.CreatedOn || f.Is.Count))
                     {
-                        if (f.IsUpdatedOn || f.IsSavedOn || f.IsCount)
+                        if (f.Is.UpdatedOn || f.Is.SavedOn || f.Is.Count)
                         {
                             processor.LoadArg(1).LoadArg(0).LoadInt(n)
-                                .LoadInt((int)(f.IsCount ? AutoValue.Count : AutoValue.DbNow)).Box(_handler.AutoValueType)
+                                .LoadInt((int)(f.Is.Count ? AutoValue.Count : AutoValue.DbNow)).Box(_handler.AutoValueType)
                                 .Call(_handler.ModelHandlerBaseTypeNewKeyValueDirect).CallVirtual(_handler.KeyValueCollectionAdd);
                         }
                         else
                         {
                             processor.LoadArg(0).LoadArg(1).LoadLoc(0).LoadString(f.Name).LoadInt(n).LoadLoc(0);
                             processor.GetMember(f, _handler);
-                            if (f.IsBelongsTo)
+                            if (f.Is.BelongsTo)
                             {
                                 processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_ForeignKey")));
                             }
-                            else if (f.IsLazyLoad)
+                            else if (f.Is.LazyLoad)
                             {
                                 var it = f.FieldType.GetGenericArguments()[0];
                                 processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_Value")));

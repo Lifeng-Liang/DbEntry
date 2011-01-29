@@ -233,7 +233,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void TestGuidMultiKey()
         {
             DbEntry.Create(typeof(GuidMultiKey));
-            Assert.AreEqual("CREATE TABLE [Guid_Multi_Key] (\n\t[UserId] UNIQUEIDENTIFIER NOT NULL ,\n\t[RoleId] UNIQUEIDENTIFIER NOT NULL ,\n\tPRIMARY KEY([UserId], [RoleId])\n);\n<Text><30>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [Guid_Multi_Key] (\n\t[RoleId] UNIQUEIDENTIFIER NOT NULL ,\n\t[UserId] UNIQUEIDENTIFIER NOT NULL ,\n\tPRIMARY KEY([RoleId], [UserId])\n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -276,21 +276,21 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void Test6()
         {
             DbEntry.Create(typeof(PersonalComputerSqlite));
-            Assert.AreEqual("CREATE TABLE [PCs] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Person_Id] BIGINT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [PCs] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Person_Id] BIGINT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void Test7()
         {
             DbEntry.Create(typeof(BookSqlite));
-            Assert.AreEqual("CREATE TABLE [Books] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Category_Id] BIGINT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [Books] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Category_Id] BIGINT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
         public void Test8()
         {
             DbEntry.Create(typeof(MyTest8));
-            Assert.AreEqual("CREATE TABLE [MyTest] (\n\t[Name] NVARCHAR (50) NOT NULL ,\n\t[Id] BIGINT NOT NULL ,\n\t[Age] INT NOT NULL ,\n\tPRIMARY KEY([Name], [Id])\n);\n<Text><30>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [MyTest] (\n\t[Id] BIGINT NOT NULL ,\n\t[Name] NVARCHAR (50) NOT NULL ,\n\t[Age] INT NOT NULL ,\n\tPRIMARY KEY([Id], [Name])\n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -354,7 +354,7 @@ namespace Lephone.UnitTest.Data.CreateTable
 	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
 	[QQQId] INT NOT NULL ,
 	[UUUs] NVARCHAR (50) NOT NULL ,
-	[CCCId] BIGINT NOT NULL 
+	[CCCId] BIGINT NULL 
 );
 CREATE UNIQUE INDEX [IX_Index_Test_Class_xxx1] ON [Index_Test_Class] ([QQQId] ASC, [CCCId] ASC);
 CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC, [CCCId] ASC);
@@ -488,7 +488,7 @@ SELECT LAST_INSERT_ROWID();
             AssertSql(@"CREATE TABLE [For_Table_Name] (
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
     [Name] NTEXT NOT NULL ,
-    [For_TableName2_Id] BIGINT NOT NULL 
+    [For_TableName2_Id] BIGINT NULL 
 );
 <Text><30>()");
         }

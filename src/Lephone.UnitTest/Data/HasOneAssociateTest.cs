@@ -107,17 +107,17 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestHasOne5()
         {
-            // A.Delete will delete itself, and delete B *
-            var p = DbEntry.GetObject<Person>(2);
+            // A.Delete will delete itself, and set B.A_id to null *
+            var p = Person.FindById(2);
             Assert.IsNotNull(p);
             Assert.IsNotNull(p.PC.Value);
             long pcid = p.PC.Value.Id;
             // do delete
-            DbEntry.Delete(p);
-            var p1 = DbEntry.GetObject<Person>(2);
+            p.Delete();
+            var p1 = Person.FindById(2);
             Assert.IsNull(p1);
-            var pc = DbEntry.GetObject<PersonalComputer>(pcid);
-            Assert.IsNull(pc);
+            var pc = PersonalComputer.FindOne(CK.K["Person_Id"] == null);
+            Assert.AreEqual(pcid, pc.Id);
         }
 
         [Test]

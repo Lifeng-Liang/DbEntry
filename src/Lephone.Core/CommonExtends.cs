@@ -115,7 +115,7 @@ public static class CommonExtends
         return Base32StringCoding.Decode(bs);
     }
 
-    public static string First(this string[] array)
+    public static string FirstItem(this string[] array)
     {
         if (array == null || array.Length == 0)
         {
@@ -124,7 +124,7 @@ public static class CommonExtends
         return array[0];
     }
 
-    public static string Last(this string[] array)
+    public static string LastItem(this string[] array)
     {
         if (array == null || array.Length == 0)
         {
@@ -159,7 +159,7 @@ public static class CommonExtends
         return new List<string>(array).RemoveLast().ToArray();
     }
 
-    public static T First<T>(this IList<T> list)
+    public static T FirstItem<T>(this IList<T> list)
     {
         if (list == null || list.Count == 0)
         {
@@ -168,7 +168,7 @@ public static class CommonExtends
         return list[0];
     }
 
-    public static T Last<T>(this IList<T> list)
+    public static T LastItem<T>(this IList<T> list)
     {
         if (list == null || list.Count == 0)
         {
@@ -177,7 +177,7 @@ public static class CommonExtends
         return list[list.Count - 1];
     }
 
-    public static T Last<T>(this T[] list)
+    public static T LastItem<T>(this T[] list)
     {
         if (list == null || list.Length == 0)
         {

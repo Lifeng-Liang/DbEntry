@@ -7,8 +7,8 @@ namespace Lephone.Data.Driver
 {
     internal class Oracle8Driver : DbDriver
     {
-        public Oracle8Driver(Dialect.DbDialect dialectClass, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
-            : base(dialectClass, connectionString, dbProviderFactoryName, autoCreateTable)
+        public Oracle8Driver(Dialect.DbDialect dialectClass, string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+            : base(dialectClass, name, connectionString, dbProviderFactoryName, autoCreateTable)
 		{
 		}
 
