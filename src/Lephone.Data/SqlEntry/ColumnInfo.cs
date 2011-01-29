@@ -1,5 +1,5 @@
 ﻿using System;
-using Lephone.Data.Common;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.SqlEntry
 {
@@ -24,21 +24,21 @@ namespace Lephone.Data.SqlEntry
         }
 
         internal ColumnInfo(MemberHandler fh)
-            : this(fh.Name, GetType(fh), fh.IsKey, fh.IsDbGenerate, fh.AllowNull, fh.IsUnicode, fh.MaxLength, fh.DecimalPart)
+            : this(fh.Name, GetType(fh), fh.Is.Key, fh.Is.DbGenerate, fh.Is.AllowNull, fh.Is.Unicode, fh.MaxLength, fh.DecimalPart)
         {
         }
 
         private static Type GetType(MemberHandler fh)
         {
-            if (fh.IsBelongsTo)
+            if (fh.Is.BelongsTo)
             {
                 var ctx = ModelContext.GetInstance(fh.FieldType.GetGenericArguments()[0]);
-                if (ctx.Info.KeyFields != null && ctx.Info.KeyFields.Length == 1)
+                if (ctx.Info.KeyMembers != null && ctx.Info.KeyMembers.Length == 1)
                 {
-                    return ctx.Info.KeyFields[0].FieldType;
+                    return ctx.Info.KeyMembers[0].FieldType;
                 }
             }
-            else if(fh.IsLazyLoad)
+            else if(fh.Is.LazyLoad)
             {
                 return fh.FieldType.GetGenericArguments()[0];
             }

@@ -66,7 +66,7 @@ namespace Lephone.Data.SqlEntry
             string userId = Dialect.GetUserId(Driver.ConnectionString);
             DbEntry.NewConnection(delegate
             {
-                var c = (DbConnection)ConnectionContext.Current.GetConnection(Driver);
+                var c = (DbConnection)ConnectionContext.Current.GetConnection(this);
                 foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
                 {
                     if (si.FiltrateDatabaseName)
@@ -90,7 +90,7 @@ namespace Lephone.Data.SqlEntry
             {
                 if (Scope<ConnectionContext>.Current != null)
                 {
-                    var c = (SqlConnection)Scope<ConnectionContext>.Current.GetConnection(Driver);
+                    var c = (SqlConnection)Scope<ConnectionContext>.Current.GetConnection(this);
                     return new SqlServerBulkCopy(c);
                 }
                 throw new DataException("It must have current connection.");
@@ -305,7 +305,7 @@ namespace Lephone.Data.SqlEntry
             {
                 Logger.SQL.Trace(sql);
             }
-            return ConnectionContext.Current.GetDbCommand(sql, Driver);
+            return ConnectionContext.Current.GetDbCommand(sql, this);
         }
 
         protected void PopulateOutParams(SqlStatement sql, IDbCommand e)

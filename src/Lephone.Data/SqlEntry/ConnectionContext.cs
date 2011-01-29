@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using Lephone.Data.Driver;
 using Lephone.Core;
 
 namespace Lephone.Data.SqlEntry
@@ -29,12 +28,14 @@ namespace Lephone.Data.SqlEntry
 
         private IDbConnection _connection;
 
-        public IDbConnection GetConnection(DbDriver driver)
+        public IDbConnection GetConnection(DataProvider provider)
         {
             if (_state == ConnectionContextState.NoConnection)
             {
-                _connection = GetDriver(driver).GetDbConnection();
+                CheckContextAreSame(provider);
+                _connection = provider.Driver.GetDbConnection();
                 _connection.Open();
+                provider.Dialect.InitConnection(provider, _connection);
                 _state = ConnectionContextState.ConnectionOpened;
             }
             return _connection;
@@ -42,18 +43,18 @@ namespace Lephone.Data.SqlEntry
 
         private IDbTransaction _transaction;
 
-        private IDbTransaction GetTransaction(DbDriver driver)
+        private IDbTransaction GetTransaction(DataProvider provider)
         {
             if (_state == ConnectionContextState.ConnectionOpened || _state == ConnectionContextState.TransactionEnded)
             {
                 switch (_transactionState)
                 {
                     case ConnectionContextTransactionState.UnspecifiedTransaction:
-                        _transaction = GetConnection(driver).BeginTransaction();
+                        _transaction = GetConnection(provider).BeginTransaction();
                         _state = ConnectionContextState.TransactionStarted;
                         break;
                     case ConnectionContextTransactionState.SpecifiedTransaciton:
-                        _transaction = GetConnection(driver).BeginTransaction(_isolationLevel);
+                        _transaction = GetConnection(provider).BeginTransaction(_isolationLevel);
                         _state = ConnectionContextState.TransactionStarted;
                         break;
                 }
@@ -70,11 +71,22 @@ namespace Lephone.Data.SqlEntry
 
         private ConnectionContextState _state;
         private ConnectionContextTransactionState _transactionState;
-        private DbDriver _driver;
+        private string _contextName;
 
-        private DbDriver GetDriver(DbDriver driver)
+        private void CheckContextAreSame(DataProvider provider)
         {
-            return _driver ?? (_driver = driver);
+            if(_contextName == null)
+            {
+                _contextName = provider.Driver.Name;
+            }
+            else
+            {
+                if(_contextName != provider.Driver.Name)
+                {
+                    throw new DataException("The transaction should use [{0}] but was [{1}]", 
+                        _contextName, provider.Driver.Name);
+                }
+            }
         }
 
         public bool IsInTransaction
@@ -107,14 +119,11 @@ namespace Lephone.Data.SqlEntry
             _isolationLevel = il;
         }
 
-        public IDbCommand GetDbCommand(SqlStatement sql, DbDriver driver)
+        public IDbCommand GetDbCommand(SqlStatement sql, DataProvider provider)
         {
-            if(_driver == null)
-            {
-                _driver = driver;
-            }
-            var e = _driver.GetDbCommand(sql, GetConnection(driver));
-            if(GetTransaction(driver) != null)
+            CheckContextAreSame(provider);
+            var e = provider.Driver.GetDbCommand(sql, GetConnection(provider));
+            if (GetTransaction(provider) != null)
             {
                 e.Transaction = _transaction;
             }
