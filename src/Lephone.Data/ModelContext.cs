@@ -5,13 +5,18 @@ using Lephone.Core;
 using Lephone.Data.Caching;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
-using Lephone.Data.QuerySyntax;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Composer;
+using Lephone.Data.Model.Handler;
+using Lephone.Data.Model.QuerySyntax;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data
 {
     public class ModelContext
     {
+        internal static bool LoadHandler = true;
+
         #region flyweight
 
         private class ContextFactory : FlyweightBase<Type, ModelContext>
@@ -44,7 +49,7 @@ namespace Lephone.Data
             Info = new ObjectInfo(t);
             Provider = DataProviderFactory.Instance.GetInstance(Info.ContextName);
             Composer = GetQueryComposer();
-            if(DataSettings.LoadHandler)
+            if(LoadHandler)
             {
                 Handler = CreateDbObjectHandler();
             }
@@ -91,7 +96,7 @@ namespace Lephone.Data
                         throw new NotSupportedException();
                 }
             }
-            var attr = ClassHelper.GetAttribute<ModelHandlerAttribute>(Info.HandleType, false);
+            var attr = Info.HandleType.GetAttribute<ModelHandlerAttribute>(false);
             if (attr != null)
             {
                 var o = (EmitObjectHandlerBase)ClassHelper.CreateInstance(attr.Type);
@@ -110,16 +115,16 @@ namespace Lephone.Data
 
         public object GetPrimaryKeyDefaultValue()
         {
-            if (Info.KeyFields.Length > 1)
+            if (Info.KeyMembers.Length > 1)
             {
                 throw new DataException("GetPrimaryKeyDefaultValue don't support multi key.");
             }
-            return CommonHelper.GetEmptyValue(Info.KeyFields[0].FieldType, false, "only supported int long guid as primary key.");
+            return CommonHelper.GetEmptyValue(Info.KeyMembers[0].FieldType, false, "only supported int long guid as primary key.");
         }
 
         public bool IsNewObject(object obj)
         {
-            return Info.KeyFields[0].UnsavedValue.Equals(Handler.GetKeyValue(obj));
+            return Info.KeyMembers[0].UnsavedValue.Equals(Handler.GetKeyValue(obj));
         }
 
         public object NewObject()
@@ -156,7 +161,7 @@ namespace Lephone.Data
         {
             Type t = obj.GetType();
             var ctx = GetInstance(t);
-            if (ctx.Info.KeyFields == null)
+            if (ctx.Info.KeyMembers == null)
             {
                 throw new DataException("dbobject do not have key field : " + t);
             }
@@ -177,7 +182,7 @@ namespace Lephone.Data
             {
                 throw new DataException("dbobject do not have SystemGeneration key field : " + t);
             }
-            var fh = ctx.Info.KeyFields[0];
+            var fh = ctx.Info.KeyMembers[0];
             object sKey;
             if (fh.FieldType == typeof(long))
             {
@@ -211,14 +216,14 @@ namespace Lephone.Data
 
         private static void InnerCloneObject(object obj, ObjectInfo oi, object o)
         {
-            foreach (var m in oi.SimpleFields)
+            foreach (var m in oi.SimpleMembers)
             {
                 object v = m.GetValue(obj);
                 m.SetValue(o, v);
             }
-            foreach (var f in oi.RelationFields)
+            foreach (var f in oi.RelationMembers)
             {
-                if (f.IsBelongsTo)
+                if (f.Is.BelongsTo)
                 {
                     var os = (IBelongsTo)f.GetValue(obj);
                     var od = (IBelongsTo)f.GetValue(o);

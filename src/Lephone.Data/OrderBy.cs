@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Lephone.Data.Builder;
 using Lephone.Data.Common;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Member;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data
@@ -95,7 +97,7 @@ namespace Lephone.Data
 
         private static string GetColumnName(ObjectInfo oi, string name)
         {
-            foreach(MemberHandler mh in oi.Fields)
+            foreach(MemberHandler mh in oi.Members)
             {
                 if(mh.MemberInfo.Name == name)
                 {

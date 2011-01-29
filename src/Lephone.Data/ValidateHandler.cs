@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Lephone.Core;
 using Lephone.Core.Text;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data
 {
@@ -67,7 +67,7 @@ namespace Lephone.Data
             var ctx = ModelContext.GetInstance(t);
             string tn = ctx.Info.HandleType.Name;
             bool isNew = false;
-            if (ctx.Info.KeyFields.Length > 0)
+            if (ctx.Info.KeyMembers.Length > 0)
             {
                 isNew = ctx.IsNewObject(obj);
             }
@@ -81,20 +81,20 @@ namespace Lephone.Data
         {
             var stringType = typeof(string);
             var byteArrayType = typeof(byte[]);
-            foreach (MemberHandler fh in ctx.Info.Fields)
+            foreach (MemberHandler fh in ctx.Info.Members)
             {
-                var realType = fh.IsLazyLoad ? fh.FieldType.GetGenericArguments()[0] : fh.FieldType;
+                var realType = fh.Is.LazyLoad ? fh.FieldType.GetGenericArguments()[0] : fh.FieldType;
                 if (realType == stringType)
                 {
                     var errMsg = new StringBuilder();
-                    string field = fh.IsLazyLoad ? ((LazyLoadField<string>)fh.GetValue(obj)).Value : (string)fh.GetValue(obj);
+                    string field = fh.Is.LazyLoad ? ((LazyLoadField<string>)fh.GetValue(obj)).Value : (string)fh.GetValue(obj);
                     var isValid = ValidateStringField(field, fh, errMsg);
                     SetErrorMessage(fh, errMsg, isValid, tableName);
                 }
                 else if (realType == byteArrayType)
                 {
                     var errMsg = new StringBuilder();
-                    byte[] field = fh.IsLazyLoad ? ((LazyLoadField<byte[]>)fh.GetValue(obj)).Value : (byte[])fh.GetValue(obj);
+                    byte[] field = fh.Is.LazyLoad ? ((LazyLoadField<byte[]>)fh.GetValue(obj)).Value : (byte[])fh.GetValue(obj);
                     var isValid = ValidateByteArrayField(field, fh, errMsg);
                     SetErrorMessage(fh, errMsg, isValid, tableName);
                 }
@@ -131,7 +131,7 @@ namespace Lephone.Data
                     if(updatedColumns == null || updatedColumns.ContainsKey(h.Name))
                     {
                         object v = h.GetValue(obj);
-                        if (h.AllowNull && v == null)
+                        if (h.Is.AllowNull && v == null)
                         {
                             c = null;
                             break;
@@ -176,7 +176,7 @@ namespace Lephone.Data
         {
             if (field == null)
             {
-                if (fh.AllowNull)
+                if (fh.Is.AllowNull)
                 {
                     return true;
                 }
@@ -199,7 +199,7 @@ namespace Lephone.Data
         {
             if (field == null || (field == "" && _emptyAsNull))
             {
-                if (fh.AllowNull)
+                if (fh.Is.AllowNull)
                 {
                     return true;
                 }
@@ -210,7 +210,7 @@ namespace Lephone.Data
             field = field.Trim();
             if (fh.MaxLength > 0)
             {
-                isValid &= IsValidStringField(field, fh.MinLength, fh.MaxLength, !fh.IsUnicode,
+                isValid &= IsValidStringField(field, fh.MinLength, fh.MaxLength, !fh.Is.Unicode,
                     string.IsNullOrEmpty(fh.LengthErrorMessage) ? _lengthText : fh.LengthErrorMessage, errMsg);
             }
             if (!string.IsNullOrEmpty(fh.Regular))

@@ -114,6 +114,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\Clause\ConstCondition.cs" />
     <Compile Include="Builder\Clause\InClause.cs" />
     <Compile Include="Builder\ISqlKeys.cs" />
+    <Compile Include="Caching\CachedModelDeleter.cs" />
     <Compile Include="Caching\CachedModelOperator.cs" />
     <Compile Include="Caching\CacheProvider.cs" />
     <Compile Include="Caching\KeyGenerator.cs" />
@@ -126,33 +127,42 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\CommonExtends.cs" />
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DbTimeProvider.cs" />
-    <Compile Include="Common\DeleteToQueryComposer.cs" />
-    <Compile Include="Common\DynamicLinqObjectHandler.cs" />
-    <Compile Include="Common\DynamicQuery.cs" />
-    <Compile Include="Common\DynamicRow.cs" />
-    <Compile Include="Common\DynamicTable.cs" />
-    <Compile Include="Common\GroupbyObjectHandler.cs" />
-    <Compile Include="Common\GroupBySumObject.cs" />
-    <Compile Include="Common\GroupbySumObjectHandler.cs" />
+    <Compile Include="Model\Composer\DeleteToQueryComposer.cs" />
+    <Compile Include="Model\Handler\DynamicLinqObjectHandler.cs" />
+    <Compile Include="Model\Member\Adapter\FieldAdapter.cs" />
+    <Compile Include="Model\Member\Adapter\PropertyAdapter.cs" />
+    <Compile Include="Model\Member\Adapter\UnsignedFieldAdapter.cs" />
+    <Compile Include="Model\Member\Adapter\UnsignedPropertyAdapter.cs" />
+    <Compile Include="Model\Member\BooleanMemberHandler.cs" />
+    <Compile Include="Model\Member\EnumMemberHandler.cs" />
+    <Compile Include="Model\Member\MemberBoolAttributes.cs" />
+    <Compile Include="Model\Member\NullableBooleanMemberHandler.cs" />
+    <Compile Include="Model\Member\NullableMemberHandler.cs" />
+    <Compile Include="SqlEntry\Dynamic\DynamicQuery.cs" />
+    <Compile Include="SqlEntry\Dynamic\DynamicRow.cs" />
+    <Compile Include="SqlEntry\Dynamic\DynamicTable.cs" />
+    <Compile Include="Model\Handler\GroupbyObjectHandler.cs" />
+    <Compile Include="Model\GroupBySumObject.cs" />
+    <Compile Include="Model\Handler\GroupbySumObjectHandler.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
-    <Compile Include="Common\ModelHandlerAttribute.cs" />
-    <Compile Include="Common\ModelOperator.cs" />
-    <Compile Include="Common\ModelUpdater.cs" />
-    <Compile Include="Common\ObjectInfoBase.cs" />
-    <Compile Include="Common\ObjectInfoFactory.cs" />
-    <Compile Include="Common\SavedObjectList.cs" />
+    <Compile Include="Model\ModelDeleter.cs" />
+    <Compile Include="Model\Handler\ModelHandlerAttribute.cs" />
+    <Compile Include="Model\ModelOperator.cs" />
+    <Compile Include="Model\ModelUpdater.cs" />
+    <Compile Include="Model\ObjectInfoFactory.cs" />
+    <Compile Include="Model\SavedObjectList.cs" />
     <Compile Include="Common\TimeSpanLessDataReader.cs" />
     <Compile Include="Common\XmlSchemaTypeParser.cs" />
     <Compile Include="Definition\CacheableAttribute.cs" />
     <Compile Include="Common\DynamicObjectReference.cs" />
-    <Compile Include="Common\EmitObjectHandlerBase.cs" />
-    <Compile Include="Common\GroupByObject.cs" />
-    <Compile Include="Common\IDbObjectHandler.cs" />
-    <Compile Include="Common\CrossTable.cs" />
-    <Compile Include="Common\OptimisticLockingQueryComposer.cs" />
-    <Compile Include="Common\QueryComposer.cs" />
-    <Compile Include="Common\MemberAdapater.cs" />
-    <Compile Include="Common\SoftDeleteQueryComposer.cs" />
+    <Compile Include="Model\Handler\EmitObjectHandlerBase.cs" />
+    <Compile Include="Model\GroupByObject.cs" />
+    <Compile Include="Model\Handler\IDbObjectHandler.cs" />
+    <Compile Include="Model\CrossTable.cs" />
+    <Compile Include="Model\Composer\OptimisticLockingQueryComposer.cs" />
+    <Compile Include="Model\Composer\QueryComposer.cs" />
+    <Compile Include="Model\Member\Adapter\MemberAdapater.cs" />
+    <Compile Include="Model\Composer\SoftDeleteQueryComposer.cs" />
     <Compile Include="Common\StaticPagedSelector.cs" />
     <Compile Include="Common\StupidDataReader.cs" />
     <Compile Include="Definition\ComposedOfAttribute.cs" />
@@ -199,15 +209,15 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Driver\MySqlDriver.cs" />
     <Compile Include="Driver\OracleDriver.cs" />
     <Compile Include="Driver\SmartDbFactory.cs" />
-    <Compile Include="Linq\ExpressionParser.cs" />
-    <Compile Include="Linq\LinqException.cs" />
-    <Compile Include="Linq\LinqExpressionParser.cs" />
-    <Compile Include="Linq\LinqHelper.cs" />
-    <Compile Include="Linq\LinqOrderSyntax.cs" />
-    <Compile Include="Linq\LinqQueryProvider.cs" />
+    <Compile Include="Model\Linq\ExpressionParser.cs" />
+    <Compile Include="Model\Linq\LinqException.cs" />
+    <Compile Include="Model\Linq\LinqExpressionParser.cs" />
+    <Compile Include="Model\Linq\LinqHelper.cs" />
+    <Compile Include="Model\Linq\LinqOrderSyntax.cs" />
+    <Compile Include="Model\Linq\LinqQueryProvider.cs" />
     <Compile Include="ModelContext.cs" />
     <Compile Include="ModelException.cs" />
-    <Compile Include="QuerySyntax\QueryInterfaces.cs" />
+    <Compile Include="Model\QuerySyntax\QueryInterfaces.cs" />
     <Compile Include="SqlEntry\ColumnInfo.cs" />
     <Compile Include="Definition\AllowNullAttribute.cs" />
     <Compile Include="Definition\IndexAttribute.cs" />
@@ -217,14 +227,14 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\HasMany.cs" />
     <Compile Include="SqlEntry\CommonBulkCopy.cs" />
     <Compile Include="SqlEntry\ConnectionContext.cs" />
-    <Compile Include="SqlEntry\DataProviderDynamicSupport.cs" />
+    <Compile Include="SqlEntry\Dynamic\DataProviderDynamicSupport.cs" />
     <Compile Include="SqlEntry\DataProviderFactory.cs" />
     <Compile Include="SqlEntry\DbColumnInfo.cs" />
     <Compile Include="SqlEntry\AutoValue.cs" />
     <Compile Include="SqlEntry\IDbBulkCopy.cs" />
-    <Compile Include="Common\LimitedListInserter.cs" />
+    <Compile Include="Model\Inserter\LimitedListInserter.cs" />
     <Compile Include="Definition\NamedDbObject.cs" />
-    <Compile Include="QuerySyntax\QueryContent.cs" />
+    <Compile Include="Model\QuerySyntax\QueryContent.cs" />
     <Compile Include="SqlEntry\SqlServerBulkCopy.cs" />
     <Compile Include="ValidateHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -377,22 +387,22 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\DbObject.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\DbObjectList.cs">
+    <Compile Include="Model\DbObjectList.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DbEntry.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\MemberHandler.cs">
+    <Compile Include="Model\Member\MemberHandler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\IProcessor.cs">
+    <Compile Include="Model\Handler\IProcessor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\ObjectInfo.cs">
+    <Compile Include="Model\ObjectInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\ListInserter.cs">
+    <Compile Include="Model\Inserter\ListInserter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\NullableHelper.cs" />
@@ -451,6 +461,7 @@ copy *.dll ..\..\..\..\bin\
       <Name>Lephone.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release

@@ -5,9 +5,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Lephone.Core;
 using Lephone.Data.Caching;
-using Lephone.Data.QuerySyntax;
+using Lephone.Data.Model;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
+using Lephone.Data.Model.QuerySyntax;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data
@@ -148,12 +149,12 @@ namespace Lephone.Data
             return GetOperator(typeof(T)).GetObject(expr);
         }
 
-        public static void Save(object obj)
+        public static void Save(IDbObject obj)
         {
             GetOperator(obj.GetType()).Save(obj);
         }
 
-        public static void Save(params object[] objs)
+        public static void Save(params IDbObject[] objs)
         {
             if(objs != null && objs.Length > 0)
             {
@@ -168,17 +169,17 @@ namespace Lephone.Data
             }
         }
 
-        public static void Update(object obj)
+        public static void Update(IDbObject obj)
 		{
             GetOperator(obj.GetType()).Update(obj);
 		}
 
-        public static void Insert(object obj)
+        public static void Insert(IDbObject obj)
 		{
             GetOperator(obj.GetType()).Insert(obj);
 		}
 
-        public static int Delete(object obj)
+        public static int Delete(IDbObject obj)
 		{
             return GetOperator(obj.GetType()).Delete(obj);
 		}

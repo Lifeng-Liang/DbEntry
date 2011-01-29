@@ -3,6 +3,7 @@ using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
 using Lephone.Data.Common;
+using Lephone.Data.Model.Member;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data
@@ -16,9 +17,9 @@ namespace Lephone.Data
         {
             get
             {
-                foreach (MemberHandler m in Ctx.Info.Fields)
+                foreach (MemberHandler m in Ctx.Info.Members)
                 {
-                    if (m.IsLazyLoad)
+                    if (m.Is.LazyLoad)
                     {
                         if (m.MemberInfo.Name == "$" + fieldName)
                         {

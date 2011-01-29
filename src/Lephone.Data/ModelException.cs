@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Lephone.Data.Common;
+using Lephone.Data.Model.Member.Adapter;
 
 namespace Lephone.Data
 {
