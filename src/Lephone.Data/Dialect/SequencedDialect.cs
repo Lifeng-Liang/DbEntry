@@ -11,7 +11,7 @@ namespace Lephone.Data.Dialect
             string seqStr = GetSelectSequenceSql(ctx.Info.From.MainTableName);
             var seq = new SqlStatement(CommandType.Text, seqStr);
             object key = ctx.Provider.ExecuteScalar(seq);
-            sb.Values.Add(new KeyValue(ctx.Info.KeyFields[0].Name, key));
+            sb.Values.Add(new KeyValue(ctx.Info.KeyMembers[0].Name, key));
             SqlStatement sql = sb.ToSqlStatement(ctx);
             ctx.Provider.ExecuteNonQuery(sql);
             return key;

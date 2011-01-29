@@ -15,9 +15,9 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Single] = "FLOAT";
         }
 
-        public override DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
         {
-            return new MySqlDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new MySqlDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)

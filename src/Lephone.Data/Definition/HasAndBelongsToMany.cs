@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Lephone.Data.Common;
+using Lephone.Data.Model;
 
 namespace Lephone.Data.Definition
 {
@@ -27,7 +27,7 @@ namespace Lephone.Data.Definition
                 if (ctx.Info.HasOnePrimaryKey)
                 {
                     object key = ctx.Handler.GetKeyValue(item);
-                    if (!key.Equals(ctx.Info.KeyFields[0].UnsavedValue))
+                    if (!key.Equals(ctx.Info.KeyMembers[0].UnsavedValue))
                     {
                         _savedNewRelations.Add(key);
                     }
@@ -42,7 +42,7 @@ namespace Lephone.Data.Definition
         protected override IList<T> InnerLoad()
         {
             var ctx = Owner.Context;
-            object key = ctx.Info.KeyFields[0].GetValue(Owner);
+            object key = ctx.Info.KeyMembers[0].GetValue(Owner);
             var il = new DbObjectList<T>();
             var t = typeof(T);
             var ctx0 = ModelContext.GetInstance(typeof(T));
@@ -55,7 +55,7 @@ namespace Lephone.Data.Definition
         {
             var ctx = ModelContext.GetInstance(item.GetType());
             object key = ctx.Handler.GetKeyValue(item);
-            if (key == ctx.Info.KeyFields[0].UnsavedValue)
+            if (key == ctx.Info.KeyMembers[0].UnsavedValue)
             {
                 _savedNewRelations.Remove(key);
             }

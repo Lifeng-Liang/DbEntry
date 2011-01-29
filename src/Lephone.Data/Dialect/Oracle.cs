@@ -55,9 +55,9 @@ namespace Lephone.Data.Dialect
             return null;
         }
 
-        public override DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
         {
-            return new OracleDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new OracleDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         public override IDataReader GetDataReader(IDataReader dr, Type returnType)

@@ -1,4 +1,5 @@
-﻿using Lephone.Data.Builder;
+﻿using System.Data;
+using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Common;
 
@@ -9,6 +10,17 @@ namespace Lephone.Data.Dialect
         public SQLite()
         {
             TypeNames[DataType.Binary] = "BLOB";
+        }
+
+        public override void InitConnection(DataProvider provider, IDbConnection conn)
+        {
+            if(DataSettings.TestForeignKey)
+            {
+                using(IDbCommand e = provider.Driver.GetDbCommand(new SqlStatement("PRAGMA foreign_keys = ON;"), conn))
+                {
+                    e.ExecuteNonQuery();
+                }
+            }
         }
 
         public override string DbNowString

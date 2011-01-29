@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using Lephone.Core;
 using Lephone.Data.Common;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Composer;
+using Lephone.Data.Model.Handler;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Caching
@@ -75,6 +78,12 @@ namespace Lephone.Data.Caching
         {
             var li = base.GetListProcessor(il);
             return new CachedListInserter(li);
+        }
+
+        public override int Delete(Definition.IDbObject obj)
+        {
+            var deleter = new CachedModelDeleter(obj);
+            return deleter.Process();
         }
     }
 }

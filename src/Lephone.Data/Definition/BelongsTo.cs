@@ -1,12 +1,12 @@
 ﻿using System;
-using Lephone.Data.Common;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
 {
     [Serializable]
     public class BelongsTo<T, TKey> : LazyLoadOneBase<T>, IBelongsTo where T : DbObjectModel<T, TKey>, new() where TKey : struct
     {
-        private TKey _foreignKey;
+        private TKey? _foreignKey;
 
         public BelongsTo(DbObjectSmartUpdate owner, string relationName)
             : base(owner, relationName)
@@ -23,7 +23,14 @@ namespace Lephone.Data.Definition
             get { return _foreignKey; }
             set
             {
-                _foreignKey = (TKey)Convert.ChangeType(value, typeof(TKey));
+                if (value == null || value == DBNull.Value)
+                {
+                    _foreignKey = null;
+                }
+                else
+                {
+                    _foreignKey = (TKey)Convert.ChangeType(value, typeof(TKey));
+                }
             }
         }
 
@@ -34,11 +41,11 @@ namespace Lephone.Data.Definition
             {
                 if (m_Value != null)
                 {
-                    _foreignKey = (TKey)ctx.Info.KeyFields[0].GetValue(m_Value);
+                    _foreignKey = (TKey)ctx.Info.KeyMembers[0].GetValue(m_Value);
                 }
                 else
                 {
-                    _foreignKey = default(TKey);
+                    _foreignKey = null;
                 }
                 if (!isLoad)
                 {
@@ -49,9 +56,9 @@ namespace Lephone.Data.Definition
                     }
                     else if (m_Value != null && m_Value != oldValue)
                     {
-                        foreach (var mh in ctx.Info.RelationFields)
+                        foreach (var mh in ctx.Info.RelationMembers)
                         {
-                            if (mh.IsHasOne || mh.IsHasMany)
+                            if (mh.Is.HasOne || mh.Is.HasMany)
                             {
                                 Type st = mh.FieldType.GetGenericArguments()[0];
                                 Type ot = Owner.GetType();
@@ -81,9 +88,9 @@ namespace Lephone.Data.Definition
             if (m_Value != null)
             {
                 var ctx1 = ModelContext.GetInstance(typeof(T));
-                foreach (MemberHandler f in ctx1.Info.RelationFields)
+                foreach (MemberHandler f in ctx1.Info.RelationMembers)
                 {
-                    if (f.IsHasOne || f.IsHasMany)
+                    if (f.Is.HasOne || f.Is.HasMany)
                     {
                         Type t = f.FieldType.GetGenericArguments()[0];
                         if (t == Owner.GetType())

@@ -5,9 +5,8 @@ namespace Lephone.Data.Common
 {
     internal static class DataSettings
     {
-        public static readonly bool LoadHandler             = true; // for Lephone.Processor only.
-
-        public static readonly string DefaultContext        = "";
+        // ReSharper disable RedundantDefaultFieldInitializer
+        public static readonly string DefaultContext = "";
 
 		public static readonly int SqlTimeOut               = 30;
 
@@ -32,9 +31,12 @@ namespace Lephone.Data.Common
 
         public static readonly int DbTimeCheckMinutes       = 10;
 
+        public static readonly bool TestForeignKey          = false;
+
         static DataSettings()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(DataSettings));
         }
-	}
+        // ReSharper restore RedundantDefaultFieldInitializer
+    }
 }

@@ -17,7 +17,7 @@ namespace Lephone.Data.Definition
             var ctx = Owner.Context;
             object key = ctx.Handler.GetKeyValue(Owner);
             var sb = new SelectStatementBuilder(ctx.Info.From, null, null);
-            string kn = ctx.Info.KeyFields[0].Name;
+            string kn = ctx.Info.KeyMembers[0].Name;
             sb.Where.Conditions = CK.K[kn] == key;
             sb.Keys.Add(new KeyValuePair<string, string>(RelationName, null));
             SqlStatement sql = sb.ToSqlStatement(ctx);

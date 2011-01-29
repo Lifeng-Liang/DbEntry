@@ -9,16 +9,16 @@ namespace Lephone.Data.Definition
         public int Max;
         public string ErrorMessage;
 
-        public LengthAttribute(int Max)
+        public LengthAttribute(int max)
         {
             this.Min = 0;
-            this.Max = Max;
+            this.Max = max;
         }
 
-        public LengthAttribute(int Min, int Max)
+        public LengthAttribute(int min, int max)
         {
-            this.Min = Min;
-            this.Max = Max;
+            this.Min = min;
+            this.Max = max;
         }
     }
 }

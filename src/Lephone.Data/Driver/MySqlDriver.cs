@@ -5,8 +5,8 @@ namespace Lephone.Data.Driver
 {
     internal class MySqlDriver : CommonDbDriver
     {
-        public MySqlDriver(DbDialect dialectClass, string connectionString, string dbProviderFactoryName, bool autoCreateTable) 
-            : base(dialectClass, connectionString, dbProviderFactoryName, autoCreateTable)
+        public MySqlDriver(DbDialect dialectClass, string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable) 
+            : base(dialectClass, name, connectionString, dbProviderFactoryName, autoCreateTable)
         {
         }
 

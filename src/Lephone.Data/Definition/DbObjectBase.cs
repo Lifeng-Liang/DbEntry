@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Lephone.Data.Common;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
 {
@@ -11,13 +11,13 @@ namespace Lephone.Data.Definition
         {
             var ctx = ModelContext.GetInstance(this.GetType());
             var sb = new StringBuilder("{ ");
-            foreach (MemberHandler m in ctx.Info.Fields)
+            foreach (MemberHandler m in ctx.Info.Members)
             {
-                if (!(m.IsHasMany || m.IsHasAndBelongsToMany || m.IsHasOne))
+                if (!(m.Is.HasMany || m.Is.HasAndBelongsToMany || m.Is.HasOne))
                 {
                     sb.Append(m.Name).Append(" = ");
                     object o = m.GetValue(this);
-                    if (m.IsBelongsTo)
+                    if (m.Is.BelongsTo)
                     {
                         o = ((IBelongsTo)o).ForeignKey;
                     }

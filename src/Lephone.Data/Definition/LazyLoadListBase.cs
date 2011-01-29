@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Lephone.Data.Common;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
 {
@@ -55,7 +56,7 @@ namespace Lephone.Data.Definition
 
         protected void AddToInnerList(IList<T> l)
         {
-            MemberHandler af = ModelContext.GetInstance(typeof(T)).Info.KeyFields[0];
+            MemberHandler af = ModelContext.GetInstance(typeof(T)).Info.KeyMembers[0];
             object tkey = null;
             if (InnerList.Count == 1)
             {
@@ -188,7 +189,7 @@ namespace Lephone.Data.Definition
         private bool RemoveItem(T item)
         {
             var ctx = ModelContext.GetInstance(typeof(T));
-            var kh = ctx.Info.KeyFields[0];
+            var kh = ctx.Info.KeyMembers[0];
             var id = kh.GetValue(item);
             foreach (var obj in InnerList)
             {

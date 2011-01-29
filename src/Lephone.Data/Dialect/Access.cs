@@ -19,9 +19,9 @@ namespace Lephone.Data.Dialect
             return new AccessDataReader(dr, returnType);
         }
 
-        public override DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
         {
-            return new OleDbDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new OleDbDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         public override DbStructInterface GetDbStructInterface()

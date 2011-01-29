@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Lephone.Data.Common;
-using Lephone.Data.QuerySyntax;
-using Lephone.Data.Linq;
+using Lephone.Data.Model;
+using Lephone.Data.Model.Linq;
+using Lephone.Data.Model.QuerySyntax;
 
 namespace Lephone.Data.Definition
 {
@@ -98,7 +99,7 @@ namespace Lephone.Data.Definition
 
         public static DbObjectList<T> FindRecent(int count)
         {
-            string id = ObjectInfo.GetKeyField(typeof(T)).Name;
+            string id = ModelContext.Info.KeyMembers[0].Name;
             return ModelContext.From<T>().Where(Condition.Empty).OrderBy((DESC)id).Range(1, count).Select();
         }
 

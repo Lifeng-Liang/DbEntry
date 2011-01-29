@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using Lephone.Core;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Common
 {
@@ -22,7 +23,7 @@ namespace Lephone.Data.Common
                 _nameType = new Dictionary<string, Type>();
                 var ctx = ModelContext.GetInstance(returnType);
                 int n = 0;
-                foreach (MemberHandler mh in ctx.Info.SimpleFields)
+                foreach (MemberHandler mh in ctx.Info.SimpleMembers)
                 {
                     _indexType.Add(n++, mh.FieldType);
                     if (!_nameType.ContainsKey(mh.Name))
@@ -30,13 +31,13 @@ namespace Lephone.Data.Common
                         _nameType.Add(mh.Name, mh.FieldType);
                     }
                 }
-                foreach (MemberHandler mh in ctx.Info.RelationFields)
+                foreach (MemberHandler mh in ctx.Info.RelationMembers)
                 {
-                    if (mh.IsBelongsTo)
+                    if (mh.Is.BelongsTo)
                     {
                         var ctx1 = ModelContext.GetInstance(mh.FieldType.GetGenericArguments()[0]);
-                        _indexType.Add(n++, ctx1.Info.KeyFields[0].FieldType);
-                        _nameType.Add(mh.Name, ctx1.Info.KeyFields[0].FieldType);
+                        _indexType.Add(n++, ctx1.Info.KeyMembers[0].FieldType);
+                        _nameType.Add(mh.Name, ctx1.Info.KeyMembers[0].FieldType);
                     }
                 }
             }

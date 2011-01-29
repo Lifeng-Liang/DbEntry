@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Lephone.Data.Common;
 using Lephone.Core;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
 {
@@ -37,7 +38,7 @@ namespace Lephone.Data.Definition
 
         protected override IList<T> InnerLoad()
         {
-            object key = Owner.Context.Info.KeyFields[0].GetValue(Owner);
+            object key = Owner.Context.Info.KeyMembers[0].GetValue(Owner);
             IList<T> l = DbEntry
                 .From<T>()
                 .Where(CK.K[ForeignKeyName] == key)

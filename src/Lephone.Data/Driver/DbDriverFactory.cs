@@ -23,6 +23,7 @@ namespace Lephone.Data.Driver
 
         private static DbDriver GetDriver(string prefix)
         {
+            var name = prefix;
             if (prefix != "") { prefix += "."; }
             string pd = prefix + "DataBase";
             string ds = ConfigHelper.DefaultSettings.GetValue(pd);
@@ -41,19 +42,19 @@ namespace Lephone.Data.Driver
             string pf = ConfigHelper.DefaultSettings.GetValue(prefix + "DbProviderFactory");
             string dcn = ConfigHelper.DefaultSettings.GetValue(prefix + "DbDriver");
             string act = ConfigHelper.DefaultSettings.GetValue(prefix + "AutoCreateTable");
-            return CreateDbDriver(d, dcn, cs, pf, act);
+            return CreateDbDriver(d, name, dcn, cs, pf, act);
         }
 
-        private static DbDriver CreateDbDriver(DbDialect dialectClass, string driverClassName, string connectionString, string dbProviderFactoryName, string act)
+        private static DbDriver CreateDbDriver(DbDialect dialectClass, string name, string driverClassName, string connectionString, string dbProviderFactoryName, string act)
         {
             bool autoCreateTable = string.IsNullOrEmpty(act) ? false : bool.Parse(act);
             CheckProperty(dialectClass, connectionString);
             if (driverClassName == "")
             {
-                return dialectClass.CreateDbDriver(connectionString, dbProviderFactoryName, autoCreateTable);
+                return dialectClass.CreateDbDriver(name, connectionString, dbProviderFactoryName, autoCreateTable);
             }
             return (DbDriver)ClassHelper.CreateInstance(driverClassName,
-                dialectClass, connectionString, dbProviderFactoryName, autoCreateTable);
+                dialectClass, name, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         private static void CheckProperty(DbDialect dialectClass, string connectionString)

@@ -1,5 +1,6 @@
 ﻿using System;
 using Lephone.Data.Common;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
 {
@@ -52,7 +53,7 @@ namespace Lephone.Data.Definition
         protected override void DoLoad()
         {
             if (RelationName == null) { return; }
-            object key = Owner.Context.Info.KeyFields[0].GetValue(Owner);
+            object key = Owner.Context.Info.KeyMembers[0].GetValue(Owner);
             m_Value = DbEntry.GetObject<T>(CK.K[RelationName] == key, _order);
 
             if (m_Value != null)

@@ -4,6 +4,7 @@ using System.Xml.Schema;
 using System.Collections.Generic;
 using Lephone.Core;
 using Lephone.Data.Common;
+using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
 {
@@ -41,7 +42,7 @@ namespace Lephone.Data.Definition
             var el = new XmlSchemaElement {Name = ctx.Info.HandleType.Name};
             var xct = new XmlSchemaComplexType();
             var xss = new XmlSchemaSequence();
-            foreach (MemberHandler mh in ctx.Info.SimpleFields)
+            foreach (MemberHandler mh in ctx.Info.SimpleMembers)
             {
                 var xe = new XmlSchemaElement
                              {
@@ -60,7 +61,7 @@ namespace Lephone.Data.Definition
         {
             var ctx = ModelContext.GetInstance(GetType());
             reader.ReadStartElement();
-            foreach (MemberHandler mh in ctx.Info.SimpleFields)
+            foreach (MemberHandler mh in ctx.Info.SimpleMembers)
             {
                 var ns = reader.ReadElementString(mh.MemberInfo.Name);
                 object o = ClassHelper.ChangeType(ns, mh.FieldType);
@@ -72,7 +73,7 @@ namespace Lephone.Data.Definition
         void IXmlSerializable.WriteXml(System.Xml.XmlWriter writer)
         {
             var ctx = ModelContext.GetInstance(GetType());
-            foreach (MemberHandler mh in ctx.Info.SimpleFields)
+            foreach (MemberHandler mh in ctx.Info.SimpleMembers)
             {
                 object o = mh.GetValue(this);
                 if (o != null)

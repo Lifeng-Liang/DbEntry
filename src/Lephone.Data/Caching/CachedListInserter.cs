@@ -1,4 +1,5 @@
 ﻿using Lephone.Data.Common;
+using Lephone.Data.Model.Handler;
 
 namespace Lephone.Data.Caching
 {

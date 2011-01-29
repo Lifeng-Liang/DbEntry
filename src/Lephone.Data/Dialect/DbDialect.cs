@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections;
 using System.Data;
 using Lephone.Data.Common;
+using Lephone.Data.Model;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Driver;
 using Lephone.Data.Builder;
@@ -48,6 +49,10 @@ namespace Lephone.Data.Dialect
             TypeNames[typeof(byte[])]   = "BINARY";
         }
 
+        public virtual void InitConnection(DataProvider provider, IDbConnection conn)
+        {
+        }
+
         public virtual string DbNowString
         {
             get { return "NOW()"; }
@@ -85,9 +90,9 @@ namespace Lephone.Data.Dialect
 
         public virtual object ExecuteInsert(DataProvider dp, InsertStatementBuilder sb, ModelContext ctx)
         {
-            if (ctx.Info.HasOnePrimaryKey && ctx.Info.KeyFields[0].FieldType == typeof(Guid))
+            if (ctx.Info.HasOnePrimaryKey && ctx.Info.KeyMembers[0].FieldType == typeof(Guid))
             {
-                if(ctx.Info.KeyFields[0].IsDbGenerateGuid)
+                if(ctx.Info.KeyMembers[0].Is.DbGenerateGuid)
                 {
                     Guid key = Guid.NewGuid();
                     sb.Values[0].Value = key;
@@ -165,9 +170,9 @@ namespace Lephone.Data.Dialect
             return "N" + asciiTypeString;
         }
 
-        public virtual DbDriver CreateDbDriver(string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public virtual DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
         {
-            return new CommonDbDriver(this, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new CommonDbDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
         public virtual string GetConnectionString(string connectionString)

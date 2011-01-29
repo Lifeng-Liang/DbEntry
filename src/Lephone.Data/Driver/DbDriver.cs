@@ -14,6 +14,8 @@ namespace Lephone.Data.Driver
 	{
         protected static Hashtable SpParameters = Hashtable.Synchronized(new Hashtable());
 
+	    public readonly string Name;
+
 		public readonly string ConnectionString;
 
 		public readonly DbDialect Dialect;
@@ -24,8 +26,9 @@ namespace Lephone.Data.Driver
 
         internal Dictionary<string, int> TableNames;
 
-	    protected DbDriver(DbDialect dialect, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
-		{
+        protected DbDriver(DbDialect dialect, string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        {
+            this.Name = name;
             this.ConnectionString = connectionString;
             this.Dialect = dialect;
 	        this.AutoCreateTable = autoCreateTable;
