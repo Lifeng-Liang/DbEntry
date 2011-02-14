@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Lephone.Data.Common;
-using Lephone.Core;
 using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
@@ -55,7 +53,7 @@ namespace Lephone.Data.Definition
                 Type ot = Owner.GetType();
                 MemberHandler mh = ctx.Info.GetBelongsTo(ot);
                 var o = (IBelongsTo)mh.GetValue(item);
-                o.ForeignKey = CommonHelper.GetEmptyValue(o.ForeignKey.GetType());
+                o.ForeignKey = null;
                 o.ForeignKeyChanged();
                 _removedValues.Add(item);
             }

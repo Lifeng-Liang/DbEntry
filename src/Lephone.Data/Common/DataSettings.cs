@@ -3,10 +3,10 @@ using Lephone.Core.Text;
 
 namespace Lephone.Data.Common
 {
-    internal static class DataSettings
+    public static class DataSettings
     {
         // ReSharper disable RedundantDefaultFieldInitializer
-        public static readonly string DefaultContext = "";
+        public static readonly string DefaultContext        = "";
 
 		public static readonly int SqlTimeOut               = 30;
 
@@ -15,7 +15,7 @@ namespace Lephone.Data.Common
         public static readonly int MaxRecords               = 0;
 
         [ShowString("Orm.UsingParameter")]
-        public static readonly bool UsingParameter           = true;
+        public static readonly bool UsingParameter          = true;
 
         public static readonly string CacheKeyGenerator     = "Lephone.Data.Caching.KeyGenerator, Lephone.Data";
 

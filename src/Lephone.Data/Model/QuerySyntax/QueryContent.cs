@@ -10,31 +10,31 @@ namespace Lephone.Data.Model.QuerySyntax
     [Serializable]
     public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IGetPagedSelector<T> where T : class, IDbObject
     {
-        public Condition m_where;
-        public OrderBy m_order;
-        public Range m_range;
-        public ModelContext m_entry;
-        public int m_pagesize;
+        private readonly ModelContext _ctx;
+        private Condition _where;
+        private OrderBy _order;
+        private Range _range;
+        private int _pageSize;
 
-        public QueryContent(ModelContext entry)
+        public QueryContent(ModelContext ctx)
         {
-            m_entry = entry;
+            _ctx = ctx;
         }
 
         protected internal QueryContent(QueryContent<T> content)
         {
             if (content != null)
             {
-                m_where = content.m_where;
-                m_order = content.m_order;
-                m_range = content.m_range;
-                m_entry = content.m_entry;
+                _where = content._where;
+                _order = content._order;
+                _range = content._range;
+                _ctx = content._ctx;
             }
         }
 
         public IAfterWhere<T> Where(Condition where)
         {
-            m_where = where;
+            _where = where;
             return this;
         }
 
@@ -42,7 +42,7 @@ namespace Lephone.Data.Model.QuerySyntax
         {
             if (expr != null)
             {
-                m_where = ExpressionParser<T>.Parse(expr);
+                _where = ExpressionParser<T>.Parse(expr);
             }
             return this;
         }
@@ -54,19 +54,19 @@ namespace Lephone.Data.Model.QuerySyntax
 
         public IRangeable<T> OrderBy(params ASC[] os)
         {
-            m_order = new OrderBy(os);
+            _order = new OrderBy(os);
             return this;
         }
 
         public IRangeable<T> OrderBy(OrderBy order)
         {
-            m_order = order;
+            _order = order;
             return this;
         }
 
         public ISelectable<T> Range(long startIndex, long endIndex)
         {
-            m_range = new Range(startIndex, endIndex);
+            _range = new Range(startIndex, endIndex);
             return this;
         }
 
@@ -74,7 +74,7 @@ namespace Lephone.Data.Model.QuerySyntax
         {
             if (r != null)
             {
-                m_range = r;
+                _range = r;
             }
             return this;
         }
@@ -103,7 +103,7 @@ namespace Lephone.Data.Model.QuerySyntax
         {
             var ret = new DbObjectList<T>();
             var t = typeof(T);
-            m_entry.Operator.FillCollection(ret, t, null, m_where, m_order, m_range, distinct, noLazy);
+            _ctx.Operator.FillCollection(ret, t, null, _where, _order, _range, distinct, noLazy);
             return ret;
         }
 
@@ -111,7 +111,7 @@ namespace Lephone.Data.Model.QuerySyntax
         {
             var ret = new DbObjectList<TResult>();
             var tresult = typeof(TResult);
-            m_entry.Operator.FillCollection(ret, tresult, null, m_where, m_order, m_range, false);
+            _ctx.Operator.FillCollection(ret, tresult, null, _where, _order, _range, false);
             return ret;
         }
 
@@ -137,59 +137,59 @@ namespace Lephone.Data.Model.QuerySyntax
 
         private SelectStatementBuilder InnerGetSelectStatement(bool distinct, string colName)
         {
-            var smt = m_entry.Composer.GetSelectStatementBuilder(null, m_where, m_order, 
-                m_range, distinct, false, m_entry.Info.HandleType, colName);
+            var smt = _ctx.Composer.GetSelectStatementBuilder(null, _where, _order, 
+                _range, distinct, false, _ctx.Info.HandleType, colName);
             return smt;
         }
 
         public IPagedSelector GetPagedSelector()
         {
-            return new PagedSelector<T>(m_where, m_order, m_pagesize);
+            return new PagedSelector<T>(_where, _order, _pageSize);
         }
 
         public IPagedSelector GetDistinctPagedSelector()
         {
-            return new PagedSelector<T>(m_where, m_order, m_pagesize, true);
+            return new PagedSelector<T>(_where, _order, _pageSize, true);
         }
 
         public IPagedSelector GetStaticPagedSelector()
         {
-            return new StaticPagedSelector<T>(m_where, m_order, m_pagesize);
+            return new StaticPagedSelector<T>(_where, _order, _pageSize);
         }
 
         public IPagedSelector GetDistinctStaticPagedSelector()
         {
-            return new StaticPagedSelector<T>(m_where, m_order, m_pagesize, true);
+            return new StaticPagedSelector<T>(_where, _order, _pageSize, true);
         }
 
         public long GetCount()
         {
-            return m_entry.Operator.GetResultCount(m_where);
+            return _ctx.Operator.GetResultCount(_where);
         }
 
         public decimal? GetMax(string columnName)
         {
-            return m_entry.Operator.GetMax(m_where, columnName);
+            return _ctx.Operator.GetMax(_where, columnName);
         }
 
         public decimal? GetMin(string columnName)
         {
-            return m_entry.Operator.GetMin(m_where, columnName);
+            return _ctx.Operator.GetMin(_where, columnName);
         }
 
         public DateTime? GetMaxDate(string columnName)
         {
-            return m_entry.Operator.GetMaxDate(m_where, columnName);
+            return _ctx.Operator.GetMaxDate(_where, columnName);
         }
 
         public DateTime? GetMinDate(string columnName)
         {
-            return m_entry.Operator.GetMinDate(m_where, columnName);
+            return _ctx.Operator.GetMinDate(_where, columnName);
         }
 
         public decimal? GetSum(string columnName)
         {
-            return m_entry.Operator.GetSum(m_where, columnName);
+            return _ctx.Operator.GetSum(_where, columnName);
         }
 
         public IRangeable<T> OrderBy(Expression<Func<T, object>> expr)
@@ -234,17 +234,17 @@ namespace Lephone.Data.Model.QuerySyntax
 
         public DbObjectList<GroupByObject<T1>> GroupBy<T1>(string columnName)
         {
-            return m_entry.Operator.GetGroupBy<T1>(m_where, m_order, columnName);
+            return _ctx.Operator.GetGroupBy<T1>(_where, _order, columnName);
         }
 
         public DbObjectList<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName)
         {
-            return m_entry.Operator.GetGroupBySum<T1, T2>(m_where, m_order, groupbyColumnName, sumColumnName);
+            return _ctx.Operator.GetGroupBySum<T1, T2>(_where, _order, groupbyColumnName, sumColumnName);
         }
 
         public IGetPagedSelector<T> PageSize(int pageSize)
         {
-            m_pagesize = pageSize;
+            _pageSize = pageSize;
             return this;
         }
 
@@ -263,11 +263,11 @@ namespace Lephone.Data.Model.QuerySyntax
         private static IRangeable<T> AddOrderBy(QueryContent<T> me, Expression<Func<T, object>> expr, bool isAsc)
         {
             string n = GetColumnName(expr);
-            if (me.m_order == null)
+            if (me._order == null)
             {
-                me.m_order = new OrderBy();
+                me._order = new OrderBy();
             }
-            me.m_order.OrderItems.Add(isAsc ? new ASC(n) : new DESC(n));
+            me._order.OrderItems.Add(isAsc ? new ASC(n) : new DESC(n));
             return me;
         }
 

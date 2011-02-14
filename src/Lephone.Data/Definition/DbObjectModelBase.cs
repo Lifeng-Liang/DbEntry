@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
-using Lephone.Data.Common;
 using Lephone.Data.Model;
 using Lephone.Data.Model.Linq;
 using Lephone.Data.Model.QuerySyntax;
+using Lephone.Data.SqlEntry.Dynamic;
 
 namespace Lephone.Data.Definition
 {

@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Lephone.Core;
-using Lephone.Data.Common;
 using Lephone.Data.Model;
 using Lephone.Data.Model.Composer;
-using Lephone.Data.Model.Handler;
+using Lephone.Data.Model.Inserter;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Caching

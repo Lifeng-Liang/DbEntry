@@ -396,7 +396,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Model\Member\MemberHandler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Handler\IProcessor.cs">
+    <Compile Include="Model\Inserter\IProcessor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\ObjectInfo.cs">

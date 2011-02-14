@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Lephone.Data.Common;
+using Lephone.Data.SqlEntry.Dynamic;
 
 namespace Lephone.Data.SqlEntry
 {

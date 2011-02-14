@@ -96,7 +96,7 @@ INSERT INTO [PCs] ([Name],[Person_Id]) VALUES ('should be failed', NULL);");
             Assert.AreEqual("DELL", c[0].Name);
             Assert.AreEqual("HP", c[1].Name);
 
-            var p = Person.FindById(1);
+            var p = Person.FindById(3);
             p.Delete();
 
             var c1 = Computer.Find(o => o.Owner.Id == 3, o => o.Id);

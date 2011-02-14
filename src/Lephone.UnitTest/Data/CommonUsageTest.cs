@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Lephone.Data;
-using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.Model;
 using Lephone.Data.SqlEntry;
@@ -31,7 +30,7 @@ namespace Lephone.UnitTest.Data
     [DbTable("File")]
     public class DistinctTest : IDbObject
     {
-        [DbColumn("BelongsTo_Id")] public long? n;
+        [DbColumn("BelongsTo_Id")] public long? N;
     }
 
     [DbTable("People")]
@@ -87,11 +86,11 @@ namespace Lephone.UnitTest.Data
     public class FieldPerson : DbObjectModel<FieldPerson>
     {
         [DbColumn("Name")]
-        public string theName { get; set; }
+        public string TheName { get; set; }
 
         public static FieldPerson FindByName(string name)
         {
-            return FindOne(p => p.theName == name);
+            return FindOne(p => p.TheName == name);
         }
     }
 
@@ -99,11 +98,11 @@ namespace Lephone.UnitTest.Data
     public class FieldPersonSql : DbObjectModel<FieldPersonSql>
     {
         [DbColumn("Name")]
-        public string theName { get; set; }
+        public string TheName { get; set; }
 
         public static FieldPersonSql FindByName(string name)
         {
-            return FindOne(p => p.theName == name);
+            return FindOne(p => p.TheName == name);
         }
     }
 
@@ -116,7 +115,7 @@ namespace Lephone.UnitTest.Data
         public int LockVersion { get; set; }
     }
 
-    public class MKEY : IDbObject
+    public class Mkey : IDbObject
     {
         [DbKey(IsDbGenerate = false)]
         public string FirstName;
@@ -128,7 +127,7 @@ namespace Lephone.UnitTest.Data
     }
 
     [DbContext("SQLite")]
-    public class MKEY2 : IDbObject
+    public class Mkey2 : IDbObject
     {
         [DbKey(IsDbGenerate = false)]
         public string FirstName;
@@ -294,6 +293,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPeopleModel()
         {
+            PCs.DeleteAll(); // avoid FK error.
             List<PeopleModel> l = PeopleModel.FindAll();
             Assert.AreEqual(3, l.Count);
             Assert.AreEqual("Tom", l[0].Name);
@@ -499,7 +499,7 @@ namespace Lephone.UnitTest.Data
         {
             StaticRecorder.ClearMessages();
             DbEntry.From<FieldPersonSql>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
-            Assert.AreEqual("SELECT [Id],[theName] FROM (SELECT [Id],[Name] AS [theName], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[TheName] FROM (SELECT [Id],[Name] AS [TheName], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -607,27 +607,27 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestMkey()
         {
-            DbEntry.Create(typeof(MKEY));
+            DbEntry.Create(typeof(Mkey));
 
-            var p1 = new MKEY {FirstName = "test", LastName = "next", Age = 11};
+            var p1 = new Mkey {FirstName = "test", LastName = "next", Age = 11};
             DbEntry.Insert(p1);
 
-            var p2 = DbEntry.From<MKEY>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
+            var p2 = DbEntry.From<Mkey>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
             Assert.AreEqual(11, p2.Age);
 
             p2.Age = 18;
             DbEntry.Update(p2);
 
-            var p3 = DbEntry.From<MKEY>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
+            var p3 = DbEntry.From<Mkey>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
             Assert.AreEqual(18, p3.Age);
         }
 
         [Test]
         public void TestMkeyForUpdate()
         {
-            var p = new MKEY2 { FirstName = "test", LastName = "next", Age = 11 };
+            var p = new Mkey2 { FirstName = "test", LastName = "next", Age = 11 };
             DbEntry.Update(p);
-            AssertSql(@"UPDATE [MKEY2] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
+            AssertSql(@"UPDATE [Mkey2] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
 <Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)");
         }
 
@@ -738,26 +738,26 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDistinct()
         {
-            var list = DbEntry.From<DistinctTest>().Where(Condition.Empty).OrderBy(p => p.n).SelectDistinct();
+            var list = DbEntry.From<DistinctTest>().Where(Condition.Empty).OrderBy(p => p.N).SelectDistinct();
             Assert.AreEqual(9, list.Count);
             var exps = new[] {0, 1, 2, 3, 4, 9, 11, 15, 16};
             for(int i = 1; i < 9; i++)
             {
-                Assert.AreEqual(exps[i], list[i].n);
+                Assert.AreEqual(exps[i], list[i].N);
             }
         }
 
         [Test]
         public void TestDistinctPagedSelector()
         {
-            var query = DbEntry.From<DistinctTest>().Where(Condition.Empty).OrderBy(p => p.n).PageSize(3).GetDistinctPagedSelector();
+            var query = DbEntry.From<DistinctTest>().Where(Condition.Empty).OrderBy(p => p.N).PageSize(3).GetDistinctPagedSelector();
             Assert.AreEqual(8, query.GetResultCount());
             var list = (List<DistinctTest>)query.GetCurrentPage(1);
             Assert.AreEqual(3, list.Count);
             var exps = new[] { 3, 4, 9 };
             for (int i = 0; i < 3; i++)
             {
-                Assert.AreEqual(exps[i], list[i].n);
+                Assert.AreEqual(exps[i], list[i].N);
             }
         }
 

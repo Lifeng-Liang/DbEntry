@@ -1,5 +1,6 @@
 ﻿using Lephone.Data.Builder;
 using Lephone.Data.Definition;
+using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Model
 {
@@ -48,8 +49,29 @@ namespace Lephone.Data.Model
         private int ProcessRelation()
         {
             int ret = 0;
+            ret += ProcessHasManyAndHasOne();
             ret += ProcessHasAndBelongsToMany();
             return ret;
+        }
+
+        private int ProcessHasManyAndHasOne()
+        {
+            var result = 0;
+            foreach(var member in Ctx.Info.RelationMembers)
+            {
+                if(member.Is.HasMany || member.Is.HasOne)
+                {
+                    var t = member.MemberInfo.MemberType.GetGenericArguments()[0];
+                    var ctx0 = ModelContext.GetInstance(t);
+                    var sb = new UpdateStatementBuilder(ctx0.Info.From.MainTableName);
+                    var key = ctx0.Info.GetBelongsTo(Ctx.Info.HandleType).Name;
+                    sb.Values.Add(new KeyValue(key, null));
+                    sb.Where.Conditions = CK.K[key] == Ctx.Handler.GetKeyValue(Obj);
+                    var sql = sb.ToSqlStatement(ctx0);
+                    result += ctx0.Provider.ExecuteNonQuery(sql);
+                }
+            }
+            return result;
         }
 
         private int ProcessHasAndBelongsToMany()

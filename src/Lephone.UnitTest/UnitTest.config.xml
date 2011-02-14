@@ -17,6 +17,7 @@
     <add key="MiscProvider" value="Lephone.UnitTest.util.MockMiscProvider, Lephone.UnitTest" />
     <add key="CookiesHandler" value="Lephone.UnitTest.Web.MockCookiesHandler, Lephone.UnitTest" />
 
+    <add key="TestForeignKey" value="True" />
     <add key="NameMapper" value="Lephone.Core.Text.UnderlineNameMapper, Lephone.Core" />
     <add key="DefaultContext" value="Development" />
     <add key="CacheEnabled" value="true" />
