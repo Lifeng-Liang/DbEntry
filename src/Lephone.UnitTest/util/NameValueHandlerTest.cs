@@ -28,7 +28,7 @@ namespace Lephone.UnitTest.util
                 var config = xd["configuration"];
                 Assert.IsNotNull(config);
                 var l = (NameValueCollection)h.Create(null, null, config.ChildNodes[1]);
-                Assert.AreEqual("Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core | Lephone.UnitTest.SqlRecorder, Lephone.UnitTest", l["SqlLogRecorder"]);
+                Assert.AreEqual("Lephone.Core.Logging.ConsoleMessageLogRecorder, Lephone.Core | Lephone.UnitTest.SqlRecorder, Lephone.UnitTest", l["SqlLogRecorder"]);
                 Assert.AreEqual("@Access : @~test.mdb", l["1.DataBase"]);
             }
         }

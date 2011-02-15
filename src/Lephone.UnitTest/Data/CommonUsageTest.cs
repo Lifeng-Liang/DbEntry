@@ -471,12 +471,12 @@ namespace Lephone.UnitTest.Data
 
             // smart validate
             var p = DbEntry.GetObject<UniquePerson>(1);
-            var n = ConsoleMessageRecorder.Count;
+            var n = ConsoleMessageLogRecorder.Count;
             Assert.IsTrue(p.IsValid());
-            Assert.AreEqual(n, ConsoleMessageRecorder.Count);
+            Assert.AreEqual(n, ConsoleMessageLogRecorder.Count);
             p.Name = "Jerry";
             Assert.IsFalse(p.IsValid());
-            Assert.AreEqual(n + 1, ConsoleMessageRecorder.Count);
+            Assert.AreEqual(n + 1, ConsoleMessageLogRecorder.Count);
         }
 
         [Test]

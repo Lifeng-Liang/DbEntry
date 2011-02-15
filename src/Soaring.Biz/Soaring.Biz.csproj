@@ -103,8 +103,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(SolutionDir)\Lephone.MSBuild\bin\$(ConfigurationName)\Lephone.MSBuild.dll" />
+  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(ProjectDir)\..\Lephone.MSBuild\bin\$(ConfigurationName)\Lephone.MSBuild.dll" />
   <Target Name="AfterCompile">
-    <ProcessorTask KeyFile="$(KeyOriginatorFile)" ProjectDir="$(ProjectDir)" AssemblyName="@(IntermediateAssembly)" SolutionDir="$(SolutionDir)" ReferenceFiles="@(ReferencePath)" />
+    <ProcessorTask KeyFile="$(KeyOriginatorFile)" ProjectDir="$(ProjectDir)" AssemblyName="@(IntermediateAssembly)" ReferenceFiles="@(ReferencePath)" />
   </Target>
 </Project>

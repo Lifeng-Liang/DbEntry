@@ -3,11 +3,11 @@ using System.IO;
 
 namespace Lephone.Core.Logging
 {
-    public class TextFileMessageRecorder : TextFileLogRecorder
+    public class TextFileMessageLogRecorder : TextFileLogRecorder
     {
-        public TextFileMessageRecorder() { }
+        public TextFileMessageLogRecorder() { }
 
-        public TextFileMessageRecorder(string logFileName) : base(logFileName) { }
+        public TextFileMessageLogRecorder(string logFileName) : base(logFileName) { }
 
         protected override void WriteLog(StreamWriter sw, SysLogType type, string source, string name, string message, Exception exception)
         {

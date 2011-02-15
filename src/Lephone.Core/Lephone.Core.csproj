@@ -64,7 +64,7 @@
     <Compile Include="IService.cs" />
     <Compile Include="LephoneException.cs" />
     <Compile Include="Logging\ConsoleLogRecorder.cs" />
-    <Compile Include="Logging\ConsoleMessageRecorder.cs" />
+    <Compile Include="Logging\ConsoleMessageLogRecorder.cs" />
     <Compile Include="Logging\DebugLogRecorder.cs" />
     <Compile Include="Logging\DtsFileLogRecorder.cs" />
     <Compile Include="Logging\ILogDirect.cs" />
@@ -73,7 +73,7 @@
     <Compile Include="Logging\LogRecorderProvider.cs" />
     <Compile Include="Logging\SysLogType.cs" />
     <Compile Include="Logging\TextFileLogRecorder.cs" />
-    <Compile Include="Logging\TextFileMessageRecorder.cs" />
+    <Compile Include="Logging\TextFileMessageLogRecorder.cs" />
     <Compile Include="MiscProvider.cs" />
     <Compile Include="NullEncoding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

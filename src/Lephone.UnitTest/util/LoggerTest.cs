@@ -22,7 +22,7 @@ namespace Lephone.UnitTest.util
             var logger = new Logger("Unit2");
             var ss = logger.LogEvent.GetInvocationList();
             Assert.AreEqual(ss.Length, 1);
-            Assert.AreEqual(ss[0].Target.GetType(), typeof(ConsoleMessageRecorder));
+            Assert.AreEqual(ss[0].Target.GetType(), typeof(ConsoleMessageLogRecorder));
         }
     }
 }

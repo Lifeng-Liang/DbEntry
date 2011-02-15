@@ -9,10 +9,10 @@
     
     <add key="Ioc.SearchAssembly.1" value="Lephone.UnitTest" />
     
-    <add key="SqlLogRecorder" value="Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core | Lephone.UnitTest.SqlRecorder, Lephone.UnitTest" />
+    <add key="SqlLogRecorder" value="Lephone.Core.Logging.ConsoleMessageLogRecorder, Lephone.Core | Lephone.UnitTest.SqlRecorder, Lephone.UnitTest" />
 
     <add key="UnitLogRecorder" value=" @DtsFile | @Console"/>
-    <add key="Unit2LogRecorder" value="Lephone.Core.Logging.ConsoleMessageRecorder, Lephone.Core"/>
+    <add key="Unit2LogRecorder" value="Lephone.Core.Logging.ConsoleMessageLogRecorder, Lephone.Core"/>
 
     <add key="MiscProvider" value="Lephone.UnitTest.util.MockMiscProvider, Lephone.UnitTest" />
     <add key="CookiesHandler" value="Lephone.UnitTest.Web.MockCookiesHandler, Lephone.UnitTest" />

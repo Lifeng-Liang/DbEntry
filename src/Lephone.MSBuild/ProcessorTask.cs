@@ -17,9 +17,6 @@ namespace Lephone.MSBuild
         [Required]
         public string AssemblyName { get; set; }
 
-        [Required]
-        public string SolutionDir { get; set; }
-
         public string ProcessorPath { get; set; }
 
         private string _targetPath;
@@ -29,34 +26,41 @@ namespace Lephone.MSBuild
 
         public override bool Execute()
         {
-            _targetPath = Path.Combine(ProjectDir, AssemblyName);
-            var info = new ProcessStartInfo(GetProcessorPath())
-                           {
-                               Arguments = GetArguments(),
-                               WorkingDirectory = GetWorkingDirectory(),
-                               CreateNoWindow = true,
-                               UseShellExecute = false,
-                               RedirectStandardInput = true,
-                               RedirectStandardOutput = true,
-                               RedirectStandardError = true,
-                           };
-            var process = new Process {StartInfo = info};
-            process.Start();
-            var result = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
             try
             {
-                RemoveBakFile();
+                _targetPath = Path.Combine(ProjectDir, AssemblyName);
+                var info = new ProcessStartInfo(GetProcessorPath())
+                {
+                    Arguments = GetArguments(),
+                    WorkingDirectory = GetWorkingDirectory(),
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                };
+                var process = new Process { StartInfo = info };
+                process.Start();
+                var result = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                try
+                {
+                    RemoveBakFile();
+                }
+                catch (Exception ex)
+                {
+                    Log.LogWarning(ex.ToString());
+                }
+                if (process.ExitCode == 0)
+                {
+                    return true;
+                }
+                Log.LogError(result);
             }
             catch(Exception ex)
             {
-                Log.LogWarning(ex.ToString());
+                Log.LogError(">>>>>{0}", ex);
             }
-            if(process.ExitCode == 0)
-            {
-                return true;
-            }
-            Log.LogError(result);
             return false;
         }
 
@@ -74,12 +78,12 @@ namespace Lephone.MSBuild
             if (string.IsNullOrEmpty(ProcessorPath))
             {
 #if DEBUG
-                ProcessorPath = Path.Combine(SolutionDir, @"Lephone.Processor\bin\Debug\Lephone.Processor.exe");
+                ProcessorPath = Path.Combine(ProjectDir, @"..\Lephone.Processor\bin\Debug\Lephone.Processor.exe");
 #else
                 ProcessorPath = Path.Combine(GetPath(GetType().Assembly.Location), "Lephone.Processor.exe");
                 if(!File.Exists(ProcessorPath))
                 {
-                    ProcessorPath = Path.Combine(SolutionDir, @"..\bin\Lephone.Processor.exe");
+                    ProcessorPath = Path.Combine(ProjectDir, @"..\..\bin\Lephone.Processor.exe");
                 }
 #endif
             }
@@ -110,7 +114,7 @@ namespace Lephone.MSBuild
 
         private string GetRefFiles()
         {
-            var sb = new StringBuilder("@\"");
+            var sb = new StringBuilder("\"@");
             foreach (var file in ReferenceFiles)
             {
                 sb.Append(file).Append(";");

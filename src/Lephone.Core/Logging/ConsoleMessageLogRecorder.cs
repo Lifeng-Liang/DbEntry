@@ -2,7 +2,7 @@
 
 namespace Lephone.Core.Logging
 {
-    public class ConsoleMessageRecorder : ILogRecorder
+    public class ConsoleMessageLogRecorder : ILogRecorder
     {
         private static long _count;
 
