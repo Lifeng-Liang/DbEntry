@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Lephone.Core;
+using Lephone.Data.Definition;
 using Lephone.Data.Model;
 using Lephone.Data.Model.Composer;
+using Lephone.Data.Model.Handler;
 using Lephone.Data.Model.Inserter;
 using Lephone.Data.SqlEntry;
 
@@ -10,8 +12,8 @@ namespace Lephone.Data.Caching
 {
     public class CachedModelOperator : ModelOperator
     {
-        internal CachedModelOperator(ObjectInfo info, QueryComposer composer, DataProvider provider)
-            : base(info, composer, provider)
+        internal CachedModelOperator(ObjectInfo info, QueryComposer composer, DataProvider provider, IDbObjectHandler handler)
+            : base(info, composer, provider, handler)
         {
         }
 
@@ -24,7 +26,7 @@ namespace Lephone.Data.Caching
                 {
                     Scope<ConnectionContext>.Current.Jar = new Dictionary<string, object>();
                 }
-                Scope<ConnectionContext>.Current.Jar.Add(key, obj);
+                Scope<ConnectionContext>.Current.Jar[key] = obj;
             }
             else
             {
@@ -61,15 +63,21 @@ namespace Lephone.Data.Caching
             return obj;
         }
 
-        protected override void InnerInsert(object obj)
+        public override void Save(IDbObject obj)
         {
-            base.InnerInsert(obj);
+            base.Save(obj);
             SetCachedObject(obj);
         }
 
-        protected override void InnerUpdate(object obj, Condition iwc, ModelContext ctx, DataProvider dp)
+        public override void Insert(IDbObject obj)
         {
-            base.InnerUpdate(obj, iwc, ctx, dp);
+            base.Insert(obj);
+            SetCachedObject(obj);
+        }
+
+        public override void Update(IDbObject obj)
+        {
+            base.Update(obj);
             SetCachedObject(obj);
         }
 
@@ -79,10 +87,11 @@ namespace Lephone.Data.Caching
             return new CachedListInserter(li);
         }
 
-        public override int Delete(Definition.IDbObject obj)
+        public override int Delete(IDbObject obj)
         {
-            var deleter = new CachedModelDeleter(obj);
-            return deleter.Process();
+            var n = base.Delete(obj);
+            CacheProvider.Instance.Remove(KeyGenerator.Instance[obj]);
+            return n;
         }
     }
 }

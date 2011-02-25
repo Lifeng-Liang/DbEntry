@@ -2,6 +2,7 @@
 using System.Data;
 using System.Text;
 using System.Collections.Generic;
+using Lephone.Data.Common;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
@@ -10,102 +11,147 @@ namespace Lephone.Data.Builder
     public class CreateTableStatementBuilder : SqlStatementBuilder
     {
         internal string TableName;
-        private readonly List<ColumnInfo> _columns;
-        private readonly List<DbIndex> _indexes;
+        public readonly List<ColumnInfo> Columns;
+        public readonly List<DbIndex> Indexes;
+        private readonly StringBuilder _sql;
+        private bool _isMutiKey;
+        private string _keys;
 
         public CreateTableStatementBuilder(string tableName)
         {
             TableName = tableName;
-            _columns = new List<ColumnInfo>();
-            _indexes = new List<DbIndex>();
+            Columns = new List<ColumnInfo>();
+            Indexes = new List<DbIndex>();
+            _sql = new StringBuilder();
         }
 
         protected override SqlStatement ToSqlStatement(DbDialect dd)
         {
-            bool isMutiKey = IsMutiKey();
-            string keys = "";
-            var sql = new StringBuilder();
-            sql.Append("CREATE TABLE ");
-            sql.Append(dd.QuoteForTableName(TableName));
-            sql.Append(" (");
+            CheckIsMutiKey(dd);
+            _sql.Append("CREATE TABLE ");
+            _sql.Append(dd.QuoteForTableName(TableName));
+            _sql.Append(" (");
 
-            foreach (ColumnInfo ci in _columns)
+            ProcessColumns(dd);
+            ProcessForeignKeys(dd);
+            ProcessPrimaryKey();
+
+            if (Columns.Count > 0)
             {
-                string nullDefine = ci.AllowNull ? dd.NullString : dd.NotNullString;
-                sql.Append("\n\t");
-                sql.Append(dd.QuoteForColumnName(ci.Key));
-                sql.Append(" ");
-                if (ci.IsDbGenerate && dd.IdentityTypeString != null)
-                {
-                    sql.Append(dd.IdentityTypeString);
-                }
-                else
-                {
-                    sql.Append(dd.GetTypeName(DataTypeParser.Parse(ci.ValueType), ci.IsUnicode, ci.Length, ci.DecimalPart));
-                }
-                if (ci.IsDbGenerate)
-                {
-                    sql.Append(" ").Append(dd.IdentityColumnString);
-                }
-                if (ci.IsKey)
-                {
-                    if (isMutiKey)
-                    {
-                        sql.Append(nullDefine);
-                        keys += dd.QuoteForColumnName(ci.Key) + ", ";
-                    }
-                    else
-                    {
-                        if (ci.ValueType == typeof(Guid) || !dd.IdentityIncludePKString || !ci.IsDbGenerate)
-                        {
-                            if (!ci.IsDbGenerate)
-                            {
-                                sql.Append(nullDefine);
-                            }
-                            sql.Append(" PRIMARY KEY");
-                        }
-                    }
-                }
-                else
-                {
-                    sql.Append(nullDefine);
-                }
-                sql.Append(",");
+                _sql.Length--;
             }
-            if (_columns.Count != 0)
-            {
-                if (isMutiKey)
-                {
-                    sql.Append("\n\tPRIMARY KEY(").Append(keys.Substring(0, keys.Length-2)).Append(")");
-                }
-                else
-                {
-                    sql.Length--;
-                }
-            }
-            sql.Append("\n);\n");
+
+            _sql.Append("\n);\n");
+
             if (HasOneDbGenKey())
             {
-                sql.Append(dd.GetCreateSequenceString(TableName));
+                _sql.Append(dd.GetCreateSequenceString(TableName));
             }
             // Create Index
-            AddCreateIndexStatement(sql, dd);
-            return new SqlStatement(CommandType.Text, sql.ToString());
+            AddCreateIndexStatement(_sql, dd);
+            return new SqlStatement(CommandType.Text, _sql.ToString());
         }
 
-        private bool IsMutiKey()
+        private void ProcessForeignKeys(DbDialect dd)
+        {
+            if(!DataSettings.UsingForeignKey)
+            {
+                return;
+            }
+            foreach (ColumnInfo ci in Columns)
+            {
+                if(ci.IsForeignKey)
+                {
+                    _sql.Append("\n\tFOREIGN KEY(");
+                    _sql.Append(dd.QuoteForColumnName(ci.Key));
+                    _sql.Append(") REFERENCES ");
+                    _sql.Append(dd.QuoteForTableName(ci.BelongsToTableName));
+                    _sql.Append(" ([Id]) ,");
+                }
+            }
+        }
+
+        private void ProcessColumns(DbDialect dd)
+        {
+            foreach (ColumnInfo ci in Columns)
+            {
+                ProcessColumn(ci, dd);
+            }
+        }
+
+        private void ProcessColumn(ColumnInfo ci, DbDialect dd)
+        {
+            string nullDefine = ci.AllowNull ? dd.NullString : dd.NotNullString;
+            _sql.Append("\n\t");
+            _sql.Append(dd.QuoteForColumnName(ci.Key));
+            _sql.Append(" ");
+            if (ci.IsDbGenerate && dd.IdentityTypeString != null)
+            {
+                _sql.Append(dd.IdentityTypeString);
+            }
+            else
+            {
+                _sql.Append(dd.GetTypeName(DataTypeParser.Parse(ci.ValueType), ci.IsUnicode, ci.Length, ci.DecimalPart));
+            }
+            if (ci.IsDbGenerate)
+            {
+                _sql.Append(" ").Append(dd.IdentityColumnString);
+            }
+            if (ci.IsKey)
+            {
+                ProcessKeyColumn(ci, dd, nullDefine);
+            }
+            else
+            {
+                _sql.Append(nullDefine);
+            }
+            _sql.Append(",");
+        }
+
+        private void ProcessKeyColumn(ColumnInfo ci, DbDialect dd, string nullDefine)
+        {
+            if (_isMutiKey)
+            {
+                _sql.Append(nullDefine);
+            }
+            else
+            {
+                if (ci.ValueType == typeof(Guid) || !dd.IdentityIncludePKString || !ci.IsDbGenerate)
+                {
+                    if (!ci.IsDbGenerate)
+                    {
+                        _sql.Append(nullDefine);
+                    }
+                    _sql.Append(" PRIMARY KEY");
+                }
+            }
+        }
+
+        private void ProcessPrimaryKey()
+        {
+            if (_isMutiKey)
+            {
+                _sql.Append("\n\tPRIMARY KEY(").Append(_keys.Substring(0, _keys.Length - 2)).Append("),");
+            }
+        }
+
+        private void CheckIsMutiKey(DbDialect dd)
         {
             int n = 0;
-            foreach (ColumnInfo ci in _columns)
+            foreach (ColumnInfo ci in Columns)
             {
-                if (ci.IsKey) { n++; }
+                if (ci.IsKey)
+                {
+                    n++;
+                    _keys += dd.QuoteForColumnName(ci.Key) + ", ";
+                }
             }
-            return n > 1;
+            _isMutiKey = n > 1;
         }
 
         private bool HasOneDbGenKey()
         {
-            foreach (ColumnInfo ci in _columns)
+            foreach (ColumnInfo ci in Columns)
             {
                 if (ci.IsKey && ci.IsDbGenerate) { return true; }
             }
@@ -115,7 +161,7 @@ namespace Lephone.Data.Builder
         private void AddCreateIndexStatement(StringBuilder sb, DbDialect dd)
         {
             string prefix = "IX_" + TableName.Replace('.', '_') + "_";
-            foreach (DbIndex i in _indexes)
+            foreach (DbIndex i in Indexes)
             {
                 string n = prefix;
                 n += i.IndexName ?? i.Columns[0].Key;
@@ -139,14 +185,7 @@ namespace Lephone.Data.Builder
                 sb.Append(" (");
                 foreach (ASC c in i.Columns)
                 {
-                    if (dd.SupportDirctionOfEachColumnInIndex)
-                    {
-                        sb.Append(c.ToString(dd));
-                    }
-                    else
-                    {
-                        sb.Append(dd.QuoteForColumnName(c.Key));
-                    }
+                    sb.Append(dd.SupportDirctionOfEachColumnInIndex ? c.ToString(dd) : dd.QuoteForColumnName(c.Key));
                     sb.Append(", ");
                 }
                 if (i.Columns.Length > 0)
@@ -155,16 +194,6 @@ namespace Lephone.Data.Builder
                 }
                 sb.Append(");\n");
             }
-        }
-
-        public List<ColumnInfo> Columns
-        {
-            get { return _columns; }
-        }
-
-        public List<DbIndex> Indexes
-        {
-            get { return _indexes; }
         }
     }
 }

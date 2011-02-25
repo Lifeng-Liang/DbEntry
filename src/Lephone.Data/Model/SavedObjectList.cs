@@ -1,24 +1,19 @@
-using System.Collections.Specialized;
+using System.Collections;
 
 namespace Lephone.Data.Model
 {
     public class SavedObjectList
     {
-        private readonly HybridDictionary _dict;
+        private readonly Hashtable  _dict;
 
         public SavedObjectList()
         {
-            _dict = new HybridDictionary();
+            _dict = new Hashtable();
         }
 
         public SavedObjectList(int initialSize)
         {
-            _dict = new HybridDictionary(initialSize);
-        }
-
-        public SavedObjectList(int initialSize, bool caseInsensitive)
-        {
-            _dict = new HybridDictionary(initialSize, caseInsensitive);
+            _dict = new Hashtable(initialSize);
         }
 
         public bool Contains(object obj)
@@ -28,7 +23,7 @@ namespace Lephone.Data.Model
 
         public void Add(object obj)
         {
-            _dict.Add(obj, null);
+            _dict.Add(obj, 0);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Lephone.Data.Dialect
 
         public override void InitConnection(DataProvider provider, IDbConnection conn)
         {
-            if(DataSettings.TestForeignKey)
+            if(DataSettings.UsingForeignKey)
             {
                 using(IDbCommand e = provider.Driver.GetDbCommand(new SqlStatement("PRAGMA foreign_keys = ON;"), conn))
                 {

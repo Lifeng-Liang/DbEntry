@@ -79,7 +79,7 @@ namespace Lephone.CodeGen
                 if (!m.Is.RelationField && !m.Is.DbGenerate && !m.Is.AutoSavedValue)
                 {
                     string s = "Ctx.Request.Form[\"" + _classType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
-                    Type t = m.Is.LazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
+                    Type t = m.Is.LazyLoad ? m.MemberType.GetGenericArguments()[0] : m.MemberType;
                     sb.Append("        obj.").Append(m.Name).Append(" = ");
                     GetFieldCode(sb, t, s);
                     sb.Append(";\n");
@@ -226,7 +226,7 @@ namespace Lephone.CodeGen
                 if (!m.Is.AutoSavedValue && !m.Is.DbGenerate)
                 {
                     string s = "Ctx.Request.Form[\"" + _classType.Name.ToLower() + "[" + m.Name.ToLower() + "]\"]";
-                    Type t = m.Is.LazyLoad ? m.FieldType.GetGenericArguments()[0] : m.FieldType;
+                    Type t = m.Is.LazyLoad ? m.MemberType.GetGenericArguments()[0] : m.MemberType;
                     sb.Append("        obj.").Append(m.Name).Append(" = ");
                     GetFieldCode(sb, t, s);
                     sb.Append(";\n");

@@ -10,21 +10,53 @@ using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.Model.Composer;
+using Lephone.Data.Model.Deleter;
+using Lephone.Data.Model.Handler;
 using Lephone.Data.Model.Inserter;
+using Lephone.Data.Model.Saver;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Model
 {
-    public class ModelOperator : ModelUpdater
+    public class ModelOperator
     {
         protected readonly ObjectInfo Info;
         internal readonly QueryComposer Composer;
+        protected DataProvider Provider;
+        private readonly SimpleObjectSaver _saver;
+        private readonly SimpleDeleter _deleter;
 
-        internal ModelOperator(ObjectInfo info, QueryComposer composer, DataProvider provider)
-            : base(provider)
+        internal ModelOperator(ObjectInfo info, QueryComposer composer, DataProvider provider, IDbObjectHandler handler)
         {
             this.Info = info;
             this.Composer = composer;
+            this.Provider = provider;
+            this._saver = SaverFactory.CreateSaver(info, composer, provider, handler);
+            this._deleter = DeleterFactory.CreateDeleter(info, composer, provider, handler);
+        }
+
+        public virtual int Delete(IDbObject obj)
+        {
+            TryCreateTable();
+            return _deleter.Delete(obj);
+        }
+
+        public virtual void Save(IDbObject obj)
+        {
+            TryCreateTable();
+            _saver.Save(obj);
+        }
+
+        public virtual void Insert(IDbObject obj)
+        {
+            TryCreateTable();
+            _saver.Insert(obj);
+        }
+
+        public virtual void Update(IDbObject obj)
+        {
+            TryCreateTable();
+            _saver.Update(obj);
         }
 
         internal void TryCreateTable()
@@ -392,7 +424,7 @@ namespace Lephone.Data.Model
         {
             var sb = Composer.GetCreateTableStatementBuilder();
             sb.TableName = Info.DeleteToTableName;
-            sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), false, false, false, false, 0, 0));
+            sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), null));
             var sql = sb.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
             Provider.ExecuteNonQuery(sql);
             if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
@@ -403,30 +435,29 @@ namespace Lephone.Data.Model
 
         public void CreateCrossTable(Type t2)
         {
-            ObjectInfo oi2 = ModelContext.GetInstance(t2).Info;
-            if (!(Info.CrossTables.ContainsKey(t2) && oi2.CrossTables.ContainsKey(Info.HandleType)))
+            var ctx2 = ModelContext.GetInstance(t2).Info;
+            if (!(Info.CrossTables.ContainsKey(t2) && ctx2.CrossTables.ContainsKey(Info.HandleType)))
             {
-                throw new DataException("They are not many to many relation ship classes!");
+                throw new DataException("They are not many to many relationship classes!");
             }
-            if (Info.KeyMembers.Length <= 0 || oi2.KeyMembers.Length <= 0)
+            if (Info.KeyMembers.Length <= 0 || ctx2.KeyMembers.Length <= 0)
             {
                 throw new DataException("The relation table must have key column!");
             }
-            CrossTable mt1 = Info.CrossTables[t2];
-            var cts = new CreateTableStatementBuilder(mt1.Name);
-            var ls = new List<string> { mt1.ColumeName1, mt1.ColumeName2 };
-            ls.Sort();
-            cts.Columns.Add(new ColumnInfo(ls[0], Info.KeyMembers[0].FieldType, false, false, false, false, 0, 0));
-            cts.Columns.Add(new ColumnInfo(ls[1], oi2.KeyMembers[0].FieldType, false, false, false, false, 0, 0));
+            var mt = Info.CrossTables[t2];
+            var cs = mt.GetSortedColumns();
+            var cts = new CreateTableStatementBuilder(mt.Name);
+            cts.Columns.Add(new ColumnInfo(cs[0].Column, Info.KeyMembers[0].MemberType, cs[0].Table));
+            cts.Columns.Add(new ColumnInfo(cs[1].Column, Info.KeyMembers[0].MemberType, cs[1].Table));
             // add index
-            cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName1));
-            cts.Indexes.Add(new DbIndex(null, false, (ASC)mt1.ColumeName2));
+            cts.Indexes.Add(new DbIndex(null, false, (ASC)cs[0].Column));
+            cts.Indexes.Add(new DbIndex(null, false, (ASC)cs[1].Column));
             // execute
-            SqlStatement sql = cts.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
+            var sql = cts.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
             Provider.ExecuteNonQuery(sql);
             if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
             {
-                Provider.Driver.TableNames.Add(mt1.Name.ToLower(), 1);
+                Provider.Driver.TableNames.Add(mt.Name.ToLower(), 1);
             }
         }
 

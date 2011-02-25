@@ -41,9 +41,9 @@ namespace Lephone.Data.Model
             foreach (MemberHandler m in ctx.Info.SimpleMembers)
             {
                 DataColumn dc
-                    = m.FieldType.IsGenericType
-                    ? new DataColumn(m.Name, m.FieldType.GetGenericArguments()[0])
-                    : new DataColumn(m.Name, m.FieldType);
+                    = m.MemberType.IsGenericType
+                    ? new DataColumn(m.Name, m.MemberType.GetGenericArguments()[0])
+                    : new DataColumn(m.Name, m.MemberType);
                 if (m.Is.AllowNull)
                 {
                     dc.AllowDBNull = true;
@@ -63,8 +63,8 @@ namespace Lephone.Data.Model
                     else
                     {
                         dr[m.Name]
-                            = m.FieldType.IsGenericType
-                            ? m.FieldType.GetMethod("get_Value").Invoke(ov, null)
+                            = m.MemberType.IsGenericType
+                            ? m.MemberType.GetMethod("get_Value").Invoke(ov, null)
                             : ov;
                     }
                 }

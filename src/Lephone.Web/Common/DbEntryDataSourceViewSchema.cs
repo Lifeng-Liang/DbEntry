@@ -26,7 +26,7 @@ namespace Lephone.Web.Common
             {
                 var s = new DbEntryDataSourceFieldSchema(
                     mh.MemberInfo.Name,
-                    mh.FieldType,
+                    mh.MemberType,
                     mh.Is.DbGenerate,
                     mh.Is.Key,
                     mh.Is.AllowNull

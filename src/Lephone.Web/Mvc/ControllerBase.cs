@@ -101,12 +101,12 @@ namespace Lephone.Web.Mvc
                     {
                         object ll = m.MemberInfo.GetValue(obj);
                         PropertyInfo pi = m.MemberInfo.MemberType.GetProperty("Value");
-                        object v = ControllerHelper.ChangeType(s, m.FieldType.GetGenericArguments()[0]);
+                        object v = ControllerHelper.ChangeType(s, m.MemberType.GetGenericArguments()[0]);
                         pi.SetValue(ll, v, null);
                     }
                     else
                     {
-                        m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
+                        m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.MemberType));
                     }
                 }
             }
@@ -163,14 +163,14 @@ namespace Lephone.Web.Mvc
                     {
                         object ll = m.MemberInfo.GetValue(obj);
                         PropertyInfo pi = m.MemberInfo.MemberType.GetProperty("Value");
-                        object v = ControllerHelper.ChangeType(s, m.FieldType.GetGenericArguments()[0]);
+                        object v = ControllerHelper.ChangeType(s, m.MemberType.GetGenericArguments()[0]);
                         pi.SetValue(ll, v, null);
                         // TODO: get rid of use such method.
                         ClassHelper.CallFunction(obj, "m_ColumnUpdated", m.Name);
                     }
                     else
                     {
-                        m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.FieldType));
+                        m.MemberInfo.SetValue(obj, ControllerHelper.ChangeType(s, m.MemberType));
                     }
                 }
             }

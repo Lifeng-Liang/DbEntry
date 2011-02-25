@@ -136,7 +136,7 @@ namespace Lephone.Web
 
         int IExcuteableDataSource.Delete(IDictionary keys, IDictionary values)
         {
-            object key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyMembers[0].FieldType);
+            object key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyMembers[0].MemberType);
             var obj = DbEntry.GetObject<T>(key);
             int n = ExecuteDelete(obj);
             if (OnObjectDeleted != null)
@@ -228,7 +228,7 @@ namespace Lephone.Web
             object key = null;
             if (keys != null)
             {
-                key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyMembers[0].FieldType);
+                key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyMembers[0].MemberType);
             }
             if (key == null || key.Equals(Ctx.Info.KeyMembers[0].UnsavedValue))
             {
@@ -249,7 +249,7 @@ namespace Lephone.Web
                         object mo;
                         if (ov != null)
                         {
-                            mo = ClassHelper.ChangeType(ov.ToString(), mh.FieldType);
+                            mo = ClassHelper.ChangeType(ov.ToString(), mh.MemberType);
                         }
                         else
                         {

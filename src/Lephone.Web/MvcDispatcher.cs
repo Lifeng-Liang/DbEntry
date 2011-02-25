@@ -24,7 +24,6 @@ namespace Lephone.Web
             {
                 foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    if (a.FullName == null) { continue; }
                     string s = a.FullName.Split(',')[0];
                     if (!s.StartsWith("System.") && CouldBeControllerAssemebly(s))
                     {
@@ -149,7 +148,7 @@ namespace Lephone.Web
             var parameters = GetParameters(ss, mi);
             object ret = CallAction(mi, ctl, parameters.ToArray()) ?? "";
 
-            var va = ClassHelper.GetAttribute<ViewAttribute>(mi, false);
+            var va = mi.GetAttribute<ViewAttribute>(false);
             var viewName = (va == null) ? mi.Name : va.ViewName;
 
             if(string.IsNullOrEmpty(ret.ToString()))
@@ -202,7 +201,7 @@ namespace Lephone.Web
             int x = 1;
             for (int i = 0; i < pis.Length; i++)
             {
-                if (ClassHelper.HasAttribute<BindAttribute>(pis[i], false))
+                if (pis[i].HasAttribute<BindAttribute>(false))
                 {
                     var obj = TypeBinder.Instance.GetObject(pis[i].Name, pis[i].ParameterType);
                     parameters.Add(obj);

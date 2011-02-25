@@ -83,7 +83,7 @@ namespace Lephone.Data
             var byteArrayType = typeof(byte[]);
             foreach (MemberHandler fh in ctx.Info.Members)
             {
-                var realType = fh.Is.LazyLoad ? fh.FieldType.GetGenericArguments()[0] : fh.FieldType;
+                var realType = fh.Is.LazyLoad ? fh.MemberType.GetGenericArguments()[0] : fh.MemberType;
                 if (realType == stringType)
                 {
                     var errMsg = new StringBuilder();

@@ -47,7 +47,7 @@ namespace Lephone.CodeGen
 
         private void ProcessMember(MemberHandler m)
         {
-            Type mft = m.FieldType;
+            Type mft = m.MemberType;
             if (mft.IsEnum)
             {
                 ProcessEnum(m);
@@ -76,7 +76,7 @@ namespace Lephone.CodeGen
 
         protected void ProcessEnum(MemberHandler m)
         {
-            Type t = m.FieldType;
+            Type t = m.MemberType;
             _b.asp("DropDownList", _id);
 
             foreach (string s in Enum.GetNames(t))

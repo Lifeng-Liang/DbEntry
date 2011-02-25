@@ -67,7 +67,7 @@ namespace Lephone.Web.Common
                 object obj = ClassHelper.CreateInstance(_info.HandleType);
                 foreach (MemberHandler mh in _info.SimpleMembers)
                 {
-                    object value = GetSampleValue(mh.FieldType, mh.Is.AllowNull, i);
+                    object value = GetSampleValue(mh.MemberType, mh.Is.AllowNull, i);
                     mh.SetValue(obj, value);
                 }
                 list.Add(obj);

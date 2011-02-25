@@ -37,48 +37,47 @@ namespace Lephone.Data.Definition
         protected override void DoWrite(object oldValue, bool isLoad)
         {
             var ctx = ModelContext.GetInstance(typeof(T));
-            if (ctx.Info.HasOnePrimaryKey)
+            if (m_Value != null)
             {
-                if (m_Value != null)
+                _foreignKey = (TKey)ctx.Info.KeyMembers[0].GetValue(m_Value);
+            }
+            else
+            {
+                _foreignKey = null;
+            }
+            if (!isLoad)
+            {
+                ProcessRelations(ctx, oldValue);
+            }
+        }
+
+        private void ProcessRelations(ModelContext ctx, object oldValue)
+        {
+            ForeignKeyChanged();
+            if (m_Value == null && oldValue != null)
+            {
+                // TODO: remove oldValue
+                return;
+            }
+            if (m_Value != null && m_Value != oldValue)
+            {
+                foreach (var mh in ctx.Info.RelationMembers)
                 {
-                    _foreignKey = (TKey)ctx.Info.KeyMembers[0].GetValue(m_Value);
-                }
-                else
-                {
-                    _foreignKey = null;
-                }
-                if (!isLoad)
-                {
-                    ForeignKeyChanged();
-                    if(m_Value == null && oldValue != null)
+                    if (mh.Is.HasOne || mh.Is.HasMany)
                     {
-                        // TODO: remove oldValue
-                    }
-                    else if (m_Value != null && m_Value != oldValue)
-                    {
-                        foreach (var mh in ctx.Info.RelationMembers)
+                        Type st = mh.MemberType.GetGenericArguments()[0];
+                        Type ot = Owner.GetType();
+                        if (st == ot)
                         {
-                            if (mh.Is.HasOne || mh.Is.HasMany)
+                            var ll = (ILazyLoading)mh.GetValue(m_Value);
+                            if (!ll.IsLoaded)
                             {
-                                Type st = mh.FieldType.GetGenericArguments()[0];
-                                Type ot = Owner.GetType();
-                                if (st == ot)
-                                {
-                                    var ll = (ILazyLoading)mh.GetValue(m_Value);
-                                    if(!ll.IsLoaded)
-                                    {
-                                        ll.Write(Owner, true);
-                                        ll.IsLoaded = true;
-                                    }
-                                }
+                                ll.Write(Owner, true);
+                                ll.IsLoaded = true;
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                throw new DataException("The object must have one key.");
             }
         }
 
@@ -92,7 +91,7 @@ namespace Lephone.Data.Definition
                 {
                     if (f.Is.HasOne || f.Is.HasMany)
                     {
-                        Type t = f.FieldType.GetGenericArguments()[0];
+                        Type t = f.MemberType.GetGenericArguments()[0];
                         if (t == Owner.GetType())
                         {
                             var ll = (ILazyLoading)f.GetValue(m_Value);

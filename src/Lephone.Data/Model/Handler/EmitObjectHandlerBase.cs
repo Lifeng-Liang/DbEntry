@@ -36,15 +36,15 @@ namespace Lephone.Data.Model.Handler
         {
             if (fi.Is.BelongsTo)
             {
-                Type type = fi.FieldType.GetGenericArguments()[0];
+                Type type = fi.MemberType.GetGenericArguments()[0];
                 MemberHandler handler = (oi.HandleType == type) ? oi.KeyMembers[0] : ModelContext.GetInstance(type).Info.KeyMembers[0];
-                return new KeyValue(fi.Name, null, handler.FieldType);
+                return new KeyValue(fi.Name, null, handler.MemberType);
             }
             if (fi.Is.LazyLoad)
             {
-                return new KeyValue(fi.Name, null, fi.FieldType.GetGenericArguments()[0]);
+                return new KeyValue(fi.Name, null, fi.MemberType.GetGenericArguments()[0]);
             }
-            return new KeyValue(fi.Name, null, fi.FieldType);
+            return new KeyValue(fi.Name, null, fi.MemberType);
         }
 
         protected virtual object GetKeyValueDirect(object o)

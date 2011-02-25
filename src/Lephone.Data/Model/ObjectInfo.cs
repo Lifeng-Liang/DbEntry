@@ -22,7 +22,7 @@ namespace Lephone.Data.Model
         public readonly string DeleteToTableName;
         public readonly FromClause From;
         public readonly Type HandleType;
-        public readonly bool HasAssociate;
+        public readonly bool HasRelation;
         public readonly bool HasOnePrimaryKey;
         public readonly bool HasSystemKey;
         public readonly Dictionary<string, List<ASC>> Indexes = new Dictionary<string, List<ASC>>();
@@ -47,7 +47,7 @@ namespace Lephone.Data.Model
             this.From = GetObjectFromClause(t);
             this.AllowSqlLog = this.IsAllowSqlLog();
             this.HasSystemKey = this.GetHasSystemKey();
-            this.HasAssociate = members.Exists(delegate(MemberHandler m)
+            this.HasRelation = members.Exists(delegate(MemberHandler m)
             {
                 if ((!m.Is.HasOne && !m.Is.HasMany) && !m.Is.HasAndBelongsToMany)
                 {
@@ -62,7 +62,7 @@ namespace Lephone.Data.Model
             this.ContextName = this.GetContextName();
             this.Cacheable = this.HandleType.HasAttribute<CacheableAttribute>(false);
             this.GetIndexes();
-            SetManyToManyFrom(this, this.From.MainOriginTableName, this.Members);
+            SetManyToManyFrom(this, this.From.MainModelName, this.Members);
         }
 
         private static void CheckIndexAttributes(IEnumerable<IndexAttribute> ias)
@@ -125,7 +125,7 @@ namespace Lephone.Data.Model
             {
                 if (member.Is.BelongsTo)
                 {
-                    var type = member.FieldType.GetGenericArguments()[0];
+                    var type = member.MemberType.GetGenericArguments()[0];
                     if (type == t)
                     {
                         return member;
@@ -177,7 +177,7 @@ namespace Lephone.Data.Model
             {
                 if (member.Is.HasAndBelongsToMany)
                 {
-                    Type type = member.FieldType.GetGenericArguments()[0];
+                    Type type = member.MemberType.GetGenericArguments()[0];
                     if (type == t)
                     {
                         return member;
@@ -200,7 +200,7 @@ namespace Lephone.Data.Model
             }
             if (!this.KeyMembers[0].Is.DbGenerate)
             {
-                return (this.KeyMembers[0].FieldType == typeof(Guid));
+                return (this.KeyMembers[0].MemberType == typeof(Guid));
             }
             return true;
         }
@@ -382,14 +382,15 @@ namespace Lephone.Data.Model
             {
                 if (member.Is.HasAndBelongsToMany)
                 {
-                    var modelType = member.FieldType.GetGenericArguments()[0];
-                    var objectFromClause = GetObjectFromClause(modelType);
-                    var mainOriginTableName = objectFromClause.MainOriginTableName;
-                    var str2 = GetCrossTableName(member, unmappedMainTableName, mainOriginTableName);
+                    var modelType = member.MemberType.GetGenericArguments()[0];
+                    var fromClause = GetObjectFromClause(modelType);
+                    var mainOriginTableName = fromClause.MainModelName;
+                    var name = GetCrossTableName(member, unmappedMainTableName, mainOriginTableName);
                     var fkMainOriginTableName = mainOriginTableName + "_Id";
-                    var from = new FromClause(new[] { new JoinClause(str2, fkMainOriginTableName, objectFromClause.MainTableName, "Id", CompareOpration.Equal, JoinMode.Inner) });
-                    var handleType = member.FieldType.GetGenericArguments()[0];
-                    oi.CrossTables[handleType] = new CrossTable(handleType, from, str2, unmappedMainTableName + "_Id", fkMainOriginTableName);
+                    var from = new FromClause(new[] { new JoinClause(name, fkMainOriginTableName, fromClause.MainTableName, "Id", CompareOpration.Equal, JoinMode.Inner) });
+                    var handleType = member.MemberType.GetGenericArguments()[0];
+                    oi.CrossTables[handleType] = new CrossTable(handleType, from, name,
+                        oi.From.MainTableName, unmappedMainTableName + "_Id", fromClause.MainTableName, fkMainOriginTableName);
                 }
             }
         }

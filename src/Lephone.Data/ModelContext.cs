@@ -55,11 +55,11 @@ namespace Lephone.Data
             }
             if(DataSettings.CacheEnabled && Info.HasOnePrimaryKey && Info.Cacheable)
             {
-                Operator = new CachedModelOperator(Info, Composer, Provider);
+                Operator = new CachedModelOperator(Info, Composer, Provider, Handler);
             }
             else
             {
-                Operator = new ModelOperator(Info, Composer, Provider);
+                Operator = new ModelOperator(Info, Composer, Provider, Handler);
             }
         }
 
@@ -119,7 +119,7 @@ namespace Lephone.Data
             {
                 throw new DataException("GetPrimaryKeyDefaultValue don't support multi key.");
             }
-            return CommonHelper.GetEmptyValue(Info.KeyMembers[0].FieldType, false, "only supported int long guid as primary key.");
+            return CommonHelper.GetEmptyValue(Info.KeyMembers[0].MemberType, false, "only supported int long guid as primary key.");
         }
 
         public bool IsNewObject(object obj)
@@ -184,13 +184,13 @@ namespace Lephone.Data
             }
             var fh = ctx.Info.KeyMembers[0];
             object sKey;
-            if (fh.FieldType == typeof(long))
+            if (fh.MemberType == typeof(long))
             {
                 sKey = Convert.ToInt64(key);
             }
             else
             {
-                sKey = fh.FieldType == typeof(int) ? Convert.ToInt32(key) : key;
+                sKey = fh.MemberType == typeof(int) ? Convert.ToInt32(key) : key;
             }
             fh.SetValue(obj, sKey);
         }

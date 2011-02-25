@@ -47,7 +47,7 @@ namespace Lephone.Data.Definition
                 var xe = new XmlSchemaElement
                              {
                                  Name = mh.MemberInfo.Name,
-                                 SchemaType = XmlSchemaTypeParser.GetSchemaType(mh.FieldType),
+                                 SchemaType = XmlSchemaTypeParser.GetSchemaType(mh.MemberType),
                              };
                 xss.Items.Add(xe);
             }
@@ -64,7 +64,7 @@ namespace Lephone.Data.Definition
             foreach (MemberHandler mh in ctx.Info.SimpleMembers)
             {
                 var ns = reader.ReadElementString(mh.MemberInfo.Name);
-                object o = ClassHelper.ChangeType(ns, mh.FieldType);
+                object o = ClassHelper.ChangeType(ns, mh.MemberType);
                 mh.SetValue(this, o);
             }
             reader.ReadEndElement();
@@ -85,12 +85,12 @@ namespace Lephone.Data.Definition
 
         public virtual void Save()
         {
-            DbEntry.Save(this);
+            Context.Operator.Save(this);
         }
 
         public virtual void Delete()
         {
-            DbEntry.Delete(this);
+            Context.Operator.Delete(this);
         }
 
         public virtual ValidateHandler Validate()

@@ -1,23 +1,47 @@
 using System;
+using System.Collections.Generic;
 using Lephone.Data.Builder.Clause;
 
 namespace Lephone.Data.Model
 {
     public class CrossTable
     {
-        public Type HandleType;
-        public FromClause From;
-        public string Name;
-        public string ColumeName1;
-        public string ColumeName2;
+        public class RefColumn
+        {
+            public readonly string Table;
+            public readonly string Column;
 
-        public CrossTable(Type handleType, FromClause from, string name, string columeName1, string columeName2)
+            public RefColumn(string table, string column)
+            {
+                this.Table = table;
+                this.Column = column;
+            }
+        }
+
+        public readonly Type HandleType;
+        public readonly FromClause From;
+        public readonly string Name;
+        private readonly List<RefColumn> _columns;
+
+        public CrossTable(Type handleType, FromClause from, string name, 
+            string table1, string column1, string table2, string column2)
         {
             this.HandleType = handleType;
             this.From = from;
             this.Name = name;
-            this.ColumeName1 = columeName1;
-            this.ColumeName2 = columeName2;
+            _columns = new List<RefColumn> {new RefColumn(table1, column1), new RefColumn(table2, column2)};
+        }
+
+        public RefColumn this[int n]
+        {
+            get { return _columns[n]; }
+        }
+
+        public List<RefColumn> GetSortedColumns()
+        {
+            var list = new List<RefColumn>(_columns);
+            list.Sort((x, y) => x.Column.CompareTo(y.Column));
+            return list;
         }
     }
 }

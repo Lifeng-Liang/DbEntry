@@ -359,7 +359,7 @@ namespace Lephone.Web
             string sid = Page.Request["Id"];
             if (!string.IsNullOrEmpty(sid))
             {
-                object id = ClassHelper.ChangeType(sid, Ctx.Info.KeyMembers[0].FieldType);
+                object id = ClassHelper.ChangeType(sid, Ctx.Info.KeyMembers[0].MemberType);
                 var o = DbEntry.GetObject<T>(id);
                 if(o == null)
                 {

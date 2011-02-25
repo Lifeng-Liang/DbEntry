@@ -88,27 +88,27 @@ namespace Lephone.Data.Dialect
             get { return true; }
         }
 
-        public virtual object ExecuteInsert(DataProvider dp, InsertStatementBuilder sb, ModelContext ctx)
+        public virtual object ExecuteInsert(InsertStatementBuilder sb, ObjectInfo info, DataProvider provider)
         {
-            if (ctx.Info.HasOnePrimaryKey && ctx.Info.KeyMembers[0].FieldType == typeof(Guid))
+            if (info.HasOnePrimaryKey && info.KeyMembers[0].MemberType == typeof(Guid))
             {
-                if(ctx.Info.KeyMembers[0].Is.DbGenerateGuid)
+                if(info.KeyMembers[0].Is.DbGenerateGuid)
                 {
                     Guid key = Guid.NewGuid();
                     sb.Values[0].Value = key;
                 }
-                SqlStatement sql = sb.ToSqlStatement(ctx);
-                dp.ExecuteNonQuery(sql);
+                SqlStatement sql = sb.ToSqlStatement(provider.Dialect, info.AllowSqlLog);
+                provider.ExecuteNonQuery(sql);
                 return sb.Values[0].Value;
             }
-            return ExecuteInsertIntKey(sb, ctx);
+            return ExecuteInsertIntKey(sb, info, provider);
         }
 
-        protected virtual object ExecuteInsertIntKey(InsertStatementBuilder sb, ModelContext ctx)
+        protected virtual object ExecuteInsertIntKey(InsertStatementBuilder sb, ObjectInfo info, DataProvider provider)
         {
-            SqlStatement sql = sb.ToSqlStatement(ctx);
+            SqlStatement sql = sb.ToSqlStatement(provider.Dialect, info.AllowSqlLog);
             sql.SqlCommandText = AddIdentitySelectToInsert(sql.SqlCommandText);
-            return ctx.Provider.ExecuteScalar(sql);
+            return provider.ExecuteScalar(sql);
         }
 
         public virtual void ExecuteDropSequence(DataProvider dp, string tableName)

@@ -25,11 +25,11 @@ namespace Lephone.Web.Mvc
 
             if(m.Is.LazyLoad)
             {
-                ProcessField(m.FieldType.GetGenericArguments()[0], m, value);
+                ProcessField(m.MemberType.GetGenericArguments()[0], m, value);
             }
             else
             {
-                ProcessField(m.FieldType, m, value);
+                ProcessField(m.MemberType, m, value);
             }
         }
 
@@ -82,9 +82,9 @@ namespace Lephone.Web.Mvc
                 v = "";
             }
             _html.tag("select").id(_id).name(_name);
-            foreach (string s in Enum.GetNames(m.FieldType))
+            foreach (string s in Enum.GetNames(m.MemberType))
             {
-                object e = Enum.Parse(m.FieldType, s);
+                object e = Enum.Parse(m.MemberType, s);
                 _html.tag("option").attr("value", s);
                 if (s == v)
                 {

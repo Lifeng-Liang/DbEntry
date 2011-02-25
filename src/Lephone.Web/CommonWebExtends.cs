@@ -60,7 +60,7 @@ public static class CommonWebExtends
             var value = request[field.Name];
             if(!value.IsNullOrEmpty())
             {
-                field.SetValue(obj, ClassHelper.ChangeType(value, field.FieldType));
+                field.SetValue(obj, ClassHelper.ChangeType(value, field.MemberType));
             }
         }
         return obj;

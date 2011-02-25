@@ -25,19 +25,19 @@ namespace Lephone.Data.Common
                 int n = 0;
                 foreach (MemberHandler mh in ctx.Info.SimpleMembers)
                 {
-                    _indexType.Add(n++, mh.FieldType);
+                    _indexType.Add(n++, mh.MemberType);
                     if (!_nameType.ContainsKey(mh.Name))
                     {
-                        _nameType.Add(mh.Name, mh.FieldType);
+                        _nameType.Add(mh.Name, mh.MemberType);
                     }
                 }
                 foreach (MemberHandler mh in ctx.Info.RelationMembers)
                 {
                     if (mh.Is.BelongsTo)
                     {
-                        var ctx1 = ModelContext.GetInstance(mh.FieldType.GetGenericArguments()[0]);
-                        _indexType.Add(n++, ctx1.Info.KeyMembers[0].FieldType);
-                        _nameType.Add(mh.Name, ctx1.Info.KeyMembers[0].FieldType);
+                        var ctx1 = ModelContext.GetInstance(mh.MemberType.GetGenericArguments()[0]);
+                        _indexType.Add(n++, ctx1.Info.KeyMembers[0].MemberType);
+                        _nameType.Add(mh.Name, ctx1.Info.KeyMembers[0].MemberType);
                     }
                 }
             }

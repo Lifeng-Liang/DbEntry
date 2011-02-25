@@ -1,7 +1,4 @@
-﻿using Lephone.Data;
-using Lephone.Data.Common;
-using Lephone.MockSql.Recorder;
-using Lephone.UnitTest.Data.Objects;
+﻿using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data

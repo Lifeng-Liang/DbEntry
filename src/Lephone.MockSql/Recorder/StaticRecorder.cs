@@ -6,7 +6,7 @@ namespace Lephone.MockSql.Recorder
     public static class DataSettings
     {
         // ReSharper disable RedundantDefaultFieldInitializer
-        public static readonly bool TestForeignKey = false;
+        public static readonly bool UsingForeignKey = false;
 
         static DataSettings()
         {
@@ -38,7 +38,7 @@ namespace Lephone.MockSql.Recorder
 
         public void Write(string msg, params object[] os)
         {
-            if (DataSettings.TestForeignKey && msg.StartsWith("PRAGMA foreign_keys = ON;"))
+            if (DataSettings.UsingForeignKey && msg.StartsWith("PRAGMA foreign_keys = ON;"))
             {
                 return;
             }

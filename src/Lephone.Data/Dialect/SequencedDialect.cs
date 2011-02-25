@@ -1,19 +1,20 @@
 ﻿using System.Data;
 using Lephone.Data.Builder;
+using Lephone.Data.Model;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Dialect
 {
     public abstract class SequencedDialect : DbDialect
     {
-        protected override object ExecuteInsertIntKey(InsertStatementBuilder sb, ModelContext ctx)
+        protected override object ExecuteInsertIntKey(InsertStatementBuilder sb, ObjectInfo info, DataProvider provider)
         {
-            string seqStr = GetSelectSequenceSql(ctx.Info.From.MainTableName);
+            string seqStr = GetSelectSequenceSql(info.From.MainTableName);
             var seq = new SqlStatement(CommandType.Text, seqStr);
-            object key = ctx.Provider.ExecuteScalar(seq);
-            sb.Values.Add(new KeyValue(ctx.Info.KeyMembers[0].Name, key));
-            SqlStatement sql = sb.ToSqlStatement(ctx);
-            ctx.Provider.ExecuteNonQuery(sql);
+            object key = provider.ExecuteScalar(seq);
+            sb.Values.Add(new KeyValue(info.KeyMembers[0].Name, key));
+            SqlStatement sql = sb.ToSqlStatement(provider.Dialect, info.AllowSqlLog);
+            provider.ExecuteNonQuery(sql);
             return key;
         }
 

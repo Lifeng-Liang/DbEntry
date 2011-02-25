@@ -24,8 +24,14 @@ namespace Lephone.UnitTest
 
         protected static void AssertSql(string sql)
         {
-            Assert.AreEqual(sql.Replace("\r\n", "\n").Replace("    ", "\t"), StaticRecorder.LastMessage);
+            AssertSql(-1, sql);
             StaticRecorder.ClearMessages();
+        }
+
+        protected static void AssertSql(int n, string sql)
+        {
+            var act = n < 0 ? StaticRecorder.LastMessage : StaticRecorder.Messages[n];
+            Assert.AreEqual(sql.Replace("\r\n", "\n").Replace("    ", "\t"), act);
         }
     }
 }

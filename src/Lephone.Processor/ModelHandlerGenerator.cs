@@ -114,7 +114,7 @@ namespace Lephone.Processor
                 processor.LoadLoc(0);
                 if (f.Is.AllowNull) { processor.LoadArg(0); }
                 processor.LoadArg(2).LoadInt(n);
-                var mi1 = Helper.GetMethodInfo(f.FieldType);
+                var mi1 = Helper.GetMethodInfo(f.MemberType);
                 if (f.Is.AllowNull || mi1 == null)
                 {
                     processor.CallVirtual(_handler.GetDataReaderMethodInt());
@@ -124,7 +124,7 @@ namespace Lephone.Processor
                         processor.Call(_handler.ModelHandlerBaseTypeGetNullable);
                     }
                     // cast or unbox
-                    processor.CastOrUnbox(_handler.Import(f.FieldType), _handler);
+                    processor.CastOrUnbox(_handler.Import(f.MemberType), _handler);
                 }
                 else
                 {
@@ -141,19 +141,19 @@ namespace Lephone.Processor
 
         private static void SetSecendArgForGetNullable(MemberHandler f, IlBuilder il)
         {
-            if (f.FieldType.IsValueType && f.FieldType == typeof(Guid?))
+            if (f.MemberType.IsValueType && f.MemberType == typeof(Guid?))
             {
                 il.LoadInt(1);
             }
-            else if (f.FieldType.IsValueType && f.FieldType == typeof(bool?))
+            else if (f.MemberType.IsValueType && f.MemberType == typeof(bool?))
             {
                 il.LoadInt(2);
             }
-            else if (f.FieldType.IsValueType && f.FieldType == typeof(Date?))
+            else if (f.MemberType.IsValueType && f.MemberType == typeof(Date?))
             {
                 il.LoadInt(3);
             }
-            else if (f.FieldType.IsValueType && f.FieldType == typeof(Time?))
+            else if (f.MemberType.IsValueType && f.MemberType == typeof(Time?))
             {
                 il.LoadInt(4);
             }
@@ -187,7 +187,7 @@ namespace Lephone.Processor
                     processor.Call(_handler.ModelHandlerBaseTypeGetNullable);
                 }
                 // cast or unbox
-                processor.CastOrUnbox(_handler.Import(f.FieldType), _handler);
+                processor.CastOrUnbox(_handler.Import(f.MemberType), _handler);
                 // set field
                 processor.SetMember(f, _handler);
             }
@@ -276,7 +276,7 @@ namespace Lephone.Processor
                 var h = _info.KeyMembers[0];
                 processor.LoadArg(1).Cast(_model);
                 processor.GetMember(h, _handler);
-                processor.Box(_handler.Import(h.FieldType));
+                processor.Box(_handler.Import(h.MemberType));
             }
             else
             {
@@ -305,7 +305,7 @@ namespace Lephone.Processor
             {
                 processor.LoadArg(1).LoadString(f.Name).LoadLoc(0);
                 processor.GetMember(f, _handler);
-                processor.Box(_handler.Import(f.FieldType)).CallVirtual(_handler.DictionaryStringObjectAdd);
+                processor.Box(_handler.Import(f.MemberType)).CallVirtual(_handler.DictionaryStringObjectAdd);
             }
 
             processor.Return();
@@ -424,17 +424,17 @@ namespace Lephone.Processor
                             processor.GetMember(f, _handler);
                             if (f.Is.BelongsTo)
                             {
-                                processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_ForeignKey")));
+                                processor.CallVirtual(_handler.Import(f.MemberType.GetMethod("get_ForeignKey")));
                             }
                             else if (f.Is.LazyLoad)
                             {
-                                var it = f.FieldType.GetGenericArguments()[0];
-                                processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_Value")));
+                                var it = f.MemberType.GetGenericArguments()[0];
+                                processor.CallVirtual(_handler.Import(f.MemberType.GetMethod("get_Value")));
                                 processor.Box(_handler.Import(it));
                             }
                             else
                             {
-                                processor.Box(_handler.Import(f.FieldType));
+                                processor.Box(_handler.Import(f.MemberType));
                             }
                             processor.Call(_handler.ModelHandlerBaseTypeNewKeyValue);
                         }
@@ -470,17 +470,17 @@ namespace Lephone.Processor
                             processor.GetMember(f, _handler);
                             if (f.Is.BelongsTo)
                             {
-                                processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_ForeignKey")));
+                                processor.CallVirtual(_handler.Import(f.MemberType.GetMethod("get_ForeignKey")));
                             }
                             else if (f.Is.LazyLoad)
                             {
-                                var it = f.FieldType.GetGenericArguments()[0];
-                                processor.CallVirtual(_handler.Import(f.FieldType.GetMethod("get_Value")));
+                                var it = f.MemberType.GetGenericArguments()[0];
+                                processor.CallVirtual(_handler.Import(f.MemberType.GetMethod("get_Value")));
                                 processor.Box(_handler.Import(it));
                             }
                             else
                             {
-                                processor.Box(_handler.Import(f.FieldType));
+                                processor.Box(_handler.Import(f.MemberType));
                             }
                             processor.Call(_handler.ModelHandlerBaseTypeAddKeyValue);
                         }

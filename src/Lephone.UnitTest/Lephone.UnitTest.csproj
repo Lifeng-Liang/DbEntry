@@ -128,10 +128,12 @@
     <Compile Include="Data\Objects\AssociateClasses.cs" />
     <Compile Include="Data\Objects\ModelObject.cs" />
     <Compile Include="Data\Objects\PropertyClasses.cs" />
+    <Compile Include="Data\Objects\RealLikeModels.cs" />
     <Compile Include="Data\OptimisticLockingTest.cs" />
     <Compile Include="Data\PagedSelectorTest.cs" />
     <Compile Include="Data\PartialUpdateTest.cs" />
     <Compile Include="Data\PropertyClassTest.cs" />
+    <Compile Include="Data\RealLikeModelTest.cs" />
     <Compile Include="Data\SerializeTest.cs" />
     <Compile Include="Data\SmartUpdateTest.cs" />
     <Compile Include="Data\SoftDeleteTest.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Data\UnsignedNumberTest.cs" />
     <Compile Include="Data\UserIssueTest.cs" />
     <Compile Include="Data\ValidateHandlerTest.cs" />
+    <Compile Include="DotNetFramework\HashTast.cs" />
     <Compile Include="DotNetFramework\LinqTest.cs" />
     <Compile Include="DotNetFramework\MathTest.cs" />
     <Compile Include="DotNetFramework\NullabelTest.cs" />

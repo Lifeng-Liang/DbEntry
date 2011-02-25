@@ -116,7 +116,9 @@ namespace Lephone.UnitTest.Data
             b.Save();
             b.Name = "aaa";
             b.Save();
+            Assert.AreEqual(1, b.LockVersion);
             var b1 = CachedLockBook.FindById(b.Id);
+            Assert.AreEqual("aaa", b1.Name);
             Assert.AreEqual(1, b1.LockVersion);
         }
     }

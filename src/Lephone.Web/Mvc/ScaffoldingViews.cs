@@ -90,7 +90,7 @@ namespace Lephone.Web.Mvc
                                 object v = m.GetValue(o);
                                 if(m.Is.LazyLoad)
                                 {
-                                    v = m.FieldType.GetProperty("Value").GetValue(v, null);
+                                    v = m.MemberType.GetProperty("Value").GetValue(v, null);
                                 }
                                 b.p.label.attr("for", n).text(m.Name).end.br.include(ControlMapper.Map(m, n, n1, v)).end.enter();
                             }
@@ -204,7 +204,7 @@ namespace Lephone.Web.Mvc
                                 object v = m.GetValue(o);
                                 if(m.Is.LazyLoad)
                                 {
-                                    v = m.FieldType.GetProperty("Value").GetValue(v, null);
+                                    v = m.MemberType.GetProperty("Value").GetValue(v, null);
                                 }
                                 b.p.tag("b").text(m.Name + ":").end.include(" ").text(v ?? "<NULL>").end.enter();
                             }

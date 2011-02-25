@@ -276,14 +276,28 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void Test6()
         {
             DbEntry.Create(typeof(PersonalComputerSqlite));
-            Assert.AreEqual("CREATE TABLE [PCs] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Person_Id] BIGINT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+            AssertSql(
+@"CREATE TABLE [PCs] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] NTEXT NOT NULL ,
+    [Person_Id] BIGINT NULL ,
+    FOREIGN KEY([Person_Id]) REFERENCES [People] ([Id]) 
+);
+<Text><30>()");
         }
 
         [Test]
         public void Test7()
         {
             DbEntry.Create(typeof(BookSqlite));
-            Assert.AreEqual("CREATE TABLE [Books] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Category_Id] BIGINT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+            AssertSql(
+@"CREATE TABLE [Books] (
+    [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
+    [Name] NTEXT NOT NULL ,
+    [Category_Id] BIGINT NULL ,
+    FOREIGN KEY([Category_Id]) REFERENCES [Categories] ([Id]) 
+);
+<Text><30>()");
         }
 
         [Test]
@@ -314,10 +328,16 @@ namespace Lephone.UnitTest.Data.CreateTable
         {
             DbEntry.CreateCrossTable(typeof(ReaderSqlite), typeof(ArticleSqlite));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
-            Assert.AreEqual("CREATE TABLE [R_Article_Reader] (\n\t[Article_Id] BIGINT NOT NULL ,\n\t[Reader_Id] BIGINT NOT NULL \n);\n" +
-                "CREATE INDEX [IX_R_Article_Reader_Reader_Id] ON [R_Article_Reader] ([Reader_Id] ASC);\n" +
-                "CREATE INDEX [IX_R_Article_Reader_Article_Id] ON [R_Article_Reader] ([Article_Id] ASC);\n<Text><30>()",
-                StaticRecorder.Messages[0]);
+            AssertSql(0,
+@"CREATE TABLE [R_Article_Reader] (
+    [Article_Id] BIGINT NOT NULL ,
+    [Reader_Id] BIGINT NOT NULL ,
+    FOREIGN KEY([Article_Id]) REFERENCES [Article] ([Id]) ,
+    FOREIGN KEY([Reader_Id]) REFERENCES [Reader] ([Id]) 
+);
+CREATE INDEX [IX_R_Article_Reader_Article_Id] ON [R_Article_Reader] ([Article_Id] ASC);
+CREATE INDEX [IX_R_Article_Reader_Reader_Id] ON [R_Article_Reader] ([Reader_Id] ASC);
+<Text><30>()");
         }
 
         [Test]
@@ -332,10 +352,28 @@ namespace Lephone.UnitTest.Data.CreateTable
         public void TestManyMore()
         {
             DbEntry.CreateCrossTable(typeof(ManyMoreSqlite), typeof(ManyMore1Sqlite));
-            Assert.AreEqual("CREATE TABLE [R_ManyMore_ManyMore1] (\n\t[ManyMore_Id] BIGINT NOT NULL ,\n\t[ManyMore1_Id] BIGINT NOT NULL \n);\nCREATE INDEX [IX_R_ManyMore_ManyMore1_ManyMore_Id] ON [R_ManyMore_ManyMore1] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_R_ManyMore_ManyMore1_ManyMore1_Id] ON [R_ManyMore_ManyMore1] ([ManyMore1_Id] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
+            AssertSql(
+@"CREATE TABLE [R_ManyMore_ManyMore1] (
+    [ManyMore_Id] BIGINT NOT NULL ,
+    [ManyMore1_Id] BIGINT NOT NULL ,
+    FOREIGN KEY([ManyMore_Id]) REFERENCES [ManyMore] ([Id]) ,
+    FOREIGN KEY([ManyMore1_Id]) REFERENCES [ManyMore1] ([Id]) 
+);
+CREATE INDEX [IX_R_ManyMore_ManyMore1_ManyMore_Id] ON [R_ManyMore_ManyMore1] ([ManyMore_Id] ASC);
+CREATE INDEX [IX_R_ManyMore_ManyMore1_ManyMore1_Id] ON [R_ManyMore_ManyMore1] ([ManyMore1_Id] ASC);
+<Text><30>()");
 
             DbEntry.CreateCrossTable(typeof(ManyMoreSqlite), typeof(ManyMore2Sqlite));
-            Assert.AreEqual("CREATE TABLE [R_ManyMore_ManyMore2] (\n\t[ManyMore_Id] BIGINT NOT NULL ,\n\t[ManyMore2_Id] BIGINT NOT NULL \n);\nCREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore_Id] ON [R_ManyMore_ManyMore2] ([ManyMore_Id] ASC);\nCREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore2_Id] ON [R_ManyMore_ManyMore2] ([ManyMore2_Id] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
+            AssertSql(
+@"CREATE TABLE [R_ManyMore_ManyMore2] (
+    [ManyMore_Id] BIGINT NOT NULL ,
+    [ManyMore2_Id] BIGINT NOT NULL ,
+    FOREIGN KEY([ManyMore_Id]) REFERENCES [ManyMore] ([Id]) ,
+    FOREIGN KEY([ManyMore2_Id]) REFERENCES [ManyMore2] ([Id]) 
+);
+CREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore_Id] ON [R_ManyMore_ManyMore2] ([ManyMore_Id] ASC);
+CREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore2_Id] ON [R_ManyMore_ManyMore2] ([ManyMore2_Id] ASC);
+<Text><30>()");
         }
 
         [Test]
@@ -354,7 +392,8 @@ namespace Lephone.UnitTest.Data.CreateTable
 	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
 	[QQQId] INT NOT NULL ,
 	[UUUs] NVARCHAR (50) NOT NULL ,
-	[CCCId] BIGINT NULL 
+	[CCCId] BIGINT NULL ,
+    FOREIGN KEY([CCCId]) REFERENCES [CCC1] ([Id]) 
 );
 CREATE UNIQUE INDEX [IX_Index_Test_Class_xxx1] ON [Index_Test_Class] ([QQQId] ASC, [CCCId] ASC);
 CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC, [CCCId] ASC);
@@ -405,7 +444,9 @@ CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC
             AssertSql(
 @"CREATE TABLE [R_book_and_category] (
     [Books_Id] INT NOT NULL ,
-    [Categories_Id] INT NOT NULL 
+    [Categories_Id] INT NOT NULL ,
+    FOREIGN KEY([Books_Id]) REFERENCES [Books] ([Id]) ,
+    FOREIGN KEY([Categories_Id]) REFERENCES [Categories] ([Id]) 
 );
 CREATE INDEX [IX_R_book_and_category_Books_Id] ON [R_book_and_category] ([Books_Id] ASC);
 CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([Categories_Id] ASC);
@@ -427,7 +468,9 @@ CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([C
             AssertSql(
 @"CREATE TABLE [R_book_and_category] (
     [crxBook1Sqlite_Id] BIGINT NOT NULL ,
-    [crxCategory1Sqlite_Id] BIGINT NOT NULL 
+    [crxCategory1Sqlite_Id] BIGINT NOT NULL ,
+    FOREIGN KEY([crxBook1Sqlite_Id]) REFERENCES [crx_Book1Sqlite] ([Id]) ,
+    FOREIGN KEY([crxCategory1Sqlite_Id]) REFERENCES [crx_Category1Sqlite] ([Id]) 
 );
 CREATE INDEX [IX_R_book_and_category_crxBook1Sqlite_Id] ON [R_book_and_category] ([crxBook1Sqlite_Id] ASC);
 CREATE INDEX [IX_R_book_and_category_crxCategory1Sqlite_Id] ON [R_book_and_category] ([crxCategory1Sqlite_Id] ASC);
@@ -485,10 +528,12 @@ SELECT LAST_INSERT_ROWID();
         public void TestTableNameForBelongsToColumn()
         {
             DbEntry.Create(typeof(ForTableName));
-            AssertSql(@"CREATE TABLE [For_Table_Name] (
+            AssertSql(
+@"CREATE TABLE [For_Table_Name] (
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
     [Name] NTEXT NOT NULL ,
-    [For_TableName2_Id] BIGINT NULL 
+    [For_TableName2_Id] BIGINT NULL ,
+    FOREIGN KEY([For_TableName2_Id]) REFERENCES [For_Table_Name2] ([Id]) 
 );
 <Text><30>()");
         }

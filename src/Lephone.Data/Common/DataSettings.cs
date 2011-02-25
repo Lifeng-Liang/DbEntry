@@ -31,7 +31,7 @@ namespace Lephone.Data.Common
 
         public static readonly int DbTimeCheckMinutes       = 10;
 
-        public static readonly bool TestForeignKey          = false;
+        public static readonly bool UsingForeignKey          = false;
 
         static DataSettings()
         {

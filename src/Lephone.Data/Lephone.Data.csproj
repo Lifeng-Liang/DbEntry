@@ -114,7 +114,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\Clause\ConstCondition.cs" />
     <Compile Include="Builder\Clause\InClause.cs" />
     <Compile Include="Builder\ISqlKeys.cs" />
-    <Compile Include="Caching\CachedModelDeleter.cs" />
     <Compile Include="Caching\CachedModelOperator.cs" />
     <Compile Include="Caching\CacheProvider.cs" />
     <Compile Include="Caching\KeyGenerator.cs" />
@@ -128,6 +127,10 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DbTimeProvider.cs" />
     <Compile Include="Model\Composer\DeleteToQueryComposer.cs" />
+    <Compile Include="Model\Deleter\DeleterFactory.cs" />
+    <Compile Include="Model\Deleter\KeyModelDeleter.cs" />
+    <Compile Include="Model\Deleter\RelationModelDeleter.cs" />
+    <Compile Include="Model\Deleter\SimpleDeleter.cs" />
     <Compile Include="Model\Handler\DynamicLinqObjectHandler.cs" />
     <Compile Include="Model\Member\Adapter\FieldAdapter.cs" />
     <Compile Include="Model\Member\Adapter\PropertyAdapter.cs" />
@@ -138,6 +141,11 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Model\Member\MemberBoolAttributes.cs" />
     <Compile Include="Model\Member\NullableBooleanMemberHandler.cs" />
     <Compile Include="Model\Member\NullableMemberHandler.cs" />
+    <Compile Include="Model\Saver\DbModelSaver.cs" />
+    <Compile Include="Model\Saver\DbObjectSaver.cs" />
+    <Compile Include="Model\Saver\RelationModelSaver.cs" />
+    <Compile Include="Model\Saver\SaverFactory.cs" />
+    <Compile Include="Model\Saver\SimpleObjectSaver.cs" />
     <Compile Include="SqlEntry\Dynamic\DynamicQuery.cs" />
     <Compile Include="SqlEntry\Dynamic\DynamicRow.cs" />
     <Compile Include="SqlEntry\Dynamic\DynamicTable.cs" />
@@ -145,10 +153,8 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Model\GroupBySumObject.cs" />
     <Compile Include="Model\Handler\GroupbySumObjectHandler.cs" />
     <Compile Include="Common\LephoneSetting.cs" />
-    <Compile Include="Model\ModelDeleter.cs" />
     <Compile Include="Model\Handler\ModelHandlerAttribute.cs" />
     <Compile Include="Model\ModelOperator.cs" />
-    <Compile Include="Model\ModelUpdater.cs" />
     <Compile Include="Model\ObjectInfoFactory.cs" />
     <Compile Include="Model\SavedObjectList.cs" />
     <Compile Include="Common\TimeSpanLessDataReader.cs" />

@@ -103,9 +103,9 @@ namespace Lephone.Web.Common
             EnumControls(p, ctx.Info, delegate(MemberHandler h, WebControl c)
             {
                 string v = GetValue(c);
-                if (h.FieldType.IsEnum)
+                if (h.MemberType.IsEnum)
                 {
-                    var n = (int)Enum.Parse(h.FieldType, v);
+                    var n = (int)Enum.Parse(h.MemberType, v);
                     h.SetValue(obj, n);
                 }
                 else
@@ -118,7 +118,7 @@ namespace Lephone.Web.Common
                         }
                         else
                         {
-                            if (h.FieldType == typeof(string))
+                            if (h.MemberType == typeof(string))
                             {
                                 h.SetValue(obj, "");
                             }
@@ -132,7 +132,7 @@ namespace Lephone.Web.Common
                     {
                         try
                         {
-                            object iv = ClassHelper.ChangeType(v, h.FieldType);
+                            object iv = ClassHelper.ChangeType(v, h.MemberType);
                             h.SetValue(obj, iv);
                         }
                         catch (Exception ex)

@@ -26,7 +26,7 @@ namespace Lephone.Data.Model.Member
 	    public readonly string ShowString;
 	    public readonly string Description;
 
-        public Type FieldType
+        public Type MemberType
         {
             get { return MemberInfo.MemberType; }
         }
@@ -146,7 +146,7 @@ namespace Lephone.Data.Model.Member
             var dk = attributes.GetAttribute<DbKeyAttribute>();
             if (dk != null)
             {
-                if (dk.UnsavedValue == null && dk.IsDbGenerate)
+                if (dk.UnsavedValue == null && (dk.IsDbGenerate || MemberInfo.MemberType == typeof(Guid)))
                 {
                     return CommonHelper.GetEmptyValue(MemberInfo.MemberType, 
                         false, "Unknown type of db key must set UnsavedValue");
@@ -163,12 +163,12 @@ namespace Lephone.Data.Model.Member
             if (Is.BelongsTo && noDbColumn)
             {
                 Type ot = MemberInfo.MemberType.GetGenericArguments()[0];
-                return ObjectInfo.GetObjectFromClause(ot).MainOriginTableName + "_Id";
+                return ObjectInfo.GetObjectFromClause(ot).MainModelName + "_Id";
             }
             if (Is.HasAndBelongsToMany && noDbColumn)
             {
                 Type ot1 = MemberInfo.MemberType.GetGenericArguments()[0];
-                return ObjectInfo.GetObjectFromClause(ot1).MainOriginTableName + "_Id";
+                return ObjectInfo.GetObjectFromClause(ot1).MainModelName + "_Id";
             }
             return noDbColumn ? MemberInfo.Name : fn.Name;
         }
