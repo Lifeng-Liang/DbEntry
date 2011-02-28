@@ -201,7 +201,9 @@
     <Compile Include="Web\XmlBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UnitTest.config.xml" />
+    <EmbeddedResource Include="UnitTest.config.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lephone.Core\Lephone.Core.csproj">

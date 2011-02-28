@@ -104,7 +104,19 @@ namespace Lephone.Processor
             }
             if (f.Is.BelongsTo)
             {
-                return f.Name;
+                var oi1 = ObjectInfoFactory.Instance.GetInstance(f.MemberType.GetGenericArguments()[0]);
+                foreach (MemberHandler member in oi1.RelationMembers)
+                {
+                    if (member.Is.HasOne || member.Is.HasMany)
+                    {
+                        var type = member.MemberType.GetGenericArguments()[0];
+                        if (type == _type)
+                        {
+                            return f.Name;
+                        }
+                    }
+                }
+                throw new DataException("BelongsTo and HasOne/HasMany must be paired.");
             }
             throw new ApplicationException("Impossiable!");
         }
