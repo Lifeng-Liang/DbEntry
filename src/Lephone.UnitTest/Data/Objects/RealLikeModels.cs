@@ -110,6 +110,9 @@ namespace Lephone.UnitTest.Data.Objects
 
         public int Count { get; set; }
 
+        [LazyLoad]
+        public string Description { get; set; }
+
         [BelongsTo]
         public Trade Trade { get; set; }
 

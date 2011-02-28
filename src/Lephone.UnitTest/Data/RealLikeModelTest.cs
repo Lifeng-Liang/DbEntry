@@ -16,7 +16,7 @@ namespace Lephone.UnitTest.Data
             new Resource {Name = "Printer", Count = 2, Company = c, Department = d};
             var p = new Product { Name = "Tale Story", Company = c };
             var t = new Trade { Name = "20110001", TotalPrice = 192m, Company = c };
-            var o = new Order { Name = "Tale Story", Count = 10, Price = 19.2m, Trade = t, Product = p};
+            var o = new Order { Name = "Tale Story", Count = 10, Price = 19.2m, Description = "test", Trade = t, Product = p};
 
             o.Save();
 

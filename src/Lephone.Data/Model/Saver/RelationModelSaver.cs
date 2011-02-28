@@ -132,11 +132,14 @@ namespace Lephone.Data.Model.Saver
             {
                 foreach (MemberHandler member in Info.RelationMembers)
                 {
-                    var ho = (ILazyLoading)member.GetValue(obj);
-                    if (ho.IsLoaded)
+                    if(member.Is.RelationField)
                     {
-                        CommonHelper.TryEnumerate(ho.Read(), 
-                            o => SetBelongsToForeignKey(obj, o, Handler.GetKeyValue(obj)));
+                        var ho = (ILazyLoading)member.GetValue(obj);
+                        if (ho.IsLoaded)
+                        {
+                            CommonHelper.TryEnumerate(ho.Read(),
+                                o => SetBelongsToForeignKey(obj, o, Handler.GetKeyValue(obj)));
+                        }
                     }
                 }
                 foreach (MemberHandler member in Info.RelationMembers)
