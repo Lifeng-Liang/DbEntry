@@ -20,7 +20,7 @@ namespace Lephone.UnitTest.Data
                 var da = (DbDataAdapter)dc.Driver.GetDbAdapter();
                 var sql = new SqlStatement("insert into [People] ([Name]) VALUES (@name)");
                 var c = (DbCommand)dc.GetDbCommand(sql);
-                c.Parameters.Add(dc.Driver.GetDbParameter(new DataParameter("name", ""), true));
+                c.Parameters.Add(dc.Driver.GetDbParameter(new DataParameter("name", "", "name")));
                 da.InsertCommand = c;
 
                 DataTable dt = ds.Tables[0];
@@ -81,7 +81,7 @@ namespace Lephone.UnitTest.Data
             DataSet ds = dc.ExecuteDataset(new SqlStatement("select [Name] from [People] where 1=0"));
 
             var sql = new SqlStatement("insert into [People] ([Name]) VALUES (@name)");
-            sql.Parameters.Add(new DataParameter("@name", ""));
+            sql.Parameters.Add(new DataParameter("@name", "", "name"));
 
             DataTable dt = ds.Tables[0];
 

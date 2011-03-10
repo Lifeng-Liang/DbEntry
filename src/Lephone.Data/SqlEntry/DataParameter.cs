@@ -8,43 +8,56 @@ namespace Lephone.Data.SqlEntry
 	{
 		public DataType Type;
         public ParameterDirection Direction = ParameterDirection.Input;
+	    public string SourceColumn;
 
-        internal static string LegalKey(string Key)
+        internal static string LegalKey(string key)
         {
-            if (Key != null)
+            if (key != null)
             {
-                return Key.Replace('.', '_').Replace(' ', '_');
+                return key.Replace('.', '_').Replace(' ', '_');
             }
             return null;
         }
 
-		public DataParameter(object Value) : this(null, Value)
+		public DataParameter(object value) : this(null, value)
 		{
-			SetTypeByObject(Value);
+			SetTypeByObject(value);
 		}
 
-		public DataParameter(string Key, object Value) : base(LegalKey(Key), Value)
+		public DataParameter(string key, object value) : base(LegalKey(key), value)
 		{
-			SetTypeByObject(Value);
+			SetTypeByObject(value);
 		}
 
-        public DataParameter(string Key, object Value, Type ValueType)
-            : base(LegalKey(Key), Value, ValueType)
+        public DataParameter(string key, object value, Type valueType)
+            : base(LegalKey(key), value, valueType)
 		{
-            SetTypeByObject(ValueType);
+            SetTypeByObject(valueType);
 		}
 
-        public DataParameter(string Key, object Value, Type ValueType, ParameterDirection Direction)
-            : base(LegalKey(Key), Value, ValueType)
+        public DataParameter(string key, object value, Type valueType, ParameterDirection direction)
+            : base(LegalKey(key), value, valueType)
         {
-            SetTypeByObject(ValueType);
-            this.Direction = Direction;
+            SetTypeByObject(valueType);
+            this.Direction = direction;
+        }
+
+        public DataParameter(string key, object value, string sourceColumn)
+            : this(key, value)
+        {
+            this.SourceColumn = sourceColumn;
+        }
+
+        public DataParameter(string key, object value, Type valueType, ParameterDirection direction, string sourceColumn)
+            : this(key, value, valueType, direction)
+        {
+            this.SourceColumn = sourceColumn;
         }
 
         protected void SetTypeByObject(object o)
 		{
 			Type = DataTypeParser.Parse(o);
-            // TODO: temp solution for time
+            // TODO: temp solution for date
             if (Type == DataType.Date && Value != null && Value.GetType() != typeof(DBNull))
             {
                 Value = ((IConvertible)Value).ToDateTime(null);

@@ -34,7 +34,7 @@ namespace Lephone.Data.Builder.Clause
                 {
                     if (DataSettings.UsingParameter)
                     {
-                        dpStr = string.Format(dd.ParameterPrefix + "{0}_{1}", DataParameter.LegalKey(kv.Key), dpc.Count);
+                        dpStr = dd.QuoteParameter(string.Format("{0}_{1}", DataParameter.LegalKey(kv.Key), dpc.Count));
                         var dp = new DataParameter(dpStr, kv.Value, kv.ValueType);
                         dpc.Add(dp);
                     }

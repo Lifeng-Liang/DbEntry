@@ -124,9 +124,9 @@ namespace Lephone.Data.Dialect
             return sql;
         }
 
-        public override char ParameterPrefix
+        public override string QuoteParameter(string parameterName)
         {
-            get { return ':'; }
+            return ":" + parameterName;
         }
 
         public override string GenIndexName(string n)

@@ -209,10 +209,6 @@ namespace Lephone.Data.SqlEntry
         private IDbCommand GetDbCommandForUpdate(SqlStatement sql)
         {
             IDbCommand c = GetDbCommand(sql);
-            foreach(IDataParameter p in c.Parameters)
-            {
-                p.SourceColumn = p.ParameterName[0] == Dialect.ParameterPrefix ? p.ParameterName.Substring(1) : p.ParameterName;
-            }
             return c;
         }
 
@@ -393,12 +389,11 @@ namespace Lephone.Data.SqlEntry
             var dpc = new DataParameterCollection();
             int start = 0, n = 0;
             var sql = new StringBuilder();
-            string pp = Dialect.ParameterPrefix + "p";
             foreach (Match m in Reg.Matches(sqlStr))
             {
                 if (m.Length == 1)
                 {
-                    string pn = pp + n;
+                    string pn = Dialect.QuoteParameter("p" + n);
                     sql.Append(sqlStr.Substring(start, m.Index - start));
                     sql.Append(pn);
                     start = m.Index + 1;

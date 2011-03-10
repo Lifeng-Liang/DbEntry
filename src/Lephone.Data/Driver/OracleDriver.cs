@@ -11,9 +11,9 @@ namespace Lephone.Data.Driver
         {
         }
 
-        public override IDbDataParameter GetDbParameter(SqlEntry.DataParameter dp, bool includeSourceColumn)
+        public override IDbDataParameter GetDbParameter(SqlEntry.DataParameter dp)
         {
-            var result = base.GetDbParameter(dp, includeSourceColumn);
+            var result = base.GetDbParameter(dp);
             if(result.DbType == DbType.Guid && result.Value != null && result.Value.GetType() == typeof(Guid))
             {
                 result.Value = ((Guid)result.Value).ToByteArray();

@@ -25,7 +25,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany1_1()
+        public void TestHasMany1A()
         {
             // A.Select will read B (LazyLoading*), and set B.a as A
             var c = DbEntry.GetObject<Category>(2);
@@ -40,23 +40,23 @@ namespace Lephone.UnitTest.Data
         public void TestHasMany2()
         {
             // A owns 0 or multiple B, so b(b.Value) could be null
-            var Tech = DbEntry.GetObject<Category>(1);
-            var Game = DbEntry.GetObject<Category>(2);
-            var Tour = DbEntry.GetObject<Category>(3);
+            var tech = DbEntry.GetObject<Category>(1);
+            var game = DbEntry.GetObject<Category>(2);
+            var tour = DbEntry.GetObject<Category>(3);
 
-            Assert.IsNotNull(Tech);
-            Assert.IsTrue(0 == Tech.Books.Count);
-            Assert.IsNotNull(Game);
-            Assert.IsTrue(3 == Game.Books.Count);
-            Assert.IsNotNull(Tour);
-            Assert.IsTrue(2 == Tour.Books.Count);
+            Assert.IsNotNull(tech);
+            Assert.IsTrue(0 == tech.Books.Count);
+            Assert.IsNotNull(game);
+            Assert.IsTrue(3 == game.Books.Count);
+            Assert.IsNotNull(tour);
+            Assert.IsTrue(2 == tour.Books.Count);
 
-            Assert.AreEqual("Tech", Tech.Name);
-            Assert.AreEqual("Game", Game.Name);
-            Assert.AreEqual("Tour", Tour.Name);
+            Assert.AreEqual("Tech", tech.Name);
+            Assert.AreEqual("Game", game.Name);
+            Assert.AreEqual("Tour", tour.Name);
 
-            Assert.AreEqual("Diablo", Game.Books[0].Name);
-            Assert.AreEqual("Beijing", Tour.Books[0].Name);
+            Assert.AreEqual("Diablo", game.Books[0].Name);
+            Assert.AreEqual("Beijing", tour.Books[0].Name);
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany4_1()
+        public void TestHasMany4A()
         {
             // A.Save will save B, if is A Update, then save B
             var c = DbEntry.GetObject<Category>(1);
@@ -90,7 +90,7 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany4_2()
+        public void TestHasMany4B()
         {
             // A.Save will save B, if is A Insert, then save A first, then set B.A_id, and then save B
             var c = new Category {Name = "Sport"};
@@ -136,9 +136,7 @@ namespace Lephone.UnitTest.Data
             // B.a = A will set value of B.A_id
             // B.a = A will set A.a = b ????
             var c = DbEntry.GetObject<Category>(3);
-            var b = new Book();
-            b.Name = "Luoyang";
-            b.CurCategory.Value = c;
+            var b = new Book {Name = "Luoyang", CurCategory = {Value = c}};
 
             Assert.AreEqual(b.CurCategory.ForeignKey, 3);
         }

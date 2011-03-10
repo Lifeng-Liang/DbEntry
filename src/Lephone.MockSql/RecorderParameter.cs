@@ -40,18 +40,7 @@ namespace Lephone.MockSql
             }
         }
 
-        public override string SourceColumn
-        {
-            get
-            {
-                throw RecorderFactory.NotImplemented;
-            }
-            set
-            {
-                throw RecorderFactory.NotImplemented;
-            }
-        }
-
+        public override string SourceColumn { get; set; }
 
         public override bool SourceColumnNullMapping
         {

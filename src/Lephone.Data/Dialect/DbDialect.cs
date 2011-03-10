@@ -263,9 +263,9 @@ namespace Lephone.Data.Dialect
 			get { return '"'; }
 		}
 
-		public virtual char ParameterPrefix
+		public virtual string QuoteParameter(string parameterName)
 		{
-			get { return '@'; }
+		    return '@' + parameterName;
 		}
 
 		protected virtual string Quote( string name )

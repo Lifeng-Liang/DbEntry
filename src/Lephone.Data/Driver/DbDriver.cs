@@ -175,20 +175,12 @@ namespace Lephone.Data.Driver
 
         public virtual IDbDataParameter GetDbParameter(DataParameter dp)
         {
-            return GetDbParameter(dp, false);
-        }
-
-        public virtual IDbDataParameter GetDbParameter(DataParameter dp, bool includeSourceColumn)
-        {
             IDbDataParameter odp = ProviderFactory.CreateParameter();
             odp.ParameterName = dp.Key;
             odp.Value = GetDbValue(dp.Value);
             odp.DbType = (DbType)dp.Type;
             odp.Direction = dp.Direction;
-            if (includeSourceColumn)
-            {
-                odp.SourceColumn = dp.Key[0] == Dialect.ParameterPrefix ? dp.Key.Substring(1) : dp.Key;
-            }
+            odp.SourceColumn = dp.SourceColumn;
             return odp;
         }
 
