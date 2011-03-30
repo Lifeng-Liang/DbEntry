@@ -135,7 +135,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(1, o1.m.Count);
             Assert.AreEqual("tom", o1.m[0].Name);
 
-            long oid = o.Id;
+            var oid = o.Id;
             o.Delete();
 
             o = ManyMore.FindById(oid);

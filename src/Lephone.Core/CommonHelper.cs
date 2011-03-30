@@ -65,9 +65,9 @@ namespace Lephone.Core
                     callback();
                     return 0;
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
-                    if (args.Length > minArgCount && args[args.Length - 1] == "-m")
+                    if(args.Length > minArgCount && args[args.Length - 1] == "-m")
                     {
                         Console.WriteLine(ex);
                     }

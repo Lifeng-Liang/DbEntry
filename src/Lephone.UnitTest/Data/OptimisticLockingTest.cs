@@ -38,7 +38,7 @@ namespace Lephone.UnitTest.Data
         {
             var b = new LockBook {Name = "locker"};
             b.Save();
-            long id = b.Id;
+            var id = b.Id;
 
             b = LockBook.FindById(id);
             Assert.AreEqual(0, b.LockVersion);
@@ -59,7 +59,7 @@ namespace Lephone.UnitTest.Data
         {
             var b = new LockBook {Name = "locker"};
             b.Save();
-            long id = b.Id;
+            var id = b.Id;
 
             b = LockBook.FindById(id);
             LockBook b1 = LockBook.FindById(id);

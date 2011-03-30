@@ -218,7 +218,7 @@ namespace Lephone.UnitTest.Data
                           };
             rel.Save();
 
-            var jr = new JobRole {CreatedBy = u.Id, Code = "CEO", Name = "CEO", Description = "CEO"};
+            var jr = new JobRole { CreatedBy = u.Id, Code = "CEO", Name = "CEO", Description = "CEO" };
             jr.JobRoleRelations.Add(rel);
             jr.EmployeeRoleRelations.Add(rel1);
             jr.Save();

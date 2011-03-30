@@ -157,13 +157,17 @@ namespace Lephone.Data.Driver
             IDbCommand e = ProviderFactory.CreateCommand();
             e.CommandText = sql.SqlCommandText;
 
-            // for some database not supports CommandTimeout
-            CommonHelper.CatchAll(() => e.CommandTimeout = sql.SqlTimeOut);
+            SetCommandTimeOut(e, sql.SqlTimeOut);
 
             e.CommandType = sql.SqlCommandType;
             e.Connection = conn;
             FillDbParameters(sql, e);
             return e;
+        }
+
+        protected virtual void SetCommandTimeOut(IDbCommand e, int timeOut)
+        {
+            e.CommandTimeout = timeOut;
         }
 
         public virtual IDbConnection GetDbConnection()

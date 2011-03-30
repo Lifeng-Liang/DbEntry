@@ -8,7 +8,7 @@ using Lephone.Data.SqlEntry.Dynamic;
 namespace Lephone.Data.Definition
 {
     [Serializable]
-    public class DbObjectModelBase<T, TKey> : DbObjectSmartUpdate where T : DbObjectModelBase<T, TKey>
+    public class DbObjectModelBase<T, TKey> : DbObjectSmartUpdate where T : DbObjectModelBase<T, TKey> where TKey : struct
     {
         protected static ModelContext ModelContext = ModelContext.GetInstance(typeof(T));
 
@@ -32,7 +32,7 @@ namespace Lephone.Data.Definition
             get { return new DynamicQuery<T>(); }
         }
 
-        public static T FindById(TKey id)
+        public static T FindById(TKey? id)
         {
             return ModelContext.Operator.GetObject<T>(id);
         }

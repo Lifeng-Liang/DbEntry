@@ -287,49 +287,61 @@ namespace Lephone.Web
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            _saveButton = NamingContainer.FindControl(SaveButtonID) as Button;
-            _deleteButton = NamingContainer.FindControl(DeleteButtonID) as Button;
-            _contentTitle = NamingContainer.FindControl(ContentTitleID) as Label;
-            _noticeMessage = NamingContainer.FindControl(NoticeMessageID) as NoticeLabel;
 
-            if (_saveButton != null)
+            try
             {
-                _saveButton.Click += SaveButton_Click;
-                if (!Page.IsPostBack)
+                _saveButton = NamingContainer.FindControl(SaveButtonID) as Button;
+                _deleteButton = NamingContainer.FindControl(DeleteButtonID) as Button;
+                _contentTitle = NamingContainer.FindControl(ContentTitleID) as Label;
+                _noticeMessage = NamingContainer.FindControl(NoticeMessageID) as NoticeLabel;
+
+                if (_saveButton != null)
                 {
-                    string tn = typeof(T).Name;
-                    T o = GetRequestObject();
-                    if (o == null)
+                    _saveButton.Click += SaveButton_Click;
+                    if (!Page.IsPostBack)
                     {
-                        if (_deleteButton != null)
+                        string tn = typeof(T).Name;
+                        T o = GetRequestObject();
+                        if (o == null)
                         {
-                            _deleteButton.Visible = false;
+                            if (_deleteButton != null)
+                            {
+                                _deleteButton.Visible = false;
+                            }
+                            if (OnPageIsNew != null)
+                            {
+                                OnPageIsNew();
+                            }
+                            SetContentTitle(NewObjectText, tn);
                         }
-                        if (OnPageIsNew != null)
+                        else
                         {
-                            OnPageIsNew();
-                        }
-                        SetContentTitle(NewObjectText, tn);
-                    }
-                    else
-                    {
-                        PageHelper.SetObject(o, Page);
-                        if (OnPageIsEdit != null)
-                        {
-                            OnPageIsEdit();
-                        }
-                        SetContentTitle(EditObjectText, tn);
-                        if (OnObjectLoaded != null)
-                        {
-                            OnObjectLoaded(o);
+                            PageHelper.SetObject(o, Page);
+                            if (OnPageIsEdit != null)
+                            {
+                                OnPageIsEdit();
+                            }
+                            SetContentTitle(EditObjectText, tn);
+                            if (OnObjectLoaded != null)
+                            {
+                                OnObjectLoaded(o);
+                            }
                         }
                     }
                 }
+                if (_deleteButton != null)
+                {
+                    _deleteButton.Click += DeleteButton_Click;
+                    GetRequestObject();
+                }
             }
-            if (_deleteButton != null)
+            catch (WebControlException ex)
             {
-                _deleteButton.Click += DeleteButton_Click;
-                GetRequestObject();
+                AddWarning(ex.RelatedControl, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                AddWarning(ex.Message);
             }
         }
 

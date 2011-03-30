@@ -7,42 +7,42 @@ namespace Lephone.Data.SqlEntry
 	[Serializable]
 	public class TimeConsumingSqlStatement : SqlStatement
 	{
-		public TimeConsumingSqlStatement(CommandType SqlCommandType, string SqlCommandText) : base(SqlCommandType, SqlCommandText)
+		public TimeConsumingSqlStatement(CommandType sqlCommandType, string sqlCommandText) : base(sqlCommandType, sqlCommandText)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(string SqlCommandText) : base(SqlCommandText)
+		public TimeConsumingSqlStatement(string sqlCommandText) : base(sqlCommandText)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(CommandType SqlCommandType, string SqlCommandText, params object[] os) : base(SqlCommandType, SqlCommandText, os)
+		public TimeConsumingSqlStatement(CommandType sqlCommandType, string sqlCommandText, params object[] os) : base(sqlCommandType, sqlCommandText, os)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(string SqlCommandText, params object[] os) : base(SqlCommandText, os)
+		public TimeConsumingSqlStatement(string sqlCommandText, params object[] os) : base(sqlCommandText, os)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(CommandType SqlCommandType, string SqlCommandText, params DataParameter[] dps) : base(SqlCommandType, SqlCommandText, dps)
+		public TimeConsumingSqlStatement(CommandType sqlCommandType, string sqlCommandText, params DataParameter[] dps) : base(sqlCommandType, sqlCommandText, dps)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(string SqlCommandText, params DataParameter[] dps) : base(SqlCommandText, dps)
+		public TimeConsumingSqlStatement(string sqlCommandText, params DataParameter[] dps) : base(sqlCommandText, dps)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(CommandType SqlCommandType, string SqlCommandText, DataParameterCollection dpc) : base(SqlCommandType, SqlCommandText, dpc)
+		public TimeConsumingSqlStatement(CommandType sqlCommandType, string sqlCommandText, DataParameterCollection dpc) : base(sqlCommandType, sqlCommandText, dpc)
 		{
 			InitSqlTimeOut();
 		}
 
-		public TimeConsumingSqlStatement(string SqlCommandText, DataParameterCollection dpc) : base(SqlCommandText, dpc)
+		public TimeConsumingSqlStatement(string sqlCommandText, DataParameterCollection dpc) : base(sqlCommandText, dpc)
 		{
 			InitSqlTimeOut();
 		}

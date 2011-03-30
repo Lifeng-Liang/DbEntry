@@ -12,6 +12,10 @@ namespace Lephone.Data.Driver
 		{
 		}
 
+        protected override void SetCommandTimeOut(IDbCommand e, int timeOut)
+        {
+        }
+
         protected override DbProviderFactory GetDefaultProviderFactory()
         {
             return  OracleClientFactory.Instance;
@@ -22,7 +26,7 @@ namespace Lephone.Data.Driver
             OracleCommandBuilder.DeriveParameters((OracleCommand)e);
         }
 
-		public override IDbDataParameter GetDbParameter(DataParameter dp)
+        public override IDbDataParameter GetDbParameter(DataParameter dp)
 		{
             var odp = (OracleParameter)base.GetDbParameter(dp);
             if (dp.Type == DataType.String)

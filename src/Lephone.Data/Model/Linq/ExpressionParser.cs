@@ -7,6 +7,7 @@ using Lephone.Data.Definition;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
 using Lephone.Data.Model.Member;
+using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Model.Linq
 {
@@ -130,8 +131,22 @@ namespace Lephone.Data.Model.Linq
                 case "In":
                 case "InStatement":
                     return ParseInCall(e);
+                case "IsNull":
+                    return ParseNull(e, true);
+                case "IsNotNull":
+                    return ParseNull(e, false);
             }
             throw new LinqException("Unknown function : " + e.Method.Name);
+        }
+
+        private static Condition ParseNull(MethodCallExpression e, bool isNull)
+        {
+            ColumnFunction function;
+            MemberExpression member;
+            string key = GetMemberName(e.Arguments[0], out function, out member);
+            return new KeyValueClause(
+                new KeyValue(key, null, member.Type),
+                isNull ? CompareOpration.Is : CompareOpration.IsNot);
         }
 
         private static Condition ParseInCall(MethodCallExpression e)

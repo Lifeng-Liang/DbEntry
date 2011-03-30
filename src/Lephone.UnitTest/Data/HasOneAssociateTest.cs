@@ -111,7 +111,7 @@ namespace Lephone.UnitTest.Data
             var p = Person.FindById(2);
             Assert.IsNotNull(p);
             Assert.IsNotNull(p.PC.Value);
-            long pcid = p.PC.Value.Id;
+            var pcid = p.PC.Value.Id;
             // do delete
             p.Delete();
             var p1 = Person.FindById(2);

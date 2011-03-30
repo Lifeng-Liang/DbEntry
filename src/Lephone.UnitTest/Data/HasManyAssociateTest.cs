@@ -115,9 +115,9 @@ namespace Lephone.UnitTest.Data
             var c = Category.FindById(2);
             Assert.IsNotNull(c);
             Assert.IsTrue(3 == c.Books.Count);
-            long bid1 = c.Books[0].Id;
-            long bid2 = c.Books[1].Id;
-            long bid3 = c.Books[2].Id;
+            var bid1 = c.Books[0].Id;
+            var bid2 = c.Books[1].Id;
+            var bid3 = c.Books[2].Id;
             // do delete
             c.Delete();
             var c1 = Category.FindById(2);

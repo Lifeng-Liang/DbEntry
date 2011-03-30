@@ -14,7 +14,6 @@ namespace Lephone.CodeGen
             protected string TableName;
             protected List<DbColumnInfo> InfoList;
             protected StringBuilder Result;
-            protected StringBuilder InitDefine;
 
             public ModelBuilder(string tableName, List<DbColumnInfo> list)
             {
@@ -22,7 +21,6 @@ namespace Lephone.CodeGen
                 InfoList = list;
 
                 Result = new StringBuilder();
-                InitDefine = new StringBuilder();
 
                 _types = new Dictionary<Type, string>
                              {
@@ -60,7 +58,7 @@ namespace Lephone.CodeGen
 
             public virtual string Build()
             {
-                Result.Append("public").Append(GetAbstract()).Append("class ").Append(TableName);
+                Result.Append("public class ").Append(TableName);
                 AppendBaseType(TableName);
                 foreach (var info in InfoList)
                 {
@@ -75,23 +73,8 @@ namespace Lephone.CodeGen
                         ProcessColumn(info);
                     }
                 }
-                if (InitDefine.Length > 2)
-                {
-                    InitDefine.Length -= 2;
-                    Result.Append("\n\tpublic").Append(GetAbstract()).Append(TableName).Append(" ");
-                    Result.Append("Initialize(");
-                    Result.Append(InitDefine);
-                    Result.Append(")");
-                    AppendInitMethodBody();
-
-                }
                 Result.Append("}\r\n");
                 return Result.ToString();
-            }
-
-            protected virtual string GetAbstract()
-            {
-                return " abstract ";
             }
 
             protected virtual void AppendInitMethodBody()
@@ -126,7 +109,7 @@ namespace Lephone.CodeGen
                 {
                     Result.Append("[Index(UNIQUE = true)] ");
                 }
-                Result.Append("public").Append(GetAbstract());
+                Result.Append("public ");
                 Result.Append(GetNullableTypeName(info));
                 Result.Append(" ");
                 Result.Append(info.ColumnName);
@@ -140,10 +123,6 @@ namespace Lephone.CodeGen
 
             protected virtual void ProcessColumn(DbColumnInfo info)
             {
-                InitDefine.Append(GetNullableTypeName(info));
-                InitDefine.Append(" ");
-                InitDefine.Append(info.ColumnName);
-                InitDefine.Append(", ");
             }
 
             protected virtual string GetColumnBody()
@@ -160,11 +139,6 @@ namespace Lephone.CodeGen
             {
             }
 
-            protected override string GetAbstract()
-            {
-                return " ";
-            }
-
             protected override void AppendInitMethodBody()
             {
                 Result.Append("{\r\n");
@@ -178,7 +152,7 @@ namespace Lephone.CodeGen
 
             protected override void AppendBaseType(string tableName)
             {
-                Result.Append(" : IDbObject\r\n");
+                Result.Append(" : IDbObject\r\n{\r\n");
             }
 
             protected override void BuildKeyColomn(DbColumnInfo info)

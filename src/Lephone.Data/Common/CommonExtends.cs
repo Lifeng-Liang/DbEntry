@@ -5,6 +5,16 @@ using Lephone.Data.Builder;
 
 public static class CommonExtends
 {
+    public static bool IsNull<T>(this T key) where T : struct
+    {
+        throw new Exception("It's only for Linq");
+    }
+
+    public static bool IsNotNull<T>(this T key) where T : struct
+    {
+        throw new Exception("It's only for Linq");
+    }
+
     public static bool In<T>(this T key, params T[] values) where T : struct 
     {
         throw new Exception("It's only for Linq");

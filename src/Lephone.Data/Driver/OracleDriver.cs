@@ -11,6 +11,10 @@ namespace Lephone.Data.Driver
         {
         }
 
+        protected override void SetCommandTimeOut(IDbCommand e, int timeOut)
+        {
+        }
+
         public override IDbDataParameter GetDbParameter(SqlEntry.DataParameter dp)
         {
             var result = base.GetDbParameter(dp);

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Lephone.Data;
 using Lephone.Data.Definition;
+using Lephone.Data.Model.Linq;
 using Lephone.MockSql.Recorder;
 using Lephone.UnitTest.Data;
 using NUnit.Framework;
@@ -78,6 +80,14 @@ namespace Lephone.UnitTest.Linq
 
             [SpecialName]
             public long WriterId { get; set; }
+        }
+
+        [DbContext("SQLite")]
+        public class TestClass : IDbObject
+        {
+            public string Name;
+            public int Age;
+            public bool Gender;
         }
 
         [Test]
@@ -501,6 +511,52 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual("tom", obj.Title);
             Assert.AreEqual(8, obj.WriterId);
             AssertSql(string.Empty);
+        }
+
+        [Test]
+        public void TestSimpleClass()
+        {
+            StaticRecorder.CurRow.Add(new RowInfo("Name", "jerry"));
+            var list = (from obj in new LinqQueryProvider<TestClass, TestClass>(null) 
+                        where obj.Age > 10 select new { obj.Name }).ToList();
+            AssertSql(@"SELECT [Name] FROM [Test_Class] WHERE [Age] > @Age_0;
+<Text><60>(@Age_0=10:Int32)");
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual("jerry", list[0].Name);
+        }
+
+        [Test]
+        public void TestIsNull()
+        {
+            Article.Find(p => p.Writer.Id == null);
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NULL;
+<Text><60>()");
+
+        }
+
+        [Test]
+        public void TestIsNull1()
+        {
+            Article.Find(p => p.Writer.Id != null);
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
+<Text><60>()");
+
+        }
+
+        [Test]
+        public void TestIsNull2()
+        {
+            Article.Find(p => p.Writer.Id.IsNull());
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NULL;
+<Text><60>()");
+        }
+
+        [Test]
+        public void TestIsNull3()
+        {
+            Article.Find(p => p.Writer.Id.IsNotNull());
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
+<Text><60>()");
         }
     }
 }

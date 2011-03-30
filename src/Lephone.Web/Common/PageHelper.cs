@@ -124,7 +124,7 @@ namespace Lephone.Web.Common
                             }
                             else if(!h.Is.CreatedOn && !h.Is.SavedOn)
                             {
-                                throw new WebControlException(c, string.Format(parseErrorText, h.Name, ""));
+                                throw new WebControlException(c, string.Format(parseErrorText, h.ShowString, ""));
                             }
                         }
                     }
@@ -137,7 +137,7 @@ namespace Lephone.Web.Common
                         }
                         catch (Exception ex)
                         {
-                            throw new WebControlException(c, string.Format(parseErrorText, h.Name, ex.Message));
+                            throw new WebControlException(c, string.Format(parseErrorText, h.ShowString, ex.Message));
                         }
                     }
                 }
