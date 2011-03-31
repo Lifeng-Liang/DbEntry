@@ -10,11 +10,27 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Boolean] = "SMALLINT";
             TypeNames[DataType.DateTime] = "TIMESTAMP";
             TypeNames[DataType.Time] = "TIME";
-            TypeNames[DataType.String] = "BLOB SUB_TYPE 1";
-            TypeNames[DataType.Binary] = "BLOB SUB_TYPE 0";
-            TypeNames[typeof(byte[])] = "BLOB";
+            TypeNames[DataType.Binary] = "BLOB";
             TypeNames[DataType.Double] = "DOUBLE PRECISION";
             TypeNames[DataType.Guid] = "CHAR(38)";
+        }
+
+        protected override string GetStringNameWithLength(string baseType, bool isUnicode, int length)
+        {
+            if (length == 0)
+            {
+                return "BLOB SUB_TYPE TEXT";
+            }
+            if (isUnicode)
+            {
+                return baseType + " (" + length + ") CHARACTER SET UNICODE_FSS";
+            }
+            return baseType + " (" + length + ")";
+        }
+
+        protected override string GetBinaryNameWithLength(string baseType, int length)
+        {
+            return "BLOB SUB_TYPE BINARY";
         }
 
         public override string DbNowString
@@ -40,11 +56,6 @@ namespace Lephone.Data.Dialect
         public override bool SupportDirctionOfEachColumnInIndex
         {
             get { return false; }
-        }
-
-        public override string GetUnicodeTypeString(string asciiTypeString)
-        {
-            return asciiTypeString + " CHARACTER SET UNICODE_FSS";
         }
 
         public override string IdentityColumnString
@@ -89,15 +100,6 @@ namespace Lephone.Data.Dialect
         public override string GenIndexName(string n)
         {
             return GenIndexName(n, 31);
-        }
-
-        protected override string GetLengthStringForBlob(int length)
-        {
-            if(length < 80)
-            {
-                return base.GetLengthStringForBlob(length);
-            }
-            return "";
         }
     }
 }

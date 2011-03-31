@@ -25,9 +25,9 @@ namespace Lephone.Data.Dialect
             return new DbStructInterface(null, new[] { null, null, null, "BASE TABLE" }, null, null, null);
         }
 
-        public override string GetUnicodeTypeString(string asciiTypeString)
+        protected override string GetStringNameWithLength(string baseType, bool isUnicode, int length)
         {
-            return asciiTypeString;
+            return base.GetStringNameWithLength(baseType, false, length);
         }
 
         public override string IdentitySelectString

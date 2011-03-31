@@ -8,6 +8,30 @@ namespace Lephone.Data.Dialect
 {
     public class SqlServer2005 : SqlServer2000
     {
+        public SqlServer2005()
+        {
+            TypeNames[DataType.String] = "VARCHAR";
+            TypeNames[DataType.Binary] = "VARBINARY";
+        }
+
+        protected override string GetStringNameWithLength(string baseType, bool isUnicode, int length)
+        {
+            if(length == 0)
+            {
+                return isUnicode ? "NVARCHAR(MAX)" : "VARCHAR(MAX)";
+            }
+            return base.GetStringNameWithLength(baseType, isUnicode, length);
+        }
+
+        protected override string GetBinaryNameWithLength(string baseType, int length)
+        {
+            if(length == 0)
+            {
+                return "VARBINARY(MAX)";
+            }
+            return base.GetBinaryNameWithLength(baseType, length);
+        }
+
         public override bool SupportsRangeStartIndex
         {
             get { return true; }

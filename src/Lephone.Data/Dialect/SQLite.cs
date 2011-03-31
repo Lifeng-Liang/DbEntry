@@ -7,9 +7,13 @@ namespace Lephone.Data.Dialect
 {
     public class SQLite : DbDialect
     {
-        public SQLite()
+        protected override string GetBinaryNameWithLength(string baseType, int length)
         {
-            TypeNames[DataType.Binary] = "BLOB";
+            if(length == 0)
+            {
+                return "BLOB";
+            }
+            return base.GetBinaryNameWithLength(baseType, length);
         }
 
         public override void InitConnection(DataProvider provider, IDbConnection conn)

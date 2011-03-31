@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
-using System.Collections;
 using System.Data;
 using Lephone.Data.Common;
 using Lephone.Data.Model;
@@ -19,11 +19,11 @@ namespace Lephone.Data.Dialect
         protected static readonly NotSupportedException DoesNotSupportPagedSelect = new NotSupportedException("Database not support paged select statement.");
         protected static readonly DataException PagedMustHaveOrder = new DataException("Paged selection must have Order And Values not Empty.");
 
-        protected readonly Hashtable TypeNames = Hashtable.Synchronized(new Hashtable());
+        protected readonly Dictionary<DataType, string> TypeNames = new Dictionary<DataType, string>();
 
 		public DbDialect()
         {
-            TypeNames[DataType.String]  = "TEXT";
+            TypeNames[DataType.String]  = "VARCHAR";
             TypeNames[DataType.DateTime]    = "DATETIME";
             TypeNames[DataType.Date]    = "DATE";
             TypeNames[DataType.Time]    = "DATETIME";
@@ -44,9 +44,44 @@ namespace Lephone.Data.Dialect
 
             TypeNames[DataType.Guid]    = "UNIQUEIDENTIFIER";
             TypeNames[DataType.Binary]  = "BINARY";
+        }
 
-            TypeNames[typeof(string)]   = "VARCHAR";
-            TypeNames[typeof(byte[])]   = "BINARY";
+        protected virtual string GetStringNameWithLength(string baseType, bool isUnicode, int length)
+        {
+            if(length == 0)
+            {
+                return isUnicode ? "NTEXT" : "TEXT";
+            }
+            if(isUnicode)
+            {
+                return "N" + baseType + " (" + length + ")";
+            }
+            return baseType + " (" + length + ")";
+        }
+
+        protected virtual string GetBinaryNameWithLength(string baseType, int length)
+        {
+            if (length == 0)
+            {
+                return "BINARY";
+            }
+            return baseType + " (" + length + ")";
+        }
+
+        public virtual string GetTypeName(DataType dt, bool isUnicode, int length, int decimalPart)
+        {
+            var s = TypeNames[dt];
+            switch (dt)
+            {
+                case DataType.String:
+                    return GetStringNameWithLength(s, isUnicode, length);
+                case DataType.Binary:
+                    return GetBinaryNameWithLength(s, length);
+                case DataType.Decimal:
+                    return s + " (" + length + "," + decimalPart + ")";
+                default:
+                    return s;
+            }
         }
 
         public virtual void InitConnection(DataProvider provider, IDbConnection conn)
@@ -118,56 +153,6 @@ namespace Lephone.Data.Dialect
         public virtual DbStructInterface GetDbStructInterface()
         {
             return new DbStructInterface(null, null, null, null, null);
-        }
-
-        public virtual string GetTypeName(DataType dt, bool isUnicode, int length, int decimalPart)
-        {
-            object key = dt;
-            if(length > 0)
-            {
-                if (dt == DataType.String)
-                {
-                    key = typeof(string);
-                }
-                else if(dt == DataType.Binary)
-                {
-                    key = typeof (byte[]);
-                }
-            }
-            var s =(string)TypeNames[key];
-            if (length > 0 || decimalPart > 0)
-            {
-                if(dt == DataType.Binary)
-                {
-                    s += GetLengthStringForBlob(length);
-                }
-                else
-                {
-                    if(decimalPart > 0)
-                    {
-                        s += " (" + length + "," + decimalPart + ")";
-                    }
-                    else
-                    {
-                        s += " (" + length + ")";
-                    }
-                }
-            }
-            if (isUnicode)
-            {
-                s = GetUnicodeTypeString(s);
-            }
-            return s;
-        }
-
-        protected virtual string GetLengthStringForBlob(int length)
-        {
-            return " (" + length + ")";
-        }
-
-        public virtual string GetUnicodeTypeString(string asciiTypeString)
-        {
-            return "N" + asciiTypeString;
         }
 
         public virtual DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)

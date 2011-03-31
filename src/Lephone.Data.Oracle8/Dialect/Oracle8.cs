@@ -11,7 +11,7 @@ namespace Lephone.Data.Dialect
     {
         public Oracle8()
         {
-            TypeNames[DataType.String] = "CLOB";
+            TypeNames[DataType.String] = "VARCHAR2";
             TypeNames[DataType.DateTime] = "TIMESTAMP";
             TypeNames[DataType.Date] = "DATE";
             TypeNames[DataType.Time] = "DATE"; //TODO: Is it right?
@@ -29,10 +29,24 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.UInt64] = "NUMBER(20,0)";
             TypeNames[DataType.Int16] = "NUMBER(5,0)";
             TypeNames[DataType.UInt16] = "NUMBER(5,0)";
+        }
 
-            TypeNames[DataType.Binary] = "BLOB";
+        protected override string GetStringNameWithLength(string baseType, bool isUnicode, int length)
+        {
+            if(length == 0)
+            {
+                return isUnicode ? "NCLOB" : "CLOB";
+            }
+            return base.GetStringNameWithLength(baseType, isUnicode, length);
+        }
 
-            TypeNames[typeof(string)] = "VARCHAR2";
+        protected override string GetBinaryNameWithLength(string baseType, int length)
+        {
+            if(length == 0)
+            {
+                return "BLOB";
+            }
+            return base.GetBinaryNameWithLength(baseType, length);
         }
 
         public override string DbNowString

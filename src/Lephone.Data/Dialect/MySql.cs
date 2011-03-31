@@ -10,9 +10,17 @@ namespace Lephone.Data.Dialect
         public MySql()
         {
             TypeNames[DataType.Guid] = "CHAR(36)";
-            TypeNames[DataType.Binary] = "BLOB";
             TypeNames[DataType.Double] = "DOUBLE";
             TypeNames[DataType.Single] = "FLOAT";
+        }
+
+        protected override string GetBinaryNameWithLength(string baseType, int length)
+        {
+            if(length == 0)
+            {
+                return "BLOB";
+            }
+            return base.GetBinaryNameWithLength(baseType, length);
         }
 
         public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
@@ -28,9 +36,9 @@ namespace Lephone.Data.Dialect
             return sql;
         }
 
-        public override string GetUnicodeTypeString(string asciiTypeString)
+        protected override string GetStringNameWithLength(string baseType, bool isUnicode, int length)
         {
-            return asciiTypeString;
+            return base.GetStringNameWithLength(baseType, false, length);
         }
 
         public override DbStructInterface GetDbStructInterface()

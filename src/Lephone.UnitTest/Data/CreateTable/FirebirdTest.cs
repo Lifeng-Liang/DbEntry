@@ -85,11 +85,11 @@ namespace Lephone.UnitTest.Data.CreateTable
             DbEntry.Create(typeof(fbBlob));
             Assert.AreEqual(@"CREATE TABLE ""FB_BLOB"" (
     ""ID"" BIGINT NOT NULL PRIMARY KEY,
-    ""BLOB1"" BLOB (64) NOT NULL ,
-    ""BLOB2"" BLOB NOT NULL ,
-    ""BLOB3"" BLOB SUB_TYPE 0 NOT NULL ,
+    ""BLOB1"" BLOB SUB_TYPE BINARY NOT NULL ,
+    ""BLOB2"" BLOB SUB_TYPE BINARY NOT NULL ,
+    ""BLOB3"" BLOB SUB_TYPE BINARY NOT NULL ,
     ""NAME"" VARCHAR (30) CHARACTER SET UNICODE_FSS NOT NULL ,
-    ""NAME2"" BLOB SUB_TYPE 1 CHARACTER SET UNICODE_FSS NOT NULL
+    ""NAME2"" BLOB SUB_TYPE TEXT NOT NULL
 );
 <Text><30>()".Replace("\r\n", "").Replace("    ", ""), StaticRecorder.Messages[0]);
         }
@@ -97,6 +97,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         [Test]
         public void TestTime()
         {
+            StaticRecorder.Messages.Clear();
             DbEntry.Create(typeof(fbTime));
             Assert.AreEqual(@"CREATE TABLE ""FB_TIME"" (
     ""ID"" BIGINT NOT NULL PRIMARY KEY,

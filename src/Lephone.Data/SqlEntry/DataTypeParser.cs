@@ -65,7 +65,7 @@ namespace Lephone.Data.SqlEntry
             {
                 return "NULL";
             }
-			Type ot = o.GetType();
+			var ot = o.GetType();
 			if ( typeof(bool) == ot )
 			{
 				return Convert.ToInt32(o).ToString();
@@ -88,9 +88,7 @@ namespace Lephone.Data.SqlEntry
 		    {
 		        throw new ApplicationException("Sql without Parameter can not support blob, please using Parameter mode.");
 		    }
-		    {
-				return o.ToString();
-			}
-		}
+            return o.ToString();
+        }
 	}
 }
