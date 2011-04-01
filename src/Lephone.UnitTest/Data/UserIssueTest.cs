@@ -63,6 +63,12 @@ namespace Lephone.UnitTest.Data
         public string Name;
     }
 
+    [DbTable("Article")]
+    public class ErrorArticle : DbObjectModel<ErrorArticle>
+    {
+        public int Name { get; set; }
+    }
+
     [TestFixture]
     public class UserIssueTest : DataTestBase
     {
@@ -98,8 +104,8 @@ namespace Lephone.UnitTest.Data
             o1.Save();
 
             var o2 = BaoXiuRS.FindById(o1.Id);
-            Assert.AreEqual(new Date(2009, 5, 20), o1.DT1);
-            Assert.AreEqual(new Date(1998, 12, 22), o1.DT);
+            Assert.AreEqual(new Date(2009, 5, 20), o2.DT1);
+            Assert.AreEqual(new Date(1998, 12, 22), o2.DT);
         }
 
         [Test]
@@ -112,6 +118,19 @@ namespace Lephone.UnitTest.Data
             var o2 = DbEntry.GetObject<SelfGuid>(gid);
             Assert.IsNotNull(o2);
             Assert.AreEqual("tom", o2.Name);
+        }
+
+        [Test, ExpectedException(typeof(DataException), ExpectedMessage = "The type of member [Name] is [System.Int32] but sql value of it is [System.String]")]
+        public void TestErrorArticle()
+        {
+            var ctx = ModelContext.GetInstance(typeof(ErrorArticle));
+            ctx.Operator.ExecuteList<ErrorArticle>("SELECT * FROM [Article]");
+        }
+
+        [Test, ExpectedException(typeof(DataException), ExpectedMessage = "The type of member [Name] is [System.Int32] but sql value of it is [System.String]")]
+        public void TestErrorArticle2()
+        {
+            ErrorArticle.FindAll();
         }
     }
 }
