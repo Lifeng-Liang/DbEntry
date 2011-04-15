@@ -54,7 +54,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soaring.Biz", "Soaring.Biz\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soaring.UnitTest", "Soaring.UnitTest\Soaring.UnitTest.csproj", "{60C6E25A-4FCA-4C02-92E4-111BD45555CB}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Soaring", "Soaring", "{A8801ED6-2D55-4CB5-8153-1644462083C6}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Soaring", "Soaring\", "{A8801ED6-2D55-4CB5-8153-1644462083C6}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		ProjectReferences = "{2BC955EE-377B-42CD-B189-2A17AF99D9AD}|Soaring.Biz.dll;{891EAD10-3C90-4478-A695-71F5537C2AA2}|Lephone.Core.dll;{25AFD300-493A-4553-B4DC-129D3A9022A8}|Lephone.Data.dll;{A73147C3-73C4-4590-9EC4-250AC83F4EF5}|Lephone.Web.dll;"

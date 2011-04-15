@@ -15,8 +15,20 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_17EDB93F0C6D4DF99035A3D595DC8F64"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4B460C9B7AF04B7B94029B97A5943598"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_64E5263711361DF5BAB9CA524C4C01E8"
+        "OwnerKey" = "8:_4B460C9B7AF04B7B94029B97A5943598"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -41,12 +53,6 @@
         {
         "MsmKey" = "8:_64E5263711361DF5BAB9CA524C4C01E8"
         "OwnerKey" = "8:_8A172EDF7ED6998D28D1A16962BD6A2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_64E5263711361DF5BAB9CA524C4C01E8"
-        "OwnerKey" = "8:_4B460C9B7AF04B7B94029B97A5943598"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -64,6 +70,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7535A9D3DAAE3803A33D98FAA046D630"
+        "OwnerKey" = "8:_4B460C9B7AF04B7B94029B97A5943598"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7535A9D3DAAE3803A33D98FAA046D630"
         "OwnerKey" = "8:_DA4AA832906843DB940041F5CB16D261"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -83,12 +95,6 @@
         {
         "MsmKey" = "8:_7535A9D3DAAE3803A33D98FAA046D630"
         "OwnerKey" = "8:_8A172EDF7ED6998D28D1A16962BD6A2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7535A9D3DAAE3803A33D98FAA046D630"
-        "OwnerKey" = "8:_4B460C9B7AF04B7B94029B97A5943598"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -154,6 +160,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_E625BD4760014AFF90504996362DB504"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_AD8CA3B6B8984CEB8CC6A25553E7E44A"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -161,12 +173,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_72192609EB4E4919AAAD586A8D6A72AF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E625BD4760014AFF90504996362DB504"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -273,6 +279,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
     }
@@ -280,6 +299,62 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_045FBBED53B743E59E1E73E1578F62A8"
+            {
+            "Name" = "8:Lephone.MSBuild.dll"
+            "Condition" = "8:"
+            "Object" = "8:_E625BD4760014AFF90504996362DB504"
+            "FileType" = "3:1"
+            "InstallAction" = "3:3"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_045F28DD_B694_45C6_B32E_F5D4443C4B8C"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_30F19E4C2AA34BE2BE407DE0AC4BE85E"
+            {
+            "Name" = "8:Lephone.MSBuild.dll"
+            "Condition" = "8:"
+            "Object" = "8:_E625BD4760014AFF90504996362DB504"
+            "FileType" = "3:1"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_52B01F9F_E935_42D8_88A5_77CD3DD28CDF"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_BD046B56620B4EE4884C4A071F8953A3"
+            {
+            "Name" = "8:Lephone.MSBuild.dll"
+            "Condition" = "8:"
+            "Object" = "8:_E625BD4760014AFF90504996362DB504"
+            "FileType" = "3:1"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_22922350_93FF_4997_AF3C_E155B9240DCD"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_E28353A0E28345C89AD32F66C936CCDF"
+            {
+            "Name" = "8:Lephone.MSBuild.dll"
+            "Condition" = "8:"
+            "Object" = "8:_E625BD4760014AFF90504996362DB504"
+            "FileType" = "3:1"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_1EAFE407_C038_4649_8487_175A886A99EF"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -303,11 +378,31 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_17EDB93F0C6D4DF99035A3D595DC8F64"
+            {
+            "SourcePath" = "8:..\\Resources\\DbEntryClassLibrary.vsix"
+            "TargetName" = "8:DbEntryClassLibrary.vsix"
+            "Tag" = "8:"
+            "Folder" = "8:_28ED3F20ECBD4C32B3A1B22EA4FBC5A5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_64E5263711361DF5BAB9CA524C4C01E8"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Lephone.Data, Version=3.9.4086.18941, Culture=neutral, PublicKeyToken=d77bbd87a80780b6, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Lephone.Data, Version=3.9.4121.26975, Culture=neutral, PublicKeyToken=d77bbd87a80780b6, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_64E5263711361DF5BAB9CA524C4C01E8"
@@ -369,7 +464,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Lephone.Core, Version=3.9.4070.21242, Culture=neutral, PublicKeyToken=3eacc2a29b11f14a, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Lephone.Core, Version=3.9.4102.17315, Culture=neutral, PublicKeyToken=3eacc2a29b11f14a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_7535A9D3DAAE3803A33D98FAA046D630"
@@ -431,7 +526,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Lephone.Web, Version=3.9.4086.18942, Culture=neutral, PublicKeyToken=42ccac35c557a2bd, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Lephone.Web, Version=3.9.4121.26983, Culture=neutral, PublicKeyToken=42ccac35c557a2bd, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_8A172EDF7ED6998D28D1A16962BD6A2C"
@@ -493,7 +588,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Lephone.MSBuild, Version=3.9.4063.25641, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Lephone.MSBuild, Version=3.9.4121.30562, Culture=neutral, PublicKeyToken=e6e4ed89b18173e3, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_E625BD4760014AFF90504996362DB504"
@@ -575,9 +670,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Lephone.Setup"
+        "ProductName" = "8:DbEntry4"
         "ProductCode" = "8:{9F57396B-5707-42A0-BDA3-6DAE70458367}"
-        "PackageCode" = "8:{360472FD-8D84-4500-9CCB-8B500D4F8AFC}"
+        "PackageCode" = "8:{B1BF6DF8-3EE7-4CB9-BEB2-FB9F1528BA30}"
         "UpgradeCode" = "8:{EF99C238-BD29-4AA5-864A-8125B3B4324B}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -585,15 +680,15 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:4.0.0"
-        "Manufacturer" = "8:Microsoft"
+        "Manufacturer" = "8:LephoneStudio"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:"
-        "Title" = "8:Lephone.Setup"
+        "ARPHELPLINK" = "8:http://dbentry.codeplex.com/documentation"
+        "Title" = "8:Lephone Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Lephone Studio"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:"
+        "ARPURLINFOABOUT" = "8:http://dbentry.codeplex.com"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
@@ -994,7 +1089,7 @@
                             "ContextData" = "8:1;True=1;False=0"
                             "Attributes" = "3:0"
                             "Setting" = "3:0"
-                            "Value" = "3:1"
+                            "Value" = "3:0"
                             "DefaultValue" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
