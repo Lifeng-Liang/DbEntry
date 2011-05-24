@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Lephone.Core
 {
+    [Serializable]
     public class LephoneException : Exception
     {
 		public LephoneException() { }

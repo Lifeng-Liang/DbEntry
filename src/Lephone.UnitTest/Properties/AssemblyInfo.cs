@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("UnitTest")]
-[assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2001")]
 [assembly: AssemblyTrademark("http://www.codeplex.com/DbEntry")]
 [assembly: AssemblyCulture("")]
 
@@ -14,4 +14,4 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("6677812e-8167-4c4b-ba76-66a62930bfcd")]
 
-[assembly: AssemblyVersion("3.9.*")]
+[assembly: AssemblyVersion("4.0.*")]

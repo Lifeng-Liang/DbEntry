@@ -56,14 +56,3 @@ TableName:  Table name in database, and it will be the model class name too.
 Example:
     Lephone.CodeGen m User
 
-----------------------------------------------------------------------------
-
-Usage for process the dll which models included:
-    Lephone.CodeGen dll ModelsFileName [KeyFileName]
-
-ModelsFileName: The assembly file name who has the model classes.
-KeyFileName:    The strong name key pair file name.
-
-Example:
-    Lephone.CodeGen dll Models.dll
-    Lephone.CodeGen dll Models.dll models.snk

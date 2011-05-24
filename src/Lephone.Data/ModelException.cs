@@ -4,6 +4,7 @@ using Lephone.Data.Model.Member.Adapter;
 
 namespace Lephone.Data
 {
+    [Serializable]
     public class ModelException : DataException
     {
         public ModelException(Type dbObjectType, string errorMessage) : base(GetMessage(dbObjectType, errorMessage)) { }

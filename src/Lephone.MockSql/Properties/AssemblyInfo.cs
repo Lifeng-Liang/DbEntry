@@ -7,7 +7,7 @@ using Lephone.Core;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("MockSql.Net")]
-[assembly: AssemblyCopyright("Copyright © Lephone Studio 2008")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2011")]
 [assembly: AssemblyTrademark("http://www.codeplex.com/DbEntry")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -15,5 +15,5 @@ using Lephone.Core;
 
 [assembly: Guid("159753d8-3102-436e-b749-462a6113146b")]
 
-[assembly: AssemblyVersion("3.9.*")]
+[assembly: AssemblyVersion("4.0.*")]
 

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("Lephone.Extra")]
-[assembly: AssemblyCopyright("Copyright © Lephone Studio 2010")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2011")]
 [assembly: AssemblyTrademark("http://dbentry.codeplex.com")]
 [assembly: AssemblyCulture("")]
 
@@ -14,4 +14,4 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("db886a33-9619-45d0-9541-43132f4137e8")]
 
-[assembly: AssemblyVersion("3.9.*")]
+[assembly: AssemblyVersion("4.0.*")]

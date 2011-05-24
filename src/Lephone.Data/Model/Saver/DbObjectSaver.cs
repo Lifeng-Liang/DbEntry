@@ -32,7 +32,8 @@ namespace Lephone.Data.Model.Saver
 
         public override object Insert(IDbObject obj)
         {
-            var key = base.Insert(obj);
+            var sb = Composer.GetInsertStatementBuilder(obj);
+            var key = Provider.Dialect.ExecuteInsert(sb, Info, Provider);
             //TODO: use emit instead of reflection
             ModelContext.SetKey(obj, key);
             return key;

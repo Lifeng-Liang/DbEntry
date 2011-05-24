@@ -118,7 +118,7 @@
     <Compile Include="TimingTask\TimingTask.cs" />
     <Compile Include="TimingTask\TimingTaskCollection.cs" />
     <Compile Include="TimingTask\TimingTaskController.cs" />
-    <Compile Include="UtilException.cs" />
+    <Compile Include="CoreException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.snk" />

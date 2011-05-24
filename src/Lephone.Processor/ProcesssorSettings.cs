@@ -19,6 +19,15 @@ namespace Lephone.Processor
             return (ISymbolWriterProvider)ClassHelper.CreateInstance(SymbolWriterProvider);
         }
 
+        public static string GetExtName()
+        {
+            if(SymbolReaderProvider.EndsWith(".Pdb"))
+            {
+                return ".pdb";
+            }
+            return ".mdb";
+        }
+
         static ProcesssorSettings()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(ProcesssorSettings));

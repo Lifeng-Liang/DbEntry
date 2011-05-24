@@ -7,10 +7,10 @@ using Lephone.Core;
 [assembly: AssemblyConfiguration("Core.Net")]
 [assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("Lephone.Framework.Core")]
-[assembly: AssemblyCopyright("Copyright © Lephone Studio 2010")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2011")]
 [assembly: AssemblyTrademark("http://dbentry.codeplex.com")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 [assembly: AssemblyProcessed]
 
-[assembly: AssemblyVersion("3.9.*")]
+[assembly: AssemblyVersion("4.0.*")]

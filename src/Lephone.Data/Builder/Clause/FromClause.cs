@@ -80,7 +80,7 @@ namespace Lephone.Data.Builder.Clause
                     string tn = dd.QuoteForTableName(JoinClauseList[i].Table2);
                     if (sd.ContainsKey(tn)) { tn = dd.QuoteForTableName(JoinClauseList[i].Table1); }
                     sd.Add(tn, "");
-                    ret = string.Format("{0} {3} JOIN {1} On {2}",
+                    ret = string.Format("{0} {3} JOIN {1} ON {2}",
                                         ret,
                                         tn,
                                         JoinClauseList[i].ToSqlText(dpc, dd),

@@ -84,7 +84,7 @@ namespace Lephone.Core.Ioc
                 {
                     if(throwException)
                     {
-                        throw new UtilException("Duplicated Register.");
+                        throw new CoreException("Duplicated Register.");
                     }
                 }
                 lock (value)
@@ -123,7 +123,7 @@ namespace Lephone.Core.Ioc
                     return obj;
                 }
             }
-            throw new UtilException("Can not found {0} in SimpleContainer", name);
+            throw new CoreException("Can not found {0} in SimpleContainer", name);
         }
 
         private static object CreateInjectableObject(Type type)
@@ -131,7 +131,7 @@ namespace Lephone.Core.Ioc
             var cis = type.GetConstructors(ClassHelper.InstancePublic);
             if(cis.Length == 0 || cis.Length > 1)
             {
-                throw new UtilException("Ioc object must have only one public constractor.");
+                throw new CoreException("Ioc object must have only one public constractor.");
             }
             var ci = cis[0];
             var ps = ci.GetParameters();

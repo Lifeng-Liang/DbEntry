@@ -28,8 +28,9 @@ namespace Lephone.Data.Model.Saver
         public virtual object Insert(IDbObject obj)
         {
             var sb = Composer.GetInsertStatementBuilder(obj);
-            var key = Provider.Dialect.ExecuteInsert(sb, Info, Provider);
-            return key;
+            var sql = sb.ToSqlStatement(Provider.Dialect);
+            Provider.ExecuteNonQuery(sql);
+            return null;
         }
 
         public virtual void Update(IDbObject obj)

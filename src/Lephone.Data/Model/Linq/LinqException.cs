@@ -4,6 +4,7 @@ using Lephone.Core;
 
 namespace Lephone.Data.Model.Linq
 {
+    [Serializable]
     public class LinqException : LephoneException
     {
         public LinqException() { }

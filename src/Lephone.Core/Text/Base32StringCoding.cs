@@ -92,7 +92,7 @@ namespace Lephone.Core.Text
                     len += 4;
                     break;
                 default:
-                    throw new UtilException("Source string length error.");
+                    throw new CoreException("Source string length error.");
             }
             return len;
         }

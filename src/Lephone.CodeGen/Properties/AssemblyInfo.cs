@@ -5,9 +5,9 @@ using Lephone.Core;
 [assembly: AssemblyTitle("Lephone.CodeGen")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Lephone Studio")]
 [assembly: AssemblyProduct("Lephone.CodeGen")]
-[assembly: AssemblyCopyright("Copyright ©  2010")]
+[assembly: AssemblyCopyright("Copyright © Lephone Studio 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -15,4 +15,4 @@ using Lephone.Core;
 
 [assembly: Guid("10c06f56-c3af-44a8-be69-568a4b3d2421")]
 
-[assembly: AssemblyVersion("3.9.*")]
+[assembly: AssemblyVersion("4.0.*")]

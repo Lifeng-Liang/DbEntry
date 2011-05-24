@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Lephone.Core.Logging;
 using Lephone.Data;
 using Mono.Cecil;
 using Mono.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Lephone.Processor
         private readonly string _name;
         private readonly string _sn;
         private readonly string[] _refFiles;
+        private readonly bool _hasSymbols;
 
         public static ModuleDefinition Module
         {
@@ -26,10 +28,16 @@ namespace Lephone.Processor
 
         public AssemblyProcessor(string name, string sn, string[] refFiles)
         {
-            this._oldName = name.Substring(0, name.Length - 4) + ".bak";
+            var n = name.Substring(0, name.Length - 4);
+            if(File.Exists(n + ProcesssorSettings.GetExtName()))
+            {
+                _hasSymbols = true;
+            }
+            this._oldName = n + ".bak";
             this._name = name;
             this._sn = sn;
             this._refFiles = refFiles;
+            Logger.Default.Info(_hasSymbols);
         }
 
         public void Process()
@@ -83,14 +91,23 @@ namespace Lephone.Processor
             }
         }
 
+        private ModuleDefinition ReadModule()
+        {
+            if(_hasSymbols)
+            {
+                return ModuleDefinition.ReadModule(
+                    _oldName, new ReaderParameters
+                    {
+                        ReadSymbols = true,
+                        SymbolReaderProvider = ProcesssorSettings.GetSymbolReaderProvider()
+                    });
+            }
+            return ModuleDefinition.ReadModule(_oldName);
+        }
+
         private void ProcessAssembly()
         {
-            var module = ModuleDefinition.ReadModule(
-                _oldName, new ReaderParameters
-                              {
-                                  ReadSymbols = true,
-                                  SymbolReaderProvider = ProcesssorSettings.GetSymbolReaderProvider()
-                              });
+            var module = ReadModule();
 
             var models = GetAllModels(module);
 
@@ -114,12 +131,7 @@ namespace Lephone.Processor
 
         private void GenerateModelHandler()
         {
-            var module = ModuleDefinition.ReadModule(
-                _oldName, new ReaderParameters
-                              {
-                                  ReadSymbols = true,
-                                  SymbolReaderProvider = ProcesssorSettings.GetSymbolReaderProvider()
-                              });
+            var module = ReadModule();
 
             var assembly = Assembly.LoadFrom(_oldName);
             var models = DbEntry.GetAllModels(assembly);
@@ -147,13 +159,16 @@ namespace Lephone.Processor
             WriteAssembly(module, _name);
         }
 
+
+
         private void WriteAssembly(ModuleDefinition module, string name)
         {
-            var args = new WriterParameters
+            var args = _hasSymbols ? new WriterParameters
                            {
                                WriteSymbols = true,
                                SymbolWriterProvider = ProcesssorSettings.GetSymbolWriterProvider(),
-                           };
+                           }
+                           : new WriterParameters();
             if (_sn.IsNullOrEmpty())
             {
                 module.Write(name, args);

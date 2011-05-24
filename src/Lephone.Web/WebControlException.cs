@@ -1,19 +1,24 @@
-﻿using System.Web.UI.WebControls;
+﻿using System;
+using System.Runtime.Serialization;
+using System.Web.UI.WebControls;
 
 namespace Lephone.Web
 {
+    [Serializable]
     public class WebControlException : WebException
     {
-        private readonly WebControl _RelatedControl;
+        private readonly WebControl _relatedControl;
 
         public WebControl RelatedControl
         {
-            get { return _RelatedControl; }
+            get { return _relatedControl; }
         }
 
-		public WebControlException(WebControl RelatedControl, string ErrorMessage) : base(ErrorMessage)
+		public WebControlException(WebControl relatedControl, string errorMessage) : base(errorMessage)
         {
-            _RelatedControl = RelatedControl;
+            _relatedControl = relatedControl;
         }
+
+        protected WebControlException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

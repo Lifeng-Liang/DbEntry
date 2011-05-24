@@ -3,7 +3,8 @@ using System.Runtime.Serialization;
 
 namespace Lephone.Core
 {
-    public class SettingException : UtilException
+    [Serializable]
+    public class SettingException : CoreException
 	{
 		public SettingException() : base("Setting Error.") {}
 		public SettingException(string errorMessage) : base(errorMessage) {}

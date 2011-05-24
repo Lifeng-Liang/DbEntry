@@ -121,6 +121,7 @@
     <Compile Include="Data\LazyLoadFieldTest.cs" />
     <Compile Include="Data\LogicalOperatorTest.cs" />
     <Compile Include="Data\ManyMoreTest.cs" />
+    <Compile Include="Data\MKeyTest.cs" />
     <Compile Include="Data\MultipleRelationsTest.cs" />
     <Compile Include="Data\NullTest.cs" />
     <Compile Include="Data\Objects\AbstractClasses.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Data\Inner\DateParamterTest.cs" />
     <Compile Include="Data\Inner\TesterHelper.cs" />
     <Compile Include="Data\Inner\WhereConditionTest.cs" />
+    <Compile Include="Extra\LephoneEnumTest.cs" />
     <Compile Include="InitTestDatabase.cs" />
     <Compile Include="Linq\CommonTest.cs" />
     <Compile Include="Linq\LinqObjectModelTest.cs" />

@@ -14,7 +14,7 @@ namespace Lephone.Data.Definition
             set { _id = value; }
 		}
 
-        public DbObject()
+        protected DbObject()
         {
         }
     }

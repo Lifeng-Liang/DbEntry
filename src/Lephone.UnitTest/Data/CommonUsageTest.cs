@@ -115,29 +115,6 @@ namespace Lephone.UnitTest.Data
         public int LockVersion { get; set; }
     }
 
-    public class Mkey : IDbObject
-    {
-        [DbKey(IsDbGenerate = false)]
-        public string FirstName;
-
-        [DbKey(IsDbGenerate = false)]
-        public string LastName;
-
-        public int Age;
-    }
-
-    [DbContext("SQLite")]
-    public class Mkey2 : IDbObject
-    {
-        [DbKey(IsDbGenerate = false)]
-        public string FirstName;
-
-        [DbKey(IsDbGenerate = false)]
-        public string LastName;
-
-        public int Age;
-    }
-
     [DbContext("SQLite")]
     public class FindByModel : DbObjectModel<FindByModel>
     {
@@ -602,33 +579,6 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("math", c1.Name);
             Assert.AreEqual(1, c1.Books.Count);
             Assert.AreEqual("test", c1.Books[0].Name);
-        }
-
-        [Test]
-        public void TestMkey()
-        {
-            DbEntry.Create(typeof(Mkey));
-
-            var p1 = new Mkey {FirstName = "test", LastName = "next", Age = 11};
-            DbEntry.Insert(p1);
-
-            var p2 = DbEntry.From<Mkey>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
-            Assert.AreEqual(11, p2.Age);
-
-            p2.Age = 18;
-            DbEntry.Update(p2);
-
-            var p3 = DbEntry.From<Mkey>().Where(p => p.FirstName == "test" && p.LastName == "next").Select()[0];
-            Assert.AreEqual(18, p3.Age);
-        }
-
-        [Test]
-        public void TestMkeyForUpdate()
-        {
-            var p = new Mkey2 { FirstName = "test", LastName = "next", Age = 11 };
-            DbEntry.Update(p);
-            AssertSql(@"UPDATE [Mkey2] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
-<Text><30>(@Age_0=11:Int32,@FirstName_1=test:String,@LastName_2=next:String)");
         }
 
         [Test]

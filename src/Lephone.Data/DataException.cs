@@ -4,6 +4,7 @@ using Lephone.Core;
 
 namespace Lephone.Data
 {
+    [Serializable]
 	public class DataException : LephoneException
 	{
 		public DataException() : base("DataBase Error.") {}

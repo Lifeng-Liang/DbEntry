@@ -146,12 +146,11 @@ namespace Lephone.Data.Model.Composer
 
         public virtual SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType, string colName)
         {
-            var builder2 = new SelectStatementBuilder(from ?? this.Context.Info.From, oc, lc)
+            var sb = new SelectStatementBuilder(from ?? this.Context.Info.From, oc, lc)
                                {
                                    IsDistinct = isDistinct,
                                    NoLazy = noLazy
                                };
-            SelectStatementBuilder sb = builder2;
             sb.Where.Conditions = iwc;
             if (!colName.IsNullOrEmpty())
             {
