@@ -11,35 +11,35 @@ namespace Lephone.Web
 {
     public abstract partial class DbEntryDataSource<T> where T : class, IDbObject
     {
-        public event CallbackVoidHandler OnPageIsNew;
-        public event CallbackVoidHandler OnPageIsEdit;
+        public event CallbackVoidHandler PageIsNew;
+        public event CallbackVoidHandler PageIsEdit;
 
         [Category("Data")]
-        public event CallbackVoidHandler OnObjectLoading;
+        public event CallbackVoidHandler ObjectLoading;
 
         [Category("Data")]
-        public event CallbackObjectHandler<T> OnObjectLoaded;
+        public event CallbackObjectHandler<T> ObjectLoaded;
 
         [Category("Data")]
-        public event CallbackObjectHandler<T> OnValidateSave;
+        public event CallbackObjectHandler<T> ValidateSaving;
 
         [Category("Data")]
-        public event CallbackObjectHandler<T> OnObjectDeleting;
+        public event CallbackObjectHandler<T> ObjectDeleting;
 
         [Category("Data")]
-        public event CallbackObjectHandler<T> OnObjectDeleted;
+        public event CallbackObjectHandler<T> ObjectDeleted;
 
         [Category("Data")]
-        public event CallbackObjectHandler<T> OnObjectInserting;
+        public event CallbackObjectHandler<T> ObjectInserting;
 
         [Category("Data")]
-        public event CallbackObjectHandler<T> OnObjectInserted;
+        public event CallbackObjectHandler<T> ObjectInserted;
 
         [Category("Data")]
-        public event CallbackObjectHandler<T> OnObjectUpdating;
+        public event CallbackObjectHandler<T> ObjectUpdating;
 
         [Category("Data")]
-        public event CallbackObjectHandler<T> OnObjectUpdated;
+        public event CallbackObjectHandler<T> ObjectUpdated;
 
         private Button _saveButton;
         private Button _deleteButton;
@@ -51,6 +51,22 @@ namespace Lephone.Web
         public bool LastOprationSucceed
         {
             get { return _lastOprationSucceed; }
+        }
+
+        private void RaiseEvent(CallbackObjectHandler<T> evt, T obj)
+        {
+            if(evt != null)
+            {
+                evt(obj);
+            }
+        }
+
+        private void RaiseEvent(CallbackVoidHandler evt)
+        {
+            if(evt != null)
+            {
+                evt();
+            }
         }
 
         [IDReferenceProperty(typeof(Button)), TypeConverter(typeof(ButtonIDConverter)), Themeable(false),
@@ -142,27 +158,14 @@ namespace Lephone.Web
             _lastOprationSucceed = false;
             try
             {
-                if (OnObjectLoading != null)
-                {
-                    OnObjectLoading();
-                }
-
                 var o = PageHelper.GetObject<T>(Page, ParseErrorText);
                 object oid = ViewState["Id"];
 
                 string tn = typeof(T).Name;
                 if (oid == null)
                 {
-                    if (OnObjectInserting != null)
-                    {
-                        OnObjectInserting(o);
-                    }
                     if (ValidateSave(o, string.Format(ObjectCreatedText, tn)))
                     {
-                        if (OnObjectInserted != null)
-                        {
-                            OnObjectInserted(o);
-                        }
                         _lastOprationSucceed = true;
                         return o;
                     }
@@ -170,16 +173,8 @@ namespace Lephone.Web
                 else // Edit
                 {
                     Ctx.Info.KeyMembers[0].SetValue(o, oid);
-                    if (OnObjectUpdating != null)
-                    {
-                        OnObjectUpdating(o);
-                    }
                     if (ValidateSave(o, string.Format(ObjectUpdatedText, tn)))
                     {
-                        if (OnObjectUpdated != null)
-                        {
-                            OnObjectUpdated(o);
-                        }
                         _lastOprationSucceed = true;
                         return o;
                     }
@@ -232,19 +227,8 @@ namespace Lephone.Web
                 if (oid != null)
                 {
                     var o = DbEntry.GetObject<T>(oid);
-
-                    if (OnObjectDeleting != null)
-                    {
-                        OnObjectDeleting(o);
-                    }
-
                     ExecuteDelete(o);
                     AddNotice(string.Format(ObjectDeletedText, tn));
-
-                    if (OnObjectDeleted != null)
-                    {
-                        OnObjectDeleted(o);
-                    }
                     _lastOprationSucceed = true;
                 }
             }
@@ -260,10 +244,7 @@ namespace Lephone.Web
 
         protected virtual bool ValidateSave(T obj, string noticeText)
         {
-            if (OnValidateSave != null)
-            {
-                OnValidateSave(obj);
-            }
+            RaiseEvent(ValidateSaving, obj);
 
             var vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
                                                      NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText,
@@ -297,37 +278,7 @@ namespace Lephone.Web
 
                 if (_saveButton != null)
                 {
-                    _saveButton.Click += SaveButton_Click;
-                    if (!Page.IsPostBack)
-                    {
-                        string tn = typeof(T).Name;
-                        T o = GetRequestObject();
-                        if (o == null)
-                        {
-                            if (_deleteButton != null)
-                            {
-                                _deleteButton.Visible = false;
-                            }
-                            if (OnPageIsNew != null)
-                            {
-                                OnPageIsNew();
-                            }
-                            SetContentTitle(NewObjectText, tn);
-                        }
-                        else
-                        {
-                            PageHelper.SetObject(o, Page);
-                            if (OnPageIsEdit != null)
-                            {
-                                OnPageIsEdit();
-                            }
-                            SetContentTitle(EditObjectText, tn);
-                            if (OnObjectLoaded != null)
-                            {
-                                OnObjectLoaded(o);
-                            }
-                        }
-                    }
+                    InitSaveButton();
                 }
                 if (_deleteButton != null)
                 {
@@ -342,6 +293,33 @@ namespace Lephone.Web
             catch (Exception ex)
             {
                 AddWarning(ex.Message);
+            }
+        }
+
+        private void InitSaveButton()
+        {
+            _saveButton.Click += SaveButton_Click;
+            if (!Page.IsPostBack)
+            {
+                string tn = typeof(T).Name;
+                T o = GetRequestObject();
+                if (o == null)
+                {
+                    if (_deleteButton != null)
+                    {
+                        _deleteButton.Visible = false;
+                    }
+                    RaiseEvent(PageIsNew);
+                    SetContentTitle(NewObjectText, tn);
+                }
+                else
+                {
+                    RaiseEvent(ObjectLoading);
+                    PageHelper.SetObject(o, Page);
+                    RaiseEvent(PageIsEdit);
+                    SetContentTitle(EditObjectText, tn);
+                    RaiseEvent(ObjectLoaded, o);
+                }
             }
         }
 

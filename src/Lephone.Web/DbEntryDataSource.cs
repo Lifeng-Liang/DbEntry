@@ -138,18 +138,15 @@ namespace Lephone.Web
         {
             object key = ClassHelper.ChangeType(keys[KeyName], Ctx.Info.KeyMembers[0].MemberType);
             var obj = DbEntry.GetObject<T>(key);
-            int n = ExecuteDelete(obj);
-            if (OnObjectDeleted != null)
-            {
-                OnObjectDeleted(obj);
-            }
-            return n;
+            return ExecuteDelete(obj);
         }
 
         public virtual int ExecuteDelete(T obj)
         {
             if (obj != null)
             {
+                RaiseEvent(ObjectDeleting, obj);
+
                 var o = obj as DbObjectSmartUpdate;
                 if (o != null)
                 {
@@ -159,6 +156,8 @@ namespace Lephone.Web
                 {
                     DbEntry.Delete(obj);
                 }
+
+                RaiseEvent(ObjectDeleted, obj);
                 return 1;
             }
             return 0;
@@ -167,18 +166,15 @@ namespace Lephone.Web
         int IExcuteableDataSource.Insert(IDictionary values)
         {
             T obj = CreateObject(null, values);
-            int n = ExecuteInsert(obj);
-            if (OnObjectInserted != null)
-            {
-                OnObjectInserted(obj);
-            }
-            return n;
+            return ExecuteInsert(obj);
         }
 
         public virtual int ExecuteInsert(T obj)
         {
             if (obj != null)
             {
+                RaiseEvent(ObjectInserting, obj);
+
                 var o = obj as DbObjectSmartUpdate;
                 if (o != null)
                 {
@@ -188,6 +184,8 @@ namespace Lephone.Web
                 {
                     DbEntry.Save(obj);
                 }
+
+                RaiseEvent(ObjectInserted, obj);
                 return 1;
             }
             return 0;
@@ -196,18 +194,15 @@ namespace Lephone.Web
         int IExcuteableDataSource.Update(IDictionary keys, IDictionary values, IDictionary oldValues)
         {
             T obj = CreateObject(keys, values);
-            int n = ExecuteUpdate(obj);
-            if (OnObjectUpdated != null)
-            {
-                OnObjectUpdated(obj);
-            }
-            return n;
+            return ExecuteUpdate(obj);
         }
 
         public virtual int ExecuteUpdate(T obj)
         {
             if (obj != null)
             {
+                RaiseEvent(ObjectUpdating, obj);
+
                 var o = obj as DbObjectSmartUpdate;
                 if (o != null)
                 {
@@ -217,6 +212,8 @@ namespace Lephone.Web
                 {
                     DbEntry.Save(obj);
                 }
+
+                RaiseEvent(ObjectUpdated, obj);
                 return 1;
             }
             return 0;
