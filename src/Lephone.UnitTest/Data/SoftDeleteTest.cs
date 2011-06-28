@@ -182,5 +182,18 @@ namespace Lephone.UnitTest.Data
             bool b = y.Validate().IsValid;
             Assert.IsFalse(b);
         }
+
+        [Test]
+        public void TestDeleteAll()
+        {
+            SoftDelete.DeleteAll();
+            var o = SoftDelete.FindById(1);
+            Assert.IsNull(o);
+
+            SoftDeleteFull o1 = SoftDeleteFull.FindById(1);
+            Assert.IsNotNull(o1);
+            Assert.AreEqual("tom", o1.Name);
+            Assert.AreEqual(true, o1.IsDeleted);
+        }
     }
 }

@@ -27,15 +27,15 @@ namespace Lephone.Data.Model.Composer
 
         public override SqlStatement GetDeleteStatement(object obj)
         {
-            var sb = new UpdateStatementBuilder(Context.Info.From.MainTableName);
-            sb.Values.Add(new KeyValue(_columnName, true));
-            sb.Where.Conditions = ModelContext.GetKeyWhereClause(obj) && _colExp;
-            return sb.ToSqlStatement(Context);
+            return this.GetDeleteStatement(ModelContext.GetKeyWhereClause(obj));
         }
 
         public override SqlStatement GetDeleteStatement(Condition iwc)
         {
-            return base.GetDeleteStatement(iwc && _colExp);
+            var sb = new UpdateStatementBuilder(Context.Info.From.MainTableName);
+            sb.Values.Add(new KeyValue(_columnName, true));
+            sb.Where.Conditions = iwc && _colExp;
+            return sb.ToSqlStatement(Context);
         }
 
         public override SqlStatement GetGroupByStatement(Condition iwc, OrderBy order, string columnName)
