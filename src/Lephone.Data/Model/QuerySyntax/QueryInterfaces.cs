@@ -9,9 +9,13 @@ namespace Lephone.Data.Model.QuerySyntax
     public interface ISelectable<T> where T : class, IDbObject
     {
         DbObjectList<T> Select();
+        DbObjectList<TResult> Select<TResult>(Expression<Func<T, TResult>> expr);
         DbObjectList<T> SelectDistinct();
+        DbObjectList<TResult> SelectDistinct<TResult>(Expression<Func<T, TResult>> expr);
         DbObjectList<T> SelectNoLazy();
+        DbObjectList<TResult> SelectNoLazy<TResult>(Expression<Func<T, TResult>> expr);
         DbObjectList<T> SelectDistinctNoLazy();
+        DbObjectList<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr);
     }
 
     public interface IGetPagedSelector<T>

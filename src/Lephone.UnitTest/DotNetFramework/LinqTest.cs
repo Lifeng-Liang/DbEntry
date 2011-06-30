@@ -18,30 +18,23 @@ namespace Lephone.UnitTest.DotNetFramework
         [Test]
         public void Test1()
         {
-            Select<Book>(p => new { Name = p.Name, Age = p.Category_Id });
+            Select<Book>(p => new {p.Name, Age = p.Category_Id});
         }
 
-        private void Select<T>(Expression<Func<T, object>> expr)
+        private static void Select<T>(Expression<Func<T, object>> expr)
         {
             Assert.AreEqual(ExpressionType.Lambda, expr.NodeType);
-            Console.WriteLine(expr);
-            Console.WriteLine(expr.Type);
-            Console.WriteLine();
-            foreach (var parameterExpression in expr.Parameters)
-            {
-                OutputParamter(parameterExpression);
-            }
-            Console.WriteLine();
-            Console.WriteLine(expr.Body);
-            var ex = expr.Compile();
-            Console.WriteLine();
-            Console.WriteLine(ex.Method);
-            Console.WriteLine(ex.Target);
-        }
 
-        private void OutputParamter(ParameterExpression expr)
-        {
-            Console.WriteLine(expr);
+            var newExpr = (NewExpression)expr.Body;
+            dynamic o = newExpr.Constructor.Invoke(new object[] {"tom", 123});
+            Assert.AreEqual("tom", o.Name);
+            Assert.AreEqual(123, o.Age);
+            Console.WriteLine("{0} - {1}", o.Name, o.Age);
+            var p1 = (MemberExpression)newExpr.Arguments[0];
+            Assert.AreEqual("Name", p1.Member.Name);
+            var p2 = (MemberExpression)newExpr.Arguments[1];
+            Assert.AreEqual("Category_Id", p2.Member.Name);
+            Console.WriteLine("{0} - {1}", p1.Member.Name, p2.Member.Name);
         }
     }
 }

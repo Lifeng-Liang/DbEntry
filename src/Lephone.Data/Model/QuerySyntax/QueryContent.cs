@@ -81,38 +81,58 @@ namespace Lephone.Data.Model.QuerySyntax
 
         public DbObjectList<T> Select()
         {
-            return InnerSelect(false, false);
+            return InnerSelect<T>(false, false);
         }
 
         public DbObjectList<T> SelectNoLazy()
         {
-            return InnerSelect(false, true);
+            return InnerSelect<T>(false, true);
+        }
+
+        public DbObjectList<TResult> SelectNoLazy<TResult>(Expression<Func<T, TResult>> expr)
+        {
+            LinqExpressionParser<T>.ProcessSelectColumns(expr);
+            return InnerSelect<TResult>(false, true);
         }
 
         public DbObjectList<T> SelectDistinct()
         {
-            return InnerSelect(true, false);
+            return InnerSelect<T>(true, false);
+        }
+
+        public DbObjectList<TResult> SelectDistinct<TResult>(Expression<Func<T, TResult>> expr)
+        {
+            LinqExpressionParser<T>.ProcessSelectColumns(expr);
+            return InnerSelect<TResult>(true, false);
         }
 
         public DbObjectList<T> SelectDistinctNoLazy()
         {
-            return InnerSelect(true, true);
+            return InnerSelect<T>(true, true);
         }
 
-        private DbObjectList<T> InnerSelect(bool distinct, bool noLazy)
+        public DbObjectList<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr)
         {
-            var ret = new DbObjectList<T>();
-            var t = typeof(T);
-            _ctx.Operator.FillCollection(ret, t, null, _where, _order, _range, distinct, noLazy);
+            LinqExpressionParser<T>.ProcessSelectColumns(expr);
+            return InnerSelect<TResult>(true, true);
+        }
+
+        private DbObjectList<TResult> InnerSelect<TResult>(bool distinct, bool noLazy)
+        {
+            var ret = new DbObjectList<TResult>();
+            _ctx.Operator.FillCollection(ret, typeof(TResult), null, _where, _order, _range, distinct, noLazy);
             return ret;
         }
 
         public DbObjectList<TResult> Select<TResult>()
         {
-            var ret = new DbObjectList<TResult>();
-            var tresult = typeof(TResult);
-            _ctx.Operator.FillCollection(ret, tresult, null, _where, _order, _range, false);
-            return ret;
+            return InnerSelect<TResult>(false, false);
+        }
+
+        public DbObjectList<TResult> Select<TResult>(Expression<Func<T, TResult>> expr)
+        {
+            LinqExpressionParser<T>.ProcessSelectColumns(expr);
+            return Select<TResult>();
         }
 
         public SelectStatementBuilder GetStatement(Expression<Func<T, object>> expr)

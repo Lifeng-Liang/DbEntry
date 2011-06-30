@@ -73,7 +73,7 @@ namespace Lephone.Data.Model.Linq
             Orderby.OrderItems.Add(item);
         }
 
-        private static void ProcessSelectColumns(Expression expr)
+        public static void ProcessSelectColumns(Expression expr)
         {
             var ex = GetUnQuoteExpression(expr);
             if (ex.Body.NodeType != ExpressionType.New) return;

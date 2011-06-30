@@ -208,5 +208,21 @@ namespace Lephone.UnitTest.Linq
             Assert.AreEqual("Wow", list[2].Name);
             Assert.AreEqual(2, list[2].CID);
         }
+
+        [Test]
+        public void TestPartialSelect5()
+        {
+            var l = Book.Where(book => book.Category_Id == 2)
+                .OrderBy(book => book.Id)
+                .Select(book => new {book.Name, CID = book.Category_Id});
+            var list = l.ToList();
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual("Diablo", list[0].Name);
+            Assert.AreEqual(2, list[0].CID);
+            Assert.AreEqual("Pal95", list[1].Name);
+            Assert.AreEqual(2, list[1].CID);
+            Assert.AreEqual("Wow", list[2].Name);
+            Assert.AreEqual(2, list[2].CID);
+        }
     }
 }
