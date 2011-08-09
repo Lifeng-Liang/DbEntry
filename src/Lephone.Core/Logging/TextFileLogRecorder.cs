@@ -64,7 +64,7 @@ namespace Lephone.Core.Logging
 
         protected virtual void WriteLog(StreamWriter sw, SysLogType type, string source, string name, string message, Exception exception)
         {
-            sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, source, name, message, exception, DateTime.Now);
+            sw.WriteLine("{0},{1},{2},{3},{4},{5}", type, source, name, message, exception, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
         }
     }
 }

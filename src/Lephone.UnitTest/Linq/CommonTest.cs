@@ -558,5 +558,22 @@ namespace Lephone.UnitTest.Linq
             AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
 <Text><60>()");
         }
+
+        [Test]
+        public void TestIsNull4()
+        {
+            Article.Find(p => p.Writer == null);
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NULL;
+<Text><60>()");
+
+        }
+
+        [Test]
+        public void TestIsNull5()
+        {
+            Article.Find(p => p.Writer != null);
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
+<Text><60>()");
+        }
     }
 }

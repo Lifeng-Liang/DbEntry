@@ -202,6 +202,10 @@ namespace Lephone.Data
             {
                 return;
             }
+            if(member.MemberType.IsEnum && value is Int32)
+            {
+                return;
+            }
             if (member.MemberType != value.GetType())
             {
                 throw new DataException("The type of member [{0}] is [{1}] but sql value of it is [{2}]",

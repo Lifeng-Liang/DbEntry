@@ -178,7 +178,7 @@ namespace Lephone.Data.Model.Linq
             if(e.Arguments.Count == 1)
             {
                 object value = GetRightValue(e.Arguments[0]);
-                if (value != null && value.GetType() == typeof(string))
+                if (value != null && value is string)
                 {
                     return new KeyValueClause(key, left + value + right, CompareOpration.Like, function);
                 }
