@@ -70,18 +70,7 @@ namespace Lephone.Processor
         {
             foreach (var pi in _properties)
             {
-                var t = pi.PropertyDefinition.PropertyType;
-                if (!t.IsValueType && !t.IsArray && t.FullName != KnownTypesHandler.String)
-                {
-                    if(pi.IsComposedOf && pi.FieldType != FieldType.Normal)
-                    {
-                        throw new DataException("ComposedOf field could not be relation field.");
-                    }
-                    if (!pi.IsExclude && !pi.IsComposedOf && (pi.FieldType == FieldType.Normal || pi.FieldType == FieldType.LazyLoad))
-                    {
-                        throw new DataException("The property '{0}' should define as relation field and can not set lazy load attribute", pi.PropertyDefinition.Name);
-                    }
-                }
+                CheckProperty(pi);
                 ProcessProperty(pi);
             }
             foreach(var property in _properties)
@@ -89,6 +78,81 @@ namespace Lephone.Processor
                 if(property.IsSpecialForeignKey)
                 {
                     ProcessSpecialForeignKey(property);
+                }
+            }
+        }
+
+        private void CheckProperty(PropertyInformation pi)
+        {
+            CheckNormalProperty(pi);
+            CheckComposedOfProperty(pi);
+            CheckPropertyAccessable(pi);
+        }
+
+        private void CheckNormalProperty(PropertyInformation pi)
+        {
+            var t = pi.PropertyDefinition.PropertyType;
+            if (!t.IsValueType && !t.IsArray && t.FullName != KnownTypesHandler.String)
+            {
+                if (!pi.IsExclude && !pi.IsComposedOf && (pi.FieldType == FieldType.Normal || pi.FieldType == FieldType.LazyLoad))
+                {
+                    Throw(pi, "The property '{0}' should define as relation field and can not set lazy load attribute");
+                }
+            }
+        }
+
+        private static void CheckPropertyAccessable(PropertyInformation pi)
+        {
+            if(pi.FieldType == FieldType.HasMany || pi.FieldType == FieldType.HasAndBelongsToMany)
+            {
+                if(!pi.PropertyDefinition.PropertyType.Name.StartsWith("IList`1"))
+                {
+                    Throw(pi, "Property [{0}] should be IList<T> but not");
+                }
+                CheckIsPublicGetAndPrivateSet(pi);
+            }
+            else
+            {
+                if(!pi.IsComposedOf)
+                {
+                    if (!pi.PropertyDefinition.SetMethod.IsPublic || !pi.PropertyDefinition.GetMethod.IsSpecialName)
+                    {
+                        Throw(pi, "Property [{0}] should have public getter and setter but not");
+                    }
+                }
+            }
+        }
+
+        private static void CheckIsPublicGetAndPrivateSet(PropertyInformation pi)
+        {
+            if(pi.PropertyDefinition.SetMethod.IsPublic)
+            {
+                Throw(pi, "Property [{0}] should have private setter but not");
+            }
+            if(!pi.PropertyDefinition.GetMethod.IsPublic)
+            {
+                Throw(pi, "Property [{0}] should have public getter but not");
+            }
+        }
+
+        private static void Throw(PropertyInformation pi, string stringTemplate)
+        {
+            throw new DataException(string.Format(stringTemplate, pi.PropertyDefinition.Name));
+        }
+
+        private static void CheckComposedOfProperty(PropertyInformation pi)
+        {
+            if(pi.IsComposedOf)
+            {
+                CheckIsPublicGetAndPrivateSet(pi);
+                var t = pi.PropertyDefinition.PropertyType;
+                if (t.IsValueType || t.IsArray || t.FullName == KnownTypesHandler.String)
+                {
+                    Throw(pi, "Property [{0}] mark as ComposedOf but the type is wrong");
+                }
+                if (pi.FieldType != FieldType.Normal)
+                {
+                    Throw(pi, "Property [{0}] could not mark as ComposedOf and relations");
                 }
             }
         }
@@ -267,13 +331,6 @@ namespace Lephone.Processor
 
         private void ProcessProperty(PropertyInformation pi)
         {
-            if(pi.FieldType == FieldType.HasMany || pi.FieldType == FieldType.HasAndBelongsToMany)
-            {
-                if(pi.PropertyDefinition.SetMethod.IsPublic)
-                {
-                    throw new DataException(string.Format("Property [{0}] should have private setter but not", pi.PropertyDefinition.Name));
-                }
-            }
             var pp = new PropertyProcessor(pi, _model, _handler);
             pp.Process();
 

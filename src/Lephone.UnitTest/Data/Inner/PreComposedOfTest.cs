@@ -52,10 +52,10 @@ namespace Lephone.UnitTest.Data.Inner
         {
             public string Name { get; set; }
 
-            internal string LocationPhone { get; set; }
-            internal string LocationAddress { get; set; }
-            internal int LocationNumber { get; set; }
-            internal int? LocationWow { get; set; }
+            public string LocationPhone { get; set; }
+            public string LocationAddress { get; set; }
+            public int LocationNumber { get; set; }
+            public int? LocationWow { get; set; }
 
             private ILocation _location;
 

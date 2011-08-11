@@ -39,10 +39,10 @@ namespace Lephone.UnitTest.Data
             public string Name { get; set; }
 
             [ComposedOf]
-            public IAddress MyAddress { get; set; }
+            public IAddress MyAddress { get; private set; }
 
             [ComposedOf]
-            public IAddress YourAddress { get; set; }
+            public IAddress YourAddress { get; private set; }
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using Lephone.Data;
+﻿using System.Collections.Generic;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
@@ -18,7 +19,7 @@ namespace Lephone.UnitTest.Data
             public string Name { get; set; }
 
             [HasMany]
-            public HasMany<Computer> Computers { get; private set; }
+            public IList<Computer> Computers { get; private set; }
         }
 
         [DbTable("PCs")]

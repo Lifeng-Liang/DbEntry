@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
@@ -15,7 +16,7 @@ namespace Lephone.UnitTest.Data
         public string Nombre { get; set; }
 
         [HasMany(OrderBy = "Id")]
-        public HasMany<AppGrupoUsrMnu> GrpMnu { get; private set; }
+        public IList<AppGrupoUsrMnu> GrpMnu { get; private set; }
     }
 
     [DbTable("SYS_GUM")]
