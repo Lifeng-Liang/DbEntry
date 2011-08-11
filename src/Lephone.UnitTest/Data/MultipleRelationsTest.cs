@@ -12,21 +12,21 @@ namespace Lephone.UnitTest.Data
         public class mrUser : DbObjectModel<mrUser>
         {
             public string Name { get; set; }
-            [HasMany] public IList<mrProject> Projects { get; set; }
+            [HasMany] public IList<mrProject> Projects { get; private set; }
         }
 
         public class mrProject : DbObjectModel<mrProject>
         {
             public string Name { get; set; }
             [BelongsTo] public mrUser Owner { get; set; }
-            [HasMany] public IList<mrSubject> Subjects { get; set; }
+            [HasMany] public IList<mrSubject> Subjects { get; private set; }
         }
 
         public class mrSubject : DbObjectModel<mrSubject>
         {
             public string Name { get; set; }
             [BelongsTo] public mrProject Owner { get; set; }
-            [HasMany] public IList<mrAttribute> Attributes { get; set; }
+            [HasMany] public IList<mrAttribute> Attributes { get; private set; }
         }
 
         public class mrAttribute : DbObjectModel<mrAttribute>
@@ -49,13 +49,13 @@ namespace Lephone.UnitTest.Data
         public class mrBook : DbObjectModel<mrBook>
         {
             public string Name { get; set; }
-            [HasAndBelongsToMany] public IList<mrCategory> Categories { get; set; }
+            [HasAndBelongsToMany] public IList<mrCategory> Categories { get; private set; }
         }
 
         public class mrCategory : DbObjectModel<mrCategory>
         {
             public string Name { get; set; }
-            [HasAndBelongsToMany] public IList<mrBook> Books { get; set; }
+            [HasAndBelongsToMany] public IList<mrBook> Books { get; private set; }
             [HasOne] public mrCateTitle Title { get; set; }
         }
 
@@ -63,7 +63,7 @@ namespace Lephone.UnitTest.Data
         {
             public string Name { get; set; }
             [BelongsTo] public mrCategory Category { get; set; }
-            [HasMany] public IList<mrCateTitleName> Names { get; set; }
+            [HasMany] public IList<mrCateTitleName> Names { get; private set; }
         }
 
         public class mrCateTitleName : DbObjectModel<mrCateTitleName>
@@ -79,7 +79,7 @@ namespace Lephone.UnitTest.Data
         public class mrReader : DbObjectModel<mrReader>
         {
             public string Name { get; set; }
-            [HasMany] public IList<mrReaderAndArticle> xTable { get; set; }
+            [HasMany] public IList<mrReaderAndArticle> xTable { get; private set; }
         }
 
         public class mrReaderAndArticle : DbObjectModel<mrReaderAndArticle>
@@ -92,7 +92,7 @@ namespace Lephone.UnitTest.Data
         public class mrArticle : DbObjectModel<mrArticle>
         {
             public string Name { get; set; }
-            [HasMany] public IList<mrReaderAndArticle> xTable { get; set; }
+            [HasMany] public IList<mrReaderAndArticle> xTable { get; private set; }
         }
 
         #endregion

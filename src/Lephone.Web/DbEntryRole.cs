@@ -9,6 +9,6 @@ namespace Lephone.Web
         public string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id", CrossTableName = "DbEntryMembershipUser_Role")]
-        public IList<DbEntryMembershipUser> Users { get; set; }
+        public IList<DbEntryMembershipUser> Users { get; private set; }
     }
 }

@@ -21,7 +21,7 @@ namespace Lephone.UnitTest.Linq
         public class lCategory : DbObjectModel<lCategory>
         {
             public string Name { get; set; }
-            [HasMany] public IList<lBook> Books { get; set; }
+            [HasMany] public IList<lBook> Books { get; private set; }
         }
 
         [DbTable("Books")]

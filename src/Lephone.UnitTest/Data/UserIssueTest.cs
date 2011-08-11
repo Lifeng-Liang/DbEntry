@@ -15,7 +15,7 @@ namespace Lephone.UnitTest.Data
         public string Nombre { get; set; }
 
         [HasMany(OrderBy = "Id")]
-        public HasMany<AppGrupoUsrMnu> GrpMnu { get; set; }
+        public HasMany<AppGrupoUsrMnu> GrpMnu { get; private set; }
     }
 
     [DbTable("SYS_GUM")]

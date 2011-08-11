@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Lephone.Data.Builder;
 using Lephone.Data.Common;
@@ -8,14 +9,14 @@ namespace Lephone.Data.Model.QuerySyntax
 {
     public interface ISelectable<T> where T : class, IDbObject
     {
-        DbObjectList<T> Select();
-        DbObjectList<TResult> Select<TResult>(Expression<Func<T, TResult>> expr);
-        DbObjectList<T> SelectDistinct();
-        DbObjectList<TResult> SelectDistinct<TResult>(Expression<Func<T, TResult>> expr);
-        DbObjectList<T> SelectNoLazy();
-        DbObjectList<TResult> SelectNoLazy<TResult>(Expression<Func<T, TResult>> expr);
-        DbObjectList<T> SelectDistinctNoLazy();
-        DbObjectList<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr);
+        List<T> Select();
+        List<TResult> Select<TResult>(Expression<Func<T, TResult>> expr);
+        List<T> SelectDistinct();
+        List<TResult> SelectDistinct<TResult>(Expression<Func<T, TResult>> expr);
+        List<T> SelectNoLazy();
+        List<TResult> SelectNoLazy<TResult>(Expression<Func<T, TResult>> expr);
+        List<T> SelectDistinctNoLazy();
+        List<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr);
     }
 
     public interface IGetPagedSelector<T>
@@ -28,8 +29,8 @@ namespace Lephone.Data.Model.QuerySyntax
 
     public interface IGroupByable
     {
-        DbObjectList<GroupByObject<T1>> GroupBy<T1>(string columnName);
-        DbObjectList<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName);
+        List<GroupByObject<T1>> GroupBy<T1>(string columnName);
+        List<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName);
     }
 
     public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : class, IDbObject

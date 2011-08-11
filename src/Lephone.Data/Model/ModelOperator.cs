@@ -223,40 +223,40 @@ namespace Lephone.Data.Model
             return Convert.ToDecimal(ro);
         }
 
-        public DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Condition iwc, OrderBy order, string columnName)
+        public List<GroupByObject<T1>> GetGroupBy<T1>(Condition iwc, OrderBy order, string columnName)
         {
             TryCreateTable();
             SqlStatement sql = Composer.GetGroupByStatement(iwc, order, columnName);
-            var list = new DbObjectList<GroupByObject<T1>>();
+            var list = new List<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list);
             DataLoadDirect(ip, typeof(GroupByObject<T1>), sql, true, false);
             return list;
         }
 
-        public DbObjectList<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
+        public List<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
         {
             TryCreateTable();
             SqlStatement sql = Composer.GetGroupBySumStatement(iwc, order, groupbyColumnName, sumColumnName);
-            var list = new DbObjectList<GroupBySumObject<T1, T2>>();
+            var list = new List<GroupBySumObject<T1, T2>>();
             IProcessor ip = GetListProcessor(list);
             DataLoadDirect(ip, typeof(GroupBySumObject<T1, T2>), sql, true, false);
             return list;
         }
 
-        public DbObjectList<T> ExecuteList<T>(string sqlStr) where T : class, IDbObject
+        public List<T> ExecuteList<T>(string sqlStr) where T : class, IDbObject
         {
             return ExecuteList<T>(new SqlStatement(sqlStr));
         }
 
-        public DbObjectList<T> ExecuteList<T>(string sqlStr, params object[] os) where T : class, IDbObject
+        public List<T> ExecuteList<T>(string sqlStr, params object[] os) where T : class, IDbObject
         {
             return ExecuteList<T>(Provider.GetSqlStatement(sqlStr, os));
         }
 
-        public DbObjectList<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
+        public List<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
         {
             TryCreateTable();
-            var ret = new DbObjectList<T>();
+            var ret = new List<T>();
             IProcessor ip = GetListProcessor(ret);
             DataLoadDirect(ip, Info.HandleType, sql, false, false);
             return ret;

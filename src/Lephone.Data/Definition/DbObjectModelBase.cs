@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using Lephone.Data.Model;
 using Lephone.Data.Model.Linq;
 using Lephone.Data.Model.QuerySyntax;
 using Lephone.Data.SqlEntry.Dynamic;
@@ -37,42 +37,42 @@ namespace Lephone.Data.Definition
             return ModelContext.Operator.GetObject<T>(id);
         }
 
-        public static DbObjectList<T> FindBySql(string sqlStr)
+        public static List<T> FindBySql(string sqlStr)
         {
             return ModelContext.Operator.ExecuteList<T>(sqlStr);
         }
 
-        public static DbObjectList<T> FindBySql(SqlEntry.SqlStatement sql)
+        public static List<T> FindBySql(SqlEntry.SqlStatement sql)
         {
             return ModelContext.Operator.ExecuteList<T>(sql);
         }
 
-        public static DbObjectList<T> FindAll()
+        public static List<T> FindAll()
         {
             return ModelContext.From<T>().Where(Condition.Empty).Select();
         }
 
-        public static DbObjectList<T> FindAll(OrderBy ob)
+        public static List<T> FindAll(OrderBy ob)
         {
             return ModelContext.From<T>().Where(Condition.Empty).OrderBy(ob).Select();
         }
 
-        public static DbObjectList<T> FindAll(string orderBy)
+        public static List<T> FindAll(string orderBy)
         {
             return ModelContext.From<T>().Where(Condition.Empty).OrderBy(orderBy).Select();
         }
 
-        public static DbObjectList<T> Find(Condition con)
+        public static List<T> Find(Condition con)
         {
             return ModelContext.From<T>().Where(con).Select();
         }
 
-        public static DbObjectList<T> Find(Condition con, OrderBy ob)
+        public static List<T> Find(Condition con, OrderBy ob)
         {
             return ModelContext.From<T>().Where(con).OrderBy(ob).Select();
         }
 
-        public static DbObjectList<T> Find(Condition con, string orderBy)
+        public static List<T> Find(Condition con, string orderBy)
         {
             return ModelContext.From<T>().Where(con).OrderBy(orderBy).Select();
         }
@@ -97,7 +97,7 @@ namespace Lephone.Data.Definition
             return new QueryContent<T>(ModelContext).Where(con);
         }
 
-        public static DbObjectList<T> FindRecent(int count)
+        public static List<T> FindRecent(int count)
         {
             string id = ModelContext.Info.KeyMembers[0].Name;
             return ModelContext.From<T>().Where(Condition.Empty).OrderBy((DESC)id).Range(1, count).Select();
@@ -155,22 +155,22 @@ namespace Lephone.Data.Definition
             return new QueryContent<T>(ModelContext).Where(condition);
         }
 
-        public static DbObjectList<T> Find(Expression<Func<T, bool>> condition)
+        public static List<T> Find(Expression<Func<T, bool>> condition)
         {
             return ModelContext.From<T>().Where(condition).Select();
         }
 
-        public static DbObjectList<T> Find(Expression<Func<T, bool>> condition, Expression<Func<T, object>> orderby)
+        public static List<T> Find(Expression<Func<T, bool>> condition, Expression<Func<T, object>> orderby)
         {
             return ModelContext.From<T>().Where(condition).OrderBy(orderby).Select();
         }
 
-        public static DbObjectList<T> Find(Expression<Func<T, bool>> condition, string orderby)
+        public static List<T> Find(Expression<Func<T, bool>> condition, string orderby)
         {
             return ModelContext.From<T>().Where(condition).OrderBy(orderby).Select();
         }
 
-        public static DbObjectList<T> FindAll(Expression<Func<T, object>> orderby)
+        public static List<T> FindAll(Expression<Func<T, object>> orderby)
         {
             return ModelContext.From<T>().Where(Condition.Empty).OrderBy(orderby).Select();
         }

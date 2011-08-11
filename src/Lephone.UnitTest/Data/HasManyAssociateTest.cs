@@ -331,5 +331,65 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("Wow", c.Books[2].Name);
             Assert.AreEqual(5, c.Books[2].Id);
         }
+
+        [Test]
+        public void TestSaveFromBelongsTo()
+        {
+            var c = new Category { Name = "test" };
+            var b1 = new Book { Name = "123" };
+            var b2 = new Book { Name = "456" };
+            var b3 = new Book { Name = "789" };
+            c.Books.Add(b1);
+            c.Books.Add(b2);
+            c.Books.Add(b3);
+            c.Save();
+
+            var c1 = Category.FindById(c.Id);
+            Assert.IsNotNull(c1);
+            Assert.AreEqual("test", c1.Name);
+            Assert.AreEqual(3, c1.Books.Count);
+            Assert.AreEqual("123", c1.Books[0].Name);
+            Assert.AreEqual("456", c1.Books[1].Name);
+            Assert.AreEqual("789", c1.Books[2].Name);
+        }
+
+        [Test]
+        public void TestSaveFromBelongsTo1()
+        {
+            var c = new Category { Name = "test" };
+            var b1 = new Book { Name = "123" };
+            var b2 = new Book { Name = "456" };
+            c.Books.Add(b1);
+            c.Books.Add(b2);
+            b2.Save();
+
+            var c1 = Category.FindById(c.Id);
+            Assert.IsNotNull(c1);
+            Assert.AreEqual("test", c1.Name);
+            Assert.AreEqual(2, c1.Books.Count);
+            Assert.AreEqual("123", c1.Books[0].Name);
+            Assert.AreEqual("456", c1.Books[1].Name);
+        }
+
+        [Test]
+        public void TestSaveFromBelongsTo2()
+        {
+            var c = new Category { Name = "test" };
+            var b1 = new Book { Name = "123" };
+            var b2 = new Book { Name = "456" };
+            var b3 = new Book { Name = "789" };
+            b1.CurCategory.Value = c;
+            b2.CurCategory.Value = c;
+            b3.CurCategory.Value = c;
+            b3.Save();
+
+            var c1 = Category.FindById(c.Id);
+            Assert.IsNotNull(c1);
+            Assert.AreEqual("test", c1.Name);
+            Assert.AreEqual(3, c1.Books.Count);
+            Assert.AreEqual("123", c1.Books[0].Name);
+            Assert.AreEqual("456", c1.Books[1].Name);
+            Assert.AreEqual("789", c1.Books[2].Name);
+        }
     }
 }

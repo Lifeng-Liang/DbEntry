@@ -9,7 +9,7 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasMany(OrderBy = "Id")]
-        public IList<File> Children { get; set; }
+        public IList<File> Children { get; private set; }
 
         [BelongsTo, DbColumn("BelongsTo_Id")]
         public File Parent { get; set; }

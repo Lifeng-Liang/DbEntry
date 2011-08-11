@@ -14,7 +14,7 @@ namespace Lephone.UnitTest.Data.CreateTable
     public class CCC1 : DbObjectModel<CCC1>
     {
         [HasMany]
-        public IList<IndexTestClass> Indeies { get; set; }
+        public IList<IndexTestClass> Indeies { get; private set; }
     }
 
     [DbContext("SQLite")]
@@ -145,7 +145,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name { get; set; }
 
         [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public IList<crxCategory1> Categories { get; set; }
+        public IList<crxCategory1> Categories { get; private set; }
     }
 
     public class crxCategory1 : DbObjectModel<crxCategory1>
@@ -154,7 +154,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name { get; set; }
 
         [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public IList<crxBook1> Books { get; set; }
+        public IList<crxBook1> Books { get; private set; }
     }
 
     [DbContext("SQLite")]
@@ -164,7 +164,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name { get; set; }
 
         [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public IList<crxCategory1Sqlite> Categories { get; set; }
+        public IList<crxCategory1Sqlite> Categories { get; private set; }
     }
 
     [DbContext("SQLite")]
@@ -174,7 +174,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name { get; set; }
 
         [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public IList<crxBook1Sqlite> Books { get; set; }
+        public IList<crxBook1Sqlite> Books { get; private set; }
     }
 
     [DbTable("tom:test_table"), DbContext("SQLite")]
@@ -197,7 +197,7 @@ namespace Lephone.UnitTest.Data.CreateTable
         public string Name { get; set; }
 
         [HasMany]
-        public IList<ForTableName> Tables { get; set; }
+        public IList<ForTableName> Tables { get; private set; }
     }
 
     [DbContext("SQLite")]

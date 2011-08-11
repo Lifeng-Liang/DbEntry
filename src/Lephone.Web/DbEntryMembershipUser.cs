@@ -32,7 +32,7 @@ namespace Lephone.Web
         public DateTime CreatedOn { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id", CrossTableName = "DbEntryMembershipUser_Role")]
-        public IList<DbEntryRole> Roles { get; set; }
+        public IList<DbEntryRole> Roles { get; private set; }
 
         public DbEntryMembershipUser Init(string userName, string password, string email, 
             string passwordQuestion, string passwordAnswer, bool isApproved, string comment)

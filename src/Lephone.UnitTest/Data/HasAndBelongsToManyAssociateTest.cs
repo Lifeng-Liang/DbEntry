@@ -15,7 +15,7 @@ namespace Lephone.UnitTest.Data
         public string Title { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<TableD> TD { get; set; }
+        public IList<TableD> TD { get; private set; }
     }
 
     [Serializable]
@@ -24,7 +24,7 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<TableC> TC { get; set; }
+        public IList<TableC> TC { get; private set; }
     }
 
     #endregion

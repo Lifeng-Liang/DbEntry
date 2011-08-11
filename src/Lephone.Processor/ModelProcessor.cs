@@ -267,6 +267,13 @@ namespace Lephone.Processor
 
         private void ProcessProperty(PropertyInformation pi)
         {
+            if(pi.FieldType == FieldType.HasMany || pi.FieldType == FieldType.HasAndBelongsToMany)
+            {
+                if(pi.PropertyDefinition.SetMethod.IsPublic)
+                {
+                    throw new DataException(string.Format("Property [{0}] should have private setter but not", pi.PropertyDefinition.Name));
+                }
+            }
             var pp = new PropertyProcessor(pi, _model, _handler);
             pp.Process();
 

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Lephone.Data.Model;
 using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
@@ -9,7 +8,7 @@ namespace Lephone.Data.Definition
     {
         protected string ForeignKeyName;
         protected DbObjectSmartUpdate Owner;
-        protected IList<T> InnerList = new DbObjectList<T>();
+        protected IList<T> InnerList = new List<T>();
 
         protected LazyLoadListBase(DbObjectSmartUpdate owner, string foreignKeyName)
         {

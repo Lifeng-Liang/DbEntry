@@ -393,9 +393,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Definition\DbObject.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\DbObjectList.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DbEntry.cs">
       <SubType>Code</SubType>
     </Compile>

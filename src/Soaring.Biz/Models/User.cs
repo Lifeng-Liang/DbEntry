@@ -25,16 +25,16 @@ namespace Soaring.Biz.Models
         public string Mobile { get; set; }
 
         [HasMany]
-        public IList<Bug> Bugs { get; set; }
+        public IList<Bug> Bugs { get; private set; }
 
         [HasMany]
-        public IList<Task> Tasks { get; set; }
+        public IList<Task> Tasks { get; private set; }
 
         [HasMany]
-        public IList<TaskDescription> TaskDescriptions { get; set; }
+        public IList<TaskDescription> TaskDescriptions { get; private set; }
 
         [HasMany]
-        public IList<BugDescription> BugDescriptions { get; set; }
+        public IList<BugDescription> BugDescriptions { get; private set; }
 
         [BelongsTo]
         public Project Project { get; set; }

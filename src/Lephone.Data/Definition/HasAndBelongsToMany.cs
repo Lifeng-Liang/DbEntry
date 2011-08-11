@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Lephone.Data.Model;
 
 namespace Lephone.Data.Definition
 {
@@ -43,7 +42,7 @@ namespace Lephone.Data.Definition
         {
             var ctx = Owner.Context;
             object key = ctx.Info.KeyMembers[0].GetValue(Owner);
-            var il = new DbObjectList<T>();
+            var il = new List<T>();
             var t = typeof(T);
             var ctx0 = ModelContext.GetInstance(typeof(T));
             ctx0.Operator.FillCollection(il, t, ctx.Info.CrossTables[t].From,

@@ -14,10 +14,10 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasAndBelongsToMany]
-        public IList<ManyMore1> m1 { get; set; }
+        public IList<ManyMore1> m1 { get; private set; }
 
         [HasAndBelongsToMany]
-        public IList<ManyMore2> m2 { get; set; }
+        public IList<ManyMore2> m2 { get; private set; }
     }
 
     [DbTable("ManyMore1")]
@@ -26,7 +26,7 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasAndBelongsToMany]
-        public IList<ManyMore> m { get; set; }
+        public IList<ManyMore> m { get; private set; }
     }
 
     [DbTable("ManyMore2")]
@@ -35,7 +35,7 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasAndBelongsToMany]
-        public IList<ManyMore> m { get; set; }
+        public IList<ManyMore> m { get; private set; }
     }
 
     [DbTable("ManyMore"), DbContext("SQLite")]
@@ -44,10 +44,10 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasAndBelongsToMany]
-        public IList<ManyMore1Sqlite> m1 { get; set; }
+        public IList<ManyMore1Sqlite> m1 { get; private set; }
 
         [HasAndBelongsToMany]
-        public IList<ManyMore2Sqlite> m2 { get; set; }
+        public IList<ManyMore2Sqlite> m2 { get; private set; }
     }
 
     [DbTable("ManyMore1"), DbContext("SQLite")]
@@ -56,7 +56,7 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasAndBelongsToMany]
-        public IList<ManyMoreSqlite> m { get; set; }
+        public IList<ManyMoreSqlite> m { get; private set; }
     }
 
     [DbTable("ManyMore2"), DbContext("SQLite")]
@@ -65,7 +65,7 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasAndBelongsToMany]
-        public IList<ManyMoreSqlite> m { get; set; }
+        public IList<ManyMoreSqlite> m { get; private set; }
     }
 
     #endregion

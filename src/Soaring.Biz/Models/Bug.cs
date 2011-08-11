@@ -15,7 +15,7 @@ namespace Soaring.Biz.Models
         public Task Task { get; set; }
 
         [HasMany]
-        public IList<BugDescription> Descriptions { get; set; }
+        public IList<BugDescription> Descriptions { get; private set; }
 
         [BelongsTo]
         public User AssignTo { get; set; }

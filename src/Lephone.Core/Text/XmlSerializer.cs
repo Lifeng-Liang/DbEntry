@@ -21,10 +21,10 @@ namespace Lephone.Core.Text
         private XmlRootAttribute GetXmlRootAttribute()
         {
             Type t = typeof(T);
-            var xt = ClassHelper.GetAttribute<XmlTypeAttribute>(t, false);
+            var xt = t.GetAttribute<XmlTypeAttribute>(false);
             if (xt == null)
             {
-                var xr = ClassHelper.GetAttribute<XmlRootAttribute>(t, false);
+                var xr = t.GetAttribute<XmlRootAttribute>(false);
                 if (xr == null)
                 {
                     string rn = (string.IsNullOrEmpty(_rootName)) ? t.Name : _rootName;

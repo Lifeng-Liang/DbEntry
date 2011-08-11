@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Lephone.Data.Builder;
 using Lephone.Data.Common;
@@ -79,57 +80,57 @@ namespace Lephone.Data.Model.QuerySyntax
             return this;
         }
 
-        public DbObjectList<T> Select()
+        public List<T> Select()
         {
             return InnerSelect<T>(false, false);
         }
 
-        public DbObjectList<T> SelectNoLazy()
+        public List<T> SelectNoLazy()
         {
             return InnerSelect<T>(false, true);
         }
 
-        public DbObjectList<TResult> SelectNoLazy<TResult>(Expression<Func<T, TResult>> expr)
+        public List<TResult> SelectNoLazy<TResult>(Expression<Func<T, TResult>> expr)
         {
             LinqExpressionParser<T>.ProcessSelectColumns(expr);
             return InnerSelect<TResult>(false, true);
         }
 
-        public DbObjectList<T> SelectDistinct()
+        public List<T> SelectDistinct()
         {
             return InnerSelect<T>(true, false);
         }
 
-        public DbObjectList<TResult> SelectDistinct<TResult>(Expression<Func<T, TResult>> expr)
+        public List<TResult> SelectDistinct<TResult>(Expression<Func<T, TResult>> expr)
         {
             LinqExpressionParser<T>.ProcessSelectColumns(expr);
             return InnerSelect<TResult>(true, false);
         }
 
-        public DbObjectList<T> SelectDistinctNoLazy()
+        public List<T> SelectDistinctNoLazy()
         {
             return InnerSelect<T>(true, true);
         }
 
-        public DbObjectList<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr)
+        public List<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr)
         {
             LinqExpressionParser<T>.ProcessSelectColumns(expr);
             return InnerSelect<TResult>(true, true);
         }
 
-        private DbObjectList<TResult> InnerSelect<TResult>(bool distinct, bool noLazy)
+        private List<TResult> InnerSelect<TResult>(bool distinct, bool noLazy)
         {
-            var ret = new DbObjectList<TResult>();
+            var ret = new List<TResult>();
             _ctx.Operator.FillCollection(ret, typeof(TResult), null, _where, _order, _range, distinct, noLazy);
             return ret;
         }
 
-        public DbObjectList<TResult> Select<TResult>()
+        public List<TResult> Select<TResult>()
         {
             return InnerSelect<TResult>(false, false);
         }
 
-        public DbObjectList<TResult> Select<TResult>(Expression<Func<T, TResult>> expr)
+        public List<TResult> Select<TResult>(Expression<Func<T, TResult>> expr)
         {
             LinqExpressionParser<T>.ProcessSelectColumns(expr);
             return Select<TResult>();
@@ -252,12 +253,12 @@ namespace Lephone.Data.Model.QuerySyntax
             return GetSum(n);
         }
 
-        public DbObjectList<GroupByObject<T1>> GroupBy<T1>(string columnName)
+        public List<GroupByObject<T1>> GroupBy<T1>(string columnName)
         {
             return _ctx.Operator.GetGroupBy<T1>(_where, _order, columnName);
         }
 
-        public DbObjectList<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName)
+        public List<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName)
         {
             return _ctx.Operator.GetGroupBySum<T1, T2>(_where, _order, groupbyColumnName, sumColumnName);
         }

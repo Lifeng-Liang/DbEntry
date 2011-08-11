@@ -11,7 +11,7 @@ namespace Lephone.UnitTest.Linq
         public string Name { get; set; }
 
         [HasMany]
-        public IList<Article> Articles { get; set; }
+        public IList<Article> Articles { get; private set; }
     }
 
     [DbContext("SQLite")]

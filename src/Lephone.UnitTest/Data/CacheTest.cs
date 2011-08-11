@@ -46,7 +46,7 @@ namespace Lephone.UnitTest.Data
         public class OrganisationalUnit : DbObjectModel<OrganisationalUnit>
         {
             [HasMany]
-            public IList<JobRoleRelation> JobRoleRelations { get; set; }
+            public IList<JobRoleRelation> JobRoleRelations { get; private set; }
         }
 
         [DbTable("HRM_EMPLOYEES"), Cacheable]
@@ -123,10 +123,10 @@ namespace Lephone.UnitTest.Data
             public string Description { get; set; }
 
             [HasMany]
-            public IList<JobRoleRelation> JobRoleRelations { get; set; }
+            public IList<JobRoleRelation> JobRoleRelations { get; private set; }
 
             [HasMany]
-            public IList<EmployeeRoleRelation> EmployeeRoleRelations { get; set; }
+            public IList<EmployeeRoleRelation> EmployeeRoleRelations { get; private set; }
         }
 
         public enum JobRoleRelationType

@@ -1,5 +1,5 @@
 ﻿using System;
-using Lephone.Data.Common;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Lephone.Data.Definition;
 
@@ -14,7 +14,7 @@ namespace Lephone.Data.Model.Linq
             AddOrderBy(expr, isAsc);
         }
 
-        public DbObjectList<T> Find(Expression<Func<T, bool>> condition)
+        public List<T> Find(Expression<Func<T, bool>> condition)
         {
             return DbEntry.From<T>().Where(condition).OrderBy(_order).Select();
         }

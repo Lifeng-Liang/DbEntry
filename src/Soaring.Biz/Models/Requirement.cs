@@ -19,7 +19,7 @@ namespace Soaring.Biz.Models
         public DateTime? UpdatedOn { get; set; }
 
         [HasMany]
-        public IList<Task> Tasks { get; set; }
+        public IList<Task> Tasks { get; private set; }
 
         [BelongsTo]
         public Project Project { get; set; }

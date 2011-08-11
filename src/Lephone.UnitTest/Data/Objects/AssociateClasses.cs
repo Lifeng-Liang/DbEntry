@@ -148,7 +148,7 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [HasMany]
-        public IList<Abook> Books { get; set; }
+        public IList<Abook> Books { get; private set; }
     }
 
     [DbTable("Books")]
@@ -165,7 +165,7 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<Reader> Readers { get; set; }
+        public IList<Reader> Readers { get; private set; }
     }
 
     public class Reader : DbObjectModel<Reader>
@@ -173,7 +173,7 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<Article> Articles { get; set; }
+        public IList<Article> Articles { get; private set; }
     }
 
     [DbTable("Article"), DbContext("SQLite")]
@@ -182,7 +182,7 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<ReaderSqlite> Readers { get; set; }
+        public IList<ReaderSqlite> Readers { get; private set; }
     }
 
     [DbTable("Reader"), DbContext("SQLite")]
@@ -191,7 +191,7 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<ArticleSqlite> Articles { get; set; }
+        public IList<ArticleSqlite> Articles { get; private set; }
     }
 
     public class Article_Reader : IDbObject

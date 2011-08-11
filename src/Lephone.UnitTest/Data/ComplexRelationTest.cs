@@ -35,7 +35,7 @@ namespace Lephone.UnitTest.Data
             [BelongsTo]
             public Cls1 Cls1 { get; set; }
             [HasMany(OrderBy = "Id")]
-            public IList<Cls3> Cls3List { get; set; }
+            public IList<Cls3> Cls3List { get; private set; }
         }
 
         public class Cls3 : DbObjectModel<Cls3>
@@ -51,7 +51,7 @@ namespace Lephone.UnitTest.Data
         {
             public string Name { get; set; }
             [HasMany(OrderBy = "Id")]
-            public IList<Cls3> Cls3List { get; set; }
+            public IList<Cls3> Cls3List { get; private set; }
             [BelongsTo]
             public Cls5 Cls5 { get; set; }
         }
@@ -68,7 +68,7 @@ namespace Lephone.UnitTest.Data
             public string Name { get; set; }
 
             [HasMany]
-            public IList<OverSave2> Overs { get; set; }
+            public IList<OverSave2> Overs { get; private set; }
         }
 
         public class OverSave2 : DbObjectModel<OverSave2>
@@ -88,7 +88,7 @@ namespace Lephone.UnitTest.Data
             public string Name { get; set; }
 
             [HasMany]
-            public IList<OverSave4> Overs { get; set; }
+            public IList<OverSave4> Overs { get; private set; }
         }
 
         public class OverSave4 : DbObjectModel<OverSave4>

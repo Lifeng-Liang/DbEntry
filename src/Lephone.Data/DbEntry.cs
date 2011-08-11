@@ -229,22 +229,22 @@ namespace Lephone.Data
             return GetOperator(dbObjectType).GetSum(iwc, columnName);
         }
 
-        public static DbObjectList<GroupByObject<T1>> GetGroupBy<T1>(Type dbObjectType, Condition iwc, OrderBy order, string columnName)
+        public static List<GroupByObject<T1>> GetGroupBy<T1>(Type dbObjectType, Condition iwc, OrderBy order, string columnName)
         {
             return GetOperator(dbObjectType).GetGroupBy<T1>(iwc, order, columnName);
         }
 
-        public static DbObjectList<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Type dbObjectType, Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
+        public static List<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Type dbObjectType, Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
         {
             return GetOperator(dbObjectType).GetGroupBySum<T1, T2>(iwc, order, groupbyColumnName, sumColumnName);
         }
 
-        public static DbObjectList<T> ExecuteList<T>(string sqlStr, params object[] os) where T : class, IDbObject
+        public static List<T> ExecuteList<T>(string sqlStr, params object[] os) where T : class, IDbObject
         {
             return GetOperator(typeof(T)).ExecuteList<T>(sqlStr, os);
         }
 
-        public static DbObjectList<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
+        public static List<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
         {
             return GetOperator(typeof(T)).ExecuteList<T>(sql);
         }

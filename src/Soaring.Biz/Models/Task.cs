@@ -24,10 +24,10 @@ namespace Soaring.Biz.Models
         public Requirement Requirement { get; set; }
 
         [HasMany]
-        public IList<Bug> Bugs { get; set; }
+        public IList<Bug> Bugs { get; private set; }
 
         [HasMany]
-        public IList<TaskDescription> Descriptions { get; set; }
+        public IList<TaskDescription> Descriptions { get; private set; }
 
         [BelongsTo]
         public User AssignTo { get; set; }

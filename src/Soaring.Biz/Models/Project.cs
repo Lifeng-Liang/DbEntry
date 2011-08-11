@@ -9,9 +9,9 @@ namespace Soaring.Biz.Models
         public string Name { get; set; }
 
         [HasMany]
-        public IList<Requirement> Requirements { get; set; }
+        public IList<Requirement> Requirements { get; private set; }
 
         [HasMany]
-        public IList<User> Users { get; set; }
+        public IList<User> Users { get; private set; }
     }
 }

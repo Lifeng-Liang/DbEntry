@@ -18,7 +18,7 @@ namespace Lephone.UnitTest.Data
             public string Name { get; set; }
 
             [HasMany]
-            public HasMany<Computer> Computers { get; set; }
+            public HasMany<Computer> Computers { get; private set; }
         }
 
         [DbTable("PCs")]

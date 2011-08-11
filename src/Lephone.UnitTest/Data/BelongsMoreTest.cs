@@ -13,7 +13,7 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasMany(OrderBy = "Id")]
-        public IList<BelongsMore> Bms { get; set; }
+        public IList<BelongsMore> Bms { get; private set; }
     }
 
     [DbTable("ReaderMore")]
@@ -22,7 +22,7 @@ namespace Lephone.UnitTest.Data
         public string Name { get; set; }
 
         [HasMany(OrderBy = "Id")]
-        public IList<BelongsMore> Bms { get; set; }
+        public IList<BelongsMore> Bms { get; private set; }
     }
 
     [DbTable("BelongsMore")]

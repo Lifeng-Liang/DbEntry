@@ -8,25 +8,25 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [HasMany]
-        public IList<User> Users { get; set; }
+        public IList<User> Users { get; private set; }
 
         [HasMany]
-        public IList<Department> Departments { get; set; }
+        public IList<Department> Departments { get; private set; }
 
         [HasMany]
-        public IList<Employee> Employees { get; set; }
+        public IList<Employee> Employees { get; private set; }
 
         [HasMany]
-        public IList<Resource> Resources { get; set; }
+        public IList<Resource> Resources { get; private set; }
 
         [HasMany]
-        public IList<Trade> Trades { get; set; }
+        public IList<Trade> Trades { get; private set; }
 
         [HasMany]
-        public IList<Customer> Customers { get; set; }
+        public IList<Customer> Customers { get; private set; }
 
         [HasMany]
-        public IList<Product> Products { get; set; }
+        public IList<Product> Products { get; private set; }
     }
 
     public enum UserType
@@ -57,10 +57,10 @@ namespace Lephone.UnitTest.Data.Objects
         public Company Company { get; set; }
 
         [HasMany]
-        public IList<Employee> Employees { get; set; }
+        public IList<Employee> Employees { get; private set; }
 
         [HasMany]
-        public IList<Resource> Resources { get; set; }
+        public IList<Resource> Resources { get; private set; }
     }
 
     public class Employee : DbObjectModel<Employee>
@@ -99,7 +99,7 @@ namespace Lephone.UnitTest.Data.Objects
         public Company Company { get; set; }
 
         [HasMany]
-        public IList<Order> Orders { get; set; }
+        public IList<Order> Orders { get; private set; }
     }
 
     public class Order : DbObjectModel<Order>
@@ -125,7 +125,7 @@ namespace Lephone.UnitTest.Data.Objects
         public string Name { get; set; }
 
         [HasMany]
-        public IList<Order> Orders { get; set; }
+        public IList<Order> Orders { get; private set; }
 
         [BelongsTo]
         public Company Company { get; set; }
