@@ -103,7 +103,11 @@ namespace Lephone.Processor
 
         private static void CheckPropertyAccessable(PropertyInformation pi)
         {
-            if(pi.FieldType == FieldType.HasMany || pi.FieldType == FieldType.HasAndBelongsToMany)
+            if(pi.IsSpecialForeignKey)
+            {
+                CheckIsPublicGetAndPrivateSet(pi);
+            }
+            else if(pi.FieldType == FieldType.HasMany || pi.FieldType == FieldType.HasAndBelongsToMany)
             {
                 if(!pi.PropertyDefinition.PropertyType.Name.StartsWith("IList`1"))
                 {
@@ -111,14 +115,11 @@ namespace Lephone.Processor
                 }
                 CheckIsPublicGetAndPrivateSet(pi);
             }
-            else
+            else if (!pi.IsComposedOf)
             {
-                if(!pi.IsComposedOf)
+                if (!pi.PropertyDefinition.SetMethod.IsPublic || !pi.PropertyDefinition.GetMethod.IsSpecialName)
                 {
-                    if (!pi.PropertyDefinition.SetMethod.IsPublic || !pi.PropertyDefinition.GetMethod.IsSpecialName)
-                    {
-                        Throw(pi, "Property [{0}] should have public getter and setter but not");
-                    }
+                    Throw(pi, "Property [{0}] should have public getter and setter but not");
                 }
             }
         }

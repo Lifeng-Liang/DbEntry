@@ -79,7 +79,7 @@ namespace Lephone.UnitTest.Linq
             public User Writer { get; set; }
 
             [SpecialName]
-            public long WriterId { get; set; }
+            public long WriterId { get; private set; }
         }
 
         [DbContext("SQLite")]
