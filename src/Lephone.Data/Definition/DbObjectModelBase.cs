@@ -135,10 +135,10 @@ namespace Lephone.Data.Definition
 
         public static void DeleteAll()
         {
-            DeleteAll(Condition.Empty);
+            DeleteBy(Condition.Empty);
         }
 
-        public static void DeleteAll(Condition con)
+        public static void DeleteBy(Condition con)
         {
             ModelContext.Operator.Delete(con);
         }
@@ -220,7 +220,7 @@ namespace Lephone.Data.Definition
             return ModelContext.From<T>().Where(condition).GetSum(column);
         }
 
-        public static int DeleteAll(Expression<Func<T, bool>> condition)
+        public static int DeleteBy(Expression<Func<T, bool>> condition)
         {
             return ModelContext.Operator.Delete(ExpressionParser<T>.Parse(condition));
         }

@@ -48,6 +48,9 @@ namespace Lephone.Data.Model.QuerySyntax
         IRangeable<T> OrderBy(string key);
         IRangeable<T> OrderBy(params ASC[] os);
         IRangeable<T> OrderBy(OrderBy order);
+        IRangeable<T> OrderBy(Expression<Func<T, object>> expr);
+        IRangeable<T> OrderByDescending(Expression<Func<T, object>> expr);
+
         long GetCount();
         decimal? GetMax(string columnName);
         decimal? GetMin(string columnName);
@@ -55,8 +58,6 @@ namespace Lephone.Data.Model.QuerySyntax
         DateTime? GetMinDate(string columnName);
         decimal? GetSum(string columnName);
 
-        IRangeable<T> OrderBy(Expression<Func<T, object>> expr);
-        IRangeable<T> OrderByDescending(Expression<Func<T, object>> expr);
         decimal? GetMax(Expression<Func<T, object>> expr);
         DateTime? GetMaxDate(Expression<Func<T, object>> expr);
         decimal? GetMin(Expression<Func<T, object>> expr);

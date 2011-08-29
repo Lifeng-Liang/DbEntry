@@ -97,6 +97,7 @@
     <Compile Include="Data\ComplexDynamicObjectTest.cs" />
     <Compile Include="Data\ComplexRelationTest.cs" />
     <Compile Include="Data\ComposedOfTest.cs" />
+    <Compile Include="Data\ConditionBuilderTest.cs" />
     <Compile Include="Data\ConnectionTest.cs" />
     <Compile Include="Data\CreateTable\FirebirdTest.cs" />
     <Compile Include="Data\CreateTable\JoinClassTest.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Data\DbObjectListTest.cs" />
     <Compile Include="Data\DbTimeProviderTest.cs" />
     <Compile Include="Data\DeleteToTest.cs" />
+    <Compile Include="Data\ExcludeModelTest.cs" />
     <Compile Include="Data\FirebirdTest.cs" />
     <Compile Include="Data\ForeignKeyTest.cs" />
     <Compile Include="Data\FullTypesTest.cs" />

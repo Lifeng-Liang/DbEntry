@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Lephone.Data.Builder;
-using Lephone.Data.Common;
 using Lephone.Data.Model;
 using Lephone.Data.Model.Member;
 using Lephone.Data.SqlEntry;

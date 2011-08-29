@@ -126,6 +126,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\CommonExtends.cs" />
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DbTimeProvider.cs" />
+    <Compile Include="ConditionBuilder.cs" />
     <Compile Include="Model\Composer\DeleteToQueryComposer.cs" />
     <Compile Include="Model\Deleter\DeleterFactory.cs" />
     <Compile Include="Model\Deleter\KeyModelDeleter.cs" />

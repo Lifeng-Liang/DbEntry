@@ -82,5 +82,13 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(1, ((PagedForOtherDb)list[0]).Id);
             Assert.AreEqual("tom", ((PagedForOtherDb)list[0]).Name);
         }
+
+        [Test]
+        public void TestForCountIsZero()
+        {
+            var selector = DbEntry.From<SinglePerson>().Where(p => p.Id > 10000).OrderBy("Id").PageSize(10).GetPagedSelector();
+            var count = (int)selector.GetResultCount();
+            Assert.AreEqual(0, count);
+        }
     }
 }
