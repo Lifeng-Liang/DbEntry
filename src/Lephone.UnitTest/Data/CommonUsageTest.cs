@@ -225,7 +225,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test4()
         {
-            List<GroupByObject<long>> l = DbEntry
+            var l = DbEntry
                 .From<Book>()
                 .Where(Condition.Empty)
                 .OrderBy((DESC)DbEntry.CountColumn)
@@ -271,7 +271,7 @@ namespace Lephone.UnitTest.Data
         public void TestPeopleModel()
         {
             PCs.DeleteAll(); // avoid FK error.
-            List<PeopleModel> l = PeopleModel.FindAll();
+            List<PeopleModel> l = PeopleModel.Find(Condition.Empty);
             Assert.AreEqual(3, l.Count);
             Assert.AreEqual("Tom", l[0].Name);
 

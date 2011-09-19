@@ -20,7 +20,7 @@ namespace Lephone.Data.Common
 
         public DbConfigHelper()
         {
-            LephoneSetting.FindAll().ForEach(p => nvc.Add(p.Name, p.Content));
+            LephoneSetting.Find(Condition.Empty).ForEach(p => nvc.Add(p.Name, p.Content));
         }
 
         protected override string GetString(string key)

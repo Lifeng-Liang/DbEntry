@@ -47,21 +47,6 @@ namespace Lephone.Data.Definition
             return ModelContext.Operator.ExecuteList<T>(sql);
         }
 
-        public static List<T> FindAll()
-        {
-            return ModelContext.From<T>().Where(Condition.Empty).Select();
-        }
-
-        public static List<T> FindAll(OrderBy ob)
-        {
-            return ModelContext.From<T>().Where(Condition.Empty).OrderBy(ob).Select();
-        }
-
-        public static List<T> FindAll(string orderBy)
-        {
-            return ModelContext.From<T>().Where(Condition.Empty).OrderBy(orderBy).Select();
-        }
-
         public static List<T> Find(Condition con)
         {
             return ModelContext.From<T>().Where(con).Select();
@@ -168,11 +153,6 @@ namespace Lephone.Data.Definition
         public static List<T> Find(Expression<Func<T, bool>> condition, string orderby)
         {
             return ModelContext.From<T>().Where(condition).OrderBy(orderby).Select();
-        }
-
-        public static List<T> FindAll(Expression<Func<T, object>> orderby)
-        {
-            return ModelContext.From<T>().Where(Condition.Empty).OrderBy(orderby).Select();
         }
 
         public static T FindOne(Expression<Func<T, bool>> condition)

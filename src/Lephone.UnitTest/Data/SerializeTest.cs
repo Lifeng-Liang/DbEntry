@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Lephone.Core.Text;
+using Lephone.Data;
 using Lephone.Data.Definition;
 using NUnit.Framework;
 
@@ -37,7 +38,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            var list = vPeople.FindAll(p => p.Id);
+            var list = vPeople.Where(Condition.Empty).OrderBy(p => p.Id).Select();
             var xml = XmlSerializer<List<vPeople>>.Xml.Serialize(list);
             Assert.AreEqual(@"<?xml version=""1.0""?>
 <List_x0060_1 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">

@@ -86,7 +86,7 @@ namespace Lephone.Web
         public override string[] GetAllRoles()
         {
             var ls = new List<string>();
-            foreach (DbEntryRole r in DbEntryRole.FindAll())
+            foreach (DbEntryRole r in DbEntryRole.Find(Condition.Empty))
             {
                 ls.Add(r.Name);
             }

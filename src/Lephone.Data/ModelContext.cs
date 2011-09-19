@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using Lephone.Core;
 using Lephone.Data.Caching;
 using Lephone.Data.Common;
@@ -8,7 +7,6 @@ using Lephone.Data.Definition;
 using Lephone.Data.Model;
 using Lephone.Data.Model.Composer;
 using Lephone.Data.Model.Handler;
-using Lephone.Data.Model.Member;
 using Lephone.Data.Model.QuerySyntax;
 using Lephone.Data.SqlEntry;
 
@@ -134,84 +132,6 @@ namespace Lephone.Data
         }
 
         #region static functions
-
-        public static object CreateObject(Type dbObjectType, IDataReader dr, bool useIndex, bool noLazy)
-        {
-            if (dbObjectType.Name.StartsWith("<"))
-            {
-                return DynamicLinqObjectHandler.Factory.GetInstance(dbObjectType).CreateObject(dr, useIndex);
-            }
-
-            var ctx = Factory.GetInstance(dbObjectType);
-            object obj = ctx.NewObject();
-            var sudi = obj as DbObjectSmartUpdate;
-            if (sudi != null)
-            {
-                sudi.m_InternalInit = true;
-            }
-            LoadValues(obj, ctx, dr, useIndex, noLazy);
-            if (sudi != null)
-            {
-                sudi.m_InternalInit = false;
-            }
-            return obj;
-        }
-
-        private static void LoadValues(object obj, ModelContext ctx, IDataReader dr, bool useIndex, bool noLazy)
-        {
-            try
-            {
-                ctx.Handler.LoadSimpleValues(obj, useIndex, dr);
-                ctx.Handler.LoadRelationValues(obj, useIndex, noLazy, dr);
-            }
-            catch(InvalidCastException)
-            {
-                if(useIndex)
-                {
-                    FindMemberCastFailByIndex(ctx, dr);
-                }
-                else
-                {
-                    FindMemberCastFailByName(ctx, dr);
-                }
-                throw;
-            }
-        }
-
-        private static void FindMemberCastFailByIndex(ModelContext ctx, IDataReader dr)
-        {
-            var ms = ctx.Info.SimpleMembers;
-            for(int i = 0; i < ms.Length; i++)
-            {
-                CheckMemberCast(ms[i], dr[i]);
-            }
-        }
-
-        private static void FindMemberCastFailByName(ModelContext ctx, IDataReader dr)
-        {
-            var ms = ctx.Info.SimpleMembers;
-            foreach(var member in ms)
-            {
-                CheckMemberCast(member, dr[member.Name]);
-            }
-        }
-
-        private static void CheckMemberCast(MemberHandler member, object value)
-        {
-            if (value == DBNull.Value && member.Is.AllowNull)
-            {
-                return;
-            }
-            if(member.MemberType.IsEnum && value is Int32)
-            {
-                return;
-            }
-            if (member.MemberType != value.GetType())
-            {
-                throw new DataException("The type of member [{0}] is [{1}] but sql value of it is [{2}]",
-                                        member.Name, member.MemberType, value.GetType());
-            }
-        }
 
         public static Condition GetKeyWhereClause(object obj)
         {

@@ -10,6 +10,7 @@ using Lephone.Data.Builder.Clause;
 using Lephone.Data.Common;
 using Lephone.Data.Definition;
 using Lephone.Data.Model.Composer;
+using Lephone.Data.Model.Creator;
 using Lephone.Data.Model.Deleter;
 using Lephone.Data.Model.Handler;
 using Lephone.Data.Model.Inserter;
@@ -293,6 +294,7 @@ namespace Lephone.Data.Model
                 endIndex = endIndex - startIndex + 1;
                 startIndex = 1;
             }
+            var creator = ModelCreator.GetCreator(returnType, useIndex, noLazy);
             Provider.ExecuteDataReader(sql, returnType, delegate(IDataReader dr)
             {
                 int count = 0;
@@ -301,7 +303,7 @@ namespace Lephone.Data.Model
                     count++;
                     if (count >= startIndex)
                     {
-                        object di = ModelContext.CreateObject(returnType, dr, useIndex, noLazy);
+                        object di = creator.CreateObject(dr);
                         if (!ip.Process(di))
                         {
                             break;

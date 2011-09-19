@@ -131,7 +131,7 @@ namespace Lephone.UnitTest.Data
         [Test, ExpectedException(typeof(DataException), ExpectedMessage = "The type of member [Name] is [System.Int32] but sql value of it is [System.String]")]
         public void TestErrorArticle2()
         {
-            ErrorArticle.FindAll();
+            ErrorArticle.Find(Condition.Empty);
         }
     }
 }

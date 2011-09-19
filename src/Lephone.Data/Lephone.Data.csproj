@@ -128,6 +128,11 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DbTimeProvider.cs" />
     <Compile Include="ConditionBuilder.cs" />
     <Compile Include="Model\Composer\DeleteToQueryComposer.cs" />
+    <Compile Include="Model\Creator\AnonymousModelCreator.cs" />
+    <Compile Include="Model\Creator\GroupByModelCreator.cs" />
+    <Compile Include="Model\Creator\ModelCreator.cs" />
+    <Compile Include="Model\Creator\PureObjectModelCreator.cs" />
+    <Compile Include="Model\Creator\StandardModelCreator.cs" />
     <Compile Include="Model\Deleter\DeleterFactory.cs" />
     <Compile Include="Model\Deleter\KeyModelDeleter.cs" />
     <Compile Include="Model\Deleter\RelationModelDeleter.cs" />

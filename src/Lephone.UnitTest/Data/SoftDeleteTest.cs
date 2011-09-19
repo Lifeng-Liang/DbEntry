@@ -61,7 +61,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestRead()
         {
-            List<SoftDelete> ls = SoftDelete.FindAll(new OrderBy("Id"));
+            List<SoftDelete> ls = SoftDelete.Find(Condition.Empty, new OrderBy("Id"));
             Assert.AreEqual(3, ls.Count);
             Assert.AreEqual("tom", ls[0].Name);
             Assert.AreEqual("jerry", ls[1].Name);

@@ -1,8 +1,15 @@
+using System;
+using System.Data;
 using Lephone.Data.Definition;
 
 namespace Lephone.Data.Model
 {
-    public class GroupByObject<T> : IDbObject
+    internal interface IGroupByObject
+    {
+        void Init(IDataReader dr);
+    }
+
+    public class GroupByObject<T> : IGroupByObject, IDbObject
     {
         // set it to key to make it looks like the first column
         [DbKey(IsDbGenerate = false)]
@@ -16,6 +23,12 @@ namespace Lephone.Data.Model
         {
             Column = column;
             Count = count;
+        }
+
+        void IGroupByObject.Init(IDataReader dr)
+        {
+            this.Column = (T)dr[0];
+            this.Count = (long)Convert.ChangeType(dr[1], typeof(long));
         }
     }
 }
