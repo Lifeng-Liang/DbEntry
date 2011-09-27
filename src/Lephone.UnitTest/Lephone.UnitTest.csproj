@@ -196,6 +196,7 @@
     <Compile Include="util\XDictionaryTest.cs" />
     <Compile Include="util\XmlSerializerTest.cs" />
     <Compile Include="Web\CommonTest.cs" />
+    <Compile Include="Web\DbEntryDataSourceTest.cs" />
     <Compile Include="Web\HtmlBuilderTest.cs" />
     <Compile Include="Web\MembershipTest.cs" />
     <Compile Include="Web\MockCookiesHandler.cs" />

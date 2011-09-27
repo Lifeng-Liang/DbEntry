@@ -34,6 +34,36 @@ namespace Lephone.Data.Definition
             }
         }
 
+        public override T Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                if(value == null)
+                {
+                    base.Value = null;
+                    return;
+                }
+                var ctx = ModelContext.GetInstance(typeof(T));
+                foreach(var mh in ctx.Info.RelationMembers)
+                {
+                    if(mh.Is.HasOne || mh.Is.HasMany)
+                    {
+                        Type st = mh.MemberType.GetGenericArguments()[0];
+                        Type ot = Owner.GetType();
+                        if (st == ot)
+                        {
+                            var ll = (IThat)mh.GetValue(value);
+                            ll.Add(Owner);
+                        }
+                    }
+                }
+            }
+        }
+
         protected override void DoWrite(object oldValue, bool isLoad)
         {
             var ctx = ModelContext.GetInstance(typeof(T));

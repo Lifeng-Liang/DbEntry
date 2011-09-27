@@ -4,7 +4,7 @@ using Lephone.Data.Model.Member;
 
 namespace Lephone.Data.Definition
 {
-    public abstract class LazyLoadListBase<T> : IList<T>, ILazyLoading
+    public abstract class LazyLoadListBase<T> : IList<T>, ILazyLoading, IThat
     {
         protected string ForeignKeyName;
         protected DbObjectSmartUpdate Owner;
@@ -222,5 +222,10 @@ namespace Lephone.Data.Definition
         }
 
         #endregion
+
+        public void Add(object obj)
+        {
+            Add((T)obj);
+        }
     }
 }

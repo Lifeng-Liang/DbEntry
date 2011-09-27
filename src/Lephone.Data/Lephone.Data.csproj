@@ -127,6 +127,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DbStructInterface.cs" />
     <Compile Include="Common\DbTimeProvider.cs" />
     <Compile Include="ConditionBuilder.cs" />
+    <Compile Include="Definition\IThat.cs" />
     <Compile Include="Model\Composer\DeleteToQueryComposer.cs" />
     <Compile Include="Model\Creator\AnonymousModelCreator.cs" />
     <Compile Include="Model\Creator\GroupByModelCreator.cs" />

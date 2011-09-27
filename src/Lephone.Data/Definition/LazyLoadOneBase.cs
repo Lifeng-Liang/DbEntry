@@ -1,6 +1,6 @@
 ﻿namespace Lephone.Data.Definition
 {
-    public abstract class LazyLoadOneBase<T> : ILazyLoading
+    public abstract class LazyLoadOneBase<T> : ILazyLoading, IThat
     {
         protected DbObjectSmartUpdate Owner;
         protected string RelationName;
@@ -34,7 +34,7 @@
 
         protected virtual void DoWrite(object oldValue, bool isLoad) { }
 
-        public T Value
+        public virtual T Value
         {
             get
             {
@@ -52,5 +52,10 @@
         }
 
         protected abstract void DoLoad();
+
+        public void Add(object obj)
+        {
+            Value = (T)obj;
+        }
     }
 }

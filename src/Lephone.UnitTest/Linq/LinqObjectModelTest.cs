@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Lephone.Data.Definition;
+using Lephone.UnitTest.Data.Objects;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Linq
