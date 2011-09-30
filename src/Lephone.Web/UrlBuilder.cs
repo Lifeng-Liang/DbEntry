@@ -6,47 +6,47 @@ namespace Lephone.Web
 {
     public class UrlBuilder
     {
-        private readonly string _BaseUrl;
-        private readonly Dictionary<string, byte[]> _Params;
-        private readonly Encoding _Encoding;
+        private readonly string _baseUrl;
+        private readonly Dictionary<string, byte[]> _params;
+        private readonly Encoding _encoding;
 
-        public UrlBuilder(string BaseUrl)
-            : this(BaseUrl, Encoding.Default)
+        public UrlBuilder(string baseUrl)
+            : this(baseUrl, Encoding.Default)
         {
         }
 
-        public UrlBuilder(string BaseUrl, Encoding defaultEncoding)
+        public UrlBuilder(string baseUrl, Encoding defaultEncoding)
         {
-            _BaseUrl = BaseUrl;
-            _Params = new Dictionary<string, byte[]>();
-            _Encoding = defaultEncoding;
+            _baseUrl = baseUrl;
+            _params = new Dictionary<string, byte[]>();
+            _encoding = defaultEncoding;
         }
 
-        public UrlBuilder Add(string Key, string Value)
+        public UrlBuilder Add(string key, string value)
         {
-            Add(Key, Value, _Encoding);
+            Add(key, value, _encoding);
             return this;
         }
 
-        public UrlBuilder Add(string Key, string Value, Encoding encoding)
+        public UrlBuilder Add(string key, string value, Encoding encoding)
         {
-            if(!string.IsNullOrEmpty(Value))
+            if(!string.IsNullOrEmpty(value))
             {
-                _Params.Add(Key, encoding.GetBytes(Value));
+                _params.Add(key, encoding.GetBytes(value));
             }
             return this;
         }
 
         public override string ToString()
         {
-            var sb = new StringBuilder(_BaseUrl);
-            bool HasParam = (_BaseUrl.IndexOf("?") >= 0);
-            sb.Append(HasParam ? "&" : "?");
-            foreach (string Key in _Params.Keys)
+            var sb = new StringBuilder(_baseUrl);
+            bool hasParam = (_baseUrl.IndexOf("?") >= 0);
+            sb.Append(hasParam ? "&" : "?");
+            foreach (string key in _params.Keys)
             {
-                sb.Append(HttpUtility.UrlEncode(Key));
+                sb.Append(HttpUtility.UrlEncode(key));
                 sb.Append("=");
-                sb.Append(HttpUtility.UrlEncode(_Params[Key]));
+                sb.Append(HttpUtility.UrlEncode(_params[key]));
                 sb.Append("&");
             }
             sb.Length--;

@@ -91,15 +91,21 @@ namespace Lephone.Web.Common
             }
         }
 
-        public static T GetObject<T>(Page p, string parseErrorText)
+        public static T GetObject<T>(object key, Page p, string parseErrorText) where T : class, IDbObject
         {
-            return (T)GetObject(typeof(T), p, parseErrorText);
+            var obj = DbEntry.GetObject<T>(key);
+            return (T)GetObject(obj, ModelContext.GetInstance(typeof(T)), p, parseErrorText);
         }
 
-        public static object GetObject(Type t, Page p, string parseErrorText)
+        public static T GetObject<T>(Page p, string parseErrorText)
         {
-            var ctx = ModelContext.GetInstance(t);
+            var ctx = ModelContext.GetInstance(typeof(T));
             object obj = ctx.NewObject();
+            return (T)GetObject(obj, ctx, p, parseErrorText);
+        }
+
+        private static object GetObject(object obj, ModelContext ctx, Page p, string parseErrorText)
+        {
             EnumControls(p, ctx.Info, delegate(MemberHandler h, WebControl c)
             {
                 string v = GetValue(c);

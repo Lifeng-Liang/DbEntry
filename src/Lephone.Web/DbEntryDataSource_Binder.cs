@@ -158,12 +158,12 @@ namespace Lephone.Web
             _lastOprationSucceed = false;
             try
             {
-                var o = PageHelper.GetObject<T>(Page, ParseErrorText);
                 object oid = ViewState["Id"];
 
                 string tn = typeof(T).Name;
                 if (oid == null)
                 {
+                    var o = PageHelper.GetObject<T>(Page, ParseErrorText);
                     if (ValidateSave(o, string.Format(ObjectCreatedText, tn)))
                     {
                         _lastOprationSucceed = true;
@@ -172,7 +172,8 @@ namespace Lephone.Web
                 }
                 else // Edit
                 {
-                    Ctx.Info.KeyMembers[0].SetValue(o, oid);
+                    var o = PageHelper.GetObject<T>(oid, Page, ParseErrorText);
+                    //Ctx.Info.KeyMembers[0].SetValue(o, oid);
                     if (ValidateSave(o, string.Format(ObjectUpdatedText, tn)))
                     {
                         _lastOprationSucceed = true;
