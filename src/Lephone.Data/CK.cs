@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Lephone.Data.Builder;
 using Lephone.Data.Builder.Clause;
 using Lephone.Data.Definition;
@@ -257,8 +259,25 @@ namespace Lephone.Data
 
 	    public Condition In(params object[] args)
 	    {
-	        return new InClause(ColumnName, args);
+	        var list = new List<object>();
+	        EnumulateArgs(list, args);
+	        return new InClause(ColumnName, list.ToArray());
 	    }
+
+        private void EnumulateArgs(List<object> list, IEnumerable args)
+        {
+            foreach(var o in args)
+            {
+                if (o is IEnumerable)
+                {
+                    EnumulateArgs(list, (IEnumerable)o);
+                }
+                else
+                {
+                    list.Add(o);
+                }
+            }
+        }
 
         public Condition InSql(string sql)
         {

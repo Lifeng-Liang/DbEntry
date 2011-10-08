@@ -745,6 +745,32 @@ namespace Lephone.UnitTest.Data
         }
 
         [Test]
+        public void TestInClause2()
+        {
+            var ids = new List<int>();
+            ids.Add(1);
+            ids.Add(3);
+            ids.Add(5);
+            ids.Add(7);
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Id"].In(ids.ToArray())).Select();
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);
+<Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
+        }
+
+        [Test]
+        public void TestInClause3()
+        {
+            var ids = new List<int>();
+            ids.Add(1);
+            ids.Add(3);
+            ids.Add(5);
+            ids.Add(7);
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Id"].In(ids)).Select();
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);
+<Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
+        }
+
+        [Test]
         public void TestInSql()
         {
             DbEntry.From<SinglePersonSqlite>().Where(CK.K["Id"].InSql("Select Id From Others")).Select();
