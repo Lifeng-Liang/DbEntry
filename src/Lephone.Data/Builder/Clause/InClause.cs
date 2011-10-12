@@ -8,11 +8,13 @@ namespace Lephone.Data.Builder.Clause
     {
         private readonly string _column;
         private readonly object[] _args;
+        private readonly bool _notIn;
 
-        public InClause(string column, params object[] args)
+        public InClause(string column, object[] args, bool notIn = false)
         {
             _column = column;
             _args = args;
+            _notIn = notIn;
         }
 
         public override bool SubClauseNotEmpty
@@ -24,6 +26,10 @@ namespace Lephone.Data.Builder.Clause
         {
             var sb = new StringBuilder();
             sb.Append(dd.QuoteForColumnName(_column));
+            if (_notIn)
+            {
+                sb.Append(" NOT");
+            }
             sb.Append(" IN (");
             if(_args.Length == 1 && _args[0].GetType() == typeof(SqlStatement))
             {

@@ -39,6 +39,26 @@ public static class CommonExtends
         throw new Exception("It's only for Linq");
     }
 
+    public static bool NotIn<T>(this T key, params T[] values) where T : struct
+    {
+        throw new Exception("It's only for Linq");
+    }
+
+    public static bool NotIn(this string key, params string[] values)
+    {
+        throw new Exception("It's only for Linq");
+    }
+
+    public static bool NotInStatement<T>(this T key, SelectStatementBuilder statement) where T : struct
+    {
+        throw new Exception("It's only for Linq");
+    }
+
+    public static bool NotInStatement(this string key, SelectStatementBuilder statement)
+    {
+        throw new Exception("It's only for Linq");
+    }
+
     public static T GetAttribute<T>(this List<Attribute> attributes) where T : Attribute
     {
         return (T)attributes.FirstOrDefault(o => o is T);

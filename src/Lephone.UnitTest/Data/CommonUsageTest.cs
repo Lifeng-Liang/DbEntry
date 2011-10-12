@@ -913,5 +913,38 @@ SELECT LAST_INSERT_ROWID();
             Assert.AreEqual("Jerry", list[0].Name);
             Assert.AreEqual("Mike", list[1].Name);
         }
+
+        [Test]
+        public void TestNotIn()
+        {
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Id"].NotIn(1, 3, 5, 7)).Select();
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] NOT IN (@in_0,@in_1,@in_2,@in_3);
+<Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
+        }
+
+        [Test]
+        public void TestNotIn2()
+        {
+            DbEntry.From<SinglePersonSqlite>().Where(CK.K["Name"].NotIn("Tom", "Jerry")).Select();
+            AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Name] NOT IN (@in_0,@in_1);
+<Text><60>(@in_0=Tom:String,@in_1=Jerry:String)");
+        }
+
+        [Test]
+        public void TestNotInStatement()
+        {
+            var smt = DbEntry.From<PCs>().Where(p => p.Id >= 2).GetStatement("Id");
+            var list = DbEntry.From<Person>().Where(CK.K["Id"].NotInStatement(smt)).OrderBy(p => p.Id).Select();
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual("Tom", list[0].Name);
+        }
+
+        [Test]
+        public void TestNotInStatement2()
+        {
+            var list = DbEntry.From<Person>().Where(CK.K["Id"].NotIn(1, 3, 5, 7)).OrderBy(p => p.Id).Select();
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual("Jerry", list[0].Name);
+        }
     }
 }

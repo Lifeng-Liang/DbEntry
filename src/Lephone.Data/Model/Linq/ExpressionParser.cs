@@ -131,6 +131,9 @@ namespace Lephone.Data.Model.Linq
                 case "In":
                 case "InStatement":
                     return ParseInCall(e);
+                case "NotIn":
+                case "NotInStatement":
+                    return ParseInCall(e, notIn: true);
                 case "IsNull":
                     return ParseNull(e, true);
                 case "IsNotNull":
@@ -149,7 +152,7 @@ namespace Lephone.Data.Model.Linq
                 isNull ? CompareOpration.Is : CompareOpration.IsNot);
         }
 
-        private static Condition ParseInCall(MethodCallExpression e)
+        private static Condition ParseInCall(MethodCallExpression e, bool notIn = false)
         {
             ColumnFunction function;
             MemberExpression member;
@@ -167,7 +170,7 @@ namespace Lephone.Data.Model.Linq
             {
                 list.Add(ie);
             }
-            return new InClause(key, list.ToArray());
+            return new InClause(key, list.ToArray(), notIn);
         }
 
         private static Condition ParseLikeCall(MethodCallExpression e, string left, string right)

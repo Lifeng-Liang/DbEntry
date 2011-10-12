@@ -575,5 +575,33 @@ namespace Lephone.UnitTest.Linq
             AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
 <Text><60>()");
         }
+
+        [Test]
+        public void TestNotIn()
+        {
+            DbEntry.From<BoolTest>().Where(p => p.Id.NotIn(1, 3, 5, 7)).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] NOT IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int64,@in_1=3:Int64,@in_2=5:Int64,@in_3=7:Int64)");
+        }
+
+        [Test]
+        public void TestNotIn1()
+        {
+            DbEntry.From<BoolTest>().Where(p => p.Name.NotIn("Tom", "Jerry")).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Name] NOT IN (@in_0,@in_1);\n<Text><60>(@in_0=Tom:String,@in_1=Jerry:String)");
+        }
+
+        [Test]
+        public void TestNotIn2()
+        {
+            DbEntry.From<BoolTest>().Where(CK.K["Id"].NotIn(1, 3, 5, 7)).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Id] NOT IN (@in_0,@in_1,@in_2,@in_3);\n<Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
+        }
+
+        [Test]
+        public void TestNotIn3()
+        {
+            DbEntry.From<BoolTest>().Where(CK.K["Name"].NotIn("Tom", "Jerry")).Select();
+            AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Name] NOT IN (@in_0,@in_1);\n<Text><60>(@in_0=Tom:String,@in_1=Jerry:String)");
+        }
     }
 }

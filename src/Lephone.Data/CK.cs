@@ -264,11 +264,18 @@ namespace Lephone.Data
 	        return new InClause(ColumnName, list.ToArray());
 	    }
 
+        public Condition NotIn(params object[] args)
+        {
+            var list = new List<object>();
+            EnumulateArgs(list, args);
+            return new InClause(ColumnName, list.ToArray(), notIn: true);
+        }
+
         private void EnumulateArgs(List<object> list, IEnumerable args)
         {
             foreach(var o in args)
             {
-                if (o is IEnumerable)
+                if ((!(o is string)) && o is IEnumerable)
                 {
                     EnumulateArgs(list, (IEnumerable)o);
                 }
@@ -281,12 +288,22 @@ namespace Lephone.Data
 
         public Condition InSql(string sql)
         {
-            return new InClause(ColumnName, new SqlStatement(sql));
+            return new InClause(ColumnName, new object[] {new SqlStatement(sql)});
+        }
+
+        public Condition NotInSql(string sql)
+        {
+            return new InClause(ColumnName, new object[] { new SqlStatement(sql) }, notIn: true);
         }
 
         public Condition InStatement(SelectStatementBuilder ssb)
         {
-            return new InClause(ColumnName, ssb);
+            return new InClause(ColumnName, new object[] {ssb});
+        }
+
+        public Condition NotInStatement(SelectStatementBuilder ssb)
+        {
+            return new InClause(ColumnName, new object[] { ssb }, notIn: true);
         }
     }
 }
