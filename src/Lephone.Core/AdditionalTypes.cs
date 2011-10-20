@@ -37,7 +37,7 @@
 
         public static TimeSpan operator -(Date d1, Date d2)
         {
-            return d1.dt.Date - d2.dt.Date;
+            return d1._dt.Date - d2._dt.Date;
         }
 
         #endregion
@@ -52,54 +52,54 @@
         public static Date MinValue = new Date(DateTime.MinValue);
         public static Date MaxValue = new Date(DateTime.MaxValue);
 
-        private DateTime dt;
+        private DateTime _dt;
 
         public int Year
         {
-            get { return dt.Year; }
+            get { return _dt.Year; }
         }
         public int Month
         {
-            get { return dt.Month; }
+            get { return _dt.Month; }
         }
         public int Day
         {
-            get { return dt.Day; }
+            get { return _dt.Day; }
         }
 
         public Date AddYears(int years)
         {
-            return new Date(dt.AddYears(years));
+            return new Date(_dt.AddYears(years));
         }
 
         public Date AddMonths(int months)
         {
-            return new Date(dt.AddMonths(months));
+            return new Date(_dt.AddMonths(months));
         }
 
         public Date AddDays(double value)
         {
-            return new Date(dt.AddDays(value));
+            return new Date(_dt.AddDays(value));
         }
 
         public DayOfWeek DayOfWeek
         {
-            get { return dt.DayOfWeek; }
+            get { return _dt.DayOfWeek; }
         }
 
         public int DayOfYear
         {
-            get { return dt.DayOfYear; }
+            get { return _dt.DayOfYear; }
         }
 
         public Date(int year, int month, int day)
         {
-            dt = new DateTime(year, month, day);
+            _dt = new DateTime(year, month, day);
         }
 
         public Date(DateTime dt)
         {
-            this.dt = dt;
+            this._dt = dt;
         }
 
         public static bool TryParse(string s, out Date result)
@@ -130,22 +130,22 @@
 
         public string ToString(string format)
         {
-            return dt.ToString(format);
+            return _dt.ToString(format);
         }
 
         public override bool Equals(object obj)
         {
-            return dt.Date.Equals(((Date)obj).dt.Date);
+            return _dt.Date.Equals(((Date)obj)._dt.Date);
         }
 
         public override int GetHashCode()
         {
-            return dt.Date.GetHashCode();
+            return _dt.Date.GetHashCode();
         }
 
         public override string ToString()
         {
-            return dt.ToString("yyyy-MM-dd");
+            return _dt.ToString("yyyy-MM-dd");
         }
 
         public static explicit operator Date(string value)
@@ -158,14 +158,19 @@
             return new Date(dt);
         }
 
+        public static explicit operator DateTime(Date d)
+        {
+            return d._dt;
+        }
+
         #endregion
 
         #region IComparable Members
 
         public int CompareTo(object obj)
         {
-            DateTime tdt = ((Date)obj).dt;
-            return dt.Date.CompareTo(tdt.Date);
+            DateTime tdt = ((Date)obj)._dt;
+            return _dt.Date.CompareTo(tdt.Date);
         }
 
         #endregion
@@ -174,7 +179,7 @@
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return dt.Date.ToString(format, formatProvider);
+            return _dt.Date.ToString(format, formatProvider);
         }
 
         #endregion
@@ -188,86 +193,86 @@
 
         public bool ToBoolean(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToBoolean(provider);
+            return ((IConvertible)(_dt.Date)).ToBoolean(provider);
         }
 
         public byte ToByte(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToByte(provider);
+            return ((IConvertible)(_dt.Date)).ToByte(provider);
         }
 
         public char ToChar(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToChar(provider);
+            return ((IConvertible)(_dt.Date)).ToChar(provider);
         }
 
         public DateTime ToDateTime(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToDateTime(provider);
+            return ((IConvertible)(_dt.Date)).ToDateTime(provider);
         }
 
         public decimal ToDecimal(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToDecimal(provider);
+            return ((IConvertible)(_dt.Date)).ToDecimal(provider);
         }
 
         public double ToDouble(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToDouble(provider);
+            return ((IConvertible)(_dt.Date)).ToDouble(provider);
         }
 
         public short ToInt16(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToInt16(provider);
+            return ((IConvertible)(_dt.Date)).ToInt16(provider);
         }
 
         public int ToInt32(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToInt32(provider);
+            return ((IConvertible)(_dt.Date)).ToInt32(provider);
         }
 
         public long ToInt64(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToInt64(provider);
+            return ((IConvertible)(_dt.Date)).ToInt64(provider);
         }
 
         [CLSCompliant(false)]
         public sbyte ToSByte(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToSByte(provider);
+            return ((IConvertible)(_dt.Date)).ToSByte(provider);
         }
 
         public float ToSingle(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToSingle(provider);
+            return ((IConvertible)(_dt.Date)).ToSingle(provider);
         }
 
         public string ToString(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToString(provider);
+            return ((IConvertible)(_dt.Date)).ToString(provider);
         }
 
         public object ToType(Type conversionType, IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToType(conversionType, provider);
+            return ((IConvertible)(_dt.Date)).ToType(conversionType, provider);
         }
 
         [CLSCompliant(false)]
         public ushort ToUInt16(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToUInt16(provider);
+            return ((IConvertible)(_dt.Date)).ToUInt16(provider);
         }
 
         [CLSCompliant(false)]
         public uint ToUInt32(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToUInt32(provider);
+            return ((IConvertible)(_dt.Date)).ToUInt32(provider);
         }
 
         [CLSCompliant(false)]
         public ulong ToUInt64(IFormatProvider provider)
         {
-            return ((IConvertible)(dt.Date)).ToUInt64(provider);
+            return ((IConvertible)(_dt.Date)).ToUInt64(provider);
         }
 
         #endregion
@@ -276,7 +281,7 @@
 
         public int CompareTo(Date other)
         {
-            return dt.Date.CompareTo(other.dt.Date);
+            return _dt.Date.CompareTo(other._dt.Date);
         }
 
         #endregion
@@ -285,7 +290,7 @@
 
         public bool Equals(Date other)
         {
-            return dt.Date.Equals(other.dt.Date);
+            return _dt.Date.Equals(other._dt.Date);
         }
 
         #endregion
@@ -328,7 +333,7 @@
 
         public static TimeSpan operator -(Time t1, Time t2)
         {
-            return t1.dt.TimeOfDay - t2.dt.TimeOfDay;
+            return t1._dt.TimeOfDay - t2._dt.TimeOfDay;
         }
 
         #endregion
@@ -340,79 +345,78 @@
             get { return new Time(DateTime.Now); }
         }
 
-        private DateTime dt;
+        private DateTime _dt;
 
         public Time AddHours(double value)
         {
-            return new Time(dt.AddHours(value));
+            return new Time(_dt.AddHours(value));
         }
 
         public Time AddMinutes(double value)
         {
-            return new Time(dt.AddMinutes(value));
+            return new Time(_dt.AddMinutes(value));
         }
 
         public Time AddSecond(double value)
         {
-            return new Time(dt.AddSeconds(value));
+            return new Time(_dt.AddSeconds(value));
         }
 
         public Time AddMillisecond(double value)
         {
-            return new Time(dt.AddMilliseconds(value));
+            return new Time(_dt.AddMilliseconds(value));
         }
 
         public Time Add(TimeSpan value)
         {
-            return new Time(dt.Add(value));
+            return new Time(_dt.Add(value));
         }
 
         public Time AddTicks(long value)
         {
-            return new Time(dt.AddTicks(value));
+            return new Time(_dt.AddTicks(value));
         }
 
         public int Hour
         {
-            get { return dt.Hour; }
+            get { return _dt.Hour; }
         }
 
         public int Minute
         {
-            get { return dt.Minute; }
+            get { return _dt.Minute; }
         }
 
         public int Second
         {
-            get { return dt.Second; }
+            get { return _dt.Second; }
         }
 
         public Time(DateTime dt)
         {
-            this.dt = dt;
+            this._dt = dt;
         }
 
-        public Time(int Second)
+        public Time(int second)
         {
-            dt = DateTime.MinValue.AddSeconds(Second);
+            _dt = DateTime.MinValue.AddSeconds(second);
         }
 
-        public Time(int Hour, int Minute, int Second)
+        public Time(int hour, int minute, int second)
         {
-            dt = new DateTime(1, 1, 1, Hour, Minute, Second);
+            _dt = new DateTime(1, 1, 1, hour, minute, second);
         }
 
-        public Time(int Hour, int Minute, int Second, int Millisecond)
+        public Time(int hour, int minute, int second, int millisecond)
         {
-            dt = new DateTime(1, 1, 1, Hour, Minute, Second, Millisecond);
+            _dt = new DateTime(1, 1, 1, hour, minute, second, millisecond);
         }
 
         public static bool TryParse(string s, out Time result)
         {
             DateTime t;
-            DateTime t1 = new DateTime();
-            bool could = DateTime.TryParse("0001-1-1 " + s, out t);
-            if (could)
+            var t1 = new DateTime();
+            if (DateTime.TryParse("0001-1-1 " + s, out t))
             {
                 if (t.Date == t1.Date)
                 {
@@ -426,8 +430,8 @@
 
         public static Time Parse(string value)
         {
-            DateTime t = DateTime.Parse("0001-1-1 " + value);
-            DateTime t1 = new DateTime();
+            var t = DateTime.Parse("0001-1-1 " + value);
+            var t1 = new DateTime();
             if (t.Date == t1.Date)
             {
                 return new Time(t);
@@ -437,22 +441,22 @@
 
         public string ToString(string format)
         {
-            return dt.ToString(format);
+            return _dt.ToString(format);
         }
 
         public override bool Equals(object obj)
         {
-            return dt.TimeOfDay.Equals(((Time)obj).dt.TimeOfDay);
+            return _dt.TimeOfDay.Equals(((Time)obj)._dt.TimeOfDay);
         }
 
         public override int GetHashCode()
         {
-            return dt.TimeOfDay.GetHashCode();
+            return _dt.TimeOfDay.GetHashCode();
         }
 
         public override string ToString()
         {
-            return dt.ToString("HH:mm:ss");
+            return _dt.ToString("HH:mm:ss");
         }
 
         public static explicit operator Time(string value)
@@ -465,13 +469,23 @@
             return new Time(dt);
         }
 
+        public static explicit operator DateTime(Time t)
+        {
+            return t._dt;
+        }
+
+        public static explicit operator TimeSpan(Time t)
+        {
+            return t._dt.TimeOfDay;
+        }
+
         #endregion
 
         #region IComparable Members
 
         public int CompareTo(object obj)
         {
-            return dt.TimeOfDay.CompareTo(((Time)obj).dt.TimeOfDay);
+            return _dt.TimeOfDay.CompareTo(((Time)obj)._dt.TimeOfDay);
         }
 
         #endregion
@@ -480,7 +494,7 @@
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return dt.ToString(format, formatProvider);
+            return _dt.ToString(format, formatProvider);
         }
 
         #endregion
@@ -494,8 +508,8 @@
 
         private IConvertible GetConvertible()
         {
-            TimeSpan t = dt.TimeOfDay;
-            DateTime r = new DateTime(1900, 1, 1, t.Hours, t.Minutes, t.Seconds, t.Milliseconds); // It's a little stupid
+            var t = _dt.TimeOfDay;
+            var r = new DateTime(1900, 1, 1, t.Hours, t.Minutes, t.Seconds, t.Milliseconds); // It's a little stupid
             return r;
         }
 
@@ -605,7 +619,7 @@
 
         public int CompareTo(Time other)
         {
-            return dt.TimeOfDay.CompareTo(other.dt.TimeOfDay);
+            return _dt.TimeOfDay.CompareTo(other._dt.TimeOfDay);
         }
 
         #endregion
@@ -614,7 +628,7 @@
 
         public bool Equals(Time other)
         {
-            return dt.TimeOfDay.Equals(other.dt.TimeOfDay);
+            return _dt.TimeOfDay.Equals(other._dt.TimeOfDay);
         }
 
         #endregion

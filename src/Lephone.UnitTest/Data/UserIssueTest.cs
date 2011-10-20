@@ -2,10 +2,21 @@
 using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Definition;
+using Lephone.MockSql.Recorder;
+using Lephone.Web;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.Data
 {
+    [DbContext("Access")]
+    public class CreatedOnModel : DbObjectModel<CreatedOnModel>
+    {
+        public string Name { get; set; }
+
+        [SpecialName]
+        public DateTime CreatedOn { get; set; }
+    }
+
     [DbTable("SYS_GRU")]
     public class AppGrupoUsr : DbObjectModel<AppGrupoUsr>
     {
@@ -132,6 +143,17 @@ namespace Lephone.UnitTest.Data
         public void TestErrorArticle2()
         {
             ErrorArticle.Find(Condition.Empty);
+        }
+
+        [Test]
+        public void TestDbEntryMembershipUser()
+        {
+            var u = new CreatedOnModel {Name = "tom"};
+            u.Save();
+            var n = StaticRecorder.Messages.Count;
+            Assert.AreEqual(@"INSERT INTO [Created_On_Model] ([Name],[CreatedOn]) VALUES (@Name_0,Now());<Text><30>(@Name_0=tom:String)",
+                StaticRecorder.Messages[n - 2]);
+            AssertSql(@"SELECT @@IDENTITY;<Text><30>(@Name_0=tom:String)");
         }
     }
 }

@@ -87,9 +87,18 @@ namespace Lephone.Data.Model.Member
             var lengthAttribute = attributes.GetAttribute<LengthAttribute>();
 	        if (lengthAttribute != null)
 	        {
-                if (MemberInfo.MemberType.IsSubclassOf(typeof(ValueType)))
+	            var type = MemberInfo.MemberType;
+                if(type.IsGenericType)
+                {
+                    var ts = type.GetGenericArguments();
+                    if(ts.Length == 1)
+                    {
+                        type = ts[0];
+                    }
+                }
+                if(type != typeof(string) && type != typeof(byte[]))
 	            {
-                    throw new ModelException(MemberInfo, "ValueType couldn't set LengthAttribute!");
+                    throw new ModelException(MemberInfo, "LengthAttribute can only define on string or byte array!");
 	            }
 	            return lengthAttribute;
 	        }
@@ -200,11 +209,11 @@ namespace Lephone.Data.Model.Member
 
         protected virtual void InnerSetValue(object obj, object value)
         {
-            if (MemberInfo.MemberType == typeof(Date) && value.GetType() == typeof(DateTime))
+            if (MemberInfo.MemberType == typeof(Date) && value is DateTime)
             {
                 value = (Date)(DateTime)value;
             }
-            else if (MemberInfo.MemberType == typeof(Time) && value.GetType() == typeof(DateTime))
+            else if (MemberInfo.MemberType == typeof(Time) && value is DateTime)
             {
                 value = (Time)(DateTime)value;
             }

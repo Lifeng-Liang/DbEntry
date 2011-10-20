@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Data.Model;
@@ -50,6 +51,26 @@ namespace Lephone.Processor
                         throw new ModelException(
                             field.MemberInfo,
                             "The subclass of DbObjectModel can not has any fields, use property instead.");
+                    }
+                }
+            }
+            if(_info.From.PartOf != null)
+            {
+                var oi = ObjectInfoFactory.Instance.GetInstance(_info.From.PartOf);
+                var dic = new Dictionary<string, int>();
+                foreach(var member in oi.Members)
+                {
+                    if(member.Is.SimpleField || member.Is.LazyLoad || member.Is.BelongsTo)
+                    {
+                        dic.Add(member.Name, 1);
+                    }
+                }
+                foreach(var member in _info.SimpleMembers)
+                {
+                    if(!dic.ContainsKey(member.Name))
+                    {
+                        throw new ModelException(member.MemberInfo,
+                            "The member of PartOf-model can not find in the origin model");
                     }
                 }
             }

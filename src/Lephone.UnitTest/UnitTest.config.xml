@@ -55,6 +55,11 @@
     <add key="Firebird.DataBase" value="@Firebird : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
     <add key="Firebird.DbDriver" value="Lephone.Data.Driver.CommonDbDriver, Lephone.Data" />
     <add key="Firebird.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />
+
+    <add key="Access.AutoCreateTable" value="true" />
+    <add key="Access.DataBase" value="@Access : Lephone.MockSql.Recorder.StaticRecorder, Lephone.MockSql" />
+    <add key="Access.DbDriver" value="Lephone.Data.Driver.CommonDbDriver, Lephone.Data" />
+    <add key="Access.DbProviderFactory" value="Lephone.MockSql.RecorderFactory, Lephone.MockSql" />
   </Lephone.Settings>
 
   <MySetting>
