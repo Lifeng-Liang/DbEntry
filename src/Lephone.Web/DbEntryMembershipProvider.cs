@@ -223,6 +223,7 @@ namespace Lephone.Web
                 {
                     var p = Rand.Next(10000000, 2147483647).ToString();
                     u.Password = StringHelper.Hash(p);
+                    u.Save();
                     return p;
                 }
             }

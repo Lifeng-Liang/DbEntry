@@ -146,12 +146,15 @@ namespace Lephone.Processor
             foreach (var type in models)
             {
                 Program.ModelClass = type.FullName;
-                var model = module.GetType(type.FullName.Replace('+', '/'));
-                var generator = new ModelHandlerGenerator(type, model, handler);
-                var mh = generator.Generate();
-                module.Types.Add(mh);
+                if(Program.ModelClass != null)
+                {
+                    var model = module.GetType(Program.ModelClass.Replace('+', '/'));
+                    var generator = new ModelHandlerGenerator(type, model, handler);
+                    var mh = generator.Generate();
+                    module.Types.Add(mh);
 
-                new ModelRelationFixer(type, model).Process();
+                    new ModelRelationFixer(type, model).Process();
+                }
             }
 
             module.CustomAttributes.Add(handler.GetAssemblyProcessed());
