@@ -163,22 +163,22 @@ namespace Lephone.Data.Model.QuerySyntax
             return smt;
         }
 
-        public IPagedSelector GetPagedSelector()
+        public IPagedSelector<T> GetPagedSelector()
         {
             return new PagedSelector<T>(_where, _order, _pageSize);
         }
 
-        public IPagedSelector GetDistinctPagedSelector()
+        public IPagedSelector<T> GetDistinctPagedSelector()
         {
             return new PagedSelector<T>(_where, _order, _pageSize, true);
         }
 
-        public IPagedSelector GetStaticPagedSelector()
+        public IPagedSelector<T> GetStaticPagedSelector()
         {
             return new StaticPagedSelector<T>(_where, _order, _pageSize);
         }
 
-        public IPagedSelector GetDistinctStaticPagedSelector()
+        public IPagedSelector<T> GetDistinctStaticPagedSelector()
         {
             return new StaticPagedSelector<T>(_where, _order, _pageSize, true);
         }

@@ -396,7 +396,6 @@ copy *.dll ..\..\..\..\bin\
     </Compile>
     <Compile Include="Definition\JoinOnAttribute.cs" />
     <Compile Include="IPagedSelector.cs" />
-    <Compile Include="PagedCollection.cs" />
     <Compile Include="Definition\DbObject.cs">
       <SubType>Code</SubType>
     </Compile>

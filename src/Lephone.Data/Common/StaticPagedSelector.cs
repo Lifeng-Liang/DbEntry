@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common
@@ -15,7 +15,7 @@ namespace Lephone.Data.Common
         {
         }
 
-        public override IList GetCurrentPage(long pageIndex)
+        public override List<T> GetCurrentPage(long pageIndex)
         {
             long rc = GetResultCount();
             var firstPageSize = (int)(rc % _PageSize);
@@ -31,7 +31,7 @@ namespace Lephone.Data.Common
             }
             long startWith = firstPageSize + _PageSize * (pageIndex - 1);
             long tn = startWith + _PageSize;
-            IList ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(startWith + 1, tn).Select();
+            var ret = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(startWith + 1, tn).Select();
             return ret;
         }
     }

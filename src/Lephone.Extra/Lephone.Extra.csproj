@@ -51,6 +51,7 @@
     <Compile Include="Logging\DatabaseLogRecorder.cs" />
     <Compile Include="Logging\LephoneLog.cs" />
     <Compile Include="Logging\LogToDatabase.cs" />
+    <Compile Include="PagedCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
+using Lephone.Data;
+using Lephone.Data.Definition;
 
-namespace Lephone.Data
+namespace Lephone.Extra
 {
-    public class PagedCollection : ICollection
+    public class PagedCollection<T> : ICollection where T : class, IDbObject
     {
         private readonly ICollection _list;
         private readonly long _pageIndex;
@@ -18,7 +20,7 @@ namespace Lephone.Data
             this._maxSize = maxSize;
         }
 
-        public PagedCollection(IPagedSelector ps, int pageIndex)
+        public PagedCollection(IPagedSelector<T> ps, int pageIndex)
         {
             this._list = ps.GetCurrentPage(pageIndex);
             this._pageIndex = pageIndex;

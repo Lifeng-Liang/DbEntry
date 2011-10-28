@@ -1,12 +1,13 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
+using Lephone.Data.Definition;
 
 namespace Lephone.Data
 {
-    public interface IPagedSelector
+    public interface IPagedSelector<T> where T : class, IDbObject
     {
         int PageSize{get;}
         long GetResultCount();
-        IList GetCurrentPage(long pageIndex);
+        List<T> GetCurrentPage(long pageIndex);
         long GetPageCount();
     }
 }

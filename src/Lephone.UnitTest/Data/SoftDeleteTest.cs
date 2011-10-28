@@ -186,7 +186,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestDeleteAll()
         {
-            SoftDelete.DeleteAll();
+            SoftDelete.DeleteBy(Condition.Empty);
             var o = SoftDelete.FindById(1);
             Assert.IsNull(o);
 

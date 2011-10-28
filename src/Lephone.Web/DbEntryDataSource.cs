@@ -128,7 +128,7 @@ namespace Lephone.Web
                 .Where(condition)
                 .OrderBy(order)
                 .PageSize(maximumRows);
-            IPagedSelector ps = IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
+            var ps = IsStatic ? igp.GetStaticPagedSelector() : igp.GetPagedSelector();
             totalRowCount = (int)ps.GetResultCount();
             IList result = ps.GetCurrentPage(pageIndex);
             return (List<T>)result;

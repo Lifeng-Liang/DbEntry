@@ -118,11 +118,6 @@ namespace Lephone.Data.Definition
             return ModelContext.From<T>().Where(con).GetSum(columnName);
         }
 
-        public static void DeleteAll()
-        {
-            DeleteBy(Condition.Empty);
-        }
-
         public static void DeleteBy(Condition con)
         {
             ModelContext.Operator.Delete(con);

@@ -124,6 +124,7 @@
     <Compile Include="Data\LogicalOperatorTest.cs" />
     <Compile Include="Data\ManyMoreTest.cs" />
     <Compile Include="Data\MKeyTest.cs" />
+    <Compile Include="Data\ModelOverrideSaveTest.cs" />
     <Compile Include="Data\MultipleRelationsTest.cs" />
     <Compile Include="Data\NullTest.cs" />
     <Compile Include="Data\Objects\AbstractClasses.cs" />

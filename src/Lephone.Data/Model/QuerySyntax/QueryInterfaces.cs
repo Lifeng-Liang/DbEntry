@@ -19,12 +19,12 @@ namespace Lephone.Data.Model.QuerySyntax
         List<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr);
     }
 
-    public interface IGetPagedSelector<T>
+    public interface IGetPagedSelector<T> where T : class, IDbObject
     {
-        IPagedSelector GetPagedSelector();
-        IPagedSelector GetDistinctPagedSelector();
-        IPagedSelector GetStaticPagedSelector();
-        IPagedSelector GetDistinctStaticPagedSelector();
+        IPagedSelector<T> GetPagedSelector();
+        IPagedSelector<T> GetDistinctPagedSelector();
+        IPagedSelector<T> GetStaticPagedSelector();
+        IPagedSelector<T> GetDistinctStaticPagedSelector();
     }
 
     public interface IGroupByable

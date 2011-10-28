@@ -270,7 +270,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestPeopleModel()
         {
-            PCs.DeleteAll(); // avoid FK error.
+            PCs.DeleteBy(Condition.Empty); // avoid FK error.
             List<PeopleModel> l = PeopleModel.Find(Condition.Empty);
             Assert.AreEqual(3, l.Count);
             Assert.AreEqual("Tom", l[0].Name);

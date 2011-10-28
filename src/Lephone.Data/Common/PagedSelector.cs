@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using Lephone.Data.Definition;
 
 namespace Lephone.Data.Common
 {
-    public class PagedSelector<T> : IPagedSelector where T : class, IDbObject
+    public class PagedSelector<T> : IPagedSelector<T> where T : class, IDbObject
     {
         protected Condition iwc;
         protected OrderBy oc;
         internal int _PageSize;
         protected ModelContext Entry;
-        internal bool isDistinct;
+        internal bool IsDistinct;
         protected long ResultCount = -1;
         protected long PageCount = -1;
 
@@ -25,10 +25,10 @@ namespace Lephone.Data.Common
             this.oc = oc;
             this._PageSize = pageSize;
             this.Entry = ModelContext.GetInstance(typeof(T));
-            this.isDistinct = isDistinct;
+            this.IsDistinct = isDistinct;
         }
 
-        int IPagedSelector.PageSize
+        public int PageSize
         {
             get { return _PageSize; }
         }
@@ -37,7 +37,7 @@ namespace Lephone.Data.Common
         {
             if (ResultCount < 0)
             {
-                ResultCount = Entry.Operator.GetResultCount(iwc, isDistinct);
+                ResultCount = Entry.Operator.GetResultCount(iwc, IsDistinct);
             }
             return ResultCount;
         }
@@ -51,12 +51,12 @@ namespace Lephone.Data.Common
             return PageCount;
         }
 
-        public virtual IList GetCurrentPage(long pageIndex)
+        public virtual List<T> GetCurrentPage(long pageIndex)
         {
             long startWith = _PageSize * pageIndex;
             long tn = startWith + _PageSize;
             var query = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(startWith + 1, tn);
-            if(isDistinct)
+            if(IsDistinct)
             {
                 return query.SelectDistinct();
             }

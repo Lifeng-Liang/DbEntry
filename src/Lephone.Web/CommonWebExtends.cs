@@ -1,17 +1,17 @@
-using System.Collections.Generic;
 using Lephone.Core;
 using Lephone.Data;
 using Lephone.Data.Definition;
 using Lephone.Data.Model.QuerySyntax;
 using Lephone.Web.Mvc;
 
+// ReSharper disable CheckNamespace
 public static class CommonWebExtends
 {
-    public static ItemList<T> GetItemList<T>(this IPagedSelector selector, long pageIndex)  where T : class, IDbObject
+    public static ItemList<T> GetItemList<T>(this IPagedSelector<T> selector, long pageIndex)  where T : class, IDbObject
     {
         var result = new ItemList<T>
                          {
-                             List = (List<T>) selector.GetCurrentPage(pageIndex),
+                             List = selector.GetCurrentPage(pageIndex),
                              Count = selector.GetResultCount(),
                              PageSize = selector.PageSize,
                              PageCount = selector.GetPageCount(),
@@ -39,7 +39,7 @@ public static class CommonWebExtends
                 pageIndex = listPageCount;
             }
         }
-        var list = ps.GetItemList<T>((pageIndex ?? 1) - 1);
+        var list = ps.GetItemList((pageIndex ?? 1) - 1);
         if (style == ListStyle.Hybird && pageIndex == null)
         {
             list.PageIndex = 0;
