@@ -39,13 +39,22 @@ namespace Soaring.Biz.Models
         [BelongsTo]
         public Project Project { get; set; }
 
-        public override void Save()
+        protected override void OnInserting()
+        {
+            ProcessPassword();
+        }
+
+        protected override void OnUpdating()
+        {
+            ProcessPassword();
+        }
+
+        private void ProcessPassword()
         {
             if (Password != null && Password.Length < 100)
             {
                 Password = CommonHelper.GetHashedPassword(Password);
             }
-            base.Save();
         }
 
         public static User FindByNick(string nick)

@@ -88,6 +88,7 @@ namespace Lephone.Processor
             GenerateLoadRelationValues(false, true);
             GenerateGetKeyValueDirect();
             GenerateGetKeyValuesDirect();
+            GenerateSetKeyValueDirect();
             GenerateSetValuesForSelectDirect();
             GenerateSetValuesForInsertDirect();
             GenerateSetValuesForUpdateDirect();
@@ -286,7 +287,6 @@ namespace Lephone.Processor
 
         private void GenerateGetKeyValueDirect()
         {
-            //TODO: implements this
             var method = new MethodDefinition("GetKeyValueDirect", MethodAttr, _handler.ObjectType);
             method.Overrides.Add(_handler.GetKeyValueDirect);
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
@@ -311,7 +311,6 @@ namespace Lephone.Processor
 
         private void GenerateGetKeyValuesDirect()
         {
-            //TODO: implements this
             var method = new MethodDefinition("GetKeyValuesDirect", MethodAttr, _handler.VoidType);
             method.Overrides.Add(_handler.GetKeyValuesDirect);
             method.Parameters.Add(new ParameterDefinition("dic", ParameterAttributes.None, _handler.DictionaryStringObjectType));
@@ -327,6 +326,44 @@ namespace Lephone.Processor
                 processor.LoadArg(1).LoadString(f.Name).LoadLoc(0);
                 processor.GetMember(f, _handler);
                 processor.Box(_handler.Import(f.MemberType)).CallVirtual(_handler.DictionaryStringObjectAdd);
+            }
+
+            processor.Return();
+            processor.Append();
+            _result.Methods.Add(method);
+        }
+
+        private void GenerateSetKeyValueDirect()
+        {
+            var method = new MethodDefinition("SetKeyValueDirect", MethodAttr, _handler.VoidType);
+            method.Overrides.Add(_handler.SetKeyValueDirect);
+            method.Parameters.Add(new ParameterDefinition("obj", ParameterAttributes.None, _handler.ObjectType));
+            method.Parameters.Add(new ParameterDefinition("key", ParameterAttributes.None, _handler.ObjectType));
+            var processor = new IlBuilder(method.Body);
+
+            if (_info.KeyMembers.Length == 1)
+            {
+                var h = _info.KeyMembers[0];
+                processor.LoadArg(1).Cast(_model);
+                processor.LoadArg(2);
+                var fh = _info.KeyMembers[0];
+                if (fh.MemberType == typeof(long))
+                {
+                    processor.Call(_handler.ConvertToInt64);
+                }
+                else if (fh.MemberType == typeof(int))
+                {
+                    processor.Call(_handler.ConvertToInt32);
+                }
+                else if (fh.MemberType == typeof(Guid))
+                {
+                    processor.Unbox(_handler.Import(h.MemberType));
+                }
+                else
+                {
+                    processor.Cast(_handler.Import(h.MemberType));
+                }
+                processor.SetMember(h, _handler);
             }
 
             processor.Return();

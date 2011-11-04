@@ -150,27 +150,6 @@ namespace Lephone.Data
             return ret;
         }
 
-        public static void SetKey(object obj, object key)
-        {
-            var t = obj.GetType();
-            var ctx = GetInstance(t);
-            if (!ctx.Info.HasSystemKey)
-            {
-                throw new DataException("dbobject do not have SystemGeneration key field : " + t);
-            }
-            var fh = ctx.Info.KeyMembers[0];
-            object sKey;
-            if (fh.MemberType == typeof(long))
-            {
-                sKey = Convert.ToInt64(key);
-            }
-            else
-            {
-                sKey = fh.MemberType == typeof(int) ? Convert.ToInt32(key) : key;
-            }
-            fh.SetValue(obj, sKey);
-        }
-
         public static object CloneObject(object obj)
         {
             if (obj == null) { return null; }

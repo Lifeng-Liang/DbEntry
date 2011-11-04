@@ -24,6 +24,10 @@ namespace Lephone.Data.Model.Handler
         {
         }
 
+        protected override void SetKeyValueDirect(object obj, object key)
+        {
+        }
+
         protected override void LoadRelationValuesByIndex(object o, IDataReader dr)
         {
         }

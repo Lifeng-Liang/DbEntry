@@ -53,6 +53,7 @@
     <Compile Include="Logging\LogToDatabase.cs" />
     <Compile Include="PagedCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlSerializableDbObjectModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Extra.snk" />

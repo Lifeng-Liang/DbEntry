@@ -13,10 +13,14 @@ namespace Lephone.UnitTest.Data
 
         [Exclude] public int SaveCount;
 
-        public override void Save()
+        protected override void OnInserting()
         {
             SaveCount++;
-            base.Save();
+        }
+
+        protected override void OnUpdating()
+        {
+            SaveCount++;
         }
     }
 
@@ -29,10 +33,14 @@ namespace Lephone.UnitTest.Data
 
         [Exclude] public int SaveCount;
 
-        public override void Save()
+        protected override void OnInserting()
         {
             SaveCount++;
-            base.Save();
+        }
+
+        protected override void OnUpdating()
+        {
+            SaveCount++;
         }
     }
 

@@ -78,8 +78,9 @@ namespace Lephone.UnitTest.Data
             [BelongsTo]
             public OverSave Over { get; set; }
 
-            public override void Save()
+            protected override void OnInserting()
             {
+                Name += "01";
             }
         }
 
@@ -98,10 +99,14 @@ namespace Lephone.UnitTest.Data
             [BelongsTo]
             public OverSave3 Over { get; set; }
 
-            public override void Save()
+            protected override void OnInserting()
             {
                 this.Name = "change";
-                base.Save();
+            }
+
+            protected override void OnUpdating()
+            {
+                this.Name = "change";
             }
         }
 
@@ -206,7 +211,8 @@ namespace Lephone.UnitTest.Data
 
             var o1 = OverSave.FindById(o.Id);
             Assert.AreEqual("test", o1.Name);
-            Assert.AreEqual(0, o1.Overs.Count);
+            Assert.AreEqual(1, o1.Overs.Count);
+            Assert.AreEqual("ok01", o1.Overs[0].Name);
         }
 
         [Test]

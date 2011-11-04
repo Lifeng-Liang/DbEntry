@@ -160,15 +160,8 @@ namespace Lephone.UnitTest.Data
     [DbContext("SQLite")]
     public class asUser : DbObjectModel<asUser>
     {
-        [DbColumn("theName")]
-        public string Name { get; set; }
+        [DbColumn("theName")] public string Name { get; set; }
         public int Age { get; set; }
-
-        public void SetAsLoadedObject()
-        {
-            this.Id = 1;
-            this.m_UpdateColumns.Clear();
-        }
     }
 
     #endregion
@@ -194,6 +187,16 @@ namespace Lephone.UnitTest.Data
         }
 
         #endregion
+
+        private asUser LoadAsUser(string name, int age)
+        {
+            StaticRecorder.CurRow.Add(new RowInfo("Id", 1L));
+            StaticRecorder.CurRow.Add(new RowInfo("theName", name));
+            StaticRecorder.CurRow.Add(new RowInfo("Age", age));
+            var u = asUser.FindById(1);
+            StaticRecorder.ClearMessages();
+            return u;
+        }
 
         [Test]
         public void TestDropManyToManyMedi()
@@ -265,8 +268,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject()
         {
-            var u = new asUser {Name = "Tom", Age = 18};
-            u.SetAsLoadedObject();
+            var u = LoadAsUser("Tom", 18);
             DbEntry.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
@@ -275,8 +277,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject2()
         {
-            var u = new asUser {Name = "jerry", Age = 18};
-            u.SetAsLoadedObject();
+            var u = LoadAsUser("jerry", 18);
             u.Name = "Tom";
             DbEntry.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
@@ -286,8 +287,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject3()
         {
-            var u = new asUser {Name = "Tom", Age = 18};
-            u.SetAsLoadedObject();
+            var u = LoadAsUser("Tom", 18);
             u.Name = "Jerry";
             u.Age = 25;
             DbEntry.Save(u);
@@ -298,12 +298,11 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestSmartUpdateForDynamicObject4()
         {
+            var u = LoadAsUser("jerry", 18);
             DbEntry.NewTransaction(delegate
             {
                 DbEntry.NewTransaction(delegate
                 {
-                    var u = new asUser {Name = "jerry", Age = 18};
-                    u.SetAsLoadedObject();
                     u.Name = "Tom";
                     DbEntry.Save(u);
                 });
@@ -315,8 +314,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void TestUpdateFieldAfterSave()
         {
-            var u = new asUser {Name = "Tom", Age = 18};
-            u.SetAsLoadedObject();
+            var u = LoadAsUser("Tom", 18);
             u.Name = "jerry";
             DbEntry.Save(u);
             u.Age = 25;

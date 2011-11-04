@@ -61,6 +61,13 @@ namespace Lephone.Data.Model.Handler
 
         protected abstract void GetKeyValuesDirect(Dictionary<string, object> dic, object o);
 
+        public void SetKeyValue(object obj, object key)
+        {
+            SetKeyValueDirect(obj, key);
+        }
+
+        protected abstract void SetKeyValueDirect(object obj, object key);
+
         protected object GetNullable(object o, int objType)
         {
             if (o == DBNull.Value)

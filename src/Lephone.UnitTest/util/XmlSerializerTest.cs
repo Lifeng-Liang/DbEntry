@@ -7,6 +7,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using Lephone.Data.Definition;
 using Lephone.Core.Text;
+using Lephone.Extra;
 using NUnit.Framework;
 
 namespace Lephone.UnitTest.util
@@ -34,7 +35,7 @@ namespace Lephone.UnitTest.util
         }
 
         [Serializable]
-        public class Sitex : DbObjectModel<Sitex>
+        public class Sitex : XmlSerializableDbObjectModel<Sitex>
         {
             public string Url { get; set; }
         }

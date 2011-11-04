@@ -64,6 +64,9 @@ namespace Lephone.Processor
         public readonly MethodReference ListKeyValuePairStringStringAdd;
         public readonly MethodReference KeyValueCollectionAdd;
 
+        public readonly MethodReference ConvertToInt64;
+        public readonly MethodReference ConvertToInt32;
+
         private readonly ModuleDefinition _module;
 
         private readonly TypeReference _hasOne;
@@ -111,6 +114,7 @@ namespace Lephone.Processor
         public readonly MethodReference LoadRelationValuesByNameNoLazy;
         public readonly MethodReference GetKeyValueDirect;
         public readonly MethodReference GetKeyValuesDirect;
+        public readonly MethodReference SetKeyValueDirect;
         public readonly MethodReference SetValuesForSelectDirect;
         public readonly MethodReference SetValuesForSelectDirectNoLazy;
         public readonly MethodReference SetValuesForInsertDirect;
@@ -209,6 +213,9 @@ namespace Lephone.Processor
 
             KeyValueCollectionAdd = Import(typeof(KeyValueCollection).GetMethod("Add", new[] {typeof(KeyValue)}));
 
+            ConvertToInt64 = _module.Import(_module.Import(typeof(Convert)).GetMethod("ToInt64"));
+            ConvertToInt32 = _module.Import(_module.Import(typeof(Convert)).GetMethod("ToInt32"));
+
             DynamicObjectReferenceSerializeObject =
                 Import(Import(typeof(DynamicObjectReference)).GetMethod("SerializeObject"));
             SerializableGetObjectData = Import(Import(typeof(ISerializable)).GetMethod("GetObjectData"));
@@ -225,6 +232,7 @@ namespace Lephone.Processor
             LoadRelationValuesByNameNoLazy = Import(emitBase.GetMethod("LoadRelationValuesByNameNoLazy", ClassHelper.AllFlag));
             GetKeyValueDirect = Import(emitBase.GetMethod("GetKeyValueDirect", ClassHelper.AllFlag));
             GetKeyValuesDirect = Import(emitBase.GetMethod("GetKeyValuesDirect", ClassHelper.AllFlag));
+            SetKeyValueDirect = Import(emitBase.GetMethod("SetKeyValueDirect", ClassHelper.AllFlag));
             SetValuesForSelectDirect = Import(emitBase.GetMethod("SetValuesForSelectDirect", ClassHelper.AllFlag));
             SetValuesForSelectDirectNoLazy = Import(emitBase.GetMethod("SetValuesForSelectDirectNoLazy", ClassHelper.AllFlag));
             SetValuesForInsertDirect = Import(emitBase.GetMethod("SetValuesForInsertDirect", ClassHelper.AllFlag));

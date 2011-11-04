@@ -11,6 +11,7 @@ namespace Lephone.Data.Model.Handler
         void LoadRelationValues(object o, bool useIndex, bool noLazy, IDataReader dr);
         Dictionary<string, object> GetKeyValues(object o);
         object GetKeyValue(object o);
+        void SetKeyValue(object obj, object key);
         void SetValuesForSelect(ISqlKeys isv, bool noLazy);
         void SetValuesForInsert(ISqlValues isv, object obj);
         void SetValuesForUpdate(ISqlValues isv, object obj);

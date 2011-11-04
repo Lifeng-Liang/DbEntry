@@ -15,6 +15,7 @@ namespace Lephone.Data.Model.Saver
         public override object Insert(IDbObject obj)
         {
             var o = (DbObjectSmartUpdate)obj;
+            o.RaiseInserting();
             var key = base.Insert(o);
             o.m_InitUpdateColumns();
             return key;
@@ -27,7 +28,8 @@ namespace Lephone.Data.Model.Saver
             {
                 if (o.m_UpdateColumns.Count > 0)
                 {
-                    base.Update(obj);
+                    o.RaiseUpdating();
+                    base.Update(o);
                 }
             }
             o.m_InitUpdateColumns();

@@ -381,6 +381,15 @@ namespace Lephone.Processor
             return this;
         }
 
+        public IlBuilder Unbox(TypeReference t)
+        {
+            if(t.IsValueType)
+            {
+                _list.Add(_il.Create(OpCodes.Unbox_Any, t));
+            }
+            return this;
+        }
+
         public IlBuilder Ceq()
         {
             _list.Add(_il.Create(OpCodes.Ceq));
