@@ -228,7 +228,7 @@ namespace Lephone.Processor
             {
                 processor.LoadArg(0);
                 processor.LoadArg(0);
-                processor.NewObj(kv.Key.GetConstructor());
+                processor.NewObj(kv.Key.GetFirstConstructor());
                 processor.SetField(kv.Value);
             }
         }

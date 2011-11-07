@@ -202,6 +202,18 @@ namespace Lephone.Processor
             throw new ApplicationException("Can not find ctor : " + type.FullName);
         }
 
+        public static MethodDefinition GetFirstConstructor(this TypeReference type)
+        {
+            foreach (var method in type.Resolve().Methods)
+            {
+                if (method.IsConstructor)
+                {
+                    return method;
+                }
+            }
+            throw new ApplicationException("Can not find ctor : " + type.FullName);
+        }
+
         private static bool IsParametersSame(MethodDefinition ctor, Type[] types)
         {
             if(types.Length == 0)
