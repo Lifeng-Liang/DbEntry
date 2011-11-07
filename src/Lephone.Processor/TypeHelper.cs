@@ -206,7 +206,7 @@ namespace Lephone.Processor
         {
             if(types.Length == 0)
             {
-                return true;
+                return ctor.Parameters.Count == 0;
             }
             if(ctor.Parameters.Count == types.Length)
             {

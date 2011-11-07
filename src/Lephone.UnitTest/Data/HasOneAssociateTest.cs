@@ -243,5 +243,24 @@ namespace Lephone.UnitTest.Data
             Assert.IsNotNull(pc);
             Assert.IsNull(pc.Owner.Value);
         }
+
+        [Test]
+        public void TestHasOneCutTheRelationByDelete()
+        {
+            // B.Delete() will cut the relation of it from A
+            var p = Person.FindById(2);
+            Assert.IsNotNull(p);
+            Assert.IsNotNull(p.PC.Value);
+
+            var pc = p.PC.Value;
+            pc.Delete();
+            Assert.IsNull(p.PC.Value);
+            Assert.IsNull(pc.Owner);
+            p.Save();
+
+            p = Person.FindById(2);
+            Assert.AreEqual("Jerry", p.Name);
+            Assert.IsNull(p.PC.Value);
+        }
     }
 }

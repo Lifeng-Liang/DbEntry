@@ -40,8 +40,10 @@ namespace Lephone.UnitTest.Data
         {
             var list = vPeople.Where(Condition.Empty).OrderBy(p => p.Id).Select();
             var xml = XmlSerializer<List<vPeople>>.Xml.Serialize(list);
+            xml = xml.Replace(@"xmlns:xsd=""http://www.w3.org/2001/XMLSchema""", "")
+                .Replace(@"xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""", "");
             Assert.AreEqual(@"<?xml version=""1.0""?>
-<List_x0060_1 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+<List_x0060_1  >
   <vPeople>
     <Id>1</Id>
     <Name>Tom</Name>

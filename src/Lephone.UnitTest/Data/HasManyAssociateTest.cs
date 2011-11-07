@@ -391,5 +391,30 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("456", c1.Books[1].Name);
             Assert.AreEqual("789", c1.Books[2].Name);
         }
+
+        [Test]
+        public void TestHasManyCutTheRelationByDelete()
+        {
+            // B.Delete() will cut the relation of it from A
+            var c = Category.FindById(2);
+            Assert.IsNotNull(c);
+            Assert.AreEqual(3, c.Books.Count);
+            Assert.AreEqual("Game", c.Name);
+            Assert.AreEqual("Diablo", c.Books[0].Name);
+
+            var b = c.Books[0];
+            b.Delete();
+            Assert.AreEqual(2, c.Books.Count);
+            Assert.AreEqual("Pal95", c.Books[0].Name);
+            Assert.AreEqual("Wow", c.Books[1].Name);
+            Assert.IsNull(b.CurCategory);
+
+            c.Save();
+            c = Category.FindById(2);
+            Assert.IsNotNull(c);
+            Assert.AreEqual(2, c.Books.Count);
+            Assert.AreEqual("Pal95", c.Books[0].Name);
+            Assert.AreEqual("Wow", c.Books[1].Name);
+        }
     }
 }
