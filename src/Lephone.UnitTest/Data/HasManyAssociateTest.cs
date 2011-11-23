@@ -392,7 +392,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual("789", c1.Books[2].Name);
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestHasManyCutTheRelationByDelete()
         {
             // B.Delete() will cut the relation of it from A

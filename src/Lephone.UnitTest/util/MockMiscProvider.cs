@@ -5,58 +5,44 @@ namespace Lephone.UnitTest.util
 {
     public class MockMiscProvider : MiscProvider
     {
-        public static MockMiscProvider Me
-        {
-            get
-            {
-                return (MockMiscProvider)Instance;
-            }
-        }
-
-        private DateTime _now = DateTime.MinValue;
+        public static DateTime MockNow = DateTime.MinValue;
 
         public override DateTime Now
         {
-            get { return _now; }
+            get { return MockNow; }
         }
 
-        public void SetNow(DateTime dt)
+        public static void Add(TimeSpan ts)
         {
-            _now = dt;
+            MockNow = MockNow.Add(ts);
         }
 
-        public void Add(TimeSpan ts)
-        {
-            _now = _now.Add(ts);
-        }
-
-        private Guid _guid = Guid.Empty;
+        public static Guid MockGuid = Guid.Empty;
 
         public override Guid NewGuid()
         {
-            return _guid;
+            return MockGuid;
         }
 
-        public void SetGuid(Guid id)
-        {
-            _guid = id;
-        }
-
-        private long _secends;
+        public static long MockSecends;
 
         public override long Secends
         {
-            get { return _secends; }
+            get { return MockSecends; }
         }
 
-        public void SetSecends(long s)
+        public static int MockSystemRunningMillisecends;
+        
+        public override int SystemRunningMillisecends
         {
-            _secends = s;
+            get { return MockSystemRunningMillisecends; }
         }
 
-        public void AddSecends(long s)
+        public static int SleepMilliSecends;
+
+        public override void Sleep(int millisecends)
         {
-            _secends += s;
+            SleepMilliSecends += millisecends;
         }
     }
 }

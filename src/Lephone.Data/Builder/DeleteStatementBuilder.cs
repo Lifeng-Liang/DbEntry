@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using Lephone.Data.Dialect;
 using Lephone.Data.Builder.Clause;
@@ -16,10 +17,10 @@ namespace Lephone.Data.Builder
 			this._tableName = tableName;
 		}
 
-        protected override SqlStatement ToSqlStatement(DbDialect dd)
+        protected override SqlStatement ToSqlStatement(DbDialect dd, List<string> queryRequiredFields)
 		{
 			var dpc = new DataParameterCollection();
-			string sqlString = string.Format(StatementTemplate, dd.QuoteForTableName(_tableName), Where.ToSqlText(dpc, dd));
+			string sqlString = string.Format(StatementTemplate, dd.QuoteForTableName(_tableName), Where.ToSqlText(dpc, dd, queryRequiredFields));
 			var sql = new SqlStatement(CommandType.Text, sqlString, dpc);
 			return sql;
 		}

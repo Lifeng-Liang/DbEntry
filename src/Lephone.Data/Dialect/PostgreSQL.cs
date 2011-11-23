@@ -1,4 +1,5 @@
-﻿using Lephone.Data.Builder;
+﻿using System.Collections.Generic;
+using Lephone.Data.Builder;
 using Lephone.Data.Common;
 using Lephone.Data.SqlEntry;
 
@@ -12,9 +13,9 @@ namespace Lephone.Data.Dialect
             TypeNames[DataType.Time] = "TIME";
         }
 
-        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
         {
-            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this);
+            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this, queryRequiredFields);
             sql.SqlCommandText = string.Format("{0} LIMIT {2} OFFSET {1}",
                 sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
             return sql;

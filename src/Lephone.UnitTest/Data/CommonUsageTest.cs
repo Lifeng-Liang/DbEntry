@@ -329,7 +329,7 @@ namespace Lephone.UnitTest.Data
             //Condition c = CK.K["Age"] > CK.K["Count"];
             var c = CK.K["Age"].Gt(CK.K["Count"]);
             var dpc = new DataParameterCollection();
-            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect, null);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
         }
@@ -339,7 +339,7 @@ namespace Lephone.UnitTest.Data
         {
             var c = CK.K["Age"] > CK.K["Count"];
             var dpc = new DataParameterCollection();
-            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect, null);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("[Age] > [Count]", s);
         }
@@ -349,7 +349,7 @@ namespace Lephone.UnitTest.Data
         {
             var c = CK.K["Age"] > CK.K["Count"] && CK.K["Name"] == CK.K["theName"] || CK.K["Age"] <= CK.K["Num"];
             var dpc = new DataParameterCollection();
-            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect);
+            string s = c.ToSqlText(dpc, DbEntry.Provider.Dialect, null);
             Assert.AreEqual(0, dpc.Count);
             Assert.AreEqual("(([Age] > [Count]) AND ([Name] = [theName])) OR ([Age] <= [Num])", s);
         }

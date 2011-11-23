@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using Lephone.Data.Builder;
 using Lephone.Data.SqlEntry;
 using Lephone.Data.Common;
@@ -52,9 +53,9 @@ namespace Lephone.Data.Dialect
             return new DbStructInterface(null, new[] { null, null, null, "table" }, null, null, null);
         }
 
-        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
         {
-            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this);
+            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this, queryRequiredFields);
             sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
                 sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
             return sql;

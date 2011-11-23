@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
@@ -54,7 +55,7 @@ namespace Lephone.Data.Builder.Clause
 			set { _list[index] = value; }
 		}
 
-		public override string ToSqlText(DataParameterCollection dpc, DbDialect dd)
+        public override string ToSqlText(DataParameterCollection dpc, DbDialect dd, List<string> queryRequiredFields)
 		{
 			var sb = new StringBuilder();
 			foreach ( Condition ic in _list )
@@ -62,7 +63,7 @@ namespace Lephone.Data.Builder.Clause
                 if (ic.SubClauseNotEmpty)
                 {
                     sb.Append("(");
-                    sb.Append(ic.ToSqlText(dpc, dd));
+                    sb.Append(ic.ToSqlText(dpc, dd, queryRequiredFields));
                     sb.Append(") ");
                     sb.Append(_condition);
                     sb.Append(" ");

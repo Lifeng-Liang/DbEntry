@@ -42,6 +42,7 @@ namespace Lephone.Processor
             var t = _handler.GetRealType(_pi);
             _pi.FieldDefinition = new FieldDefinition(name, FieldAttributes.FamORAssem, t);
             PopulateDbColumn();
+            PopulateQueryRequired();
             PopulateIndex();
             GenerateCrossTableForHasManyAndBelongsTo();
             PopulateCustomAttributeForLazyLoadColumn();
@@ -272,6 +273,17 @@ namespace Lephone.Processor
             {
                 var c = _handler.GetDbColumn(_pi.PropertyDefinition.Name);
                 _pi.FieldDefinition.CustomAttributes.Add(c);
+            }
+        }
+
+        private void PopulateQueryRequired()
+        {
+            var pd = _pi.PropertyDefinition;
+            var bc = pd.GetCustomAttribute(KnownTypesHandler.QueryRequiredAttribute);
+            if (bc != null)
+            {
+                pd.CustomAttributes.Remove(bc);
+                _pi.FieldDefinition.CustomAttributes.Add(bc);
             }
         }
 

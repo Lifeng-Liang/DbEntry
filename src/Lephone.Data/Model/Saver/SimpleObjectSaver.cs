@@ -28,7 +28,7 @@ namespace Lephone.Data.Model.Saver
         public virtual object Insert(IDbObject obj)
         {
             var sb = Composer.GetInsertStatementBuilder(obj);
-            var sql = sb.ToSqlStatement(Provider.Dialect);
+            var sql = sb.ToSqlStatement(Provider.Dialect, null);
             Provider.ExecuteNonQuery(sql);
             return null;
         }

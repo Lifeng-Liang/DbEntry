@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Lephone.Data.Common
 {
     public class EmptyCondition : Condition
@@ -7,7 +9,7 @@ namespace Lephone.Data.Common
             get { return false; }
         }
 
-        public override string ToSqlText(SqlEntry.DataParameterCollection dpc, Dialect.DbDialect dd)
+        public override string ToSqlText(SqlEntry.DataParameterCollection dpc, Dialect.DbDialect dd, List<string> queryRequiredFields)
         {
             return null;
         }

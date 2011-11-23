@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using Lephone.Data.Driver;
 using Lephone.Data.SqlEntry;
@@ -34,13 +35,13 @@ namespace Lephone.Data.Dialect
             get { return false; }
         }
 
-        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
         {
             var dpc = new DataParameterCollection();
             string sqlString = string.Format("SELECT TOP {4} {0} FROM {1}{2}{3}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
-                ssb.Where.ToSqlText(dpc, this),
+                ssb.Where.ToSqlText(dpc, this, queryRequiredFields),
                 (ssb.Order == null || ssb.Keys.Count == 0) ? "" : ssb.Order.ToSqlText(dpc, this),
                 ssb.Range.EndIndex
                 );

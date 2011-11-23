@@ -59,7 +59,7 @@ namespace Lephone.Data.Model.Deleter
             {
                 var sb = new DeleteStatementBuilder(mt.Name);
                 sb.Where.Conditions = CK.K[mt[0].Column] == Handler.GetKeyValue(obj);
-                var sql = sb.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
+                var sql = sb.ToSqlStatement(Provider.Dialect, Info.QueryRequiredFields, Info.AllowSqlLog);
                 ret += Provider.ExecuteNonQuery(sql);
             }
             return ret;

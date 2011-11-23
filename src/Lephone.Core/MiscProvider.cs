@@ -23,7 +23,9 @@ namespace Lephone.Core
         private static class TickProvider
         {
             // ReSharper disable UnaccessedField.Local
+            // ReSharper disable NotAccessedField.Local
             private static Timer _timer; // to avoid it to be collected by GC.
+            // ReSharper restore NotAccessedField.Local
             // ReSharper restore UnaccessedField.Local
 
             public static long Secends;
@@ -36,10 +38,17 @@ namespace Lephone.Core
 
         public virtual long Secends
         {
-            get
-            {
-                return TickProvider.Secends;
-            }
+            get { return TickProvider.Secends; }
+        }
+
+        public virtual int SystemRunningMillisecends
+        {
+            get { return Environment.TickCount; }
+        }
+
+        public virtual void Sleep(int millisecends)
+        {
+            Thread.Sleep(millisecends);
         }
     }
 }

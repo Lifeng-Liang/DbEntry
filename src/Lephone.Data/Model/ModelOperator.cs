@@ -427,7 +427,7 @@ namespace Lephone.Data.Model
             var sb = Composer.GetCreateTableStatementBuilder();
             sb.TableName = Info.DeleteToTableName;
             sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), null));
-            var sql = sb.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
+            var sql = sb.ToSqlStatement(Provider.Dialect, null, Info.AllowSqlLog);
             Provider.ExecuteNonQuery(sql);
             if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
             {
@@ -455,7 +455,7 @@ namespace Lephone.Data.Model
             cts.Indexes.Add(new DbIndex(null, false, (ASC)cs[0].Column));
             cts.Indexes.Add(new DbIndex(null, false, (ASC)cs[1].Column));
             // execute
-            var sql = cts.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
+            var sql = cts.ToSqlStatement(Provider.Dialect, null, Info.AllowSqlLog);
             Provider.ExecuteNonQuery(sql);
             if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
             {

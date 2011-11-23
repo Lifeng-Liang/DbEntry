@@ -13,37 +13,37 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            MockMiscProvider.Me.SetNow(new DateTime(2010, 12, 10, 10, 9 , 8));
+            MockMiscProvider.MockNow = new DateTime(2010, 12, 10, 10, 9 , 8);
             var provider = new DbTimeProvider(new DataProvider("SQLite"));
 
             StaticRecorder.CurRow.Add(new RowInfo("now", new DateTime(2010, 12, 10, 9, 8, 7)));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 8, 7), provider.Now);
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 50));
+            MockMiscProvider.Add(new TimeSpan(0, 0, 50));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 8, 57), provider.Now);
 
             StaticRecorder.CurRow.Add(new RowInfo("now", new DateTime(2010, 12, 10, 9, 8, 7)));
-            MockMiscProvider.Me.Add(new TimeSpan(0, 10, 0));
+            MockMiscProvider.Add(new TimeSpan(0, 10, 0));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 8, 7), provider.Now);
         }
 
         [Test]
         public void Test2()
         {
-            MockMiscProvider.Me.SetNow(new DateTime(2010, 12, 10, 10, 9, 8));
+            MockMiscProvider.MockNow = new DateTime(2010, 12, 10, 10, 9, 8);
             var provider = new DbTimeProvider(new DataProvider("SQLite"));
 
             StaticRecorder.CurRow.Add(new RowInfo("now", new DateTime(2010, 12, 10, 9, 8, 7)));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 8, 7), provider.Now);
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 50));
+            MockMiscProvider.Add(new TimeSpan(0, 0, 50));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 8, 57), provider.Now);
 
             StaticRecorder.CurRow.Add(new RowInfo("now", new DateTime(2010, 12, 10, 9, 18, 7)));
-            MockMiscProvider.Me.Add(new TimeSpan(0, 10, 0));
+            MockMiscProvider.Add(new TimeSpan(0, 10, 0));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 18, 7), provider.Now);
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 3, 8));
+            MockMiscProvider.Add(new TimeSpan(0, 3, 8));
             Assert.AreEqual(new DateTime(2010, 12, 10, 9, 21, 15), provider.Now);
         }
     }

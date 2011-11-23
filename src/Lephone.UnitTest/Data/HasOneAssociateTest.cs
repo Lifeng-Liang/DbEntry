@@ -244,7 +244,7 @@ namespace Lephone.UnitTest.Data
             Assert.IsNull(pc.Owner.Value);
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestHasOneCutTheRelationByDelete()
         {
             // B.Delete() will cut the relation of it from A

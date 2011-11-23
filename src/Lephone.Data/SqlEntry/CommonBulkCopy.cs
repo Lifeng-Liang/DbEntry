@@ -166,7 +166,7 @@ namespace Lephone.Data.SqlEntry
 
         private bool WriteSingleToServer(InsertStatementBuilder sb)
         {
-            SqlStatement sql = sb.ToSqlStatement(_provider.Dialect);
+            SqlStatement sql = sb.ToSqlStatement(_provider.Dialect, null);
             sql.SqlTimeOut = _bulkCopyTimeout;
             _provider.ExecuteNonQuery(sql);
             _count++;

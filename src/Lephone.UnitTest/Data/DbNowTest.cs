@@ -69,7 +69,7 @@ namespace Lephone.UnitTest.Data
             var dc = new DataProvider("SQLite");
             var sb = new InsertStatementBuilder("user");
             sb.Values.Add(new KeyValue("CreatedOn", AutoValue.DbNow));
-            SqlStatement sql = sb.ToSqlStatement(dc.Dialect);
+            SqlStatement sql = sb.ToSqlStatement(dc.Dialect, null);
             Assert.AreEqual("INSERT INTO [user] ([CreatedOn]) VALUES (DATETIME(CURRENT_TIMESTAMP, 'localtime'));\n", sql.SqlCommandText);
         }
 
@@ -79,7 +79,7 @@ namespace Lephone.UnitTest.Data
             var dc = new DataProvider("SQLite");
             var sb = new UpdateStatementBuilder("user");
             sb.Values.Add(new KeyValue("UpdatedOn", AutoValue.DbNow));
-            SqlStatement sql = sb.ToSqlStatement(dc.Dialect);
+            SqlStatement sql = sb.ToSqlStatement(dc.Dialect, null);
             Assert.AreEqual("UPDATE [user] SET [UpdatedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime') ;\n", sql.SqlCommandText);
         }
 

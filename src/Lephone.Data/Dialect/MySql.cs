@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Lephone.Data.Builder;
 using Lephone.Data.Common;
 using Lephone.Data.Driver;
@@ -28,9 +29,9 @@ namespace Lephone.Data.Dialect
             return new MySqlDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
         }
 
-        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
         {
-            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this);
+            SqlStatement sql = ssb.GetNormalSelectSqlStatement(this, queryRequiredFields);
             sql.SqlCommandText = string.Format("{0} LIMIT {1}, {2}",
                 sql.SqlCommandText, ssb.Range.Offset, ssb.Range.Rows);
             return sql;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Lephone.Core.Text;
 using Lephone.Data.Common;
 using Lephone.Data.Dialect;
@@ -37,9 +38,16 @@ namespace Lephone.Data.Builder.Clause
         {
             get { return true; }
         }
-        
-        public override string ToSqlText(DataParameterCollection dpc, DbDialect dd)
+
+        public override string ToSqlText(DataParameterCollection dpc, DbDialect dd, List<string> queryRequiredFields)
         {
+            if (queryRequiredFields != null && dpc.FindQueryRequiedFieldOrId == false)
+            {
+                if (KV.Key == "Id" || queryRequiredFields.Contains(KV.Key))
+                {
+                    dpc.FindQueryRequiedFieldOrId = true;
+                }
+            }
             string dpStr = GetValueString(dpc, dd, KV);
             string dkStr = dd.QuoteForColumnName(KV.Key);
             switch (function)

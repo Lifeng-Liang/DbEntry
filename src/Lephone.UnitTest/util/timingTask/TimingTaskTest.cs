@@ -12,7 +12,7 @@ namespace Lephone.UnitTest.util.timingTask
 		public void TestIt()
 		{
 			var task = new MockTask();
-            MockMiscProvider.Me.SetNow(new DateTime(2004, 3, 5, 10, 5, 10, 0));
+            MockMiscProvider.MockNow = (new DateTime(2004, 3, 5, 10, 5, 10, 0));
 			ITiming timing = new TimeSpanTiming(new TimeSpan(0, 5, 0));
 
 			var tt = new TimingTask(task, timing);
@@ -20,32 +20,32 @@ namespace Lephone.UnitTest.util.timingTask
 			Assert.AreEqual(true, task.DoTaskOk);
 			task.DoTaskOk = false;
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
+            MockMiscProvider.Add(new TimeSpan(0, 0, 1));
 			tt.RunIfTimingUp();
 			Assert.AreEqual(false, task.DoTaskOk);
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 1, 1));
+            MockMiscProvider.Add(new TimeSpan(0, 1, 1));
 			tt.RunIfTimingUp();
 			Assert.AreEqual(false, task.DoTaskOk);
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 3, 1));
+            MockMiscProvider.Add(new TimeSpan(0, 3, 1));
 			tt.RunIfTimingUp();
 			Assert.AreEqual(false, task.DoTaskOk);
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 56));
+            MockMiscProvider.Add(new TimeSpan(0, 0, 56));
 			tt.RunIfTimingUp();
 			Assert.AreEqual(false, task.DoTaskOk);
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
+            MockMiscProvider.Add(new TimeSpan(0, 0, 1));
 			tt.RunIfTimingUp();
 			Assert.AreEqual(true, task.DoTaskOk);
 			task.DoTaskOk = false;
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 0, 1));
+            MockMiscProvider.Add(new TimeSpan(0, 0, 1));
 			tt.RunIfTimingUp();
 			Assert.AreEqual(false, task.DoTaskOk);
 
-            MockMiscProvider.Me.Add(new TimeSpan(0, 5, 8));
+            MockMiscProvider.Add(new TimeSpan(0, 5, 8));
 			tt.RunIfTimingUp();
 			Assert.AreEqual(true, task.DoTaskOk);
 		}

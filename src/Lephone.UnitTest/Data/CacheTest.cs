@@ -139,8 +139,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var now = (MockMiscProvider)MiscProvider.Instance;
-            now.SetNow(new DateTime(2007, 11, 4, 15, 23, 43));
+            MockMiscProvider.MockNow = (new DateTime(2007, 11, 4, 15, 23, 43));
             var c = ClassHelper.CreateInstance<StaticHashCacheProvider>();
 
             var p = new SinglePerson {Id = 15, Name = "tom"};
@@ -164,7 +163,7 @@ namespace Lephone.UnitTest.Data
             Assert.AreEqual(15, act.Id);
             Assert.AreEqual("jerry", act.Name);
 
-            now.SetNow(new DateTime(2007, 11, 4, 15, 34, 43));
+            MockMiscProvider.MockNow = (new DateTime(2007, 11, 4, 15, 34, 43));
 
             act = (SinglePerson)c[key];
 

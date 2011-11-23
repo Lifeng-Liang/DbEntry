@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Lephone.Data.Builder;
@@ -37,7 +38,7 @@ namespace Lephone.Data.Dialect
             get { return true; }
         }
 
-        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
         {
             if (ssb.Order == null || ssb.Keys.Count == 0)
             {
@@ -50,7 +51,7 @@ namespace Lephone.Data.Dialect
                 "SELECT {7} FROM (SELECT {0}, ROW_NUMBER() OVER ({3}) AS {6} FROM {1} {2}) AS T WHERE T.{6} >= {4} AND T.{6} <= {5}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
-                ssb.Where.ToSqlText(dpc, this),
+                ssb.Where.ToSqlText(dpc, this, queryRequiredFields),
                 ssb.Order.ToSqlText(dpc, this),
                 ssb.Range.StartIndex,
                 ssb.Range.EndIndex,

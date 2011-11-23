@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
@@ -22,8 +23,15 @@ namespace Lephone.Data.Builder.Clause
             get { return true; }
         }
 
-        public override string ToSqlText(DataParameterCollection dpc, DbDialect dd)
+        public override string ToSqlText(DataParameterCollection dpc, DbDialect dd, List<string> queryRequiredFields)
         {
+            if (queryRequiredFields != null && dpc.FindQueryRequiedFieldOrId == false)
+            {
+                if(_column == "Id" || queryRequiredFields.Contains(_column))
+                {
+                    dpc.FindQueryRequiedFieldOrId = true;
+                }
+            }
             var sb = new StringBuilder();
             sb.Append(dd.QuoteForColumnName(_column));
             if (_notIn)
@@ -37,7 +45,7 @@ namespace Lephone.Data.Builder.Clause
             }
             else if (_args.Length == 1 && _args[0].GetType() == typeof(SelectStatementBuilder))
             {
-                sb.Append(((SelectStatementBuilder)_args[0]).ToSqlText(dpc, dd));
+                sb.Append(((SelectStatementBuilder)_args[0]).ToSqlText(dpc, dd, queryRequiredFields));
             }
             else
             {

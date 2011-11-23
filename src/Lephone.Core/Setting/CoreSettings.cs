@@ -10,6 +10,10 @@ namespace Lephone.Core.Setting
 
         public static readonly string LogFileName = "{0}{1}.{2}.log";
 
+        public static readonly int DelayToStart = 30000;
+
+        public static readonly int MinStartTicks = 180000;
+
         [ShowString("Ioc.EnableAutoLoad")]
         public static readonly bool IocEnableAutoLoad = true;
 

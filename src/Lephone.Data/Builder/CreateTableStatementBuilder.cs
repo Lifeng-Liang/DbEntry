@@ -25,7 +25,7 @@ namespace Lephone.Data.Builder
             _sql = new StringBuilder();
         }
 
-        protected override SqlStatement ToSqlStatement(DbDialect dd)
+        protected override SqlStatement ToSqlStatement(DbDialect dd, List<string> queryRequiredFields)
         {
             CheckIsMutiKey(dd);
             _sql.Append("CREATE TABLE ");

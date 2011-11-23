@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
 namespace Lephone.Data.Builder.Clause
 {
 	[Serializable]
-	public class WhereClause : IClause
+	public class WhereClause : IWhereClause
 	{
 		private Condition _ic;
 
@@ -24,13 +25,17 @@ namespace Lephone.Data.Builder.Clause
 			get { return _ic; }
 		}
 
-		public string ToSqlText(DataParameterCollection dpc, DbDialect dd)
+        public string ToSqlText(DataParameterCollection dpc, DbDialect dd, List<string> queryRequiredFields)
 		{
 			if ( _ic != null )
 			{
-				string s = _ic.ToSqlText(dpc, dd);
+				string s = _ic.ToSqlText(dpc, dd, queryRequiredFields);
                 if (s != null)
                 {
+                    if (queryRequiredFields != null && !dpc.FindQueryRequiedFieldOrId)
+                    {
+                        throw new DataException("The QueryRequired fields not found in query.");
+                    }
                     return (s.Length > 0) ? " WHERE " + s : "";
                 }
 			}

@@ -18,6 +18,7 @@ namespace Lephone.Data.Model
         public readonly bool AllowSqlLog;
         public readonly bool Cacheable;
         public readonly string ContextName;
+        public readonly List<string> QueryRequiredFields;
         public readonly Dictionary<Type, CrossTable> CrossTables = new Dictionary<Type, CrossTable>();
         public readonly string DeleteToTableName;
         public readonly FromClause From;
@@ -60,9 +61,27 @@ namespace Lephone.Data.Model
             this.SoftDeleteColumnName = this.GetSoftDeleteColumnName();
             this.DeleteToTableName = this.GetDeleteToTableName();
             this.ContextName = this.GetContextName();
+            this.QueryRequiredFields = this.GetQueryRequiredFields();
             this.Cacheable = this.HandleType.HasAttribute<CacheableAttribute>(false);
             this.GetIndexes();
             SetManyToManyFrom(this, this.From.MainModelName, this.Members);
+        }
+
+        private List<string> GetQueryRequiredFields()
+        {
+            List<string> result = null;
+            foreach (var member in Members)
+            {
+                if (member.MemberInfo.HasAttribute<QueryRequiredAttribute>(false))
+                {
+                    if(result == null)
+                    {
+                        result = new List<string>();
+                    }
+                    result.Add(member.Name);
+                }
+            }
+            return result;
         }
 
         private static void CheckIndexAttributes(IEnumerable<IndexAttribute> ias)

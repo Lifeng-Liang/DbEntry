@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Lephone.Data.Dialect;
 using Lephone.Data.SqlEntry;
 
@@ -26,11 +27,11 @@ namespace Lephone.Data.Builder.Clause
             }
         }
 
-        public override string ToSqlText(DataParameterCollection dpc, DbDialect dd)
+        public override string ToSqlText(DataParameterCollection dpc, DbDialect dd, List<string> queryRequiredFields)
 		{
             if (_ic.SubClauseNotEmpty)
             {
-                return string.Format("( NOT ({0}) )", _ic.ToSqlText(dpc, dd));
+                return string.Format("( NOT ({0}) )", _ic.ToSqlText(dpc, dd, queryRequiredFields));
             }
             return "";
 		}

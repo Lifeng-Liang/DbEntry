@@ -26,6 +26,7 @@ namespace Lephone.Processor
         public static readonly string Guid = typeof(Guid).FullName;
         public static readonly string DbObjectSmartUpdate = typeof(DbObjectSmartUpdate).FullName;
         public static readonly string DbColumnAttribute = typeof(DbColumnAttribute).FullName;
+        public static readonly string QueryRequiredAttribute = typeof(QueryRequiredAttribute).FullName;
         public static readonly string DbTableAttribute = typeof(DbTableAttribute).FullName;
         public static readonly string HasOneAttribute = typeof(HasOneAttribute).FullName;
         public static readonly string BelongsToAttribute = typeof(BelongsToAttribute).FullName;
@@ -345,7 +346,12 @@ namespace Lephone.Processor
                     return TypeHelper.MakeGenericType(_hasMany, 
                         ((GenericInstanceType)propertyType).GenericArguments[0]);
                 case FieldType.BelongsTo:
-                    return TypeHelper.MakeGenericType(_belongsTo, propertyType, GetKeyType(propertyType));
+                    var t = GetKeyType(propertyType);
+                    if(t == null)
+                    {
+                        throw new DataException("BelongsTo field type error!");
+                    }
+                    return TypeHelper.MakeGenericType(_belongsTo, propertyType, t);
                 case FieldType.HasAndBelongsToMany:
                     return TypeHelper.MakeGenericType(_hasAndBelongsToMany,
                         ((GenericInstanceType)propertyType).GenericArguments[0]);
@@ -358,6 +364,10 @@ namespace Lephone.Processor
 
         private static TypeReference GetKeyType(TypeReference model)
         {
+            if(model == null)
+            {
+                return null;
+            }
             if (model.IsGenericInstance && model.Namespace == "Lephone.Data.Definition")
             {
                 var m = (GenericInstanceType)model;

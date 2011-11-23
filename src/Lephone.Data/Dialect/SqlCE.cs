@@ -1,13 +1,14 @@
-﻿using Lephone.Data.SqlEntry;
+﻿using System.Collections.Generic;
+using Lephone.Data.SqlEntry;
 using Lephone.Data.Builder;
 
 namespace Lephone.Data.Dialect
 {
     public class SqlCE : SqlServer2000
     {
-        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
         {
-            return ssb.GetNormalSelectSqlStatement(this);
+            return ssb.GetNormalSelectSqlStatement(this, queryRequiredFields);
         }
 
         public override string GetConnectionString(string connectionString)

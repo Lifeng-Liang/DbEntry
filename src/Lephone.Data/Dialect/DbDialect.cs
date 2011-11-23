@@ -132,7 +132,7 @@ namespace Lephone.Data.Dialect
                     Guid key = Guid.NewGuid();
                     sb.Values[0].Value = key;
                 }
-                SqlStatement sql = sb.ToSqlStatement(provider.Dialect, info.AllowSqlLog);
+                SqlStatement sql = sb.ToSqlStatement(provider.Dialect, null, info.AllowSqlLog);
                 provider.ExecuteNonQuery(sql);
                 return sb.Values[0].Value;
             }
@@ -141,7 +141,7 @@ namespace Lephone.Data.Dialect
 
         protected virtual object ExecuteInsertIntKey(InsertStatementBuilder sb, ObjectInfo info, DataProvider provider)
         {
-            SqlStatement sql = sb.ToSqlStatement(provider.Dialect, info.AllowSqlLog);
+            SqlStatement sql = sb.ToSqlStatement(provider.Dialect, null, info.AllowSqlLog);
             sql.SqlCommandText = AddIdentitySelectToInsert(sql.SqlCommandText);
             return provider.ExecuteScalar(sql);
         }
@@ -183,7 +183,7 @@ namespace Lephone.Data.Dialect
             get { return true; }
         }
 
-        public virtual SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb)
+        public virtual SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
         {
             throw DoesNotSupportPagedSelect;
         }

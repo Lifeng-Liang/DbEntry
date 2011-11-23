@@ -68,7 +68,7 @@ namespace Lephone.Data.Model.Saver
                 var builder = new InsertStatementBuilder(table.Name);
                 builder.Values.Add(new KeyValue(table[0].Column, key1));
                 builder.Values.Add(new KeyValue(table[1].Column, key2));
-                SqlStatement sql = builder.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
+                SqlStatement sql = builder.ToSqlStatement(Provider.Dialect, Info.QueryRequiredFields, Info.AllowSqlLog);
                 Provider.ExecuteNonQuery(sql);
             }
         }
@@ -222,7 +222,7 @@ namespace Lephone.Data.Model.Saver
                 var condition = (Condition)(CK.K[table[0].Column] == key1);
                 condition &= CK.K[table[1].Column] == key2;
                 builder.Where.Conditions = condition;
-                var sql = builder.ToSqlStatement(Provider.Dialect, Info.AllowSqlLog);
+                var sql = builder.ToSqlStatement(Provider.Dialect, Info.QueryRequiredFields, Info.AllowSqlLog);
                 Provider.ExecuteNonQuery(sql);
             }
         }

@@ -1,12 +1,14 @@
+using System.Collections.Generic;
+
 namespace Lephone.Data.Builder.Clause
 {
     public class ConstCondition : Condition
     {
-        private readonly string Condition;
+        private readonly string _condition;
 
-        internal ConstCondition(string Condition)
+        internal ConstCondition(string condition)
         {
-            this.Condition = Condition;
+            this._condition = condition;
         }
 
         public override bool SubClauseNotEmpty
@@ -14,9 +16,9 @@ namespace Lephone.Data.Builder.Clause
             get { return true; }
         }
 
-        public override string ToSqlText(SqlEntry.DataParameterCollection dpc, Dialect.DbDialect dd)
+        public override string ToSqlText(SqlEntry.DataParameterCollection dpc, Dialect.DbDialect dd, List<string> queryRequiredFields)
         {
-            return Condition;
+            return _condition;
         }
     }
 }

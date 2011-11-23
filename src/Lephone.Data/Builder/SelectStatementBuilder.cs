@@ -8,7 +8,7 @@ using Lephone.Data.Common;
 
 namespace Lephone.Data.Builder
 {
-	public class SelectStatementBuilder : SqlStatementBuilder, IClause, ISqlKeys, ISqlWhere
+	public class SelectStatementBuilder : SqlStatementBuilder, IWhereClause, ISqlKeys, ISqlWhere
 	{
         private readonly OrderBy _order;
         private readonly Range _limit;
@@ -81,13 +81,13 @@ namespace Lephone.Data.Builder
             IsGroupBy = true;
         }
 
-        public string ToSqlText(DataParameterCollection dpc, DbDialect dd)
+        public string ToSqlText(DataParameterCollection dpc, DbDialect dd, List<string> queryRequiredFields)
         {
             CheckInput();
             string sqlString = string.Format("SELECT {0} FROM {1}{2}{3}{4}",
                 GetColumns(dd),
                 From.ToSqlText(dpc, dd),
-                Where.ToSqlText(dpc, dd),
+                Where.ToSqlText(dpc, dd, queryRequiredFields),
                 IsGroupBy ? " GROUP BY " + GetFunctionArgs(dd) : "",
                 (Order == null || Keys.Count == 0) ? "" : Order.ToSqlText(dpc, dd)
                 );
@@ -109,10 +109,10 @@ namespace Lephone.Data.Builder
             return ret.ToString();
         }
 
-        protected override SqlStatement ToSqlStatement(DbDialect dd)
+        protected override SqlStatement ToSqlStatement(DbDialect dd, List<string> queryRequiredFields)
 		{
             CheckInput();
-            SqlStatement sql = GetSelectSqlStatement(dd);
+            SqlStatement sql = GetSelectSqlStatement(dd, queryRequiredFields);
             if (_limit != null)
             {
                 sql.StartIndex = _limit.StartIndex;
@@ -121,19 +121,19 @@ namespace Lephone.Data.Builder
             return sql;
 		}
 
-        private SqlStatement GetSelectSqlStatement(DbDialect dd)
+        private SqlStatement GetSelectSqlStatement(DbDialect dd, List<string> queryRequiredFields)
         {
             SqlStatement sql = (Range == null) ?
-                GetNormalSelectSqlStatement(dd) :
-                dd.GetPagedSelectSqlStatement(this);
+                GetNormalSelectSqlStatement(dd, queryRequiredFields) :
+                dd.GetPagedSelectSqlStatement(this, queryRequiredFields);
             sql.SqlCommandText += ";\n";
             return sql;
         }
 
-        public SqlStatement GetNormalSelectSqlStatement(DbDialect dd)
+        public SqlStatement GetNormalSelectSqlStatement(DbDialect dd, List<string> queryRequiredFields)
         {
             var dpc = new DataParameterCollection();
-            var sqlString = ToSqlText(dpc, dd);
+            var sqlString = ToSqlText(dpc, dd, queryRequiredFields);
             return new TimeConsumingSqlStatement(CommandType.Text, sqlString, dpc);
         }
 

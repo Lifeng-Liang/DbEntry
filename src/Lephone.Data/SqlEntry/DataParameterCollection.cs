@@ -7,6 +7,8 @@ namespace Lephone.Data.SqlEntry
 	[Serializable]
 	public class DataParameterCollection : CollectionBase
 	{
+	    public bool FindQueryRequiedFieldOrId;
+
         private bool _paramsNameUserSet;
 
 		internal bool UserSetKey

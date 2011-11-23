@@ -13,7 +13,7 @@ namespace Lephone.Data.Dialect
             var seq = new SqlStatement(CommandType.Text, seqStr);
             object key = provider.ExecuteScalar(seq);
             sb.Values.Add(new KeyValue(info.KeyMembers[0].Name, key));
-            SqlStatement sql = sb.ToSqlStatement(provider.Dialect, info.AllowSqlLog);
+            SqlStatement sql = sb.ToSqlStatement(provider.Dialect, null, info.AllowSqlLog);
             provider.ExecuteNonQuery(sql);
             return key;
         }

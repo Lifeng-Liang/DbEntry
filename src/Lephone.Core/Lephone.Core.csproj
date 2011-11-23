@@ -61,7 +61,6 @@
     <Compile Include="Ioc\ImplementationAttribute.cs" />
     <Compile Include="Ioc\InjectionAttribute.cs" />
     <Compile Include="Ioc\SimpleContainer.cs" />
-    <Compile Include="IService.cs" />
     <Compile Include="LephoneException.cs" />
     <Compile Include="Logging\ConsoleLogRecorder.cs" />
     <Compile Include="Logging\ConsoleMessageLogRecorder.cs" />
@@ -80,6 +79,7 @@
     <Compile Include="Rand.cs" />
     <Compile Include="ResourceHelper.cs" />
     <Compile Include="Scope.cs" />
+    <Compile Include="ServiceBase.cs" />
     <Compile Include="SettingException.cs" />
     <Compile Include="Setting\CollectionConfigHelper.cs" />
     <Compile Include="Setting\ConfigHelper.cs" />

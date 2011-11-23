@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Lephone.Data.Builder;
 using Lephone.Data.Common;
 using Lephone.Data.Dialect;
@@ -8,7 +9,7 @@ using Lephone.Data.Builder.Clause;
 namespace Lephone.Data
 {
     [Serializable]
-	public abstract class Condition : IClause
+	public abstract class Condition : IWhereClause
 	{
         public static readonly Condition Empty = new EmptyCondition();
         public static readonly ConstCondition True = new ConstCondition("(1=1)");
@@ -86,7 +87,7 @@ namespace Lephone.Data
             return (condition == null || (condition is EmptyCondition));
         }
 
-        public abstract string ToSqlText(DataParameterCollection dpc, DbDialect dd);
+        public abstract string ToSqlText(DataParameterCollection dpc, DbDialect dd, List<string> queryRequiredFields);
 
         protected virtual string GetValueString(DataParameterCollection dpc, DbDialect dd, KeyValue kv)
         {

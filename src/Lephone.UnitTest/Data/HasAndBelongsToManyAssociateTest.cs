@@ -35,7 +35,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test1()
         {
-            // A.Select 将会载入 A, A.B 将会 LazyLoading
+            // A.Select will load A, A.B will LazyLoading
             var a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
             Assert.AreEqual(3, a.Readers.Count);
@@ -47,7 +47,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test2()
         {
-            // A.Select 将会载入 A, 如果 A.B 被修改，则不再 Loading B
+            // A.Select will load A, if A.B have been modified, then will not Loading B
             var a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
             a.Readers.Add(new Reader {Name = "ruby"});
@@ -58,7 +58,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test3()
         {
-            // A.Save 将会保存 A, 如果 A.B 中有新元素，则插入 B，插入 A_B
+            // A.Save will load A, if there is new element in A.B, then insert B, insert A_B
             var a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
             a.Readers.Add(new Reader {Name = "ruby"});
@@ -72,7 +72,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test4()
         {
-            // A.Save 将会保存 A, 如果 A.B 中有载入的元素，则 update B，不修改 A_B
+            // A.Save will save A, if there is loaded element in A.B, then update B, it will not modify A_B
             var a = DbEntry.GetObject<Article>(3);
             Assert.IsNotNull(a);
             Assert.AreEqual(1, a.Readers.Count);
@@ -90,7 +90,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test5()
         {
-            // A.Delete 将会删除 A， 并且删除 A_B 中所有和 A 相关的条目
+            // A.Delete will delete A, and delete all the related items in A_B
             var a = DbEntry.GetObject<Article>(1);
             DbEntry.Delete(a);
 
@@ -104,7 +104,7 @@ namespace Lephone.UnitTest.Data
         [Test]
         public void Test6()
         {
-            // 如果 A 为 Insert, A.Save 将会保存 A, 如果 A.B 中有新元素，则插入 B，插入 A_B
+            // if A doing Insert, A.Save will save A, if there is new element in A.B, then insert B, insert A_B
             var a = new Article {Name = "Call from hell"};
             a.Readers.Add(new Reader {Name = "ruby"});
             DbEntry.Save(a);
@@ -226,9 +226,9 @@ namespace Lephone.UnitTest.Data
             //Begin Remove
 
             var t4 = TableC.FindById(1);
-            t4.TD.Count.ToString();
+            Assert.AreEqual(1, t4.TD.Count);
             var t5 = TableD.FindById(1);
-            t5.TC.Count.ToString();
+            Assert.AreEqual(1, t5.TC.Count);
 
             bool b = t4.TD.Remove(t5);
             Assert.IsTrue(b);
@@ -241,6 +241,19 @@ namespace Lephone.UnitTest.Data
             t5.Save();
 
             //here b2= false and can't trace the delete sql
+        }
+
+        [Test]
+        public void TestDelteWillRemoveRelation()
+        {
+            // B.Delete() will cut the relation of it from A
+            var a = DbEntry.GetObject<Article>(1);
+            Assert.AreEqual(3, a.Readers.Count);
+            a.Readers[0].Delete();
+            a.Save();
+
+            a = DbEntry.GetObject<Article>(1);
+            Assert.AreEqual(2, a.Readers.Count);
         }
     }
 }

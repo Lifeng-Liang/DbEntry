@@ -114,6 +114,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Builder\Clause\ConstCondition.cs" />
     <Compile Include="Builder\Clause\InClause.cs" />
     <Compile Include="Builder\ISqlKeys.cs" />
+    <Compile Include="Builder\IWhereClause.cs" />
     <Compile Include="Caching\CachedModelOperator.cs" />
     <Compile Include="Caching\CacheProvider.cs" />
     <Compile Include="Caching\KeyGenerator.cs" />
@@ -128,6 +129,7 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Common\DbTimeProvider.cs" />
     <Compile Include="ConditionBuilder.cs" />
     <Compile Include="Definition\IThat.cs" />
+    <Compile Include="Definition\QueryRequiredAttribute.cs" />
     <Compile Include="Model\Composer\DeleteToQueryComposer.cs" />
     <Compile Include="Model\Creator\AnonymousModelCreator.cs" />
     <Compile Include="Model\Creator\GroupByModelCreator.cs" />
