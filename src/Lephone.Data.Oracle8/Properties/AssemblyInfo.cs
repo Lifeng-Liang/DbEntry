@@ -13,4 +13,4 @@ using Lephone.Core;
 [assembly: CLSCompliant(true)]
 [assembly: AssemblyProcessed]
 
-[assembly: AssemblyVersion("4.0.*")]
+[assembly: AssemblyVersion("4.1.*")]
