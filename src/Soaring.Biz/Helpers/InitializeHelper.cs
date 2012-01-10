@@ -1,4 +1,4 @@
-﻿using Lephone.Data;
+﻿using Leafing.Data;
 using Soaring.Biz.Models;
 using Soaring.Biz.Models.Enums;
 
@@ -16,8 +16,9 @@ namespace Soaring.Biz.Helpers
                                 Password = "123",
                                 Nick = "test",
                                 Mobile = "123456",
-                                Type = UserType.Adminstrator
+                                Type = UserType.Adminstrator,
                             };
+                u.ResetSessionId();
                 u.Save();
             }
         }

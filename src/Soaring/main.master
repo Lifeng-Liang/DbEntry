@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" Inherits="Lephone.Web.Mvc.MasterPageBase" %>
+﻿<%@ Master Language="C#" Inherits="Leafing.Web.Mvc.MasterPageBase" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,13 +21,13 @@
     </div>
     <div class="header">
         <div id="navigator"> | 
-            <%= LinkTo.Controller("project").Title("Projects") %> | 
-            <%= LinkTo.Controller("requirement").Title("Requirements")%> | 
-            <%= LinkTo.Controller("task").Title("Tasks")%> | 
-            <%= LinkTo.Controller("bug").Title("Bugs")%> | 
+            <%= LinkTo().Controller("project").Title("Projects") %> | 
+            <%= LinkTo().Controller("requirement").Title("Requirements")%> | 
+            <%= LinkTo().Controller("task").Title("Tasks")%> | 
+            <%= LinkTo().Controller("bug").Title("Bugs")%> | 
         </div>
         <div id="oprator"> | 
-            <%= LinkTo.Controller("user").Action("logout").Title("Logout") %> | 
+            <%= LinkTo().Controller("user").Action("logout").Title("Logout") %> | 
         </div>
     </div>
     <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">

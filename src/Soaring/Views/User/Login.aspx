@@ -44,7 +44,7 @@
     </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-    <form id="form1" action="<%= UrlTo.Controller("user").Action("login") %>" method="post">
+    <form id="form1" action="<%= UrlTo<UserController>(p => p.Login()) %>" method="post">
         <div id="center">
         <div id="mainPanel">
             <table border="0" style="margin-left:130px; margin-right:auto; margin-top:140px">

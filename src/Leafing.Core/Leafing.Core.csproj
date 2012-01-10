@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{891EAD10-3C90-4478-A695-71F5537C2AA2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Leafing.Core</RootNamespace>
+    <AssemblyName>Leafing.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Core.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdditionalTypes.cs" />
+    <Compile Include="AssemblyProcessed.cs" />
+    <Compile Include="ClassHelper.cs" />
+    <Compile Include="CommonExtends.cs" />
+    <Compile Include="Ioc\InjectedClassCreator.cs" />
+    <Compile Include="Ioc\IocException.cs" />
+    <Compile Include="Ioc\SimpleClassCreator.cs" />
+    <Compile Include="TimingTask\QueueTaskController.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="CountViewer.cs" />
+    <Compile Include="FlyweightBase.cs" />
+    <Compile Include="Ioc\ClassCreator.cs" />
+    <Compile Include="Ioc\PropertyInjector.cs" />
+    <Compile Include="Ioc\DependenceEntryAttribute.cs" />
+    <Compile Include="Ioc\ImplementationAttribute.cs" />
+    <Compile Include="Ioc\ImplementsCreators.cs" />
+    <Compile Include="Ioc\InjectionAttribute.cs" />
+    <Compile Include="Ioc\SimpleContainer.cs" />
+    <Compile Include="LeafingException.cs" />
+    <Compile Include="Logging\ConsoleLogRecorder.cs" />
+    <Compile Include="Logging\ConsoleMessageLogRecorder.cs" />
+    <Compile Include="Logging\DebugLogRecorder.cs" />
+    <Compile Include="Logging\DtsFileLogRecorder.cs" />
+    <Compile Include="Logging\ILogRecorder.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LogRecorderProvider.cs" />
+    <Compile Include="Logging\SysLogType.cs" />
+    <Compile Include="Logging\TextFileLogRecorder.cs" />
+    <Compile Include="Logging\TextFileMessageLogRecorder.cs" />
+    <Compile Include="MiscProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rand.cs" />
+    <Compile Include="ResourceHelper.cs" />
+    <Compile Include="Scope.cs" />
+    <Compile Include="ServiceBase.cs" />
+    <Compile Include="SettingException.cs" />
+    <Compile Include="Setting\CollectionConfigHelper.cs" />
+    <Compile Include="Setting\ConfigHelper.cs" />
+    <Compile Include="Setting\ConfigHelperBase.cs" />
+    <Compile Include="Setting\ConfigReader.cs" />
+    <Compile Include="Setting\ConfigReaderProxy.cs" />
+    <Compile Include="Setting\NameValueSectionHandler.cs" />
+    <Compile Include="Setting\ResourceConfigReader.cs" />
+    <Compile Include="Setting\CoreSettings.cs" />
+    <Compile Include="SystemHelper.cs" />
+    <Compile Include="Text\Base32StringCoding.cs" />
+    <Compile Include="Text\BOMChecker.cs" />
+    <Compile Include="Text\HexStringCoding.cs" />
+    <Compile Include="Text\InflectionNameMapper.cs" />
+    <Compile Include="Text\Inflector.cs" />
+    <Compile Include="Text\NameMapper.cs" />
+    <Compile Include="Text\ShowStringAttribute.cs" />
+    <Compile Include="Text\StringHelper.cs" />
+    <Compile Include="Text\UnderlineNameMapper.cs" />
+    <Compile Include="Text\UtfEncoding.cs" />
+    <Compile Include="Text\XmlSerializable.cs" />
+    <Compile Include="Text\XmlSerializer.cs" />
+    <Compile Include="TimingTask\ITask.cs" />
+    <Compile Include="TimingTask\ITimer.cs" />
+    <Compile Include="TimingTask\ITiming.cs" />
+    <Compile Include="TimingTask\SystemTimerAdapter.cs" />
+    <Compile Include="TimingTask\TaskCollection.cs" />
+    <Compile Include="TimingTask\ThreadingTimerAdapter.cs" />
+    <Compile Include="TimingTask\Timings\DayOfRangeTimingBase.cs" />
+    <Compile Include="TimingTask\Timings\DayTiming.cs" />
+    <Compile Include="TimingTask\Timings\MonthTiming.cs" />
+    <Compile Include="TimingTask\Timings\TimeOfDayStruct.cs" />
+    <Compile Include="TimingTask\Timings\TimeSpanTiming.cs" />
+    <Compile Include="TimingTask\Timings\WeekTiming.cs" />
+    <Compile Include="TimingTask\TimingTask.cs" />
+    <Compile Include="TimingTask\TimingTaskCollection.cs" />
+    <Compile Include="TimingTask\TimingTaskController.cs" />
+    <Compile Include="CoreException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core.snk" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
+goto End
+
+:Release
+copy *.dll ..\..\..\..\bin\
+
+:End
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

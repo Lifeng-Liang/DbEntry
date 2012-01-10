@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using Lephone.Core.Logging;
-using Lephone.Core.Text;
-using Lephone.Data.Definition;
+﻿using System;
+using System.Collections.Generic;
+using Leafing.Core;
+using Leafing.Data.Definition;
 using Soaring.Biz.Helpers;
 using Soaring.Biz.Models.Enums;
 
@@ -23,6 +22,11 @@ namespace Soaring.Biz.Models
 
         [Length(30)]
         public string Mobile { get; set; }
+
+        [Length(35), Index(UNIQUE = true)]
+        public string SessionId { get; set; }
+
+        public DateTime SessionValidUntil { get; set; }
 
         [HasMany]
         public IList<Bug> Bugs { get; private set; }
@@ -53,7 +57,7 @@ namespace Soaring.Biz.Models
         {
             if (Password != null && Password.Length < 100)
             {
-                Password = CommonHelper.GetHashedPassword(Password);
+                Password = LoginHelper.GetHashedPassword(Password);
             }
         }
 
@@ -69,40 +73,29 @@ namespace Soaring.Biz.Models
                 return null;
             }
 
-            var pass = CommonHelper.GetHashedPassword(password);
+            var pass = LoginHelper.GetHashedPassword(password);
             var u = FindOne(p => p.Email == email);
-            if (u != null)
+            if (u != null && u.Password != pass)
             {
-                if (u.Password != pass)
-                {
-                    return null;
-                }
+                return null;
             }
             return u;
         }
 
-        public static string SerializeToString(string email, string password)
+        public static User FindBySessionId(string sessionId)
         {
-            var s = string.Format("{0}\n{1}", email, password);
-            var bs = Encoding.UTF8.GetBytes(s);
-            return Base32StringCoding.Decode(bs);
+            var user = FindOne(p => p.SessionId == sessionId);
+            if(user != null && user.SessionValidUntil > Util.Now)
+            {
+                return user;
+            }
+            return null;
         }
 
-        public static User DeserializeFromString(string source)
+        public void ResetSessionId()
         {
-            var bs = Base32StringCoding.Encode(source);
-            var s = Encoding.UTF8.GetString(bs);
-            var ss = s.Split('\n');
-            User user = null;
-            if (ss.Length == 2)
-            {
-                user = GetUserForLogin(ss[0], ss[1]);
-            }
-            if (user == null)
-            {
-                Logger.System.Trace(string.Format("CAN NOT FOUND USER : {0},{1}", source, s));
-            }
-            return user;
+            SessionId = Util.NewGuid().ToBase32String();
+            SessionValidUntil = Util.Now.AddDays(30);
         }
     }
 }

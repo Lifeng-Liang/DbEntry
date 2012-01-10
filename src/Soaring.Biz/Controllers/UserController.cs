@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text;
-using System.Web;
-using Lephone.Web.Mvc;
+﻿using System.Text;
+using Leafing.Core;
+using Leafing.Web.Mvc;
 using Soaring.Biz.Helpers;
 using Soaring.Biz.Models;
 
@@ -9,23 +8,31 @@ namespace Soaring.Biz.Controllers
 {
     public class UserController : ControllerBase<User>
     {
-        public string Login([Bind]string email, [Bind]string password, [Bind]bool rememberme)
+        public string Login()
         {
-            if (email == null || password == null)
+            var vm = Bind<LoginViewModel>();
+            if (vm == null || vm.Email == null || vm.Password == null)
             {
                 return null;
             }
-            var u = User.GetUserForLogin(email, password);
+            var u = User.GetUserForLogin(vm.Email, vm.Password);
             if (u != null)
             {
-                Session[Const.LoginSession] = u;
-                if (rememberme)
+                if (vm.RememberMe)
                 {
-                    var cookie = new HttpCookie(Const.LoginCookie, 
-                        User.SerializeToString(u.Email, password)) { Expires = DateTime.Now.AddDays(30) };
-                    Ctx.Response.Cookies.Add(cookie);
+                    var et = Util.Now.AddDays(30);
+                    Cookies.SetCookie(LoginHelper.LoginCookie,
+                                      u.SessionId, et);
+                    u.SessionValidUntil = et;
+                    u.Save();
                 }
-                return UrlTo.Controller("requirement");
+                else
+                {
+                    Cookies[LoginHelper.LoginCookie] = u.SessionId;
+                    u.SessionValidUntil = Util.Now.AddDays(1);
+                    u.Save();
+                }
+                return UrlTo<RequirementController>();
             }
             Flash.Warning = "用户名或密码错误";
             return null;
@@ -33,30 +40,31 @@ namespace Soaring.Biz.Controllers
 
         public string Logout(string url)
         {
-            Session[Const.LoginSession] = null;
-            var luc = Ctx.Request.Cookies[Const.LoginCookie];
-            if (luc != null)
+            var user = LoginHelper.GetLoginUser();
+            if(user != null)
             {
-                luc.Expires = DateTime.Now.AddDays(-1);
-                luc.Value = "";
-                Ctx.Response.Cookies.Set(luc);
+                user.ResetSessionId();
+                user.Save();
             }
-            return url ?? UrlTo.Controller("user").Action("login");
+            LoginHelper.SetLoginId(null);
+            return url ?? UrlTo<UserController>(p => p.Login());
         }
 
-        public string Register([Bind]User user)
+        public string Register()
         {
+            var user = Bind<User>();
             if (user.Email.LikeNull() || user.Password.LikeNull() || user.Nick.LikeNull() || user.Email.IndexOf("@") < 0)
             {
                 Flash.Warning = "Email密码以及显示名都是必填项";
                 return null;
             }
+            user.ResetSessionId();
             var validater = user.Validate();
             if(validater.IsValid)
             {
                 user.Save();
                 Flash.Notice = "用户创建成功";
-                return UrlTo.Controller("user").Action("login");
+                return UrlTo("user").Action("login");
             }
             var sb = new StringBuilder();
             foreach (var message in validater.ErrorMessages)

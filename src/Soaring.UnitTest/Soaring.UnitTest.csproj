@@ -43,6 +43,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Leafing.Core\Leafing.Core.csproj">
+      <Project>{891EAD10-3C90-4478-A695-71F5537C2AA2}</Project>
+      <Name>Leafing.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Soaring.Biz\Soaring.Biz.csproj">
       <Project>{2BC955EE-377B-42CD-B189-2A17AF99D9AD}</Project>
       <Name>Soaring.Biz</Name>

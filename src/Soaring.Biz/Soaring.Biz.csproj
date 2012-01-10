@@ -56,10 +56,10 @@
     <Compile Include="Exceptions\PageNotFoundException.cs" />
     <Compile Include="Exceptions\SessionInvalidException.cs" />
     <Compile Include="Helpers\CommonExtends.cs" />
-    <Compile Include="Helpers\CommonHelper.cs" />
-    <Compile Include="Helpers\Const.cs" />
+    <Compile Include="Helpers\LoginHelper.cs" />
     <Compile Include="Helpers\InitializeHelper.cs" />
-    <Compile Include="Helpers\MembershipDispatcher.cs" />
+    <Compile Include="Helpers\LoginViewModel.cs" />
+    <Compile Include="Helpers\MembershipProcessor.cs" />
     <Compile Include="Models\Bug.cs" />
     <Compile Include="Models\BugDescription.cs" />
     <Compile Include="Models\Enums\BugStatus.cs" />
@@ -74,17 +74,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lephone.Core\Lephone.Core.csproj">
+    <ProjectReference Include="..\Leafing.Core\Leafing.Core.csproj">
       <Project>{891EAD10-3C90-4478-A695-71F5537C2AA2}</Project>
-      <Name>Lephone.Core</Name>
+      <Name>Leafing.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Lephone.Data\Lephone.Data.csproj">
+    <ProjectReference Include="..\Leafing.Data\Leafing.Data.csproj">
       <Project>{25AFD300-493A-4553-B4DC-129D3A9022A8}</Project>
-      <Name>Lephone.Data</Name>
+      <Name>Leafing.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Lephone.Web\Lephone.Web.csproj">
+    <ProjectReference Include="..\Leafing.Web\Leafing.Web.csproj">
       <Project>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</Project>
-      <Name>Lephone.Web</Name>
+      <Name>Leafing.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -103,7 +103,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(ProjectDir)\..\Lephone.MSBuild\bin\$(ConfigurationName)\Lephone.MSBuild.dll" />
+  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(ProjectDir)\..\Leafing.MSBuild\bin\$(ConfigurationName)\Leafing.MSBuild.dll" />
   <Target Name="AfterCompile">
     <ProcessorTask KeyFile="$(KeyOriginatorFile)" ProjectDir="$(ProjectDir)" AssemblyName="@(IntermediateAssembly)" ReferenceFiles="@(ReferencePath)" />
   </Target>

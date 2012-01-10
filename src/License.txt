@@ -1,11 +1,11 @@
-                                          Lephone Library Public License 1.0
+                                          Leafing Library Public License 1.0
 
-Copyright (C) 2008 Lephone Studio <http://llf.hanzify.org>
+Copyright (C) 2008 Leafing Studio <http://llf.hanzify.org>
 Everyone is permitted to copy and distribute verbatim copies of this license document, but changing 
 it is not allowed.
 
 0. Additional Definitions.
-As used herein, ¡°this License¡± refers to version 1.0 of Lephone Library Public License.
+As used herein, ¡°this License¡± refers to version 1.0 of Leafing Library Public License.
 "The Library" refers to a covered work governed by this License, other than an Application or a 
 Combined Work as defined below.
 "The Original Author" refers to the author/team who created the project.
@@ -62,4 +62,4 @@ AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND
 PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, 
 YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION. 
 
-Copyright (C) Lephone Studio 2008-7-22
+Copyright (C) Leafing Studio 2008-7-22

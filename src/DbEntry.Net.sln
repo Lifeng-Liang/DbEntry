@@ -18,32 +18,32 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest Projects", "UnitTest Projects", "{A0CF8258-917F-4756-BF94-7C3F7E254352}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Data", "Lephone.Data\Lephone.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.Data", "Leafing.Data\Leafing.Data.csproj", "{25AFD300-493A-4553-B4DC-129D3A9022A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.UnitTest", "Lephone.UnitTest\Lephone.UnitTest.csproj", "{48E4289C-FABF-46F6-AC45-AAA4224F84D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.UnitTest", "Leafing.UnitTest\Leafing.UnitTest.csproj", "{48E4289C-FABF-46F6-AC45-AAA4224F84D3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.MockSql", "Lephone.MockSql\Lephone.MockSql.csproj", "{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.MockSql", "Leafing.MockSql\Leafing.MockSql.csproj", "{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Web", "Lephone.Web\Lephone.Web.csproj", "{A73147C3-73C4-4590-9EC4-250AC83F4EF5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D009E584-9511-4243-9D2D-CD74079FB425} = {D009E584-9511-4243-9D2D-CD74079FB425}
-		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.CodeGen", "Lephone.CodeGen\Lephone.CodeGen.csproj", "{B36CF407-9408-428D-A2B7-0245E58CDE17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.Web", "Leafing.Web\Leafing.Web.csproj", "{A73147C3-73C4-4590-9EC4-250AC83F4EF5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D009E584-9511-4243-9D2D-CD74079FB425} = {D009E584-9511-4243-9D2D-CD74079FB425}
 		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Core", "Lephone.Core\Lephone.Core.csproj", "{891EAD10-3C90-4478-A695-71F5537C2AA2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.CodeGen", "Leafing.CodeGen\Leafing.CodeGen.csproj", "{B36CF407-9408-428D-A2B7-0245E58CDE17}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D009E584-9511-4243-9D2D-CD74079FB425} = {D009E584-9511-4243-9D2D-CD74079FB425}
+		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Processor", "Lephone.Processor\Lephone.Processor.csproj", "{F44CB5CA-3328-43C3-B640-443A1A57A745}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.Core", "Leafing.Core\Leafing.Core.csproj", "{891EAD10-3C90-4478-A695-71F5537C2AA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Data.Oracle8", "Lephone.Data.Oracle8\Lephone.Data.Oracle8.csproj", "{EE035A63-2ABA-4B2C-B716-780CF8CFB631}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.Processor", "Leafing.Processor\Leafing.Processor.csproj", "{F44CB5CA-3328-43C3-B640-443A1A57A745}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.Data.Oracle8", "Leafing.Data.Oracle8\Leafing.Data.Oracle8.csproj", "{EE035A63-2ABA-4B2C-B716-780CF8CFB631}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Soaring Projects", "Soaring Projects", "{12CB8C04-711F-484B-BA8B-C2A7FD688592}"
 EndProject
@@ -57,7 +57,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Soaring", "Soaring\", "{A8801ED6-2D55-4CB5-8153-1644462083C6}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		ProjectReferences = "{2BC955EE-377B-42CD-B189-2A17AF99D9AD}|Soaring.Biz.dll;{891EAD10-3C90-4478-A695-71F5537C2AA2}|Lephone.Core.dll;{25AFD300-493A-4553-B4DC-129D3A9022A8}|Lephone.Data.dll;{A73147C3-73C4-4590-9EC4-250AC83F4EF5}|Lephone.Web.dll;"
+		ProjectReferences = "{2BC955EE-377B-42CD-B189-2A17AF99D9AD}|Soaring.Biz.dll;{891EAD10-3C90-4478-A695-71F5537C2AA2}|Leafing.Core.dll;{25AFD300-493A-4553-B4DC-129D3A9022A8}|Leafing.Data.dll;{A73147C3-73C4-4590-9EC4-250AC83F4EF5}|Leafing.Web.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/Soaring"
 		Debug.AspNetCompiler.PhysicalPath = "Soaring\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\Soaring\"
@@ -76,22 +76,22 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Soaring", "Soaring\", "{A88
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.Extra", "Lephone.Extra\Lephone.Extra.csproj", "{D009E584-9511-4243-9D2D-CD74079FB425}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.Extra", "Leafing.Extra\Leafing.Extra.csproj", "{D009E584-9511-4243-9D2D-CD74079FB425}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lephone.UnitTest.NoConfig", "Lephone.UnitTest.NoConfig\Lephone.UnitTest.NoConfig.csproj", "{77F62E15-6EBD-4E19-BE39-D9D823717B50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.UnitTest.NoConfig", "Leafing.UnitTest.NoConfig\Leafing.UnitTest.NoConfig.csproj", "{77F62E15-6EBD-4E19-BE39-D9D823717B50}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
 	EndProjectSection
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Lephone.UnitTest.VB", "Lephone.UnitTest.VB\Lephone.UnitTest.VB.vbproj", "{68D482CB-3284-42B4-9641-2DC146730FED}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Leafing.UnitTest.VB", "Leafing.UnitTest.VB\Leafing.UnitTest.VB.vbproj", "{68D482CB-3284-42B4-9641-2DC146730FED}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Lephone.Setup", "Lephone.Setup\Lephone.Setup.vdproj", "{0FB22CE7-4C62-49BF-96B8-80A704ACF244}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Leafing.Setup", "Leafing.Setup\Leafing.Setup.vdproj", "{0FB22CE7-4C62-49BF-96B8-80A704ACF244}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
