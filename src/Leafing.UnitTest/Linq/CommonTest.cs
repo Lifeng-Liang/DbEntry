@@ -399,7 +399,7 @@ namespace Leafing.UnitTest.Linq
         [Test]
         public void TestDelete()
         {
-            DbEntry.Delete<PersonSqlite>(p => p.FirstName.EndsWith("T"));
+            DbEntry.DeleteBy<PersonSqlite>(p => p.FirstName.EndsWith("T"));
             Assert.AreEqual("DELETE FROM [People] WHERE [Name] LIKE @Name_0;\n<Text><30>(@Name_0=%T:String)", StaticRecorder.LastMessage);
         }
 
@@ -602,6 +602,38 @@ namespace Leafing.UnitTest.Linq
         {
             DbEntry.From<BoolTest>().Where(CK.K["Name"].NotIn("Tom", "Jerry")).Select();
             AssertSql("SELECT [Id],[Name],[Available] FROM [Bool_Test] WHERE [Name] NOT IN (@in_0,@in_1);\n<Text><60>(@in_0=Tom:String,@in_1=Jerry:String)");
+        }
+
+        [Test]
+        public void TestUpdateBy0()
+        {
+            BoolTest.UpdateBy(p => p.Available, new { Name = "aa" });
+            AssertSql(@"UPDATE [Bool_Test] SET [Name]=@Name_0  WHERE [Available] = @Available_1;
+<Text><30>(@Name_0=aa:String,@Available_1=True:Boolean)");
+        }
+
+        [Test]
+        public void TestUpdateBy1()
+        {
+            BoolTest.UpdateBy(p => p.Available, new { Name = "aa", Available = false});
+            AssertSql(@"UPDATE [Bool_Test] SET [Name]=@Name_0,[Available]=@Available_1  WHERE [Available] = @Available_2;
+<Text><30>(@Name_0=aa:String,@Available_1=False:Boolean,@Available_2=True:Boolean)");
+        }
+
+        [Test]
+        public void TestUpdateBy2()
+        {
+            DbEntry.UpdateBy<TestClass>(p => p.Name == "abc", new { Age = 3L });
+            AssertSql(@"UPDATE [Test_Class] SET [Age]=@Age_0  WHERE [Name] = @Name_1;
+<Text><30>(@Age_0=3:Int64,@Name_1=abc:String)");
+        }
+
+        [Test]
+        public void TestUpdateBy3()
+        {
+            DbEntry.UpdateBy<TestClass>(p => p.Name == "abc", new { Age = 3L, Gender = true });
+            AssertSql(@"UPDATE [Test_Class] SET [Age]=@Age_0,[Gender]=@Gender_1  WHERE [Name] = @Name_2;
+<Text><30>(@Age_0=3:Int64,@Gender_1=True:Boolean,@Name_2=abc:String)");
         }
     }
 }

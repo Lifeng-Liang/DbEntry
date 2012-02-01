@@ -182,6 +182,17 @@ namespace Leafing.Data.Model.Composer
             return isv.ToSqlStatement(this.Context);
         }
 
+        public virtual SqlStatement GetUpdateStatement(Condition iwc, object obj)
+        {
+            var isv = new UpdateStatementBuilder(this.Context.Info.From);
+            foreach(var property in obj.GetType().GetProperties())
+            {
+                isv.Values.Add(new KeyValue(property.Name, property.GetValue(obj, null)));
+            }
+            isv.Where.Conditions = iwc;
+            return isv.ToSqlStatement(this.Context);
+        }
+
         public virtual void ProcessAfterSave(object obj)
         {
         }

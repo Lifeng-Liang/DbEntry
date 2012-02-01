@@ -218,6 +218,10 @@ namespace Leafing.Processor
             {
                 return false;
             }
+            if(t.IsInterface)
+            {
+                return false;
+            }
             foreach (var @interface in t.Interfaces)
             {
                 if (@interface.FullName == KnownTypesHandler.DbObjectInterface)

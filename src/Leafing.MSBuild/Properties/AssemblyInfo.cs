@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Reflection;
+using Leafing.Core;
 
 [assembly: AssemblyTitle("Leafing Framework MSBuild Task")]
 [assembly: AssemblyDescription("Leafing Framework MSBuild Task")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Leafing Studio")]
-[assembly: AssemblyProduct("Leafing Framework")]
-[assembly: AssemblyCopyright("Copyright © Leafing Studio 2012")]
-[assembly: AssemblyTrademark("http://dbentry.codeplex.com")]
+[assembly: AssemblyCompany(Util.Company)]
+[assembly: AssemblyProduct(Util.Product)]
+[assembly: AssemblyCopyright(Util.Copyright)]
+[assembly: AssemblyTrademark(Util.Trademark)]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 
-[assembly: AssemblyVersion("4.2.*")]
+[assembly: AssemblyVersion(Util.Version + ".*")]

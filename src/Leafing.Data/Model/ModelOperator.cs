@@ -244,11 +244,6 @@ namespace Leafing.Data.Model
             return list;
         }
 
-        public List<T> ExecuteList<T>(string sqlStr) where T : class, IDbObject
-        {
-            return ExecuteList<T>(new SqlStatement(sqlStr));
-        }
-
         public List<T> ExecuteList<T>(string sqlStr, params object[] os) where T : class, IDbObject
         {
             return ExecuteList<T>(Provider.GetSqlStatement(sqlStr, os));
@@ -364,10 +359,17 @@ namespace Leafing.Data.Model
             return il[0];
         }
 
-        public int Delete(Condition iwc)
+        public int DeleteBy(Condition iwc)
         {
             TryCreateTable();
             var sql = Composer.GetDeleteStatement(iwc);
+            return Provider.ExecuteNonQuery(sql);
+        }
+
+        public int UpdateBy(Condition iwc, object obj)
+        {
+            TryCreateTable();
+            var sql = Composer.GetUpdateStatement(iwc, obj);
             return Provider.ExecuteNonQuery(sql);
         }
 
@@ -471,10 +473,16 @@ namespace Leafing.Data.Model
             return GetObject<T>(wc);
         }
 
-        public int Delete<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
+        public int DeleteBy<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
         {
             var wc = Linq.ExpressionParser<T>.Parse(expr);
-            return Delete(wc);
+            return DeleteBy(wc);
+        }
+
+        public int UpdateBy<T>(Expression<Func<T, bool>> expr, object obj) where T : class, IDbObject
+        {
+            var wc = Linq.ExpressionParser<T>.Parse(expr);
+            return UpdateBy(wc, obj);
         }
 
         #endregion

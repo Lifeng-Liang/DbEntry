@@ -44,7 +44,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -122,6 +121,7 @@
     <Compile Include="TimingTask\TimingTaskCollection.cs" />
     <Compile Include="TimingTask\TimingTaskController.cs" />
     <Compile Include="CoreException.cs" />
+    <Compile Include="UtilVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.snk" />

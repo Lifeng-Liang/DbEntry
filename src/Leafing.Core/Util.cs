@@ -7,14 +7,8 @@ using Leafing.Core.Ioc;
 
 namespace Leafing.Core
 {
-    public static class Util
+    public static partial class Util
     {
-        public const string Version = "4.2";
-        public const string Copyright = "Copyright © Leafing Studio 2012";
-        public const string Product = "Leafing Framework";
-        public const string Company = "Leafing Studio";
-        public const string Trademark = "http://dbentry.codeplex.com";
-
         #region Assersion
 
         public static void Assert(bool assertCondition)
@@ -86,32 +80,6 @@ namespace Leafing.Core
         }
 
         #endregion
-
-        public static int Main(string[] args, int minArgCount, string usage, Action callback)
-        {
-            if(args.Length >= minArgCount)
-            {
-                try
-                {
-                    callback();
-                    return 0;
-                }
-                catch(Exception ex)
-                {
-                    if(args.Length > minArgCount && args[args.Length - 1] == "-m")
-                    {
-                        Console.WriteLine(ex);
-                    }
-                    else
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                    return 2;
-                }
-            }
-            Console.WriteLine(usage);
-            return 1;
-        }
 
         public static void CatchAll(Action callback)
         {

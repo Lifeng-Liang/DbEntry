@@ -10,6 +10,18 @@ namespace Leafing.Core.Setting
 {
     public class ResourceConfigReader : ConfigReader
     {
+        class ConfigNames
+        {
+            public readonly string Name;
+            public readonly Assembly Assembly;
+
+            public ConfigNames(string name, Assembly assembly)
+            {
+                this.Name = name;
+                this.Assembly = assembly;
+            }
+        }
+
         private const string ConfigFilePostFix = ".config.xml";
         private Dictionary<string, NameValueCollection> _xmlConfigs;
 
@@ -29,6 +41,7 @@ namespace Leafing.Core.Setting
 
         private void InitAllXmlConfigFiles()
         {
+            var names = new List<ConfigNames>();
             var ass = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly a in ass)
             {
@@ -38,12 +51,20 @@ namespace Leafing.Core.Setting
                     {
                         if (s.EndsWith(ConfigFilePostFix))
                         {
-                            string xml = ResourceHelper.ReadToEnd(a, s, false);
-                            ParseConfig(xml);
-                            return;
+                            names.Add(new ConfigNames(s, a));
                         }
                     }
                 }
+            }
+            if(names.Count > 1)
+            {
+                names.Sort((a, b) => string.Compare(b.Name, a.Name));
+            }
+            if(names.Count >= 1)
+            {
+                var name = names[0];
+                string xml = ResourceHelper.ReadToEnd(name.Assembly, name.Name, false);
+                ParseConfig(xml);
             }
         }
 

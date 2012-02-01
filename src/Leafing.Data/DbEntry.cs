@@ -184,6 +184,16 @@ namespace Leafing.Data
             return GetOperator(obj.GetType()).Delete(obj);
 		}
 
+        public static int UpdateBy<T>(Expression<Func<T, bool>> expr, object obj) where T : class, IDbObject
+        {
+            return GetOperator(typeof(T)).UpdateBy(expr, obj);
+        }
+
+        public static int DeleteBy<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
+        {
+            return GetOperator(typeof(T)).DeleteBy(expr);
+        }
+
         public static long GetResultCount(Type dbObjectType, Condition iwc)
         {
             return GetOperator(dbObjectType).GetResultCount(iwc);
@@ -294,11 +304,6 @@ namespace Leafing.Data
             GetOperator(t1).CreateCrossTable(t2);
         }
 
-        public static int Delete<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
-        {
-            return GetOperator(typeof(T)).Delete(expr);
-        }
-
         public static void CreateDeleteToTable(Type type)
         {
             GetOperator(type).CreateDeleteToTable();
@@ -310,7 +315,7 @@ namespace Leafing.Data
             var ts = new List<Type>();
             foreach (var t in assembly.GetExportedTypes())
             {
-                if (!t.IsGenericType && !t.IsAbstract)
+                if (!t.IsInterface && !t.IsGenericType && !t.IsAbstract)
                 {
                     foreach (var @interface in t.GetInterfaces())
                     {
@@ -321,7 +326,7 @@ namespace Leafing.Data
                     }
                 }
             }
-            ts.Sort((x, y) => x.FullName.CompareTo(y.FullName));
+            ts.Sort((x, y) => string.Compare(x.FullName, y.FullName));
             return ts;
         }
 

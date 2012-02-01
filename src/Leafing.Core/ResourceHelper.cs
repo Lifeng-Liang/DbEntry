@@ -88,7 +88,22 @@ namespace Leafing.Core
 
         public static byte[] ReadAll(Type t, string filePath)
         {
-            using (Stream s = GetStream(t, filePath))
+            return ReadAll(GetStream(t, filePath));
+        }
+
+        public static byte[] ReadAll(Assembly a, string filePath)
+        {
+            return ReadAll(GetStream(a, filePath));
+        }
+
+        public static byte[] ReadAll(string fullPath)
+        {
+            return ReadAll(Assembly.GetManifestResourceStream(fullPath));
+        }
+
+        public static byte[] ReadAll(Stream s)
+        {
+            using (s)
             {
                 var l = (int)s.Length;
                 var ret = new byte[l];

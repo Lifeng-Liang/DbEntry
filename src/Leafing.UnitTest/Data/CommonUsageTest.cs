@@ -702,7 +702,7 @@ namespace Leafing.UnitTest.Data
         {
             var query = DbEntry.From<DistinctTest>().Where(Condition.Empty).OrderBy(p => p.N).PageSize(3).GetDistinctPagedSelector();
             Assert.AreEqual(8, query.GetResultCount());
-            var list = (List<DistinctTest>)query.GetCurrentPage(1);
+            var list = query.GetCurrentPage(1);
             Assert.AreEqual(3, list.Count);
             var exps = new[] { 3, 4, 9 };
             for (int i = 0; i < 3; i++)
@@ -747,11 +747,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestInClause2()
         {
-            var ids = new List<int>();
-            ids.Add(1);
-            ids.Add(3);
-            ids.Add(5);
-            ids.Add(7);
+            var ids = new List<int> {1, 3, 5, 7};
             DbEntry.From<SinglePersonSqlite>().Where(CK.K["Id"].In(ids.ToArray())).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);
 <Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
@@ -760,11 +756,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestInClause3()
         {
-            var ids = new List<int>();
-            ids.Add(1);
-            ids.Add(3);
-            ids.Add(5);
-            ids.Add(7);
+            var ids = new List<int> {1, 3, 5, 7};
             DbEntry.From<SinglePersonSqlite>().Where(CK.K["Id"].In(ids)).Select();
             AssertSql(@"SELECT [Id],[Name] FROM [People] WHERE [Id] IN (@in_0,@in_1,@in_2,@in_3);
 <Text><60>(@in_0=1:Int32,@in_1=3:Int32,@in_2=5:Int32,@in_3=7:Int32)");
@@ -945,6 +937,14 @@ SELECT LAST_INSERT_ROWID();
             var list = DbEntry.From<Person>().Where(CK.K["Id"].NotIn(1, 3, 5, 7)).OrderBy(p => p.Id).Select();
             Assert.AreEqual(1, list.Count);
             Assert.AreEqual("Jerry", list[0].Name);
+        }
+
+        [Test]
+        public void TestExecuteNonQuery()
+        {
+            DbEntry.Provider.ExecuteNonQuery("UPDATE [Books] SET [Name] = ?", "aaa");
+            var book = Book.FindById(1);
+            Assert.AreEqual("aaa", book.Name);
         }
     }
 }
