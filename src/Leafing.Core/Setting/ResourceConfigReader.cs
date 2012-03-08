@@ -12,6 +12,7 @@ namespace Leafing.Core.Setting
     {
         class ConfigNames
         {
+            private string _key;
             public readonly string Name;
             public readonly Assembly Assembly;
 
@@ -19,6 +20,27 @@ namespace Leafing.Core.Setting
             {
                 this.Name = name;
                 this.Assembly = assembly;
+            }
+
+            public string Key
+            {
+                get { return _key ?? (_key = GetKey()); }
+            }
+
+            private string GetKey()
+            {
+                var an = GetName();
+                if(!an.IsNullOrEmpty() && Name.Length > an.Length)
+                {
+                    return Name.Substring(an.Length);
+                }
+                return Name;
+            }
+
+            private string GetName()
+            {
+                var ss = Assembly.FullName.Split(',');
+                return ss[0];
             }
         }
 
@@ -58,7 +80,7 @@ namespace Leafing.Core.Setting
             }
             if(names.Count > 1)
             {
-                names.Sort((a, b) => string.Compare(b.Name, a.Name));
+                names.Sort((a, b) => string.Compare(b.Key, a.Key));
             }
             if(names.Count >= 1)
             {

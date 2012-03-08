@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
 using Leafing.Core;
+using Leafing.Core.Logging;
 using Leafing.Data.Caching;
 using Leafing.Data.Model;
 using Leafing.Data.Common;
@@ -54,7 +55,7 @@ namespace Leafing.Data
         {
             NewConnection(delegate
             {
-                ConnectionContext cc = ConnectionContext.Current;
+                var cc = Scope<ConnectionContext>.Current;
                 cc.BeginTransaction(il);
                 try
                 {
@@ -64,7 +65,14 @@ namespace Leafing.Data
                 }
                 catch
                 {
-                    cc.Rollback();
+                    try
+                    {
+                        cc.Rollback();
+                    }
+                    catch(Exception ex)
+                    {
+                        Logger.SQL.Error(ex);
+                    }
                     throw;
                 }
             });

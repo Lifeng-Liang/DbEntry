@@ -18,9 +18,10 @@ namespace Leafing.Data.Driver
         public override IDbDataParameter GetDbParameter(SqlEntry.DataParameter dp)
         {
             var result = base.GetDbParameter(dp);
-            if(result.DbType == DbType.Guid && result.Value != null && result.Value.GetType() == typeof(Guid))
+            if(result.DbType == DbType.Guid && result.Value != null && result.Value is Guid)
             {
-                result.Value = ((Guid)result.Value).ToByteArray();
+                result.Value = ((Guid)result.Value).ToString();
+                result.DbType = DbType.String;
             }
             return result;
         }

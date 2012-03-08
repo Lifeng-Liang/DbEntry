@@ -66,7 +66,7 @@ namespace Leafing.Data.SqlEntry
             string userId = Dialect.GetUserId(Driver.ConnectionString);
             DbEntry.NewConnection(delegate
             {
-                var c = (DbConnection)ConnectionContext.Current.GetConnection(this);
+                var c = (DbConnection)Scope<ConnectionContext>.Current.GetConnection(this);
                 foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
                 {
                     if (si.FiltrateDatabaseName)
@@ -301,7 +301,11 @@ namespace Leafing.Data.SqlEntry
             {
                 Logger.SQL.Trace(sql);
             }
-            return ConnectionContext.Current.GetDbCommand(sql, this);
+            if (Scope<ConnectionContext>.Current != null)
+            {
+                return Scope<ConnectionContext>.Current.GetDbCommand(sql, this);
+            }
+            return new ConnectionContext().GetDbCommand(sql, this);
         }
 
         protected void PopulateOutParams(SqlStatement sql, IDbCommand e)

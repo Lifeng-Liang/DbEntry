@@ -97,7 +97,7 @@ namespace Leafing.Data.Common
 
         public override Guid GetGuid(int ordinal)
         {
-            return DataReader.GetGuid(ordinal);
+            return Guid.Parse(DataReader.GetString(ordinal));
         }
 
         public override string GetName(int ordinal)

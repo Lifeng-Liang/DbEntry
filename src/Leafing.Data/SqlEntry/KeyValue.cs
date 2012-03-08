@@ -19,16 +19,16 @@ namespace Leafing.Data.SqlEntry
 
 		protected KeyValue() {}
 
-		protected KeyValue(object Value) : this(null, Value) {}
+		protected KeyValue(object value) : this(null, value) {}
 
-		public KeyValue(string Key, object Value)
-            : this(Key, Value, (Value == null) ? typeof(DBNull) : Value.GetType()) { }
+		public KeyValue(string key, object value)
+            : this(key, value, (value == null) ? typeof(DBNull) : value.GetType()) { }
 
-		public KeyValue(string Key, object Value, Type ValueType)
+		public KeyValue(string key, object value, Type valueType)
 		{
-			this.Key = Key;
-			this.Value = Value;
-			this.ValueType = ValueType;
+			this.Key = key;
+			this.Value = value;
+			this.ValueType = valueType;
 		}
 	}
 }

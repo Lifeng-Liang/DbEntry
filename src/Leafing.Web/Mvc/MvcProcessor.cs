@@ -153,7 +153,7 @@ namespace Leafing.Web.Mvc
 
         protected virtual void OnException(Exception exception, ControllerBase controller)
         {
-            controller.OnException(exception);
+            ControllerHelper.OnException(exception);
         }
     }
 }

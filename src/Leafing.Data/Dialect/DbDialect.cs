@@ -129,7 +129,7 @@ namespace Leafing.Data.Dialect
             {
                 if(info.KeyMembers[0].Is.DbGenerateGuid)
                 {
-                    Guid key = Guid.NewGuid();
+                    Guid key = Util.NewGuid();
                     sb.Values[0].Value = key;
                 }
                 SqlStatement sql = sb.ToSqlStatement(provider.Dialect, null, info.AllowSqlLog);

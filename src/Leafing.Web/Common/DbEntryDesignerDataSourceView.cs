@@ -127,7 +127,7 @@ namespace Leafing.Web.Common
             }
             if (fieldType == typeof(Guid))
             {
-                return Guid.NewGuid();
+                return Util.NewGuid();
             }
             if (fieldType == typeof(byte))
             {

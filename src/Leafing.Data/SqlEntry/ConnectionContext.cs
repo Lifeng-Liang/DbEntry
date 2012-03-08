@@ -96,18 +96,6 @@ namespace Leafing.Data.SqlEntry
 
         #endregion
 
-        public static ConnectionContext Current
-        {
-            get
-            {
-                if (Scope<ConnectionContext>.Current != null)
-                {
-                    return Scope<ConnectionContext>.Current;
-                }
-                return new ConnectionContext();
-            }
-        }
-
         public void BeginTransaction()
         {
             _transactionState = ConnectionContextTransactionState.UnspecifiedTransaction;
@@ -164,7 +152,10 @@ namespace Leafing.Data.SqlEntry
                 {
                     Util.CatchAll(() => _transaction.Rollback());
                 }
-                _transaction.Dispose();
+                else
+                {
+                    _transaction.Dispose();
+                }
             }
             if (_connection != null)
             {

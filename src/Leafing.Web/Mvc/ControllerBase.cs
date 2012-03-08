@@ -56,11 +56,6 @@ namespace Leafing.Web.Mvc
             ControllerName = LinkHelper.GetControllerNameByType(GetType());
         }
 
-        protected internal virtual void OnException(Exception ex)
-        {
-            ControllerHelper.OnException(ex);
-        }
-
         [Exclude]
         public void RedirectTo(string url)
         {

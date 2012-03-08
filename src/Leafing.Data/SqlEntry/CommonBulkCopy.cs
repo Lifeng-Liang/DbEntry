@@ -65,7 +65,10 @@ namespace Leafing.Data.SqlEntry
 
         public void Close()
         {
-            ConnectionContext.Current.Close();
+            if(Scope<ConnectionContext>.Current != null)
+            {
+                Scope<ConnectionContext>.Current.Close();
+            }
         }
 
         public void WriteToServer(DataRow[] rows)
@@ -173,7 +176,7 @@ namespace Leafing.Data.SqlEntry
             _count++;
             if (_batchSize > 0 && (_count % _batchSize) == 0)
             {
-                ConnectionContext cc = Scope<ConnectionContext>.Current;
+                var cc = Scope<ConnectionContext>.Current;
                 cc.Commit();
                 cc.BeginTransaction();
             }

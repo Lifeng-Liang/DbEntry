@@ -946,5 +946,51 @@ SELECT LAST_INSERT_ROWID();
             var book = Book.FindById(1);
             Assert.AreEqual("aaa", book.Name);
         }
+
+        [Test]
+        public void TestTransactionWithoutUpdate()
+        {
+            DbEntry.UsingTransaction(() => Book.FindById(1));
+        }
+
+        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "Todo")]
+        public void TestTransactionWithExceptionAndWithoutUpdate()
+        {
+            DbEntry.UsingTransaction(
+                () =>
+                    {
+                        var a = Book.FindById(1);
+                        if(a != null)
+                        {
+                            throw new ApplicationException("Todo");
+                        }
+                    });
+        }
+
+        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "Todo")]
+        public void TestTransactionOnlyException()
+        {
+            DbEntry.UsingTransaction(
+                () =>
+                {
+                    throw new ApplicationException("Todo");
+                });
+        }
+
+        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "Todo")]
+        public void TestTransactions()
+        {
+            DbEntry.UsingTransaction(
+                () =>
+                    {
+                        Book.FindById(1);
+                        Book.FindById(2);
+                        DbEntry.UsingTransaction(
+                            () =>
+                                {
+                                    throw new ApplicationException("Todo");
+                                });
+                    });
+        }
     }
 }

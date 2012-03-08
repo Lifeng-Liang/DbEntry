@@ -50,11 +50,6 @@ namespace Leafing.UnitTest.Mvc
             this["s2"] = s2;
             return new MyView(this);
         }
-
-        protected override void OnException(System.Exception ex)
-        {
-            throw ex;
-        }
     }
 
     [TestFixture]
