@@ -144,37 +144,47 @@ namespace Leafing.Data.SqlEntry
 
         public int UpdateDataset(SqlStatement selectSql, DataSet ds)
         {
-            return UpdateDataset(selectSql, ds, 1);
+            return UpdateDataset(selectSql, ds, 1, UpdateRowSource.Both);
         }
 
         public int UpdateDataset(SqlStatement selectSql, DataSet ds, int updateBatchSize)
         {
+            var updateRowSource = updateBatchSize != 1 ? UpdateRowSource.None : UpdateRowSource.Both;
+            return UpdateDataset(selectSql, ds, updateBatchSize, updateRowSource);
+        }
+
+	    public int UpdateDataset(SqlStatement selectSql, DataSet ds, int updateBatchSize, UpdateRowSource updateRowSource)
+        {
             int ret = 0;
-            DbEntry.UsingConnection(delegate
-            {
-                var d = (DbDataAdapter)InnerDriver.GetDbAdapter(GetDbCommand(selectSql));
-                var cb = InnerDriver.GetCommandBuilder();
-                cb.QuotePrefix = Dialect.OpenQuote.ToString();
-                cb.QuoteSuffix = Dialect.CloseQuote.ToString();
-                cb.DataAdapter = d;
-                d.UpdateBatchSize = updateBatchSize;
-                ret = d.Update(ds);
-                ds.AcceptChanges();
-            });
+            DbEntry.UsingConnection(
+                () =>
+                {
+                    var c = GetDbCommand(selectSql);
+                    c.UpdatedRowSource = updateRowSource;
+                    var d = (DbDataAdapter)InnerDriver.GetDbAdapter(c);
+                    var cb = InnerDriver.GetCommandBuilder();
+                    cb.QuotePrefix = Dialect.OpenQuote.ToString();
+                    cb.QuoteSuffix = Dialect.CloseQuote.ToString();
+                    cb.DataAdapter = d;
+                    d.UpdateBatchSize = updateBatchSize;
+                    ret = d.Update(ds);
+                    ds.AcceptChanges();
+                });
             return ret;
         }
 
         public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds)
 		{
-            return UpdateDataset(insertSql, updateSql, deleteSql, ds, 1, false);
+            return UpdateDataset(insertSql, updateSql, deleteSql, ds, 1, UpdateRowSource.Both, false);
         }
 
         public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize)
         {
-            return UpdateDataset(insertSql, updateSql, deleteSql, ds, updateBatchSize, true);
+            var updateRowSource = updateBatchSize != 1 ? UpdateRowSource.None : UpdateRowSource.Both;
+            return UpdateDataset(insertSql, updateSql, deleteSql, ds, updateBatchSize, updateRowSource, true);
         }
 
-        private int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize, bool throwException)
+        private int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize, UpdateRowSource updateRowSource, bool throwException)
         {
             int ret = 0;
             DbEntry.UsingConnection(delegate
@@ -182,15 +192,15 @@ namespace Leafing.Data.SqlEntry
                 IDbDataAdapter d = InnerDriver.GetDbAdapter();
                 if(insertSql != null)
                 {
-                    d.InsertCommand = GetDbCommandForUpdate(insertSql);
+                    d.InsertCommand = GetDbCommandForUpdate(insertSql, updateRowSource);
                 }
                 if(updateSql != null)
                 {
-                    d.UpdateCommand = GetDbCommandForUpdate(updateSql);
+                    d.UpdateCommand = GetDbCommandForUpdate(updateSql, updateRowSource);
                 }
                 if(deleteSql != null)
                 {
-                    d.DeleteCommand = GetDbCommandForUpdate(deleteSql);
+                    d.DeleteCommand = GetDbCommandForUpdate(deleteSql, updateRowSource);
                 }
                 if (d is DbDataAdapter)
                 {
@@ -206,9 +216,10 @@ namespace Leafing.Data.SqlEntry
             return ret;
         }
 
-        private IDbCommand GetDbCommandForUpdate(SqlStatement sql)
+        private IDbCommand GetDbCommandForUpdate(SqlStatement sql, UpdateRowSource updateRowSource)
         {
-            IDbCommand c = GetDbCommand(sql);
+            var c = GetDbCommand(sql);
+            c.UpdatedRowSource = updateRowSource;
             return c;
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Leafing.Core;
 using Leafing.Core.Ioc;
 
@@ -19,11 +20,15 @@ namespace Leafing.UnitTest.Mocks
             MockNow = MockNow.Add(ts);
         }
 
-        public static Guid MockGuid = Guid.Empty;
+        public static Queue<Guid> MockGuids = new Queue<Guid>();
 
         public override Guid NewGuid()
         {
-            return MockGuid;
+            if (MockGuids.Count > 0)
+            {
+                return MockGuids.Dequeue();
+            }
+            return Guid.NewGuid();
         }
 
         public static long MockSecends;
