@@ -56,6 +56,11 @@ Example:
 
         private static void Process(string[] args)
         {
+            if(args.Length == 0)
+            {
+                throw new ArgsErrorException(1, "Input Error!");
+            }
+
             var fileName = Path.GetFullPath(args[0]);
 
             if (!File.Exists(fileName))
@@ -74,7 +79,6 @@ Example:
 
                 new AssemblyProcessor(fileName, sn, GetReferenceFiles(args[args.Length - 1])).Process();
                 Console.WriteLine("Assembly processed!");
-                return;
             }
         }
 
