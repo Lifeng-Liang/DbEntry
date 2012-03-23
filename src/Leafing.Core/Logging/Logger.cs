@@ -46,10 +46,6 @@ namespace Leafing.Core.Logging
                     var s2 = s1.Trim();
                     if (s2 != "")
                     {
-                        if (s2.StartsWith("@"))
-                        {
-                            s2 = string.Format("Leafing.Core.Logging.{0}LogRecorder, Leafing.Core", s2.Substring(1));
-                        }
                         var ilc = LogRecorderProvider.GetLogRecorder(s2);
                         list.Add(ilc);
                     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Leafing.Core.Ioc
 {
@@ -15,16 +16,29 @@ namespace Leafing.Core.Ioc
 
         public void Add(ClassCreator creator)
         {
-            if(creator.Index > _defaultIndex)
+            if(creator.Index > 0)
             {
-                _default = creator;
-                _defaultIndex = creator.Index;
-            }
-            foreach(var cc in _all)
-            {
-                if(cc.Index == creator.Index)
+                if (creator.Index > _defaultIndex)
                 {
-                    throw new IocException("[{0}] and [{1}] have the same index {2}", creator.Type, cc.Type, cc.Index);
+                    _default = creator;
+                    _defaultIndex = creator.Index;
+                }
+                foreach (var cc in _all)
+                {
+                    if (cc.Index == creator.Index)
+                    {
+                        throw new IocException("[{0}] and [{1}] have the same index {2}", creator.Type, cc.Type, cc.Index);
+                    }
+                }
+            }
+            if(!creator.Name.IsNullOrEmpty())
+            {
+                foreach (var cc in _all)
+                {
+                    if (cc.Name == creator.Name)
+                    {
+                        throw new IocException("[{0}] and [{1}] have the same name {2}", creator.Type, cc.Type, cc.Name);
+                    }
                 }
             }
             _all.Add(creator);
@@ -50,6 +64,23 @@ namespace Leafing.Core.Ioc
             }
             throw new IocException("Can not find implement of [{0}] by index {1}",
                 _default.Type, index);
+        }
+
+        public object Create(string name)
+        {
+            if (name.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException("name");
+            }
+            foreach (var creator in _all)
+            {
+                if (creator.Name != null && creator.Name == name)
+                {
+                    return creator.Create();
+                }
+            }
+            throw new IocException("Can not find implement of [{0}] by name {1}",
+                _default.Type, name);
         }
     }
 }

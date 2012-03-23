@@ -9,8 +9,8 @@ namespace Leafing.Core.Ioc
         public readonly ConstructorInfo Constructor;
         public readonly List<PropertyInjector> PropertyInjectors;
 
-        public InjectedClassCreator(Type type, int index, ConstructorInfo constructor, List<PropertyInjector> injectors)
-            : base(type, index)
+        public InjectedClassCreator(Type type, int index, string name, ConstructorInfo constructor, List<PropertyInjector> injectors)
+            : base(type, index, name)
         {
             this.Constructor = constructor;
             this.PropertyInjectors = injectors;

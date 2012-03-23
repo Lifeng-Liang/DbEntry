@@ -117,7 +117,7 @@ namespace Leafing.Core.Ioc
                     var impl = type.GetAttribute<ImplementationAttribute>(false);
                     if(impl != null)
                     {
-                        impls.Add(ClassCreator.New(type, impl.Index));
+                        impls.Add(ClassCreator.New(type, impl.Index, impl.Name));
                     }
                 }
             }
@@ -128,9 +128,9 @@ namespace Leafing.Core.Ioc
             return entry == impl || impl.IsChildOf(entry);
         }
 
-        public static void Register(Type entryType, Type implType, int index)
+        public static void Register(Type entryType, Type implType, int index, string name)
         {
-            var cc = ClassCreator.New(implType, index);
+            var cc = ClassCreator.New(implType, index, name);
             Register(entryType, cc);
         }
 
@@ -165,6 +165,21 @@ namespace Leafing.Core.Ioc
                 return creator.Create(index);
             }
             throw new CoreException("Can not find [{0}] index [{1}]", entry, index);
+        }
+
+        public static T Get<T>(string name)
+        {
+            return (T)Get(typeof(T), name);
+        }
+
+        public static object Get(Type entry, string name)
+        {
+            if (Container.ContainsKey(entry))
+            {
+                var creator = Container[entry];
+                return creator.Create(name);
+            }
+            throw new CoreException("Can not find [{0}] name [{1}]", entry, name);
         }
     }
 }

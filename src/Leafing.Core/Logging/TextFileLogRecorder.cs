@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Text;
 using System.IO;
+using Leafing.Core.Ioc;
 using Leafing.Core.Setting;
 
 namespace Leafing.Core.Logging
 {
-	public class TextFileLogRecorder : ILogRecorder
+    [Implementation("TextFile")]
+    public class TextFileLogRecorder : ILogRecorder
 	{
         protected object SyncRoot = new object();
 
@@ -28,12 +30,6 @@ namespace Leafing.Core.Logging
 		{
             _logFileTemplate = CoreSettings.LogFileName;
 			Init();
-		}
-
-        public TextFileLogRecorder(string logFileName)
-		{
-            _logFileTemplate = logFileName;
-            Init();
 		}
 
 		protected void Init()

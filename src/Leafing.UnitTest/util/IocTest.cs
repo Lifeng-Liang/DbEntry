@@ -10,7 +10,7 @@ namespace Leafing.UnitTest.util
         string Run();
     }
 
-    [Implementation(1)]
+    [Implementation(1, "test")]
     public class TestImpl : ITest
     {
         public string Run()
@@ -19,12 +19,21 @@ namespace Leafing.UnitTest.util
         }
     }
 
-    [Implementation(2)]
+    [Implementation(2, "test2")]
     public class NewTestImpl : ITest
     {
         public string Run()
         {
             return "2nd impl";
+        }
+    }
+
+    [Implementation("test3")]
+    public class NewNewTestImpl : ITest
+    {
+        public string Run()
+        {
+            return "3rd impl";
         }
     }
 
@@ -104,7 +113,7 @@ namespace Leafing.UnitTest.util
         [Test]
         public void Test2()
         {
-            SimpleContainer.Register(typeof(IocSame), typeof(IocSameReg), 4);
+            SimpleContainer.Register(typeof(IocSame), typeof(IocSameReg), 4, null);
             var t = SimpleContainer.Get<IocSame>(4);
             Assert.IsNotNull(t);
             Assert.AreEqual("reg class", t.Run());
@@ -115,7 +124,7 @@ namespace Leafing.UnitTest.util
         [Test, ExpectedException(typeof(ArgumentException))]
         public void Test3()
         {
-            SimpleContainer.Register(typeof(ITest), typeof(ITest), 7);
+            SimpleContainer.Register(typeof(ITest), typeof(ITest), 7, null);
         }
 
         [Test]
@@ -124,6 +133,22 @@ namespace Leafing.UnitTest.util
             var item = SimpleContainer.Get<IocConstractor>();
             Assert.IsNotNull(item);
             Assert.AreEqual("2nd impl", item.Run());
+        }
+
+        [Test]
+        public void TestName()
+        {
+            var item = SimpleContainer.Get<ITest>("test");
+            Assert.IsNotNull(item);
+            Assert.AreEqual("1st impl", item.Run());
+
+            item = SimpleContainer.Get<ITest>("test2");
+            Assert.IsNotNull(item);
+            Assert.AreEqual("2nd impl", item.Run());
+
+            item = SimpleContainer.Get<ITest>("test3");
+            Assert.IsNotNull(item);
+            Assert.AreEqual("3rd impl", item.Run());
         }
     }
 }

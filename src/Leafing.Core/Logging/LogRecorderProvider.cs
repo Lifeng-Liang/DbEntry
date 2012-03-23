@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Leafing.Core.Ioc;
 
 namespace Leafing.Core.Logging
 {
@@ -14,7 +15,9 @@ namespace Leafing.Core.Logging
                 {
                     return Jar[name];
                 }
-                var ilc = (ILogRecorder)ClassHelper.CreateInstance(name);
+                var ilc = name.StartsWith("@")
+                    ? SimpleContainer.Get<ILogRecorder>(name.Substring(1))
+                    : (ILogRecorder)ClassHelper.CreateInstance(name);
                 if (ilc == null)
                 {
                     throw new SettingException();

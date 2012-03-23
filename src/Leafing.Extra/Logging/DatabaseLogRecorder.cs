@@ -1,9 +1,11 @@
 ﻿using System;
+using Leafing.Core.Ioc;
 using Leafing.Core.Logging;
 using Leafing.Data;
 
 namespace Leafing.Extra.Logging
 {
+    [Implementation("Database")]
     public class DatabaseLogRecorder : ILogRecorder
     {
         public void ProcessLog(SysLogType type, string name, string message, Exception exception)

@@ -1,7 +1,9 @@
 ﻿using System;
+using Leafing.Core.Ioc;
 
 namespace Leafing.Core.Logging
 {
+    [Implementation("ConsoleMessage")]
     public class ConsoleMessageLogRecorder : ILogRecorder
     {
         private static long _count;

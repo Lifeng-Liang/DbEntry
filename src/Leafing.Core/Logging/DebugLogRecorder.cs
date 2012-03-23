@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using Leafing.Core.Ioc;
 
 namespace Leafing.Core.Logging
 {
+    [Implementation("Debug")]
     public class DebugLogRecorder : ILogRecorder
     {
         public void ProcessLog(SysLogType type, string name, string message, Exception exception)

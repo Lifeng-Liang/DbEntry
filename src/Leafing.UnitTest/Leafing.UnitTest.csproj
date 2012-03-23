@@ -106,6 +106,7 @@
     <Compile Include="Data\CreateTable\SqlServer2008Test.cs" />
     <Compile Include="Data\DatasetTest.cs" />
     <Compile Include="Data\DateTimeTest.cs" />
+    <Compile Include="Data\DbContextTest.cs" />
     <Compile Include="Data\DbNowTest.cs" />
     <Compile Include="Data\DbObjectListTest.cs" />
     <Compile Include="Data\DbTimeProviderTest.cs" />

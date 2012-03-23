@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO;
+using Leafing.Core.Ioc;
 
 namespace Leafing.Core.Logging
 {
+    [Implementation("DtsFile")]
     public class DtsFileLogRecorder : TextFileLogRecorder
     {
-        public DtsFileLogRecorder() { }
-
-        public DtsFileLogRecorder(string logFileName) : base(logFileName) { }
-
         protected override void WriteLog(StreamWriter sw, SysLogType type, string name, string message, Exception exception)
         {
             sw.WriteLine("{0},{1},{2},{3},{4}", GetString4Dts(type),

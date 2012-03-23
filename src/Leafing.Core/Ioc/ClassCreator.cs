@@ -7,18 +7,24 @@ namespace Leafing.Core.Ioc
     {
         public readonly Type Type;
         public readonly int Index;
+        public readonly string Name;
 
-        protected ClassCreator(Type type, int index)
+        protected ClassCreator(Type type, int index, string name)
         {
             this.Type = type;
             this.Index = index;
+            this.Name = name;
         }
 
         public abstract object Create();
 
-        public static ClassCreator New(Type type, int index)
+        public static ClassCreator New(Type type, int index, string name)
         {
-            if (index <= 0 || index > 100)
+            if(index == 0 && name.IsNullOrEmpty())
+            {
+                throw new ArgumentOutOfRangeException("index", "index can not be 0 while name is null or empty");
+            }
+            if (index < 0 || index > 100)
             {
                 throw new ArgumentOutOfRangeException("index", "index should be between 1 to 100");
             }
@@ -35,9 +41,9 @@ namespace Leafing.Core.Ioc
             var injectors = GetInjectors(type);
             if(injectors.Count > 0 || constructor.GetParameters().Length > 0)
             {
-                return new InjectedClassCreator(type, index, constructor, injectors);
+                return new InjectedClassCreator(type, index, name, constructor, injectors);
             }
-            return new SimpleClassCreator(type, index, constructor);
+            return new SimpleClassCreator(type, index, name, constructor);
         }
 
         private static List<PropertyInjector> GetInjectors(Type type)

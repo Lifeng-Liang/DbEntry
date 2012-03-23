@@ -7,8 +7,8 @@ namespace Leafing.Core.Ioc
     {
         public readonly Func<object> Constructor;
 
-        public SimpleClassCreator(Type type, int index, ConstructorInfo constructor) 
-            : base(type, index)
+        public SimpleClassCreator(Type type, int index, string name, ConstructorInfo constructor) 
+            : base(type, index, name)
         {
             Constructor = ClassHelper.GetConstructorDelegate(constructor);
         }
