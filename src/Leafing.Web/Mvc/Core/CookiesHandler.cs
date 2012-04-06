@@ -36,9 +36,9 @@ namespace Leafing.Web.Mvc.Core
             c.Value = value;
         }
 
-        public virtual void SetCookie(string key, string value, DateTime expires)
+        public virtual void SetCookie(string key, string value, string domain, DateTime expires)
         {
-            var cookie = new HttpCookie(key, value) {Expires = expires};
+            var cookie = new HttpCookie(key, value) {Expires = expires, Domain = domain, Path = "/"};
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
     }

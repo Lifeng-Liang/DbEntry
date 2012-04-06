@@ -1,5 +1,8 @@
-﻿namespace Leafing.Core.Text
+﻿using Leafing.Core.Ioc;
+
+namespace Leafing.Core.Text
 {
+    [Implementation("Inflection")]
     public class InflectionNameMapper : UnderlineNameMapper
     {
         public override string MapName(string name)

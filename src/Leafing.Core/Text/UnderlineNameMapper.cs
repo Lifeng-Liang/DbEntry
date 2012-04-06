@@ -1,7 +1,9 @@
 ﻿using System.Text;
+using Leafing.Core.Ioc;
 
 namespace Leafing.Core.Text
 {
+    [Implementation("Underline")]
     public class UnderlineNameMapper : NameMapper
     {
         public override string MapName(string name)

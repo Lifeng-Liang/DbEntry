@@ -62,5 +62,15 @@ namespace Leafing.Web.Mvc.Core
         {
             get { return HttpContext.Current.Request.AppRelativeCurrentExecutionFilePath; }
         }
+
+        public virtual string UserAgent
+        {
+            get { return HttpContext.Current.Request.UserAgent; }
+        }
+
+        public virtual string UserHostAddress
+        {
+            get { return HttpContext.Current.Request.UserHostAddress; }
+        }
     }
 }

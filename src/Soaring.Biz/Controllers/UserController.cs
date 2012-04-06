@@ -22,7 +22,7 @@ namespace Soaring.Biz.Controllers
                 {
                     var et = Util.Now.AddDays(30);
                     Cookies.SetCookie(LoginHelper.LoginCookie,
-                                      u.SessionId, et);
+                                      u.SessionId, null, et);
                     u.SessionValidUntil = et;
                     u.Save();
                 }
