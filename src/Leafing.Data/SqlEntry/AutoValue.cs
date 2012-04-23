@@ -5,4 +5,12 @@
         DbNow,
         Count,
     }
+
+    public class AutoValueDbNow
+    {
+    }
+
+    public class AutoValueCount
+    {
+    }
 }

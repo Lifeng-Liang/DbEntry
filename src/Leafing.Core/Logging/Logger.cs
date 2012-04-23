@@ -8,9 +8,9 @@ namespace Leafing.Core.Logging
 	{
         // ReSharper disable InconsistentNaming
         public static readonly Logger SQL = new Logger("SQL");
-        // ReSharper restore InconsistentNaming
         public static readonly Logger Default = new Logger("Default");
         public static readonly Logger System = new Logger("System");
+        // ReSharper restore InconsistentNaming
 
         public readonly List<ILogRecorder> LogRecorders;
         private readonly string _name;

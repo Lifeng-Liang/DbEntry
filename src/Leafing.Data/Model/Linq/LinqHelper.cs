@@ -1,4 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
+using Leafing.Data.Common;
+using Leafing.Data.Definition;
 
 namespace Leafing.Data.Model.Linq
 {
@@ -15,6 +18,14 @@ namespace Leafing.Data.Model.Linq
                 return (MemberExpression)((UnaryExpression)expr.Body).Operand;
             }
             return null;
+        }
+
+        public static string GetColumnName<T>(this Expression<Func<T, object>> expr) where T : class, IDbObject
+        {
+            ColumnFunction function;
+            MemberExpression obj;
+            var key = ExpressionParser<T>.GetMemberName(expr.Body, out function, out obj);
+            return key;
         }
     }
 }

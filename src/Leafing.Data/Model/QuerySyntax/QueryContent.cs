@@ -138,12 +138,12 @@ namespace Leafing.Data.Model.QuerySyntax
 
         public SelectStatementBuilder GetStatement(Expression<Func<T, object>> expr)
         {
-            return InnerGetSelectStatement(false, GetColumnName(expr));
+            return InnerGetSelectStatement(false, expr.GetColumnName());
         }
 
         public SelectStatementBuilder GetDistinctStatement(Expression<Func<T, object>> expr)
         {
-            return InnerGetSelectStatement(true, GetColumnName(expr));
+            return InnerGetSelectStatement(true, expr.GetColumnName());
         }
 
         public SelectStatementBuilder GetStatement(string columnName)
@@ -225,31 +225,31 @@ namespace Leafing.Data.Model.QuerySyntax
 
         public decimal? GetMax(Expression<Func<T, object>> expr)
         {
-            string n = GetColumnName(expr);
+            string n = expr.GetColumnName();
             return GetMax(n);
         }
 
         public DateTime? GetMaxDate(Expression<Func<T, object>> expr)
         {
-            string n = GetColumnName(expr);
+            string n = expr.GetColumnName();
             return GetMaxDate(n);
         }
 
         public decimal? GetMin(Expression<Func<T, object>> expr)
         {
-            string n = GetColumnName(expr);
+            string n = expr.GetColumnName();
             return GetMin(n);
         }
 
         public DateTime? GetMinDate(Expression<Func<T, object>> expr)
         {
-            string n = GetColumnName(expr);
+            string n = expr.GetColumnName();
             return GetMinDate(n);
         }
 
         public decimal? GetSum(Expression<Func<T, object>> expr)
         {
-            string n = GetColumnName(expr);
+            string n = expr.GetColumnName();
             return GetSum(n);
         }
 
@@ -283,21 +283,13 @@ namespace Leafing.Data.Model.QuerySyntax
 
         private static IRangeable<T> AddOrderBy(QueryContent<T> me, Expression<Func<T, object>> expr, bool isAsc)
         {
-            string n = GetColumnName(expr);
+            string n = expr.GetColumnName();
             if (me._order == null)
             {
                 me._order = new OrderBy();
             }
             me._order.OrderItems.Add(isAsc ? new ASC(n) : new DESC(n));
             return me;
-        }
-
-        private static string GetColumnName(Expression<Func<T, object>> expr)
-        {
-            ColumnFunction function;
-            MemberExpression obj;
-            var key = ExpressionParser<T>.GetMemberName(expr.Body, out function, out obj);
-            return key;
         }
 
         #endregion

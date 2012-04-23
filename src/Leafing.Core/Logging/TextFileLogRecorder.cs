@@ -9,8 +9,7 @@ namespace Leafing.Core.Logging
     [Implementation("TextFile")]
     public class TextFileLogRecorder : ILogRecorder
 	{
-        protected object SyncRoot = new object();
-
+        private readonly object _syncRoot = new object();
 	    private string _logFileName;
 	    private readonly string _logFileTemplate;
 	    private Date _lastDate = Date.MinValue;
@@ -41,9 +40,9 @@ namespace Leafing.Core.Logging
 		    GetLogFileName();
         }
 
-        public void ProcessLog(SysLogType type, string name, string message, Exception exception)
+        public virtual void ProcessLog(SysLogType type, string name, string message, Exception exception)
         {
-            lock (SyncRoot)
+            lock (_syncRoot)
             {
                 using (var sw = new StreamWriter(GetLogFileName(), true, Encoding.Default))
                 {
@@ -54,7 +53,7 @@ namespace Leafing.Core.Logging
 
         protected virtual void WriteLog(StreamWriter sw, SysLogType type, string name, string message, Exception exception)
         {
-            sw.WriteLine("{0},{1},{2},{3},{4}", type, name, message, exception, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            sw.WriteLine("{0}|{1}|{2}|{3}|{4}", type, name, message, exception, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
         }
     }
 }

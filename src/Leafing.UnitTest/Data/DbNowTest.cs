@@ -56,6 +56,14 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
         }
 
+        [DbTable("DateTable"), DbContext("SQLite")]
+        public class DateTable5 : DbObjectModel<DateTable5>
+        {
+            public string Name { get; set; }
+
+            public int Count { get; set; }
+        }
+
         [SetUp]
         public void SetUp()
         {
@@ -139,5 +147,14 @@ namespace Leafing.UnitTest.Data
             DbEntry.Update(o);
             Assert.AreEqual("UPDATE [DateTable] SET [SavedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
+
+
+        [Test]
+        public void TestIntColumnAdd()
+        {
+            DateTable5.IntColumnAdd(CK.K["Name"] == "tom", "Count");
+            Assert.AreEqual("UPDATE [DateTable] SET [Count]=[Count]+1  WHERE [Name] = @Name_0;\n<Text><30>(@Name_0=tom:String)", StaticRecorder.LastMessage);
+        }
+
     }
 }

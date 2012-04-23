@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Text;
 using Leafing.Data.Model.Member;
 
 namespace Leafing.Data.Model.Creator
@@ -49,23 +50,33 @@ namespace Leafing.Data.Model.Creator
 
         private static void FindMemberCastFailByIndex(ModelContext ctx, IDataReader dr, InvalidCastException ex)
         {
+            var text = new StringBuilder();
             var ms = ctx.Info.SimpleMembers;
             for (int i = 0; i < ms.Length; i++)
             {
-                CheckMemberCast(ms[i], dr[i], ex);
+                CheckMemberCast(ms[i], dr[i], text);
+            }
+            if(text.Length > 0)
+            {
+                throw new DataException(text.ToString(), ex);
             }
         }
 
         private static void FindMemberCastFailByName(ModelContext ctx, IDataReader dr, InvalidCastException ex)
         {
+            var text = new StringBuilder();
             var ms = ctx.Info.SimpleMembers;
             foreach (var member in ms)
             {
-                CheckMemberCast(member, dr[member.Name], ex);
+                CheckMemberCast(member, dr[member.Name], text);
+            }
+            if (text.Length > 0)
+            {
+                throw new DataException(text.ToString(), ex);
             }
         }
 
-        private static void CheckMemberCast(MemberHandler member, object value, InvalidCastException ex)
+        private static void CheckMemberCast(MemberHandler member, object value, StringBuilder text)
         {
             if (value == DBNull.Value && member.Is.AllowNull)
             {
@@ -77,8 +88,8 @@ namespace Leafing.Data.Model.Creator
             }
             if (member.MemberType != value.GetType())
             {
-                throw new DataException(string.Format("The type of member [{0}] is [{1}] but sql value of it is [{2}]",
-                                        member.Name, member.MemberType, value.GetType()), ex);
+                text.AppendFormat("The type of member [{0}] is [{1}] but sql value of it is [{2}]\n",
+                                  member.Name, member.MemberType, value.GetType());
             }
         }
     }

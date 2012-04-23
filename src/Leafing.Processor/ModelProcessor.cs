@@ -196,7 +196,7 @@ namespace Leafing.Processor
         {
             foreach (var c in _model.Methods)
             {
-                if (c.IsConstructor)
+                if (c.IsConstructor && !c.IsStatic)
                 {
                     ProcessConstructor(c);
                 }

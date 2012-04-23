@@ -64,11 +64,7 @@ namespace Leafing.Data.Model
         {
             if (Provider.Driver.AutoCreateTable)
             {
-                if (Provider.Driver.TableNames == null)
-                {
-                    InitTableNames();
-                }
-                Debug.Assert(Provider.Driver.TableNames != null);
+                InitTableNames();
                 if(Info.CreateTables != null)
                 {
                     foreach(var type in Info.CreateTables)
@@ -127,10 +123,13 @@ namespace Leafing.Data.Model
 
         private void InitTableNames()
         {
-            Provider.Driver.TableNames = new Dictionary<string, int>();
-            foreach (string s in Provider.GetTableNames())
+            if (Provider.Driver.TableNames == null)
             {
-                Provider.Driver.TableNames.Add(s.ToLower(), 1);
+                Provider.Driver.TableNames = new Dictionary<string, int>();
+                foreach (string s in Provider.GetTableNames())
+                {
+                    Provider.Driver.TableNames.Add(s.ToLower(), 1);
+                }
             }
         }
 
@@ -198,6 +197,12 @@ namespace Leafing.Data.Model
             object o = GetMinObject(iwc, columnName);
             if (o == null) { return null; }
             return Convert.ToDateTime(o);
+        }
+
+        public void IntColumnAdd(Condition condition, string column, int n)
+        {
+            var sql = Composer.GetColumnAddStatement(condition, column, n);
+            Provider.ExecuteNonQuery(sql);
         }
 
         public object GetMinObject(Condition iwc, string columnName)
