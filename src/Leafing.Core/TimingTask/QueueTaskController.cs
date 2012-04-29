@@ -13,7 +13,7 @@ namespace Leafing.Core.TimingTask
         {
             if (runPerMilliSecends <= 0)
             {
-                throw new ArgumentOutOfRangeException("runPerMilliSecends", "runPerMilliSecends should large than 0 but not");
+                throw new ArgumentOutOfRangeException("runPerMilliSecends", "runPerMilliSecends should large than 0");
             }
             _runPerMilliSecends = runPerMilliSecends;
         }

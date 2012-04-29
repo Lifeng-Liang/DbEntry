@@ -111,7 +111,7 @@ namespace Leafing.Processor
             {
                 if(!pi.PropertyDefinition.PropertyType.Name.StartsWith("IList`1"))
                 {
-                    Throw(pi, "Property [{0}] should be IList<T> but not");
+                    Throw(pi, "Property [{0}] should be IList<T>");
                 }
                 CheckIsPublicGetAndPrivateSet(pi);
             }
@@ -119,7 +119,7 @@ namespace Leafing.Processor
             {
                 if (!pi.PropertyDefinition.SetMethod.IsPublic || !pi.PropertyDefinition.GetMethod.IsSpecialName)
                 {
-                    Throw(pi, "Property [{0}] should have public getter and setter but not");
+                    Throw(pi, "The getter/setter of property [{0}] should be public");
                 }
             }
         }
@@ -128,11 +128,11 @@ namespace Leafing.Processor
         {
             if(pi.PropertyDefinition.SetMethod.IsPublic)
             {
-                Throw(pi, "Property [{0}] should have private setter but not");
+                Throw(pi, "The setter of property [{0}] should be private. Example:\npublic string Name { get; private set; }");
             }
             if(!pi.PropertyDefinition.GetMethod.IsPublic)
             {
-                Throw(pi, "Property [{0}] should have public getter but not");
+                Throw(pi, "The getter of property [{0}] should be public");
             }
         }
 

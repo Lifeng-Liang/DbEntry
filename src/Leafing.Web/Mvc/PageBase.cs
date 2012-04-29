@@ -47,8 +47,11 @@ namespace Leafing.Web.Mvc
             base.OnInit(e);
             if (Master != null && Master is MasterPageBase)
             {
-                ((MasterPageBase)Master).Bag = Bag;
-                ((MasterPageBase)Master).InitFields();
+                var m = (MasterPageBase)Master;
+                m.Bag = Bag;
+                m.ControllerName = ControllerName;
+                m.ActionName = ActionName;
+                m.InitFields();
             }
         }
 
