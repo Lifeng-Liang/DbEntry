@@ -24,9 +24,27 @@ namespace Leafing.Data
             return this;
         }
 
+        public ConditionBuilder<T> And(bool check, Expression<Func<T, bool>> expr)
+        {
+            if (check)
+            {
+                _condition &= ExpressionParser<T>.Parse(expr);
+            }
+            return this;
+        }
+
         public ConditionBuilder<T> Or(Expression<Func<T, bool>> expr)
         {
             _condition |= ExpressionParser<T>.Parse(expr);
+            return this;
+        }
+
+        public ConditionBuilder<T> Or(bool check, Expression<Func<T, bool>> expr)
+        {
+            if(check)
+            {
+                _condition |= ExpressionParser<T>.Parse(expr);
+            }
             return this;
         }
 

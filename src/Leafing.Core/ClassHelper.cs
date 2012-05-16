@@ -43,7 +43,13 @@ namespace Leafing.Core
                 object o = ChangeType(value, conversionType.GetGenericArguments()[0]);
                 return CreateInstance(conversionType, o);
             }
-            if(conversionType == typeof(bool))
+            if (conversionType.IsEnum)
+            {
+                return value is string
+                           ? Enum.Parse(conversionType, (string)value)
+                           : Enum.ToObject(conversionType, value);
+            }
+            if (conversionType == typeof(bool))
             {
                 if(value is bool)
                 {

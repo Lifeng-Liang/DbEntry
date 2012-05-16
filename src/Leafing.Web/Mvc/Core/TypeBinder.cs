@@ -136,14 +136,20 @@ namespace Leafing.Web.Mvc.Core
             foreach (var info in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
                 var value = HttpContextHandler.Instance[info.Name];
-                var av = ClassHelper.ChangeType(value, info.FieldType);
-                info.SetValue(obj, av);
+                if(!value.IsNullOrEmpty())
+                {
+                    var av = ClassHelper.ChangeType(value, info.FieldType);
+                    info.SetValue(obj, av);
+                }
             }
             foreach (var info in type.GetProperties())
             {
                 var value = HttpContextHandler.Instance[info.Name];
-                var av = ClassHelper.ChangeType(value, info.PropertyType);
-                info.SetValue(obj, av, null);
+                if(!value.IsNullOrEmpty())
+                {
+                    var av = ClassHelper.ChangeType(value, info.PropertyType);
+                    info.SetValue(obj, av, null);
+                }
             }
             return obj;
         }

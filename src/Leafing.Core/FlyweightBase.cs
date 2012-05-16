@@ -4,7 +4,7 @@ namespace Leafing.Core
 {
     public abstract class FlyweightBase<TKey, TValue>
     {
-        protected static Dictionary<TKey, TValue> Jar = new Dictionary<TKey, TValue>();
+        protected Dictionary<TKey, TValue> Jar = new Dictionary<TKey, TValue>();
 
         public TValue GetInstance(TKey t)
         {
