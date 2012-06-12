@@ -61,7 +61,7 @@ namespace Leafing.Web.Mvc.Core
                 {
                     if (defaultAction == null)
                     {
-                        defaultAction = mi.Name;
+                        defaultAction = mi.Name.ToLower();
                     }
                     else
                     {

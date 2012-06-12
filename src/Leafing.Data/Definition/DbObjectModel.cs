@@ -122,9 +122,14 @@ namespace Leafing.Data.Definition
             ModelContext.Operator.IntColumnAdd(con, column, 1);
         }
 
-        public static void DeleteBy(Condition con)
+        public static void DeleteBy(Condition condition)
         {
-            ModelContext.Operator.DeleteBy(con);
+            ModelContext.Operator.DeleteBy(condition);
+        }
+
+        public static int UpdateBy(Condition condition, object obj)
+        {
+            return ModelContext.Operator.UpdateBy(condition, obj);
         }
 
         #region Linq methods

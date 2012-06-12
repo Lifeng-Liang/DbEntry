@@ -8,6 +8,7 @@ namespace Leafing.Data
     public class ConditionBuilder<T> where T : IDbObject, new()
     {
         private Condition _condition;
+        private int _count;
 
         public ConditionBuilder()
         {
@@ -16,11 +17,13 @@ namespace Leafing.Data
         public ConditionBuilder(Expression<Func<T, bool>> expr)
         {
             _condition = ExpressionParser<T>.Parse(expr);
+            _count++;
         }
 
         public ConditionBuilder<T> And(Expression<Func<T, bool>> expr)
         {
             _condition &= ExpressionParser<T>.Parse(expr);
+            _count++;
             return this;
         }
 
@@ -29,6 +32,7 @@ namespace Leafing.Data
             if (check)
             {
                 _condition &= ExpressionParser<T>.Parse(expr);
+                _count++;
             }
             return this;
         }
@@ -36,6 +40,7 @@ namespace Leafing.Data
         public ConditionBuilder<T> Or(Expression<Func<T, bool>> expr)
         {
             _condition |= ExpressionParser<T>.Parse(expr);
+            _count++;
             return this;
         }
 
@@ -44,6 +49,7 @@ namespace Leafing.Data
             if(check)
             {
                 _condition |= ExpressionParser<T>.Parse(expr);
+                _count++;
             }
             return this;
         }
@@ -51,13 +57,20 @@ namespace Leafing.Data
         public static ConditionBuilder<T> operator &(ConditionBuilder<T> builder, Expression<Func<T, bool>> expr)
         {
             builder._condition &= ExpressionParser<T>.Parse(expr);
+            builder._count++;
             return builder;
         }
 
         public static ConditionBuilder<T> operator |(ConditionBuilder<T> builder, Expression<Func<T, bool>> expr)
         {
             builder._condition |= ExpressionParser<T>.Parse(expr);
+            builder._count++;
             return builder;
+        }
+
+        public int Count
+        {
+            get { return _count; }
         }
 
         public Condition ToCondition()
