@@ -635,5 +635,29 @@ namespace Leafing.UnitTest.Linq
             AssertSql(@"UPDATE [Test_Class] SET [Age]=@Age_0,[Gender]=@Gender_1  WHERE [Name] = @Name_2;
 <Text><30>(@Age_0=3:Int64,@Gender_1=True:Boolean,@Name_2=abc:String)");
         }
+
+        [Test]
+        public void TestUpdateBy4()
+        {
+            DbEntry.UpdateBy<TestClass>(CK.K["Name"] == "abc", new { Age = 3L, Gender = true });
+            AssertSql(@"UPDATE [Test_Class] SET [Age]=@Age_0,[Gender]=@Gender_1  WHERE [Name] = @Name_2;
+<Text><30>(@Age_0=3:Int64,@Gender_1=True:Boolean,@Name_2=abc:String)");
+        }
+
+        [Test]
+        public void TestDeleteBy0()
+        {
+            DbEntry.DeleteBy<TestClass>(CK.K["Name"] == "abc");
+            AssertSql(@"DELETE FROM [Test_Class] WHERE [Name] = @Name_0;
+<Text><30>(@Name_0=abc:String)");
+        }
+
+        [Test]
+        public void TestDeleteBy1()
+        {
+            DbEntry.DeleteBy<TestClass>(p => p.Name == "abc");
+            AssertSql(@"DELETE FROM [Test_Class] WHERE [Name] = @Name_0;
+<Text><30>(@Name_0=abc:String)");
+        }
     }
 }

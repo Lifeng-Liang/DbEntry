@@ -5,14 +5,14 @@ using Leafing.Core.Logging;
 namespace Leafing.Extra.Logging
 {
 	[DisableSqlLog]
-	public class LeafingLog : DbObject
+    public class LeafingLog : DbObjectModel<LeafingLog>
 	{
-		public SysLogType Type;
-		public string Thread;
-		public string Name;
-		public string Message;
-		public string Exception;
-        [SpecialName] public DateTime CreatedOn;
+        public SysLogType Type { get; set; }
+        public string Thread { get; set; }
+        public string Name { get; set; }
+        public string Message { get; set; }
+        public string Exception { get; set; }
+        [SpecialName] public DateTime CreatedOn { get; set; }
 
         public LeafingLog() {}
 

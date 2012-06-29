@@ -192,14 +192,24 @@ namespace Leafing.Data
             return GetOperator(obj.GetType()).Delete(obj);
 		}
 
-        public static int UpdateBy<T>(Expression<Func<T, bool>> expr, object obj) where T : class, IDbObject
+        public static int UpdateBy<T>(Condition condition, object obj) where T : class, IDbObject
         {
-            return GetOperator(typeof(T)).UpdateBy(expr, obj);
+            return GetOperator(typeof(T)).UpdateBy(condition, obj);
         }
 
-        public static int DeleteBy<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
+        public static int UpdateBy<T>(Expression<Func<T, bool>> condition, object obj) where T : class, IDbObject
         {
-            return GetOperator(typeof(T)).DeleteBy(expr);
+            return GetOperator(typeof(T)).UpdateBy(condition, obj);
+        }
+
+        public static int DeleteBy<T>(Condition condition) where T : class, IDbObject
+        {
+            return GetOperator(typeof(T)).DeleteBy(condition);
+        }
+
+        public static int DeleteBy<T>(Expression<Func<T, bool>> condition) where T : class, IDbObject
+        {
+            return GetOperator(typeof(T)).DeleteBy(condition);
         }
 
         public static long GetResultCount(Type dbObjectType, Condition iwc)
