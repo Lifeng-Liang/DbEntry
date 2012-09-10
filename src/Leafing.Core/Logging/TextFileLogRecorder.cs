@@ -44,7 +44,7 @@ namespace Leafing.Core.Logging
         {
             lock (_syncRoot)
             {
-                using (var sw = new StreamWriter(GetLogFileName(), true, Encoding.Default))
+                using (var sw = new StreamWriter(GetLogFileName(), true, Encoding.UTF8))
                 {
                 	WriteLog(sw, type, name, message, exception);
                 }

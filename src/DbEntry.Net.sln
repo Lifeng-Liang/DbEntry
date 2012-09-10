@@ -93,6 +93,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Leafing.UnitTest.VB", "Leaf
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Leafing.Setup", "Leafing.Setup\Leafing.Setup.vdproj", "{0FB22CE7-4C62-49BF-96B8-80A704ACF244}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.Membership", "Leafing.Membership\Leafing.Membership.csproj", "{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -281,6 +283,18 @@ Global
 		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Release|Any CPU.ActiveCfg = Release
 		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Release|Mixed Platforms.ActiveCfg = Release
 		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Release|x86.ActiveCfg = Release
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Release|.NET.ActiveCfg = Release|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

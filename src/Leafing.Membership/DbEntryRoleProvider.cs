@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Web.Security;
 using Leafing.Data;
 
-namespace Leafing.Web
+namespace Leafing.Membership
 {
     public class DbEntryRoleProvider : RoleProvider
     {

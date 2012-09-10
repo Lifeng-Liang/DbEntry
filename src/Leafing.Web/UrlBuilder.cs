@@ -11,7 +11,7 @@ namespace Leafing.Web
         private readonly Encoding _encoding;
 
         public UrlBuilder(string baseUrl)
-            : this(baseUrl, Encoding.Default)
+            : this(baseUrl, Encoding.UTF8)
         {
         }
 

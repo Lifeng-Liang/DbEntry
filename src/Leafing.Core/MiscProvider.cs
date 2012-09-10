@@ -47,5 +47,15 @@ namespace Leafing.Core
         {
             Thread.Sleep(millisecends);
         }
+
+        public virtual DateTime ToLocalTime(DateTime time)
+        {
+            return time.ToLocalTime();
+        }
+
+        public virtual DateTime ToUniversalTime(DateTime time)
+        {
+            return time.ToUniversalTime();
+        }
     }
 }

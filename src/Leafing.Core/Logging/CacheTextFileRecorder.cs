@@ -32,7 +32,7 @@ namespace Leafing.Core.Logging
 
                 if (sb.Length > 0)
                 {
-                    using (var sw = new StreamWriter(GetLogFileName(), true, Encoding.Default))
+                    using (var sw = new StreamWriter(GetLogFileName(), true, Encoding.UTF8))
                     {
                         sw.Write(sb.ToString());
                     }

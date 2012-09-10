@@ -220,6 +220,16 @@ namespace Leafing.Core
             MiscHandler.Instence.Sleep(millisecends);
         }
 
+        public static DateTime ToLocalTime(DateTime time)
+        {
+            return MiscHandler.Instence.ToLocalTime(time);
+        }
+
+        public static DateTime ToUniversalTime(DateTime time)
+        {
+            return MiscHandler.Instence.ToUniversalTime(time);
+        }
+
         #endregion
     }
 }

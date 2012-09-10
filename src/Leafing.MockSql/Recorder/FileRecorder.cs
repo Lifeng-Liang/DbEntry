@@ -15,7 +15,7 @@ namespace Leafing.MockSql.Recorder
 
         public void Write(string msg, params object[] os)
         {
-            using (var sw = new StreamWriter(_fileName, true, Encoding.Default))
+            using (var sw = new StreamWriter(_fileName, true, Encoding.UTF8))
             {
                 sw.WriteLine(msg, os);
             }

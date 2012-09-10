@@ -104,11 +104,7 @@
     <Compile Include="Mvc\Core\FlashHandler.cs" />
     <Compile Include="MvcDispatcher.cs" />
     <Compile Include="DbEntryDataSource.cs" />
-    <Compile Include="DbEntryMembershipProvider.cs" />
-    <Compile Include="DbEntryRole.cs" />
-    <Compile Include="DbEntryRoleProvider.cs" />
     <Compile Include="Common\IExcuteableDataSource.cs" />
-    <Compile Include="DbEntryMembershipUser.cs" />
     <Compile Include="Mvc\Core\HttpContextHandler.cs" />
     <Compile Include="ItemList.cs" />
     <Compile Include="Mvc\Core\LinkToInfo.cs" />

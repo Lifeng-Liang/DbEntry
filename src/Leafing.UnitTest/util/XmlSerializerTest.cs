@@ -84,7 +84,7 @@ namespace Leafing.UnitTest.util
             var set = new XmlSchemaSet();
             set.Add(schema);
             var reader = XmlReader.Create(
-                new MemoryStream(Encoding.Default.GetBytes(c2)),
+                new MemoryStream(Encoding.UTF8.GetBytes(c2)),
                 new XmlReaderSettings { ValidationType = ValidationType.Schema, Schemas = set });
             while (reader.Read())
             {
@@ -107,14 +107,14 @@ namespace Leafing.UnitTest.util
 </xs:element>
 
 </xs:schema>";
-            var schema = XmlSchema.Read(new MemoryStream(Encoding.Default.GetBytes(ss)), null);
+            var schema = XmlSchema.Read(new MemoryStream(Encoding.UTF8.GetBytes(ss)), null);
 
             var s = new Sitex { Url = "ddd" };
             string c2 = XmlSerializer<Sitex>.Xml.Serialize(s);
             var set = new XmlSchemaSet();
             set.Add(schema);
             var reader = XmlReader.Create(
-                new MemoryStream(Encoding.Default.GetBytes(c2)),
+                new MemoryStream(Encoding.UTF8.GetBytes(c2)),
                 new XmlReaderSettings { ValidationType = ValidationType.Schema, Schemas = set });
             while (reader.Read())
             {

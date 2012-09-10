@@ -18,7 +18,7 @@ namespace Leafing.UnitTest.util
             string s = ResourceHelper.ReadToEnd(this.GetType(), "UnitTest.config.xml");
             using (var ms = new MemoryStream())
             {
-                byte[] bs = Encoding.Default.GetBytes(s);
+                byte[] bs = Encoding.UTF8.GetBytes(s);
                 ms.Write(bs, 0, bs.Length);
                 ms.Flush();
                 ms.Position = 0;

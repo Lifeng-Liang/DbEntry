@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Leafing.Data.Definition;
 
-namespace Leafing.Web
+namespace Leafing.Membership
 {
     public class DbEntryRole : DbObjectModel<DbEntryRole>
     {
