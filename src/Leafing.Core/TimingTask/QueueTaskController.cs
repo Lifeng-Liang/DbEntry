@@ -6,8 +6,8 @@ namespace Leafing.Core.TimingTask
 {
     public class QueueTaskController : ServiceBase
     {
-        private readonly int _runPerMilliSecends;
-        private readonly List<ITask> _tasks = new List<ITask>();
+        protected readonly int RunPerMilliSecends;
+        protected readonly List<ITask> Tasks = new List<ITask>();
 
         public QueueTaskController(int runPerMilliSecends)
         {
@@ -15,12 +15,12 @@ namespace Leafing.Core.TimingTask
             {
                 throw new ArgumentOutOfRangeException("runPerMilliSecends", "runPerMilliSecends should large than 0");
             }
-            _runPerMilliSecends = runPerMilliSecends;
+            RunPerMilliSecends = runPerMilliSecends;
         }
 
         public void AddTask(ITask task)
         {
-            _tasks.Add(task);
+            Tasks.Add(task);
         }
 
         protected override void OnStarting()
@@ -33,7 +33,7 @@ namespace Leafing.Core.TimingTask
 
         protected override void RunControllerTask()
         {
-            foreach (var task in _tasks)
+            foreach (var task in Tasks)
             {
                 try
                 {
@@ -47,9 +47,9 @@ namespace Leafing.Core.TimingTask
             RoundSleep();
         }
 
-        private void RoundSleep()
+        protected void RoundSleep()
         {
-            for(int i = _runPerMilliSecends; i > 0; i -= 1000)
+            for(int i = RunPerMilliSecends; i > 0; i -= 1000)
             {
                 var n = i > 1000 ? 1000 : i;
                 Util.Sleep(n);
