@@ -67,8 +67,8 @@ namespace Leafing.Data.Model.Saver
             {
                 CrossTable table = Info.CrossTables[t];
                 var builder = new InsertStatementBuilder(new FromClause(table.Name));
-                builder.Values.Add(new KeyValue(table[0].Column, key1));
-                builder.Values.Add(new KeyValue(table[1].Column, key2));
+                builder.Values.Add(new KeyOpValue(table[0].Column, key1, KvOpertation.None));
+                builder.Values.Add(new KeyOpValue(table[1].Column, key2, KvOpertation.None));
                 SqlStatement sql = builder.ToSqlStatement(Provider.Dialect, Info.QueryRequiredFields, Info.AllowSqlLog);
                 Provider.ExecuteNonQuery(sql);
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Leafing.Data.Builder;
+using Leafing.Data.Builder.Clause;
 using Leafing.Data.Common;
 using Leafing.Data.Definition;
 using Leafing.Data.Model.Linq;
@@ -9,13 +10,15 @@ using Leafing.Data.Model.Linq;
 namespace Leafing.Data.Model.QuerySyntax
 {
     [Serializable]
-    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IGetPagedSelector<T> where T : class, IDbObject
+    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IUpdatable<T>, IGetPagedSelector<T> where T : class, IDbObject
     {
         private readonly ModelContext _ctx;
         private Condition _where;
         private OrderBy _order;
         private Range _range;
         private int _pageSize;
+
+        private UpdateStatementBuilder _updater;
 
         public QueryContent(ModelContext ctx)
         {
@@ -181,6 +184,45 @@ namespace Leafing.Data.Model.QuerySyntax
         public IPagedSelector<T> GetDistinctStaticPagedSelector()
         {
             return new StaticPagedSelector<T>(_where, _order, _pageSize, true);
+        }
+
+        public IUpdatable<T> Set(string key, object value)
+        {
+            return Operate(key, value, KvOpertation.None);
+        }
+
+        public IUpdatable<T> Add(string key, decimal value)
+        {
+            return Operate(key, value, KvOpertation.Add);
+        }
+
+        public IUpdatable<T> Sub(string key, decimal value)
+        {
+            return Operate(key, value, KvOpertation.Sub);
+        }
+
+        public int Delete()
+        {
+            var deleter = new DeleteStatementBuilder(_ctx.Info.From.MainTableName);
+            deleter.Where.Conditions = _where;
+            return _ctx.Provider.ExecuteNonQuery(deleter.ToSqlStatement(_ctx));
+        }
+
+        private IUpdatable<T> Operate(string key, object value, KvOpertation op)
+        {
+            if (_updater == null)
+            {
+                _updater = new UpdateStatementBuilder(_ctx.Info.From);
+            }
+            _updater.Values.Add(new KeyOpValue(key, value, op));
+            return this;
+        }
+
+        public int Update()
+        {
+            _updater.Where.Conditions = _where;
+            var n = _ctx.Provider.ExecuteNonQuery(_updater.ToSqlStatement(_ctx));
+            return n;
         }
 
         public long GetCount()

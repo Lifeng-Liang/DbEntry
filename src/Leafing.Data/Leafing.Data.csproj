@@ -245,7 +245,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="SqlEntry\Dynamic\DataProviderDynamicSupport.cs" />
     <Compile Include="SqlEntry\DataProviderFactory.cs" />
     <Compile Include="SqlEntry\DbColumnInfo.cs" />
-    <Compile Include="SqlEntry\AutoValue.cs" />
     <Compile Include="SqlEntry\IDbBulkCopy.cs" />
     <Compile Include="Model\Inserter\LimitedListInserter.cs" />
     <Compile Include="Definition\NamedDbObject.cs" />

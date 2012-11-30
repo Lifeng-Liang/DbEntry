@@ -43,6 +43,14 @@ namespace Leafing.Data.Model.QuerySyntax
         IRangeable<T> ThenByDescending(Expression<Func<T, object>> expr);
     }
 
+    public interface IUpdatable<T> where T : class, IDbObject
+    {
+        IUpdatable<T> Set(string key, object value);
+        IUpdatable<T> Add(string key, decimal value);
+        IUpdatable<T> Sub(string key, decimal value);
+        int Update();
+    }
+
     public interface IAfterWhere<T> : ISelectable<T>, IGroupByable where T : class, IDbObject
     {
         IRangeable<T> OrderBy(string key);
@@ -50,6 +58,12 @@ namespace Leafing.Data.Model.QuerySyntax
         IRangeable<T> OrderBy(OrderBy order);
         IRangeable<T> OrderBy(Expression<Func<T, object>> expr);
         IRangeable<T> OrderByDescending(Expression<Func<T, object>> expr);
+
+        IUpdatable<T> Set(string key, object value);
+        IUpdatable<T> Add(string key, decimal value);
+        IUpdatable<T> Sub(string key, decimal value);
+
+        int Delete();
 
         long GetCount();
         decimal? GetMax(string columnName);

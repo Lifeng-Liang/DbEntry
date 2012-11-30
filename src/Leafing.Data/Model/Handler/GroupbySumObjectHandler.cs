@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Leafing.Data.SqlEntry;
+using Leafing.Data.Builder.Clause;
 
 namespace Leafing.Data.Model.Handler
 {
@@ -48,7 +48,7 @@ namespace Leafing.Data.Model.Handler
         {
         }
 
-        protected override void SetValuesForInsertDirect(KeyValueCollection values, object o)
+        protected override void SetValuesForInsertDirect(List<KeyOpValue> values, object o)
         {
         }
 
@@ -60,7 +60,7 @@ namespace Leafing.Data.Model.Handler
         {
         }
 
-        protected override void SetValuesForUpdateDirect(KeyValueCollection values, object o)
+        protected override void SetValuesForUpdateDirect(List<KeyOpValue> values, object o)
         {
         }
     }

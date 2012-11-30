@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Leafing.Data;
+using Leafing.Data.Builder.Clause;
 using Leafing.Data.Common;
 using Leafing.Data.Definition;
 using Leafing.Data.Model.Handler;
@@ -58,13 +59,13 @@ namespace Leafing.Processor
         public readonly MethodReference ModelHandlerBaseTypeCtor;
         public readonly MethodReference ModelHandlerBaseTypeGetNullable;
         public readonly MethodReference ModelHandlerBaseTypeNewKeyValue;
-        public readonly MethodReference ModelHandlerBaseTypeNewKeyValueDirect;
+        public readonly MethodReference ModelHandlerBaseTypeNewSpKeyValueDirect;
         public readonly MethodReference ModelHandlerBaseTypeAddKeyValue;
 
         public readonly MethodReference DictionaryStringObjectAdd;
         public readonly MethodReference KeyValuePairStringStringCtor;
         public readonly MethodReference ListKeyValuePairStringStringAdd;
-        public readonly MethodReference KeyValueCollectionAdd;
+        public readonly MethodReference KeyOpValueListAdd;
 
         public readonly MethodReference ConvertToInt64;
         public readonly MethodReference ConvertToInt32;
@@ -92,11 +93,10 @@ namespace Leafing.Processor
         public readonly TypeReference DataReaderInterface;
         public readonly TypeReference DictionaryStringObjectType;
         public readonly TypeReference ListKeyValuePairStringStringType;
-        public readonly TypeReference KeyValueCollectionType;
+        public readonly TypeReference KeyOpValueListType;
         public readonly TypeReference SerializableInterface;
         public readonly TypeReference SerializationInfoType;
         public readonly TypeReference StreamingContextType;
-        public readonly TypeReference AutoValueType;
         public readonly TypeReference DbObjectHandlerInterface;
         public readonly TypeReference MemberHandlerInterface;
 
@@ -193,7 +193,7 @@ namespace Leafing.Processor
             ModelHandlerBaseTypeCtor = Import(ModelHandlerBaseType.GetConstructor());
             ModelHandlerBaseTypeGetNullable = Import(ModelHandlerBaseType.GetMethod("GetNullable"));
             ModelHandlerBaseTypeNewKeyValue = Import(ModelHandlerBaseType.GetMethod("NewKeyValue"));
-            ModelHandlerBaseTypeNewKeyValueDirect = Import(ModelHandlerBaseType.GetMethod("NewKeyValueDirect"));
+            ModelHandlerBaseTypeNewSpKeyValueDirect = Import(ModelHandlerBaseType.GetMethod("NewSpKeyValueDirect"));
             ModelHandlerBaseTypeAddKeyValue = Import(ModelHandlerBaseType.GetMethod("AddKeyValue"));
             var ci = typeof(KeyValuePair<string, string>).GetConstructor(new[] { typeof(string), typeof(string) });
             KeyValuePairStringStringCtor = _module.Import(ci);
@@ -205,17 +205,16 @@ namespace Leafing.Processor
             DictionaryStringObjectType = Import(typeof(Dictionary<string, object>));
             DictionaryStringObjectAdd = Import(typeof(Dictionary<string, object>).GetMethod("Add"));
             ListKeyValuePairStringStringType = Import(typeof(List<KeyValuePair<string, string>>));
-            KeyValueCollectionType = Import(typeof(KeyValueCollection));
+            KeyOpValueListType = Import(typeof(List<KeyOpValue>));
             SerializableInterface = Import(typeof(ISerializable));
             SerializationInfoType = Import(typeof(SerializationInfo));
             StreamingContextType = Import(typeof(StreamingContext));
-            AutoValueType = Import(typeof(AutoValue));
             DbObjectHandlerInterface = Import(typeof(IDbObjectHandler));
             MemberHandlerInterface = Import(typeof(IMemberHandler));
 
             ObjectTypeCtor = Import(ObjectType.GetConstructor());
 
-            KeyValueCollectionAdd = Import(typeof(KeyValueCollection).GetMethod("Add", new[] {typeof(KeyValue)}));
+            KeyOpValueListAdd = Import(typeof(List<KeyOpValue>).GetMethod("Add", new[] {typeof(KeyOpValue)}));
 
             ConvertToInt64 = _module.Import(_module.Import(typeof(Convert)).GetMethod("ToInt64"));
             ConvertToInt32 = _module.Import(_module.Import(typeof(Convert)).GetMethod("ToInt32"));

@@ -15,7 +15,7 @@ namespace Leafing.Data.Model.Composer
         {
             SqlStatement sql = base.GetDeleteStatement(obj);
             InsertStatementBuilder sb = GetInsertStatementBuilder(obj);
-            sb.Values.Add(new KeyValue("DeletedOn", AutoValue.DbNow));
+            sb.Values.Add(new KeyOpValue("DeletedOn", null, KvOpertation.Now));
             sb.From = new FromClause(Context.Info.DeleteToTableName);
             SqlStatement isql = sb.ToSqlStatement(Context);
             sql.SqlCommandText += isql.SqlCommandText;

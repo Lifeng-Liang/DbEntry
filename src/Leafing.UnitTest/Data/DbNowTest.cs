@@ -77,7 +77,7 @@ namespace Leafing.UnitTest.Data
         {
             var dc = new DataProvider("SQLite");
             var sb = new InsertStatementBuilder(new FromClause("user"));
-            sb.Values.Add(new KeyValue("CreatedOn", AutoValue.DbNow));
+            sb.Values.Add(new KeyOpValue("CreatedOn", null, KvOpertation.Now));
             SqlStatement sql = sb.ToSqlStatement(dc.Dialect, null);
             Assert.AreEqual("INSERT INTO [user] ([CreatedOn]) VALUES (DATETIME(CURRENT_TIMESTAMP, 'localtime'));\n", sql.SqlCommandText);
         }
@@ -87,7 +87,7 @@ namespace Leafing.UnitTest.Data
         {
             var dc = new DataProvider("SQLite");
             var sb = new UpdateStatementBuilder(new FromClause("user"));
-            sb.Values.Add(new KeyValue("UpdatedOn", AutoValue.DbNow));
+            sb.Values.Add(new KeyOpValue("UpdatedOn", null, KvOpertation.Now));
             SqlStatement sql = sb.ToSqlStatement(dc.Dialect, null);
             Assert.AreEqual("UPDATE [user] SET [UpdatedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime') ;\n", sql.SqlCommandText);
         }

@@ -82,7 +82,7 @@ namespace Leafing.Data.SqlEntry
                     for (int i = 0; i < dcc.Count; i++)
                     {
                         object o = GetValue(dr[i]);
-                        sb.Values.Add(new KeyValue(dcc[i].ColumnName, o));
+                        sb.Values.Add(new KeyOpValue(dcc[i].ColumnName, o, KvOpertation.None));
                     }
                     if (!WriteSingleToServer(sb)) { break; }
                 }
@@ -99,7 +99,7 @@ namespace Leafing.Data.SqlEntry
                     for (int i = 0; i < table.Columns.Count; i++)
                     {
                         object o = GetValue(dr[i]);
-                        sb.Values.Add(new KeyValue(table.Columns[i].ColumnName, o));
+                        sb.Values.Add(new KeyOpValue(table.Columns[i].ColumnName, o, KvOpertation.None));
                     }
                     if (!WriteSingleToServer(sb)) { break; }
                 }
@@ -116,7 +116,7 @@ namespace Leafing.Data.SqlEntry
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
                         object o = GetValue(reader[i]);
-                        sb.Values.Add(new KeyValue(reader.GetName(i), o));
+                        sb.Values.Add(new KeyOpValue(reader.GetName(i), o, KvOpertation.None));
                     }
                     if (!WriteSingleToServer(sb)) { break; }
                 }
@@ -135,7 +135,7 @@ namespace Leafing.Data.SqlEntry
                         for (int i = 0; i < table.Columns.Count; i++)
                         {
                             object o = GetValue(dr[i]);
-                            sb.Values.Add(new KeyValue(table.Columns[i].ColumnName, o));
+                            sb.Values.Add(new KeyOpValue(table.Columns[i].ColumnName, o, KvOpertation.None));
                         }
                         if (!WriteSingleToServer(sb)) { break; }
                     }

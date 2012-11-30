@@ -187,7 +187,7 @@ namespace Leafing.Data.Model.Composer
             var isv = new UpdateStatementBuilder(this.Context.Info.From);
             foreach(var property in obj.GetType().GetProperties())
             {
-                isv.Values.Add(new KeyValue(property.Name, property.GetValue(obj, null)));
+                isv.Values.Add(new KeyOpValue(property.Name, property.GetValue(obj, null), KvOpertation.None));
             }
             isv.Where.Conditions = iwc;
             return isv.ToSqlStatement(this.Context);
@@ -197,7 +197,7 @@ namespace Leafing.Data.Model.Composer
         {
             var isv = new UpdateStatementBuilder(this.Context.Info.From);
             isv.Where.Conditions = iwc;
-            isv.Values.Add(new KeyValue(column, AutoValue.Count));
+            isv.Values.Add(new KeyOpValue(column, 1, KvOpertation.Add));
             return isv.ToSqlStatement(this.Context);
         }
 

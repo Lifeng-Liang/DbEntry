@@ -1,4 +1,5 @@
 ﻿using Leafing.Data.Builder;
+using Leafing.Data.Builder.Clause;
 using Leafing.Data.Definition;
 using Leafing.Data.Model.Composer;
 using Leafing.Data.Model.Handler;
@@ -43,7 +44,7 @@ namespace Leafing.Data.Model.Deleter
                     var ctx0 = ModelContext.GetInstance(t);
                     var sb = new UpdateStatementBuilder(ctx0.Info.From);
                     var key = ctx0.Info.GetBelongsTo(Info.HandleType).Name;
-                    sb.Values.Add(new KeyValue(key, null));
+                    sb.Values.Add(new KeyOpValue(key, null, KvOpertation.None));
                     sb.Where.Conditions = CK.K[key] == Handler.GetKeyValue(obj);
                     var sql = sb.ToSqlStatement(ctx0);
                     result += ctx0.Provider.ExecuteNonQuery(sql);

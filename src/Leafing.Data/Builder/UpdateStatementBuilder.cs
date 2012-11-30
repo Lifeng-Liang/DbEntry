@@ -28,7 +28,7 @@ namespace Leafing.Data.Builder
 			return sql;
 		}
 
-		public KeyValueCollection Values
+        public List<KeyOpValue> Values
 		{
 			get { return _setOptions; }
 		}

@@ -1,3 +1,4 @@
+using Leafing.Data.Builder.Clause;
 using Leafing.Data.SqlEntry;
 using Leafing.Data.Builder;
 
@@ -17,7 +18,7 @@ namespace Leafing.Data.Model.Composer
             var lv = (int)Context.Info.LockVersion.GetValue(obj);
             sb.Where.Conditions = iwc && (CK.K[Context.Info.LockVersion.Name] == lv);
             bool find = false;
-            foreach (KeyValue kv in sb.Values)
+            foreach (var kv in sb.Values)
             {
                 if (kv.Key == Context.Info.LockVersion.Name)
                 {
@@ -28,7 +29,7 @@ namespace Leafing.Data.Model.Composer
             }
             if (!find)
             {
-                sb.Values.Add(new KeyValue(Context.Info.LockVersion.Name, lv + 1));
+                sb.Values.Add(new KeyOpValue(Context.Info.LockVersion.Name, lv + 1, KvOpertation.None));
             }
             return sb.ToSqlStatement(Context);
         }

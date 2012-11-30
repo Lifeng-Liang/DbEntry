@@ -659,5 +659,49 @@ namespace Leafing.UnitTest.Linq
             AssertSql(@"DELETE FROM [Test_Class] WHERE [Name] = @Name_0;
 <Text><30>(@Name_0=abc:String)");
         }
+
+        [Test]
+        public void TestUpdate1()
+        {
+            DbEntry.From<TestClass>().Where(p => p.Name == "abc")
+                .Add("Gender", 2).Update();
+            AssertSql(@"UPDATE [Test_Class] SET [Gender]=[Gender]+2  WHERE [Name] = @Name_0;
+<Text><30>(@Name_0=abc:String)");
+        }
+
+        [Test]
+        public void TestUpdate2()
+        {
+            DbEntry.From<TestClass>().Where(p => p.Name == "abc")
+                .Sub("Gender", 4).Update();
+            AssertSql(@"UPDATE [Test_Class] SET [Gender]=[Gender]-4  WHERE [Name] = @Name_0;
+<Text><30>(@Name_0=abc:String)");
+        }
+
+        [Test]
+        public void TestUpdate3()
+        {
+            DbEntry.From<TestClass>().Where(p => p.Name == "abc")
+                .Set("Gender", true).Update();
+            AssertSql(@"UPDATE [Test_Class] SET [Gender]=@Gender_0  WHERE [Name] = @Name_1;
+<Text><30>(@Gender_0=True:Boolean,@Name_1=abc:String)");
+        }
+
+        [Test]
+        public void TestUpdate4()
+        {
+            DbEntry.From<TestClass>().Where(p => p.Name == "abc")
+                .Set("Gender", true).Add("Age", 15).Update();
+            AssertSql(@"UPDATE [Test_Class] SET [Gender]=@Gender_0,[Age]=[Age]+15  WHERE [Name] = @Name_1;
+<Text><30>(@Gender_0=True:Boolean,@Name_1=abc:String)");
+        }
+
+        [Test]
+        public void TestDelete1()
+        {
+            DbEntry.From<TestClass>().Where(p => p.Name == "abc").Delete();
+            AssertSql(@"DELETE FROM [Test_Class] WHERE [Name] = @Name_0;
+<Text><30>(@Name_0=abc:String)");
+        }
     }
 }

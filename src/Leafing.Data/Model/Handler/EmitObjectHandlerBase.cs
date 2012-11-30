@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Leafing.Data.Builder;
+using Leafing.Data.Builder.Clause;
 using Leafing.Data.Definition;
 using Leafing.Data.Model.Member;
 using Leafing.Data.SqlEntry;
@@ -147,16 +148,24 @@ namespace Leafing.Data.Model.Handler
         protected abstract void LoadSimpleValuesByIndex(object o, IDataReader dr);
         protected abstract void LoadSimpleValuesByName(object o, IDataReader dr);
 
-        protected KeyValue NewKeyValue(int n, object v)
+        protected KeyOpValue NewKeyValue(int n, object v)
         {
             KeyValue value2 = this.kvc[n];
-            return new KeyValue(value2.Key, v, value2.ValueType);
+            return new KeyOpValue(value2.Key, v, value2.ValueType);
         }
 
-        protected KeyValue NewKeyValueDirect(int n, object v)
+        protected KeyOpValue NewSpKeyValueDirect(int n, int op)
         {
             KeyValue value2 = this.kvc[n];
-            return new KeyValue(value2.Key, v, v.GetType());
+            if(op == 1)
+            {
+                return new KeyOpValue(value2.Key, 1, KvOpertation.Add);
+            }
+            if(op == 2)
+            {
+                return new KeyOpValue(value2.Key, null, KvOpertation.Now);
+            }
+            throw new ApplicationException();
         }
 
         public void SetValuesForInsert(ISqlValues isv, object obj)
@@ -164,7 +173,7 @@ namespace Leafing.Data.Model.Handler
             this.SetValuesForInsertDirect(isv.Values, obj);
         }
 
-        protected abstract void SetValuesForInsertDirect(KeyValueCollection values, object o);
+        protected abstract void SetValuesForInsertDirect(List<KeyOpValue> values, object o);
 
         public void SetValuesForSelect(ISqlKeys isv, bool noLazy)
         {
@@ -186,7 +195,7 @@ namespace Leafing.Data.Model.Handler
             this.SetValuesForUpdateDirect(isv.Values, obj);
         }
 
-        protected abstract void SetValuesForUpdateDirect(KeyValueCollection values, object o);
+        protected abstract void SetValuesForUpdateDirect(List<KeyOpValue> values, object o);
     }
 }
 

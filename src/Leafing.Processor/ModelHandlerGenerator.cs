@@ -4,7 +4,6 @@ using Leafing.Data;
 using Leafing.Data.Definition;
 using Leafing.Data.Model;
 using Leafing.Data.Model.Member;
-using Leafing.Data.SqlEntry;
 using Mono.Cecil;
 
 namespace Leafing.Processor
@@ -414,7 +413,7 @@ namespace Leafing.Processor
             //TODO: implements this
             var method = new MethodDefinition("SetValuesForInsertDirect", MethodAttr, _handler.VoidType);
             method.Overrides.Add(_handler.SetValuesForInsertDirect);
-            method.Parameters.Add(new ParameterDefinition("values", ParameterAttributes.None, _handler.KeyValueCollectionType));
+            method.Parameters.Add(new ParameterDefinition("values", ParameterAttributes.None, _handler.KeyOpValueListType));
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             var processor = new IlBuilder(method.Body);
 
@@ -432,7 +431,7 @@ namespace Leafing.Processor
             //TODO: implements this
             var method = new MethodDefinition("SetValuesForUpdateDirect", MethodAttr, _handler.VoidType);
             method.Overrides.Add(_handler.SetValuesForUpdateDirect);
-            method.Parameters.Add(new ParameterDefinition("values", ParameterAttributes.None, _handler.KeyValueCollectionType));
+            method.Parameters.Add(new ParameterDefinition("values", ParameterAttributes.None, _handler.KeyOpValueListType));
             method.Parameters.Add(new ParameterDefinition("o", ParameterAttributes.None, _handler.ObjectType));
             var processor = new IlBuilder(method.Body);
 
@@ -469,8 +468,8 @@ namespace Leafing.Processor
                         processor.LoadArg(1).LoadArg(0).LoadInt(n);
                         if (cb2(f))
                         {
-                            processor.LoadInt((int)(f.Is.Count ? AutoValue.Count : AutoValue.DbNow))
-                                .Box(_handler.AutoValueType).Call(_handler.ModelHandlerBaseTypeNewKeyValueDirect);
+                            processor.LoadInt(f.Is.Count ? 1 : 2)
+                                .Call(_handler.ModelHandlerBaseTypeNewSpKeyValueDirect);
                         }
                         else
                         {
@@ -492,7 +491,7 @@ namespace Leafing.Processor
                             }
                             processor.Call(_handler.ModelHandlerBaseTypeNewKeyValue);
                         }
-                        processor.CallVirtual(_handler.KeyValueCollectionAdd);
+                        processor.CallVirtual(_handler.KeyOpValueListAdd);
                     }
                     n++;
                 }
@@ -515,8 +514,8 @@ namespace Leafing.Processor
                         if (f.Is.UpdatedOn || f.Is.SavedOn || f.Is.Count)
                         {
                             processor.LoadArg(1).LoadArg(0).LoadInt(n)
-                                .LoadInt((int)(f.Is.Count ? AutoValue.Count : AutoValue.DbNow)).Box(_handler.AutoValueType)
-                                .Call(_handler.ModelHandlerBaseTypeNewKeyValueDirect).CallVirtual(_handler.KeyValueCollectionAdd);
+                                .LoadInt(f.Is.Count ? 1 : 2)
+                                .Call(_handler.ModelHandlerBaseTypeNewSpKeyValueDirect).CallVirtual(_handler.KeyOpValueListAdd);
                         }
                         else
                         {

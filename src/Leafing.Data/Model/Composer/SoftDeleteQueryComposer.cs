@@ -33,7 +33,7 @@ namespace Leafing.Data.Model.Composer
         public override SqlStatement GetDeleteStatement(Condition iwc)
         {
             var sb = new UpdateStatementBuilder(Context.Info.From);
-            sb.Values.Add(new KeyValue(_columnName, true));
+            sb.Values.Add(new KeyOpValue(_columnName, true, KvOpertation.None));
             sb.Where.Conditions = iwc && _colExp;
             return sb.ToSqlStatement(Context);
         }
@@ -46,7 +46,7 @@ namespace Leafing.Data.Model.Composer
         public override InsertStatementBuilder GetInsertStatementBuilder(object obj)
         {
             InsertStatementBuilder sb = base.GetInsertStatementBuilder(obj);
-            sb.Values.Add(new KeyValue(_columnName, false));
+            sb.Values.Add(new KeyOpValue(_columnName, false, KvOpertation.None));
             return sb;
         }
 
