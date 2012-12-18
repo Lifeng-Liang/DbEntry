@@ -520,7 +520,7 @@ namespace Leafing.UnitTest.Data
             StaticRecorder.ClearMessages();
             var ct = new CountTableSql {Id = 1};
             DbEntry.Save(ct);
-            Assert.AreEqual("UPDATE [Count_Table_Sql] SET [Count]=[Count]+1  WHERE [Id] = @Id_0;\n<Text><30>(@Id_0=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [Count_Table_Sql] SET [Count]=[Count]+(1)  WHERE [Id] = @Id_0;\n<Text><30>(@Id_0=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -529,7 +529,7 @@ namespace Leafing.UnitTest.Data
             StaticRecorder.ClearMessages();
             var ct = new CountTable2Sql {Id = 1, Name = "tom"};
             DbEntry.Save(ct);
-            Assert.AreEqual("UPDATE [Count_Table2Sql] SET [Name]=@Name_0,[Count]=[Count]+1  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+            Assert.AreEqual("UPDATE [Count_Table2Sql] SET [Name]=@Name_0,[Count]=[Count]+(1)  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]

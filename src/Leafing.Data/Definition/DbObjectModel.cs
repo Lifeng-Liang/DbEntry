@@ -117,11 +117,6 @@ namespace Leafing.Data.Definition
             return ModelContext.From<T>().Where(con).GetSum(columnName);
         }
 
-        public static void IntColumnAdd(Condition con, string column)
-        {
-            ModelContext.Operator.IntColumnAdd(con, column, 1);
-        }
-
         public static void DeleteBy(Condition condition)
         {
             ModelContext.Operator.DeleteBy(condition);
@@ -208,11 +203,6 @@ namespace Leafing.Data.Definition
         public static decimal? GetSum(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
         {
             return ModelContext.From<T>().Where(condition).GetSum(column);
-        }
-
-        public static void IntColumnAdd(Expression<Func<T, bool>> con, Expression<Func<T, object>> column)
-        {
-            ModelContext.Operator.IntColumnAdd(ExpressionParser<T>.Parse(con), column.GetColumnName(), 1);
         }
 
         public static int DeleteBy(Expression<Func<T, bool>> condition)

@@ -15,6 +15,9 @@ namespace Leafing.Core.Setting
         [ShowString("Ioc.EnableAutoLoad")]
         public static readonly bool IocEnableAutoLoad = true;
 
+        [ShowString("Ioc.SearchPath")]
+        public static string IocSearchPath = "bin";
+
         static CoreSettings()
         {
             ConfigHelper.DefaultSettings.InitClass(typeof(CoreSettings));

@@ -201,6 +201,21 @@ namespace Leafing.Data.Model.QuerySyntax
             return Operate(key, value, KvOpertation.Sub);
         }
 
+        public IUpdatable<T> Set<T1>(Expression<Func<T, T1>> expr, T1 value)
+        {
+            return Operate(expr.GetColumnName(), value, KvOpertation.None);
+        }
+
+        public IUpdatable<T> Add<T1>(Expression<Func<T, T1>> expr, T1 value) where T1 : struct
+        {
+            return Operate(expr.GetColumnName(), value, KvOpertation.Add);
+        }
+
+        public IUpdatable<T> Sub<T1>(Expression<Func<T, T1>> expr, T1 value) where T1 : struct
+        {
+            return Operate(expr.GetColumnName(), value, KvOpertation.Sub);
+        }
+
         public int Delete()
         {
             var deleter = new DeleteStatementBuilder(_ctx.Info.From.MainTableName);

@@ -62,6 +62,9 @@ namespace Leafing.Data.Model.QuerySyntax
         IUpdatable<T> Set(string key, object value);
         IUpdatable<T> Add(string key, decimal value);
         IUpdatable<T> Sub(string key, decimal value);
+        IUpdatable<T> Set<T1>(Expression<Func<T, T1>> expr, T1 value);
+        IUpdatable<T> Add<T1>(Expression<Func<T, T1>> expr, T1 value) where T1 : struct;
+        IUpdatable<T> Sub<T1>(Expression<Func<T, T1>> expr, T1 value) where T1 : struct;
 
         int Delete();
 

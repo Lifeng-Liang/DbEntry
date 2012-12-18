@@ -199,12 +199,6 @@ namespace Leafing.Data.Model
             return Convert.ToDateTime(o);
         }
 
-        public void IntColumnAdd(Condition condition, string column, int n)
-        {
-            var sql = Composer.GetColumnAddStatement(condition, column, n);
-            Provider.ExecuteNonQuery(sql);
-        }
-
         public object GetMinObject(Condition iwc, string columnName)
         {
             TryCreateTable();

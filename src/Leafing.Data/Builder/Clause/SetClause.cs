@@ -60,10 +60,10 @@ namespace Leafing.Data.Builder.Clause
 			            dpStr = dd.DbNowString;
 			            break;
 			        case KvOpertation.Add:
-			            dpStr = dd.QuoteForColumnName(kv.Key) + "+" + kv.Value;
+			            dpStr = dd.QuoteForColumnName(kv.Key) + "+(" + kv.Value + ")";
 			            break;
 			        case KvOpertation.Sub:
-			            dpStr = dd.QuoteForColumnName(kv.Key) + "-" + kv.Value;
+			            dpStr = dd.QuoteForColumnName(kv.Key) + "-(" + kv.Value + ")";
 			            break;
                     default:
 			            throw new ApplicationException("Application Error");

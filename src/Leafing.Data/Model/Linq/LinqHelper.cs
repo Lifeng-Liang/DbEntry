@@ -22,6 +22,11 @@ namespace Leafing.Data.Model.Linq
 
         public static string GetColumnName<T>(this Expression<Func<T, object>> expr) where T : class, IDbObject
         {
+            return GetColumnName<T, object>(expr);
+        }
+
+        public static string GetColumnName<T, T1>(this Expression<Func<T, T1>> expr) where T : class, IDbObject
+        {
             ColumnFunction function;
             MemberExpression obj;
             var key = ExpressionParser<T>.GetMemberName(expr.Body, out function, out obj);
