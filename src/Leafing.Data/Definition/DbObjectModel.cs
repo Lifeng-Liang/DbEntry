@@ -81,6 +81,11 @@ namespace Leafing.Data.Definition
             return new QueryContent<T>(ModelContext).Where(con);
         }
 
+        public static IAfterWhere<T> Where(ConditionBuilder<T> con)
+        {
+            return new QueryContent<T>(ModelContext).Where(con.ToCondition());
+        }
+
         public static List<T> FindRecent(int count)
         {
             string id = ModelContext.Info.KeyMembers[0].Name;
@@ -218,6 +223,11 @@ namespace Leafing.Data.Definition
         public static Condition Parse(Expression<Func<T, bool>> expr)
         {
             return ExpressionParser<T>.Parse(expr);
+        }
+
+        public static IAlterable<T> AddColumn(Expression<Func<T, object>> expr)
+        {
+            return new AlterContent<T>(ModelContext).AddColumn(expr);
         }
 
         #endregion

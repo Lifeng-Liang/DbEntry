@@ -91,7 +91,7 @@ namespace Leafing.Data.Builder
             }
             else
             {
-                _sql.Append(dd.GetTypeName(DataTypeParser.Parse(ci.ValueType), ci.IsUnicode, ci.Length, ci.DecimalPart));
+                _sql.Append(dd.GetTypeName(ci));
             }
             if (ci.IsDbGenerate)
             {

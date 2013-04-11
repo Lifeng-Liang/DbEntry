@@ -68,6 +68,11 @@ namespace Leafing.Data.Dialect
             return baseType + " (" + length + ")";
         }
 
+        public virtual string GetTypeName(ColumnInfo ci)
+        {
+            return GetTypeName(DataTypeParser.Parse(ci.ValueType), ci.IsUnicode, ci.Length, ci.DecimalPart);
+        }
+
         public virtual string GetTypeName(DataType dt, bool isUnicode, int length, int decimalPart)
         {
             var s = TypeNames[dt];
