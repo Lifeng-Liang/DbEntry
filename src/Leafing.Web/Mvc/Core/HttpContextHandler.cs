@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
 using Leafing.Core.Ioc;
 
@@ -71,6 +72,11 @@ namespace Leafing.Web.Mvc.Core
         public virtual string UserHostAddress
         {
             get { return HttpContext.Current.Request.UserHostAddress; }
+        }
+
+        public virtual Stream InputStream
+        {
+            get { return HttpContext.Current.Request.InputStream; }
         }
     }
 }

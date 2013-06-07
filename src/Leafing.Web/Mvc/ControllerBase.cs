@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
 using Leafing.Web.Mvc.Core;
 
@@ -49,6 +50,15 @@ namespace Leafing.Web.Mvc
         public string Bind(string name)
         {
             return (string)TypeBinder.Instance.GetObject(name, typeof(string));
+        }
+
+        [Exclude]
+        public string Body()
+        {
+            using(var sr = new StreamReader(HttpContextHandler.Instance.InputStream))
+            {
+                return sr.ReadToEnd();
+            }
         }
 
         protected ControllerBase()

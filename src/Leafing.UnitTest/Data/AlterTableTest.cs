@@ -27,14 +27,14 @@ namespace Leafing.UnitTest.Data
                              DefaultValue = 0,
                          };
             var sql = ab.ToSqlStatement(new SqlServer2005(), null);
-            Assert.AreEqual("ALTER TABLE [User] ADD COLUMN [Age] INT NOT NULL DEFAULT(0);", sql.SqlCommandText);
+            Assert.AreEqual("ALTER TABLE [User] ADD [Age] INT NOT NULL DEFAULT(0);", sql.SqlCommandText);
         }
 
         [Test]
         public void Test1A()
         {
             MyUser.AddColumn(p => p.Age).Default(0).AlterTable();
-            AssertSql("ALTER TABLE [My_User] ADD COLUMN [Age] INT NOT NULL DEFAULT(0);<Text><30>()");
+            AssertSql("ALTER TABLE [My_User] ADD [Age] INT NOT NULL DEFAULT(0);<Text><30>()");
         }
 
         [Test]
@@ -45,14 +45,14 @@ namespace Leafing.UnitTest.Data
                 AddColumn = new ColumnInfo("Nick", typeof(string), false, false, true, true, 50, 0, null),
             };
             var sql = ab.ToSqlStatement(new SqlServer2005(), null);
-            Assert.AreEqual("ALTER TABLE [User] ADD COLUMN [Nick] NVARCHAR (50) NULL;", sql.SqlCommandText);
+            Assert.AreEqual("ALTER TABLE [User] ADD [Nick] NVARCHAR (50) NULL;", sql.SqlCommandText);
         }
 
         [Test]
         public void Test2A()
         {
             MyUser.AddColumn(p => p.Nick).AlterTable();
-            AssertSql("ALTER TABLE [My_User] ADD COLUMN [Nick] NVARCHAR (50) NULL;<Text><30>()");
+            AssertSql("ALTER TABLE [My_User] ADD [Nick] NVARCHAR (50) NULL;<Text><30>()");
         }
     }
 }

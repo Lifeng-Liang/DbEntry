@@ -64,6 +64,17 @@ namespace Leafing.UnitTest.Data
             public int Count { get; set; }
         }
 
+        [DbTable("DateTable"), DbContext("SQLite")]
+        public class DateTable6 : DbObjectModel<DateTable4>
+        {
+            public long ShopId { get; set; }
+
+            [SpecialName]
+            public DateTime SavedOn { get; set; }
+
+            public string Name { get; set; }
+        }
+
         [SetUp]
         public void SetUp()
         {
@@ -146,6 +157,14 @@ namespace Leafing.UnitTest.Data
             var o = new DateTable4 {Name = "tom", Id = 1};
             DbEntry.Update(o);
             Assert.AreEqual("UPDATE [DateTable] SET [SavedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+        }
+
+        [Test]
+        public void TestSavedOnWithSetValue()
+        {
+            var o = new DateTable6 {Name = "tom", SavedOn = DateTime.Now, ShopId = 100};
+            DbEntry.Save(o);
+            Assert.AreEqual("INSERT INTO [DateTable] ([ShopId],[SavedOn],[Name]) VALUES (@ShopId_0,DATETIME(CURRENT_TIMESTAMP, 'localtime'),@Name_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@ShopId_0=100:Int64,@Name_1=tom:String)", StaticRecorder.LastMessage);
         }
     }
 }

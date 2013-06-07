@@ -23,7 +23,7 @@ namespace Leafing.Data.Builder
             sb.Append(dd.QuoteForTableName(_from.MainTableName));
             if(AddColumn != null)
             {
-                sb.Append(" ADD COLUMN ");
+                sb.Append(" ADD ");
                 sb.Append(dd.QuoteForColumnName(AddColumn.Key));
                 sb.Append(" ");
                 sb.Append(dd.GetTypeName(AddColumn));
