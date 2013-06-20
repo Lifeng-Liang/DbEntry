@@ -125,18 +125,25 @@ namespace Leafing.Core.Ioc
         {
             foreach(var assembly in assemblies)
             {
-                foreach(var type in assembly.GetTypes())
+                try
                 {
-                    var entry = type.GetAttribute<DependenceEntryAttribute>(false);
-                    if(entry != null)
+                    foreach (var type in assembly.GetTypes())
                     {
-                        entries.Add(type);
+                        var entry = type.GetAttribute<DependenceEntryAttribute>(false);
+                        if (entry != null)
+                        {
+                            entries.Add(type);
+                        }
+                        var impl = type.GetAttribute<ImplementationAttribute>(false);
+                        if (impl != null)
+                        {
+                            impls.Add(ClassCreator.New(type, impl.Index, impl.Name));
+                        }
                     }
-                    var impl = type.GetAttribute<ImplementationAttribute>(false);
-                    if(impl != null)
-                    {
-                        impls.Add(ClassCreator.New(type, impl.Index, impl.Name));
-                    }
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    throw new SystemException("Loading assembly error: " + assembly.FullName, ex);
                 }
             }
         }
