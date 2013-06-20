@@ -33,7 +33,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void Test1A()
         {
-            MyUser.AddColumn(p => p.Age).Default(0).AlterTable();
+            MyUser.AddColumn(p => p.Age, 0);
             AssertSql("ALTER TABLE [My_User] ADD [Age] INT NOT NULL DEFAULT(0);<Text><30>()");
         }
 
@@ -51,8 +51,26 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void Test2A()
         {
-            MyUser.AddColumn(p => p.Nick).AlterTable();
+            MyUser.AddColumn(p => p.Nick);
             AssertSql("ALTER TABLE [My_User] ADD [Nick] NVARCHAR (50) NULL;<Text><30>()");
+        }
+
+        [Test]
+        public void TestDrop1()
+        {
+            var ab = new AlterTableStatementBuilder(new FromClause("User"))
+            {
+                DropColumnName = "test",
+            };
+            var sql = ab.ToSqlStatement(new SqlServer2005(), null);
+            Assert.AreEqual("ALTER TABLE [User] DROP COLUMN [test];", sql.SqlCommandText);
+        }
+
+        [Test]
+        public void TestDrop2()
+        {
+            MyUser.DropColumn("test");
+            AssertSql("ALTER TABLE [My_User] DROP COLUMN [test];<Text><30>()");
         }
     }
 }

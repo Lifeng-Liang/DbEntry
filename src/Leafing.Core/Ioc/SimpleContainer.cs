@@ -26,11 +26,29 @@ namespace Leafing.Core.Ioc
             {
                 throw new SystemException("Can not find BaseDirectory!!!!");
             }
-            var pathBin = Path.Combine(path, CoreSettings.IocSearchPath);
             var list = new List<Assembly>();
             SearchAssemblies(list, path);
-            SearchAssemblies(list, pathBin);
+            var pathBin = GetIocSearchPath(path, CoreSettings.IocSearchPath);
+            if(!pathBin.IsNullOrEmpty())
+            {
+                SearchAssemblies(list, pathBin);
+            }
             return list;
+        }
+
+        private static string GetIocSearchPath(string path, string binPath)
+        {
+            var pathBin = Path.Combine(path, binPath);
+            if(Directory.Exists(pathBin))
+            {
+                return pathBin;
+            }
+            var p = binPath.ToLower();
+            if (p != binPath)
+            {
+                return GetIocSearchPath(path, p);
+            }
+            return null;
         }
 
         private static void SearchAssemblies(List<Assembly> assemblies, string path)

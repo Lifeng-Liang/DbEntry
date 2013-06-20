@@ -152,8 +152,6 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Model\Member\MemberBoolAttributes.cs" />
     <Compile Include="Model\Member\NullableBooleanMemberHandler.cs" />
     <Compile Include="Model\Member\NullableMemberHandler.cs" />
-    <Compile Include="Model\QuerySyntax\AlterContent.cs" />
-    <Compile Include="Model\QuerySyntax\AlterInterfaces.cs" />
     <Compile Include="Model\Saver\DbModelSaver.cs" />
     <Compile Include="Model\Saver\DbObjectSaver.cs" />
     <Compile Include="Model\Saver\RelationModelSaver.cs" />

@@ -8,6 +8,7 @@
     <add key="@Leafing_Log" value="System_Log" />
     
     <add key="SqlLogRecorder" value="@ConsoleMessage | Leafing.UnitTest.SqlRecorder, Leafing.UnitTest" />
+    <add key="SystemLogRecorder" value="Leafing.Extra.Logging.DatabaseLogRecorder, Leafing.Extra"/>
 
     <add key="UnitLogRecorder" value=" @DtsFile | @Console"/>
     <add key="Unit2LogRecorder" value="@ConsoleMessage"/>

@@ -1,10 +1,11 @@
 ﻿using Leafing.Core.Logging;
+using Leafing.Extra.Logging;
 using NUnit.Framework;
 
 namespace Leafing.UnitTest.util
 {
     [TestFixture]
-    public class LoggerTest
+    public class LoggerTest : DataTestBase
     {
         [Test]
         public void Test1()
@@ -23,6 +24,15 @@ namespace Leafing.UnitTest.util
             var ss = logger.LogRecorders.ToArray();
             Assert.AreEqual(ss.Length, 1);
             Assert.AreEqual(ss[0].GetType(), typeof(ConsoleMessageLogRecorder));
+        }
+
+        [Test]
+        public void Test3()
+        {
+            Logger.System.Trace("test");
+            var list = LeafingLog.FindRecent(1);
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual("test", list[0].Message);
         }
     }
 }

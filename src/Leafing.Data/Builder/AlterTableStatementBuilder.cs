@@ -10,6 +10,7 @@ namespace Leafing.Data.Builder
     {
         private readonly FromClause _from;
         public ColumnInfo AddColumn;
+        public string DropColumnName;
         public object DefaultValue;
 
         public AlterTableStatementBuilder(FromClause from)
@@ -34,6 +35,12 @@ namespace Leafing.Data.Builder
                     sb.Append(DefaultValue);
                     sb.Append(")");
                 }
+                sb.Append(";");
+            }
+            else if(!DropColumnName.IsNullOrEmpty())
+            {
+                sb.Append(" DROP COLUMN ");
+                sb.Append(dd.QuoteForColumnName(DropColumnName));
                 sb.Append(";");
             }
             return new SqlStatement(sb.ToString());

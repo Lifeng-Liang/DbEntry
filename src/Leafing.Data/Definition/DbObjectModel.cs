@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using Leafing.Data.Builder;
 using Leafing.Data.Model.Linq;
 using Leafing.Data.Model.QuerySyntax;
+using Leafing.Data.SqlEntry;
 using Leafing.Data.SqlEntry.Dynamic;
 
 namespace Leafing.Data.Definition
@@ -45,7 +48,7 @@ namespace Leafing.Data.Definition
             return ModelContext.Operator.ExecuteList<T>(sqlStr);
         }
 
-        public static List<T> FindBySql(SqlEntry.SqlStatement sql)
+        public static List<T> FindBySql(SqlStatement sql)
         {
             return ModelContext.Operator.ExecuteList<T>(sql);
         }
@@ -225,9 +228,30 @@ namespace Leafing.Data.Definition
             return ExpressionParser<T>.Parse(expr);
         }
 
-        public static IAlterable<T> AddColumn(Expression<Func<T, object>> expr)
+        public static void AddColumn(Expression<Func<T, object>> expr)
         {
-            return new AlterContent<T>(ModelContext).AddColumn(expr);
+            AddColumn(expr, null);
+        }
+
+        public static void AddColumn(Expression<Func<T, object>> expr, object o)
+        {
+            var builder = new AlterTableStatementBuilder(ModelContext.Info.From);
+            var n = expr.GetColumnName();
+            var mem = ModelContext.Info.Members.FirstOrDefault(p => p.Name == n);
+            builder.AddColumn = new ColumnInfo(mem);
+            if(o != null)
+            {
+                builder.DefaultValue = o;
+            }
+            var sql = builder.ToSqlStatement(ModelContext);
+            ModelContext.Provider.ExecuteNonQuery(sql);
+        }
+
+        public static void DropColumn(string columnName)
+        {
+            var builder = new AlterTableStatementBuilder(ModelContext.Info.From) {DropColumnName = columnName};
+            var sql = builder.ToSqlStatement(ModelContext);
+            ModelContext.Provider.ExecuteNonQuery(sql);
         }
 
         #endregion
