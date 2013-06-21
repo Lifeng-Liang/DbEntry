@@ -68,12 +68,38 @@ namespace Leafing.Data.Definition
             return ModelContext.From<T>().Where(con).OrderBy(orderBy).Select();
         }
 
+        public static List<T> Find(ConditionBuilder<T> con)
+        {
+            return ModelContext.From<T>().Where(con).Select();
+        }
+
+        public static List<T> Find(ConditionBuilder<T> con, OrderBy ob)
+        {
+            return ModelContext.From<T>().Where(con).OrderBy(ob).Select();
+        }
+
+        public static List<T> Find(ConditionBuilder<T> con, string orderBy)
+        {
+            return ModelContext.From<T>().Where(con).OrderBy(orderBy).Select();
+        }
+
         public static T FindOne(Condition condition)
         {
             return FindOne(condition, new OrderBy("Id"));
         }
 
         public static T FindOne(Condition condition, OrderBy ob)
+        {
+            var ls = Where(condition).OrderBy(ob).Range(1, 1).Select();
+            return ls.Count > 0 ? ls[0] : null;
+        }
+
+        public static T FindOne(ConditionBuilder<T> condition)
+        {
+            return FindOne(condition, new OrderBy("Id"));
+        }
+
+        public static T FindOne(ConditionBuilder<T> condition, OrderBy ob)
         {
             var ls = Where(condition).OrderBy(ob).Range(1, 1).Select();
             return ls.Count > 0 ? ls[0] : null;
@@ -125,14 +151,54 @@ namespace Leafing.Data.Definition
             return ModelContext.From<T>().Where(con).GetSum(columnName);
         }
 
+        public static long GetCount(ConditionBuilder<T> con)
+        {
+            return ModelContext.From<T>().Where(con).GetCount();
+        }
+
+        public static decimal? GetMax(ConditionBuilder<T> con, string columnName)
+        {
+            return ModelContext.From<T>().Where(con).GetMax(columnName);
+        }
+
+        public static DateTime? GetMaxDate(ConditionBuilder<T> con, string columnName)
+        {
+            return ModelContext.From<T>().Where(con).GetMaxDate(columnName);
+        }
+
+        public static decimal? GetMin(ConditionBuilder<T> con, string columnName)
+        {
+            return ModelContext.From<T>().Where(con).GetMin(columnName);
+        }
+
+        public static DateTime? GetMinDate(ConditionBuilder<T> con, string columnName)
+        {
+            return ModelContext.From<T>().Where(con).GetMinDate(columnName);
+        }
+
+        public static decimal? GetSum(ConditionBuilder<T> con, string columnName)
+        {
+            return ModelContext.From<T>().Where(con).GetSum(columnName);
+        }
+
         public static void DeleteBy(Condition condition)
         {
             ModelContext.Operator.DeleteBy(condition);
         }
 
+        public static void DeleteBy(ConditionBuilder<T> condition)
+        {
+            ModelContext.Operator.DeleteBy(condition.ToCondition());
+        }
+
         public static int UpdateBy(Condition condition, object obj)
         {
             return ModelContext.Operator.UpdateBy(condition, obj);
+        }
+
+        public static int UpdateBy(ConditionBuilder<T> condition, object obj)
+        {
+            return ModelContext.Operator.UpdateBy(condition.ToCondition(), obj);
         }
 
         #region Linq methods
@@ -157,6 +223,11 @@ namespace Leafing.Data.Definition
             return ModelContext.From<T>().Where(condition).OrderBy(orderby).Select();
         }
 
+        public static List<T> Find(ConditionBuilder<T> condition, Expression<Func<T, object>> orderby)
+        {
+            return ModelContext.From<T>().Where(condition).OrderBy(orderby).Select();
+        }
+
         public static List<T> Find(Expression<Func<T, bool>> condition, string orderby)
         {
             return ModelContext.From<T>().Where(condition).OrderBy(orderby).Select();
@@ -168,6 +239,12 @@ namespace Leafing.Data.Definition
         }
 
         public static T FindOne(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
+        {
+            var ls = Where(condition).OrderBy(column).Range(1, 1).Select();
+            return ls.Count > 0 ? ls[0] : null;
+        }
+
+        public static T FindOne(ConditionBuilder<T> condition, Expression<Func<T, object>> column)
         {
             var ls = Where(condition).OrderBy(column).Range(1, 1).Select();
             return ls.Count > 0 ? ls[0] : null;
@@ -209,6 +286,56 @@ namespace Leafing.Data.Definition
         }
 
         public static decimal? GetSum(Expression<Func<T, bool>> condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetSum(column);
+        }
+
+        public static decimal? GetMax(ConditionBuilder<T> condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetMax(column);
+        }
+
+        public static DateTime? GetMaxDate(ConditionBuilder<T> condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetMaxDate(column);
+        }
+
+        public static decimal? GetMin(ConditionBuilder<T> condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetMin(column);
+        }
+
+        public static DateTime? GetMinDate(ConditionBuilder<T> condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetMinDate(column);
+        }
+
+        public static decimal? GetSum(ConditionBuilder<T> condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetSum(column);
+        }
+
+        public static decimal? GetMax(Condition condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetMax(column);
+        }
+
+        public static DateTime? GetMaxDate(Condition condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetMaxDate(column);
+        }
+
+        public static decimal? GetMin(Condition condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetMin(column);
+        }
+
+        public static DateTime? GetMinDate(Condition condition, Expression<Func<T, object>> column)
+        {
+            return ModelContext.From<T>().Where(condition).GetMinDate(column);
+        }
+
+        public static decimal? GetSum(Condition condition, Expression<Func<T, object>> column)
         {
             return ModelContext.From<T>().Where(condition).GetSum(column);
         }

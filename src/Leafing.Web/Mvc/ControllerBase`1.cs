@@ -8,7 +8,7 @@ using Leafing.Web.Mvc.Core;
 namespace Leafing.Web.Mvc
 {
     [Scaffolding]
-    public abstract class ControllerBase<T> : ControllerBase where T : class, IDbObject
+    public abstract class ControllerBase<T> : ControllerBase where T : class, IDbObject, new()
     {
         protected T Item
         {

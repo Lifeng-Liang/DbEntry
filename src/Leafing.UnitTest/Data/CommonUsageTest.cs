@@ -39,6 +39,12 @@ namespace Leafing.UnitTest.Data
         public string Name;
     }
 
+    [DbTable("People")]
+    public class SinglePerson2 : DbObjectModel<SinglePerson2>
+    {
+        public string Name { get; set; }
+    }
+
     [DbTable("People"), DbContext("SQLite")]
     public class SinglePersonSqlite : DbObject
     {
@@ -623,7 +629,7 @@ namespace Leafing.UnitTest.Data
             var n = DbEntry.From<SinglePerson>().Where(Condition.Empty).GetMax("Id");
             Assert.AreEqual(3, n);
 
-            n = FieldPerson.GetMax(null, "Id");
+            n = FieldPerson.GetMax(Condition.Empty, "Id");
             Assert.AreEqual(3, n);
         }
 
@@ -637,7 +643,7 @@ namespace Leafing.UnitTest.Data
             var n = DbEntry.From<SinglePerson>().Where(Condition.Empty).GetMin("Id");
             Assert.AreEqual(1, n);
 
-            n = FieldPerson.GetMin(null, "Id");
+            n = FieldPerson.GetMin(Condition.Empty, "Id");
             Assert.AreEqual(1, n);
         }
 
@@ -652,7 +658,7 @@ namespace Leafing.UnitTest.Data
             var n = DbEntry.From<DateAndTime>().Where(Condition.Empty).GetMaxDate("dtValue");
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
-            n = DateAndTime.GetMaxDate(null, "dtValue");
+            n = DateAndTime.GetMaxDate(Condition.Empty, "dtValue");
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
         }
 
@@ -667,7 +673,7 @@ namespace Leafing.UnitTest.Data
             var n = DbEntry.From<DateAndTime>().Where(Condition.Empty).GetMinDate("dtValue");
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
-            n = DateAndTime.GetMinDate(null, "dtValue");
+            n = DateAndTime.GetMinDate(Condition.Empty, "dtValue");
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
         }
 
@@ -681,7 +687,7 @@ namespace Leafing.UnitTest.Data
             var n = DbEntry.From<SinglePerson>().Where(Condition.Empty).GetSum("Id");
             Assert.AreEqual(6, n);
 
-            n = FieldPerson.GetSum(null, "Id");
+            n = FieldPerson.GetSum(Condition.Empty, "Id");
             Assert.AreEqual(6, n);
         }
 

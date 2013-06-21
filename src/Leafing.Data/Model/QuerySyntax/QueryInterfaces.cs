@@ -7,7 +7,7 @@ using Leafing.Data.Definition;
 
 namespace Leafing.Data.Model.QuerySyntax
 {
-    public interface ISelectable<T> where T : class, IDbObject
+    public interface ISelectable<T> where T : class, IDbObject, new()
     {
         List<T> Select();
         List<TResult> Select<TResult>(Expression<Func<T, TResult>> expr);
@@ -19,7 +19,7 @@ namespace Leafing.Data.Model.QuerySyntax
         List<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr);
     }
 
-    public interface IGetPagedSelector<T> where T : class, IDbObject
+    public interface IGetPagedSelector<T> where T : class, IDbObject, new()
     {
         IPagedSelector<T> GetPagedSelector();
         IPagedSelector<T> GetDistinctPagedSelector();
@@ -33,7 +33,7 @@ namespace Leafing.Data.Model.QuerySyntax
         List<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName);
     }
 
-    public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : class, IDbObject
+    public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : class, IDbObject, new()
     {
         ISelectable<T> Range(long startIndex, long endIndex);
         ISelectable<T> Range(Range r);
@@ -43,7 +43,7 @@ namespace Leafing.Data.Model.QuerySyntax
         IRangeable<T> ThenByDescending(Expression<Func<T, object>> expr);
     }
 
-    public interface IUpdatable<T> where T : class, IDbObject
+    public interface IUpdatable<T> where T : class, IDbObject, new()
     {
         IUpdatable<T> Set(string key, object value);
         IUpdatable<T> Add(string key, decimal value);
@@ -51,7 +51,7 @@ namespace Leafing.Data.Model.QuerySyntax
         int Update();
     }
 
-    public interface IAfterWhere<T> : ISelectable<T>, IGroupByable where T : class, IDbObject
+    public interface IAfterWhere<T> : ISelectable<T>, IGroupByable where T : class, IDbObject, new()
     {
         IRangeable<T> OrderBy(string key);
         IRangeable<T> OrderBy(params ASC[] os);
@@ -87,9 +87,10 @@ namespace Leafing.Data.Model.QuerySyntax
         SelectStatementBuilder GetDistinctStatement(string columnName);
     }
 
-    public interface IWhere<T> where T : class, IDbObject
+    public interface IWhere<T> where T : class, IDbObject, new()
     {
         IAfterWhere<T> Where(Condition where);
+        IAfterWhere<T> Where(ConditionBuilder<T> where);
         IAfterWhere<T> Where(Expression<Func<T, bool>> expr);
     }
 }

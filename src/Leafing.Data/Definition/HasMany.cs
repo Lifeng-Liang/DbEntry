@@ -10,7 +10,7 @@ namespace Leafing.Data.Definition
     }
 
     [Serializable]
-    public class HasMany<T> : LazyLoadListBase<T>, IHasMany where T : class, IDbObject
+    public class HasMany<T> : LazyLoadListBase<T>, IHasMany where T : class, IDbObject, new()
     {
         private readonly OrderBy _order;
         private readonly List<object> _removedValues = new List<object>();

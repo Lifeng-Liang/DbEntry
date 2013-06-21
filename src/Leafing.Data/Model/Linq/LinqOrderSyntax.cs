@@ -5,7 +5,7 @@ using Leafing.Data.Definition;
 
 namespace Leafing.Data.Model.Linq
 {
-    public class LinqOrderSyntax<T> where T : class, IDbObject
+    public class LinqOrderSyntax<T> where T : class, IDbObject, new()
     {
         private OrderBy _order;
 

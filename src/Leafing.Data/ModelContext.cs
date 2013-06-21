@@ -107,7 +107,7 @@ namespace Leafing.Data
 
         #endregion
 
-        public IWhere<T> From<T>() where T : class, IDbObject
+        public IWhere<T> From<T>() where T : class, IDbObject, new()
         {
             return new QueryContent<T>(this);
         }

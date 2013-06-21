@@ -4,7 +4,7 @@ using Leafing.Data.Definition;
 
 namespace Leafing.Data.Common
 {
-    public class PagedSelector<T> : IPagedSelector<T> where T : class, IDbObject
+    public class PagedSelector<T> : IPagedSelector<T> where T : class, IDbObject, new()
     {
         protected Condition iwc;
         protected OrderBy oc;

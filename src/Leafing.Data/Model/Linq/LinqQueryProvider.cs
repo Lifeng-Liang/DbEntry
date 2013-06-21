@@ -7,7 +7,7 @@ using Leafing.Data.Model.QuerySyntax;
 
 namespace Leafing.Data.Model.Linq
 {
-    public class LinqQueryProvider<T, TResult> : IOrderedQueryable<TResult>, IQueryProvider where T : class, IDbObject
+    public class LinqQueryProvider<T, TResult> : IOrderedQueryable<TResult>, IQueryProvider where T : class, IDbObject, new()
     {
         private readonly Expression _expression;
 

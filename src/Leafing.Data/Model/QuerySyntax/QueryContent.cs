@@ -10,7 +10,7 @@ using Leafing.Data.Model.Linq;
 namespace Leafing.Data.Model.QuerySyntax
 {
     [Serializable]
-    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IUpdatable<T>, IGetPagedSelector<T> where T : class, IDbObject
+    public class QueryContent<T> : IWhere<T>, IAfterWhere<T>, IRangeable<T>, IUpdatable<T>, IGetPagedSelector<T> where T : class, IDbObject, new()
     {
         private readonly ModelContext _ctx;
         private Condition _where;
@@ -39,6 +39,12 @@ namespace Leafing.Data.Model.QuerySyntax
         public IAfterWhere<T> Where(Condition where)
         {
             _where = where;
+            return this;
+        }
+
+        public IAfterWhere<T> Where(ConditionBuilder<T> where)
+        {
+            _where = where.ToCondition();
             return this;
         }
 

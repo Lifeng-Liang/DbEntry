@@ -337,7 +337,7 @@ namespace Leafing.UnitTest.Linq
             var n = DbEntry.From<Person>().Where(Condition.Empty).GetMax(p => p.Id);
             Assert.AreEqual(3, n);
 
-            n = Person.GetMax(null, p => p.Id);
+            n = Person.GetMax(Condition.Empty, p => p.Id);
             Assert.AreEqual(3, n);
 
             var x = Person.GetMax(p => p.Id > 100, p => p.Id);
@@ -350,7 +350,7 @@ namespace Leafing.UnitTest.Linq
             var n = DbEntry.From<Person>().Where(Condition.Empty).GetMin(p => p.Id);
             Assert.AreEqual(1, n);
 
-            n = Person.GetMin(null, p => p.Id);
+            n = Person.GetMin(Condition.Empty, p => p.Id);
             Assert.AreEqual(1, n);
 
             var x = Person.GetMin(p => p.Id > 100, p => p.Id);
@@ -363,7 +363,7 @@ namespace Leafing.UnitTest.Linq
             var n = DbEntry.From<DateAndTime>().Where(Condition.Empty).GetMaxDate(p => p.dtValue);
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
-            n = DateAndTime.GetMaxDate(null, p => p.dtValue);
+            n = DateAndTime.GetMaxDate(Condition.Empty, p => p.dtValue);
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
             var x = DateAndTime.GetMaxDate(p => p.Id > 100, p => p.dtValue);
@@ -376,7 +376,7 @@ namespace Leafing.UnitTest.Linq
             var n = DbEntry.From<DateAndTime>().Where(Condition.Empty).GetMinDate(p => p.dtValue);
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
-            n = DateAndTime.GetMinDate(null, p => p.dtValue);
+            n = DateAndTime.GetMinDate(Condition.Empty, p => p.dtValue);
             Assert.AreEqual(DateTime.Parse("2004-8-19 18:51:06"), n);
 
             var x = DateAndTime.GetMinDate(p => p.Id > 100, p => p.dtValue);
@@ -389,7 +389,7 @@ namespace Leafing.UnitTest.Linq
             var n = DbEntry.From<Person>().Where(Condition.Empty).GetSum(p => p.Id);
             Assert.AreEqual(6, n);
 
-            n = Person.GetSum(null, p => p.Id);
+            n = Person.GetSum(Condition.Empty, p => p.Id);
             Assert.AreEqual(6, n);
 
             var x = Person.GetSum(p => p.Id > 100, p => p.Id);

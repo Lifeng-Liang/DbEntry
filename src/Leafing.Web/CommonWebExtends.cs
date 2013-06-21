@@ -7,7 +7,7 @@ using Leafing.Web.Mvc;
 // ReSharper disable CheckNamespace
 public static class CommonWebExtends
 {
-    public static ItemList<T> GetItemList<T>(this IPagedSelector<T> selector, long pageIndex)  where T : class, IDbObject
+    public static ItemList<T> GetItemList<T>(this IPagedSelector<T> selector, long pageIndex) where T : class, IDbObject, new()
     {
         var result = new ItemList<T>
                          {
@@ -20,7 +20,7 @@ public static class CommonWebExtends
         return result;
     }
 
-    public static ItemList<T> GetItemList<T>(this IGetPagedSelector<T> psd, ListStyle style, long? pageIndex) where T : class, IDbObject
+    public static ItemList<T> GetItemList<T>(this IGetPagedSelector<T> psd, ListStyle style, long? pageIndex) where T : class, IDbObject, new()
     {
         var ps
             = (style == ListStyle.Static) || (style == ListStyle.StaticLite) || (style == ListStyle.Hybird && pageIndex != null)

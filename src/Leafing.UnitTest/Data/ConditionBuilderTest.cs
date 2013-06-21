@@ -29,5 +29,37 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual("Tom", list[0].Name);
             Assert.AreEqual("Mike", list[1].Name);
         }
+
+        [Test]
+        public void Test3()
+        {
+            var builder = new ConditionBuilder<SinglePerson>();
+            builder &= p => p.Id == 1;
+            builder |= p => p.Id == 3;
+            var list = DbEntry.From<SinglePerson>().Where(builder).OrderBy(p => p.Id).Select();
+            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual("Tom", list[0].Name);
+            Assert.AreEqual("Mike", list[1].Name);
+        }
+
+        [Test]
+        public void Test4()
+        {
+            var builder = new ConditionBuilder<SinglePerson2>(p => p.Id == 1);
+            builder |= p => p.Id == 3;
+            var list = SinglePerson2.Find(builder, p => p.Id);
+            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual("Tom", list[0].Name);
+            Assert.AreEqual("Mike", list[1].Name);
+        }
+
+        [Test]
+        public void Test5()
+        {
+            var builder = new ConditionBuilder<SinglePerson2>(p => p.Id == 1);
+            builder |= p => p.Id == 3;
+            var user = SinglePerson2.FindOne(builder, p => p.Id);
+            Assert.AreEqual("Tom", user.Name);
+        }
     }
 }

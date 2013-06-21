@@ -3,7 +3,7 @@ using Leafing.Data.Definition;
 
 namespace Leafing.Data.Common
 {
-    public class StaticPagedSelector<T> : PagedSelector<T> where T : class, IDbObject
+    public class StaticPagedSelector<T> : PagedSelector<T> where T : class, IDbObject, new()
     {
         public StaticPagedSelector(Condition iwc, OrderBy oc, int pageSize)
             : base(iwc, oc, pageSize)

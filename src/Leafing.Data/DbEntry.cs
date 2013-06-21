@@ -132,7 +132,7 @@ namespace Leafing.Data
             return ctx.Operator;
         }
 
-        public static IWhere<T> From<T>() where T : class, IDbObject
+        public static IWhere<T> From<T>() where T : class, IDbObject, new()
         {
             return ModelContext.GetInstance(typeof(T)).From<T>();
         }
@@ -150,6 +150,16 @@ namespace Leafing.Data
         public static T GetObject<T>(Condition c, OrderBy ob) where T : class, IDbObject
         {
             return GetOperator(typeof(T)).GetObject<T>(c, ob);
+        }
+
+        public static T GetObject<T>(ConditionBuilder<T> c) where T : class, IDbObject, new()
+        {
+            return GetOperator(typeof(T)).GetObject<T>(c.ToCondition());
+        }
+
+        public static T GetObject<T>(ConditionBuilder<T> c, OrderBy ob) where T : class, IDbObject, new()
+        {
+            return GetOperator(typeof(T)).GetObject<T>(c.ToCondition(), ob);
         }
 
         public static T GetObject<T>(Expression<Func<T, bool>> expr) where T : class, IDbObject
@@ -197,6 +207,11 @@ namespace Leafing.Data
             return GetOperator(typeof(T)).UpdateBy(condition, obj);
         }
 
+        public static int UpdateBy<T>(ConditionBuilder<T> condition, object obj) where T : class, IDbObject, new()
+        {
+            return GetOperator(typeof(T)).UpdateBy(condition.ToCondition(), obj);
+        }
+
         public static int UpdateBy<T>(Expression<Func<T, bool>> condition, object obj) where T : class, IDbObject
         {
             return GetOperator(typeof(T)).UpdateBy(condition, obj);
@@ -205,6 +220,11 @@ namespace Leafing.Data
         public static int DeleteBy<T>(Condition condition) where T : class, IDbObject
         {
             return GetOperator(typeof(T)).DeleteBy(condition);
+        }
+
+        public static int DeleteBy<T>(ConditionBuilder<T> condition) where T : class, IDbObject, new()
+        {
+            return GetOperator(typeof(T)).DeleteBy(condition.ToCondition());
         }
 
         public static int DeleteBy<T>(Expression<Func<T, bool>> condition) where T : class, IDbObject

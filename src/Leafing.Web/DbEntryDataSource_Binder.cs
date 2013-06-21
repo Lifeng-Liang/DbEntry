@@ -9,7 +9,7 @@ using Leafing.Data.Definition;
 
 namespace Leafing.Web
 {
-    public abstract partial class DbEntryDataSource<T> where T : class, IDbObject
+    public abstract partial class DbEntryDataSource<T> where T : class, IDbObject, new()
     {
         public event Action PageIsNew;
         public event Action PageIsEdit;

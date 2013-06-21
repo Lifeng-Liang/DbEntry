@@ -18,7 +18,7 @@ namespace Leafing.Web
     [AspNetHostingPermission(SecurityAction.Demand, Level = AspNetHostingPermissionLevel.Minimal)]
     [ParseChildren(true), PersistChildren(false)]
     [Designer(typeof(DbEntryDataSourceDesigner))]
-    public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource where T : class, IDbObject
+    public abstract partial class DbEntryDataSource<T> : DataSourceControl, IExcuteableDataSource where T : class, IDbObject, new()
     {
         public void AddAndCondition(Expression<Func<T, bool>> condition)
         {
