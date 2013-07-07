@@ -102,7 +102,7 @@ namespace Leafing.Data
                 o.Init(Info);
                 return o;
             }
-            throw new ModelException(Info.HandleType, "Can not find ObjectHandler.");
+            throw new ModelException(Info.HandleType, "Can not find ObjectHandler. REF: http://dbentry.codeplex.com/wikipage?title=Setup");
         }
 
         #endregion

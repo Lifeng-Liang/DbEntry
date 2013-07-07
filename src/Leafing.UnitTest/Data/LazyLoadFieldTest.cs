@@ -69,6 +69,32 @@ namespace Leafing.UnitTest.Data
         public string Profile { get; set; }
     }
 
+    [DbContext("SQLite")]
+    public class lzpUserSqlite2 : DbObjectModel<lzpUserSqlite2>
+    {
+        public string Name { get; set; }
+
+        [LazyLoad, AllowNull]
+        public string Profile { get; set; }
+    }
+
+    [DbContext("SQLite")]
+    public class lzpUserSqlite3 : DbObjectModel<lzpUserSqlite3>
+    {
+        public string Name { get; set; }
+
+        [LazyLoad, AllowNull]
+        public int? Age { get; set; }
+    }
+
+    public class lzpUserSqlite4 : DbObjectModel<lzpUserSqlite4>
+    {
+        public string Name { get; set; }
+
+        [LazyLoad, AllowNull]
+        public int? Age { get; set; }
+    }
+
     [DbTable("User"), DbContext("SQLite")]
     public class lzpUser1 : DbObjectModel<lzpUser1>
     {
@@ -228,6 +254,40 @@ namespace Leafing.UnitTest.Data
         {
             DbEntry.From<lzpUserSqlite>().Where(p => p.Profile == "test").Select();
             AssertSql("SELECT [Id],[Name] FROM [lzp_User_Sqlite] WHERE [Profile] = @Profile_0;\n<Text><60>(@Profile_0=test:String)");
+        }
+
+        [Test]
+        public void TestLazyloadNullable()
+        {
+            lzpUserSqlite2.Where(p => p.Profile == null).Select();
+            AssertSql("SELECT [Id],[Name] FROM [lzp_User_Sqlite2] WHERE [Profile] IS NULL;\n<Text><60>()");
+        }
+
+        [Test]
+        public void TestLazyloadNullable2()
+        {
+            lzpUserSqlite3.Where(p => p.Age == null).Select();
+            AssertSql("SELECT [Id],[Name] FROM [lzp_User_Sqlite3] WHERE [Age] IS NULL;\n<Text><60>()");
+        }
+
+        [Test]
+        public void TestLazyloadNullable3()
+        {
+            var u = new lzpUserSqlite4 {Name = "tom", Age = 12};
+            u.Save();
+            var u1 = lzpUserSqlite4.FindById(u.Id);
+            Assert.AreEqual("tom", u1.Name);
+            Assert.AreEqual(12, u1.Age);
+            u1.Age = null;
+            u1.Save();
+            var u2 = lzpUserSqlite4.FindById(u.Id);
+            Assert.AreEqual("tom", u2.Name);
+            Assert.AreEqual(null, u2.Age);
+            var u3 = lzpUserSqlite4.FindById(u.Id);
+            u3.Age = 19;
+            u3.Save();
+            var u4 = lzpUserSqlite4.FindById(u.Id);
+            Assert.AreEqual(19, u4.Age);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using Leafing.Data.Builder;
@@ -94,15 +95,18 @@ namespace Leafing.Data.Model.Handler
 
         public void Init(ObjectInfo oi)
         {
-            var list = new List<KeyValue>();
-            foreach (MemberHandler member in oi.Members)
+            var keys = new List<KeyValuePair<string, string>>();
+            SetValuesForSelectDirectNoLazy(keys);
+            var result = new List<KeyValue>();
+            foreach(var key in keys)
             {
-                if ((!member.Is.DbGenerate && !member.Is.HasOne) && (!member.Is.HasMany && !member.Is.HasAndBelongsToMany))
+                var member = oi.Members.FirstOrDefault(p => p.Name == key.Key);
+                if(!member.Is.DbGenerate)
                 {
-                    list.Add(GetKeyValue(oi, member));
+                    result.Add(GetKeyValue(oi, member));
                 }
             }
-            this.kvc = list.ToArray();
+            this.kvc = result.ToArray();
         }
 
         public void LoadRelationValues(object o, bool useIndex, bool noLazy, IDataReader dr)
