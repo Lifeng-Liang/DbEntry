@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Leafing.Data.Builder;
+using Leafing.Data.Builder.Clause;
 using Leafing.Data.Common;
 using Leafing.Data.Driver;
 using Leafing.Data.SqlEntry;
@@ -24,9 +25,9 @@ namespace Leafing.Data.Dialect
             return base.GetBinaryNameWithLength(baseType, length);
         }
 
-        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
         {
-            return new MySqlDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new MySqlDriver(this, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
         public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
@@ -70,6 +71,18 @@ namespace Leafing.Data.Dialect
         public override string QuoteParameter(string parameterName)
         {
             return "?" + parameterName;
+        }
+
+        public override void AddColumn(ModelContext ctx, string columnName, object o)
+        {
+            base.AddColumn(ctx, columnName, null);
+            if (o != null)
+            {
+                var stm = new UpdateStatementBuilder(ctx.Info.From);
+                stm.Values.Add(new KeyOpValue(columnName, o, KvOpertation.None));
+                var sql = stm.ToSqlStatement(ctx);
+                ctx.Provider.ExecuteNonQuery(sql);
+            }
         }
     }
 }

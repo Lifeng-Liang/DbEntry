@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Data;
+using Leafing.Data.Common;
 using Leafing.Data.Dialect;
 
 namespace Leafing.Data.Driver
 {
     internal class OracleDriver : CommonDbDriver
     {
-        public OracleDriver(DbDialect dialectClass, string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
-            : base(dialectClass, name, connectionString, dbProviderFactoryName, autoCreateTable)
+        public OracleDriver(DbDialect dialectClass, string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
+            : base(dialectClass, name, connectionString, dbProviderFactoryName, autoScheme)
         {
         }
 

@@ -26,6 +26,7 @@ namespace Leafing.Data.Model
         protected DataProvider Provider;
         private readonly SimpleObjectSaver _saver;
         private readonly SimpleDeleter _deleter;
+        internal readonly AutoSchemeFixer Fixer;
 
         internal ModelOperator(ObjectInfo info, QueryComposer composer, DataProvider provider, IDbObjectHandler handler)
         {
@@ -34,59 +35,31 @@ namespace Leafing.Data.Model
             this.Provider = provider;
             this._saver = SaverFactory.CreateSaver(info, composer, provider, handler);
             this._deleter = DeleterFactory.CreateDeleter(info, composer, provider, handler);
+            this.Fixer = AutoSchemeFixer.CreateInstance(this.Provider, this.Info);
         }
 
         public virtual int Delete(IDbObject obj)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             return _deleter.Delete(obj);
         }
 
         public virtual void Save(IDbObject obj)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             _saver.Save(obj);
         }
 
         public virtual void Insert(IDbObject obj)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             _saver.Insert(obj);
         }
 
         public virtual void Update(IDbObject obj)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             _saver.Update(obj);
-        }
-
-        internal void TryCreateTable()
-        {
-            if (Provider.Driver.AutoCreateTable)
-            {
-                InitTableNames();
-                if(Info.CreateTables != null)
-                {
-                    foreach(var type in Info.CreateTables)
-                    {
-                        var ctx = ModelContext.GetInstance(type);
-                        InnerTryCreateTable(ctx.Info, ctx.Operator);
-                    }
-                }
-                else
-                {
-                    InnerTryCreateTable(Info, this);
-                }
-            }
-        }
-
-        private void InnerTryCreateTable(ObjectInfo oi, ModelOperator op)
-        {
-            string name = oi.From.MainTableName;
-            if (name != null && !Provider.Driver.TableNames.ContainsKey(name.ToLower()))
-            {
-                CreateTableAndRelations(oi, op, mt => !Provider.Driver.TableNames.ContainsKey(mt.Name.ToLower()));
-            }
         }
 
         internal void CreateTableAndRelations(ObjectInfo oi, ModelOperator op, Func<CrossTable, bool> callback)
@@ -121,18 +94,6 @@ namespace Leafing.Data.Model
             }
         }
 
-        private void InitTableNames()
-        {
-            if (Provider.Driver.TableNames == null)
-            {
-                Provider.Driver.TableNames = new Dictionary<string, int>();
-                foreach (string s in Provider.GetTableNames())
-                {
-                    Provider.Driver.TableNames.Add(s.ToLower(), 1);
-                }
-            }
-        }
-
         public long GetResultCount(Condition iwc)
         {
             return GetResultCount(iwc, false);
@@ -140,7 +101,7 @@ namespace Leafing.Data.Model
 
         public long GetResultCount(Condition iwc, bool isDistinct)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             SqlStatement sql = Composer.GetResultCountStatement(iwc, isDistinct);
             object ro = Provider.ExecuteScalar(sql);
             return Convert.ToInt64(ro);
@@ -148,16 +109,9 @@ namespace Leafing.Data.Model
 
         internal long GetResultCountAvoidSoftDelete(Condition iwc, bool isDistinct)
         {
-            TryCreateTable();
-            SqlStatement sql;
-            if (Composer is SoftDeleteQueryComposer)
-            {
-                sql = ((SoftDeleteQueryComposer)Composer).GetResultCountStatementWithoutDeleteCheck(iwc, isDistinct);
-            }
-            else
-            {
-                sql = Composer.GetResultCountStatement(iwc, isDistinct);
-            }
+            Fixer.TryFix();
+            var c = Composer as SoftDeleteQueryComposer;
+            var sql = c != null ? c.GetResultCountStatementWithoutDeleteCheck(iwc, isDistinct) : Composer.GetResultCountStatement(iwc, isDistinct);
             object ro = Provider.ExecuteScalar(sql);
             return Convert.ToInt64(ro);
         }
@@ -178,7 +132,7 @@ namespace Leafing.Data.Model
 
         public object GetMaxObject(Condition iwc, string columnName)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             SqlStatement sql = Composer.GetMaxStatement(iwc, columnName);
             object ro = Provider.ExecuteScalar(sql);
             if (ro == DBNull.Value) { return null; }
@@ -201,7 +155,7 @@ namespace Leafing.Data.Model
 
         public object GetMinObject(Condition iwc, string columnName)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             SqlStatement sql = Composer.GetMinStatement(iwc, columnName);
             object ro = Provider.ExecuteScalar(sql);
             if (ro == DBNull.Value)
@@ -213,7 +167,7 @@ namespace Leafing.Data.Model
 
         public decimal? GetSum(Condition iwc, string columnName)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             SqlStatement sql = Composer.GetSumStatement(iwc, columnName);
             object ro = Provider.ExecuteScalar(sql);
             if (ro == DBNull.Value)
@@ -225,7 +179,7 @@ namespace Leafing.Data.Model
 
         public List<GroupByObject<T1>> GetGroupBy<T1>(Condition iwc, OrderBy order, string columnName)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             SqlStatement sql = Composer.GetGroupByStatement(iwc, order, columnName);
             var list = new List<GroupByObject<T1>>();
             IProcessor ip = GetListProcessor(list);
@@ -235,7 +189,7 @@ namespace Leafing.Data.Model
 
         public List<GroupBySumObject<T1, T2>> GetGroupBySum<T1, T2>(Condition iwc, OrderBy order, string groupbyColumnName, string sumColumnName)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             SqlStatement sql = Composer.GetGroupBySumStatement(iwc, order, groupbyColumnName, sumColumnName);
             var list = new List<GroupBySumObject<T1, T2>>();
             IProcessor ip = GetListProcessor(list);
@@ -250,7 +204,7 @@ namespace Leafing.Data.Model
 
         public List<T> ExecuteList<T>(SqlStatement sql) where T : class, IDbObject
         {
-            TryCreateTable();
+            Fixer.TryFix();
             var ret = new List<T>();
             IProcessor ip = GetListProcessor(ret);
             DataLoadDirect(ip, Info.HandleType, sql, false, false);
@@ -274,7 +228,7 @@ namespace Leafing.Data.Model
 
         public void DataLoad(IProcessor ip, Type returnType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             SqlStatement sql = Composer.GetSelectStatement(from, iwc, oc, lc, isDistinct, noLazy, returnType);
             DataLoadDirect(ip, returnType, sql, true, noLazy);
         }
@@ -360,14 +314,14 @@ namespace Leafing.Data.Model
 
         public int DeleteBy(Condition iwc)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             var sql = Composer.GetDeleteStatement(iwc);
             return Provider.ExecuteNonQuery(sql);
         }
 
         public int UpdateBy(Condition iwc, object obj)
         {
-            TryCreateTable();
+            Fixer.TryFix();
             var sql = Composer.GetUpdateStatement(iwc, obj);
             return Provider.ExecuteNonQuery(sql);
         }
@@ -396,7 +350,7 @@ namespace Leafing.Data.Model
             string s = "DROP TABLE " + Provider.Dialect.QuoteForTableName(tableName);
             var sql = new SqlStatement(s);
             Util.IfCatchException(catchException, () => Provider.ExecuteNonQuery(sql));
-            if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
+            if (Provider.Driver.AutoScheme == AutoScheme.CreateTable && Provider.Driver.TableNames != null)
             {
                 Provider.Driver.TableNames.Remove(tableName.ToLower());
             }
@@ -417,10 +371,7 @@ namespace Leafing.Data.Model
             {
                 Util.CatchAll(() => Provider.ExecuteNonQuery(descSql));
             }
-            if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
-            {
-                Provider.Driver.TableNames.Add(Info.From.MainTableName.ToLower(), 1);
-            }
+            Fixer.SetAsProcessed();
         }
 
         public void CreateDeleteToTable()
@@ -430,10 +381,7 @@ namespace Leafing.Data.Model
             sb.Columns.Add(new ColumnInfo("DeletedOn", typeof(DateTime), null));
             var sql = sb.ToSqlStatement(Provider.Dialect, null, Info.AllowSqlLog);
             Provider.ExecuteNonQuery(sql);
-            if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
-            {
-                Provider.Driver.TableNames.Add(Info.DeleteToTableName.ToLower(), 1);
-            }
+            Fixer.SetAsProcessed();
         }
 
         public void CreateCrossTable(Type t2)
@@ -458,10 +406,7 @@ namespace Leafing.Data.Model
             // execute
             var sql = cts.ToSqlStatement(Provider.Dialect, null, Info.AllowSqlLog);
             Provider.ExecuteNonQuery(sql);
-            if (Provider.Driver.AutoCreateTable && Provider.Driver.TableNames != null)
-            {
-                Provider.Driver.TableNames.Add(mt.Name.ToLower(), 1);
-            }
+            Fixer.SetAsProcessed();
         }
 
         #region Linq methods

@@ -10,12 +10,13 @@ namespace Leafing.Data.Builder
     {
         private readonly FromClause _from;
         public ColumnInfo AddColumn;
-        public string DropColumnName;
         public object DefaultValue;
+        public bool DefaultFirst = false;
 
-        public AlterTableStatementBuilder(FromClause from)
+        public AlterTableStatementBuilder(FromClause from, bool defaultFirst)
         {
             this._from = from;
+            this.DefaultFirst = defaultFirst;
         }
 
         protected override SqlStatement ToSqlStatement(DbDialect dd, List<string> queryRequiredFields)
@@ -28,19 +29,23 @@ namespace Leafing.Data.Builder
                 sb.Append(dd.QuoteForColumnName(AddColumn.Key));
                 sb.Append(" ");
                 sb.Append(dd.GetTypeName(AddColumn));
-                sb.Append(AddColumn.AllowNull ? " NULL" : " NOT NULL");
                 if(DefaultValue != null)
                 {
-                    sb.Append(" DEFAULT(");
-                    sb.Append(DefaultValue);
-                    sb.Append(")");
+                    if (DefaultFirst)
+                    {
+                        sb.Append(" DEFAULT(").Append(DefaultValue).Append(")");
+                        sb.Append(AddColumn.AllowNull ? " NULL" : " NOT NULL");
+                    }
+                    else
+                    {
+                        sb.Append(AddColumn.AllowNull ? " NULL" : " NOT NULL");
+                        sb.Append(" DEFAULT(").Append(DefaultValue).Append(")");
+                    }
                 }
-                sb.Append(";");
-            }
-            else if(!DropColumnName.IsNullOrEmpty())
-            {
-                sb.Append(" DROP COLUMN ");
-                sb.Append(dd.QuoteForColumnName(DropColumnName));
+                else
+                {
+                    sb.Append(AddColumn.AllowNull ? " NULL" : " NOT NULL");
+                }
                 sb.Append(";");
             }
             return new SqlStatement(sb.ToString());

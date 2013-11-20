@@ -55,9 +55,9 @@ namespace Leafing.Data.Dialect
             get { return "SYSDATE"; }
         }
 
-        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
         {
-            return new Oracle8Driver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new Oracle8Driver(this, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
         public override string GetUserId(string connectionString)

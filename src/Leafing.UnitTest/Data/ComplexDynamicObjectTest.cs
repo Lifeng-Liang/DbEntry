@@ -9,6 +9,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestCross()
         {
+            ImpPeople.FindById(1);
             SqlRecorder.Start();
 
             ImpPeople p = ImpPeople.FindById(1);

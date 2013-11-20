@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Data;
 using Leafing.Data.Common;
@@ -46,6 +47,43 @@ namespace Leafing.Data.Dialect
             TypeNames[DataType.Binary]  = "BINARY";
         }
 
+        public virtual string DefaultDateTimeString()
+        {
+            return "1990-01-01 00:00:00";
+        }
+
+        public virtual void AddColumn(ModelContext ctx, string columnName, object o)
+        {
+            InnerGetValue(ctx, columnName, o, false);
+        }
+
+	    protected static void InnerGetValue(ModelContext ctx, string columnName, object o, bool defaultFirst)
+	    {
+            var builder = new AlterTableStatementBuilder(ctx.Info.From, defaultFirst);
+	        var mem = ctx.Info.Members.FirstOrDefault(p => p.Name == columnName);
+	        builder.AddColumn = new ColumnInfo(mem);
+	        if(o != null)
+	        {
+	            builder.DefaultValue = o;
+	        }
+	        var sql = builder.ToSqlStatement(ctx);
+	        ctx.Provider.ExecuteNonQuery(sql);
+	    }
+
+	    public virtual void DropColumns(ModelContext ctx, params string[] columns)
+        {
+            foreach(var column in columns)
+            {
+                var sb = new StringBuilder("ALTER TABLE ");
+                sb.Append(QuoteForTableName(ctx.Info.From.MainTableName));
+                sb.Append(" DROP COLUMN ");
+                sb.Append(QuoteForColumnName(column));
+                sb.Append(";");
+                var sql = new SqlStatement(sb.ToString());
+                ctx.Provider.ExecuteNonQuery(sql);
+            }
+        }
+
         protected virtual string GetStringNameWithLength(string baseType, bool isUnicode, int length)
         {
             if(length == 0)
@@ -89,7 +127,7 @@ namespace Leafing.Data.Dialect
             }
         }
 
-        public virtual void InitConnection(DataProvider provider, IDbConnection conn)
+        public virtual void InitConnection(DbDriver driver, IDbConnection conn)
         {
         }
 
@@ -97,6 +135,11 @@ namespace Leafing.Data.Dialect
         {
             get { return "NOW()"; }
         }
+
+	    public virtual string EmptyString
+	    {
+	        get { return "''"; }
+	    }
 
         public virtual string GetUserId(string connectionString)
         {
@@ -160,9 +203,9 @@ namespace Leafing.Data.Dialect
             return new DbStructInterface(null, null, null, null, null);
         }
 
-        public virtual DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public virtual DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
         {
-            return new CommonDbDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new CommonDbDriver(this, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
         public virtual string GetConnectionString(string connectionString)

@@ -71,9 +71,9 @@ namespace Leafing.Data.Dialect
             return null;
         }
 
-        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
         {
-            return new OracleDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new OracleDriver(this, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
         public override IDataReader GetDataReader(IDataReader dr, Type returnType)
@@ -148,6 +148,16 @@ namespace Leafing.Data.Dialect
         public override string GenIndexName(string n)
         {
             return GenIndexName(n, 30);
+        }
+
+        public override void AddColumn(ModelContext ctx, string columnName, object o)
+        {
+            InnerGetValue(ctx, columnName, o, true);
+        }
+
+        public override string EmptyString
+        {
+            get { return "' '"; }
         }
     }
 }

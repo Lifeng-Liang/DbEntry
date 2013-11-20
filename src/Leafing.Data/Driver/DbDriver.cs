@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Collections;
 using Leafing.Core;
 using Leafing.Core.Text;
+using Leafing.Data.Common;
 using Leafing.Data.Dialect;
 using Leafing.Data.SqlEntry;
 
@@ -22,18 +23,60 @@ namespace Leafing.Data.Driver
 
         protected DbFactory ProviderFactory;
 
-	    public readonly bool AutoCreateTable;
+	    public readonly AutoScheme AutoScheme;
 
-        internal Dictionary<string, int> TableNames;
+        private List<string> _tableNames;
 
-        protected DbDriver(DbDialect dialect, string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+	    internal List<string> TableNames
+	    {
+	        get
+	        {
+                if(_tableNames == null)
+                {
+                    _tableNames = new List<string>();
+                    var list = GetTableNames();
+                    foreach (var name in list)
+                    {
+                        _tableNames.Add(name.ToLower());
+                    }
+                }
+                return _tableNames;
+	        }
+	    }
+
+        protected DbDriver(DbDialect dialect, string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
         {
             this.Name = name;
             this.ConnectionString = connectionString;
             this.Dialect = dialect;
-	        this.AutoCreateTable = autoCreateTable;
+            this.AutoScheme = autoScheme;
             ProviderFactory = CreateDbProviderFactory(dbProviderFactoryName);
-		}
+        }
+
+        public List<string> GetTableNames()
+        {
+            var ret = new List<string>();
+            DbStructInterface si = Dialect.GetDbStructInterface();
+            string userId = Dialect.GetUserId(ConnectionString);
+            using(var c = (DbConnection)GetDbConnection())
+            {
+                c.Open();
+                foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
+                {
+                    if (si.FiltrateDatabaseName)
+                    {
+                        if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
+                    }
+                    if (userId != null)
+                    {
+                        if (!dr["OWNER"].Equals(userId)) { continue; }
+                    }
+                    string s = dr[si.TableNameString].ToString();
+                    ret.Add(s);
+                }
+            }
+            return ret;
+        }
 
         private DbFactory CreateDbProviderFactory(string dbProviderFactoryName)
         {

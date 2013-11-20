@@ -166,21 +166,34 @@ namespace Leafing.UnitTest.Data
         public DateTime dtValue { get; set; }
     }
 
+    [DbTable("AutoAlterTableTest")]
+    public class AutoAlterTableTest : DbObjectModel<AutoAlterTableTest>
+    {
+        [Length(50)]
+        public string Name { get; set; }
+
+        public int Age { get; set; }
+
+        public bool Gender { get; set; }
+
+        public double Salary { get; set; }
+    }
+
     #endregion
 
     [TestFixture]
-    public class AutoCreateTableTest : DataTestBase
+    public class AutoCreateOrAlterTableTest : DataTestBase
     {
         [Test]
         public void TestGetTableNames()
         {
-            var tables = new List<string> { "Article", "ArticleMore", "Bao_Xiu_RS", "BelongsMore", "Books", "Categories", "Lock_Book", "LockVersionTest",
+            var tables = new List<string> { "Article", "ArticleMore", "AutoAlterTableTest", "Bao_Xiu_RS", "BelongsMore", "Books", "Categories", "Lock_Book", "LockVersionTest",
                 "Co_User", "Co_User1", "DateAndTime", "File", "NullTest", "PCs", "People", "R_Article_Reader", "Reader", "ReaderMore", "Required_Model", "Required_Two", "SoftDelete",
                 "DCS_USERS", "REF_ORG_UNIT", "HRM_EMPLOYEES", "DCS_PERSONS", "REL_EMP_JOB_ROLE", "REL_JOB_ROLE_ORG_UNIT", "HRM_JOB_ROLES" };
             tables.Sort();
             string[] ts = tables.ToArray();
 
-            List<string> li = DbEntry.Provider.GetTableNames();
+            List<string> li = DbEntry.Provider.Driver.GetTableNames();
             li.Sort();
             Assert.AreEqual(ts, li.ToArray());
         }
@@ -301,6 +314,19 @@ namespace Leafing.UnitTest.Data
             DbEntry.From<DtPart>().Where(Condition.Empty).Select();
             AssertSql(@"SELECT [Id],[dtValue] FROM [DateAndTime];
 <Text><60>()");
+        }
+
+        [Test]
+        public void TestAutoAlterTableTest()
+        {
+            var o = new AutoAlterTableTest { Name = "tom", Age = 19, Gender = true, Salary = 2653.23 };
+            o.Save();
+            var o1 = AutoAlterTableTest.FindById(o.Id);
+            Assert.IsNotNull(o1);
+            Assert.AreEqual("tom", o1.Name);
+            Assert.AreEqual(19, o1.Age);
+            Assert.AreEqual(true, o1.Gender);
+            Assert.AreEqual(2653.23, o1.Salary);
         }
     }
 }

@@ -20,9 +20,9 @@ namespace Leafing.Data.Dialect
             get { return "GETDATE()"; }
         }
 
-        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
         {
-            return new SqlServerDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new SqlServerDriver(this, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
         public override DbStructInterface GetDbStructInterface()

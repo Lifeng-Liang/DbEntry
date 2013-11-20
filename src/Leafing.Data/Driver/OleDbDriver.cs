@@ -1,14 +1,15 @@
 using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
+using Leafing.Data.Common;
 using Leafing.Data.SqlEntry;
 
 namespace Leafing.Data.Driver
 {
     internal class OleDbDriver : DbDriver
 	{
-        public OleDbDriver(Dialect.DbDialect dialectClass, string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
-            : base(dialectClass, name, connectionString, dbProviderFactoryName, autoCreateTable)
+        public OleDbDriver(Dialect.DbDialect dialectClass, string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
+            : base(dialectClass, name, connectionString, dbProviderFactoryName, autoScheme)
 		{
 		}
 

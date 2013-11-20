@@ -35,7 +35,7 @@ namespace Leafing.Data.SqlEntry
                 CheckContextAreSame(provider);
                 _connection = provider.Driver.GetDbConnection();
                 _connection.Open();
-                provider.Dialect.InitConnection(provider, _connection);
+                provider.Dialect.InitConnection(provider.Driver, _connection);
                 _state = ConnectionContextState.ConnectionOpened;
             }
             return _connection;

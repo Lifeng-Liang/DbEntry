@@ -55,10 +55,15 @@ namespace Leafing.Core.Ioc
         {
             try
             {
+                var main = Assembly.GetEntryAssembly();
+                if(main != null)
+                {
+                    assemblies.Add(main);
+                }
                 foreach (var fn in Directory.GetFiles(path))
                 {
                     var file = fn.ToLower();
-                    if ((file.EndsWith(".dll") || file.EndsWith(".exe")) && !file.EndsWith(".vshost.exe"))
+                    if (file.EndsWith(".dll"))
                     {
                         var assembly = Assembly.LoadFrom(fn);
                         assemblies.Add(assembly);

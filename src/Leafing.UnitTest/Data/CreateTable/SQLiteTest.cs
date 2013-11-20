@@ -230,7 +230,7 @@ namespace Leafing.UnitTest.Data.CreateTable
         protected override void OnSetUp()
         {
             base.OnSetUp();
-            Driver.TableNames = null;
+            //Driver.TableNames = null;
         }
 
         [Test]

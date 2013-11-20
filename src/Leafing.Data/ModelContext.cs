@@ -187,6 +187,19 @@ namespace Leafing.Data
             }
         }
 
+        public void AddColumn(string columnName, object o)
+        {
+            this.Provider.Dialect.AddColumn(this, columnName, o);
+        }
+
+        public void DropColumn(params string[] columns)
+        {
+            if(columns.Length > 0)
+            {
+                this.Provider.Dialect.DropColumns(this, columns);
+            }
+        }
+
         #endregion
     }
 }

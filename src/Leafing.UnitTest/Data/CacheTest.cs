@@ -349,8 +349,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestLazyLoadColumn2()
         {
-            var ctx = ModelContext.GetInstance(typeof(LazyableSqlite));
-            ctx.Operator.TryCreateTable();
+            DbEntry.GetObject<LazyableSqlite>(1);
 
             StaticRecorder.ClearMessages();
             StaticRecorder.CurRow.Clear();

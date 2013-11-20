@@ -14,7 +14,6 @@ namespace Leafing.Data.Model
 {
     public class ObjectInfo
     {
-        private Type[] _createTables;
         public readonly bool AllowSqlLog;
         public readonly bool Cacheable;
         public readonly string ContextName;
@@ -343,33 +342,6 @@ namespace Leafing.Data.Model
             return ConfigHelper.DefaultSettings.GetValue("@" + definedName, definedName);
         }
 
-        private void InitCreateTables()
-        {
-            if (this.From.PartOf != null)
-            {
-                this._createTables = new[] { this.From.PartOf };
-            }
-            else if (this.From.JoinClauseList != null)
-            {
-                var jar = new Dictionary<Type, int>();
-                foreach (JoinClause jc in this.From.JoinClauseList)
-                {
-                    if (jc.Type1 != null)
-                    {
-                        jar[jc.Type1] = 1;
-                    }
-                    if (jc.Type2 != null)
-                    {
-                        jar[jc.Type2] = 1;
-                    }
-                }
-                if (jar.Count > 0)
-                {
-                    this._createTables = new List<Type>(jar.Keys).ToArray();
-                }
-            }
-        }
-
         private bool IsAllowSqlLog()
         {
             if (this.HandleType.GetCustomAttributes(typeof(DisableSqlLogAttribute), false).Length != 0)
@@ -411,24 +383,6 @@ namespace Leafing.Data.Model
                     oi.CrossTables[handleType] = new CrossTable(handleType, from, name,
                         oi.From.MainTableName, unmappedMainTableName + "_Id", fromClause.MainTableName, fkMainOriginTableName);
                 }
-            }
-        }
-
-        public Type[] CreateTables
-        {
-            get
-            {
-                if (this._createTables == null)
-                {
-                    lock (this)
-                    {
-                        if (this._createTables == null)
-                        {
-                            this.InitCreateTables();
-                        }
-                    }
-                }
-                return this._createTables;
             }
         }
     }

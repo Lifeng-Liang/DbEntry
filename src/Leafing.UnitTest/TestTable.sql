@@ -128,6 +128,8 @@ CREATE TABLE [LockVersionTest] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] N
 
 INSERT INTO [LockVersionTest] ([Id],[Name],[LockVersion]) VALUES (1, 'test', 1);
 
+CREATE TABLE [AutoAlterTableTest] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Name] NVARCHAR(50) NOT NULL);
+
 --------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE [DCS_USERS] (

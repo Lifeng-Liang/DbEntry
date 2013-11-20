@@ -48,10 +48,8 @@ namespace Leafing.UnitTest.Data
 
         static FullTypesTest()
         {
-            var ft = ModelContext.GetInstance(typeof(FullType));
-            ft.Operator.TryCreateTable();
-            var ft2 = ModelContext.GetInstance(typeof(FullType2));
-            ft2.Operator.TryCreateTable();
+            DbEntry.GetObject<FullType>(1);
+            DbEntry.GetObject<FullType2>(1);
         }
 
         [SetUp]

@@ -21,7 +21,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void Test1()
         {
-            var ab = new AlterTableStatementBuilder(new FromClause("User"))
+            var ab = new AlterTableStatementBuilder(new FromClause("User"), false)
                          {
                              AddColumn = new ColumnInfo("Age", typeof(int), false, false, false, false, 0, 0, null),
                              DefaultValue = 0,
@@ -40,7 +40,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void Test2()
         {
-            var ab = new AlterTableStatementBuilder(new FromClause("User"))
+            var ab = new AlterTableStatementBuilder(new FromClause("User"), false)
             {
                 AddColumn = new ColumnInfo("Nick", typeof(string), false, false, true, true, 50, 0, null),
             };
@@ -57,17 +57,6 @@ namespace Leafing.UnitTest.Data
 
         [Test]
         public void TestDrop1()
-        {
-            var ab = new AlterTableStatementBuilder(new FromClause("User"))
-            {
-                DropColumnName = "test",
-            };
-            var sql = ab.ToSqlStatement(new SqlServer2005(), null);
-            Assert.AreEqual("ALTER TABLE [User] DROP COLUMN [test];", sql.SqlCommandText);
-        }
-
-        [Test]
-        public void TestDrop2()
         {
             MyUser.DropColumn("test");
             AssertSql("ALTER TABLE [My_User] DROP COLUMN [test];<Text><30>()");

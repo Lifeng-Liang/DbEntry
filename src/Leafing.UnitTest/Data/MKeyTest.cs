@@ -74,8 +74,7 @@ namespace Leafing.UnitTest.Data
         public void TestForFirebird()
         {
             // try create table first.
-            var ctx = ModelContext.GetInstance(typeof(Mkey3));
-            ctx.Operator.TryCreateTable();
+            DbEntry.From<Mkey3>().Where(Condition.Empty).GetCount();
             StaticRecorder.ClearMessages();
             // real test
             var o = new Mkey3 {Name = "test", Age = 18, Gender = true};

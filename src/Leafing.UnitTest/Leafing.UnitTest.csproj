@@ -90,7 +90,7 @@
     <Compile Include="DataTestBase.cs" />
     <Compile Include="Data\ActsAsTreeTest.cs" />
     <Compile Include="Data\AlterTableTest.cs" />
-    <Compile Include="Data\AutoCreateTableTest.cs" />
+    <Compile Include="Data\AutoCreateOrAlterTableTest.cs" />
     <Compile Include="Data\BelongsMoreTest.cs" />
     <Compile Include="Data\BulkCopyTest.cs" />
     <Compile Include="Data\CacheTest.cs" />

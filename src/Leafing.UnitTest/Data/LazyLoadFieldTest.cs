@@ -114,7 +114,7 @@ namespace Leafing.UnitTest.Data
         protected override void OnSetUp()
         {
             base.OnSetUp();
-            DbEntry.Provider.Driver.TableNames = null;
+            //DbEntry.Provider.Driver.TableNames = null;
         }
 
         #endregion
@@ -187,7 +187,9 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestCrudForDynamicObject()
         {
-            var u = new lzpUser {Name = "tom", Profile = "test"};
+            DbEntry.Create(typeof(lzpUser));
+
+            var u = new lzpUser { Name = "tom", Profile = "test" };
             u.Save();
             Assert.AreEqual(1, u.Id);
 
@@ -211,6 +213,8 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestForNotUpdateWithDynamicObject()
         {
+            DbEntry.Create(typeof(lzpUser));
+
             var u = new lzpUser {Name = "tom", Profile = "test"};
             u.Save();
             Assert.AreEqual(1, u.Id);

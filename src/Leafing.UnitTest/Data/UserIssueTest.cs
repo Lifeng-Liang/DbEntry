@@ -7,6 +7,11 @@ using NUnit.Framework;
 
 namespace Leafing.UnitTest.Data
 {
+    public class UserInfo : DbObjectModel<UserInfo>
+    {
+        public int ErrorCount { get; set; }
+    }
+
     [DbContext("Access")]
     public class CreatedOnModel : DbObjectModel<CreatedOnModel>
     {
@@ -153,6 +158,23 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual(@"INSERT INTO [Created_On_Model] ([Name],[CreatedOn]) VALUES (@Name_0,Now());<Text><30>(@Name_0=tom:String)",
                 StaticRecorder.Messages[n - 2]);
             AssertSql(@"SELECT @@IDENTITY;<Text><30>(@Name_0=tom:String)");
+        }
+
+        [Test]
+        public void TestIntZeroSave()
+        {
+            var ui = new UserInfo {ErrorCount = 0};
+            ui.Save();
+            var u1 = UserInfo.FindById(ui.Id);
+            Assert.AreEqual(0, u1.ErrorCount);
+            u1.ErrorCount++;
+            u1.Save();
+            var u2 = UserInfo.FindById(ui.Id);
+            Assert.AreEqual(1, u2.ErrorCount);
+            u2.ErrorCount = 0;
+            u2.Save();
+            var u3 = UserInfo.FindById(ui.Id);
+            Assert.AreEqual(0, u3.ErrorCount);
         }
     }
 }

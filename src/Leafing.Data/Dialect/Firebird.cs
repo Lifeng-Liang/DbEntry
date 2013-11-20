@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Text;
+using Leafing.Data.Builder;
+using Leafing.Data.Builder.Clause;
 using Leafing.Data.SqlEntry;
 using Leafing.Data.Common;
 
@@ -101,6 +104,32 @@ namespace Leafing.Data.Dialect
         public override string GenIndexName(string n)
         {
             return GenIndexName(n, 31);
+        }
+
+        public override void AddColumn(ModelContext ctx, string columnName, object o)
+        {
+            base.AddColumn(ctx, columnName, null);
+            if (o != null)
+            {
+                var stm = new UpdateStatementBuilder(ctx.Info.From);
+                stm.Values.Add(new KeyOpValue(columnName, o, KvOpertation.None));
+                var sql = stm.ToSqlStatement(ctx);
+                ctx.Provider.ExecuteNonQuery(sql);
+            }
+        }
+
+        public override void DropColumns(ModelContext ctx, params string[] columns)
+        {
+            foreach(var column in columns)
+            {
+                var sb = new StringBuilder("ALTER TABLE ");
+                sb.Append(QuoteForTableName(ctx.Info.From.MainTableName));
+                sb.Append(" DROP ");
+                sb.Append(QuoteForColumnName(column));
+                sb.Append(";");
+                var sql = new SqlStatement(sb.ToString());
+                ctx.Provider.ExecuteNonQuery(sql);
+            }
         }
     }
 }

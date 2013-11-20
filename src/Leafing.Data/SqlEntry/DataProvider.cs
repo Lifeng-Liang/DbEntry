@@ -59,31 +59,6 @@ namespace Leafing.Data.SqlEntry
             return ret;
         }
 
-        public List<string> GetTableNames()
-        {
-            var ret = new List<string>();
-            DbStructInterface si = Dialect.GetDbStructInterface();
-            string userId = Dialect.GetUserId(Driver.ConnectionString);
-            DbEntry.NewConnection(delegate
-            {
-                var c = (DbConnection)Scope<ConnectionContext>.Current.GetConnection(this);
-                foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
-                {
-                    if (si.FiltrateDatabaseName)
-                    {
-                        if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
-                    }
-                    if (userId != null)
-                    {
-                        if (!dr["OWNER"].Equals(userId)) { continue; }
-                    }
-                    string s = dr[si.TableNameString].ToString();
-                    ret.Add(s);
-                }
-            });
-            return ret;
-        }
-
         public IDbBulkCopy GetDbBulkCopy(bool identityInsert)
         {
             if (!identityInsert && Driver is SqlServerDriver)
@@ -202,9 +177,10 @@ namespace Leafing.Data.SqlEntry
                 {
                     d.DeleteCommand = GetDbCommandForUpdate(deleteSql, updateRowSource);
                 }
-                if (d is DbDataAdapter)
+                var adapter = d as DbDataAdapter;
+                if (adapter != null)
                 {
-                    ((DbDataAdapter) d).UpdateBatchSize = updateBatchSize;
+                    adapter.UpdateBatchSize = updateBatchSize;
                 }
                 else if(throwException)
                 {

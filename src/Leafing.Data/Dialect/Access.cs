@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using Leafing.Data.Builder;
+using Leafing.Data.Builder.Clause;
 using Leafing.Data.Common;
 using Leafing.Data.Driver;
 using Leafing.Data.SqlEntry;
@@ -19,9 +21,9 @@ namespace Leafing.Data.Dialect
             return new AccessDataReader(dr, returnType);
         }
 
-        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, bool autoCreateTable)
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
         {
-            return new OleDbDriver(this, name, connectionString, dbProviderFactoryName, autoCreateTable);
+            return new OleDbDriver(this, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
         public override DbStructInterface GetDbStructInterface()
@@ -69,6 +71,18 @@ namespace Leafing.Data.Dialect
             get
             {
                 return "Now()";
+            }
+        }
+
+        public override void AddColumn(ModelContext ctx, string columnName, object o)
+        {
+            base.AddColumn(ctx, columnName, null);
+            if(o != null)
+            {
+                var stm = new UpdateStatementBuilder(ctx.Info.From);
+                stm.Values.Add(new KeyOpValue(columnName, o, KvOpertation.None));
+                var sql = stm.ToSqlStatement(ctx);
+                ctx.Provider.ExecuteNonQuery(sql);
             }
         }
 	}

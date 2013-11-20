@@ -1,4 +1,5 @@
-﻿using Leafing.Core;
+﻿using System;
+using Leafing.Core;
 using Leafing.Core.Setting;
 using Leafing.Core.Text;
 using Leafing.Data.Common;
@@ -42,22 +43,40 @@ namespace Leafing.Data.Driver
             string pf = ConfigHelper.DefaultSettings.GetValue(prefix + "DbProviderFactory");
             string dcn = ConfigHelper.DefaultSettings.GetValue(prefix + "DbDriver");
             string act = ConfigHelper.DefaultSettings.GetValue(prefix + "AutoCreateTable");
-            return CreateDbDriver(d, name, dcn, cs, pf, act);
+            string auto = ConfigHelper.DefaultSettings.GetValue(prefix + "AutoScheme");
+            return CreateDbDriver(d, name, dcn, cs, pf, act, auto);
         }
 
-        private static DbDriver CreateDbDriver(DbDialect dialectClass, string name, string driverClassName, string connectionString, string dbProviderFactoryName, string act)
+        private static DbDriver CreateDbDriver(DbDialect dialectClass, string name, string driverClassName, 
+            string connectionString, string dbProviderFactoryName, string act, string auto)
         {
-            bool autoCreateTable = string.IsNullOrEmpty(act) ? false : bool.Parse(act);
+            var autoScheme = AutoScheme.None;
+            if(auto.IsNullOrEmpty())
+            {
+                if(!string.IsNullOrEmpty(act))
+                {
+                    if(bool.Parse(act))
+                    {
+                        autoScheme = AutoScheme.CreateTable;
+                    }
+                }
+            }
+            else
+            {
+                autoScheme = (AutoScheme)Enum.Parse(typeof(AutoScheme), auto);
+            }
             CheckProperty(dialectClass, connectionString);
             if (driverClassName == "")
             {
-                return dialectClass.CreateDbDriver(name, connectionString, dbProviderFactoryName, autoCreateTable);
+                return dialectClass.CreateDbDriver(name, connectionString, dbProviderFactoryName, autoScheme);
             }
             return (DbDriver)ClassHelper.CreateInstance(driverClassName,
-                dialectClass, name, connectionString, dbProviderFactoryName, autoCreateTable);
+                dialectClass, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
+        // ReSharper disable UnusedParameter.Local
         private static void CheckProperty(DbDialect dialectClass, string connectionString)
+        // ReSharper restore UnusedParameter.Local
         {
             if (dialectClass == null || connectionString == "")
             {

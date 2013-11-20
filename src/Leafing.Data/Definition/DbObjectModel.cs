@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Leafing.Data.Builder;
 using Leafing.Data.Model.Linq;
@@ -362,23 +361,13 @@ namespace Leafing.Data.Definition
 
         public static void AddColumn(Expression<Func<T, object>> expr, object o)
         {
-            var builder = new AlterTableStatementBuilder(ModelContext.Info.From);
             var n = expr.GetColumnName();
-            var mem = ModelContext.Info.Members.FirstOrDefault(p => p.Name == n);
-            builder.AddColumn = new ColumnInfo(mem);
-            if(o != null)
-            {
-                builder.DefaultValue = o;
-            }
-            var sql = builder.ToSqlStatement(ModelContext);
-            ModelContext.Provider.ExecuteNonQuery(sql);
+            ModelContext.AddColumn(n, o);
         }
 
         public static void DropColumn(string columnName)
         {
-            var builder = new AlterTableStatementBuilder(ModelContext.Info.From) {DropColumnName = columnName};
-            var sql = builder.ToSqlStatement(ModelContext);
-            ModelContext.Provider.ExecuteNonQuery(sql);
+            ModelContext.DropColumn(columnName);
         }
 
         #endregion

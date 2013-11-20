@@ -122,6 +122,8 @@ copy *.dll ..\..\..\..\bin\
     <Compile Include="Caching\StaticHashCacheProvider.cs" />
     <Compile Include="Caching\TimeValue.cs" />
     <Compile Include="Common\AccessDataReader.cs" />
+    <Compile Include="Common\AutoScheme.cs" />
+    <Compile Include="Common\AutoSchemeFixer.cs" />
     <Compile Include="Common\BulkCopyProcessor.cs" />
     <Compile Include="Caching\CachedListInserter.cs" />
     <Compile Include="Common\ColumnFunction.cs" />
