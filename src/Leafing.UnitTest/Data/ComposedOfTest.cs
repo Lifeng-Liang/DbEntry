@@ -73,6 +73,16 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
+        public void TestQuery()
+        {
+            var user = new CoUser { Name = "tom", Location = { Phone = "123456", Address = "The east of queen street" } };
+            user.Save();
+
+            var ru = CoUser.FindOne(p => p.Location.Phone == "123456");
+            Assert.AreEqual("The east of queen street", ru.Location.Address);
+        }
+
+        [Test]
         public void Test3()
         {
             var type = typeof(CoUser);

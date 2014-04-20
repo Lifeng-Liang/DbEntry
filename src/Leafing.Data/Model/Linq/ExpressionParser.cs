@@ -192,9 +192,17 @@ namespace Leafing.Data.Model.Linq
         private static string GetColumnName(MemberExpression expr)
         {
             string mn = expr.Member.Name;
-            if (expr.Expression is MemberExpression && mn == "Id")
+            if (expr.Expression is MemberExpression)
             {
-                mn = ((MemberExpression)expr.Expression).Member.Name;
+                var m = (MemberExpression)expr.Expression;
+                if (mn == "Id")
+                {
+                    mn = m.Member.Name;
+                }
+                else
+                {
+                    mn = m.Member.Name + "$" + mn;
+                }
             }
             return GetColumnName(mn);
         }
