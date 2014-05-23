@@ -113,7 +113,10 @@ namespace Leafing.Processor
         {
             processor.Return();
             processor.Append();
-            ProcessPropertySetNormalCompare(processor);
+            if(ProcessorSettings.AddCompareToSetProperty)
+            {
+                ProcessPropertySetNormalCompare(processor);
+            }
             processor.LoadArg(0);
             processor.LoadArg(1);
             processor.SetField(_pi.FieldDefinition);

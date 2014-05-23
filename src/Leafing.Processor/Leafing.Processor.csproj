@@ -80,7 +80,7 @@
     <Compile Include="ModelRelationFixer.cs" />
     <Compile Include="PropertyProcessor.cs" />
     <Compile Include="TypeFactory.cs" />
-    <Compile Include="ProcesssorSettings.cs" />
+    <Compile Include="ProcessorSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyInformation.cs" />

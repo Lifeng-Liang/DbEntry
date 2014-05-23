@@ -1,13 +1,13 @@
 ﻿using Leafing.Core;
-using Leafing.Core.Setting;
 using Mono.Cecil.Cil;
 
 namespace Leafing.Processor
 {
-    public static class ProcesssorSettings
+    public static class ProcessorSettings
     {
         public static readonly string SymbolReaderProvider = "Mono.Cecil.Pdb.PdbReaderProvider, Mono.Cecil.Pdb";
         public static readonly string SymbolWriterProvider = "Mono.Cecil.Pdb.PdbWriterProvider, Mono.Cecil.Pdb";
+        public static readonly bool AddCompareToSetProperty = true;
 
         public static ISymbolReaderProvider GetSymbolReaderProvider()
         {
@@ -28,9 +28,9 @@ namespace Leafing.Processor
             return ".mdb";
         }
 
-        static ProcesssorSettings()
+        static ProcessorSettings()
         {
-            ConfigHelper.DefaultSettings.InitClass(typeof(ProcesssorSettings));
+            typeof(ProcessorSettings).Initialize();
         }
     }
 }

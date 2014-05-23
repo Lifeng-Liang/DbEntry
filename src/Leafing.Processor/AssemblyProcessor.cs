@@ -29,7 +29,7 @@ namespace Leafing.Processor
         public AssemblyProcessor(string name, string sn, string[] refFiles)
         {
             var n = name.Substring(0, name.Length - 4);
-            if(File.Exists(n + ProcesssorSettings.GetExtName()))
+            if(File.Exists(n + ProcessorSettings.GetExtName()))
             {
                 _hasSymbols = true;
             }
@@ -99,7 +99,7 @@ namespace Leafing.Processor
                     _oldName, new ReaderParameters
                     {
                         ReadSymbols = true,
-                        SymbolReaderProvider = ProcesssorSettings.GetSymbolReaderProvider()
+                        SymbolReaderProvider = ProcessorSettings.GetSymbolReaderProvider()
                     });
             }
             return ModuleDefinition.ReadModule(_oldName);
@@ -172,7 +172,7 @@ namespace Leafing.Processor
             var args = _hasSymbols ? new WriterParameters
                            {
                                WriteSymbols = true,
-                               SymbolWriterProvider = ProcesssorSettings.GetSymbolWriterProvider(),
+                               SymbolWriterProvider = ProcessorSettings.GetSymbolWriterProvider(),
                            }
                            : new WriterParameters();
             if (_sn.IsNullOrEmpty())
