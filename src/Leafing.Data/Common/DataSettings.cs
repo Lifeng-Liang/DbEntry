@@ -31,7 +31,7 @@ namespace Leafing.Data.Common
 
         static DataSettings()
         {
-            ConfigHelper.DefaultSettings.InitClass(typeof(DataSettings));
+            ConfigHelper.LeafingSettings.InitClass(typeof(DataSettings));
         }
         // ReSharper restore RedundantDefaultFieldInitializer
     }

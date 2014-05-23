@@ -27,7 +27,7 @@ namespace Leafing.Data.Driver
             var name = prefix;
             if (prefix != "") { prefix += "."; }
             string pd = prefix + "DataBase";
-            string ds = ConfigHelper.DefaultSettings.GetValue(pd);
+            string ds = ConfigHelper.LeafingSettings.GetValue(pd);
             if (ds == "")
             {
                 throw new SettingException("DataBase must be set as a valid value. Current get is : " + pd);
@@ -40,10 +40,10 @@ namespace Leafing.Data.Driver
             }
             var d = (DbDialect)ClassHelper.CreateInstance(ds);
             string cs = d.GetConnectionString(ss[1].Trim());
-            string pf = ConfigHelper.DefaultSettings.GetValue(prefix + "DbProviderFactory");
-            string dcn = ConfigHelper.DefaultSettings.GetValue(prefix + "DbDriver");
-            string act = ConfigHelper.DefaultSettings.GetValue(prefix + "AutoCreateTable");
-            string auto = ConfigHelper.DefaultSettings.GetValue(prefix + "AutoScheme");
+            string pf = ConfigHelper.LeafingSettings.GetValue(prefix + "DbProviderFactory");
+            string dcn = ConfigHelper.LeafingSettings.GetValue(prefix + "DbDriver");
+            string act = ConfigHelper.LeafingSettings.GetValue(prefix + "AutoCreateTable");
+            string auto = ConfigHelper.LeafingSettings.GetValue(prefix + "AutoScheme");
             return CreateDbDriver(d, name, dcn, cs, pf, act, auto);
         }
 

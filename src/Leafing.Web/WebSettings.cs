@@ -25,7 +25,7 @@ namespace Leafing.Web
 
         static WebSettings()
         {
-            ConfigHelper.DefaultSettings.InitClass(typeof(WebSettings));
+            ConfigHelper.LeafingSettings.InitClass(typeof(WebSettings));
         }
     }
 }

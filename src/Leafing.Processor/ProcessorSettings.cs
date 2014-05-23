@@ -1,4 +1,5 @@
 ﻿using Leafing.Core;
+using Leafing.Core.Setting;
 using Mono.Cecil.Cil;
 
 namespace Leafing.Processor
@@ -30,7 +31,7 @@ namespace Leafing.Processor
 
         static ProcessorSettings()
         {
-            typeof(ProcessorSettings).Initialize();
+            ConfigHelper.LeafingSettings.InitClass(typeof(ProcessorSettings));
         }
     }
 }

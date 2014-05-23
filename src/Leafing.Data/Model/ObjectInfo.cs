@@ -339,7 +339,7 @@ namespace Leafing.Data.Model
 
         private static string GetTableNameFromConfig(string definedName)
         {
-            return ConfigHelper.DefaultSettings.GetValue("@" + definedName, definedName);
+            return ConfigHelper.LeafingSettings.GetValue("@" + definedName, definedName);
         }
 
         private bool IsAllowSqlLog()

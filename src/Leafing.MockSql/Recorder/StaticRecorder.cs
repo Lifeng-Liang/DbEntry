@@ -10,7 +10,7 @@ namespace Leafing.MockSql.Recorder
 
         static DataSettings()
         {
-            ConfigHelper.DefaultSettings.InitClass(typeof(DataSettings));
+            ConfigHelper.LeafingSettings.InitClass(typeof(DataSettings));
         }
         // ReSharper restore RedundantDefaultFieldInitializer
     }

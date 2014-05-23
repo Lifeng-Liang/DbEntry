@@ -20,7 +20,7 @@ namespace Leafing.Core.Setting
 
         static CoreSettings()
         {
-            ConfigHelper.DefaultSettings.InitClass(typeof(CoreSettings));
+            ConfigHelper.LeafingSettings.InitClass(typeof(CoreSettings));
         }
     }
 }

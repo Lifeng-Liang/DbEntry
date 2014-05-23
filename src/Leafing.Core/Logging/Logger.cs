@@ -36,7 +36,7 @@ namespace Leafing.Core.Logging
 
         private List<ILogRecorder> GetLogRecorders()
         {
-            string s = ConfigHelper.DefaultSettings.GetValue(_name + "LogRecorder");
+            string s = ConfigHelper.LeafingSettings.GetValue(_name + "LogRecorder");
             if (s != "")
             {
                 var list = new List<ILogRecorder>();

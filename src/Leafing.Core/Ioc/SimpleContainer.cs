@@ -81,7 +81,7 @@ namespace Leafing.Core.Ioc
             for (int i = 1; ; i++)
             {
                 var s = string.Format("IocAssembly.{0}", i);
-                var asmName = ConfigHelper.DefaultSettings.GetValue(s);
+                var asmName = ConfigHelper.LeafingSettings.GetValue(s);
                 if(string.IsNullOrEmpty(asmName) || asmName.Length <= 1)
                 {
                     break;
