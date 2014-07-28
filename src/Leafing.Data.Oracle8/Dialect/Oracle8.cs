@@ -20,7 +20,7 @@ namespace Leafing.Data.Dialect
 
             TypeNames[DataType.Byte] = "NUMBER(3,0)";
             TypeNames[DataType.SByte] = "";
-            TypeNames[DataType.Decimal] = "NUMBER(19,5)";
+            TypeNames[DataType.Decimal] = "NUMBER";
             TypeNames[DataType.Double] = "DOUBLE PRECISION";
             TypeNames[DataType.Single] = "FLOAT(24)";
 
