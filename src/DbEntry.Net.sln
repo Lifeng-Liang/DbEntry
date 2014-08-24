@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E42B44C-3848-4A14-B2E7-69A309C59B91}"
 	ProjectSection(SolutionItems) = preProject
 		Resources\aprop.snippet = Resources\aprop.snippet
@@ -73,6 +75,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Soaring", "Soaring\", "{A88
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "2765"
+		SlnRelativePath = "Soaring\"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -90,8 +93,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Leafing.UnitTest.VB", "Leaf
 	ProjectSection(ProjectDependencies) = postProject
 		{F44CB5CA-3328-43C3-B640-443A1A57A745} = {F44CB5CA-3328-43C3-B640-443A1A57A745}
 	EndProjectSection
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Leafing.Setup", "Leafing.Setup\Leafing.Setup.vdproj", "{0FB22CE7-4C62-49BF-96B8-80A704ACF244}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leafing.Membership", "Leafing.Membership\Leafing.Membership.csproj", "{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}"
 EndProject
@@ -275,14 +276,6 @@ Global
 		{68D482CB-3284-42B4-9641-2DC146730FED}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{68D482CB-3284-42B4-9641-2DC146730FED}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{68D482CB-3284-42B4-9641-2DC146730FED}.Release|x86.ActiveCfg = Release|Any CPU
-		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Debug|.NET.ActiveCfg = Debug
-		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Debug|Any CPU.ActiveCfg = Debug
-		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Debug|x86.ActiveCfg = Debug
-		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Release|.NET.ActiveCfg = Release
-		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Release|Any CPU.ActiveCfg = Release
-		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Release|Mixed Platforms.ActiveCfg = Release
-		{0FB22CE7-4C62-49BF-96B8-80A704ACF244}.Release|x86.ActiveCfg = Release
 		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|.NET.ActiveCfg = Debug|Any CPU
 		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
