@@ -49,12 +49,6 @@
     <Compile Include="..\Leafing.Core\UtilVersion.cs">
       <Link>UtilVersion.cs</Link>
     </Compile>
-    <Compile Include="DbEntryInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DbEntryInstaller.Designer.cs">
-      <DependentUpon>DbEntryInstaller.cs</DependentUpon>
-    </Compile>
     <Compile Include="ProcessorTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
