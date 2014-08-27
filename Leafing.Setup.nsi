@@ -37,6 +37,7 @@ Section "DbEntry4 (required)"
   File "bin\Leafing.Data.dll"
   File "bin\Leafing.Data.Oracle8.dll"
   File "bin\Leafing.Extra.dll"
+  File "bin\Leafing.Membership.dll"
   File "bin\Leafing.MSBuild.dll"
   File "bin\Leafing.Processor.exe"
   File "bin\Leafing.Processor.exe.config"
@@ -78,6 +79,7 @@ Section "Uninstall"
   Delete $INSTDIR\Leafing.Data.dll
   Delete $INSTDIR\Leafing.Data.Oracle8.dll
   Delete $INSTDIR\Leafing.Extra.dll
+  Delete $INSTDIR\Leafing.Membership.dll
   Delete $INSTDIR\Leafing.MSBuild.dll
   Delete $INSTDIR\Leafing.MSBuild.InstallState
   Delete $INSTDIR\Leafing.Processor.exe
