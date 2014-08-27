@@ -75,11 +75,8 @@ copy *.dll ..\..\..\..\bin\
 :End
 </PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(ProjectDir)\..\Leafing.MSBuild\bin\$(ConfigurationName)\Leafing.MSBuild.dll" />
+  <Target Name="AfterCompile">
+    <ProcessorTask KeyFile="$(KeyOriginatorFile)" ProjectDir="$(ProjectDir)" AssemblyName="@(IntermediateAssembly)" ReferenceFiles="@(ReferencePath)" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
