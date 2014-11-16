@@ -13,9 +13,8 @@ namespace Leafing.Core.Ioc
 
         static SimpleContainer()
         {
-            if (!CoreSettings.IocEnableAutoLoad) { return; }
-            var assemblies = GetAllAssemblies();
-            InitCustomAssemblies(assemblies);
+            if (!IocConfig.EnableAutoLoad) { return; }
+            var assemblies = (IocConfig.Assemblies.Count == 0) ? GetAllAssemblies() : IocConfig.Assemblies;
             SearchInAssemblies(assemblies);
         }
 
@@ -28,7 +27,7 @@ namespace Leafing.Core.Ioc
             }
             var list = new List<Assembly>();
             SearchAssemblies(list, path);
-            var pathBin = GetIocSearchPath(path, CoreSettings.IocSearchPath);
+            var pathBin = GetIocSearchPath(path, IocConfig.SearchPath);
             if(!pathBin.IsNullOrEmpty())
             {
                 SearchAssemblies(list, pathBin);
@@ -72,42 +71,6 @@ namespace Leafing.Core.Ioc
             }
             catch (DirectoryNotFoundException)
             {
-            }
-        }
-
-        private static void InitCustomAssemblies(List<Assembly> assemblies)
-        {
-            var list = new List<Assembly>();
-            for (int i = 1; ; i++)
-            {
-                var s = string.Format("IocAssembly.{0}", i);
-                var asmName = ConfigHelper.LeafingSettings.GetValue(s);
-                if(string.IsNullOrEmpty(asmName) || asmName.Length <= 1)
-                {
-                    break;
-                }
-                var realAsmName = asmName.Substring(1);
-                switch(asmName[0])
-                {
-                    case '+':
-                        var asm = Assembly.Load(realAsmName);
-                        if(!assemblies.Contains(asm))
-                        {
-                            list.Add(asm);
-                        }
-                        break;
-                    case '-':
-                        foreach (var assembly in assemblies)
-                        {
-                            if(assembly.FullName == realAsmName)
-                            {
-                                assemblies.Remove(assembly);
-                            }
-                        }
-                        break;
-                    default:
-                        throw new IocException("IocAssembly value must start with [+] or [-]");
-                }
             }
         }
 

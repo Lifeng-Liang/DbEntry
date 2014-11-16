@@ -136,14 +136,14 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual("tom", o2.Name);
         }
 
-        [Test, ExpectedException(typeof(DataException), ExpectedMessage = "The type of member [Name] is [System.Int32] but sql value of it is [System.String]\n")]
+        [Test, ExpectedException(typeof(DataException), ExpectedMessage = "The type of member [Name] is [System.Int32] but the type in Database of it is [System.String]\n")]
         public void TestErrorArticle()
         {
             var ctx = ModelContext.GetInstance(typeof(ErrorArticle));
             ctx.Operator.ExecuteList<ErrorArticle>("SELECT * FROM [Article]");
         }
 
-        [Test, ExpectedException(typeof(DataException), ExpectedMessage = "The type of member [Name] is [System.Int32] but sql value of it is [System.String]\n")]
+        [Test, ExpectedException(typeof(DataException), ExpectedMessage = "The type of member [Name] is [System.Int32] but the type in Database of it is [System.String]\n")]
         public void TestErrorArticle2()
         {
             ErrorArticle.Find(Condition.Empty);

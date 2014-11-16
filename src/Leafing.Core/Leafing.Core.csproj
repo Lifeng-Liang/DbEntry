@@ -54,8 +54,10 @@
     <Compile Include="CommonExtends.cs" />
     <Compile Include="Ioc\InjectedClassCreator.cs" />
     <Compile Include="Ioc\IocException.cs" />
+    <Compile Include="Ioc\IocConfig.cs" />
     <Compile Include="Ioc\SimpleClassCreator.cs" />
     <Compile Include="Logging\CacheTextFileRecorder.cs" />
+    <Compile Include="Setting\CodeConfigReader.cs" />
     <Compile Include="TimingTask\QueueTaskController.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="CountViewer.cs" />

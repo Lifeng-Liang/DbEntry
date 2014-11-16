@@ -5,9 +5,11 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Reflection;
 using System.Xml;
+using Leafing.Core.Ioc;
 
 namespace Leafing.Core.Setting
 {
+    [Implementation("Resource")]
     public class ResourceConfigReader : ConfigReader
     {
         class ConfigNames

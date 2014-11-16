@@ -88,7 +88,7 @@ namespace Leafing.Data.Model.Creator
             }
             if (member.MemberType != value.GetType())
             {
-                text.AppendFormat("The type of member [{0}] is [{1}] but sql value of it is [{2}]\n",
+                text.AppendFormat("The type of member [{0}] is [{1}] but the type in Database of it is [{2}]\n",
                                   member.Name, member.MemberType, value.GetType());
             }
         }
