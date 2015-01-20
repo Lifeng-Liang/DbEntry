@@ -128,7 +128,7 @@ namespace Leafing.Processor
         {
             if(pi.PropertyDefinition.SetMethod.IsPublic)
             {
-                Throw(pi, "The setter of property [{0}] should be private. Example:\npublic string Name { get; private set; }");
+                Throw(pi, "The setter of property [{0}] should be private. Example:\npublic string Name {{ get; private set; }}");
             }
             if(!pi.PropertyDefinition.GetMethod.IsPublic)
             {
