@@ -105,7 +105,7 @@ namespace Leafing.Data.Common
             string name = ctx.Info.From.MainTableName;
             if (name != null)
             {
-                if (!Provider.Driver.TableNames.Contains(name.ToLower()))
+                if (!ctx.Provider.Driver.TableNames.Contains(name.ToLower()))
                 {
                     CreateTable(ctx);
                 }

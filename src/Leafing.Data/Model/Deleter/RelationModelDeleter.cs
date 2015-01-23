@@ -42,6 +42,7 @@ namespace Leafing.Data.Model.Deleter
                 {
                     var t = member.MemberInfo.MemberType.GetGenericArguments()[0];
                     var ctx0 = ModelContext.GetInstance(t);
+                    ctx0.Operator.Fixer.TryFix();
                     var sb = new UpdateStatementBuilder(ctx0.Info.From);
                     var key = ctx0.Info.GetBelongsTo(Info.HandleType).Name;
                     sb.Values.Add(new KeyOpValue(key, null, KvOpertation.None));

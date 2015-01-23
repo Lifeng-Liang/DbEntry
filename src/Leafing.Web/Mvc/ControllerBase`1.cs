@@ -133,7 +133,7 @@ namespace Leafing.Web.Mvc
                 }
                 else
                 {
-                    DbEntry.Save(o);
+                    DbEntry.Delete(o);
                 }
                 return UrlTo().Action("list");
             }
