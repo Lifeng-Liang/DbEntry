@@ -300,24 +300,12 @@ namespace Leafing.Data
         public static void RebuildTables(Assembly assembly)
         {
             var list = GetAllModels(assembly);
-            var ctlist = new List<string>();
             foreach (var type in list)
             {
                 var ctx = ModelContext.GetInstance(type);
                 if (!string.IsNullOrEmpty(ctx.Info.From.MainTableName))
                 {
-                    ctx.Operator.DropTable(true);
-                    ctx.Operator.CreateTableAndRelations(
-                        ctx.Info, ctx.Operator, mt =>
-                        {
-                            if (ctlist.Contains(mt.Name))
-                            {
-                                return false;
-                            }
-                            ctx.Operator.DropTable(mt.Name, true);
-                            ctlist.Add(mt.Name);
-                            return true;
-                        });
+                    ctx.Operator.CreateTableAndRelations(ctx, true);
                 }
             }
         }

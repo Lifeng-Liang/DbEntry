@@ -118,18 +118,7 @@ namespace Leafing.Data.Common
 
         protected virtual void CreateTable(ModelContext ctx)
         {
-            ctx.Operator.CreateTableAndRelations(
-                ctx.Info, ctx.Operator,
-                mt =>
-                    {
-                        var n = mt.Name.ToLower();
-                        var notExists = !Provider.Driver.TableNames.Contains(n);
-                        if(notExists)
-                        {
-                            Provider.Driver.TableNames.Add(n);
-                        }
-                        return notExists;
-                    });
+            ctx.Operator.CreateTableAndRelations(ctx);
         }
 
         protected virtual void FixColumns(ModelContext ctx)
@@ -141,22 +130,6 @@ namespace Leafing.Data.Common
     {
         public AutoSchemeFixerAddColumns(DataProvider provider, ObjectInfo info) : base(provider, info)
         {
-        }
-
-        protected override void InnerTryFix(ModelContext ctx)
-        {
-            string name = ctx.Info.From.MainTableName;
-            if(name != null)
-            {
-                if (!Provider.Driver.TableNames.Contains(name.ToLower()))
-                {
-                    CreateTable(ctx);
-                }
-                else
-                {
-                    FixColumns(ctx);
-                }
-            }
         }
 
         protected override void FixColumns(ModelContext ctx)

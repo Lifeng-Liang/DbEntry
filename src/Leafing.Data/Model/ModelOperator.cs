@@ -62,21 +62,51 @@ namespace Leafing.Data.Model
             _saver.Update(obj);
         }
 
-        internal void CreateTableAndRelations(ObjectInfo oi, ModelOperator op, Func<CrossTable, bool> callback)
+        internal void CreateTableAndRelations(ModelContext ctx, bool dropFirst = false)
         {
+            var oi = ctx.Info;
+            var op = ctx.Operator;
+            var tables = ctx.Provider.Driver.TableNames;
             IfUsingTransaction(Provider.Dialect.NeedCommitCreateFirst, delegate
             {
-                op.Create();
+                var mtn = oi.From.MainModelName.ToLower();
+                if (dropFirst)
+                {
+                    op.DropTable(true);
+                    tables.Remove(mtn);
+                }
+                if (!tables.Contains(mtn))
+                {
+                    op.Create();
+                    tables.Add(mtn);
+                }
                 if (!string.IsNullOrEmpty(oi.DeleteToTableName))
                 {
-                    op.CreateDeleteToTable();
+                    var dttn = oi.DeleteToTableName.ToLower();
+                    if (dropFirst)
+                    {
+                        op.DropDeleteToTable();
+                        tables.Remove(dttn);
+                    }
+                    if (!tables.Contains(dttn))
+                    {
+                        op.CreateDeleteToTable();
+                        tables.Add(dttn);
+                    }
                 }
-                foreach (CrossTable mt in oi.CrossTables.Values)
+                foreach (CrossTable ct in oi.CrossTables.Values)
                 {
-                    if (callback(mt))
+                    var ctn = ct.Name.ToLower();
+                    if (dropFirst)
+                    {
+                        op.DropTable(ct.Name, true);
+                        tables.Remove(ctn);
+                    }
+                    if (!tables.Contains(ctn))
                     {
                         Debug.Assert(oi.HandleType.Assembly.FullName != null);
-                        op.CreateCrossTable(mt.HandleType);
+                        op.CreateCrossTable(ct.HandleType);
+                        tables.Add(ctn);
                     }
                 }
             });
@@ -350,10 +380,6 @@ namespace Leafing.Data.Model
             string s = "DROP TABLE " + Provider.Dialect.QuoteForTableName(tableName);
             var sql = new SqlStatement(s);
             Util.IfCatchException(catchException, () => Provider.ExecuteNonQuery(sql));
-            if (Provider.Driver.AutoScheme == AutoScheme.CreateTable && Provider.Driver.TableNames != null)
-            {
-                Provider.Driver.TableNames.Remove(tableName.ToLower());
-            }
         }
 
         public void DropAndCreate()
@@ -372,6 +398,11 @@ namespace Leafing.Data.Model
                 Util.CatchAll(() => Provider.ExecuteNonQuery(descSql));
             }
             Fixer.SetAsProcessed();
+        }
+
+        public void DropDeleteToTable()
+        {
+            DropTable(Info.DeleteToTableName, true);
         }
 
         public void CreateDeleteToTable()
