@@ -15,7 +15,7 @@ namespace Leafing.Core.Ioc
         {
             if (!IocConfig.EnableAutoLoad) { return; }
             var assemblies = (IocConfig.Assemblies.Count == 0) ? GetAllAssemblies() : IocConfig.Assemblies;
-            SearchInAssemblies(assemblies);
+            Util.CatchAll(() => SearchInAssemblies(assemblies));
         }
 
         private static List<Assembly> GetAllAssemblies()
