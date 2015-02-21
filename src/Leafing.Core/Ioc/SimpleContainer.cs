@@ -15,7 +15,7 @@ namespace Leafing.Core.Ioc
         {
             if (!IocConfig.EnableAutoLoad) { return; }
             var assemblies = (IocConfig.Assemblies.Count == 0) ? GetAllAssemblies() : IocConfig.Assemblies;
-            Util.CatchAll(() => SearchInAssemblies(assemblies));
+            SearchInAssemblies(assemblies);
         }
 
         private static List<Assembly> GetAllAssemblies()
@@ -111,7 +111,7 @@ namespace Leafing.Core.Ioc
                 }
                 catch (ReflectionTypeLoadException ex)
                 {
-                    throw new SystemException("Loading assembly error: " + assembly.FullName, ex);
+                    System.Diagnostics.Debug.WriteLine("Loading assembly error: " + assembly.FullName + ex);
                 }
             }
         }
