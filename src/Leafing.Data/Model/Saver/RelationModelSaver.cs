@@ -12,6 +12,18 @@ namespace Leafing.Data.Model.Saver
 {
     class RelationModelSaver : DbModelSaver
     {
+        public class SavedTypeKey
+        {
+            public Type Type;
+            public object Key;
+
+            public SavedTypeKey(Type type, object key)
+            {
+                this.Type = type;
+                this.Key = key;
+            }
+        }
+
         public RelationModelSaver(ObjectInfo info, QueryComposer composer, DataProvider provider, IDbObjectHandler handler)
             : base(info, composer, provider, handler)
         {
@@ -43,7 +55,11 @@ namespace Leafing.Data.Model.Saver
             var key = base.Insert(obj);
             foreach (var t2 in Info.CrossTables.Keys)
             {
-                SetManyToManyRelation(t2, key, Scope<object>.Current);
+                var stk = Scope<SavedTypeKey>.Current;
+                if (stk != null && t2 == stk.Type)
+                {
+                    SetManyToManyRelation(t2, key, stk.Key);
+                }
             }
             ProcessChildren(obj);
             return key;
@@ -129,7 +145,7 @@ namespace Leafing.Data.Model.Saver
 
         private void ProcessChildren(IDbObject obj)
         {
-            using (new Scope<object>(Handler.GetKeyValue(obj)))
+            using (new Scope<SavedTypeKey>(new SavedTypeKey(obj.GetType(), Handler.GetKeyValue(obj))))
             {
                 foreach (MemberHandler member in Info.RelationMembers)
                 {

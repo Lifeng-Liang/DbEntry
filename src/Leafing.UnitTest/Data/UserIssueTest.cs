@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Leafing.Data;
 using Leafing.Data.Definition;
@@ -7,6 +8,24 @@ using NUnit.Framework;
 
 namespace Leafing.UnitTest.Data
 {
+    [DbContext("SQLite")]
+    public class TreeInfo : DbObjectModelAsTree<TreeInfo>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany]
+        public IList<OtherInfo> Other { get; private set; }
+    }
+
+    [DbContext("SQLite")]
+    public class OtherInfo : DbObjectModel<OtherInfo>
+    {
+        public string Name { get; set; }
+
+        [HasAndBelongsToMany]
+        public IList<TreeInfo> Info { get; private set; }
+    }
+
     public class UserInfo : DbObjectModel<UserInfo>
     {
         public int ErrorCount { get; set; }
@@ -175,6 +194,28 @@ namespace Leafing.UnitTest.Data
             u2.Save();
             var u3 = UserInfo.FindById(ui.Id);
             Assert.AreEqual(0, u3.ErrorCount);
+        }
+
+        [Test]
+        public void TestHasAndBelongsToManyWithAsTree()
+        {
+            StaticRecorder.ClearMessages();
+            var f1 = new TreeInfo { Name = "father" };
+            var s1 = new TreeInfo{Name = "son"};
+            f1.Children.Add(s1);
+            f1.Save();
+
+            var n = StaticRecorder.Messages.Count<string>(p => p.StartsWith("INSERT INTO [R_OtherInfo_TreeInfo]"));
+            Assert.AreEqual(0, n);
+
+            StaticRecorder.ClearMessages();
+            var f2 = new TreeInfo { Name = "f2" };
+            var s2 = new TreeInfo { Name = "s2" };
+            s2.Parent = f2;
+            s2.Save();
+
+            n = StaticRecorder.Messages.Count<string>(p => p.StartsWith("INSERT INTO [R_OtherInfo_TreeInfo]"));
+            Assert.AreEqual(0, n);
         }
     }
 }
