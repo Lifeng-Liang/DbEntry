@@ -96,18 +96,18 @@ Other resources:
 *   在我的博客园的Blog上，写了几篇角度不同的介绍DbEntry的文章，也可以作为一个补充：http://www.cnblogs.com/lephone/
 *   网友Elephant正在翻译DbEntry.Net的文档，在翻译中，他也增加了一些内容，这里是链接：http://www.blogjava.net/enzosoft/category/38039.html
 *   这是网友吴晓阳写的一些项目
-**      使用firebird2.1与dbEntry.net做的设备报修小程序
-**      从数据库生成领域类的CodeSmith模板
-**      http://baoming.codeplex.com/
-**      http://ct4dbentry.codeplex.com/ 
+	*	使用firebird2.1与dbEntry.net做的设备报修小程序
+	*	从数据库生成领域类的CodeSmith模板
+	*	http://baoming.codeplex.com/
+	*	http://ct4dbentry.codeplex.com/ 
 *  这是网友 吴鑫宇（wuxinyu） 用 WCF+DbEntry 写的例子
-**      Wcf+dbentry架构
+	*	Wcf+dbentry架构
 
 Donate 捐款:
 ----------
 
 *   Donate ways 捐款方式:
-        支付宝: lifeng.liang(at)gmail.com
-        Paypal: lifeng.liang(at)gmail.com
-        Bitcoin: 16ypFeJGaqyQywu9ra1AQw6UaNWP4RoPBf
+	*	支付宝: lifeng.liang(at)gmail.com
+	*	Paypal: lifeng.liang(at)gmail.com
+	*	Bitcoin: 16ypFeJGaqyQywu9ra1AQw6UaNWP4RoPBf
 
