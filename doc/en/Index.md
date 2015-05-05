@@ -69,8 +69,8 @@
 *Appendix*
 ----------
 
-1. [About Versions]
-1. [About GAC]
-1. [About Namespaces]
-1. [Tools]
-1. [Migration]
+1. [About Versions](Appendix/AboutVersions.md)
+1. [About GAC](Appendix/AboutGAC.md)
+1. [About Namespaces](Appendix/AboutNamespaces.md)
+1. [Tools](Appendix/Tools.md)
+1. [Migration](Appendix/Migration.md)
