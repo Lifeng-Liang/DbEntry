@@ -111,6 +111,7 @@ Other resources:
 Donate 捐款:
 ----------
 
+*   [Details 细节](Donate.md)
 *   Donate ways 捐款方式:
 	*	支付宝: lifeng.liang(at)gmail.com
 	*	Paypal: lifeng.liang(at)gmail.com
