@@ -10,14 +10,14 @@ In [First Application](FirstApplication.md), it shows how to insert a new object
 
 Now, let's continue this work to change this code to complete basic CRUD for database.
 
-1. First, make sure the *c:\Test\test.mdb* has *User* table, and the table data is following:
+1\. First, make sure the *c:\Test\test.mdb* has *User* table, and the table data is following:
 
 | Id    | Name  |
 | ----- | ----- |
 | 1     | tom   |
 | 2     | tom   |
 
-2. Open *Program.cs* and change it as following:
+2\. Open *Program.cs* and change it as following:
 
 ````c#
 using System;
@@ -34,13 +34,13 @@ class Program
 }
 ````
 
-3. Run this application, it will show:
+3\. Run this application, it will show:
 
 ````
 { Id = 1, Name = tom }
 ````
 
-4. Edit the *Program.cs* as following:
+4\. Edit the *Program.cs* as following:
 
 ````c#
 using System;
@@ -61,7 +61,7 @@ class Program
 }
 ````
 
-5. Run this application, it will show:
+5\. Run this application, it will show:
 
 ````
 Read Object:
@@ -70,7 +70,7 @@ Updated Object:
 { Id = 1, Name = jerry }
 ````
 
-6. Edit the *Program.cs* as following:
+6\. Edit the *Program.cs* as following:
 
 ````c#
 using System;
@@ -93,7 +93,7 @@ class Program
 }
 ````
 
-7. Run this application, it will show:
+7\. Run this application, it will show:
 
 ````
 Read Object:
@@ -101,12 +101,12 @@ Read Object:
 After delete, the object doesn't find.
 ````
 
-8. Open the *c:\Test\test.mdb* file, confirm the *User* table is following:
+8\. Open the *c:\Test\test.mdb* file, confirm the *User* table is following:
 
 | Id    | Name  |
 | ----- | ----- |
 | 1     | jerry |
 
-9. Ok, we just finished the basic CRUD, have fun!
+9\. Ok, we just finished the basic CRUD, have fun!
 
 

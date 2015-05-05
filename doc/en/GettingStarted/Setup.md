@@ -15,6 +15,6 @@ To install DbEntry.net to your computer:
 Addition
 ----------
 
-# Vista/Win7/Win8 user may have issue that can not find the template *"DbEntryClassLibrary 4.2"*, please open dialog in menu *"Tools -> Extention Manager"* and enable *"DbEntryClassLibrary 4.2"* first.
-# Old user of DbEntry.Net need to uninstall early version. And uninstall vs template manually in vs IDE.
-# If there is no *"DbEntryClassLibrary 4.2"* in *"Tools -> Extention Manager"*, try to install it manually by run *"DbEntryClassLibrary.vsix"* in DbEntry installation path.
+* Vista/Win7/Win8 user may have issue that can not find the template *"DbEntryClassLibrary 4.2"*, please open dialog in menu *"Tools -> Extention Manager"* and enable *"DbEntryClassLibrary 4.2"* first.
+* Old user of DbEntry.Net need to uninstall early version. And uninstall vs template manually in vs IDE.
+* If there is no *"DbEntryClassLibrary 4.2"* in *"Tools -> Extention Manager"*, try to install it manually by run *"DbEntryClassLibrary.vsix"* in DbEntry installation path.

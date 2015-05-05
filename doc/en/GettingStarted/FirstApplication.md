@@ -4,15 +4,15 @@ First Application
 The following steps shows how to create a basic database application using DbEntry.Net:
 ----------
 
-1. Create a console application in Visual Studio 2010/2012/2013.
+1\. Create a console application in Visual Studio 2010/2012/2013.
 
-2. Create a *DbEntryClassLibrary 4.2* project and make the console application references it.
+2\. Create a *DbEntryClassLibrary 4.2* project and make the console application references it.
 
-3. Create a new Access mdb file named *test.mdb*, and store it to *c:\Test* (Make sure it exists). If you are using Access 2007, please save it as Access 2003 format.
+3\. Create a new Access mdb file named *test.mdb*, and store it to *c:\Test* (Make sure it exists). If you are using Access 2007, please save it as Access 2003 format.
 
-4. Add the references of *Leafing.Data.dll* and *Leafing.Core.dll* to this application.
+4\. Add the references of *Leafing.Data.dll* and *Leafing.Core.dll* to this application.
 
-5. Add an *App.config* to this application. Open it in Visual Studio, and change it as following:
+5\. Add an *App.config* to this application. Open it in Visual Studio, and change it as following:
 
 ````xml
 <?xml version="1.0" encoding="utf-8" ?>
@@ -32,7 +32,7 @@ The following steps shows how to create a basic database application using DbEnt
 </configuration>
 ````
 
-6. Notice that there is a class file named *User.cs* in the folder Models in the class library. And the code will be:
+6\. Notice that there is a class file named *User.cs* in the folder Models in the class library. And the code will be:
 
 ````c#
 using System;
@@ -50,7 +50,7 @@ namespace DbEntryClassLibrary1.Models
 }
 ````
 
-7. Open *Program.cs* and change it as following:
+7\. Open *Program.cs* and change it as following:
 
 ````c#
 using System;
@@ -70,7 +70,7 @@ class Program
 }
 ````
 
-8. Run this application, it will shows:
+8\. Run this application, it will shows:
 
 ````
 New object:
@@ -79,13 +79,13 @@ Saved object:
 { Id = 1, Name = tom }
 ````
 
-9. Check *c:\Test\test.mdb* file, confirm the *User* table already created and it has one row data, check the data of this row, confirm the *Name* column is *tom*:
+9\. Check *c:\Test\test.mdb* file, confirm the *User* table already created and it has one row data, check the data of this row, confirm the *Name* column is *tom*:
 
 | Id    | Name  |
 | ----- | ----- |
 | 1     | tom   |
 
-10. Re-run this application, it will shows:
+10\. Re-run this application, it will shows:
 
 ````
 New object:
@@ -94,7 +94,7 @@ Saved object:
 { Id = 2, Name = tom }
 ````
 
-11. Check the *c:\test.mdb* file, confirm the data of *User* table is following:
+11\. Check the *c:\test.mdb* file, confirm the data of *User* table is following:
 
 | Id    | Name  |
 | ----- | ----- |
