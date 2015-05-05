@@ -60,9 +60,10 @@ static void Main()
 }
 ```
 
-Tutorials
+Documentation
 ----------
-[Tutorials](doc/en/Index.md)
+
+### [Documentation Index](doc/en/Index.md)
 
 Links
 ----------
