@@ -6,12 +6,13 @@ DbEntry provides a simple log system.
 The log recorder could be defined in the configuration file.
 
 There are some pre-defined recorders.
-# ``DebugLogRecorder`` will output the information to debug window in Visual Studio.
-# ``ConsoleLogRecorder`` will output the information to console.
-# ``TextFileLogRecorder`` will output the information to a text file.
-# ``CacheTextFileLogRecorder`` will output the information to a text file by cache it in RAM for 10 secends at first.
-# ``DtsFileLogRecorder`` will output the information to a text file with dts format. So we can import it to database later.
-# ``DatabaseLogRecorder`` will output the information to a database table named ``Log``, it could be created by auto create table feature.
+* ``DebugLogRecorder`` will output the information to debug window in Visual Studio.
+* ``ConsoleLogRecorder`` will output the information to console.
+* ``TextFileLogRecorder`` will output the information to a text file.
+* ``CacheTextFileLogRecorder`` will output the information to a text file by cache it in RAM for 10 secends at first.
+* ``DtsFileLogRecorder`` will output the information to a text file with dts format. So we can import it to database later.
+* ``DatabaseLogRecorder`` will output the information to a database table named ``Log``, it could be created by auto create table feature.
+
 In ``Logger``, there are some pre-defined loggers in it. Such as SQL, Default and System. 
 
 The ORM part is using SQL logger to log composed SQLs. So we can define a log recorder to log all ORM composed sql to analyze.
