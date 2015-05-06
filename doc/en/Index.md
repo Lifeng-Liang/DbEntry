@@ -40,21 +40,21 @@
 *ASP.NET*
 ----------
 
-1. [Working with DataSource]
-1. [DbEntryDataSource]
-1. [Using DbEntryDataSource for New and Edit Page]
-1. [Working with Membership]
-1. [Http Parameter]
+1. [Working with DataSource](ASP.NET/WorkingWithDataSource.md)
+1. [DbEntryDataSource](ASP.NET/DbEntryDataSource.md)
+1. [Using DbEntryDataSource for New and Edit Page](ASP.NET/UsingDbEntryDataSourceForNewAndEditPage.md)
+1. [Working with Membership](ASP.NET/WorkingWithMembership.md)
+1. [Http Parameter](ASP.NET/HttpParameter.md)
 
 *Rails Style MVC*
 ----------
 
-1. [Getting Started|Rails Getting Started]
-1. [Scaffolding]
-1. [Controller]
-1. [Viewer]
-1. [Configuration|Rails Configuration]
-1. [Deployment|Rails Style MVC Deployment]
+1. [Getting Started](RailsStyleMVC/GettingStarted.md)
+1. [Scaffolding](RailsStyleMVC/Scaffolding.md)
+1. [Controller](RailsStyleMVC/Controller.md)
+1. [Viewer](RailsStyleMVC/Viewer.md)
+1. [Configuration](RailsStyleMVC/Configuration.md)
+1. [Deployment](RailsStyleMVC/Deployment.md)
 
 *Utils*
 ----------
