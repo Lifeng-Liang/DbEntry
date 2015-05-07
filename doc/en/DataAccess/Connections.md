@@ -1,7 +1,7 @@
 Connections
 ==========
 
-In DbEntry, the connection will be created and destroyed in every operation of database. There is no connection pool in it, because ADO.NET supported connection pool by itself. Even we destroy the connection in our code, it also in the ADO.NET connection pool. So the best practice to use connection in ADO.NET is when we need it, create it, when we don¡¯t need it, close and destroy it immediately. 
+In DbEntry, the connection will be created and destroyed in every operation of database. There is no connection pool in it, because ADO.NET supported connection pool by itself. Even we destroy the connection in our code, it also in the ADO.NET connection pool. So the best practice to use connection in ADO.NET is when we need it, create it, when we don't need it, close and destroy it immediately. 
 
 In DbEntry, use connection is designed as an anonymous method just like use transaction:
 

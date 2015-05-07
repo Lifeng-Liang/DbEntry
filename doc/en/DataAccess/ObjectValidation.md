@@ -9,7 +9,7 @@ Another example, if a string field mark by ``Length`` with 8, and the real lengt
 
 The validate function check all members of the object, if all passed, it will return true, if any check failed, it will return false.
 
-The validate function belongs to ``ValidataHandler`` and named ``ValidateObject``, it returns bool to tell us the basic result. The ``ValidateHandler`` has the property ``ErrorMessages``. It¡¯s a list of all failed message with fields name. We can show it to the end user if we want. The ``ValidateHandler`` also has a field named ``IsValid``, it can gives use the bool result if we miss the return value of ``ValidateObject``.
+The validate function belongs to ``ValidataHandler`` and named ``ValidateObject``, it returns bool to tell us the basic result. The ``ValidateHandler`` has the property ``ErrorMessages``. It's a list of all failed message with fields name. We can show it to the end user if we want. The ``ValidateHandler`` also has a field named ``IsValid``, it can gives use the bool result if we miss the return value of ``ValidateObject``.
 
 The arguments of constructor will let us define some acts of the validate function. ``EmptyAsNull`` means the empty string will regarded as null, if the value is get from user input, it will not be null, so this argument makes us can check this situation. ``NotNullFieldMinSize`` makes us can check the min length of the not null string field, normally it will set to 1. ``IncludeClassName`` means the error message of field name will include class name. ``InvalidFieldText`` makes us can set the invalid text by ourselves.
 

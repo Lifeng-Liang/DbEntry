@@ -12,9 +12,9 @@ DbEntry.UsingTransaction(delegate
 });
 ````
 
-All above code include two ``Save`` calls and one ``ExecuteNonQuery`` call are in the same transaction. We don¡¯t need to call ``Commit`` by ourselves, it will commit the changes by the end of the scope if all the code executes success. It will call the rollback function by the end of the scope if any exception occurs. The connection will close by the end of the scope too.
+All above code include two ``Save`` calls and one ``ExecuteNonQuery`` call are in the same transaction. We don't need to call ``Commit`` by ourselves, it will commit the changes by the end of the scope if all the code executes success. It will call the rollback function by the end of the scope if any exception occurs. The connection will close by the end of the scope too.
 
-So, we don¡¯t need worry about commit, rollback or close connection, just put the code into this scope, they all will in the transaction.
+So, we don't need worry about commit, rollback or close connection, just put the code into this scope, they all will in the transaction.
 
 We can specify isolation level as well:
 
@@ -41,7 +41,7 @@ DbEntry.UsingTransaction(delegate
 });
 ````
 
-The above two transactions doesn¡¯t disturb each other. But it¡¯s not recommended to use.
+The above two transactions doesn't disturb each other. But it's not recommended to use.
 
 We can specify the isolation level in ``NewTransaction`` too.
 
@@ -64,12 +64,12 @@ DbEntry.UsingTransaction(delegate
 });
 ````
 
-Of course, it isn¡¯t the real cross-database transaction, We can use ``TransactionScope`` to get the real cross-database transaction by using DbEntry as well.
+Of course, it isn't the real cross-database transaction, We can use ``TransactionScope`` to get the real cross-database transaction by using DbEntry as well.
 
 Cross-database transaction
 ----------
 
-``TransactionScope`` gives us real cross-database transaction. Inside it, the MSDTC is use for manager transactions between databases. MSDTC isn¡¯t 100% ensure way to implements cross-database transaction, but it gives us a better solution than nested transaction like above code shows.
+``TransactionScope`` gives us real cross-database transaction. Inside it, the MSDTC is use for manager transactions between databases. MSDTC isn't 100% ensure way to implements cross-database transaction, but it gives us a better solution than nested transaction like above code shows.
 
 The following code shows how to use it in DbEntry:
 
@@ -106,7 +106,7 @@ class Program
 }
 ````
 
-In above code, the exception will caused at ``new trTest().Save`` line if we don¡¯t have MSDTC installed.
+In above code, the exception will caused at ``new trTest().Save`` line if we don't have MSDTC installed.
 
 Check the database, the ``t1, t2`` are not saved to ``test`` table yet. So we can say it works in DbEntry.
 

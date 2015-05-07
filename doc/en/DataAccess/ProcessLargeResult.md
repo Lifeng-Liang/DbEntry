@@ -5,7 +5,7 @@ DbEntry Query Syntax allows multiple methods to get the result.
 
 By default, DbEntry add the items to a list. This is use a class named ``ListInserter`` to implements. It implements the interface ``IProcessor``. In DbEntry, all classes which implement this interface could be used to get the query result.
 
-If we have a large result and it¡¯s too big to add them all into the memory. We can just use the following method to avoid add the items to a list.
+If we have a large result and it's too big to add them all into the memory. We can just use the following method to avoid add the items to a list.
 
 ````c#
 public class ItemOutputer : IProcessor

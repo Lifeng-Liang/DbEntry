@@ -1,4 +1,4 @@
-Lazy load column
+Lazy Load Column
 ==========
 
 In DbEntry, we can define a column as lazy load just by define a attribute on it:

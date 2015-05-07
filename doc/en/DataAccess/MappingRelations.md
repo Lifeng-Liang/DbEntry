@@ -1,4 +1,4 @@
-Mapping relations
+Mapping Relations
 ==========
 
 >It only shows the mapping for SqlServer, other database please find it by yourself.

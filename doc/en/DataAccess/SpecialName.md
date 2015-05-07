@@ -18,7 +18,7 @@ public class DateTable : DbObjectModel<DateTable>
 
 The name of them must be CreatedOn or UpdatedOn and the type must be DateTime. And UpdatedOn must be nullable.
 
-The name(s) in our code can¡¯t change. But the mapped name could define as another name:
+The name(s) in our code can't change. But the mapped name could define as another name:
 
 ````c#
 public class DeletedUser : DbObjectModel<DeletedUser>
@@ -40,7 +40,7 @@ public class TestTable : DbObjectModel<TestTable>
 
 When we updata the record, the LockVersion will be checked and increased. If update statement can't find any matched record, an exception will be raised.
 
-The name of LockVersion in our code can¡¯t change. But the mapped name could define as another name:
+The name of LockVersion in our code can't change. But the mapped name could define as another name:
 
 ````c#
 public class TestTable : DbObjectModel<TestTable>

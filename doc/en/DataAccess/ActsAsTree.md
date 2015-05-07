@@ -7,28 +7,28 @@ It is a table has column to point itself. And the class has children and parent 
 
 If we have a table like following:
 
-| Id | Name          | BelongsTo_Id |
-| -- | ------------- | ------------ |
-| 1  | Root          | 0            |
-| 2  | Windows       | 1            |
-| 3  | Program Files | 1            |
-| 4  | Tools         | 1            |
-| 5  | Config.sys    | 1            |
-| 6  | Command.com   | 1            |
-| 7  | regedit.exe   | 2            |
-| 8  | notepad.exe   | 2            |
-| 9  | System32      | 2            |
-| 10 | regsvr32.exe  | 9            |
-| 11 | Office        | 3            |
-| 12 | Word.exe      | 11           |
-| 13 | Outlook.exe   | 11           |
-| 14 | Excel.exe     | 11           |
-| 15 | LocPlus       | 4            |
-| 16 | cConv         | 4            |
-| 17 | LocPlus.exe   | 15           |
-| 18 | LocPlus.ini   | 15           |
-| 19 | cConv.exe     | 16           |
-| 20 | cConv.ini     | 16           |
+| Id  | Name          | BelongsTo_Id |
+| --- | ------------- | ------------ |
+| 1   | Root          | 0            |
+| 2   | Windows       | 1            |
+| 3   | Program Files | 1            |
+| 4   | Tools         | 1            |
+| 5   | Config.sys    | 1            |
+| 6   | Command.com   | 1            |
+| 7   | regedit.exe   | 2            |
+| 8   | notepad.exe   | 2            |
+| 9   | System32      | 2            |
+| 10  | regsvr32.exe  | 9            |
+| 11  | Office        | 3            |
+| 12  | Word.exe      | 11           |
+| 13  | Outlook.exe   | 11           |
+| 14  | Excel.exe     | 11           |
+| 15  | LocPlus       | 4            |
+| 16  | cConv         | 4            |
+| 17  | LocPlus.exe   | 15           |
+| 18  | LocPlus.ini   | 15           |
+| 19  | cConv.exe     | 16           |
+| 20  | cConv.ini     | 16           |
 
 We can define the class like following :
 

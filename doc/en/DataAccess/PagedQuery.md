@@ -35,7 +35,7 @@ Static paged selector
 
 We already have ``PagedSelector``, why we need ``StaticPagedSelector``?
 
-Normally, we use the ``Id DESC`` as order clause to show the items, and paged them too. So we will get the dynamic results when we get the page by page number if the new items added. It¡¯s ok for search function, but if we use it for news list or something like that, the dynamic result will perturb the search engine, and normally, the most requests are start from search engine.
+Normally, we use the ``Id DESC`` as order clause to show the items, and paged them too. So we will get the dynamic results when we get the page by page number if the new items added. It's ok for search function, but if we use it for news list or something like that, the dynamic result will perturb the search engine, and normally, the most requests are start from search engine.
 
 To solve this issue, we can use ``Id`` as order clause to get the page, and it will works well with the database which supported paged select like ``limit`` clause, but if we change it to SqlServer 2000, it will use ``Top`` clause, and the most recent page will be the most slowly query of it.
 

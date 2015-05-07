@@ -37,4 +37,4 @@ o.Save();
 o.Delete();
 ````
 
->*Attention:* the cross-table of many to many relations doesn¡¯t support soft delete. This table is automatically use and always use the real delete.
+>*Attention:* the cross-table of many to many relations doesn't support soft delete. This table is automatically use and always use the real delete.

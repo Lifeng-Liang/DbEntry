@@ -29,7 +29,7 @@ Set the CacheEnabled as true and set a SQL recorder in App.config:
 </Leafing.Settings>
 ````
 
-Now, let¡¯s test it:
+Now, let's test it:
 
 ````c#
 static void Main(string[] args)
@@ -52,7 +52,7 @@ static void Main(string[] args)
 }
 ````
 
-As the result shows, the 2nd FindById function will read object from cache, so we can¡¯t find the SQL of it.
+As the result shows, the 2nd FindById function will read object from cache, so we can't find the SQL of it.
 
 How it works
 ----------
@@ -86,7 +86,7 @@ There are two more items to define the cache provider and key generator:
 Cache Provider
 ----------
 
-DbEntry.Net only provides a static hash table based cache provider, it¡¯s the default of configuration.
+DbEntry.Net only provides a static hash table based cache provider, it's the default of configuration.
 
 We can implement our cache provider by inherit from CacheProvider:
 

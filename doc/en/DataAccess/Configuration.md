@@ -12,7 +12,7 @@ DbEntry mainly use ``App.config/Web.config`` to set the configure information of
 </configSections>
 ````
 
-It is fixed, so we don¡¯t need to change it at all, just copy it to the ``App.config/Web.config``.
+It is fixed, so we don't need to change it at all, just copy it to the ``App.config/Web.config``.
 
 And then, we need define the section ``Leafing.Settings``, it is the same format as ``appSettings``:
 

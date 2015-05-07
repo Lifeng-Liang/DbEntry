@@ -1,4 +1,4 @@
-Linq Support
+Query Syntax
 ==========
 
 Linq
@@ -106,11 +106,11 @@ DbEntry provides query methods like linq but do not need linq support. It allow 
 User.Find(CK.K["Age"] > 15);
 ````
 
-``CK.K`` is the converter to make the operator overloading works. If you don¡¯t like this name, it has an alias ``CK.Column``.
+``CK.K`` is the converter to make the operator overloading works. If you don't like this name, it has an alias ``CK.Column``.
 
 The column name should be the name in database, it is NOT the field name in the class.
 
-If we neglected the ``CK.K`` and the quotes for the column name, it will like ``[Age] > 15``, just like SQL statement, isn¡¯t it?
+If we neglected the ``CK.K`` and the quotes for the column name, it will like ``[Age] > 15``, just like SQL statement, isn't it?
 
 The find function allows ``OrderBy`` clause as well:
 
@@ -193,7 +193,7 @@ Most application allow users to input one or more keywords to search by multiple
 
 Such as title and content, if the user only input keyword in the title textbox, we just search title with the keyword. If the user input keyword both of title and content, we search title and content with the keywords both.
 
-In DbEntry, it¡¯s very easy.
+In DbEntry, it's very easy.
 
 The following code shows use ConditionBuilder to do it by Linq style:
 
@@ -249,7 +249,7 @@ The range clause can be specified in the ``From`` syntax:
 DbEntry.From<User>().Where(Condition.Empty).OrderBy("Id").Range(1, 10).Select();
 ````
 
-The parameters in the range clause are start-with and end-with. It¡¯s including the value of them. And the minimal of start-with is 1.
+The parameters in the range clause are start-with and end-with. It's including the value of them. And the minimal of start-with is 1.
 
 The ``From`` syntax also provides ``PagedSelector``:
 
@@ -288,7 +288,7 @@ var list = DbEntry
     .SelectDistinct();
 ````
 
-If all of above couldn¡¯t help you to solve your problem, your query is too complex. Please [Using SQL statement] to solve it.
+If all of above couldn't help you to solve your problem, your query is too complex. Please [Using SQL statement] to solve it.
 
 QueryRequired
 ----------

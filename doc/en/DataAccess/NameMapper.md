@@ -9,7 +9,7 @@ This is for the class which is not define the ``DbTable`` or ``JoinOn``.
 
 And there is a prefix for many-to-many cross table name is ``"R_"``. So the cross table of ``Article`` and ``User`` will be ``R_ARTICLE_USER``.
 
-This is the default configure by now. But if we have some old code and don¡¯t want to change the database table name, we can define it in App/Web.config:
+This is the default configure by now. But if we have some old code and don't want to change the database table name, we can define it in App/Web.config:
 
 ````xml
 <add key="NameMapper" value="Leafing.Core.Text.NameMapper, Leafing.Core" />

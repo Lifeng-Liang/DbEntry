@@ -7,7 +7,7 @@ The table name is ``LeafingEnum``. It could created by auto create table feature
 
 And it also designed to work together with .net enums.
 
-It only read when we use it, and won¡¯t read it again.
+It only read when we use it, and won't read it again.
 
 The following shows how to use it. And this is a sample in the released package:
 

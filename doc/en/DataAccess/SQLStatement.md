@@ -1,4 +1,4 @@
-SQL statement
+SQL Statement
 ==========
 
 Most time we just need to use [Query Syntax](QuerySyntax.md) in DbEntry. It supports anti SQL injection. And it's unrelated to the database, so we can use same syntax on different databases, and change database freely.
@@ -40,7 +40,7 @@ Or if we want to call stored procedure, it will like:
 DataSet ds = DbEntry.Provider.ExecuteDataset("GetDataByPage", 2, 10);
 ````
 
-It just like we call a SQL, we don¡¯t need to specify it as a stored procedure because of DbEntry will check the text, if it is a identity, it will be considered as a stored procedure. And for stored procedure, DbEntry will get the parameters and types from database automatically, so we don¡¯t need to specify them anymore.
+It just like we call a SQL, we don't need to specify it as a stored procedure because of DbEntry will check the text, if it is a identity, it will be considered as a stored procedure. And for stored procedure, DbEntry will get the parameters and types from database automatically, so we don't need to specify them anymore.
 
 SqlStatement
 ----------
@@ -59,7 +59,7 @@ Like we just disscussed, DbEntry will check the text to judge if it is a stored 
 
 An identity means start with English character or underline, follow English character or number of 0 to 9 or underline. And it allows space or tab in the begin or end. Otherwise it is not an identity.
 
-If you find the auto check doesn¡¯t work well, you can specify it in code like this:
+If you find the auto check doesn't work well, you can specify it in code like this:
 
 ````c#
 SqlStatement Sql = new SqlStatement(
@@ -77,7 +77,7 @@ Sql.SqlTimeOut = 3600;
 List<SampleData> ls = SampleData.FindBySql(Sql);
 ````
 
-The stored procedure¡¯s parameters could be get from database so we don¡¯t need to specify them, but the SQL parameter need us to specify the name at least:
+The stored procedure's parameters could be get from database so we don't need to specify them, but the SQL parameter need us to specify the name at least:
 
 ````c#
 SqlStatement Sql = new SqlStatement(
@@ -87,7 +87,7 @@ SqlStatement Sql = new SqlStatement(
     );
 ````
 
-The type of parameter doesn¡¯t need to specify, but if we want, we can specify it as well. The default direction of parameter is IN. We can specify it as OUT or RETURN too:
+The type of parameter doesn't need to specify, but if we want, we can specify it as well. The default direction of parameter is IN. We can specify it as OUT or RETURN too:
 
 ````c#
 SqlStatement Sql = new SqlStatement("llf_GetOutParam",
