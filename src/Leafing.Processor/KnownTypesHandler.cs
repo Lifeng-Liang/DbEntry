@@ -216,8 +216,8 @@ namespace Leafing.Processor
 
             KeyOpValueListAdd = Import(typeof(List<KeyOpValue>).GetMethod("Add", new[] {typeof(KeyOpValue)}));
 
-            ConvertToInt64 = _module.Import(_module.Import(typeof(Convert)).GetMethod("ToInt64"));
-            ConvertToInt32 = _module.Import(_module.Import(typeof(Convert)).GetMethod("ToInt32"));
+            ConvertToInt64 = _module.Import(_module.Import(typeof(Convert)).GetMethod("ToInt64", typeof(object)));
+            ConvertToInt32 = _module.Import(_module.Import(typeof(Convert)).GetMethod("ToInt32", typeof(object)));
 
             DynamicObjectReferenceSerializeObject =
                 Import(Import(typeof(DynamicObjectReference)).GetMethod("SerializeObject"));
