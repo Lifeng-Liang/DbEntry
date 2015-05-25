@@ -7,9 +7,9 @@ if [ $? -eq 0 ]
 then
 
 cp src/Resources/nunit.framework.dll src/Leafing.Processor/bin/Debug/
-cp src/Resources/Mono.Cecil.dll bin src/Leafing.Processor/bin/Debug/
-cp src/Resources/Mono.Cecil.Pdb.dll bin src/Leafing.Processor/bin/Debug/
-cp src/Resources/Mono.Cecil.Mdb.dll bin src/Leafing.Processor/bin/Debug/
+cp src/Resources/Mono.Cecil.dll src/Leafing.Processor/bin/Debug/
+cp src/Resources/Mono.Cecil.Pdb.dll src/Leafing.Processor/bin/Debug/
+cp src/Resources/Mono.Cecil.Mdb.dll src/Leafing.Processor/bin/Debug/
 
 xbuild /property:Configuration=Debug src/DbEntry.Net.sln
 
