@@ -16,7 +16,7 @@ namespace Leafing.Processor
         private readonly string _name;
         private readonly string _sn;
         private readonly string[] _refFiles;
-        private readonly bool _hasSymbols;
+		private readonly SymbolHandler _symbolHandler;
 
         public static ModuleDefinition Module
         {
@@ -29,15 +29,12 @@ namespace Leafing.Processor
         public AssemblyProcessor(string name, string sn, string[] refFiles)
         {
             var n = name.Substring(0, name.Length - 4);
-            if(File.Exists(n + ProcessorSettings.GetExtName()))
-            {
-                _hasSymbols = true;
-            }
+			_symbolHandler = new SymbolHandler(n);
             this._oldName = n + ".bak";
             this._name = name;
             this._sn = sn;
             this._refFiles = refFiles;
-            Logger.Default.Info(_hasSymbols);
+			Logger.Default.Info(_symbolHandler.HasSymbols);
         }
 
         public void Process()
@@ -93,13 +90,13 @@ namespace Leafing.Processor
 
         private ModuleDefinition ReadModule()
         {
-            if(_hasSymbols)
+			if(_symbolHandler.HasSymbols)
             {
                 return ModuleDefinition.ReadModule(
                     _oldName, new ReaderParameters
                     {
                         ReadSymbols = true,
-                        SymbolReaderProvider = ProcessorSettings.GetSymbolReaderProvider()
+						SymbolReaderProvider = _symbolHandler.Reader
                     });
             }
             return ModuleDefinition.ReadModule(_oldName);
@@ -169,10 +166,10 @@ namespace Leafing.Processor
 
         private void WriteAssembly(ModuleDefinition module, string name)
         {
-            var args = _hasSymbols ? new WriterParameters
+			var args = _symbolHandler.HasSymbols ? new WriterParameters
                            {
                                WriteSymbols = true,
-                               SymbolWriterProvider = ProcessorSettings.GetSymbolWriterProvider(),
+								SymbolWriterProvider = _symbolHandler.Writer,
                            }
                            : new WriterParameters();
             if (_sn.IsNullOrEmpty())

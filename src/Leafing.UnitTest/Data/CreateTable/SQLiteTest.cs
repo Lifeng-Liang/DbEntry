@@ -225,7 +225,7 @@ namespace Leafing.UnitTest.Data.CreateTable
     [TestFixture]
     public class SqliteTest : SqlTestBase
     {
-        private static readonly DbDriver Driver = DbDriverFactory.Instance.GetInstance("SQLite");
+        //private static readonly DbDriver Driver = DbDriverFactory.Instance.GetInstance("SQLite");
 
         protected override void OnSetUp()
         {

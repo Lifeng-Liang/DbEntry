@@ -86,7 +86,7 @@ namespace Leafing.Data.SqlEntry
 
 		public DataSet ExecuteDataset(SqlStatement sql)
 		{
-			var ds = new DataSet();
+			var ds = new DataSet("Set");
 			ExecuteDataset(sql, ds);
 			return ds;
 		}

@@ -1,12 +1,13 @@
 ﻿using System;
+using Leafing.Data.Common;
 
-namespace Leafing.Data
+namespace Leafing.Data.Dialect
 {
-	public class CsharpSQLite
+	public class CsharpSQLite : SQLite
 	{
-		public CsharpSQLite ()
+		public override DbStructInterface GetDbStructInterface()
 		{
+			return new DbStructInterface("TABLES", null, null, null, "tbl_name");
 		}
 	}
 }
-

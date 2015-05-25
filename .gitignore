@@ -25,3 +25,9 @@
 /src/Leafing.Web/obj
 /src/Leafing.Web/bin
 /*.suo
+/bin/*.exe
+/bin/*.dll
+/bin/*.config
+/src/*.userprefs
+/src/*.user
+

@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F44CB5CA-3328-43C3-B640-443A1A57A745}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -85,6 +83,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyInformation.cs" />
     <Compile Include="TypeHelper.cs" />
+    <Compile Include="SymbolHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -124,23 +123,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
-
-copy ..\..\..\Resources\nunit.framework.dll
-copy ..\..\..\Resources\Mono.Cecil.dll
-copy ..\..\..\Resources\Mono.Cecil.Pdb.dll
-
-goto End
-
-:Release
-copy Leafing.Processor.exe ..\..\..\..\bin\
-copy Leafing.Processor.exe.config ..\..\..\..\bin\
-copy Mono.Cecil.dll ..\..\..\..\bin\
-copy ..\..\..\Resources\Mono.Cecil.Pdb.dll ..\..\..\..\bin\
-copy ..\..\..\Resources\Mono.Cecil.Mdb.dll ..\..\..\..\bin\
-
-:End
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

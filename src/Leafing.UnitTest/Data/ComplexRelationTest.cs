@@ -118,7 +118,7 @@ namespace Leafing.UnitTest.Data
             c1.Cls2.Cls3List.Add(new Cls3 {Name = "c32"});
             var c4 = new Cls4 {Name = "c4"};
             c4.Cls3List.Add(c1.Cls2.Cls3List[0]);
-            var c5 = new Cls5 {Name = "c5", Cls4 = c1.Cls2.Cls3List[0].Cls4};
+            new Cls5 {Name = "c5", Cls4 = c1.Cls2.Cls3List[0].Cls4};
             c1.Save();
 
             var c = Cls1.FindById(c1.Id);

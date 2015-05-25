@@ -17,7 +17,7 @@ namespace Leafing.UnitTest.Data
         [TearDown]
         public void TearDown()
         {
-            var ctx = ModelContext.GetInstance(typeof(DeleteToUser));
+            //var ctx = ModelContext.GetInstance(typeof(DeleteToUser));
             //ctx.Provider.Driver.TableNames = null;
         }
 

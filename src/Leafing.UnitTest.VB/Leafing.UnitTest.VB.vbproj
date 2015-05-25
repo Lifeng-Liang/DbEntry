@@ -3,10 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
-    <SchemaVersion>
-    </SchemaVersion>
     <ProjectGuid>{68D482CB-3284-42B4-9641-2DC146730FED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Leafing.UnitTest.VB</RootNamespace>
@@ -17,12 +13,13 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>Leafing.UnitTest.VB.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <AdditionalParameters>
+    </AdditionalParameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,30 +29,22 @@
     <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>Leafing.UnitTest.VB.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionExplicit>On</OptionExplicit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionCompare>Binary</OptionCompare>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionStrict>Off</OptionStrict>
+    <AdditionalParameters>
+    </AdditionalParameters>
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Resources\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\Resources\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -113,9 +102,25 @@
       <Project>{25AFD300-493A-4553-B4DC-129D3A9022A8}</Project>
       <Name>Leafing.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Leafing.UnitTest\Leafing.UnitTest.csproj">
-      <Project>{48E4289C-FABF-46F6-AC45-AAA4224F84D3}</Project>
-      <Name>Leafing.UnitTest</Name>
+    <ProjectReference Include="..\Leafing.Data.Oracle8\Leafing.Data.Oracle8.csproj">
+      <Project>{EE035A63-2ABA-4B2C-B716-780CF8CFB631}</Project>
+      <Name>Leafing.Data.Oracle8</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Leafing.Extra\Leafing.Extra.csproj">
+      <Project>{D009E584-9511-4243-9D2D-CD74079FB425}</Project>
+      <Name>Leafing.Extra</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Leafing.Membership\Leafing.Membership.csproj">
+      <Project>{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}</Project>
+      <Name>Leafing.Membership</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Leafing.MockSql\Leafing.MockSql.csproj">
+      <Project>{C79309C3-3E59-490C-89EA-6A4AA05B0DD5}</Project>
+      <Name>Leafing.MockSql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Leafing.Web\Leafing.Web.csproj">
+      <Project>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</Project>
+      <Name>Leafing.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

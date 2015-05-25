@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -66,15 +64,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonWebExtends.cs" />
@@ -190,17 +186,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
-
-copy Leafing.Web.dll ..\..\..\Leafing.Processor\bin\Debug\
-
-goto End
-:Release
-
-copy *.dll ..\..\..\..\bin\
-
-:End
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <UsingTask TaskName="ProcessorTask" AssemblyFile="$(ProjectDir)\..\Leafing.MSBuild\bin\$(ConfigurationName)\Leafing.MSBuild.dll" />
   <Target Name="AfterCompile">

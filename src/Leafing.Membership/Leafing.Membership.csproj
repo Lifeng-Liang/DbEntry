@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -12,6 +10,8 @@
     <AssemblyName>Leafing.Membership</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Membership.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,7 +32,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -41,6 +40,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbEntryMembershipProvider.cs" />
@@ -66,17 +66,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto Release
-goto End
-
-:Release
-copy *.dll ..\..\..\..\bin\
-
-:End
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <UsingTask TaskName="ProcessorTask" AssemblyFile="$(ProjectDir)\..\Leafing.MSBuild\bin\$(ConfigurationName)\Leafing.MSBuild.dll" />
   <Target Name="AfterCompile">
     <ProcessorTask KeyFile="$(KeyOriginatorFile)" ProjectDir="$(ProjectDir)" AssemblyName="@(IntermediateAssembly)" ReferenceFiles="@(ReferencePath)" />
   </Target>
+  <ItemGroup>
+    <None Include="Membership.snk" />
+  </ItemGroup>
 </Project>

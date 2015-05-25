@@ -78,12 +78,12 @@ namespace Leafing.MSBuild
             if (string.IsNullOrEmpty(ProcessorPath))
             {
 #if DEBUG
-                ProcessorPath = Path.Combine(ProjectDir, @"..\Leafing.Processor\bin\Debug\Leafing.Processor.exe");
+                ProcessorPath = Path.Combine(ProjectDir, @"../Leafing.Processor/bin/Debug/Leafing.Processor.exe");
 #else
                 ProcessorPath = Path.Combine(GetPath(GetType().Assembly.Location), "Leafing.Processor.exe");
                 if(!File.Exists(ProcessorPath))
                 {
-                    ProcessorPath = Path.Combine(ProjectDir, @"..\..\bin\Leafing.Processor.exe");
+                    ProcessorPath = Path.Combine(ProjectDir, @"../../bin/Leafing.Processor.exe");
                 }
 #endif
             }
@@ -117,7 +117,8 @@ namespace Leafing.MSBuild
             var sb = new StringBuilder("\"@");
             foreach (var file in ReferenceFiles)
             {
-                sb.Append(file).Append(";");
+				var f = Path.Combine(ProjectDir, file);
+                sb.Append(f).Append(";");
             }
             if(sb.Length > 1)
             {

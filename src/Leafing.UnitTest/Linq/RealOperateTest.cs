@@ -54,6 +54,7 @@ namespace Leafing.UnitTest.Linq
         public void TestDateTime()
         {
             var t = Tst.Find(p => p.Dt <= DateTime.Now);
+			Assert.AreEqual(2, t.Count);
         }
 
         [Test]
