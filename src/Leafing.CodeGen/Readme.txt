@@ -56,3 +56,12 @@ TableName:  Table name in database, and it will be the model class name too.
 Example:
     Leafing.CodeGen m User
 
+----------------------------------------------------------------------------
+
+Usage for get assembly fullname:
+	Leafing.CodeGen fn assemblyFileName
+
+assemblyFileName:	assembly file name such as dll or exe file name.
+
+Example:
+	Leafing.CodeGen fn MyBiz.dll

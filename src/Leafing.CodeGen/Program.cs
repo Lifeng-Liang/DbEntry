@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Leafing.Core;
+using System.Reflection;
 
 namespace Leafing.CodeGen
 {
@@ -27,16 +28,6 @@ namespace Leafing.CodeGen
                 Console.WriteLine(ex);
             }
             return 999;
-        }
-
-        private static bool ActionMatch(string s)
-        {
-            if (s == null)
-            {
-                return false;
-            }
-            s = s.ToLower();
-            return (s == "a" || s == "ra" || s == "rv");
         }
 
         private static void Process(string[] args)
@@ -66,48 +57,47 @@ namespace Leafing.CodeGen
                 throw new ArgsErrorException(2, "The file you input doesn't exist!");
             }
 
-            if (!ActionMatch(args[0]))
-            {
-                throw new ArgsErrorException(0, null);
-            }
-
-            if (args.Length == 2)
-            {
-                SearchClasses(fileName);
-                return;
-            }
-
-            switch (args[0].ToLower())
-            {
-                case "a":
-                    GenerateAspNetTemplate(fileName, args[2]);
-                    break;
-                case "ra":
-                    if (args.Length >= 4)
-                    {
-                        var gen = new MvcActionGenerator(fileName, args[2], args[3]);
-                        string s = gen.ToString();
-                        Console.WriteLine(s);
-                    }
-                    else
-                    {
-                        throw new ArgsErrorException(3, "Need class name and action name.");
-                    }
-                    break;
-                case "rv":
-                    if (args.Length >= 4)
-                    {
-                        string mpn = args.Length >= 5 ? args[4] : null;
-                        var gen = new MvcViewGenerator(fileName, args[2], args[3], mpn);
-                        string s = gen.ToString();
-                        Console.WriteLine(s);
-                    }
-                    else
-                    {
-                        throw new ArgsErrorException(4, "Need class name and view name.");
-                    }
-                    break;
-            }
+			switch (args [0].ToLower ()) {
+			case "a":
+			case "asp":
+			case "aspnet":
+				if (!SearchClasses (fileName, args.Length)) {
+					GenerateAspNetTemplate (fileName, args [2]);
+				}
+				break;
+			case "ra":
+			case "action":
+				if (!SearchClasses (fileName, args.Length)) {
+					if (args.Length >= 4) {
+						var gen = new MvcActionGenerator (fileName, args [2], args [3]);
+						string s = gen.ToString ();
+						Console.WriteLine (s);
+					} else {
+						throw new ArgsErrorException (3, "Need class name and action name.");
+					}
+				}
+				break;
+			case "rv":
+			case "view":
+				if (!SearchClasses (fileName, args.Length)) {
+					if (args.Length >= 4) {
+						string mpn = args.Length >= 5 ? args [4] : null;
+						var gen = new MvcViewGenerator (fileName, args [2], args [3], mpn);
+						string s = gen.ToString ();
+						Console.WriteLine (s);
+					} else {
+						throw new ArgsErrorException (4, "Need class name and view name.");
+					}
+				}
+				break;
+			case "fn":
+			case "fullname":
+				var assembly = Assembly.LoadFile (args [1]);
+				Console.WriteLine (assembly.FullName);
+				break;
+			default:
+				throw new ArgsErrorException (0, null);
+			}
         }
 
         //private static void GenerateAssembly(string fileName)
@@ -139,13 +129,16 @@ namespace Leafing.CodeGen
             });
         }
 
-        private static void SearchClasses(string fileName)
+        private static bool SearchClasses(string fileName, int argCount)
         {
-            Helper.EnumTypes(fileName, t =>
-            {
-                Console.WriteLine(t.FullName);
-                return true;
-            });
+			if (argCount == 2) {
+				Helper.EnumTypes (fileName, t => {
+					Console.WriteLine (t.FullName);
+					return true;
+				});
+				return true;
+			}
+			return false;
         }
 
         private static void ShowTableList()
