@@ -2,7 +2,7 @@
 
 namespace Leafing.Data.Definition
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class CrossTableNameAttribute : Attribute
     {
         public string Name;

@@ -188,7 +188,7 @@ namespace Leafing.CodeGen
 
         public List<string> GetTableList()
         {
-            return DbEntry.Provider.Driver.GetTableNames();
+            return DbEntry.Provider.GetTableNames();
         }
 
         public string GenerateModelFromDatabase(string tableName)

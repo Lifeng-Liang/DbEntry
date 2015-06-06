@@ -19,7 +19,7 @@ namespace Leafing.Data.Definition
 
         internal protected void m_InitUpdateColumns()
         {
-            m_UpdateColumns = new Dictionary<string, object>();
+            //m_UpdateColumns = new Dictionary<string, object>();
         }
 
         protected internal void m_ColumnUpdated(string columnName)

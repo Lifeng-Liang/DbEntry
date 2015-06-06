@@ -172,17 +172,13 @@
     <Compile Include="Definition\CrossTableNameAttribute.cs" />
     <Compile Include="Definition\DbContextAttribute.cs" />
     <Compile Include="Definition\DbObjectModelAsTree.cs" />
-    <Compile Include="Definition\BelongsToAttribute.cs" />
     <Compile Include="Definition\DbObjectBase.cs" />
     <Compile Include="Definition\DbObjectModel.cs" />
     <Compile Include="Definition\DbObjectSmartUpdate.cs" />
     <Compile Include="Definition\DeleteToAttribute.cs" />
     <Compile Include="Definition\DescriptionAttribute.cs" />
     <Compile Include="Definition\HasAndBelongsToMany.cs" />
-    <Compile Include="Definition\HasAndBelongsToManyAttribute.cs" />
-    <Compile Include="Definition\HasManyAttribute.cs" />
     <Compile Include="Definition\HasOne.cs" />
-    <Compile Include="Definition\HasOneAttribute.cs" />
     <Compile Include="Definition\IBelongsTo.cs" />
     <Compile Include="Definition\IDbObject.cs" />
     <Compile Include="Definition\ILazyLoading.cs" />
@@ -190,8 +186,6 @@
     <Compile Include="Builder\CreateTableStatementBuilder.cs" />
     <Compile Include="Builder\DbIndex.cs" />
     <Compile Include="Definition\ISavedNewRelations.cs" />
-    <Compile Include="Definition\LazyLoadAttribute.cs" />
-    <Compile Include="Definition\LazyLoadField.cs" />
     <Compile Include="Definition\LazyLoadListBase.cs" />
     <Compile Include="Definition\LazyLoadOneBase.cs" />
     <Compile Include="Definition\OrderByAttribute.cs" />
@@ -416,7 +410,8 @@
     <Compile Include="SqlEntry\TimeConsumingSqlStatement.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dialect\CsharpSQLite.cs" />
+    <Compile Include="Definition\LazyLoad.cs" />
+    <Compile Include="Dialect\NSQLite.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DbEntry.snk" />

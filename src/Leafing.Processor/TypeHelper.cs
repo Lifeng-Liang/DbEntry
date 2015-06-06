@@ -88,27 +88,15 @@ namespace Leafing.Processor
             {
                 return true;
             }
-            if(type.GetCustomAttribute(KnownTypesHandler.HasOneAttribute) != null)
-            {
-                return true;
-            }
-            if (type.GetCustomAttribute(KnownTypesHandler.HasManyAttribute) != null)
-            {
-                return true;
-            }
-            if (type.GetCustomAttribute(KnownTypesHandler.HasAndBelongsToManyAttribute) != null)
-            {
-                return true;
-            }
-            if (type.GetCustomAttribute(KnownTypesHandler.BelongsToAttribute) != null)
-            {
-                return true;
-            }
-            if (type.GetCustomAttribute(KnownTypesHandler.LazyLoadAttribute) != null)
-            {
-                return true;
-            }
-            return false;
+
+			if (type.PropertyType.IsGenericInstance) {
+				//if (type.PropertyType.IsValueType) {
+				if(type.Name == "Nullable`1") {
+					return false;
+				}
+				return true;
+			}
+			return false;
         }
 
         public static CustomAttribute GetDbKey(this IMemberDefinition type)

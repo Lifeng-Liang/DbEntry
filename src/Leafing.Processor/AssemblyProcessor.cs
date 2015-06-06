@@ -61,8 +61,6 @@ namespace Leafing.Processor
 
             InitRefFiles();
 
-            Program.Stage = "Process Model";
-            ProcessAssembly();
             Program.Stage = "GenerateHandler for Model";
             GenerateHandlers();
         }
@@ -102,30 +100,6 @@ namespace Leafing.Processor
             return ModuleDefinition.ReadModule(_oldName);
         }
 
-        private void ProcessAssembly()
-        {
-            var module = ReadModule();
-
-            var models = GetAllModels(module);
-
-            if (models.Count <= 0)
-            {
-                Console.WriteLine("Can not find any model to process !");
-                return;
-            }
-
-            var handler = new KnownTypesHandler(module);
-
-            foreach (var type in models)
-            {
-                Program.ModelClass = type.FullName;
-                var processor = new ModelProcessor(type, handler);
-                processor.Process();
-            }
-
-            WriteAssembly(module, _oldName);
-        }
-
         private void GenerateHandlers()
         {
             var module = ReadModule();
@@ -161,8 +135,6 @@ namespace Leafing.Processor
 
             WriteAssembly(module, _name);
         }
-
-
 
         private void WriteAssembly(ModuleDefinition module, string name)
         {

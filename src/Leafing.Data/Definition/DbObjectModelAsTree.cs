@@ -8,36 +8,14 @@ namespace Leafing.Data.Definition
     {
         protected DbObjectModelAsTree()
         {
-            XChildren = new HasMany<T>(this, "Id", "BelongsTo_Id");
-            XParent = new BelongsTo<T, TKey>(this, "BelongsTo_Id");
+            Children = new HasMany<T>(this, "Id", "BelongsTo_Id");
+            Parent = new BelongsTo<T, TKey>(this, "BelongsTo_Id");
         }
 
-        public HasMany<T> XChildren;
+		public HasMany<T> Children { get; private set; }
 
-        [DbColumn("BelongsTo_Id")]
-        public BelongsTo<T, TKey> XParent;
-
-        [HasMany(OrderBy = "Id")]
-        public IList<T> Children
-        {
-            get
-            {
-                return XChildren;
-            }
-        }
-
-        [BelongsTo, DbColumn("BelongsTo_Id")]
-        public T Parent
-        {
-            get
-            {
-                return XParent.Value;
-            }
-            set
-            {
-                XParent.Value = value;
-            }
-        }
+		[DbColumn("BelongsTo_Id")]
+		public BelongsTo<T, TKey> Parent { get; set; }
     }
 
     public abstract class DbObjectModelAsTree<T> : DbObjectModelAsTree<T, long>

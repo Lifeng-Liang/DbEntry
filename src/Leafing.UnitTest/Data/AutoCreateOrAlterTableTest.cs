@@ -166,7 +166,7 @@ namespace Leafing.UnitTest.Data
         public DateTime dtValue { get; set; }
     }
 
-    [DbTable("AutoAlterTableTest")]
+	[DbTable("AutoAlterTableTest"), DbContext("Scheme")]
     public class AutoAlterTableTest : DbObjectModel<AutoAlterTableTest>
     {
         [Length(50)]
@@ -189,11 +189,11 @@ namespace Leafing.UnitTest.Data
         {
             var tables = new List<string> { "Article", "ArticleMore", "AutoAlterTableTest", "Bao_Xiu_RS", "BelongsMore", "Books", "Categories", "Lock_Book", "LockVersionTest",
                 "Co_User", "Co_User1", "DateAndTime", "File", "NullTest", "PCs", "People", "R_Article_Reader", "Reader", "ReaderMore", "Required_Model", "Required_Two", "SoftDelete",
-                "DCS_USERS", "REF_ORG_UNIT", "HRM_EMPLOYEES", "DCS_PERSONS", "REL_EMP_JOB_ROLE", "REL_JOB_ROLE_ORG_UNIT", "HRM_JOB_ROLES" };
+				"DCS_USERS", "REF_ORG_UNIT", "HRM_EMPLOYEES", "DCS_PERSONS", "REL_EMP_JOB_ROLE", "REL_JOB_ROLE_ORG_UNIT", "HRM_JOB_ROLES", "sqlite_sequence" };
             tables.Sort();
             string[] ts = tables.ToArray();
 
-            List<string> li = DbEntry.Provider.Driver.GetTableNames();
+            List<string> li = DbEntry.Provider.GetTableNames();
             li.Sort();
             Assert.AreEqual(ts, li.ToArray());
         }
@@ -201,14 +201,18 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestAutoCreateTable()
         {
-            var o = new MyTestTable {Name = "Tom", Gender = true, Age = 18, Birthday = DateTime.Now};
+			var dt = DateTime.Now;
+            var o = new MyTestTable {Name = "Tom", Gender = true, Age = 18, Birthday = dt};
             DbEntry.Save(o);
             List<MyTestTable> ls = DbEntry.From<MyTestTable>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("Tom", ls[0].Name);
             Assert.AreEqual(true, ls[0].Gender);
             Assert.AreEqual(18, ls[0].Age);
-            Assert.AreEqual(o.Birthday, ls[0].Birthday);
+			Console.WriteLine (dt - dt.Date);
+			Console.WriteLine (ls[0].Birthday - dt.Date);
+			Console.WriteLine (dt - ls[0].Birthday);
+			Assert.IsTrue((dt - ls[0].Birthday).TotalMilliseconds < 1);
         }
 
         [Test]

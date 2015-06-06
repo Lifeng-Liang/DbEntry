@@ -91,8 +91,13 @@ namespace Leafing.Membership
         [SpecialName]
         public DateTime CreatedOn { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id", CrossTableName = "DbEntryMembershipUser_Role")]
-        public IList<DbEntryRole> Roles { get; private set; }
+        [CrossTableName("DbEntryMembershipUser_Role")]
+		public HasAndBelongsToMany<DbEntryRole> Roles { get; private set; }
+
+		public DbEntryMembershipUser ()
+		{
+			Roles = new HasAndBelongsToMany<DbEntryRole> (this, "Id", "User_Id");
+		}
 
         public MembershipUser ToMembershipUser()
         {

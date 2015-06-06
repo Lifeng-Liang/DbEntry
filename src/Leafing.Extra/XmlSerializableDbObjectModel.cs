@@ -20,9 +20,10 @@ namespace Leafing.Extra
     {
         XmlSchema IXmlSerializable.GetSchema()
         {
-            var xs = new XmlSchema();
+			var xs = new XmlSchema ();
+			xs.Id = ModelContext.Info.HandleType.Name;
 
-            var el = new XmlSchemaElement { Name = ModelContext.Info.HandleType.Name };
+			var el = new XmlSchemaElement { Name = xs.Id };
             var xct = new XmlSchemaComplexType();
             var xss = new XmlSchemaSequence();
             foreach (MemberHandler mh in ModelContext.Info.SimpleMembers)

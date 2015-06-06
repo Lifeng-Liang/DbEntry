@@ -219,21 +219,15 @@ namespace Leafing.Data.SqlEntry
 
 		public int ExecuteNonQuery(SqlStatement sql)
 		{
-            int i = 0;
-            DbEntry.UsingConnection(delegate
-            {
-                using (IDbCommand e = GetDbCommand(sql))
-                {
-                    if (Dialect.ExecuteEachLine)
-                    {
-                        i = ExecuteBeforeLines(e);
-                    }
-                    i += e.ExecuteNonQuery();
-                    PopulateOutParams(sql, e);
-                }
-            });
-            return i;
-        }
+			int i = 0;
+			DbEntry.UsingConnection (delegate {
+				using (IDbCommand e = GetDbCommand (sql)) {
+					ProcessLines (e, e1 => i += e1.ExecuteNonQuery ());
+					PopulateOutParams (sql, e);
+				}
+			});
+			return i;
+		}
 
         public void ExecuteDataReader(SqlStatement sql, Action<IDataReader> callback)
         {
@@ -241,46 +235,35 @@ namespace Leafing.Data.SqlEntry
         }
 
         public void ExecuteDataReader(SqlStatement sql, CommandBehavior behavior, Action<IDataReader> callback)
-        {
-            DbEntry.UsingConnection(delegate
-            {
-                using (IDbCommand e = GetDbCommand(sql))
-                {
-                    if (Dialect.ExecuteEachLine)
-                    {
-                        ExecuteBeforeLines(e);
-                    }
-                    using (IDataReader r = e.ExecuteReader(behavior))
-                    {
-                        PopulateOutParams(sql, e);
-                        callback(r);
-                    }
-                }
-            });
-        }
+		{
+			DbEntry.UsingConnection (delegate {
+				using (IDbCommand e = GetDbCommand (sql)) {
+					ProcessLines (e, e1 => {
+						using (IDataReader r = e1.ExecuteReader (behavior)) {
+							PopulateOutParams (sql, e1);
+							callback (r);
+						}
+					});
+				}
+			});
+		}
 
-        // It's only for stupid oracle
+        // for oracle
         internal void ExecuteDataReader(SqlStatement sql, Type returnType, Action<IDataReader> callback)
-        {
-            DbEntry.UsingConnection(delegate
-            {
-                using (IDbCommand e = GetDbCommand(sql))
-                {
-                    if (Dialect.ExecuteEachLine)
-                    {
-                        ExecuteBeforeLines(e);
-                    }
-                    using (IDataReader r = e.ExecuteReader(CommandBehavior.Default))
-                    {
-                        PopulateOutParams(sql, e);
-                        using (IDataReader dr = Dialect.GetDataReader(r, returnType))
-                        {
-                            callback(dr);
-                        }
-                    }
-                }
-            });
-        }
+		{
+			DbEntry.UsingConnection (delegate {
+				using (IDbCommand e = GetDbCommand (sql)) {
+					ProcessLines (e, e1 => {
+						using (IDataReader r = e1.ExecuteReader (CommandBehavior.Default)) {
+							PopulateOutParams (sql, e1);
+							using (IDataReader dr = Dialect.GetDataReader (r, returnType)) {
+								callback (dr);
+							}
+						}
+					});
+				}
+			});
+		}
 
         public IDbCommand GetDbCommand(SqlStatement sql)
         {
@@ -288,12 +271,17 @@ namespace Leafing.Data.SqlEntry
             {
                 Logger.SQL.Trace(sql);
             }
-            if (Scope<ConnectionContext>.Current != null)
-            {
-                return Scope<ConnectionContext>.Current.GetDbCommand(sql, this);
-            }
-            return new ConnectionContext().GetDbCommand(sql, this);
+			return GetConnectionContext().GetDbCommand(sql, this);
         }
+
+		public ConnectionContext GetConnectionContext()
+		{
+			if (Scope<ConnectionContext>.Current != null)
+			{
+				return Scope<ConnectionContext>.Current;
+			}
+			return new ConnectionContext();
+		}
 
         protected void PopulateOutParams(SqlStatement sql, IDbCommand e)
         {
@@ -313,6 +301,20 @@ namespace Leafing.Data.SqlEntry
         #endregion
 
         #region Lines plus
+
+		protected void ProcessLines(IDbCommand e, Action<IDbCommand> callback)
+		{
+			if (!Dialect.ExecuteEachLine) {
+				callback (e);
+				return;
+			}
+			List<string> al = Split(e.CommandText);
+			for (int i = 0; i < al.Count; i++)
+			{
+				e.CommandText = al[i];
+				callback(e);
+			}
+		}
 
         protected int ExecuteBeforeLines(IDbCommand e)
         {
@@ -424,5 +426,51 @@ namespace Leafing.Data.SqlEntry
             DateTime dt = Convert.ToDateTime(ExecuteScalar(sqlstr));
             return dt;
         }
+
+		private List<string> _tableNames;
+
+		internal List<string> TableNames
+		{
+			get
+			{
+				if(_tableNames == null)
+				{
+					_tableNames = new List<string>();
+					var list = GetTableNames();
+					foreach (var name in list)
+					{
+						_tableNames.Add(name.ToLower());
+					}
+				}
+				return _tableNames;
+			}
+		}
+
+		public List<string> GetTableNames()
+		{
+			var ret = new List<string>();
+			DbStructInterface si = Dialect.GetDbStructInterface();
+			string userId = Dialect.GetUserId(Driver.ConnectionString);
+			DbEntry.UsingConnection (() => {
+				using(var c = (DbConnection)(Scope<ConnectionContext>.Current.GetConnection (this)))
+				{
+					var t = c.GetSchema(si.TablesTypeName, si.TablesParams);
+					foreach (DataRow dr in t.Rows)
+					{
+						if (si.FiltrateDatabaseName)
+						{
+							if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
+						}
+						if (userId != null)
+						{
+							if (!dr["OWNER"].Equals(userId)) { continue; }
+						}
+						string s = dr[si.TableNameString].ToString();
+						ret.Add(s);
+					}
+				}
+			});
+			return ret;
+		}
 	}
 }

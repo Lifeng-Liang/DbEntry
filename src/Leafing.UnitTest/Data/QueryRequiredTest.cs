@@ -18,8 +18,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasMany]
-        public IList<RequiredPc> Pc { get; private set; }
+		public HasMany<RequiredPc> Pc { get; private set; }
+
+		public RequiredPerson ()
+		{
+			Pc = new HasMany<RequiredPc> (this, "Id", "RequiredPerson_Id");
+		}
     }
 
     [DbTable("PCs")]
@@ -27,8 +31,13 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [BelongsTo, DbColumn("Person_Id"), QueryRequired]
-        public RequiredPerson Owner { get; set; }
+        [DbColumn("Person_Id"), QueryRequired]
+		public BelongsTo<RequiredPerson, long> Owner { get; set; }
+
+		public RequiredPc ()
+		{
+			Owner = new BelongsTo<RequiredPerson, long> (this, "RequiredPerson_Id");
+		}
     }
 
     public class RequiredTwo : DbObjectModel<RequiredTwo>
@@ -84,7 +93,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void Test7()
         {
-            RequiredPc.Find(p => p.Owner.Id == 1);
+			RequiredPc.Find(p => p.Owner.Value.Id == 1);
         }
 
         [Test]

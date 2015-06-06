@@ -137,9 +137,11 @@ namespace Leafing.Core.Text
 			return ms.ToArray();
 		}
 
+		private static Encoding _encoding936 = Encoding.GetEncoding (936);
+
         public static int GetAnsiLength(string s)
         {
-            return Encoding.Default.GetByteCount(s);
+			return _encoding936.GetByteCount(s);
         }
 
 		public static string GetMultiByteSubString(string s, int count)
@@ -191,7 +193,12 @@ namespace Leafing.Core.Text
 
 		public static string ReadToEnd(Stream s)
 		{
-			return ReadToEnd( new StreamReader(s) );
+			return ReadToEnd( new StreamReader(s, Encoding.UTF8) );
+		}
+
+		public static string ReadToEnd(Stream s, Encoding encoding)
+		{
+			return ReadToEnd( new StreamReader(s, encoding) );
 		}
 
         public static string ReadToEnd(Stream s, long position)

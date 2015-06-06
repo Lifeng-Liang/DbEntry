@@ -87,14 +87,14 @@ namespace Leafing.Data
                 if (realType == stringType)
                 {
                     var errMsg = new StringBuilder();
-                    string field = fh.Is.LazyLoad ? ((LazyLoadField<string>)fh.GetValue(obj)).Value : (string)fh.GetValue(obj);
+                    string field = fh.Is.LazyLoad ? ((LazyLoad<string>)fh.GetValue(obj)).Value : (string)fh.GetValue(obj);
                     var isValid = ValidateStringField(field, fh, errMsg);
                     SetErrorMessage(fh, errMsg, isValid, tableName);
                 }
                 else if (realType == byteArrayType)
                 {
                     var errMsg = new StringBuilder();
-                    byte[] field = fh.Is.LazyLoad ? ((LazyLoadField<byte[]>)fh.GetValue(obj)).Value : (byte[])fh.GetValue(obj);
+                    byte[] field = fh.Is.LazyLoad ? ((LazyLoad<byte[]>)fh.GetValue(obj)).Value : (byte[])fh.GetValue(obj);
                     var isValid = ValidateByteArrayField(field, fh, errMsg);
                     SetErrorMessage(fh, errMsg, isValid, tableName);
                 }

@@ -30,11 +30,6 @@ namespace Leafing.Processor
         public static readonly string DbColumnAttribute = typeof(DbColumnAttribute).FullName;
         public static readonly string QueryRequiredAttribute = typeof(QueryRequiredAttribute).FullName;
         public static readonly string DbTableAttribute = typeof(DbTableAttribute).FullName;
-        public static readonly string HasOneAttribute = typeof(HasOneAttribute).FullName;
-        public static readonly string BelongsToAttribute = typeof(BelongsToAttribute).FullName;
-        public static readonly string HasManyAttribute = typeof(HasManyAttribute).FullName;
-        public static readonly string HasAndBelongsToManyAttribute = typeof(HasAndBelongsToManyAttribute).FullName;
-        public static readonly string LazyLoadAttribute = typeof(LazyLoadAttribute).FullName;
         public static readonly string OrderByAttribute = typeof(OrderByAttribute).FullName;
         public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
         public static readonly string ExcludeAttribute = typeof(ExcludeAttribute).FullName;
@@ -132,21 +127,13 @@ namespace Leafing.Processor
 
         static KnownTypesHandler()
         {
-            RelationAttributes = new Dictionary<string, FieldType>
-                       {
-                           {HasOneAttribute, FieldType.HasOne},
-                           {BelongsToAttribute, FieldType.BelongsTo},
-                           {HasManyAttribute, FieldType.HasMany},
-                           {HasAndBelongsToManyAttribute, FieldType.HasAndBelongsToMany},
-                           {LazyLoadAttribute, FieldType.LazyLoad},
-                       };
             Relations = new Dictionary<string, FieldType>
                             {
                                 {typeof(HasOne<>).FullName, FieldType.HasOne},
                                 {typeof(BelongsTo<,>).FullName, FieldType.BelongsTo},
                                 {typeof(HasMany<>).FullName, FieldType.HasMany},
                                 {typeof(HasAndBelongsToMany<>).FullName, FieldType.HasAndBelongsToMany},
-                                {typeof(LazyLoadField<>).FullName, FieldType.LazyLoad},
+                                {typeof(LazyLoad<>).FullName, FieldType.LazyLoad},
                             };
             DataReaderMethods = new Dictionary<string, string>
                       {
@@ -176,7 +163,7 @@ namespace Leafing.Processor
             _hasMany = _module.Import(typeof(HasMany<>));
             _belongsTo = _module.Import(typeof(BelongsTo<,>));
             _hasAndBelongsToMany = _module.Import(typeof(HasAndBelongsToMany<>));
-            _lazyLoadField = _module.Import(typeof(LazyLoadField<>));
+            _lazyLoadField = _module.Import(typeof(LazyLoad<>));
             _string = _module.Import(typeof(string));
             _type = _module.Import(typeof(Type));
             _dbColumn = Import(Import(typeof(DbColumnAttribute)).GetConstructor(typeof(string)));

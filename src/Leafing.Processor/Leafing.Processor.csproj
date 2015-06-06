@@ -68,15 +68,12 @@
   <ItemGroup>
     <Compile Include="ArgsErrorException.cs" />
     <Compile Include="AssemblyProcessor.cs" />
-    <Compile Include="ComposedOfClassGenerator.cs" />
     <Compile Include="DataReaderEmitHelper.cs" />
     <Compile Include="IlBuilder.cs" />
     <Compile Include="KnownTypesHandler.cs" />
     <Compile Include="MemberHandlerGenerator.cs" />
     <Compile Include="ModelHandlerGenerator.cs" />
-    <Compile Include="ModelProcessor.cs" />
     <Compile Include="ModelRelationFixer.cs" />
-    <Compile Include="PropertyProcessor.cs" />
     <Compile Include="TypeFactory.cs" />
     <Compile Include="ProcessorSettings.cs" />
     <Compile Include="Program.cs" />

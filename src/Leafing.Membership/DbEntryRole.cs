@@ -8,7 +8,12 @@ namespace Leafing.Membership
         [Length(1, 30), Index(UNIQUE = true)]
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id", CrossTableName = "DbEntryMembershipUser_Role")]
-        public IList<DbEntryMembershipUser> Users { get; private set; }
+        [CrossTableName("DbEntryMembershipUser_Role")]
+		public HasAndBelongsToMany<DbEntryMembershipUser> Users { get; private set; }
+
+		public DbEntryRole ()
+		{
+			Users = new HasAndBelongsToMany<DbEntryMembershipUser> (this, "Id", "User_Id");
+		}
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Specialized;
 using Leafing.Data.SqlEntry;
+using System.Text;
 
 namespace Leafing.Data.Builder.Clause
 {
@@ -33,6 +34,22 @@ namespace Leafing.Data.Builder.Clause
         {
             this.JoinClauseList = joinClauseList;
         }
+
+		public override string ToString ()
+		{
+			if (MainTableName != null) {
+				return string.Format ("Table Name : [{0}]", MainTableName);
+			}
+			if (PartOf != null) {
+				return string.Format ("PartOf Type : [{0}]", PartOf.Name);
+			}
+			var sb = new StringBuilder ("Join Tables : ");
+			foreach (var j in JoinClauseList) {
+				sb.AppendFormat ("[{0}] - [{1}], ", j.Table1, j.Table2);
+			}
+			sb.Length -= 2;
+			return sb.ToString();
+		}
 
         //internal FromClause(params string[] linkColumnNames)
         //{

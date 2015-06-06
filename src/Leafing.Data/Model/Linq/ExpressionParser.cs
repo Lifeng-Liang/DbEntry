@@ -195,9 +195,16 @@ namespace Leafing.Data.Model.Linq
             if (expr.Expression is MemberExpression)
             {
                 var m = (MemberExpression)expr.Expression;
-                if (mn == "Id")
+				if (mn == "Value" && m.Member is PropertyInfo && ((PropertyInfo)m.Member).PropertyType.IsGenericType) {
+					mn = m.Member.Name;
+				}
+                else if (mn == "Id")
                 {
-                    mn = m.Member.Name;
+					if (m.Member.Name == "Value" && m.Expression != null && m.Expression is MemberExpression) {
+						mn = ((MemberExpression)m.Expression).Member.Name;
+					} else {
+						mn = m.Member.Name;
+					}
                 }
                 else
                 {

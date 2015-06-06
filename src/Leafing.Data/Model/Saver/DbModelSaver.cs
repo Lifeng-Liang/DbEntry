@@ -24,13 +24,10 @@ namespace Leafing.Data.Model.Saver
         public override void Update(IDbObject obj)
         {
             var o = (DbObjectSmartUpdate)obj;
-            if (o.m_UpdateColumns != null)
+			if (o.m_UpdateColumns == null || o.m_UpdateColumns.Count > 0)
             {
-                if (o.m_UpdateColumns.Count > 0)
-                {
-                    o.RaiseUpdating();
-                    base.Update(o);
-                }
+                o.RaiseUpdating();
+                base.Update(o);
             }
             o.m_InitUpdateColumns();
         }

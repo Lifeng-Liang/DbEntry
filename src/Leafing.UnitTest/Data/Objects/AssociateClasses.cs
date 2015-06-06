@@ -147,8 +147,12 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasMany]
-        public IList<Abook> Books { get; private set; }
+		public HasMany<Abook> Books { get; private set; }
+
+		public Acategory ()
+		{
+			Books = new HasMany<Abook> (this, "Id", "Category_Id");
+		}
     }
 
     [DbTable("Books")]
@@ -156,24 +160,37 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [BelongsTo, DbColumn("Category_Id")]
-        public Acategory CurCategory { get; set; }
+        [DbColumn("Category_Id")]
+		public BelongsTo<Acategory, long> CurCategory { get; private set; }
+
+		public Abook ()
+		{
+			CurCategory = new BelongsTo<Acategory, long> (this, "Category_Id");
+		}
     }
 
     public class Article : DbObjectModel<Article>
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<Reader> Readers { get; private set; }
+		public HasAndBelongsToMany<Reader> Readers { get; private set; }
+
+		public Article ()
+		{
+			Readers = new HasAndBelongsToMany<Reader> (this, "Id", "Article_Id");
+		}
     }
 
     public class Reader : DbObjectModel<Reader>
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<Article> Articles { get; private set; }
+		public HasAndBelongsToMany<Article> Articles { get; private set; }
+
+		public Reader ()
+		{
+			Articles = new HasAndBelongsToMany<Article> (this, "Id", "Reader_Id");
+		}
     }
 
     [DbTable("Article"), DbContext("SQLite")]
@@ -181,8 +198,12 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<ReaderSqlite> Readers { get; private set; }
+		public HasAndBelongsToMany<ReaderSqlite> Readers { get; private set; }
+
+		public ArticleSqlite ()
+		{
+			Readers = new HasAndBelongsToMany<ReaderSqlite> (this, "Id", "ArticleSqlite_Id");
+		}
     }
 
     [DbTable("Reader"), DbContext("SQLite")]
@@ -190,8 +211,12 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<ArticleSqlite> Articles { get; private set; }
+		public HasAndBelongsToMany<ArticleSqlite> Articles { get; private set; }
+
+		public ReaderSqlite ()
+		{
+			Articles = new HasAndBelongsToMany<ArticleSqlite> (this, "Id", "ReaderSqlite_Id");
+		}
     }
 
     public class Article_Reader : IDbObject

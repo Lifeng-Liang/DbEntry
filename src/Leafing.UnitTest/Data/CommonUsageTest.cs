@@ -132,8 +132,13 @@ namespace Leafing.UnitTest.Data
     [Serializable]
     public abstract class Contentable<T> : DbObjectModel<T> where T : Contentable<T>, new()
     {
-        [DbColumn("Content"), LazyLoad]
-        public string ItemContent { get; set; }
+        [DbColumn("Content")]
+		public LazyLoad<string> ItemContent { get; set; }
+
+		public Contentable ()
+		{
+			ItemContent = new LazyLoad<string> (this, "Content");
+		}
     }
 
     [DbContext("SQLite")]
@@ -175,49 +180,49 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void Test2()
         {
-            List<SinglePerson> l = DbEntry
-                .From<SinglePerson>()
-                .Where(Condition.Empty)
-                .OrderBy("Id")
-                .Range(1, 1)
-                .Select();
+			List<SinglePerson> l = DbEntry
+            .From<SinglePerson> ()
+            .Where (Condition.Empty)
+            .OrderBy ("Id")
+            .Range (1, 1)
+            .Select ();
 
-            Assert.AreEqual(1, l.Count);
-            Assert.AreEqual(1, l[0].Id);
-            Assert.AreEqual("Tom", l[0].Name);
+			Assert.AreEqual (1, l.Count);
+			Assert.AreEqual (1, l [0].Id);
+			Assert.AreEqual ("Tom", l [0].Name);
 
-            l = DbEntry
-                .From<SinglePerson>()
-                .Where(Condition.Empty)
-                .OrderBy("Id")
-                .Range(2, 2)
-                .Select();
+			l = DbEntry
+            .From<SinglePerson> ()
+            .Where (Condition.Empty)
+            .OrderBy ("Id")
+            .Range (2, 2)
+            .Select ();
 
-            Assert.AreEqual(1, l.Count);
-            Assert.AreEqual(2, l[0].Id);
-            Assert.AreEqual("Jerry", l[0].Name);
+			Assert.AreEqual (1, l.Count);
+			Assert.AreEqual (2, l [0].Id);
+			Assert.AreEqual ("Jerry", l [0].Name);
 
-            l = DbEntry
-                .From<SinglePerson>()
-                .Where(Condition.Empty)
-                .OrderBy("Id")
-                .Range(3, 5)
-                .Select();
+			l = DbEntry
+            .From<SinglePerson> ()
+            .Where (Condition.Empty)
+            .OrderBy ("Id")
+            .Range (3, 5)
+            .Select ();
 
-            Assert.AreEqual(1, l.Count);
-            Assert.AreEqual(3, l[0].Id);
-            Assert.AreEqual("Mike", l[0].Name);
+			Assert.AreEqual (1, l.Count);
+			Assert.AreEqual (3, l [0].Id);
+			Assert.AreEqual ("Mike", l [0].Name);
 
-            l = DbEntry
-                .From<SinglePerson>()
-                .Where(Condition.Empty)
-                .OrderBy((DESC)"Id")
-                .Range(3, 5)
-                .Select();
+			l = DbEntry
+            .From<SinglePerson> ()
+            .Where (Condition.Empty)
+            .OrderBy ((DESC)"Id")
+            .Range (3, 5)
+            .Select ();
 
-            Assert.AreEqual(1, l.Count);
-            Assert.AreEqual(1, l[0].Id);
-            Assert.AreEqual("Tom", l[0].Name);
+			Assert.AreEqual (1, l.Count);
+			Assert.AreEqual (1, l [0].Id);
+			Assert.AreEqual ("Tom", l [0].Name);
         }
 
         [Test]
@@ -862,7 +867,8 @@ Select * From PCs Order By Id;");
         [Test]
         public void TestWithContent()
         {
-            var c = new WithContent {Name = "tom", ItemContent = "test"};
+			var c = new WithContent { Name = "tom" };
+			c.ItemContent.Value = "test";
             c.Save();
             AssertSql(@"INSERT INTO [With_Content] ([Name],[Content]) VALUES (@Name_0,@Content_1);
 SELECT LAST_INSERT_ROWID();
@@ -873,7 +879,7 @@ SELECT LAST_INSERT_ROWID();
             AssertSql(string.Format(@"UPDATE [With_Content] SET [Name]=@Name_0  WHERE [Id] = @Id_1;
 <Text><30>(@Name_0=jerry:String,@Id_1={0}:Int64)", c.Id));
 
-            c.ItemContent = "update";
+			c.ItemContent.Value = "update";
             c.Save();
             AssertSql(string.Format(@"UPDATE [With_Content] SET [Content]=@Content_0  WHERE [Id] = @Id_1;
 <Text><30>(@Content_0=update:String,@Id_1={0}:Int64)", c.Id));
@@ -887,7 +893,7 @@ SELECT LAST_INSERT_ROWID();
             var c = WithContent.FindById(1);
             Assert.AreEqual("tom", c.Name);
             StaticRecorder.CurRow.Add(new RowInfo("Content", "test"));
-            Assert.AreEqual("test", c.ItemContent);
+			Assert.AreEqual("test", c.ItemContent.Value);
             AssertSql(@"SELECT [Content] FROM [With_Content] WHERE [Id] = @Id_0;
 <Text><60>(@Id_0=1:Int64)");
         }

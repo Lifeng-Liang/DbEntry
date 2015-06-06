@@ -25,25 +25,6 @@ namespace Leafing.Data.Driver
 
 	    public readonly AutoScheme AutoScheme;
 
-        private List<string> _tableNames;
-
-	    internal List<string> TableNames
-	    {
-	        get
-	        {
-                if(_tableNames == null)
-                {
-                    _tableNames = new List<string>();
-                    var list = GetTableNames();
-                    foreach (var name in list)
-                    {
-                        _tableNames.Add(name.ToLower());
-                    }
-                }
-                return _tableNames;
-	        }
-	    }
-
         protected DbDriver(DbDialect dialect, string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
         {
             this.Name = name;
@@ -51,31 +32,6 @@ namespace Leafing.Data.Driver
             this.Dialect = dialect;
             this.AutoScheme = autoScheme;
             ProviderFactory = CreateDbProviderFactory(dbProviderFactoryName);
-        }
-
-        public List<string> GetTableNames()
-        {
-            var ret = new List<string>();
-            DbStructInterface si = Dialect.GetDbStructInterface();
-            string userId = Dialect.GetUserId(ConnectionString);
-            using(var c = (DbConnection)GetDbConnection())
-            {
-                c.Open();
-                foreach (DataRow dr in c.GetSchema(si.TablesTypeName, si.TablesParams).Rows)
-                {
-                    if (si.FiltrateDatabaseName)
-                    {
-                        if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
-                    }
-                    if (userId != null)
-                    {
-                        if (!dr["OWNER"].Equals(userId)) { continue; }
-                    }
-                    string s = dr[si.TableNameString].ToString();
-                    ret.Add(s);
-                }
-            }
-            return ret;
         }
 
         private DbFactory CreateDbProviderFactory(string dbProviderFactoryName)
