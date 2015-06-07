@@ -7,6 +7,7 @@ using Leafing.Core.Text;
 using Leafing.Data;
 using Leafing.Data.Definition;
 using NUnit.Framework;
+using System.Xml.Linq;
 
 namespace Leafing.UnitTest.Data
 {
@@ -37,26 +38,21 @@ namespace Leafing.UnitTest.Data
 
         [Test]
         public void Test2()
-        {
-            var list = vPeople.Where(Condition.Empty).OrderBy(p => p.Id).Select();
-            var xml = XmlSerializer<List<vPeople>>.Xml.Serialize(list);
-            xml = xml.Replace(@"xmlns:xsd=""http://www.w3.org/2001/XMLSchema""", "")
-                .Replace(@"xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""", "");
-            Assert.AreEqual(@"<?xml version=""1.0""?>
-<List_x0060_1  >
-  <vPeople>
-    <Id>1</Id>
-    <Name>Tom</Name>
-  </vPeople>
-  <vPeople>
-    <Id>2</Id>
-    <Name>Jerry</Name>
-  </vPeople>
-  <vPeople>
-    <Id>3</Id>
-    <Name>Mike</Name>
-  </vPeople>
-</List_x0060_1>", xml);
-        }
+		{
+			var list = vPeople.Where (Condition.Empty).OrderBy (p => p.Id).Select ();
+			var xml = XmlSerializer<List<vPeople>>.Xml.Serialize (list);
+
+			var root = XElement.Parse (xml);
+			Assert.AreEqual ("List_x0060_1", root.Name.LocalName);
+			var nodes = new List<XElement> ();
+			nodes.AddRange (root.Elements());
+			Assert.AreEqual (3, nodes.Count);
+			Assert.AreEqual ("1", nodes [0].Element ("Id").Value);
+			Assert.AreEqual ("Tom", nodes [0].Element ("Name").Value);
+			Assert.AreEqual ("2", nodes [1].Element ("Id").Value);
+			Assert.AreEqual ("Jerry", nodes [1].Element ("Name").Value);
+			Assert.AreEqual ("3", nodes [2].Element ("Id").Value);
+			Assert.AreEqual ("Mike", nodes [2].Element ("Name").Value);
+		}
     }
 }

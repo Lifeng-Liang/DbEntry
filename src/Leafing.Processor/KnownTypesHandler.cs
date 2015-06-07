@@ -48,8 +48,8 @@ namespace Leafing.Processor
         private static readonly Dictionary<string, FieldType> RelationAttributes;
         private static readonly Dictionary<string, FieldType> Relations;
 
-        public readonly MethodReference ColumnUpdated;
-        public readonly MethodReference InitUpdateColumns;
+//        public readonly MethodReference ColumnUpdated;
+//        public readonly MethodReference InitUpdateColumns;
         public readonly TypeReference ModelHandlerBaseType;
         public readonly MethodReference ModelHandlerBaseTypeCtor;
         public readonly MethodReference ModelHandlerBaseTypeGetNullable;
@@ -173,8 +173,8 @@ namespace Leafing.Processor
             _exclude = Import(Import(typeof(ExcludeAttribute)).GetConstructor());
             _specialName = Import(Import(typeof(SpecialNameAttribute)).GetConstructor());
             var dbase = typeof(DbObjectSmartUpdate);
-            ColumnUpdated = _module.Import(dbase.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag));
-            InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
+            //ColumnUpdated = _module.Import(dbase.GetMethod("m_ColumnUpdated", ClassHelper.InstanceFlag));
+            //InitUpdateColumns = _module.Import(dbase.GetMethod("m_InitUpdateColumns", ClassHelper.InstanceFlag));
             var emitBase = typeof(EmitObjectHandlerBase);
             ModelHandlerBaseType = _module.Import(emitBase);
             ModelHandlerBaseTypeCtor = Import(ModelHandlerBaseType.GetConstructor());

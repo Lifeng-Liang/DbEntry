@@ -2,6 +2,7 @@
 using Leafing.Data.Model.Composer;
 using Leafing.Data.Model.Handler;
 using Leafing.Data.SqlEntry;
+using System;
 
 namespace Leafing.Data.Model.Saver
 {
@@ -35,13 +36,27 @@ namespace Leafing.Data.Model.Saver
 
         public virtual void Update(IDbObject obj)
         {
-            var iwc = ModelContext.GetKeyWhereClause(obj);
-            SqlStatement updateStatement = Composer.GetUpdateStatement(obj, iwc);
-            if (Provider.ExecuteNonQuery(updateStatement) == 0)
-            {
-                throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
-            }
-            Composer.ProcessAfterSave(obj);
+			Update (obj, null);
         }
+
+		protected void Update(IDbObject obj, Action callback)
+		{
+			var iwc = ModelContext.GetKeyWhereClause(obj);
+			SqlStatement updateStatement = Composer.GetUpdateStatement(obj, iwc);
+			if (updateStatement != null) {
+				if (callback != null) {
+					callback ();
+				}
+				if (Provider.ExecuteNonQuery(updateStatement) == 0)
+				{
+					throw new DataException("Record doesn't exist OR LockVersion doesn't match!");
+				}
+				Composer.ProcessAfterSave(obj);
+				var o = obj as DbObjectSmartUpdate;
+				if (o != null) {
+					o.InitLoadedColumns ();
+				}
+			}
+		}
     }
 }

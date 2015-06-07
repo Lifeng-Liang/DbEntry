@@ -67,7 +67,7 @@ namespace Leafing.UnitTest.Data.Objects
     public class ImpPeople : DbObjectModel<ImpPeople>
     {
         private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
+        public string Name { get { return _Name; } set { _Name = value; } }
 
         protected internal HasOne<ImpPCs> _pc;
 
@@ -78,7 +78,6 @@ namespace Leafing.UnitTest.Data.Objects
         public ImpPeople()
         {
             _pc = new HasOne<ImpPCs>(this, "Id", "Person_Id");
-            m_InitUpdateColumns();
         }
     }
 
@@ -86,7 +85,7 @@ namespace Leafing.UnitTest.Data.Objects
     public class ImpPCs : DbObjectModel<ImpPCs>
     {
         private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
+        public string Name { get { return _Name; } set { _Name = value; } }
 
         [DbColumn("Person_Id")]
         protected internal BelongsTo<ImpPeople, long> _owner;
@@ -98,7 +97,6 @@ namespace Leafing.UnitTest.Data.Objects
         public ImpPCs()
         {
             _owner = new BelongsTo<ImpPeople, long>(this, "Person_Id");
-            m_InitUpdateColumns();
         }
     }
 
@@ -106,7 +104,7 @@ namespace Leafing.UnitTest.Data.Objects
     public class ImpPeople1 : DbObjectModel<ImpPeople1>
     {
         private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
+        public string Name { get { return _Name; } set { _Name = value; } }
 
         protected internal HasMany<ImpPCs1> _pcs;
 
@@ -117,7 +115,6 @@ namespace Leafing.UnitTest.Data.Objects
         public ImpPeople1()
         {
             _pcs = new HasMany<ImpPCs1>(this, "Id DESC", "Person_Id");
-            m_InitUpdateColumns();
         }
     }
 
@@ -125,7 +122,7 @@ namespace Leafing.UnitTest.Data.Objects
     public class ImpPCs1 : DbObjectModel<ImpPCs1>
     {
         private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
+        public string Name { get { return _Name; } set { _Name = value; } }
 
         [DbColumn("Person_Id")]
         protected internal BelongsTo<ImpPeople1, long> _owner;
@@ -137,7 +134,6 @@ namespace Leafing.UnitTest.Data.Objects
         public ImpPCs1()
         {
             _owner = new BelongsTo<ImpPeople1, long>(this, "Person_Id");
-            m_InitUpdateColumns();
         }
     }
 
@@ -304,10 +300,5 @@ namespace Leafing.UnitTest.Data.Objects
     public class PeopleWith : DbObjectModel<PeopleWith>
     {
         public string Name { get; set; }
-
-        public Dictionary<string, object> GetUpdateColumns()
-        {
-            return m_UpdateColumns;
-        }
     }
 }

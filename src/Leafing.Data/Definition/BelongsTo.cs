@@ -15,7 +15,7 @@ namespace Leafing.Data.Definition
 
         public void ForeignKeyChanged()
         {
-            Owner.m_ColumnUpdated(RelationName);
+            //Owner.m_ColumnUpdated(RelationName);
         }
 
         public object ForeignKey

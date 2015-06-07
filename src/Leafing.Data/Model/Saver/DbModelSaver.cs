@@ -17,19 +17,14 @@ namespace Leafing.Data.Model.Saver
             var o = (DbObjectSmartUpdate)obj;
             o.RaiseInserting();
             var key = base.Insert(o);
-            o.m_InitUpdateColumns();
+			o.InitLoadedColumns ();
             return key;
         }
 
         public override void Update(IDbObject obj)
         {
             var o = (DbObjectSmartUpdate)obj;
-			if (o.m_UpdateColumns == null || o.m_UpdateColumns.Count > 0)
-            {
-                o.RaiseUpdating();
-                base.Update(o);
-            }
-            o.m_InitUpdateColumns();
+			base.Update(o, o.RaiseUpdating);
         }
     }
 }

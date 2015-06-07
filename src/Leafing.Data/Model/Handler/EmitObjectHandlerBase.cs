@@ -16,10 +16,10 @@ namespace Leafing.Data.Model.Handler
 
         protected void AddKeyValue(KeyValueCollection values, DbObjectSmartUpdate o, string key, int n, object v)
         {
-            if ((o.m_UpdateColumns == null) || o.m_UpdateColumns.ContainsKey(key))
-            {
-                values.Add(this.NewKeyValue(n, v));
-            }
+//            if ((o.m_UpdateColumns == null) || o.m_UpdateColumns.ContainsKey(key))
+//            {
+//                values.Add(this.NewKeyValue(n, v));
+//            }
         }
 
         public abstract object CreateInstance();

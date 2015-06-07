@@ -3,6 +3,7 @@ using Leafing.UnitTest.Mocks;
 using Leafing.Web;
 using Leafing.Web.Mvc;
 using NUnit.Framework;
+using Leafing.Web.Mvc.Core;
 
 namespace Leafing.UnitTest.Mvc
 {

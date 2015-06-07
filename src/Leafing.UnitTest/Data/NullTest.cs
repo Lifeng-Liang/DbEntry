@@ -45,6 +45,11 @@ namespace Leafing.UnitTest.Data
 		public LazyLoad<string> Name { get; private set; }
         public int? MyInt { get; set; }
         public bool? MyBool { get; set; }
+
+		public NullableTableLazyString ()
+		{
+			Name = new LazyLoad<string> (this, "Name");
+		}
     }
 
     #endregion
@@ -194,7 +199,7 @@ namespace Leafing.UnitTest.Data
             NullableTableLazyString o = NullableTableLazyString.FindById(2);
             Assert.IsNotNull(o);
             Assert.AreEqual(2, o.Id);
-            Assert.AreEqual(null, o.Name);
+			Assert.AreEqual(null, o.Name.Value);
             Assert.IsTrue(1 == o.MyInt);
             Assert.IsTrue(false == o.MyBool);
         }

@@ -4,6 +4,9 @@ using Leafing.Data;
 using Leafing.Data.Definition;
 using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
+using Leafing.Data.Builder;
+using Leafing.Data.Builder.Clause;
+using System.Linq;
 
 namespace Leafing.UnitTest.Data
 {
@@ -15,9 +18,16 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
         public int Age { get; set; }
 
-        public Dictionary<string, object> GetUpdateColumns()
+		public int GetUpdateColumnCount()
+		{
+			return GetUpdateColumns ().Count;
+		}
+
+		public List<KeyOpValue> GetUpdateColumns()
         {
-            return this.m_UpdateColumns;
+			var builder = new UpdateStatementBuilder(new FromClause("theName"));
+			this.FindUpdateColumns (builder);
+			return builder.Values;
         }
     }
 
@@ -271,10 +281,10 @@ namespace Leafing.UnitTest.Data
             var u = new asUser2 { Name = "Tom", Age = 18 };
             u.Save();
             var u1 = asUser2.FindById(u.Id);
-            Assert.AreEqual(0, u1.GetUpdateColumns().Count);
+			Assert.AreEqual(0, u1.GetUpdateColumnCount());
             u1.Name = "Jerry";
-            Assert.AreEqual(1, u1.GetUpdateColumns().Count);
-            Assert.IsTrue(u1.GetUpdateColumns().ContainsKey("theName"));
+			Assert.AreEqual(1, u1.GetUpdateColumnCount());
+			Assert.IsTrue(u1.GetUpdateColumns()[0].Key == "theName");
             u1.Save();
             var u2 = asUser2.FindById(u.Id);
             Assert.AreEqual("Jerry", u2.Name);

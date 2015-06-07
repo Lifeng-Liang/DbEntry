@@ -113,64 +113,48 @@ namespace Leafing.Data
         }
 
         private void ValidateUnique(object obj, ModelContext ctx, bool isNew)
-        {
-            Dictionary<string, object> updatedColumns = null;
-            if(obj is DbObjectSmartUpdate)
-            {
-                updatedColumns = ((DbObjectSmartUpdate)obj).m_UpdateColumns;
-            }
-
-            Condition editCondition = isNew ? null : !ModelContext.GetKeyWhereClause(obj);
-            foreach (List<MemberHandler> mhs in ctx.Info.UniqueIndexes.Values)
-            {
-                Condition c = null;
-                string n = "";
-                var sn = new StringBuilder();
-                foreach (MemberHandler h in mhs)
-                {
-                    if(updatedColumns == null || updatedColumns.ContainsKey(h.Name))
-                    {
-                        object v = h.GetValue(obj);
-                        if (h.Is.AllowNull && v == null)
-                        {
-                            c = null;
-                            break;
-                        }
-                        if (v != null)
-                        {
-                            if (v.GetType().IsGenericType)
-                            {
-                                if (v is IBelongsTo)
-                                {
-                                    v = ((IBelongsTo)v).ForeignKey;
-                                }
-                                else
-                                {
-                                    v = v.GetType().GetField("m_Value", ClassHelper.AllFlag).GetValue(v);
-                                }
-                            }
-                        }
-                        c &= (CK.K[h.Name] == v);
-                        n += h.Name;
-                        sn.Append(h.ShowString).Append(_separatorText);
-                    }
-                }
-                if (c != null)
-                {
-                    if (ctx.Operator.GetResultCountAvoidSoftDelete(c && editCondition, false) != 0)
-                    {
-                        sn.Length -= _separatorTextLength;
-                        IsValid = false;
-                        string uniqueErrMsg = string.IsNullOrEmpty(mhs[0].UniqueErrorMessage)
+		{
+			Condition editCondition = isNew ? null : !ModelContext.GetKeyWhereClause (obj);
+			foreach (List<MemberHandler> mhs in ctx.Info.UniqueIndexes.Values) {
+				Condition c = null;
+				string n = "";
+				var sn = new StringBuilder ();
+				foreach (MemberHandler h in mhs) {
+					if (!(h.Is.DbGenerate || h.Is.HasOne || h.Is.HasMany ||
+					   h.Is.HasAndBelongsToMany || h.Is.CreatedOn || h.Is.Key || h.Is.AutoSavedValue)) {
+						object v = h.GetValue (obj);
+						if (h.Is.AllowNull && v == null) {
+							c = null;
+							break;
+						}
+						if (v != null) {
+							if (v.GetType ().IsGenericType) {
+								if (v is IBelongsTo) {
+									v = ((IBelongsTo)v).ForeignKey;
+								} else {
+									v = v.GetType ().GetField ("m_Value", ClassHelper.AllFlag).GetValue (v);
+								}
+							}
+						}
+						c &= (CK.K [h.Name] == v);
+						n += h.Name;
+						sn.Append (h.ShowString).Append (_separatorText);
+					}
+				}
+				if (c != null) {
+					if (ctx.Operator.GetResultCountAvoidSoftDelete (c && editCondition, false) != 0) {
+						sn.Length -= _separatorTextLength;
+						IsValid = false;
+						string uniqueErrMsg = string.IsNullOrEmpty (mhs [0].UniqueErrorMessage)
                                                   ? _shouldBeUniqueText
-                                                  : mhs[0].UniqueErrorMessage;
-                        _errorMessages[n] = _errorMessages.ContainsKey(n)
-                                  ? string.Format("{0}{1}{2}", _errorMessages[n], _separatorText, uniqueErrMsg)
-                                  : string.Format(_invalidFieldText, sn, uniqueErrMsg);
-                    }
-                }
-            }
-        }
+                                                  : mhs [0].UniqueErrorMessage;
+						_errorMessages [n] = _errorMessages.ContainsKey (n)
+                                  ? string.Format ("{0}{1}{2}", _errorMessages [n], _separatorText, uniqueErrMsg)
+                                  : string.Format (_invalidFieldText, sn, uniqueErrMsg);
+					}
+				}
+			}
+		}
 
         private bool ValidateByteArrayField(byte[] field, MemberHandler fh, StringBuilder errMsg)
         {

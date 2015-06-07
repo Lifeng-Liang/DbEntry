@@ -24,6 +24,14 @@ namespace Leafing.UnitTest.Data
             public DateTime? UpdatedOn { get; set; }
 
             public string Name { get; set; }
+
+			public static DateTable AsLoad(long id, string name)
+			{
+				var o = new DateTable{ Id = 1 };
+				o.InitLoadedColumns ();
+				o.Name = name;
+				return o;
+			}
         }
 
         [DbTable("DateTable"), DbContext("SQLite")]
@@ -54,6 +62,14 @@ namespace Leafing.UnitTest.Data
             public DateTime SavedOn { get; set; }
 
             public string Name { get; set; }
+
+			public static DateTable4 AsLoad(long id, string name)
+			{
+				var o = new DateTable4{ Id = 1 };
+				o.InitLoadedColumns ();
+				o.Name = name;
+				return o;
+			}
         }
 
         [DbTable("DateTable"), DbContext("SQLite")]
@@ -65,7 +81,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [DbTable("DateTable"), DbContext("SQLite")]
-        public class DateTable6 : DbObjectModel<DateTable4>
+        public class DateTable6 : DbObjectModel<DateTable6>
         {
             public long ShopId { get; set; }
 
@@ -114,9 +130,9 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestUpdatedOnWithTable()
         {
-            var o = new DateTable {Name = "tom", Id = 1};
+			var o = DateTable.AsLoad(1, "tom");
             DbEntry.Update(o);
-            Assert.AreEqual("UPDATE [DateTable] SET [UpdatedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+			Assert.AreEqual("UPDATE [DateTable] SET [Name]=@Name_0,[UpdatedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime')  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -125,14 +141,6 @@ namespace Leafing.UnitTest.Data
             var o = new DateTable2 {Name = "tom", Id = 1};
             DbEntry.Update(o);
             Assert.AreEqual("UPDATE [DateTable] SET [UpdatedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
-        }
-
-        [Test]
-        public void TestSelectDatabaseTime()
-        {
-            DateTime dt = DbEntry.Provider.GetDatabaseTime();
-            TimeSpan ts = DateTime.Now.Subtract(dt);
-            Assert.IsTrue(ts.TotalSeconds < 10);
         }
 
         [Test]
@@ -154,9 +162,9 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestSavedOnForPartialUpdate()
         {
-            var o = new DateTable4 {Name = "tom", Id = 1};
+			var o = DateTable4.AsLoad(1, "tom");
             DbEntry.Update(o);
-            Assert.AreEqual("UPDATE [DateTable] SET [SavedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime'),[Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
+			Assert.AreEqual("UPDATE [DateTable] SET [Name]=@Name_0,[SavedOn]=DATETIME(CURRENT_TIMESTAMP, 'localtime')  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]

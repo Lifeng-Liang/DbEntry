@@ -158,9 +158,8 @@ namespace Leafing.Data
             var os = o as DbObjectSmartUpdate;
             if (os != null)
             {
-                os.m_InternalInit = true;
                 InnerCloneObject(obj, ctx.Info, o);
-                os.m_InternalInit = false;
+				os.InitLoadedColumns();
             }
             else
             {

@@ -6,6 +6,7 @@ using Leafing.Data.Common;
 using Leafing.Data.Model.Handler;
 using Leafing.Data.Model.Member;
 using Leafing.Data.SqlEntry;
+using Leafing.Data.Definition;
 
 namespace Leafing.Data.Model.Composer
 {
@@ -177,7 +178,14 @@ namespace Leafing.Data.Model.Composer
         public virtual SqlStatement GetUpdateStatement(object obj, Condition iwc)
         {
             var isv = new UpdateStatementBuilder(this.Context.Info.From);
-            this.Context.Handler.SetValuesForUpdate(isv, obj);
+			var o = obj as DbObjectSmartUpdate;
+			if (o != null) {
+				if (!o.FindUpdateColumns (isv)) {
+					return null;
+				}
+			} else {
+				this.Context.Handler.SetValuesForUpdate(isv, obj);
+			}
             isv.Where.Conditions = iwc;
             return isv.ToSqlStatement(this.Context);
         }

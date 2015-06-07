@@ -24,7 +24,7 @@ namespace Leafing.UnitTest.Linq
 			public HasMany<lBook> Books { get; private set; }
 			public lCategory ()
 			{
-				Books = new HasMany<lBook>(this, "Id", "lCategory_Id");
+				Books = new HasMany<lBook>(this, "Id", "Category_Id");
 			}
         }
 
@@ -35,7 +35,7 @@ namespace Leafing.UnitTest.Linq
 			[DbColumn("Category_Id")] public BelongsTo<lCategory, long> Category { get; private set; }
 			public lBook ()
 			{
-				Category = new BelongsTo<lCategory, long>(this, "lCategory_Id");
+				Category = new BelongsTo<lCategory, long>(this, "Category_Id");
 			}
         }
 

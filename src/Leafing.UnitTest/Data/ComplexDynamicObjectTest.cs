@@ -41,13 +41,6 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestDynamicObjectConstractor()
-        {
-            PeopleWith p = PeopleWith.FindById(1);
-            Assert.IsNotNull(p.GetUpdateColumns());
-        }
-
-        [Test]
         public void TestHasOne()
         {
             People p = People.FindById(1);
