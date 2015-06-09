@@ -412,6 +412,12 @@
     </Compile>
     <Compile Include="Definition\LazyLoad.cs" />
     <Compile Include="Dialect\NSQLite.cs" />
+    <Compile Include="Model\Handler\Generator\AssemblyHandler.cs" />
+    <Compile Include="Model\Handler\Generator\MemoryAssembly.cs" />
+    <Compile Include="Model\Handler\Generator\DataReaderEmitHelper.cs" />
+    <Compile Include="Model\Handler\Generator\ILBuilder.cs" />
+    <Compile Include="Model\Handler\Generator\ModelHandlerGenerator.cs" />
+    <Compile Include="Model\Handler\Generator\MemberHandlerGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DbEntry.snk" />
@@ -460,4 +466,10 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Model\Handler\Generator\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model\Handler\Generator\dynamic.snk" />
+  </ItemGroup>
 </Project>

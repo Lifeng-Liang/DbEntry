@@ -9,6 +9,7 @@ using Leafing.Data.Model.Composer;
 using Leafing.Data.Model.Handler;
 using Leafing.Data.Model.QuerySyntax;
 using Leafing.Data.SqlEntry;
+using Leafing.Data.Model.Handler.Generator;
 
 namespace Leafing.Data
 {
@@ -103,6 +104,12 @@ namespace Leafing.Data
                 return o;
             }
             throw new ModelException(Info.HandleType, "Can not find ObjectHandler. REF: http://dbentry.codeplex.com/wikipage?title=Setup");
+			/*
+			var gen = new ModelHandlerGenerator (Info);
+			var o = (EmitObjectHandlerBase)ClassHelper.CreateInstance (gen.Generate ());
+			o.Init (Info);
+			return o;
+			            */
         }
 
         #endregion

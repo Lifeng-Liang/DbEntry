@@ -73,7 +73,6 @@
     <Compile Include="KnownTypesHandler.cs" />
     <Compile Include="MemberHandlerGenerator.cs" />
     <Compile Include="ModelHandlerGenerator.cs" />
-    <Compile Include="ModelRelationFixer.cs" />
     <Compile Include="TypeFactory.cs" />
     <Compile Include="ProcessorSettings.cs" />
     <Compile Include="Program.cs" />

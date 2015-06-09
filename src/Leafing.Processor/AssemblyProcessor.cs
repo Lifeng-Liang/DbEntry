@@ -126,8 +126,6 @@ namespace Leafing.Processor
 
                     var mhg = new MemberHandlerGenerator(type, model, handler);
                     mhg.Generate(module);
-
-                    new ModelRelationFixer(type, model).Process();
                 }
             }
 

@@ -2,6 +2,7 @@
 using System.Reflection;
 using Leafing.Core;
 using Leafing.Data.Model.Handler;
+using Leafing.Data.Model.Handler.Generator;
 
 namespace Leafing.Data.Model.Member.Adapter
 {
@@ -31,22 +32,15 @@ namespace Leafing.Data.Model.Member.Adapter
         protected IMemberHandler Handler;
 
         public FieldAdapter(FieldInfo info)
-        {
-            this.Info = info;
-            var attr = info.GetAttribute<InstanceHandlerAttribute>(false);
-            if(attr != null)
-            {
-                var h = ClassHelper.CreateInstance(attr.Type);
-                if(h is IMemberHandler)
-                {
-                    Handler = (IMemberHandler)h;
-                }
-            }
-            if(Handler == null)
-            {
-                Handler = new FieldHandler(info);
-            }
-        }
+		{
+			this.Info = info;
+			if (info.IsPublic) {
+				var t = MemberHandlerGenerator.Generate (info.DeclaringType, info);
+				Handler = (IMemberHandler)ClassHelper.CreateInstance (t);
+			} else {
+				Handler = new FieldHandler (info);
+			}
+		}
 
         public override Type MemberType
         {
