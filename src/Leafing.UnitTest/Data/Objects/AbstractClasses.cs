@@ -66,12 +66,10 @@ namespace Leafing.UnitTest.Data.Objects
     [DbTable("People")]
     public class ImpPeople : DbObjectModel<ImpPeople>
     {
-        private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; } }
+		public string Name { get; set; }
 
-        protected internal HasOne<ImpPCs> _pc;
+        public HasOne<ImpPCs> _pc;
 
-        //[HasOne(OrderBy = "Id")]
 		[Exclude]
         public ImpPCs pc { get { return _pc.Value; } set { _pc.Value = value; } }
 
@@ -84,13 +82,11 @@ namespace Leafing.UnitTest.Data.Objects
     [DbTable("PCs")]
     public class ImpPCs : DbObjectModel<ImpPCs>
     {
-        private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; } }
+		public string Name { get; set; }
 
         [DbColumn("Person_Id")]
-        protected internal BelongsTo<ImpPeople, long> _owner;
+        public BelongsTo<ImpPeople, long> _owner;
 
-        //[BelongsTo, DbColumn("Person_Id")]
 		[Exclude]
         public ImpPeople owner { get { return _owner.Value; } set { _owner.Value = value; } }
 
@@ -103,31 +99,24 @@ namespace Leafing.UnitTest.Data.Objects
     [DbTable("People")]
     public class ImpPeople1 : DbObjectModel<ImpPeople1>
     {
-        private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; } }
+		public string Name { get; set; }
 
-        protected internal HasMany<ImpPCs1> _pcs;
-
-        //[HasMany(OrderBy = "Id DESC")]
-		[Exclude]
-        public IList<ImpPCs1> pcs { get { return _pcs; } set { } }
+		public HasMany<ImpPCs1> pcs { get; private set; }
 
         public ImpPeople1()
         {
-            _pcs = new HasMany<ImpPCs1>(this, "Id DESC", "Person_Id");
+            pcs = new HasMany<ImpPCs1>(this, "Id DESC", "Person_Id");
         }
     }
 
     [DbTable("PCs")]
     public class ImpPCs1 : DbObjectModel<ImpPCs1>
     {
-        private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; } }
+		public string Name { get; set; }
 
         [DbColumn("Person_Id")]
-        protected internal BelongsTo<ImpPeople1, long> _owner;
+        public BelongsTo<ImpPeople1, long> _owner;
 
-        //[BelongsTo, DbColumn("Person_Id")]
 		[Exclude]
         public ImpPeople1 owner { get { return _owner.Value; } set { _owner.Value = value; } }
 
@@ -141,7 +130,6 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        //[HasOne(OrderBy = "Id")]
 		public HasOne<PCs> pc { get; private set; }
 
 		public People ()

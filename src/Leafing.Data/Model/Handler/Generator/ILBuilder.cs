@@ -299,7 +299,7 @@ namespace Leafing.Data.Model.Handler.Generator
 		{
 			if (t.IsValueType)
 			{
-				il.Emit(OpCodes.Unbox, t);
+				il.Emit(OpCodes.Unbox_Any, t);
 			}
 			return this;
 		}

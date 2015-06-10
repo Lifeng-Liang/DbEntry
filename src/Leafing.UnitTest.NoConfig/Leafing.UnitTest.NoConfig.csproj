@@ -80,8 +80,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <UsingTask TaskName="ProcessorTask" AssemblyFile="$(ProjectDir)\..\Leafing.MSBuild\bin\$(ConfigurationName)\Leafing.MSBuild.dll" />
-  <Target Name="AfterCompile">
-    <ProcessorTask KeyFile="$(KeyOriginatorFile)" ProjectDir="$(ProjectDir)" AssemblyName="@(IntermediateAssembly)" ReferenceFiles="@(ReferencePath)" />
-  </Target>
 </Project>

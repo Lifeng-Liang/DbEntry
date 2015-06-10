@@ -21,46 +21,90 @@ namespace Leafing.Data.Model.Handler.Generator
 
 		private const BindingFlags commFlag = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 		private const TypeAttributes DynamicObjectTypeAttr = TypeAttributes.Class | TypeAttributes.Public;
-		private static readonly MethodInfo handlerBaseCreateInstance = handlerBaseType.GetMethod ("CreateInstance", commFlag);
-		private static readonly MethodInfo handlerBaseLoadSimpleValuesByIndex = handlerBaseType.GetMethod("LoadSimpleValuesByIndex", commFlag);
-		private static readonly MethodInfo handlerBaseLoadSimpleValuesByName = handlerBaseType.GetMethod("LoadSimpleValuesByName", commFlag);
-		private static readonly MethodInfo handlerBaseLoadRelationValuesByIndex = handlerBaseType.GetMethod("LoadRelationValuesByIndex", commFlag);
-		private static readonly MethodInfo handlerBaseLoadRelationValuesByName = handlerBaseType.GetMethod("LoadRelationValuesByName", commFlag);
-		private static readonly MethodInfo handlerBaseLoadRelationValuesByIndexNoLazy = handlerBaseType.GetMethod("LoadRelationValuesByIndexNoLazy", commFlag);
-		private static readonly MethodInfo handlerBaseLoadRelationValuesByNameNoLazy = handlerBaseType.GetMethod("LoadRelationValuesByNameNoLazy", commFlag);
-		private static readonly MethodInfo handlerBaseTypeGetNullable = handlerBaseType.GetMethod("GetNullable");
-		private static readonly MethodInfo handlerBaseGetKeyValueDirect = handlerBaseType.GetMethod("GetKeyValueDirect", commFlag);
-		private static readonly MethodInfo handlerBaseGetKeyValuesDirect = handlerBaseType.GetMethod("GetKeyValuesDirect", commFlag);
-		private static readonly MethodInfo handlerBaseSetKeyValueDirect = handlerBaseType.GetMethod("SetKeyValueDirect", commFlag);
-		private static readonly MethodInfo handlerBaseSetValuesForInsertDirect = handlerBaseType.GetMethod("SetValuesForInsertDirect", commFlag);
-		private static readonly MethodInfo handlerBaseSetValuesForUpdateDirect = handlerBaseType.GetMethod("SetValuesForUpdateDirect", commFlag);
-		private static readonly MethodInfo handlerBaseTypeNewSpKeyValueDirect = handlerBaseType.GetMethod("NewSpKeyValueDirect");
-		private static readonly MethodInfo handlerBaseTypeNewKeyValue = handlerBaseType.GetMethod("NewKeyValue");
-		private static readonly MethodInfo handlerBaseTypeAddKeyValue = handlerBaseType.GetMethod("AddKeyValue");
 
-		private static readonly MethodInfo dataReaderMethodInt = typeof(IDataReader).GetMethod("get_Item", new Type[]{typeof(int)});
-		private static readonly MethodInfo dataReaderMethodString = typeof(IDataReader).GetMethod("get_Item", new Type[]{typeof(string)});
-		private static readonly MethodInfo lazyLoadingInterfaceWrite = typeof(ILazyLoading).GetMethod("Write");
-		private static readonly MethodInfo belongsToInterfaceSetForeignKey = typeof(IBelongsTo).GetMethod("set_ForeignKey");
-		private static readonly MethodInfo dictionaryStringObjectAdd = dictionaryStringObjectType.GetMethod("Add");
-		private static readonly MethodInfo convertToInt64 = typeof(Convert).GetMethod ("ToInt64", new []{ objectType });
-		private static readonly MethodInfo convertToInt32 = typeof(Convert).GetMethod ("ToInt32", new []{ objectType });
-		private static readonly ConstructorInfo keyValuePairStringStringCtor = typeof(KeyValuePair<string, string>).GetConstructor(new[] { typeof(string), typeof(string) });
-		private static readonly MethodInfo listKeyValuePairStringStringAdd = listKeyValuePairStringStringType.GetMethod("Add");
-		private static readonly MethodInfo keyOpValueListAdd = typeof(List<KeyOpValue>).GetMethod("Add", new[] {typeof(KeyOpValue)});
+		private static readonly Type[] noArgs ;
+		private static readonly Type handlerBaseType ;
+		private static readonly Type objectType ;
+		private static readonly Type iDataReaderType ;
+		private static readonly Type dictionaryStringObjectType ;
+		private static readonly Type listKeyValuePairStringStringType ;
+		private static readonly Type keyOpValueListType ;
 
-		private static readonly Type[] noArgs = new Type[]{ };
-		private static readonly Type handlerBaseType = typeof(EmitObjectHandlerBase);
-		private static readonly Type objectType = typeof(object);
-		private static readonly Type iDataReaderType = typeof(IDataReader);
-		private static readonly Type dictionaryStringObjectType = typeof(Dictionary<string, object>);
-		private static readonly Type listKeyValuePairStringStringType = typeof(List<KeyValuePair<string, string>>);
-		private static readonly Type keyOpValueListType = typeof(List<KeyOpValue>);
+		private static readonly MethodInfo handlerBaseCreateInstance ;
+		private static readonly MethodInfo handlerBaseLoadSimpleValuesByIndex ;
+		private static readonly MethodInfo handlerBaseLoadSimpleValuesByName ;
+		private static readonly MethodInfo handlerBaseLoadRelationValuesByIndex ;
+		private static readonly MethodInfo handlerBaseLoadRelationValuesByName ;
+		private static readonly MethodInfo handlerBaseLoadRelationValuesByIndexNoLazy ;
+		private static readonly MethodInfo handlerBaseLoadRelationValuesByNameNoLazy ;
+		private static readonly MethodInfo handlerBaseTypeGetNullable ;
+		private static readonly MethodInfo handlerBaseGetKeyValueDirect ;
+		private static readonly MethodInfo handlerBaseGetKeyValuesDirect ;
+		private static readonly MethodInfo handlerBaseSetKeyValueDirect ;
+		private static readonly MethodInfo handlerBaseSetValuesForSelectDirect;
+		private static readonly MethodInfo handlerBaseSetValuesForSelectDirectNoLazy;
+		private static readonly MethodInfo handlerBaseSetValuesForInsertDirect ;
+		private static readonly MethodInfo handlerBaseSetValuesForUpdateDirect ;
+		private static readonly MethodInfo handlerBaseTypeNewSpKeyValueDirect ;
+		private static readonly MethodInfo handlerBaseTypeNewKeyValue ;
+		private static readonly MethodInfo handlerBaseTypeAddKeyValue ;
+
+		private static readonly MethodInfo dataReaderMethodInt ;
+		private static readonly MethodInfo dataReaderMethodString ;
+		private static readonly MethodInfo lazyLoadingInterfaceWrite ;
+		private static readonly MethodInfo belongsToInterfaceSetForeignKey ;
+		private static readonly MethodInfo dictionaryStringObjectAdd ;
+		private static readonly MethodInfo convertToInt64 ;
+		private static readonly MethodInfo convertToInt32 ;
+		private static readonly ConstructorInfo keyValuePairStringStringCtor ;
+		private static readonly MethodInfo listKeyValuePairStringStringAdd ;
+		private static readonly MethodInfo keyOpValueListAdd ;
 
 		private readonly Type _model;
 		private readonly TypeBuilder _result;
 
 		private readonly ObjectInfo _info;
+
+		static ModelHandlerGenerator ()
+		{
+			noArgs = new Type[]{ };
+			handlerBaseType = typeof(EmitObjectHandlerBase);
+			objectType = typeof(object);
+			iDataReaderType = typeof(IDataReader);
+			dictionaryStringObjectType = typeof(Dictionary<string, object>);
+			listKeyValuePairStringStringType = typeof(List<KeyValuePair<string, string>>);
+			keyOpValueListType = typeof(List<KeyOpValue>);
+
+			handlerBaseCreateInstance = handlerBaseType.GetMethod ("CreateInstance", commFlag);
+			handlerBaseLoadSimpleValuesByIndex = handlerBaseType.GetMethod("LoadSimpleValuesByIndex", commFlag);
+			handlerBaseLoadSimpleValuesByName = handlerBaseType.GetMethod("LoadSimpleValuesByName", commFlag);
+			handlerBaseLoadRelationValuesByIndex = handlerBaseType.GetMethod("LoadRelationValuesByIndex", commFlag);
+			handlerBaseLoadRelationValuesByName = handlerBaseType.GetMethod("LoadRelationValuesByName", commFlag);
+			handlerBaseLoadRelationValuesByIndexNoLazy = handlerBaseType.GetMethod("LoadRelationValuesByIndexNoLazy", commFlag);
+			handlerBaseLoadRelationValuesByNameNoLazy = handlerBaseType.GetMethod("LoadRelationValuesByNameNoLazy", commFlag);
+			handlerBaseTypeGetNullable = handlerBaseType.GetMethod("GetNullable", commFlag);
+			handlerBaseGetKeyValueDirect = handlerBaseType.GetMethod("GetKeyValueDirect", commFlag);
+			handlerBaseGetKeyValuesDirect = handlerBaseType.GetMethod("GetKeyValuesDirect", commFlag);
+			handlerBaseSetKeyValueDirect = handlerBaseType.GetMethod("SetKeyValueDirect", commFlag);
+			handlerBaseSetValuesForSelectDirect = handlerBaseType.GetMethod("SetValuesForSelectDirect", commFlag);
+			handlerBaseSetValuesForSelectDirectNoLazy = handlerBaseType.GetMethod("SetValuesForSelectDirectNoLazy", commFlag);
+			handlerBaseSetValuesForInsertDirect = handlerBaseType.GetMethod("SetValuesForInsertDirect", commFlag);
+			handlerBaseSetValuesForUpdateDirect = handlerBaseType.GetMethod("SetValuesForUpdateDirect", commFlag);
+			handlerBaseTypeNewSpKeyValueDirect = handlerBaseType.GetMethod("NewSpKeyValueDirect", commFlag);
+			handlerBaseTypeNewKeyValue = handlerBaseType.GetMethod("NewKeyValue", commFlag);
+			handlerBaseTypeAddKeyValue = handlerBaseType.GetMethod("AddKeyValue", commFlag);
+
+			dataReaderMethodInt = typeof(IDataRecord).GetMethod("get_Item", new Type[]{typeof(int)});
+			dataReaderMethodString = typeof(IDataRecord).GetMethod("get_Item", new Type[]{typeof(string)});
+			lazyLoadingInterfaceWrite = typeof(ILazyLoading).GetMethod("Write");
+			belongsToInterfaceSetForeignKey = typeof(IBelongsTo).GetMethod("set_ForeignKey");
+			dictionaryStringObjectAdd = dictionaryStringObjectType.GetMethod("Add");
+			convertToInt64 = typeof(Convert).GetMethod ("ToInt64", new []{ objectType });
+			convertToInt32 = typeof(Convert).GetMethod ("ToInt32", new []{ objectType });
+			keyValuePairStringStringCtor = typeof(KeyValuePair<string, string>).GetConstructor(new[] { typeof(string), typeof(string) });
+			listKeyValuePairStringStringAdd = listKeyValuePairStringStringType.GetMethod("Add");
+			keyOpValueListAdd = typeof(List<KeyOpValue>).GetMethod("Add", new[] {typeof(KeyOpValue)});
+		}
 
 		public ModelHandlerGenerator(ObjectInfo info)
 		{
@@ -141,8 +185,8 @@ namespace Leafing.Data.Model.Handler.Generator
 
 		private void GenerateCreateInstance()
 		{
-			var ctor = _model.GetConstructor(null);
-			var method = _result.DefineMethod("CreateInstance", CtMethodAttr, _model, noArgs);
+			var ctor = _model.GetConstructor(noArgs);
+			var method = _result.DefineMethod("CreateInstance", CtMethodAttr, objectType, noArgs);
 			_result.DefineMethodOverride(method, handlerBaseCreateInstance);
 			var processor = new ILBuilder(method.GetILGenerator());
 			processor.NewObj(ctor);
@@ -396,7 +440,9 @@ namespace Leafing.Data.Model.Handler.Generator
 		{
 			var method = _result.DefineMethod(methodName, MethodAttr, 
 				null, new Type[]{listKeyValuePairStringStringType});
-			_result.DefineMethodOverride (method, handlerBaseGetKeyValuesDirect);
+			_result.DefineMethodOverride (method, noLazy 
+				? handlerBaseSetValuesForSelectDirectNoLazy 
+				: handlerBaseSetValuesForSelectDirect);
 			var processor = new ILBuilder(method.GetILGenerator());
 
 			foreach (var f in _info.Members)
