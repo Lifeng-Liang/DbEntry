@@ -5,56 +5,56 @@ using System.Reflection;
 
 namespace Leafing.Data.Model.Handler.Generator
 {
-    internal class DataReaderEmitHelper
+    internal static class DataReaderEmitHelper
     {
-        readonly Dictionary<Type, string> _dic;
+		private static readonly Dictionary<Type, MethodInfo> drDic;
+		private static readonly MethodInfo drGetInt32;
 
-        public DataReaderEmitHelper()
+        static DataReaderEmitHelper()
         {
+			var drt = typeof(IDataRecord);
+			drGetInt32 = drt.GetMethod ("GetInt32");
             // process chars etc.
-            _dic = new Dictionary<Type, string>
-                      {
-                          {typeof (long), "GetInt64"},
-                          {typeof (int), "GetInt32"},
-                          {typeof (short), "GetInt16"},
-                          {typeof (byte), "GetByte"},
-                          {typeof (bool), "GetBoolean"},
-                          {typeof (DateTime), "GetDateTime"},
-                          {typeof (Date), "GetDateTime"},
-                          {typeof (Time), "GetDateTime"},
-                          {typeof (string), "GetString"},
-                          {typeof (decimal), "GetDecimal"},
-                          {typeof (float), "GetFloat"},
-                          {typeof (double), "GetDouble"},
-                          {typeof (Guid), "GetGuid"},
-                          {typeof (ulong), "GetInt64"},
-                          {typeof (uint), "GetInt32"},
-                          {typeof (ushort), "GetInt16"}
-                      };
+			drDic = new Dictionary<Type, MethodInfo> {
+				{ typeof(long), drt.GetMethod ("GetInt64") },
+				{ typeof(int), drGetInt32 },
+				{ typeof(short), drt.GetMethod ("GetInt16") },
+				{ typeof(byte), drt.GetMethod ("GetByte") },
+				{ typeof(bool), drt.GetMethod ("GetBoolean") },
+				{ typeof(DateTime), drt.GetMethod ("GetDateTime") },
+				{ typeof(Date), drt.GetMethod ("GetDateTime") },
+				{ typeof(Time), drt.GetMethod ("GetDateTime") },
+				{ typeof(string), drt.GetMethod ("GetString") },
+				{ typeof(decimal), drt.GetMethod ("GetDecimal") },
+				{ typeof(float), drt.GetMethod ("GetFloat") },
+				{ typeof(double),drt.GetMethod ("GetDouble") },
+				{ typeof(Guid), drt.GetMethod ("GetGuid") },
+				{ typeof(ulong), drt.GetMethod ("GetInt64") },
+				{ typeof(uint), drt.GetMethod ("GetInt32") },
+				{ typeof(ushort), drt.GetMethod ("GetInt16") }
+			};
         }
 
-        public MethodInfo GetMethodInfo(Type t)
+        public static MethodInfo GetMethodInfo(Type t)
         {
-            Type drt = typeof(IDataRecord);
-            if (_dic.ContainsKey(t))
+			MethodInfo result;
+			if (drDic.TryGetValue(t, out result))
             {
-                string n = _dic[t];
-                MethodInfo mi = drt.GetMethod(n);
-                return mi;
+				return result;
             }
             if (t.IsEnum)
             {
-                return drt.GetMethod("GetInt32");
+				return drGetInt32;
             }
             return null;
         }
 
-        public MethodInfo GetMethodInfo()
+        public static MethodInfo GetMethodInfo()
         {
             return GetMethodInfo(false);
         }
 
-        public MethodInfo GetMethodInfo(bool isInt)
+        public static MethodInfo GetMethodInfo(bool isInt)
         {
             if (isInt)
             {

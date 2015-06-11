@@ -13,8 +13,6 @@ namespace Leafing.Data.Model.Handler.Generator
 {
 	public class ModelHandlerGenerator
 	{
-		private static readonly DataReaderEmitHelper Helper = new DataReaderEmitHelper();
-
 		private const MethodAttributes CtMethodAttr = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual; //public hidebysig virtual instance
 		private const MethodAttributes MethodAttr = MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.Virtual; //public hidebysig virtual instance
 		private const MethodAttributes CtorAttr = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
@@ -51,6 +49,7 @@ namespace Leafing.Data.Model.Handler.Generator
 
 		private static readonly MethodInfo dataReaderMethodInt ;
 		private static readonly MethodInfo dataReaderMethodString ;
+		private static readonly MethodInfo dataReaderGetOrdinal;
 		private static readonly MethodInfo lazyLoadingInterfaceWrite ;
 		private static readonly MethodInfo belongsToInterfaceSetForeignKey ;
 		private static readonly MethodInfo dictionaryStringObjectAdd ;
@@ -96,6 +95,7 @@ namespace Leafing.Data.Model.Handler.Generator
 
 			dataReaderMethodInt = typeof(IDataRecord).GetMethod("get_Item", new Type[]{typeof(int)});
 			dataReaderMethodString = typeof(IDataRecord).GetMethod("get_Item", new Type[]{typeof(string)});
+			dataReaderGetOrdinal = typeof(IDataRecord).GetMethod ("GetOrdinal", commFlag);
 			lazyLoadingInterfaceWrite = typeof(ILazyLoading).GetMethod("Write");
 			belongsToInterfaceSetForeignKey = typeof(IBelongsTo).GetMethod("set_ForeignKey");
 			dictionaryStringObjectAdd = dictionaryStringObjectType.GetMethod("Add");
@@ -111,7 +111,6 @@ namespace Leafing.Data.Model.Handler.Generator
 			this._model = info.HandleType;
 			_result = CreateType();
 			_info = info;
-
 			CheckType(_model);
 		}
 
@@ -210,7 +209,7 @@ namespace Leafing.Data.Model.Handler.Generator
 				processor.LoadLoc(0);
 				if (f.Is.AllowNull) { processor.LoadArg(0); }
 				processor.LoadArg(2).LoadInt(n);
-				var mi1 = Helper.GetMethodInfo(f.MemberType);
+				var mi1 = DataReaderEmitHelper.GetMethodInfo(f.MemberType);
 				if (f.Is.AllowNull || mi1 == null)
 				{
 					processor.CallVirtual(dataReaderMethodInt);
@@ -270,18 +269,25 @@ namespace Leafing.Data.Model.Handler.Generator
 			// set values
 			foreach (var f in _info.SimpleMembers)
 			{
-				// get value
 				processor.LoadLoc(0);
 				if (f.Is.AllowNull) { processor.LoadArg(0); }
-				processor.LoadArg(2).LoadString(f.Name).CallVirtual(dataReaderMethodString);
-				if (f.Is.AllowNull)
+				processor.LoadArg(2).LoadArg(2).LoadString(f.Name).CallVirtual(dataReaderGetOrdinal);
+				var mi1 = DataReaderEmitHelper.GetMethodInfo(f.MemberType);
+				if (f.Is.AllowNull || mi1 == null)
 				{
-					SetSecendArgForGetNullable(f, processor);
-					processor.Call(handlerBaseTypeGetNullable);
+					processor.CallVirtual(dataReaderMethodInt);
+					if (f.Is.AllowNull)
+					{
+						SetSecendArgForGetNullable(f, processor);
+						processor.Call(handlerBaseTypeGetNullable);
+					}
+					// cast or unbox
+					processor.CastOrUnbox(f.MemberType);
 				}
-				// cast or unbox
-				processor.CastOrUnbox(f.MemberType);
-				// set field
+				else
+				{
+					processor.CallVirtual(mi1);
+				}
 				processor.SetMember(f);
 			}
 
