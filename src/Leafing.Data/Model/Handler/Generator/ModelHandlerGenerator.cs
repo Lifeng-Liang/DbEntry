@@ -162,8 +162,8 @@ namespace Leafing.Data.Model.Handler.Generator
 		{
 			GenerateConstructor();
 			GenerateCreateInstance();
-			GenerateLoadSimpleValuesByIndex();
-			GenerateLoadSimpleValuesByName();
+			GenerateLoadSimpleValues(true);
+			GenerateLoadSimpleValues(false);
 			GenerateLoadRelationValues(true, false);
 			GenerateLoadRelationValues(false, false);
 			GenerateLoadRelationValues(true, true);
@@ -192,11 +192,14 @@ namespace Leafing.Data.Model.Handler.Generator
 			processor.Return();
 		}
 
-		private void GenerateLoadSimpleValuesByIndex()
+		private void GenerateLoadSimpleValues(bool byIndex)
 		{
-			var method = _result.DefineMethod("LoadSimpleValuesByIndex", MethodAttr, 
+			var name = byIndex ? "LoadSimpleValuesByIndex" : "LoadSimpleValuesByName";
+			var method = _result.DefineMethod(name, MethodAttr, 
 				null, new Type[]{objectType, iDataReaderType});
-			_result.DefineMethodOverride (method, handlerBaseLoadSimpleValuesByIndex);
+			_result.DefineMethodOverride (method, byIndex 
+				? handlerBaseLoadSimpleValuesByIndex
+				: handlerBaseLoadSimpleValuesByName);
 			var processor = new ILBuilder(method.GetILGenerator());
 
 			// User u = (User)o;
@@ -208,7 +211,12 @@ namespace Leafing.Data.Model.Handler.Generator
 			{
 				processor.LoadLoc(0);
 				if (f.Is.AllowNull) { processor.LoadArg(0); }
-				processor.LoadArg(2).LoadInt(n);
+				processor.LoadArg (2);
+				if (byIndex) {
+					processor.LoadInt (n);
+				} else {
+					processor.LoadArg(2).LoadString(f.Name).CallVirtual(dataReaderGetOrdinal);
+				}
 				var mi1 = DataReaderEmitHelper.GetMethodInfo(f.MemberType);
 				if (f.Is.AllowNull || mi1 == null)
 				{
@@ -254,44 +262,6 @@ namespace Leafing.Data.Model.Handler.Generator
 			{
 				il.LoadInt(0);
 			}
-		}
-
-		private void GenerateLoadSimpleValuesByName()
-		{
-			var method = _result.DefineMethod("LoadSimpleValuesByName", MethodAttr, 
-				null, new Type[]{objectType, iDataReaderType});
-			_result.DefineMethodOverride (method, handlerBaseLoadSimpleValuesByName);
-			var processor = new ILBuilder(method.GetILGenerator());
-
-			// User u = (User)o;
-			processor.DeclareLocal(_model);
-			processor.LoadArg(1).Cast(_model).SetLoc(0);
-			// set values
-			foreach (var f in _info.SimpleMembers)
-			{
-				processor.LoadLoc(0);
-				if (f.Is.AllowNull) { processor.LoadArg(0); }
-				processor.LoadArg(2).LoadArg(2).LoadString(f.Name).CallVirtual(dataReaderGetOrdinal);
-				var mi1 = DataReaderEmitHelper.GetMethodInfo(f.MemberType);
-				if (f.Is.AllowNull || mi1 == null)
-				{
-					processor.CallVirtual(dataReaderMethodInt);
-					if (f.Is.AllowNull)
-					{
-						SetSecendArgForGetNullable(f, processor);
-						processor.Call(handlerBaseTypeGetNullable);
-					}
-					// cast or unbox
-					processor.CastOrUnbox(f.MemberType);
-				}
-				else
-				{
-					processor.CallVirtual(mi1);
-				}
-				processor.SetMember(f);
-			}
-
-			processor.Return();
 		}
 
 		private void GenerateLoadRelationValues(bool useIndex, bool noLazy)
@@ -438,12 +408,13 @@ namespace Leafing.Data.Model.Handler.Generator
 
 		private void GenerateSetValuesForSelectDirect()
 		{
-			GenerateSetValuesForSelectDirectDirect("SetValuesForSelectDirect", false);
-			GenerateSetValuesForSelectDirectDirect("SetValuesForSelectDirectNoLazy", true);
+			GenerateSetValuesForSelectDirectDirect(false);
+			GenerateSetValuesForSelectDirectDirect(true);
 		}
 
-		private void GenerateSetValuesForSelectDirectDirect(string methodName, bool noLazy)
+		private void GenerateSetValuesForSelectDirectDirect(bool noLazy)
 		{
+			var methodName = noLazy ? "SetValuesForSelectDirectNoLazy" : "SetValuesForSelectDirect";
 			var method = _result.DefineMethod(methodName, MethodAttr, 
 				null, new Type[]{listKeyValuePairStringStringType});
 			_result.DefineMethodOverride (method, noLazy 
