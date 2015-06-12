@@ -23,7 +23,7 @@ namespace Leafing.UnitTest.Data
         string Street { get; set; }
     }
 
-    [TestFixture]
+	[TestFixture, Ignore("Can not support this feather by emit mode.")]
     public class ComposedOfTest : DataTestBase
     {
         public class CoUser : DbObjectModel<CoUser>

@@ -37,34 +37,14 @@ namespace Leafing.Data.Model.Handler.Generator
 		private const TypeAttributes DynamicObjectTypeAttr = TypeAttributes.Class | TypeAttributes.Public;
 
 		private static readonly Type objectType = typeof(object);
-		//private static readonly Type dbObjectSmartUpdate = typeof(DbObjectSmartUpdate);
 		private static readonly Type memberHandlerInterface = typeof(IMemberHandler);
-
-		//private readonly Type _model;
-		//private readonly ObjectInfo _info;
 
 		public MemberHandlerGenerator()
 		{
-//			this._model = type;
-//			_info = ObjectInfoFactory.Instance.GetInstance(type);
-		}
-
-		public void Generate()
-		{
-//			foreach(var member in _info.Members)
-//			{
-//				var key = member.MemberInfo.Name;
-//				var type = MemoryAssembly.Instance.DefineType (DynamicObjectTypeAttr, 
-//					objectType, new []{ memberHandlerInterface });
-//				GenerateConstructor(type);
-//				GenerateSetValue(type, member, member.MemberInfo.MemberType);
-//				GenerateGetValue(type, member, member.MemberInfo.MemberType);
-//			}
 		}
 
 		public static Type Generate(Type model, FieldInfo info)
 		{
-			//var key = info.Name;
 			var type = MemoryAssembly.Instance.DefineType (DynamicObjectTypeAttr, 
 				objectType, new []{ memberHandlerInterface });
 			GenerateConstructor(type);
@@ -75,7 +55,6 @@ namespace Leafing.Data.Model.Handler.Generator
 
 		public static Type Generate(Type model, PropertyInfo info)
 		{
-			//var key = info.Name;
 			var type = MemoryAssembly.Instance.DefineType (DynamicObjectTypeAttr, 
 				objectType, new []{ memberHandlerInterface });
 			GenerateConstructor(type);
