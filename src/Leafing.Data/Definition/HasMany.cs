@@ -17,6 +17,25 @@ namespace Leafing.Data.Definition
 
         List<object> IHasMany.RemovedValues { get { return _removedValues; } }
 
+		public HasMany(DbObjectSmartUpdate owner)
+			: base(owner, GetRelationName(owner))
+		{
+			this._order = new OrderBy("Id");
+		}
+
+		public HasMany(DbObjectSmartUpdate owner, OrderBy orderBy)
+			: base(owner, GetRelationName(owner))
+		{
+			this._order = orderBy;
+		}
+
+		private static string GetRelationName(DbObjectSmartUpdate owner)
+		{
+			var tCtx = ModelContext.GetInstance (typeof(T));
+			var bt = tCtx.Info.GetBelongsTo (owner.GetType ());
+			return bt.Name;
+		}
+
         public HasMany(DbObjectSmartUpdate owner, string orderByString, string foreignKeyName)
             : base(owner, foreignKeyName)
         {

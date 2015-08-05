@@ -74,9 +74,7 @@ namespace Leafing.Data.Driver
                 dialectClass, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
-        // ReSharper disable UnusedParameter.Local
         private static void CheckProperty(DbDialect dialectClass, string connectionString)
-        // ReSharper restore UnusedParameter.Local
         {
             if (dialectClass == null || connectionString == "")
             {

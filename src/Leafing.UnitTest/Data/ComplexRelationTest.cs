@@ -28,7 +28,7 @@ namespace Leafing.UnitTest.Data
 			public HasOne<Cls2> Cls2 { get; private set; }
 			public Cls1 ()
 			{
-				Cls2 = new HasOne<Cls2>(this, "Id", "Cls1_Id");
+				Cls2 = new HasOne<Cls2>(this);
 			}
         }
 
@@ -39,8 +39,8 @@ namespace Leafing.UnitTest.Data
 			public HasMany<Cls3> Cls3List { get; private set; }
 			public Cls2 ()
 			{
-				Cls1 = new BelongsTo<Cls1, long>(this, "Cls1_Id");
-				Cls3List = new HasMany<Cls3>(this, "Id", "Cls2_Id");
+				Cls1 = new BelongsTo<Cls1, long>(this);
+				Cls3List = new HasMany<Cls3>(this);
 			}
         }
 
@@ -51,8 +51,8 @@ namespace Leafing.UnitTest.Data
 			public BelongsTo<Cls4, long> Cls4 { get; private set; }
 			public Cls3 ()
 			{
-				Cls2 = new BelongsTo<Cls2, long>(this, "Cls2_Id");
-				Cls4 = new BelongsTo<Cls4, long>(this, "Cls4_Id");
+				Cls2 = new BelongsTo<Cls2, long>(this);
+				Cls4 = new BelongsTo<Cls4, long>(this);
 			}
         }
 
@@ -63,8 +63,8 @@ namespace Leafing.UnitTest.Data
 			public BelongsTo<Cls5, long> Cls5 { get; private set; }
 			public Cls4 ()
 			{
-				Cls3List = new HasMany<Cls3>(this, "Id", "Cls4_Id");
-				Cls5 = new BelongsTo<Cls5, long>(this, "Cls5_Id");
+				Cls3List = new HasMany<Cls3>(this);
+				Cls5 = new BelongsTo<Cls5, long>(this);
 			}
         }
 
@@ -74,7 +74,7 @@ namespace Leafing.UnitTest.Data
 			public HasOne<Cls4> Cls4 { get; private set; }
 			public Cls5 ()
 			{
-				Cls4 = new HasOne<ComplexRelationTest.Cls4>(this, "Id", "Cls5_Id");
+				Cls4 = new HasOne<ComplexRelationTest.Cls4>(this);
 			}
         }
 
@@ -84,7 +84,7 @@ namespace Leafing.UnitTest.Data
 			public HasMany<OverSave2> Overs { get; private set; }
 			public OverSave ()
 			{
-				Overs = new HasMany<OverSave2>(this, "Id", "OverSave_Id");
+				Overs = new HasMany<OverSave2>(this);
 			}
         }
 
@@ -94,7 +94,7 @@ namespace Leafing.UnitTest.Data
 			public BelongsTo<OverSave, long> Over { get; private set; }
 			public OverSave2 ()
 			{
-				Over = new BelongsTo<OverSave, long>(this, "OverSave_Id");
+				Over = new BelongsTo<OverSave, long>(this);
 			}
             protected override void OnInserting()
             {
@@ -108,7 +108,7 @@ namespace Leafing.UnitTest.Data
 			public HasMany<OverSave4> Overs { get; private set; }
 			public OverSave3 ()
 			{
-				Overs = new HasMany<OverSave4>(this, "Id", "OverSave3_Id");
+				Overs = new HasMany<OverSave4>(this);
 			}
         }
 
@@ -119,7 +119,7 @@ namespace Leafing.UnitTest.Data
 
 			public OverSave4 ()
 			{
-				Over = new BelongsTo<OverSave3, long>(this, "OverSave3_Id");
+				Over = new BelongsTo<OverSave3, long>(this);
 			}
 
             protected override void OnInserting()

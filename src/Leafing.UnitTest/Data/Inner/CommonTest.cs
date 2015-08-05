@@ -25,7 +25,7 @@ namespace Leafing.UnitTest.Data.Inner
 		public HasOne<TableB> tableB { get; private set; }
 		public TableA ()
 		{
-			tableB = new HasOne<TableB> (this, "Id", "TableB_Id");
+			tableB = new HasOne<TableB> (this);
 		}
     }
 
@@ -41,7 +41,7 @@ namespace Leafing.UnitTest.Data.Inner
 
 		public TableB ()
 		{
-			TB = new BelongsTo<TableA, long> (this, "TableA_Id");
+			TB = new BelongsTo<TableA, long> (this);
 		}
     }
 

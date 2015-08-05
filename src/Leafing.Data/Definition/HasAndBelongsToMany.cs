@@ -12,6 +12,25 @@ namespace Leafing.Data.Definition
         private readonly List<object> _removedRelations = new List<object>();
         List<object> IHasAndBelongsToManyRelations.RemovedRelations { get { return _removedRelations; } }
 
+		public HasAndBelongsToMany(DbObjectSmartUpdate owner)
+			: base(owner, GetRelationName(owner))
+		{
+			_order = new OrderBy("Id");
+		}
+
+		public HasAndBelongsToMany(DbObjectSmartUpdate owner, OrderBy orderBy)
+			: base(owner, GetRelationName(owner))
+		{
+			_order = orderBy;
+		}
+
+		private static string GetRelationName(DbObjectSmartUpdate owner)
+		{
+			var tCtx = ModelContext.GetInstance (typeof(T));
+			var bt = tCtx.Info.GetHasAndBelongsToMany (owner.GetType());
+			return bt.Name;
+		}
+
         public HasAndBelongsToMany(DbObjectSmartUpdate owner, string orderByString, string foreignKeyName)
             : base(owner, foreignKeyName)
         {

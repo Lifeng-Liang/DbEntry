@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Leafing.Data.Common;
 using Leafing.Data.Definition;
+using Leafing.Data;
 
 namespace Leafing.UnitTest.Data.Objects
 {
@@ -75,7 +76,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public ImpPeople()
         {
-            _pc = new HasOne<ImpPCs>(this, "Id", "Person_Id");
+            _pc = new HasOne<ImpPCs>(this);
         }
     }
 
@@ -92,7 +93,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public ImpPCs()
         {
-            _owner = new BelongsTo<ImpPeople, long>(this, "Person_Id");
+            _owner = new BelongsTo<ImpPeople, long>(this);
         }
     }
 
@@ -105,7 +106,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public ImpPeople1()
         {
-            pcs = new HasMany<ImpPCs1>(this, "Id DESC", "Person_Id");
+			pcs = new HasMany<ImpPCs1>(this, Leafing.Data.OrderBy.Parse("Id DESC"));
         }
     }
 
@@ -122,7 +123,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public ImpPCs1()
         {
-            _owner = new BelongsTo<ImpPeople1, long>(this, "Person_Id");
+            _owner = new BelongsTo<ImpPeople1, long>(this);
         }
     }
 
@@ -134,7 +135,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public People ()
 		{
-			pc = new HasOne<PCs> (this, "Id", "Person_Id");
+			pc = new HasOne<PCs> (this);
 		}
     }
 
@@ -147,7 +148,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public PCs ()
 		{
-			owner = new BelongsTo<People, long> (this, "Person_Id");
+			owner = new BelongsTo<People, long> (this);
 		}
     }
 
@@ -160,7 +161,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public People1 ()
 		{
-			pcs = new HasMany<PCs1> (this, "Id DESC", "Person_Id");
+			pcs = new HasMany<PCs1> (this, Leafing.Data.OrderBy.Parse("Id DESC"));
 		}
     }
 
@@ -174,7 +175,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public PCs1 ()
 		{
-			owner = new BelongsTo<People1, long> (this, "Person_Id");
+			owner = new BelongsTo<People1, long> (this);
 		}
     }
 
@@ -187,7 +188,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public DArticle ()
 		{
-			readers = new HasAndBelongsToMany<DReader> (this, "Id", "Article_Id");
+			readers = new HasAndBelongsToMany<DReader> (this);
 		}
     }
 
@@ -200,7 +201,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public DReader ()
 		{
-			arts = new HasAndBelongsToMany<DArticle> (this, "Id", "Reader_Id");
+			arts = new HasAndBelongsToMany<DArticle> (this);
 		}
     }
 
@@ -213,7 +214,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public DArticleSqlite ()
 		{
-			readers = new HasAndBelongsToMany<DReaderSqlite> (this, "Id", "Article_Id");
+			readers = new HasAndBelongsToMany<DReaderSqlite> (this);
 		}
     }
 
@@ -226,7 +227,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public DReaderSqlite ()
 		{
-			arts = new HasAndBelongsToMany<DArticleSqlite> (this, "Id", "Reader_Id");
+			arts = new HasAndBelongsToMany<DArticleSqlite> (this);
 		}
     }
 
@@ -239,7 +240,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public PeopleImp1()
         {
-            pc = new HasOne<PCsImp1>(this, "Id", "Person_Id");
+            pc = new HasOne<PCsImp1>(this);
         }
     }
 
@@ -253,7 +254,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public PCsImp1()
         {
-            owner = new BelongsTo<PeopleImp1, long>(this, "Person_Id");
+            owner = new BelongsTo<PeopleImp1, long>(this);
         }
     }
 
@@ -266,7 +267,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public PeopleImp2()
         {
-            pc = new HasOne<PCsImp2>(this, "Id DESC", "Person_Id");
+			pc = new HasOne<PCsImp2>(this, Leafing.Data.OrderBy.Parse("Id DESC"));
         }
     }
 
@@ -280,7 +281,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public PCsImp2()
         {
-            owner = new BelongsTo<PeopleImp2, long>(this, "Person_Id");
+            owner = new BelongsTo<PeopleImp2, long>(this);
         }
     }
 

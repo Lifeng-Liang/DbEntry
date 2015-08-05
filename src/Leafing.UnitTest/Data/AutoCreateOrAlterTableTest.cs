@@ -47,7 +47,7 @@ namespace Leafing.UnitTest.Data
 
         public ctUser()
         {
-            info = new HasOne<ctInfo>(this, null, "user_id");
+            info = new HasOne<ctInfo>(this);
         }
     }
 
@@ -60,7 +60,7 @@ namespace Leafing.UnitTest.Data
 
         public ctInfo()
         {
-            user = new BelongsTo<ctUser, long>(this, "user_id");
+            user = new BelongsTo<ctUser, long>(this);
         }
     }
 
@@ -72,7 +72,7 @@ namespace Leafing.UnitTest.Data
 
         public ctmUser()
         {
-            infos = new HasMany<ctmInfo>(this, "Id", "user_id");
+            infos = new HasMany<ctmInfo>(this);
         }
     }
 
@@ -85,7 +85,7 @@ namespace Leafing.UnitTest.Data
 
         public ctmInfo()
         {
-            user = new BelongsTo<ctmUser, long>(this, "user_id");
+            user = new BelongsTo<ctmUser, long>(this);
         }
         public ctmInfo(string msg) : this()
         {
@@ -101,7 +101,7 @@ namespace Leafing.UnitTest.Data
         public HasAndBelongsToMany<cmmArticle> arts;
         public cmmReader()
         {
-            arts = new HasAndBelongsToMany<cmmArticle>(this, "Id", "cmmReader_id");
+            arts = new HasAndBelongsToMany<cmmArticle>(this);
         }
         public cmmReader(string name) : this() { this.Name = name; }
     }
@@ -114,7 +114,7 @@ namespace Leafing.UnitTest.Data
         public HasAndBelongsToMany<cmmReader> rads;
         public cmmArticle()
         {
-            rads = new HasAndBelongsToMany<cmmReader>(this, "Id", "cmmArticle_id");
+            rads = new HasAndBelongsToMany<cmmReader>(this);
         }
         public cmmArticle(string title) : this() { this.Title = title; }
     }

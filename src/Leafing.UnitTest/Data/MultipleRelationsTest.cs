@@ -15,7 +15,7 @@ namespace Leafing.UnitTest.Data
 			public HasMany<mrProject> Projects { get; private set; }
 			public mrUser ()
 			{
-				Projects = new HasMany<mrProject>(this, "Id", "mrUser_Id");
+				Projects = new HasMany<mrProject>(this);
 			}
         }
 
@@ -26,8 +26,8 @@ namespace Leafing.UnitTest.Data
 			public HasMany<mrSubject> Subjects { get; private set; }
 			public mrProject ()
 			{
-				Owner = new BelongsTo<mrUser, long>(this, "mrUser_Id");
-				Subjects = new HasMany<mrSubject>(this, "Id", "mrProject_Id");
+				Owner = new BelongsTo<mrUser, long>(this);
+				Subjects = new HasMany<mrSubject>(this);
 			}
         }
 
@@ -38,8 +38,8 @@ namespace Leafing.UnitTest.Data
 			public HasMany<mrAttribute> Attributes { get; private set; }
 			public mrSubject ()
 			{
-				Owner = new BelongsTo<mrProject, long>(this, "mrProject_Id");
-				Attributes = new HasMany<mrAttribute>(this, "Id", "mrSubject_Id");
+				Owner = new BelongsTo<mrProject, long>(this);
+				Attributes = new HasMany<mrAttribute>(this);
 			}
         }
 
@@ -50,8 +50,8 @@ namespace Leafing.UnitTest.Data
 			public HasOne<mrTitle> Title { get; private set; }
 			public mrAttribute ()
 			{
-				Owner = new BelongsTo<mrSubject, long>(this, "mrSubject_Id");
-				Title = new HasOne<mrTitle>(this, "Id", "mrAttribute_Id");
+				Owner = new BelongsTo<mrSubject, long>(this);
+				Title = new HasOne<mrTitle>(this);
 			}
         }
 
@@ -61,7 +61,7 @@ namespace Leafing.UnitTest.Data
 			public BelongsTo<mrAttribute, long> Owner { get; private set; }
 			public mrTitle ()
 			{
-				Owner = new BelongsTo<mrAttribute, long>(this, "mrAttribute_Id");
+				Owner = new BelongsTo<mrAttribute, long>(this);
 			}
         }
 
@@ -75,7 +75,7 @@ namespace Leafing.UnitTest.Data
 			public HasAndBelongsToMany<mrCategory> Categories { get; private set; }
 			public mrBook ()
 			{
-				Categories = new HasAndBelongsToMany<mrCategory>(this, "Id", "mrBook_Id");
+				Categories = new HasAndBelongsToMany<mrCategory>(this);
 			}
         }
 
@@ -86,8 +86,8 @@ namespace Leafing.UnitTest.Data
 			public HasOne<mrCateTitle> Title { get; set; }
 			public mrCategory ()
 			{
-				Books = new HasAndBelongsToMany<mrBook>(this, "Id", "mrCategory_Id");
-				Title = new HasOne<mrCateTitle>(this, "Id", "mrCategory_Id");
+				Books = new HasAndBelongsToMany<mrBook>(this);
+				Title = new HasOne<mrCateTitle>(this);
 			}
         }
 
@@ -98,8 +98,8 @@ namespace Leafing.UnitTest.Data
 			public HasMany<mrCateTitleName> Names { get; private set; }
 			public mrCateTitle ()
 			{
-				Category = new BelongsTo<mrCategory, long>(this, "mrCategory_Id");
-				Names = new HasMany<mrCateTitleName>(this, "Id", "mrCateTitle_Id");
+				Category = new BelongsTo<mrCategory, long>(this);
+				Names = new HasMany<mrCateTitleName>(this);
 			}
         }
 
@@ -109,7 +109,7 @@ namespace Leafing.UnitTest.Data
 			public BelongsTo<mrCateTitle, long> Owner { get; private set; }
 			public mrCateTitleName ()
 			{
-				Owner = new BelongsTo<mrCateTitle, long>(this, "mrCateTitle_Id");
+				Owner = new BelongsTo<mrCateTitle, long>(this);
 			}
         }
 
@@ -123,7 +123,7 @@ namespace Leafing.UnitTest.Data
 			public HasMany<mrReaderAndArticle> xTable { get; private set; }
 			public mrReader ()
 			{
-				xTable = new HasMany<mrReaderAndArticle>(this, "Id", "mrReader_Id");
+				xTable = new HasMany<mrReaderAndArticle>(this);
 			}
         }
 
@@ -134,8 +134,8 @@ namespace Leafing.UnitTest.Data
 			public BelongsTo<mrArticle, long> Article { get; private set; }
 			public mrReaderAndArticle ()
 			{
-				Reader = new BelongsTo<mrReader, long>(this, "mrReader_Id");
-				Article = new BelongsTo<mrArticle, long>(this, "mrArticle_Id");
+				Reader = new BelongsTo<mrReader, long>(this);
+				Article = new BelongsTo<mrArticle, long>(this);
 			}
         }
 
@@ -145,7 +145,7 @@ namespace Leafing.UnitTest.Data
 			public HasMany<mrReaderAndArticle> xTable { get; private set; }
 			public mrArticle ()
 			{
-				xTable = new HasMany<mrReaderAndArticle>(this, "Id", "mrArticle_Id");
+				xTable = new HasMany<mrReaderAndArticle>(this);
 			}
         }
 
