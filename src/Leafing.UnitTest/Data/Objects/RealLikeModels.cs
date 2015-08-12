@@ -7,26 +7,30 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasMany]
-        public IList<User> Users { get; private set; }
+		public HasMany<User> Users { get; private set; }
 
-        [HasMany]
-        public IList<Department> Departments { get; private set; }
+		public HasMany<Department> Departments { get; private set; }
 
-        [HasMany]
-        public IList<Employee> Employees { get; private set; }
+		public HasMany<Employee> Employees { get; private set; }
 
-        [HasMany]
-        public IList<Resource> Resources { get; private set; }
+		public HasMany<Resource> Resources { get; private set; }
 
-        [HasMany]
-        public IList<Trade> Trades { get; private set; }
+		public HasMany<Trade> Trades { get; private set; }
 
-        [HasMany]
-        public IList<Customer> Customers { get; private set; }
+		public HasMany<Customer> Customers { get; private set; }
 
-        [HasMany]
-        public IList<Product> Products { get; private set; }
+		public HasMany<Product> Products { get; private set; }
+
+		public Company ()
+		{
+			Users = new HasMany<User> (this, "Id", "Company_Id");
+			Departments = new HasMany<Department> (this, "Id", "Company_Id");
+			Employees = new HasMany<Employee> (this, "Id", "Company_Id");
+			Resources = new HasMany<Resource> (this, "Id", "Company_Id");
+			Trades = new HasMany<Trade> (this, "Id", "Company_Id");
+			Customers = new HasMany<Customer> (this, "Id", "Company_Id");
+			Products = new HasMany<Product> (this, "Id", "Company_Id");
+		}
     }
 
     public enum UserType
@@ -45,22 +49,30 @@ namespace Leafing.UnitTest.Data.Objects
 
         public bool Valid { get; set; }
 
-        [BelongsTo]
-        public Company Company { get; set; }
+		public BelongsTo<Company, long> Company { get; private set; }
+
+		public User ()
+		{
+			Company = new BelongsTo<Company, long> (this, "Company_Id");
+		}
     }
 
     public class Department : DbObjectModel<Department>
     {
         public string Name { get; set; }
 
-        [BelongsTo]
-        public Company Company { get; set; }
+		public BelongsTo<Company, long> Company { get; private set; }
 
-        [HasMany]
-        public IList<Employee> Employees { get; private set; }
+		public HasMany<Employee> Employees { get; private set; }
 
-        [HasMany]
-        public IList<Resource> Resources { get; private set; }
+		public HasMany<Resource> Resources { get; private set; }
+
+		public Department ()
+		{
+			Company = new BelongsTo<Company, long> (this, "Company_Id");
+			Employees = new HasMany<Employee> (this, "Id", "Department_Id");
+			Resources = new HasMany<Resource> (this, "Id", "Department_Id");
+		}
     }
 
     public class Employee : DbObjectModel<Employee>
@@ -69,11 +81,15 @@ namespace Leafing.UnitTest.Data.Objects
 
         public int Age { get; set; }
 
-        [BelongsTo]
-        public Company Company { get; set; }
+		public BelongsTo<Company, long> Company { get; private set; }
 
-        [BelongsTo]
-        public Department Department { get; set; }
+		public BelongsTo<Department, long> Department { get; private set; }
+
+		public Employee ()
+		{
+			Company = new BelongsTo<Company, long> (this, "Company_Id");
+			Department = new BelongsTo<Department, long> (this, "Department_Id");
+		}
     }
 
     public class Resource : DbObjectModel<Resource>
@@ -82,11 +98,15 @@ namespace Leafing.UnitTest.Data.Objects
 
         public int Count { get; set; }
 
-        [BelongsTo]
-        public Company Company { get; set; }
+		public BelongsTo<Company, long> Company { get; private set; }
 
-        [BelongsTo]
-        public Department Department { get; set; }
+		public BelongsTo<Department, long> Department { get; private set; }
+
+		public Resource ()
+		{
+			Company = new BelongsTo<Company, long> (this, "Company_Id");
+			Department = new BelongsTo<Department, long> (this, "Department_Id");
+		}
     }
 
     public class Trade : DbObjectModel<Trade>
@@ -95,11 +115,15 @@ namespace Leafing.UnitTest.Data.Objects
 
         public decimal TotalPrice { get; set; }
 
-        [BelongsTo]
-        public Company Company { get; set; }
+		public BelongsTo<Company, long> Company { get; private set; }
 
-        [HasMany]
-        public IList<Order> Orders { get; private set; }
+		public HasMany<Order> Orders { get; private set; }
+
+		public Trade ()
+		{
+			Company = new BelongsTo<Company, long> (this, "Company_Id");
+			Orders = new HasMany<Order> (this, "Id", "Trade_Id");
+		}
     }
 
     public class Order : DbObjectModel<Order>
@@ -110,25 +134,33 @@ namespace Leafing.UnitTest.Data.Objects
 
         public int Count { get; set; }
 
-        [LazyLoad]
-        public string Description { get; set; }
+		public LazyLoad<string> Description { get; private set; }
 
-        [BelongsTo]
-        public Trade Trade { get; set; }
+		public BelongsTo<Trade, long> Trade { get; private set; }
 
-        [BelongsTo]
-        public Product Product { get; set; }
+		public BelongsTo<Product, long> Product { get; private set; }
+
+		public Order ()
+		{
+			Description = new LazyLoad<string> (this, "Description");
+			Trade = new BelongsTo<Trade, long> (this, "Trade_Id");
+			Product = new BelongsTo<Product, long> (this, "Product_Id");
+		}
     }
 
     public class Product : DbObjectModel<Product>
     {
         public string Name { get; set; }
 
-        [HasMany]
-        public IList<Order> Orders { get; private set; }
+		public HasMany<Order> Orders { get; private set; }
 
-        [BelongsTo]
-        public Company Company { get; set; }
+		public BelongsTo<Company, long> Company { get; private set; }
+
+		public Product ()
+		{
+			Orders = new HasMany<Order> (this, "Id", "Product_Id");
+			Company = new BelongsTo<Company, long> (this, "Company_Id");
+		}
     }
 
     public class Customer : DbObjectModel<Customer>
@@ -139,7 +171,11 @@ namespace Leafing.UnitTest.Data.Objects
 
         public string Mobile { get; set; }
 
-        [BelongsTo]
-        public Company Company { get; set; }
+		public BelongsTo<Company, long> Company { get; set; }
+
+		public Customer ()
+		{
+			Company = new BelongsTo<Company, long> (this, "Company_Id");
+		}
     }
 }

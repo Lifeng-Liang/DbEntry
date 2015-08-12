@@ -43,9 +43,8 @@ namespace Leafing.Core.Text
             using (var ms = new MemoryStream())
             {
                 ois.Serialize(ms, obj);
-                byte[] bs = ms.ToArray();
-                string s = Encoding.UTF8.GetString(bs);
-                return s;
+				ms.Position = 0;
+				return ms.ReadToEnd ();
             }
         }
 

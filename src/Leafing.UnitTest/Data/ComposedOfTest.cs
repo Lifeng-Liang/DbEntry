@@ -4,26 +4,26 @@ using NUnit.Framework;
 
 namespace Leafing.UnitTest.Data
 {
-    public interface ILocation
+	public class ILocation
     {
-        string Phone { get; set; }
+		public string Phone { get; set; }
 
         [AllowNull, Length(2, 50)]
-        string Address { get; set; }
+		public string Address { get; set; }
 
         [DbColumn("MyNumber")]
-        int Number { get; set; }
+		public int Number { get; set; }
 
-        int? Wow { get; set; }
+		public int? Wow { get; set; }
     }
 
-    public interface IAddress
+    public class IAddress
     {
-        string City { get; set; }
-        string Street { get; set; }
+		public string City { get; set; }
+		public string Street { get; set; }
     }
 
-    [TestFixture]
+	[TestFixture, Ignore]
     public class ComposedOfTest : DataTestBase
     {
         public class CoUser : DbObjectModel<CoUser>
@@ -32,6 +32,11 @@ namespace Leafing.UnitTest.Data
 
             [ComposedOf]
             public ILocation Location { get; private set; }
+
+			public CoUser ()
+			{
+				Location = new ILocation();
+			}
         }
 
         public class CoAddr : DbObjectModel<CoAddr>
@@ -43,6 +48,12 @@ namespace Leafing.UnitTest.Data
 
             [ComposedOf]
             public IAddress YourAddress { get; private set; }
+
+			public CoAddr ()
+			{
+				MyAddress = new IAddress();
+				YourAddress = new IAddress();
+			}
         }
 
         [Test]

@@ -5,9 +5,9 @@ using Leafing.Data.SqlEntry;
 
 namespace Leafing.Data.Definition
 {
-    public class LazyLoadField<T> : LazyLoadOneBase<T>
+    public class LazyLoad<T> : LazyLoadOneBase<T>
     {
-        public LazyLoadField(DbObjectSmartUpdate owner, string relationName)
+        public LazyLoad(DbObjectSmartUpdate owner, string relationName)
             : base(owner, relationName)
         {
         }

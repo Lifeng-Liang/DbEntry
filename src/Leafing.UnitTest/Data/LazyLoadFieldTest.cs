@@ -8,11 +8,11 @@ namespace Leafing.UnitTest.Data
     public class lzUser1 : DbObjectModel<lzUser1>
     {
         public string Name { get; set; }
-        public LazyLoadField<string> Profile;
+        public LazyLoad<string> Profile;
 
         public lzUser1()
         {
-            Profile = new LazyLoadField<string>(this, "Profile");
+            Profile = new LazyLoad<string>(this, "Profile");
         }
     }
 
@@ -21,25 +21,11 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
 
         [DbColumn("Profile")]
-        protected internal LazyLoadField<string> _Profile;
-
-        [LazyLoad]
-        public string Profile
-        {
-            get
-            {
-                return _Profile.Value;
-            }
-            set
-            {
-                _Profile.Value = value;
-                m_ColumnUpdated("Profile");
-            }
-        }
+		public LazyLoad<string> Profile {get;set;}
 
         public lzUser()
         {
-            _Profile = new LazyLoadField<string>(this, "Profile");
+            Profile = new LazyLoad<string>(this, "Profile");
         }
     }
 
@@ -48,16 +34,24 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [LazyLoad]
-        public string Profile { get; set; }
+		public LazyLoad<string> Profile { get; set; }
+
+		public lzUser2 ()
+		{
+			Profile = new LazyLoad<string> (this, "Profile");
+		}
     }
 
     public class lzpUser : DbObjectModel<lzpUser>
     {
         public string Name { get; set; }
 
-        [LazyLoad]
-        public string Profile { get; set; }
+		public LazyLoad<string> Profile { get; set; }
+
+		public lzpUser ()
+		{
+			Profile = new LazyLoad<string> (this, "Profile");
+		}
     }
 
     [DbContext("SQLite")]
@@ -65,8 +59,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [LazyLoad]
-        public string Profile { get; set; }
+		public LazyLoad<string> Profile { get; set; }
+
+		public lzpUserSqlite ()
+		{
+			Profile = new LazyLoad<string> (this, "Profile");
+		}
     }
 
     [DbContext("SQLite")]
@@ -74,8 +72,13 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [LazyLoad, AllowNull]
-        public string Profile { get; set; }
+        [AllowNull]
+		public LazyLoad<string> Profile { get; set; }
+
+		public lzpUserSqlite2 ()
+		{
+			Profile = new LazyLoad<string> (this, "Profile");
+		}
     }
 
     [DbContext("SQLite")]
@@ -83,16 +86,26 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [LazyLoad, AllowNull]
-        public int? Age { get; set; }
+        [AllowNull]
+		public LazyLoad<int?> Age { get; set; }
+
+		public lzpUserSqlite3 ()
+		{
+			Age = new LazyLoad<int?> (this, "Age");
+		}
     }
 
     public class lzpUserSqlite4 : DbObjectModel<lzpUserSqlite4>
     {
         public string Name { get; set; }
 
-        [LazyLoad, AllowNull]
-        public int? Age { get; set; }
+        [AllowNull]
+		public LazyLoad<int?> Age { get; set; }
+
+		public lzpUserSqlite4 ()
+		{
+			Age = new LazyLoad<int?> (this, "Age");
+		}
     }
 
     [DbTable("User"), DbContext("SQLite")]
@@ -100,10 +113,15 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [LazyLoad, AllowNull, DbColumn("MyTest"), Length(10)]
+        [AllowNull, DbColumn("MyTest"), Length(10)]
         [StringColumn(IsUnicode=false, Regular=CommonRegular.EmailRegular)]
         [Index(ASC=true, IndexName="test", UNIQUE=true)]
-        public string Profile { get; set; }
+		public LazyLoad<string> Profile { get; set; }
+
+		public lzpUser1 ()
+		{
+			Profile = new LazyLoad<string> (this, "Profile");
+		}
     }
 
     [TestFixture]
@@ -137,11 +155,12 @@ namespace Leafing.UnitTest.Data
         public void TestValidate()
         {
             StaticRecorder.CurRow.Add(new RowInfo(0));
-            var u = new lzpUser1 {Name = "tom", Profile = "xxx"};
+            var u = new lzpUser1 {Name = "tom"};
+			u.Profile.Value = "xxx";
             Assert.IsFalse(u.IsValid());
 
             StaticRecorder.CurRow.Add(new RowInfo(0));
-            u.Profile = "a@b.c";
+			u.Profile.Value = "a@b.c";
             Assert.IsTrue(u.IsValid());
         }
 
@@ -155,7 +174,8 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestInsert()
         {
-            var u = new lzUser2 {Name = "tom", Profile = "test"};
+            var u = new lzUser2 {Name = "tom"};
+			u.Profile.Value = "test";
             DbEntry.Insert(u);
             Assert.AreEqual("INSERT INTO [lz_User2] ([Name],[Profile]) VALUES (@Name_0,@Profile_1);\nSELECT LAST_INSERT_ROWID();\n<Text><30>(@Name_0=tom:String,@Profile_1=test:String)", StaticRecorder.LastMessage);
         }
@@ -163,20 +183,21 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestCrud()
         {
-            var u = new lzUser {Name = "tom", Profile = "test"};
+            var u = new lzUser {Name = "tom"};
+			u.Profile.Value = "test";
             u.Save();
             Assert.AreEqual(1, u.Id);
 
             lzUser u1 = lzUser.FindById(1);
             Assert.AreEqual("tom", u1.Name);
-            Assert.AreEqual("test", u1.Profile);
+			Assert.AreEqual("test", u1.Profile.Value);
 
-            u1.Profile = "test 2";
+			u1.Profile.Value = "test 2";
             u1.Save();
 
             lzUser u2 = lzUser.FindById(1);
             Assert.AreEqual("tom", u2.Name);
-            Assert.AreEqual("test 2", u2.Profile);
+			Assert.AreEqual("test 2", u2.Profile.Value);
 
             u2.Delete();
 
@@ -189,20 +210,21 @@ namespace Leafing.UnitTest.Data
         {
             DbEntry.Create(typeof(lzpUser));
 
-            var u = new lzpUser { Name = "tom", Profile = "test" };
+            var u = new lzpUser { Name = "tom" };
+			u.Profile.Value = "test";
             u.Save();
             Assert.AreEqual(1, u.Id);
 
             lzpUser u1 = lzpUser.FindById(1);
             Assert.AreEqual("tom", u1.Name);
-            Assert.AreEqual("test", u1.Profile);
+            Assert.AreEqual("test", u1.Profile.Value);
 
-            u1.Profile = "test 2";
+			u1.Profile.Value = "test 2";
             u1.Save();
 
             lzpUser u2 = lzpUser.FindById(1);
             Assert.AreEqual("tom", u2.Name);
-            Assert.AreEqual("test 2", u2.Profile);
+            Assert.AreEqual("test 2", u2.Profile.Value);
 
             u2.Delete();
 
@@ -215,7 +237,8 @@ namespace Leafing.UnitTest.Data
         {
             DbEntry.Create(typeof(lzpUser));
 
-            var u = new lzpUser {Name = "tom", Profile = "test"};
+            var u = new lzpUser {Name = "tom"};
+			u.Profile.Value = "test";
             u.Save();
             Assert.AreEqual(1, u.Id);
 
@@ -225,7 +248,7 @@ namespace Leafing.UnitTest.Data
 
             lzpUser u2 = lzpUser.FindById(1);
             Assert.AreEqual("jerry", u2.Name);
-            Assert.AreEqual("test", u2.Profile);
+			Assert.AreEqual("test", u2.Profile.Value);
         }
 
         [Test]
@@ -256,7 +279,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestLazyLoadFieldForCondition2()
         {
-            DbEntry.From<lzpUserSqlite>().Where(p => p.Profile == "test").Select();
+			DbEntry.From<lzpUserSqlite>().Where(p => p.Profile.Value == "test").Select();
             AssertSql("SELECT [Id],[Name] FROM [lzp_User_Sqlite] WHERE [Profile] = @Profile_0;\n<Text><60>(@Profile_0=test:String)");
         }
 
@@ -277,21 +300,22 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestLazyloadNullable3()
         {
-            var u = new lzpUserSqlite4 {Name = "tom", Age = 12};
+            var u = new lzpUserSqlite4 {Name = "tom"};
+			u.Age.Value = 12;
             u.Save();
             var u1 = lzpUserSqlite4.FindById(u.Id);
             Assert.AreEqual("tom", u1.Name);
-            Assert.AreEqual(12, u1.Age);
-            u1.Age = null;
+			Assert.AreEqual(12, u1.Age.Value);
+			u1.Age.Value = null;
             u1.Save();
             var u2 = lzpUserSqlite4.FindById(u.Id);
             Assert.AreEqual("tom", u2.Name);
-            Assert.AreEqual(null, u2.Age);
+			Assert.AreEqual(null, u2.Age.Value);
             var u3 = lzpUserSqlite4.FindById(u.Id);
-            u3.Age = 19;
+			u3.Age.Value = 19;
             u3.Save();
             var u4 = lzpUserSqlite4.FindById(u.Id);
-            Assert.AreEqual(19, u4.Age);
+			Assert.AreEqual(19, u4.Age.Value);
         }
     }
 }

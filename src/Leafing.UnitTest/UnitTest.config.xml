@@ -19,12 +19,16 @@
     <add key="CacheEnabled" value="true" />
 
     <add key="Init.AutoCreateTable" value="true" />
-    <add key="Init.DataBase" value="@SQLite : @{CurrentDirectory}..\..\UnitTest.db" />
-    <add key="Init.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
+    <add key="Init.DataBase" value="@NSQLite : @{CurrentDirectory}../../UnitTest.db" />
+	<add key="Init.DbProviderFactory" value="System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=3.7.7.1, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e"/>
 
-    <add key="Development.AutoScheme" value="RemoveColumns" />
-    <add key="Development.DataBase" value="@SQLite : @{TempDirectory}UnitTest.db" />
-    <add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
+    <add key="Development.AutoScheme" value="CreateTable" />
+    <add key="Development.DataBase" value="@NSQLite : @/Volumes/RamDisk/UnitTest.db" />
+	<add key="Development.DbProviderFactory" value="System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=3.7.7.1, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e"/>
+
+    <add key="Scheme.AutoScheme" value="RemoveColumns" />
+    <add key="Scheme.DataBase" value="@NSQLite : @/Volumes/RamDisk/UnitTest.db" />
+	<add key="Scheme.DbProviderFactory" value="System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=3.7.7.1, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e"/>
 
     <add key="1.DataBase" value="@Access : @~test.mdb" />
 

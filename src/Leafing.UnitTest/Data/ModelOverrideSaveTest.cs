@@ -8,8 +8,7 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasMany]
-        public IList<OverPc> Pcs { get; private set; }
+		public HasMany<OverPc> Pcs { get; private set; }
 
         [Exclude] public int SaveCount;
 
@@ -22,14 +21,18 @@ namespace Leafing.UnitTest.Data
         {
             SaveCount++;
         }
+
+		public OverPeople ()
+		{
+			Pcs = new HasMany<OverPc> (this, "Id", "OverPeople_Id");
+		}
     }
 
     public class OverPc : DbObjectModel<OverPc>
     {
         public string Name { get; set; }
 
-        [BelongsTo]
-        public OverPeople Person { get; set; }
+		public BelongsTo<OverPeople, long> Person { get; set; }
 
         [Exclude] public int SaveCount;
 
@@ -42,6 +45,11 @@ namespace Leafing.UnitTest.Data
         {
             SaveCount++;
         }
+
+		public OverPc ()
+		{
+			Person = new BelongsTo<OverPeople, long> (this, "OverPeople_Id");
+		}
     }
 
     [TestFixture]

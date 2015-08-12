@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Leafing.Data.Common;
 using Leafing.Data.Definition;
+using Leafing.Data;
 
 namespace Leafing.UnitTest.Data.Objects
 {
@@ -66,74 +67,63 @@ namespace Leafing.UnitTest.Data.Objects
     [DbTable("People")]
     public class ImpPeople : DbObjectModel<ImpPeople>
     {
-        private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
+		public string Name { get; set; }
 
-        protected internal HasOne<ImpPCs> _pc;
+        public HasOne<ImpPCs> _pc;
 
-        [HasOne(OrderBy = "Id")]
+		[Exclude]
         public ImpPCs pc { get { return _pc.Value; } set { _pc.Value = value; } }
 
         public ImpPeople()
         {
-            _pc = new HasOne<ImpPCs>(this, "Id", "Person_Id");
-            m_InitUpdateColumns();
+            _pc = new HasOne<ImpPCs>(this);
         }
     }
 
     [DbTable("PCs")]
     public class ImpPCs : DbObjectModel<ImpPCs>
     {
-        private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
+		public string Name { get; set; }
 
         [DbColumn("Person_Id")]
-        protected internal BelongsTo<ImpPeople, long> _owner;
+        public BelongsTo<ImpPeople, long> _owner;
 
-        [BelongsTo, DbColumn("Person_Id")]
+		[Exclude]
         public ImpPeople owner { get { return _owner.Value; } set { _owner.Value = value; } }
 
         public ImpPCs()
         {
-            _owner = new BelongsTo<ImpPeople, long>(this, "Person_Id");
-            m_InitUpdateColumns();
+            _owner = new BelongsTo<ImpPeople, long>(this);
         }
     }
 
     [DbTable("People")]
     public class ImpPeople1 : DbObjectModel<ImpPeople1>
     {
-        private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
+		public string Name { get; set; }
 
-        protected internal HasMany<ImpPCs1> _pcs;
-
-        [HasMany(OrderBy = "Id DESC")]
-        public IList<ImpPCs1> pcs { get { return _pcs; } set { } }
+		public HasMany<ImpPCs1> pcs { get; private set; }
 
         public ImpPeople1()
         {
-            _pcs = new HasMany<ImpPCs1>(this, "Id DESC", "Person_Id");
-            m_InitUpdateColumns();
+			pcs = new HasMany<ImpPCs1>(this, Leafing.Data.OrderBy.Parse("Id DESC"));
         }
     }
 
     [DbTable("PCs")]
     public class ImpPCs1 : DbObjectModel<ImpPCs1>
     {
-        private string _Name;
-        public string Name { get { return _Name; } set { _Name = value; m_ColumnUpdated("Name"); } }
+		public string Name { get; set; }
 
         [DbColumn("Person_Id")]
-        protected internal BelongsTo<ImpPeople1, long> _owner;
+        public BelongsTo<ImpPeople1, long> _owner;
 
-        [BelongsTo, DbColumn("Person_Id")]
+		[Exclude]
         public ImpPeople1 owner { get { return _owner.Value; } set { _owner.Value = value; } }
 
         public ImpPCs1()
         {
-            _owner = new BelongsTo<ImpPeople1, long>(this, "Person_Id");
-            m_InitUpdateColumns();
+            _owner = new BelongsTo<ImpPeople1, long>(this);
         }
     }
 
@@ -141,16 +131,25 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasOne(OrderBy = "Id")]
-        public PCs pc { get; set; }
+		public HasOne<PCs> pc { get; private set; }
+
+		public People ()
+		{
+			pc = new HasOne<PCs> (this);
+		}
     }
 
     public class PCs : DbObjectModel<PCs>
     {
         public string Name { get; set; }
 
-        [BelongsTo, DbColumn("Person_Id")]
-        public People owner { get; set; }
+        [DbColumn("Person_Id")]
+		public BelongsTo<People, long> owner { get; private set; }
+
+		public PCs ()
+		{
+			owner = new BelongsTo<People, long> (this);
+		}
     }
 
     [DbTable("People")]
@@ -158,8 +157,12 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasMany(OrderBy = "Id DESC")]
-        public IList<PCs1> pcs { get; private set; }
+		public HasMany<PCs1> pcs { get; private set; }
+
+		public People1 ()
+		{
+			pcs = new HasMany<PCs1> (this, Leafing.Data.OrderBy.Parse("Id DESC"));
+		}
     }
 
     [DbTable("PCs")]
@@ -167,8 +170,13 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [BelongsTo, DbColumn("Person_Id")]
-        public People1 owner { get; set; }
+        [DbColumn("Person_Id")]
+		public BelongsTo<People1, long> owner { get; private set; }
+
+		public PCs1 ()
+		{
+			owner = new BelongsTo<People1, long> (this);
+		}
     }
 
     [DbTable("Article")]
@@ -176,8 +184,12 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<DReader> readers { get; private set; }
+		public HasAndBelongsToMany<DReader> readers { get; private set; }
+
+		public DArticle ()
+		{
+			readers = new HasAndBelongsToMany<DReader> (this);
+		}
     }
 
     [DbTable("Reader")]
@@ -185,8 +197,12 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<DArticle> arts { get; private set; }
+		public HasAndBelongsToMany<DArticle> arts { get; private set; }
+
+		public DReader ()
+		{
+			arts = new HasAndBelongsToMany<DArticle> (this);
+		}
     }
 
     [DbTable("Article"), DbContext("SQLite")]
@@ -194,8 +210,12 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<DReaderSqlite> readers { get; private set; }
+		public HasAndBelongsToMany<DReaderSqlite> readers { get; private set; }
+
+		public DArticleSqlite ()
+		{
+			readers = new HasAndBelongsToMany<DReaderSqlite> (this);
+		}
     }
 
     [DbTable("Reader"), DbContext("SQLite")]
@@ -203,8 +223,12 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<DArticleSqlite> arts { get; private set; }
+		public HasAndBelongsToMany<DArticleSqlite> arts { get; private set; }
+
+		public DReaderSqlite ()
+		{
+			arts = new HasAndBelongsToMany<DArticleSqlite> (this);
+		}
     }
 
     [DbTable("People")]
@@ -216,7 +240,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public PeopleImp1()
         {
-            pc = new HasOne<PCsImp1>(this, "Id", "Person_Id");
+            pc = new HasOne<PCsImp1>(this);
         }
     }
 
@@ -230,7 +254,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public PCsImp1()
         {
-            owner = new BelongsTo<PeopleImp1, long>(this, "Person_Id");
+            owner = new BelongsTo<PeopleImp1, long>(this);
         }
     }
 
@@ -243,7 +267,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public PeopleImp2()
         {
-            pc = new HasOne<PCsImp2>(this, "Id DESC", "Person_Id");
+			pc = new HasOne<PCsImp2>(this, Leafing.Data.OrderBy.Parse("Id DESC"));
         }
     }
 
@@ -257,7 +281,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public PCsImp2()
         {
-            owner = new BelongsTo<PeopleImp2, long>(this, "Person_Id");
+            owner = new BelongsTo<PeopleImp2, long>(this);
         }
     }
 
@@ -265,10 +289,5 @@ namespace Leafing.UnitTest.Data.Objects
     public class PeopleWith : DbObjectModel<PeopleWith>
     {
         public string Name { get; set; }
-
-        public Dictionary<string, object> GetUpdateColumns()
-        {
-            return m_UpdateColumns;
-        }
     }
 }

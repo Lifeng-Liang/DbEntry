@@ -289,13 +289,10 @@ namespace Leafing.Data.Model
             }
             foreach (PropertyInfo pi in this.HandleType.GetProperties(ClassHelper.InstanceFlag))
             {
-                if ((pi.CanRead && pi.CanWrite) && ((pi.GetGetMethod(true) != null) && !pi.GetGetMethod(true).IsPrivate))
+				var getMethod = pi.GetGetMethod(true);
+				if ((pi.CanRead && pi.CanWrite) && ((getMethod != null) && !getMethod.IsPrivate))
                 {
-                    MethodInfo getMethod = pi.GetGetMethod(true);
-                    if ((getMethod != null) && !getMethod.IsPrivate)
-                    {
-                        ProcessMember(MemberAdapter.NewObject(pi), members);
-                    }
+					ProcessMember(MemberAdapter.NewObject(pi), members);
                 }
             }
             return members;
@@ -353,19 +350,37 @@ namespace Leafing.Data.Model
 
         private static void ProcessMember(MemberAdapter m, IList<MemberHandler> members)
         {
-            if (((!m.HasAttribute<ExcludeAttribute>(false) && !m.HasAttribute<HasOneAttribute>(false)) && (!m.HasAttribute<HasManyAttribute>(false) && !m.HasAttribute<HasAndBelongsToManyAttribute>(false))) && (!m.HasAttribute<BelongsToAttribute>(false) && !m.HasAttribute<LazyLoadAttribute>(false)))
+            //if (((!m.HasAttribute<ExcludeAttribute>(false) && !m.HasAttribute<HasOneAttribute>(false)) && (!m.HasAttribute<HasManyAttribute>(false) && !m.HasAttribute<HasAndBelongsToManyAttribute>(false))) && (!m.HasAttribute<BelongsToAttribute>(false) && !m.HasAttribute<LazyLoadAttribute>(false)))
+			if(!IsExcludeMember(m))
             {
-                var member = MemberHandler.NewObject(m);
-                if (member.Is.Key)
-                {
-                    members.Add(member);
-                }
-                else
-                {
-                    members.Add(member);
-                }
+				var member = MemberHandler.NewObject(m);
+				if (member.Is.Key)
+				{
+					members.Add(member);
+				}
+				else
+				{
+					members.Add(member);
+				}
             }
         }
+
+		private static bool IsExcludeMember(MemberAdapter m)
+		{
+			if (m.HasAttribute<ExcludeAttribute> (false)) {
+				return true;
+			}
+//			if(m.MemberType.IsGenericType) {
+//				if (m.MemberType.GetGenericTypeDefinition() == typeof(BelongsTo<,>)) {
+//					return false;
+//				}
+//				if(m.MemberType.IsNullable()){
+//					return false;
+//				}
+//				return true;
+//			}
+			return false;
+		}
 
         private static void SetManyToManyFrom(ObjectInfo oi, string unmappedMainTableName, IEnumerable<MemberHandler> fields)
         {
@@ -385,6 +400,11 @@ namespace Leafing.Data.Model
                 }
             }
         }
+
+		public override string ToString ()
+		{
+			return string.Format ("Handle Type : [{0}]", HandleType);
+		}
     }
 }
 

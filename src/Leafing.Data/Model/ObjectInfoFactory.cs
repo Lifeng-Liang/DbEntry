@@ -13,4 +13,3 @@ namespace Leafing.Data.Model
         }
     }
 }
-

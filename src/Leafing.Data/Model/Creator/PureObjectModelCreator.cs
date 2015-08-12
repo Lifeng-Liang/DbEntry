@@ -34,21 +34,31 @@ namespace Leafing.Data.Model.Creator
                 ctx.Handler.LoadSimpleValues(obj, useIndex, dr);
                 ctx.Handler.LoadRelationValues(obj, useIndex, noLazy, dr);
             }
+			catch (FormatException ex)
+			{
+				ThrowClearExceptionMsg (useIndex, ctx, dr, ex);
+				throw;
+			}
             catch (InvalidCastException ex)
             {
-                if (useIndex)
-                {
-                    FindMemberCastFailByIndex(ctx, dr, ex);
-                }
-                else
-                {
-                    FindMemberCastFailByName(ctx, dr, ex);
-                }
-                throw;
+				ThrowClearExceptionMsg (useIndex, ctx, dr, ex);
+				throw;
             }
         }
 
-        private static void FindMemberCastFailByIndex(ModelContext ctx, IDataReader dr, InvalidCastException ex)
+		private static void ThrowClearExceptionMsg(bool useIndex, ModelContext ctx, IDataReader dr, Exception ex)
+		{
+			if (useIndex)
+			{
+				FindMemberCastFailByIndex(ctx, dr, ex);
+			}
+			else
+			{
+				FindMemberCastFailByName(ctx, dr, ex);
+			}
+		}
+
+        private static void FindMemberCastFailByIndex(ModelContext ctx, IDataReader dr, Exception ex)
         {
             var text = new StringBuilder();
             var ms = ctx.Info.SimpleMembers;
@@ -62,7 +72,7 @@ namespace Leafing.Data.Model.Creator
             }
         }
 
-        private static void FindMemberCastFailByName(ModelContext ctx, IDataReader dr, InvalidCastException ex)
+        private static void FindMemberCastFailByName(ModelContext ctx, IDataReader dr, Exception ex)
         {
             var text = new StringBuilder();
             var ms = ctx.Info.SimpleMembers;
@@ -78,7 +88,7 @@ namespace Leafing.Data.Model.Creator
 
         private static void CheckMemberCast(MemberHandler member, object value, StringBuilder text)
         {
-            if (value == DBNull.Value && member.Is.AllowNull)
+			if ((value == null || value == DBNull.Value) && member.Is.AllowNull)
             {
                 return;
             }
@@ -86,6 +96,9 @@ namespace Leafing.Data.Model.Creator
             {
                 return;
             }
+			if (member.MemberType == typeof(long) && value.GetType () == typeof(int)) {
+				return;
+			}
             if (member.MemberType != value.GetType())
             {
                 text.AppendFormat("The type of member [{0}] is [{1}] but the type in Database of it is [{2}]\n",

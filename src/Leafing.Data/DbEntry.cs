@@ -43,7 +43,7 @@ namespace Leafing.Data
                     return;
                 }
             }
-            NewTransaction(callback);
+            NewTransaction(il, callback);
         }
 
         public static void NewTransaction(Action callback)

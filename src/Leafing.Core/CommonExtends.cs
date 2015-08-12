@@ -5,10 +5,9 @@ using System.IO;
 using Leafing.Core;
 using Leafing.Core.Setting;
 using Leafing.Core.Text;
+using System.Text;
 
-// ReSharper disable CheckNamespace
 public static class CommonExtends
-// ReSharper restore CheckNamespace
 {
     #region String
 
@@ -95,6 +94,11 @@ public static class CommonExtends
     {
         return StringHelper.ReadToEnd(s);
     }
+
+	public static string ReadToEnd(this Stream s, Encoding encoding)
+	{
+		return StringHelper.ReadToEnd(s, encoding);
+	}
 
     public static string ReadToEnd(this Stream s, long position)
     {
@@ -225,6 +229,15 @@ public static class CommonExtends
     {
         ConfigHelper.AppSettings.InitClass(type);
     }
+
+	public static bool IsNullable(this Type type){
+		if (type.IsGenericType) {
+			if (type.GetGenericTypeDefinition () == typeof(Nullable<>)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
     #endregion
 }

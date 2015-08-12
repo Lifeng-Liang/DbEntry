@@ -66,7 +66,7 @@ namespace Leafing.Data.Model
         {
             var oi = ctx.Info;
             var op = ctx.Operator;
-            var tables = ctx.Provider.Driver.TableNames;
+            var tables = ctx.Provider.TableNames;
             IfUsingTransaction(ctx.Provider.Dialect.NeedCommitCreateFirst, delegate
             {
                 var mtn = oi.From.MainModelName.ToLower();

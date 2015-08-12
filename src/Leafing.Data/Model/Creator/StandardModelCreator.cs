@@ -14,9 +14,8 @@ namespace Leafing.Data.Model.Creator
         protected override void InitObject(object obj, IDataReader dr)
         {
             var sudi = (DbObjectSmartUpdate)obj;
-            sudi.m_InternalInit = true;
             LoadValues(obj, Ctx, dr, UseIndex, NoLazy);
-            sudi.m_InternalInit = false;
+			sudi.InitLoadedColumns ();
         }
     }
 }

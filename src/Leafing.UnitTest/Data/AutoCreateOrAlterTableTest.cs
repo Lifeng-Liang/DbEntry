@@ -4,6 +4,9 @@ using Leafing.Data;
 using Leafing.Data.Definition;
 using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
+using Leafing.Data.Builder;
+using Leafing.Data.Builder.Clause;
+using System.Linq;
 
 namespace Leafing.UnitTest.Data
 {
@@ -15,9 +18,16 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
         public int Age { get; set; }
 
-        public Dictionary<string, object> GetUpdateColumns()
+		public int GetUpdateColumnCount()
+		{
+			return GetUpdateColumns ().Count;
+		}
+
+		public List<KeyOpValue> GetUpdateColumns()
         {
-            return this.m_UpdateColumns;
+			var builder = new UpdateStatementBuilder(new FromClause("theName"));
+			this.FindUpdateColumns (builder);
+			return builder.Values;
         }
     }
 
@@ -37,7 +47,7 @@ namespace Leafing.UnitTest.Data
 
         public ctUser()
         {
-            info = new HasOne<ctInfo>(this, null, "user_id");
+            info = new HasOne<ctInfo>(this);
         }
     }
 
@@ -50,7 +60,7 @@ namespace Leafing.UnitTest.Data
 
         public ctInfo()
         {
-            user = new BelongsTo<ctUser, long>(this, "user_id");
+            user = new BelongsTo<ctUser, long>(this);
         }
     }
 
@@ -62,7 +72,7 @@ namespace Leafing.UnitTest.Data
 
         public ctmUser()
         {
-            infos = new HasMany<ctmInfo>(this, "Id", "user_id");
+            infos = new HasMany<ctmInfo>(this);
         }
     }
 
@@ -75,7 +85,7 @@ namespace Leafing.UnitTest.Data
 
         public ctmInfo()
         {
-            user = new BelongsTo<ctmUser, long>(this, "user_id");
+            user = new BelongsTo<ctmUser, long>(this);
         }
         public ctmInfo(string msg) : this()
         {
@@ -91,7 +101,7 @@ namespace Leafing.UnitTest.Data
         public HasAndBelongsToMany<cmmArticle> arts;
         public cmmReader()
         {
-            arts = new HasAndBelongsToMany<cmmArticle>(this, "Id", "cmmReader_id");
+            arts = new HasAndBelongsToMany<cmmArticle>(this);
         }
         public cmmReader(string name) : this() { this.Name = name; }
     }
@@ -104,7 +114,7 @@ namespace Leafing.UnitTest.Data
         public HasAndBelongsToMany<cmmReader> rads;
         public cmmArticle()
         {
-            rads = new HasAndBelongsToMany<cmmReader>(this, "Id", "cmmArticle_id");
+            rads = new HasAndBelongsToMany<cmmReader>(this);
         }
         public cmmArticle(string title) : this() { this.Title = title; }
     }
@@ -166,7 +176,7 @@ namespace Leafing.UnitTest.Data
         public DateTime dtValue { get; set; }
     }
 
-    [DbTable("AutoAlterTableTest")]
+	[DbTable("AutoAlterTableTest"), DbContext("Scheme")]
     public class AutoAlterTableTest : DbObjectModel<AutoAlterTableTest>
     {
         [Length(50)]
@@ -189,11 +199,11 @@ namespace Leafing.UnitTest.Data
         {
             var tables = new List<string> { "Article", "ArticleMore", "AutoAlterTableTest", "Bao_Xiu_RS", "BelongsMore", "Books", "Categories", "Lock_Book", "LockVersionTest",
                 "Co_User", "Co_User1", "DateAndTime", "File", "NullTest", "PCs", "People", "R_Article_Reader", "Reader", "ReaderMore", "Required_Model", "Required_Two", "SoftDelete",
-                "DCS_USERS", "REF_ORG_UNIT", "HRM_EMPLOYEES", "DCS_PERSONS", "REL_EMP_JOB_ROLE", "REL_JOB_ROLE_ORG_UNIT", "HRM_JOB_ROLES" };
+				"DCS_USERS", "REF_ORG_UNIT", "HRM_EMPLOYEES", "DCS_PERSONS", "REL_EMP_JOB_ROLE", "REL_JOB_ROLE_ORG_UNIT", "HRM_JOB_ROLES", "sqlite_sequence" };
             tables.Sort();
             string[] ts = tables.ToArray();
 
-            List<string> li = DbEntry.Provider.Driver.GetTableNames();
+            List<string> li = DbEntry.Provider.GetTableNames();
             li.Sort();
             Assert.AreEqual(ts, li.ToArray());
         }
@@ -201,14 +211,18 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestAutoCreateTable()
         {
-            var o = new MyTestTable {Name = "Tom", Gender = true, Age = 18, Birthday = DateTime.Now};
+			var dt = DateTime.Now;
+            var o = new MyTestTable {Name = "Tom", Gender = true, Age = 18, Birthday = dt};
             DbEntry.Save(o);
             List<MyTestTable> ls = DbEntry.From<MyTestTable>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("Tom", ls[0].Name);
             Assert.AreEqual(true, ls[0].Gender);
             Assert.AreEqual(18, ls[0].Age);
-            Assert.AreEqual(o.Birthday, ls[0].Birthday);
+			Console.WriteLine (dt - dt.Date);
+			Console.WriteLine (ls[0].Birthday - dt.Date);
+			Console.WriteLine (dt - ls[0].Birthday);
+			Assert.IsTrue((dt - ls[0].Birthday).TotalMilliseconds < 1);
         }
 
         [Test]
@@ -267,10 +281,10 @@ namespace Leafing.UnitTest.Data
             var u = new asUser2 { Name = "Tom", Age = 18 };
             u.Save();
             var u1 = asUser2.FindById(u.Id);
-            Assert.AreEqual(0, u1.GetUpdateColumns().Count);
+			Assert.AreEqual(0, u1.GetUpdateColumnCount());
             u1.Name = "Jerry";
-            Assert.AreEqual(1, u1.GetUpdateColumns().Count);
-            Assert.IsTrue(u1.GetUpdateColumns().ContainsKey("theName"));
+			Assert.AreEqual(1, u1.GetUpdateColumnCount());
+			Assert.IsTrue(u1.GetUpdateColumns()[0].Key == "theName");
             u1.Save();
             var u2 = asUser2.FindById(u.Id);
             Assert.AreEqual("Jerry", u2.Name);

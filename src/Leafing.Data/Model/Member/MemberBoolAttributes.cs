@@ -38,7 +38,7 @@ namespace Leafing.Data.Model.Member
             HasMany = GetIsRelation(fi.MemberType, typeof(HasMany<>));
             HasAndBelongsToMany = GetIsRelation(fi.MemberType, typeof(HasAndBelongsToMany<>));
             BelongsTo = GetIsRelation(fi.MemberType, typeof(BelongsTo<,>));
-            LazyLoad = GetIsRelation(fi.MemberType, typeof(LazyLoadField<>));
+            LazyLoad = GetIsRelation(fi.MemberType, typeof(LazyLoad<>));
             StringType = GetIsStringType(fi.MemberType);
             Unicode = GetIsUnicode(fi, attributes);
             AllowNull = GetIsAllowNull(fi, attributes);

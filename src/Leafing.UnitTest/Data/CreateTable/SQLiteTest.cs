@@ -13,21 +13,30 @@ namespace Leafing.UnitTest.Data.CreateTable
 
     public class CCC1 : DbObjectModel<CCC1>
     {
-        [HasMany]
-        public IList<IndexTestClass> Indeies { get; private set; }
+		public HasMany<IndexTestClass> Indeies { get; private set; }
+
+		public CCC1 ()
+		{
+			Indeies = new HasMany<IndexTestClass> (this, "Id", "IndexTestClass_Id");
+		}
     }
 
     [DbContext("SQLite")]
     public class IndexTestClass : DbObjectModel<IndexTestClass>
     {
-        [BelongsTo, DbColumn("CCCId"), Index(IndexName = "xxx1", UNIQUE = true), Index(IndexName = "ccc1", UNIQUE = true)]
-        public CCC1 CCC { get; set; }
+        [DbColumn("CCCId"), Index(IndexName = "xxx1", UNIQUE = true), Index(IndexName = "ccc1", UNIQUE = true)]
+		public BelongsTo<CCC1, long> CCC { get; private set; }
 
         [Index(IndexName = "xxx1", UNIQUE = true)]
         public int QQQId { get; set; }
 
         [Length(50), Index(IndexName = "ccc1", UNIQUE = true)]
         public string UUUs { get; set; }
+
+		public IndexTestClass ()
+		{
+			CCC = new BelongsTo<CCC1, long> (this, "CCC1_Id");
+		}
     }
 
     [DbContext("SQLite")]
@@ -144,8 +153,13 @@ namespace Leafing.UnitTest.Data.CreateTable
         [Length(20)]
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public IList<crxCategory1> Categories { get; private set; }
+        [CrossTableName("book_and_category")]
+		public HasAndBelongsToMany<crxCategory1> Categories { get; private set; }
+
+		public crxBook1 ()
+		{
+			Categories = new HasAndBelongsToMany<crxCategory1> (this, "Id", "crxCategory1_Id");
+		}
     }
 
     public class crxCategory1 : DbObjectModel<crxCategory1>
@@ -153,8 +167,13 @@ namespace Leafing.UnitTest.Data.CreateTable
         [Length(20)]
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public IList<crxBook1> Books { get; private set; }
+        [CrossTableName("book_and_category")]
+		public HasAndBelongsToMany<crxBook1> Books { get; private set; }
+
+		public crxCategory1 ()
+		{
+			Books = new HasAndBelongsToMany<crxBook1> (this, "Id", "crxCategory1_Id");
+		}
     }
 
     [DbContext("SQLite")]
@@ -163,8 +182,13 @@ namespace Leafing.UnitTest.Data.CreateTable
         [Length(20)]
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public IList<crxCategory1Sqlite> Categories { get; private set; }
+        [CrossTableName("book_and_category")]
+		public HasAndBelongsToMany<crxCategory1Sqlite> Categories { get; private set; }
+
+		public crxBook1Sqlite ()
+		{
+			Categories = new HasAndBelongsToMany<crxCategory1Sqlite> (this, "Id", "crxBook1Sqlite_Id");
+		}
     }
 
     [DbContext("SQLite")]
@@ -173,8 +197,13 @@ namespace Leafing.UnitTest.Data.CreateTable
         [Length(20)]
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(CrossTableName = "book_and_category")]
-        public IList<crxBook1Sqlite> Books { get; private set; }
+        [CrossTableName("book_and_category")]
+		public HasAndBelongsToMany<crxBook1Sqlite> Books { get; private set; }
+
+		public crxCategory1Sqlite ()
+		{
+			Books = new HasAndBelongsToMany<crxBook1Sqlite> (this, "Id", "crxBook1Sqlite_Id");
+		}
     }
 
     [DbTable("tom:test_table"), DbContext("SQLite")]
@@ -188,16 +217,24 @@ namespace Leafing.UnitTest.Data.CreateTable
     {
         public string Name { get; set; }
 
-        [BelongsTo]
-        public For_TableName2 Table2 { get; set; }
+		public BelongsTo<For_TableName2, long> Table2 { get; private set; }
+
+		public ForTableName ()
+		{
+			Table2 = new BelongsTo<For_TableName2, long> (this, "For_TableName2_Id");
+		}
     }
 
     public class For_TableName2 : DbObjectModel<For_TableName2>
     {
         public string Name { get; set; }
 
-        [HasMany]
-        public IList<ForTableName> Tables { get; private set; }
+		public HasMany<ForTableName> Tables { get; private set; }
+
+		public For_TableName2 ()
+		{
+			Tables = new HasMany<ForTableName> (this, "Id", "For_TableName2_Id");
+		}
     }
 
     [DbContext("SQLite")]

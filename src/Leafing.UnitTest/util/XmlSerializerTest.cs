@@ -9,6 +9,7 @@ using Leafing.Data.Definition;
 using Leafing.Core.Text;
 using Leafing.Extra;
 using NUnit.Framework;
+using System.Xml.Linq;
 
 namespace Leafing.UnitTest.util
 {
@@ -44,10 +45,10 @@ namespace Leafing.UnitTest.util
         public void Test1()
         {
             var l = new MyList {new MyItem("tom")};
-            string act = XmlSerializer<MyList>.Xml.Serialize(l);
-            bool b1 = act == "<?xml version=\"1.0\"?>\r\n<List xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>";
-            bool b2 = act == "<?xml version=\"1.0\"?>\r\n<List xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>";
-            Assert.IsTrue(b1 || b2);
+			string act = XmlSerializer<MyList>.Xml.Serialize(l);
+			var root = XElement.Parse(act);
+			Assert.AreEqual ("List", root.Name.LocalName);
+			Assert.AreEqual ("tom", root.Element("Item").Element("Name").Value);
         }
 
         [Test]
@@ -55,9 +56,9 @@ namespace Leafing.UnitTest.util
         {
             var l = new MyList2 {new MyItem("tom")};
             string act = XmlSerializer<MyList2>.Xml.Serialize(l);
-            bool b1 = act == "<?xml version=\"1.0\"?>\r\n<List xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>";
-            bool b2 = act == "<?xml version=\"1.0\"?>\r\n<List xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <Item>\r\n    <Name>tom</Name>\r\n  </Item>\r\n</List>";
-            Assert.IsTrue(b1 || b2);
+			var root = XElement.Parse (act);
+			Assert.AreEqual ("List", root.Name.LocalName);
+			Assert.AreEqual ("tom", root.Element("Item").Element("Name").Value);
         }
 
         [Test]
@@ -65,11 +66,16 @@ namespace Leafing.UnitTest.util
         {
             var s = new Sitex {Url = "ddd"};
             string c2 = XmlSerializer<Sitex>.Xml.Serialize(s);
-            Assert.AreEqual(@"<?xml version=""1.0""?>
-<Sitex>
-  <Id>0</Id>
-  <Url>ddd</Url>
-</Sitex>", c2);
+
+			var root = XElement.Parse (c2);
+			Assert.AreEqual ("Sitex", root.Name.LocalName);
+			Assert.AreEqual ("0", root.Element ("Id").Value);
+			Assert.AreEqual ("ddd", root.Element ("Url").Value);
+//            Assert.AreEqual(@"<?xml version=""1.0""?>
+//<Sitex>
+//  <Id>0</Id>
+//  <Url>ddd</Url>
+//</Sitex>", c2);
 
             var f = XmlSerializer<Sitex>.Xml.Deserialize(c2);
             Assert.AreEqual("ddd", f.Url);

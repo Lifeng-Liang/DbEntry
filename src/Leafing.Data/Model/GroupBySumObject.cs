@@ -19,4 +19,3 @@ namespace Leafing.Data.Model
         }
     }
 }
-

@@ -12,132 +12,52 @@ namespace Leafing.UnitTest.Data
     [DbContext("SQLite")]
     public class sUser : DbObjectModel<sUser>
     {
-        private string _name;
+		public string Name { get; set; }
+		public int Age { get; set; }
 
-        public string Name
+		public sUser()
         {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-                m_ColumnUpdated("Name");
-            }
         }
 
-        private int _age;
-
-        public int Age
+		public sUser(long id, string name, int age)
         {
-            get
-            {
-                return _age;
-            }
-            set
-            {
-                _age = value;
-                m_ColumnUpdated("Age");
-            }
-        }
-
-        public sUser()
-        {
-            m_InitUpdateColumns();
-        }
-
-        public sUser(string name, int age)
-        {
+			this.Id = id;
             this.Name = name;
             this.Age = age;
-            m_InitUpdateColumns();
+			this.InitLoadedColumns ();
         }
     }
 
     [DbContext("SQLite")]
     public class rUser : DbObjectModel<rUser>
     {
-        private string _name;
-
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-                m_ColumnUpdated("Name");
-            }
-        }
-
-        private int _age;
-
-        public int Age
-        {
-            get
-            {
-                return _age;
-            }
-            set
-            {
-                _age = value;
-                m_ColumnUpdated("Age");
-            }
-        }
+		public string Name { get; set; }
+		public int Age { get; set; }
 
         public HasMany<rArticle> Articles;
 
         public rUser()
         {
             Articles = new HasMany<rArticle>(this, null, "Reader_Id");
-            m_InitUpdateColumns();
         }
 
-        public rUser(string name, int age)
+        public rUser(long id, string name, int age)
         {
+			this.Id = id;
             Articles = new HasMany<rArticle>(this, null, "Reader_Id");
             this.Name = name;
             this.Age = age;
-            m_InitUpdateColumns();
+			this.InitLoadedColumns();
         }
     }
 
     [DbContext("SQLite")]
     public class rArticle : DbObjectModel<rArticle>
     {
-        private string _name;
+		public string Name { get; set; }
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-                m_ColumnUpdated("Name");
-            }
-        }
-
-        private int _price;
-
-        [DbColumn("thePrice")]
-        public int Price
-        {
-            get
-            {
-                return _price;
-            }
-            set
-            {
-                _price = value;
-                m_ColumnUpdated("thePrice");
-            }
-        }
+		[DbColumn("thePrice")]
+		public int Price { get; set; }
 
         [DbColumn("Reader_Id")]
         public BelongsTo<rUser, long> Reader;
@@ -145,15 +65,15 @@ namespace Leafing.UnitTest.Data
         public rArticle()
         {
             Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
-            m_InitUpdateColumns();
         }
 
-        public rArticle(string name, int age)
+        public rArticle(long id, string name, int age)
         {
+			this.Id = id;
             Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
             this.Name = name;
             this.Price = age;
-            m_InitUpdateColumns();
+			this.InitLoadedColumns ();
         }
     }
 
@@ -210,7 +130,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestDontUpdateIfNotSetValue()
         {
-            var u = new sUser("Tom", 18) {Id = 1};
+            var u = new sUser(1, "Tom", 18);
             DbEntry.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
             Assert.AreEqual("", StaticRecorder.LastMessage);
@@ -219,7 +139,7 @@ namespace Leafing.UnitTest.Data
         [Test]
         public void TestPartialUpdateThatSetValue()
         {
-            var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
+            var u = new sUser(1, "Ok", 18) {Name = "Tom"};
             DbEntry.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("UPDATE [s_User] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
@@ -230,7 +150,7 @@ namespace Leafing.UnitTest.Data
         {
             DbEntry.NewTransaction(delegate
             {
-                var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
+                var u = new sUser(1, "Ok", 18) {Name = "Tom"};
                 DbEntry.Save(u);
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
@@ -243,7 +163,7 @@ namespace Leafing.UnitTest.Data
             Util.CatchAll(() =>
                 DbEntry.NewTransaction(delegate
                 {
-                    var u = new sUser("Tom", 18) {Id = 1, Name = "Tom"};
+                    var u = new sUser(1, "Tom", 18) {Name = "Tom"};
                     DbEntry.Save(u);
                     throw new Exception(); // emulate exception
                 }));
@@ -255,9 +175,9 @@ namespace Leafing.UnitTest.Data
         public void TestSmartUpdateForComplexObject()
         {
             // relationship objects, one not update, one insert, one partial update.
-            var u = new rUser("tom", 18) {Id = 1};
-            u.Articles.Add(new rArticle("sos", 199));
-            var a = new rArticle("haha", 299) {Id = 1, Price = 180};
+            var u = new rUser(1, "tom", 18);
+			u.Articles.Add(new rArticle(){Name = "sos", Price = 199});
+            var a = new rArticle(1, "haha", 299) {Price = 180};
             u.Articles.Add(a);
             DbEntry.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
@@ -328,7 +248,6 @@ namespace Leafing.UnitTest.Data
         public void TestUpdateFieldAfterInsert()
         {
             var u = new asUser {Name = "Tom", Age = 18};
-            //u.GetUpdateColumns().Clear();
             DbEntry.Save(u);
             u.Age = 25;
             DbEntry.Save(u);

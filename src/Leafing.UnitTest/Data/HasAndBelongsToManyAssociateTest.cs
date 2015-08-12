@@ -14,8 +14,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Title { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<TableD> TD { get; private set; }
+		public HasAndBelongsToMany<TableD> TD { get; private set; }
+
+		public TableC ()
+		{
+			TD = new HasAndBelongsToMany<TableD> (this, "Id", "TableC_Id");
+		}
     }
 
     [Serializable]
@@ -23,8 +27,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<TableC> TC { get; private set; }
+		public HasAndBelongsToMany<TableC> TC { get; private set; }
+
+		public TableD ()
+		{
+			TC = new HasAndBelongsToMany<TableC> (this, "Id", "TableD_Id");
+		}
     }
 
     #endregion

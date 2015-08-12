@@ -18,21 +18,31 @@ namespace Leafing.UnitTest.Data
         [Cacheable, DbTable("PCs")]
         public class Lazyable : DbObjectModel<Lazyable>
         {
-            [LazyLoad, DbColumn("Name")]
-            public string Content { get; set; }
+            [DbColumn("Name")]
+			public LazyLoad<string> Content { get; set; }
 
             [DbColumn("Person_Id")]
             public int TestColumn { get; set; }
+
+			public Lazyable ()
+			{
+				Content = new LazyLoad<string>(this, "Name");
+			}
         }
 
         [Cacheable, DbTable("PCs"), DbContext("SQLite")]
         public class LazyableSqlite : DbObjectModel<LazyableSqlite>
         {
-            [LazyLoad, DbColumn("Name")]
-            public string Content { get; set; }
+            [DbColumn("Name")]
+			public LazyLoad<string> Content { get; set; }
 
             [DbColumn("Person_Id")]
             public int TestColumn { get; set; }
+
+			public LazyableSqlite ()
+			{
+				Content = new LazyLoad<string>(this, "Name");
+			}
         }
 
         [DbTable("DCS_USERS"), Cacheable]
@@ -45,18 +55,26 @@ namespace Leafing.UnitTest.Data
         [DbTable("REF_ORG_UNIT"), Cacheable]
         public class OrganisationalUnit : DbObjectModel<OrganisationalUnit>
         {
-            [HasMany]
-            public IList<JobRoleRelation> JobRoleRelations { get; private set; }
+			public HasMany<JobRoleRelation> JobRoleRelations { get; private set; }
+
+			public OrganisationalUnit ()
+			{
+				JobRoleRelations = new HasMany<JobRoleRelation>(this, "Id", "REF_ORG_UNIT_Id");
+			}
         }
 
         [DbTable("HRM_EMPLOYEES"), Cacheable]
         public class Employee : DbObjectModel<Employee>
         {
-            [HasOne]
-            public EmployeeRoleRelation Rel { get; set; }
+			public HasOne<EmployeeRoleRelation> Rel { get; set; }
 
-            [BelongsTo]
-            public Person Person { get; set; }
+			public BelongsTo<Person, long> Person { get; set; }
+
+			public Employee ()
+			{
+				Rel = new HasOne<EmployeeRoleRelation>(this, "Id", "HRM_EMPLOYEES_Id");
+				Person = new BelongsTo<Person, long>(this, "DCS_PERSONS_Id");
+			}
         }
 
         [DbTable("DCS_PERSONS")]
@@ -65,8 +83,12 @@ namespace Leafing.UnitTest.Data
             [DbColumn("NAME_LAST")]
             public string LastName { get; set; }
 
-            [HasOne]
-            public Employee emp { get; set; }
+			public HasOne<Employee> emp { get; set; }
+
+			public Person ()
+			{
+				emp = new HasOne<Employee>(this, "Id", "DCS_PERSONS_Id");
+			}
         }
 
         [DbTable("REL_EMP_JOB_ROLE"), Cacheable]
@@ -81,11 +103,15 @@ namespace Leafing.UnitTest.Data
             [DbColumn("START_DATE")]
             public DateTime? Start { get; set; }
 
-            [BelongsTo]
-            public Employee Employee { get; set; }
+			public BelongsTo<Employee, long> Employee { get; set; }
 
-            [BelongsTo]
-            public JobRole jrr { get; set; }
+			public BelongsTo<JobRole, long> jrr { get; set; }
+
+			public EmployeeRoleRelation ()
+			{
+				Employee = new BelongsTo<Employee, long>(this, "HRM_EMPLOYEES_Id");
+				jrr = new BelongsTo<JobRole, long>(this, "HRM_JOB_ROLES_Id");
+			}
         }
 
         [DbTable("REL_JOB_ROLE_ORG_UNIT"), Cacheable]
@@ -100,11 +126,15 @@ namespace Leafing.UnitTest.Data
             [DbColumn("RELATION_TYPE")]
             public JobRoleRelationType Type { get; set; }
 
-            [BelongsTo]
-            public OrganisationalUnit OrganisationalUnit { get; set; }
+			public BelongsTo<OrganisationalUnit, long> OrganisationalUnit { get; set; }
 
-            [BelongsTo]
-            public JobRole JobRole { get; set; }
+			public BelongsTo<JobRole, long> JobRole { get; set; }
+
+			public JobRoleRelation ()
+			{
+				OrganisationalUnit = new BelongsTo<OrganisationalUnit, long>(this, "REF_ORG_UNIT_Id");
+				JobRole = new BelongsTo<JobRole, long>(this, "HRM_JOB_ROLES_Id");
+			}
         }
 
         [DbTable("HRM_JOB_ROLES"), Cacheable]
@@ -122,11 +152,15 @@ namespace Leafing.UnitTest.Data
             [DbColumn("DESCRIPTION")]
             public string Description { get; set; }
 
-            [HasMany]
-            public IList<JobRoleRelation> JobRoleRelations { get; private set; }
+			public HasMany<JobRoleRelation> JobRoleRelations { get; private set; }
 
-            [HasMany]
-            public IList<EmployeeRoleRelation> EmployeeRoleRelations { get; private set; }
+			public HasMany<EmployeeRoleRelation> EmployeeRoleRelations { get; private set; }
+
+			public JobRole ()
+			{
+				JobRoleRelations = new HasMany<JobRoleRelation>(this, "Id", "HRM_JOB_ROLES_Id");
+				EmployeeRoleRelations = new HasMany<EmployeeRoleRelation>(this, "Id", "HRM_JOB_ROLES_Id");
+			}
         }
 
         public enum JobRoleRelationType
@@ -203,8 +237,8 @@ namespace Leafing.UnitTest.Data
                                CreatedBy = u.Id,
                                Active = true,
                                Start = DateTime.Now,
-                               Employee = emp
                            };
+			rel1.Employee.Value = emp;
             rel1.Save();
 
             // create job role relation
@@ -213,8 +247,8 @@ namespace Leafing.UnitTest.Data
                               CreatedBy = u.Id,
                               Active = true,
                               Type = JobRoleRelationType.Manager,
-                              OrganisationalUnit = ou
                           };
+			rel.OrganisationalUnit.Value = ou;
             rel.Save();
 
             var jr = new JobRole { CreatedBy = u.Id, Code = "CEO", Name = "CEO", Description = "CEO" };
@@ -227,9 +261,9 @@ namespace Leafing.UnitTest.Data
             Assert.IsNotNull(ou);
 
             Assert.AreEqual(1, ou.JobRoleRelations.Count);
-            Assert.AreEqual("CEO", ou.JobRoleRelations[0].JobRole.Code);
-            Assert.AreEqual(1, ou.JobRoleRelations[0].JobRole.EmployeeRoleRelations.Count);
-            Assert.AreEqual("Mustermann", ou.JobRoleRelations[0].JobRole.EmployeeRoleRelations[0].Employee.Person.LastName); // error
+			Assert.AreEqual("CEO", ou.JobRoleRelations[0].JobRole.Value.Code);
+			Assert.AreEqual(1, ou.JobRoleRelations[0].JobRole.Value.EmployeeRoleRelations.Count);
+			Assert.AreEqual("Mustermann", ou.JobRoleRelations[0].JobRole.Value.EmployeeRoleRelations[0].Employee.Value.Person.Value.LastName); // error
         }
 
         /*
@@ -339,11 +373,11 @@ namespace Leafing.UnitTest.Data
 
             var o1 = Lazyable.FindById(1);
             Assert.AreEqual(2, o1.TestColumn);
-            Assert.AreEqual("IBM", o1.Content);
+			Assert.AreEqual("IBM", o1.Content.Value);
 
             var o2 = Lazyable.FindById(1);
             Assert.AreEqual(2, o2.TestColumn);
-            Assert.AreEqual("IBM", o2.Content);
+			Assert.AreEqual("IBM", o2.Content.Value);
         }
 
         [Test]
@@ -363,13 +397,13 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual(2, o2.TestColumn);
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));
-            Assert.AreEqual("IBM", o2.Content);
+			Assert.AreEqual("IBM", o2.Content.Value);
 
             var o3 = DbEntry.GetObject<LazyableSqlite>(2);
             Assert.AreEqual(2, o3.TestColumn);
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));
-            Assert.AreEqual("IBM", o3.Content);
+			Assert.AreEqual("IBM", o3.Content.Value);
             
             Assert.AreEqual(3, StaticRecorder.Messages.Count);
         }

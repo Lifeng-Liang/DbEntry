@@ -13,11 +13,15 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany]
-        public IList<ManyMore1> m1 { get; private set; }
+		public HasAndBelongsToMany<ManyMore1> m1 { get; private set; }
 
-        [HasAndBelongsToMany]
-        public IList<ManyMore2> m2 { get; private set; }
+		public HasAndBelongsToMany<ManyMore2> m2 { get; private set; }
+
+		public ManyMore ()
+		{
+			m1 = new HasAndBelongsToMany<ManyMore1> (this, "Id", "ManyMore_Id");
+			m2 = new HasAndBelongsToMany<ManyMore2> (this, "Id", "ManyMore_Id");
+		}
     }
 
     [DbTable("ManyMore1")]
@@ -25,8 +29,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany]
-        public IList<ManyMore> m { get; private set; }
+		public HasAndBelongsToMany<ManyMore> m { get; private set; }
+
+		public ManyMore1 ()
+		{
+			m = new HasAndBelongsToMany<ManyMore> (this, "Id", "ManyMore1_Id");
+		}
     }
 
     [DbTable("ManyMore2")]
@@ -34,8 +42,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany]
-        public IList<ManyMore> m { get; private set; }
+		public HasAndBelongsToMany<ManyMore> m { get; private set; }
+
+		public ManyMore2 ()
+		{
+			m = new HasAndBelongsToMany<ManyMore> (this, "Id", "ManyMore2_Id");
+		}
     }
 
     [DbTable("ManyMore"), DbContext("SQLite")]
@@ -43,11 +55,15 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany]
-        public IList<ManyMore1Sqlite> m1 { get; private set; }
+		public HasAndBelongsToMany<ManyMore1Sqlite> m1 { get; private set; }
 
-        [HasAndBelongsToMany]
-        public IList<ManyMore2Sqlite> m2 { get; private set; }
+		public HasAndBelongsToMany<ManyMore2Sqlite> m2 { get; private set; }
+
+		public ManyMoreSqlite ()
+		{
+			m1 = new HasAndBelongsToMany<ManyMore1Sqlite> (this, "Id", "ManyMore_Id");
+			m2 = new HasAndBelongsToMany<ManyMore2Sqlite> (this, "Id", "ManyMore_Id");
+		}
     }
 
     [DbTable("ManyMore1"), DbContext("SQLite")]
@@ -55,8 +71,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany]
-        public IList<ManyMoreSqlite> m { get; private set; }
+		public HasAndBelongsToMany<ManyMoreSqlite> m { get; private set; }
+
+		public ManyMore1Sqlite ()
+		{
+			m = new HasAndBelongsToMany<ManyMoreSqlite> (this, "Id", "ManyMore1_Id");
+		}
     }
 
     [DbTable("ManyMore2"), DbContext("SQLite")]
@@ -64,8 +84,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany]
-        public IList<ManyMoreSqlite> m { get; private set; }
+		public HasAndBelongsToMany<ManyMoreSqlite> m { get; private set; }
+
+		public ManyMore2Sqlite ()
+		{
+			m = new HasAndBelongsToMany<ManyMoreSqlite> (this, "Id", "ManyMore2_Id");
+		}
     }
 
     #endregion

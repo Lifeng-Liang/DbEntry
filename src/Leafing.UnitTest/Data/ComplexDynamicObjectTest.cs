@@ -41,35 +41,28 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestDynamicObjectConstractor()
-        {
-            PeopleWith p = PeopleWith.FindById(1);
-            Assert.IsNotNull(p.GetUpdateColumns());
-        }
-
-        [Test]
         public void TestHasOne()
         {
             People p = People.FindById(1);
             Assert.AreEqual("Tom", p.Name);
-            Assert.IsNull(p.pc);
+			Assert.IsNull(p.pc.Value);
 
             p = People.FindById(2);
             Assert.AreEqual("Jerry", p.Name);
-            Assert.AreEqual("IBM", p.pc.Name);
+			Assert.AreEqual("IBM", p.pc.Value.Name);
 
             p = People.FindById(3);
             Assert.AreEqual("Mike", p.Name);
-            Assert.AreEqual("DELL", p.pc.Name);
+			Assert.AreEqual("DELL", p.pc.Value.Name);
 
             p = People.FindById(3);
             p.Name = "me";
-            p.pc.Name = "test";
+			p.pc.Value.Name = "test";
             p.Save();
 
             p = People.FindById(3);
             Assert.AreEqual("me", p.Name);
-            Assert.AreEqual("test", p.pc.Name);
+			Assert.AreEqual("test", p.pc.Value.Name);
         }
 
         [Test]

@@ -30,18 +30,26 @@ namespace Leafing.UnitTest.Data
     {
         [AllowNull]
         public string Name { get; set; }
-        [LazyLoad]
-        public int? MyInt { get; set; }
+		public LazyLoad<int?> MyInt { get; private set; }
         public bool? MyBool { get; set; }
+		public NullableTableLazyInt ()
+		{
+			MyInt = new LazyLoad<int?> (this, "MyInt");
+		}
     }
 
     [DbTable("NullTest")]
     public class NullableTableLazyString : DbObjectModel<NullableTableLazyString>
     {
-        [LazyLoad, AllowNull]
-        public string Name { get; set; }
+        [AllowNull]
+		public LazyLoad<string> Name { get; private set; }
         public int? MyInt { get; set; }
         public bool? MyBool { get; set; }
+
+		public NullableTableLazyString ()
+		{
+			Name = new LazyLoad<string> (this, "Name");
+		}
     }
 
     #endregion
@@ -181,8 +189,8 @@ namespace Leafing.UnitTest.Data
             Assert.IsNotNull(o);
             Assert.AreEqual(1, o.Id);
             Assert.AreEqual("tom", o.Name);
-            Assert.IsTrue(null == o.MyInt);
-            Assert.IsTrue(true == o.MyBool);
+			Assert.IsTrue(null == o.MyInt.Value);
+			Assert.IsTrue(true == o.MyBool.Value);
         }
 
         [Test]
@@ -191,7 +199,7 @@ namespace Leafing.UnitTest.Data
             NullableTableLazyString o = NullableTableLazyString.FindById(2);
             Assert.IsNotNull(o);
             Assert.AreEqual(2, o.Id);
-            Assert.AreEqual(null, o.Name);
+			Assert.AreEqual(null, o.Name.Value);
             Assert.IsTrue(1 == o.MyInt);
             Assert.IsTrue(false == o.MyBool);
         }
@@ -207,5 +215,17 @@ namespace Leafing.UnitTest.Data
             Assert.IsNotNull(o1.Name);
             Assert.AreEqual("", o1.Name);
         }
+
+		[Test]
+		public void TestObjectInfoForNullable()
+		{
+			var ctx = ModelContext.GetInstance (typeof(NullableTable));
+			foreach (var item in ctx.Info.Members) {
+				if (item.Name != "Id") {
+					Assert.IsTrue (item.Is.AllowNull, 
+						item.Name + " should allow null but was not.");
+				}
+			}
+		}
     }
 }

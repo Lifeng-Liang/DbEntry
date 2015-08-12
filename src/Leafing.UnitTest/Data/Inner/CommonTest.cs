@@ -22,9 +22,11 @@ namespace Leafing.UnitTest.Data.Inner
     public class TableA : DbObjectModel<TableA>
     {
         public string Name { get; set; }
-
-        [HasOne]
-        public TableB tableB { get; set; }
+		public HasOne<TableB> tableB { get; private set; }
+		public TableA ()
+		{
+			tableB = new HasOne<TableB> (this);
+		}
     }
 
     [Serializable]
@@ -34,13 +36,18 @@ namespace Leafing.UnitTest.Data.Inner
         public string Url { get; set; }
 
         [Index(UNIQUE = true, IndexName = "Url_TableAId", ASC = false)]
-        [BelongsTo, DbColumn("TableAId")]
-        public TableA TB { get; set; }
+        [DbColumn("TableAId")]
+		public BelongsTo<TableA, long> TB { get; private set; }
+
+		public TableB ()
+		{
+			TB = new BelongsTo<TableA, long> (this);
+		}
     }
 
-    public class ClassSite {}
+	public class ClassSite : DbObjectModel<ClassSite> {}
 
-    public class indexSample
+	public class indexSample : DbObjectModel<indexSample>
     {
         [Index(UNIQUE = true, IndexName = "indexname1", ASC = true)]
         [Index(UNIQUE = false, IndexName = "indexname2", ASC = true)]
@@ -48,12 +55,18 @@ namespace Leafing.UnitTest.Data.Inner
 
         [Index(UNIQUE = true, IndexName = "indexname1", ASC = true)]
         [Index(UNIQUE = false, IndexName = "indexname2", ASC = true)]
-        [BelongsTo, DbColumn("SiteId")]
-        public ClassSite Site { get; set; }
+        [DbColumn("SiteId")]
+		public BelongsTo<ClassSite, long> Site { get; private set; }
 
         [Index(UNIQUE = true, IndexName = "qid", ASC = true)]
-        [BelongsTo, DbColumn("SiteId"), Index(IndexName = "xxx"), Index(IndexName = "ccc")]
-        public ClassSite Site2 { get; set; }
+        [DbColumn("SiteId"), Index(IndexName = "xxx"), Index(IndexName = "ccc")]
+		public BelongsTo<ClassSite, long> Site2 { get; private set; }
+
+		public indexSample ()
+		{
+			Site = new BelongsTo<ClassSite, long> (this, "SiteId");
+			Site2 = new BelongsTo<ClassSite, long> (this, "SiteId");
+		}
     }
 
     #endregion
@@ -91,7 +104,7 @@ namespace Leafing.UnitTest.Data.Inner
         [Test]
         public void TestCloneObject()
         {
-            var p = new People {Id = 10, Name = "abc", pc = new PCs {Name = "uuu"}};
+			var p = new People {Id = 10, Name = "abc"}; p.pc.Value = new PCs { Name = "uuu" };
 
             var p1 = (People)ModelContext.CloneObject(p);
             Assert.AreEqual(10, p1.Id);
@@ -146,7 +159,8 @@ namespace Leafing.UnitTest.Data.Inner
             t1.Save();
 
             var t2 = TableA.FindById(1);
-            var t3 = new TableB {Url = "TestUrl1", TB = t2};
+            var t3 = new TableB {Url = "TestUrl1"};
+			t3.TB.Value = t2;
             t3.Validate();
             t3.Save();
         }

@@ -12,8 +12,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasMany(OrderBy = "Id")]
-        public IList<BelongsMore> Bms { get; private set; }
+		public HasMany<BelongsMore> Bms { get; private set; }
+
+		public ArticleMore ()
+		{
+			Bms = new HasMany<BelongsMore> (this, "Id", "Article_Id");
+		}
     }
 
     [DbTable("ReaderMore")]
@@ -21,8 +25,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasMany(OrderBy = "Id")]
-        public IList<BelongsMore> Bms { get; private set; }
+		public HasMany<BelongsMore> Bms { get; private set; }
+
+		public ReaderMore ()
+		{
+			Bms = new HasMany<BelongsMore> (this, "Id", "Reader_Id");
+		}
     }
 
     [DbTable("BelongsMore")]
@@ -31,11 +39,17 @@ namespace Leafing.UnitTest.Data
         [Length(50)]
         public string Name { get; set; }
 
-        [BelongsTo, DbColumn("Article_Id")]
-        public ArticleMore Article { get; set; }
+        [DbColumn("Article_Id")]
+		public BelongsTo<ArticleMore, long> Article { get; set; }
 
-        [BelongsTo, DbColumn("Reader_Id")]
-        public ReaderMore Reader { get; set; }
+        [DbColumn("Reader_Id")]
+		public BelongsTo<ReaderMore, long> Reader { get; set; }
+
+		public BelongsMore ()
+		{
+			Article = new BelongsTo<ArticleMore, long> (this, "Article_Id");
+			Reader = new BelongsTo<ReaderMore, long> (this, "Reader_Id");
+		}
     }
 
     #endregion
@@ -87,12 +101,12 @@ namespace Leafing.UnitTest.Data
         {
             BelongsMore b = BelongsMore.FindById(1);
             Assert.IsNotNull(b);
-            Assert.AreEqual("The lovely bones", b.Article.Name);
-            Assert.AreEqual("jerry", b.Reader.Name);
+			Assert.AreEqual("The lovely bones", b.Article.Value.Name);
+            Assert.AreEqual("jerry", b.Reader.Value.Name);
 
             b = BelongsMore.FindById(3);
-            Assert.AreEqual("The load of rings", b.Article.Name);
-            Assert.AreEqual("tom", b.Reader.Name);
+            Assert.AreEqual("The load of rings", b.Article.Value.Name);
+            Assert.AreEqual("tom", b.Reader.Value.Name);
         }
 
         [Test]
@@ -119,8 +133,8 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual(1, r1.Bms.Count);
             Assert.AreEqual("b", r1.Bms[0].Name);
 
-            Assert.AreEqual("test", r1.Bms[0].Reader.Name);
-            Assert.IsNull(r1.Bms[0].Article);
+            Assert.AreEqual("test", r1.Bms[0].Reader.Value.Name);
+			Assert.IsNull(r1.Bms[0].Article.Value);
         }
 
         [Test]
@@ -138,8 +152,8 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual("test", r1.Name);
             Assert.AreEqual(1, r1.Bms.Count);
             Assert.AreEqual("b", r1.Bms[0].Name);
-            Assert.AreEqual("test", r1.Bms[0].Reader.Name);
-            Assert.AreEqual("art", r1.Bms[0].Article.Name);
+            Assert.AreEqual("test", r1.Bms[0].Reader.Value.Name);
+            Assert.AreEqual("art", r1.Bms[0].Article.Value.Name);
         }
 
         [Test]
@@ -205,7 +219,7 @@ namespace Leafing.UnitTest.Data
 
             ReaderMore r = ReaderMore.FindById(2);
             Assert.AreEqual("f1", r.Bms[0].Name);
-            Assert.IsNull(r.Bms[0].Article);
+			Assert.IsNull(r.Bms[0].Article.Value);
         }
 
         [Test]

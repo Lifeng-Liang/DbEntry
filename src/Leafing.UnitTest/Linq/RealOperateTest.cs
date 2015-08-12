@@ -21,14 +21,22 @@ namespace Leafing.UnitTest.Linq
         public class lCategory : DbObjectModel<lCategory>
         {
             public string Name { get; set; }
-            [HasMany] public IList<lBook> Books { get; private set; }
+			public HasMany<lBook> Books { get; private set; }
+			public lCategory ()
+			{
+				Books = new HasMany<lBook>(this, "Id", "Category_Id");
+			}
         }
 
         [DbTable("Books")]
         public class lBook : DbObjectModel<lBook>
         {
             public string Name { get; set; }
-            [BelongsTo, DbColumn("Category_Id")] public lCategory Category { get; set; }
+			[DbColumn("Category_Id")] public BelongsTo<lCategory, long> Category { get; private set; }
+			public lBook ()
+			{
+				Category = new BelongsTo<lCategory, long>(this, "Category_Id");
+			}
         }
 
         [DbTable("People")]
@@ -92,7 +100,7 @@ namespace Leafing.UnitTest.Linq
         [Test]
         public void Test17()
         {
-            var list = lBook.Find(p => p.Category.Id == 3, p => p.Id);
+			var list = lBook.Find(p => p.Category.Value.Id == 3, p => p.Id);
             Assert.AreEqual(2, list.Count);
             Assert.AreEqual("Beijing", list[0].Name);
             Assert.AreEqual("Shanghai", list[1].Name);

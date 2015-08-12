@@ -19,7 +19,8 @@ namespace Leafing.Web.Mvc.Core
                 foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     string s = a.FullName.Split(',')[0];
-                    if (!s.StartsWith("System.") && CouldBeControllerAssemebly(s))
+					if (!s.StartsWith("System.") && !s.StartsWith("Mono.") 
+						&& !s.StartsWith("MonoDevelop.") && CouldBeControllerAssemebly(s))
                     {
                         SearchControllers(a);
                     }

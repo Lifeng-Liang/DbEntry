@@ -54,11 +54,15 @@ namespace Leafing.UnitTest.Linq
         {
             public int No { get; set; }
 
-            [LazyLoad]
-            public string Content { get; set; }
+			public LazyLoad<string> Content { get; set; }
 
             [Length(10)]
             public string Name { get; set; }
+
+			public Nolazy ()
+			{
+				Content = new LazyLoad<string>(this, "Content");
+			}
         }
 
         [DbContext("SQLite")]
@@ -66,8 +70,12 @@ namespace Leafing.UnitTest.Linq
         {
             public string Name { get; set; }
 
-            [HasMany]
-            public IList<Article> Articles { get; private set; }
+			public HasMany<Article> Articles { get; private set; }
+
+			public User ()
+			{
+				Articles = new HasMany<Article>(this, "Id", "User_Id");
+			}
         }
 
         [DbContext("SQLite")]
@@ -75,11 +83,21 @@ namespace Leafing.UnitTest.Linq
         {
             public string Title { get; set; }
 
-            [BelongsTo]
-            public User Writer { get; set; }
+			public BelongsTo<User, long> Writer { get; set; }
 
-            [SpecialName]
-            public long WriterId { get; private set; }
+			// get foreign key without read writer.
+            public long WriterId
+			{
+				get
+				{
+					return (long)Writer.ForeignKey;
+				}
+			}
+
+			public Article ()
+			{
+				Writer = new BelongsTo<User, long>(this, "User_Id");
+			}
         }
 
         [DbContext("SQLite")]
@@ -393,7 +411,7 @@ namespace Leafing.UnitTest.Linq
             Assert.AreEqual(6, n);
 
             var x = Person.GetSum(p => p.Id > 100, p => p.Id);
-            Assert.IsNull(x);
+			Assert.IsTrue(x == null || x == 0m);
         }
 
         [Test]
@@ -456,15 +474,15 @@ namespace Leafing.UnitTest.Linq
         [Test]
         public void TestInClause5()
         {
-            User.Where(p => p.Id.InStatement(Article.Where(x => x.Id >= 5).GetStatement(x => x.Writer.Id))).Select();
+			User.Where(p => p.Id.InStatement(Article.Where(x => x.Id >= 5).GetStatement(x => x.Writer.Value.Id))).Select();
             AssertSql("SELECT [Id],[Name] FROM [User] WHERE [Id] IN (SELECT [User_Id] FROM [Article] WHERE [Id] >= @Id_0);\n<Text><60>(@Id_0=5:Int64)");
         }
 
         [Test]
         public void TestOrderByFk()
         {
-            Article.Where(x => x.Id >= 5).OrderBy(x => x.Writer.Id).Select();
-            AssertSql("SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [Id] >= @Id_0 ORDER BY [User_Id] ASC;\n<Text><60>(@Id_0=5:Int64)");
+			Article.Where(x => x.Id >= 5).OrderBy(x => x.Writer.Value.Id).Select();
+            AssertSql("SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [Id] >= @Id_0 ORDER BY [User_Id] ASC;\n<Text><60>(@Id_0=5:Int64)");
         }
 
         [Test]
@@ -477,10 +495,10 @@ namespace Leafing.UnitTest.Linq
             AssertSql("SELECT DISTINCT [Id],[No],[Name] FROM [Nolazy];\n<Text><60>()");
 
             Nolazy.Where(Condition.Empty).SelectNoLazy();
-            AssertSql("SELECT [Id],[No],[Name],[Content] AS [$Content] FROM [Nolazy];\n<Text><60>()");
+            AssertSql("SELECT [Id],[No],[Name],[Content] FROM [Nolazy];\n<Text><60>()");
 
             Nolazy.Where(Condition.Empty).SelectDistinctNoLazy();
-            AssertSql("SELECT DISTINCT [Id],[No],[Name],[Content] AS [$Content] FROM [Nolazy];\n<Text><60>()");
+            AssertSql("SELECT DISTINCT [Id],[No],[Name],[Content] FROM [Nolazy];\n<Text><60>()");
         }
 
         [Test]
@@ -495,8 +513,8 @@ namespace Leafing.UnitTest.Linq
             Assert.AreEqual(1, list.Count);
             Assert.AreEqual(2, list[0].No);
             Assert.AreEqual("aha", list[0].Name);
-            Assert.AreEqual("I'm here", list[0].Content);
-            AssertSql("SELECT [Id],[No],[Name],[Content] AS [$Content] FROM [Nolazy];\n<Text><60>()");
+			Assert.AreEqual("I'm here", list[0].Content.Value);
+            AssertSql("SELECT [Id],[No],[Name],[Content] FROM [Nolazy];\n<Text><60>()");
         }
 
         [Test]
@@ -506,7 +524,7 @@ namespace Leafing.UnitTest.Linq
             StaticRecorder.CurRow.Add(new RowInfo("Title", "tom"));
             StaticRecorder.CurRow.Add(new RowInfo("$Writer", 8L));
             var obj = Article.FindById(1);
-            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [Id] = @Id_0;
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [Id] = @Id_0;
 <Text><60>(@Id_0=1:Int64)");
             Assert.AreEqual("tom", obj.Title);
             Assert.AreEqual(8, obj.WriterId);
@@ -528,8 +546,8 @@ namespace Leafing.UnitTest.Linq
         [Test]
         public void TestIsNull()
         {
-            Article.Find(p => p.Writer.Id == null);
-            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NULL;
+			Article.Find(p => p.Writer.Value.Id == null);
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [User_Id] IS NULL;
 <Text><60>()");
 
         }
@@ -537,8 +555,8 @@ namespace Leafing.UnitTest.Linq
         [Test]
         public void TestIsNull1()
         {
-            Article.Find(p => p.Writer.Id != null);
-            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
+			Article.Find(p => p.Writer.Value.Id != null);
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
 <Text><60>()");
 
         }
@@ -546,16 +564,16 @@ namespace Leafing.UnitTest.Linq
         [Test]
         public void TestIsNull2()
         {
-            Article.Find(p => p.Writer.Id.IsNull());
-            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NULL;
+			Article.Find(p => p.Writer.Value.Id.IsNull());
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [User_Id] IS NULL;
 <Text><60>()");
         }
 
         [Test]
         public void TestIsNull3()
         {
-            Article.Find(p => p.Writer.Id.IsNotNull());
-            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
+			Article.Find(p => p.Writer.Value.Id.IsNotNull());
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
 <Text><60>()");
         }
 
@@ -563,7 +581,7 @@ namespace Leafing.UnitTest.Linq
         public void TestIsNull4()
         {
             Article.Find(p => p.Writer == null);
-            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NULL;
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [User_Id] IS NULL;
 <Text><60>()");
 
         }
@@ -572,7 +590,7 @@ namespace Leafing.UnitTest.Linq
         public void TestIsNull5()
         {
             Article.Find(p => p.Writer != null);
-            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [$Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
+            AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
 <Text><60>()");
         }
 

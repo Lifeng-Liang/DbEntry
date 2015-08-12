@@ -170,12 +170,9 @@ namespace Leafing.UnitTest.Data
                     c.BatchSize = 2;
                     c.DestinationTableName = "test";
                     c.NotifyAfter = 3;
-                    c.SqlRowsCopied += delegate(object sender, SqlRowsCopiedEventArgs e)
-                                       {
-                                           e.Abort = true;
-                                       };
+					c.SqlRowsCopied += ((sender, e) => e.Abort = true);
                     c.WriteToServer(dr);
-                });
+				});
             });
             Assert.AreEqual(3, StaticRecorder.Messages.Count);
 

@@ -13,8 +13,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany]
-        public IList<OtherInfo> Other { get; private set; }
+		public HasAndBelongsToMany<OtherInfo> Other { get; private set; }
+
+		public TreeInfo ()
+		{
+			Other = new HasAndBelongsToMany<OtherInfo> (this, "Id", "TreeInfo_Id");
+		}
     }
 
     [DbContext("SQLite")]
@@ -22,8 +26,12 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany]
-        public IList<TreeInfo> Info { get; private set; }
+		public HasAndBelongsToMany<TreeInfo> Info { get; private set; }
+
+		public OtherInfo ()
+		{
+			Info = new HasAndBelongsToMany<TreeInfo> (this, "Id", "OtherInfo_Id");
+		}
     }
 
     public class UserInfo : DbObjectModel<UserInfo>
@@ -49,21 +57,30 @@ namespace Leafing.UnitTest.Data
         [Length(50), AllowNull]
         public string Nombre { get; set; }
 
-        [HasMany(OrderBy = "Id")]
-        public IList<AppGrupoUsrMnu> GrpMnu { get; private set; }
+		public HasMany<AppGrupoUsrMnu> GrpMnu { get; private set; }
+
+		public AppGrupoUsr ()
+		{
+			GrpMnu = new HasMany<AppGrupoUsrMnu> (this, "Id", "gru_id");
+		}
     }
 
     [DbTable("SYS_GUM")]
     public class AppGrupoUsrMnu : DbObjectModel<AppGrupoUsrMnu>
     {
-        [BelongsTo, DbColumn("gru_id")]
-        public AppGrupoUsr AppGrupoUsr { get; set; }
+        [DbColumn("gru_id")]
+		public BelongsTo<AppGrupoUsr, long> AppGrupoUsr { get; set; }
 
         [Length(20), AllowNull]
         public string CodigoMenu { get; set; }
 
         [Length(50), AllowNull]
         public string Atts { get; set; }
+
+		public AppGrupoUsrMnu ()
+		{
+			AppGrupoUsr = new BelongsTo<AppGrupoUsr, long> (this, "gru_id");
+		}
     }
 
     [Serializable]
@@ -211,7 +228,7 @@ namespace Leafing.UnitTest.Data
             StaticRecorder.ClearMessages();
             var f2 = new TreeInfo { Name = "f2" };
             var s2 = new TreeInfo { Name = "s2" };
-            s2.Parent = f2;
+			s2.Parent.Value = f2;
             s2.Save();
 
             n = StaticRecorder.Messages.Count<string>(p => p.StartsWith("INSERT INTO [R_OtherInfo_TreeInfo]"));

@@ -74,24 +74,24 @@ namespace Leafing.UnitTest.Data
         public void Test1()
         {
             var vh = new ValidateHandler(true);
-            Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("123456", null, "a@b.c")));
-            Assert.IsTrue(vh.ValidateObject(new vtest("测试1", null, "a@b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("测试一", null, "a@b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest(null, null, "a@b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("", null, "a@b.c")));
-            Assert.IsTrue(vh.ValidateObject(new vtest("1", null, "a@b.c")));
+            Assert.IsTrue(vh.ValidateObject(new vtest("12345", null, "a@b.c")), "1");
+			Assert.IsFalse(vh.ValidateObject(new vtest("123456", null, "a@b.c")), "2");
+			Assert.IsTrue(vh.ValidateObject(new vtest("测试1", null, "a@b.c")), "3");
+			Assert.IsFalse(vh.ValidateObject(new vtest("测试一", null, "a@b.c")), "4");
+			Assert.IsFalse(vh.ValidateObject(new vtest(null, null, "a@b.c")), "5");
+			Assert.IsFalse(vh.ValidateObject(new vtest("", null, "a@b.c")), "6");
+			Assert.IsTrue(vh.ValidateObject(new vtest("1", null, "a@b.c")), "7");
 
-            Assert.IsTrue(vh.ValidateObject(new vtest("1", "", "a@b.c")));
-            Assert.IsTrue(vh.ValidateObject(new vtest("1", "12345678", "a@b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("1", "123456789", "a@b.c")));
-            Assert.IsTrue(vh.ValidateObject(new vtest("1", "测试测试测试测试", "a@b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("1", "测试测试测试测试1", "a@b.c")));
+			Assert.IsTrue(vh.ValidateObject(new vtest("1", "", "a@b.c")), "8");
+			Assert.IsTrue(vh.ValidateObject(new vtest("1", "12345678", "a@b.c")), "9");
+			Assert.IsFalse(vh.ValidateObject(new vtest("1", "123456789", "a@b.c")), "10");
+			Assert.IsTrue(vh.ValidateObject(new vtest("1", "测试测试测试测试", "a@b.c")), "11");
+			Assert.IsFalse(vh.ValidateObject(new vtest("1", "测试测试测试测试1", "a@b.c")), "12");
 
-            Assert.IsFalse(vh.ValidateObject(new vtest("1", null, "a.b.c")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("1", null, null)));
-            Assert.IsFalse(vh.ValidateObject(new vtest("1", null, "")));
-            Assert.IsFalse(vh.ValidateObject(new vtest("1", null, "1")));
+			Assert.IsFalse(vh.ValidateObject(new vtest("1", null, "a.b.c")), "13");
+			Assert.IsFalse(vh.ValidateObject(new vtest("1", null, null)), "14");
+			Assert.IsFalse(vh.ValidateObject(new vtest("1", null, "")), "15");
+			Assert.IsFalse(vh.ValidateObject(new vtest("1", null, "1")), "16");
         }
 
         [Test]
