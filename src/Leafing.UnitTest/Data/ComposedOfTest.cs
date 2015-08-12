@@ -23,7 +23,7 @@ namespace Leafing.UnitTest.Data
 		public string Street { get; set; }
     }
 
-	[TestFixture]
+	[TestFixture, Ignore]
     public class ComposedOfTest : DataTestBase
     {
         public class CoUser : DbObjectModel<CoUser>
