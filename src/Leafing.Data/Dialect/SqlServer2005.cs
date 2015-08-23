@@ -48,7 +48,7 @@ namespace Leafing.Data.Dialect
             const string posName = "__rownumber__";
             var dpc = new DataParameterCollection();
             string sqlString = string.Format(
-                "SELECT {7} FROM (SELECT {0}, ROW_NUMBER() OVER ({3}) AS {6} FROM {1} {2}) AS T WHERE T.{6} >= {4} AND T.{6} <= {5}",
+				"SELECT {7} FROM (SELECT {0}, ROW_NUMBER() OVER ({3}) AS {6} FROM {1} {2}) AS T WHERE T.{6} >= {4} AND T.{6} <= {5} ORDER BY T.{6}",
                 ssb.GetColumns(this),
                 ssb.From.ToSqlText(dpc, this),
                 ssb.Where.ToSqlText(dpc, this, queryRequiredFields),
