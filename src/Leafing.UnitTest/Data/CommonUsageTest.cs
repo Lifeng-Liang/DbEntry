@@ -142,11 +142,6 @@ namespace Leafing.UnitTest.Data
     {
         [DbColumn("Content")]
 		public LazyLoad<string> ItemContent { get; set; }
-
-		public Contentable ()
-		{
-			ItemContent = new LazyLoad<string> (this, "Content");
-		}
     }
 
     [DbContext("SQLite")]
@@ -487,7 +482,7 @@ namespace Leafing.UnitTest.Data
         {
             StaticRecorder.ClearMessages();
             DbEntry.From<PersonSql>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
-            Assert.AreEqual("SELECT [Id],[Name] FROM (SELECT [Id],[Name], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[Name] FROM (SELECT [Id],[Name], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5 ORDER BY T.__rownumber__;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
@@ -495,7 +490,7 @@ namespace Leafing.UnitTest.Data
         {
             StaticRecorder.ClearMessages();
             DbEntry.From<FieldPersonSql>().Where(CK.K["Age"] > 18).OrderBy("Id").Range(3, 5).Select();
-            Assert.AreEqual("SELECT [Id],[TheName] FROM (SELECT [Id],[Name] AS [TheName], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
+            Assert.AreEqual("SELECT [Id],[TheName] FROM (SELECT [Id],[Name] AS [TheName], ROW_NUMBER() OVER ( ORDER BY [Id] ASC) AS __rownumber__ FROM [People]  WHERE [Age] > @Age_0) AS T WHERE T.__rownumber__ >= 3 AND T.__rownumber__ <= 5 ORDER BY T.__rownumber__;\n<Text><60>(@Age_0=18:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
