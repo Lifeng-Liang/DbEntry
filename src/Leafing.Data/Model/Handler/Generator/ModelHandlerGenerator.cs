@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Data;
 using Leafing.Data.Builder.Clause;
+using Leafing.Data.Model.Member.Adapter;
 
 namespace Leafing.Data.Model.Handler.Generator
 {
@@ -19,8 +20,10 @@ namespace Leafing.Data.Model.Handler.Generator
 
 		private const BindingFlags commFlag = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 		private const TypeAttributes DynamicObjectTypeAttr = TypeAttributes.Class | TypeAttributes.Public;
+		private const FieldAttributes fieldFlag = FieldAttributes.Private;
 
 		private static readonly Type[] noArgs ;
+		private static readonly Type[] dbObjectSmartUpdateArgs;
 		private static readonly Type handlerBaseType ;
 		private static readonly Type objectType ;
 		private static readonly Type iDataReaderType ;
@@ -28,6 +31,7 @@ namespace Leafing.Data.Model.Handler.Generator
 		private static readonly Type listKeyValuePairStringStringType ;
 		private static readonly Type keyOpValueListType ;
 
+		private static readonly MethodInfo handlerBaseCtorInit;
 		private static readonly MethodInfo handlerBaseCreateInstance ;
 		private static readonly MethodInfo handlerBaseLoadSimpleValuesByIndex ;
 		private static readonly MethodInfo handlerBaseLoadSimpleValuesByName ;
@@ -59,14 +63,22 @@ namespace Leafing.Data.Model.Handler.Generator
 		private static readonly MethodInfo listKeyValuePairStringStringAdd ;
 		private static readonly MethodInfo keyOpValueListAdd ;
 
+		private static readonly MethodInfo createDelegate;
+		private static readonly MethodInfo getTypeFromHandle;
+		private static readonly MethodInfo getProperty;
+		private static readonly MethodInfo getSetMethod;
+		private static readonly ConstructorInfo objectCtor;
+
 		private readonly Type _model;
 		private readonly TypeBuilder _result;
 
 		private readonly ObjectInfo _info;
+		private ConstructorBuilder _ctor;
 
 		static ModelHandlerGenerator ()
 		{
 			noArgs = new Type[]{ };
+			dbObjectSmartUpdateArgs = new Type[]{ typeof(DbObjectSmartUpdate) };
 			handlerBaseType = typeof(EmitObjectHandlerBase);
 			objectType = typeof(object);
 			iDataReaderType = typeof(IDataReader);
@@ -74,6 +86,7 @@ namespace Leafing.Data.Model.Handler.Generator
 			listKeyValuePairStringStringType = typeof(List<KeyValuePair<string, string>>);
 			keyOpValueListType = typeof(List<KeyOpValue>);
 
+			handlerBaseCtorInit = handlerBaseType.GetMethod("CtorInit", commFlag);
 			handlerBaseCreateInstance = handlerBaseType.GetMethod ("CreateInstance", commFlag);
 			handlerBaseLoadSimpleValuesByIndex = handlerBaseType.GetMethod("LoadSimpleValuesByIndex", commFlag);
 			handlerBaseLoadSimpleValuesByName = handlerBaseType.GetMethod("LoadSimpleValuesByName", commFlag);
@@ -99,11 +112,19 @@ namespace Leafing.Data.Model.Handler.Generator
 			lazyLoadingInterfaceWrite = typeof(ILazyLoading).GetMethod("Write");
 			belongsToInterfaceSetForeignKey = typeof(IBelongsTo).GetMethod("set_ForeignKey");
 			dictionaryStringObjectAdd = dictionaryStringObjectType.GetMethod("Add");
-			convertToInt64 = typeof(Convert).GetMethod ("ToInt64", new []{ objectType });
-			convertToInt32 = typeof(Convert).GetMethod ("ToInt32", new []{ objectType });
+			convertToInt64 = typeof(Convert).GetMethod ("ToInt64", new [] { objectType });
+			convertToInt32 = typeof(Convert).GetMethod ("ToInt32", new [] { objectType });
 			keyValuePairStringStringCtor = typeof(KeyValuePair<string, string>).GetConstructor(new[] { typeof(string), typeof(string) });
 			listKeyValuePairStringStringAdd = listKeyValuePairStringStringType.GetMethod("Add");
-			keyOpValueListAdd = typeof(List<KeyOpValue>).GetMethod("Add", new[] {typeof(KeyOpValue)});
+			keyOpValueListAdd = typeof(List<KeyOpValue>).GetMethod("Add", new [] { typeof(KeyOpValue) });
+
+			createDelegate = typeof(Delegate).GetMethod("CreateDelegate",
+				BindingFlags.Static | BindingFlags.Public, null,
+				new Type[]{ typeof(Type), typeof(MethodInfo) }, null);
+			getTypeFromHandle = typeof(Type).GetMethod("GetTypeFromHandle", new []{ typeof(RuntimeTypeHandle) });
+			getProperty = typeof(Type).GetMethod("GetProperty", new []{ typeof(string) });
+			getSetMethod = typeof(PropertyInfo).GetMethod("GetSetMethod", new []{ typeof(bool) });
+			objectCtor = typeof(Object).GetConstructor(new Type[]{});
 		}
 
 		public ModelHandlerGenerator(ObjectInfo info)
@@ -117,9 +138,11 @@ namespace Leafing.Data.Model.Handler.Generator
 		private TypeBuilder CreateType()
 		{
 			return MemoryAssembly.Instance.DefineType(
+				MemoryAssembly.GetTypeName() + "$" + _model.Name,
 				DynamicObjectTypeAttr, 
 				handlerBaseType, 
-				new[] { typeof(IDbObjectHandler) });
+				new[] { typeof(IDbObjectHandler) },
+				new CustomAttributeBuilder[] { });
 		}
 
 		private void CheckType(Type type)
@@ -179,7 +202,19 @@ namespace Leafing.Data.Model.Handler.Generator
 
 		private void GenerateConstructor()
 		{
-			_result.DefineDefaultConstructor (MethodAttributes.Public);
+			_ctor = _result.DefineConstructor(MethodAttributes.Public,
+				CallingConventions.Standard, new Type[]{ });
+			var ctorBuilder = new ILBuilder(_ctor.GetILGenerator());
+
+			ctorBuilder.LoadArg(0);
+			ctorBuilder.Call(objectCtor);
+			ctorBuilder.DeclareLocal(typeof(Type));
+			ctorBuilder.LoadToken(_model);
+			ctorBuilder.Call(getTypeFromHandle);
+			ctorBuilder.SetLoc(0);
+
+			GenerateCtorInit(ctorBuilder);
+			ctorBuilder.Return();
 		}
 
 		private void GenerateCreateInstance()
@@ -574,6 +609,126 @@ namespace Leafing.Data.Model.Handler.Generator
 					}
 					n++;
 				}
+			}
+		}
+
+		private void GenerateCtorInit(ILBuilder ctorBuilder)
+		{
+			var method = _result.DefineMethod("CtorInit", CtMethodAttr, null, dbObjectSmartUpdateArgs);
+			_result.DefineMethodOverride(method, handlerBaseCtorInit);
+			var processor = new ILBuilder(method.GetILGenerator());
+			foreach (var f in _info.Members) {
+				if (!(f.Is.RelationField || f.Is.LazyLoad)) {
+					continue;
+				}
+				if (f.MemberInfo.IsProperty) {
+					var pi = (PropertyInfo)f.MemberInfo.GetMemberInfo();
+					var setter = pi.GetSetMethod(true);
+					if (setter.IsPrivate) {
+						GenerateNewMemberWithPrivateSetter(f, processor, ctorBuilder);
+					} else {
+						processor.LoadArg(1);
+						GenerateNewMember(f, processor);
+						processor.CallVirtual(setter);
+					}
+				} else {
+					processor.LoadArg(1);
+					GenerateNewMember(f, processor);
+					processor.SetField((FieldInfo)f.MemberInfo.GetMemberInfo());
+				}
+			}
+			processor.Return();
+		}
+
+		private void GenerateNewMemberWithPrivateSetter(MemberHandler pi, ILBuilder processor, ILBuilder ctorBuilder)
+		{
+			var dt = typeof(Action<,>).MakeGenericType(_model, pi.MemberType);
+			var df = _result.DefineField("$" + pi.MemberInfo.Name, dt, fieldFlag);
+			ctorBuilder.LoadArg(0);
+			ctorBuilder.LoadToken(dt);
+			ctorBuilder.Call(getTypeFromHandle);
+			ctorBuilder.LoadLoc(0);
+			ctorBuilder.LoadString(pi.MemberInfo.Name);
+			ctorBuilder.CallVirtual(getProperty);
+			ctorBuilder.LoadInt(1);
+			ctorBuilder.CallVirtual(getSetMethod);
+			ctorBuilder.Call(createDelegate);
+			ctorBuilder.Cast(dt);
+			ctorBuilder.SetField(df);
+
+			processor.LoadArg(0);
+			processor.LoadField(df);
+			processor.LoadArg(1);
+			GenerateNewMember(pi, processor);
+			var invoke = dt.GetMethod("Invoke");
+			processor.CallVirtual(invoke);
+		}
+
+		private void GenerateNewMember(MemberHandler pi, ILBuilder processor)
+		{
+			processor.LoadArg(1);
+			ConstructorInfo ci1;
+			var ft = pi.MemberType;
+			if (pi.Is.HasOne || pi.Is.HasMany || pi.Is.HasAndBelongsToMany) {
+				ci1 = ft.GetConstructor(new Type[] {
+					typeof(DbObjectSmartUpdate),
+					typeof(string),
+					typeof(string)
+				});
+				if (string.IsNullOrEmpty(pi.OrderByString)) {
+					processor.LoadString("Id");
+				}
+				else {
+					processor.LoadString(pi.OrderByString);
+				}
+			}
+			else {
+				ci1 = ft.GetConstructor(new Type[] {
+					typeof(DbObjectSmartUpdate),
+					typeof(string)
+				});
+			}
+			if (pi.Is.HasOne || pi.Is.HasMany) {
+				processor.LoadString(GetBelongsToColumnName(pi));
+			} else if (pi.Is.HasAndBelongsToMany) {
+				processor.LoadString(GetHasManyAndBelongsToColumnName(pi));
+			} else {
+				processor.LoadString(pi.Name);
+			}
+			processor.NewObj(ci1);
+		}
+
+		private string GetBelongsToColumnName(MemberHandler pi)
+		{
+			var tt = pi.MemberType.GetGenericArguments()[0];
+			var tinfo = ObjectInfoFactory.Instance.GetInstance(tt);
+			var bt = tinfo.GetBelongsTo(_model);
+			return bt.Name;
+		}
+
+		private string GetHasManyAndBelongsToColumnName(MemberHandler pi)
+		{
+			var tt = pi.MemberType.GetGenericArguments()[0];
+			var tinfo = ObjectInfoFactory.Instance.GetInstance(tt);
+			var bt = tinfo.GetHasAndBelongsToMany(_model);
+			return bt.Name;
+		}
+
+		private static string GetOrderByString(MemberHandler pi)
+		{
+			var attr = GetAttribute<OrderByAttribute>(pi.MemberInfo);
+			if (attr != null) {
+				return attr.OrderBy;
+			}
+			return null;
+		}
+
+		private static T GetAttribute<T>(MemberAdapter info) where T : Attribute
+		{
+			if (info.IsProperty) {
+				return Leafing.Core.ClassHelper.GetAttribute<T>((PropertyInfo)info.GetMemberInfo(), false);
+			} else {
+				return Leafing.Core.ClassHelper.GetAttribute<T>((FieldInfo)info.GetMemberInfo(), false);
 			}
 		}
 	}

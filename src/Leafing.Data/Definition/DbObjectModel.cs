@@ -6,6 +6,8 @@ using Leafing.Data.Model.Linq;
 using Leafing.Data.Model.QuerySyntax;
 using Leafing.Data.SqlEntry;
 using Leafing.Data.SqlEntry.Dynamic;
+using System.Reflection;
+using Leafing.Core;
 
 namespace Leafing.Data.Definition
 {
@@ -26,6 +28,11 @@ namespace Leafing.Data.Definition
         {
             get { return ModelContext; }
         }
+
+		public DbObjectModel ()
+		{
+			Context.Handler.CtorInit(this);
+		}
 
         protected static CK Col
         {

@@ -30,6 +30,13 @@ namespace Leafing.Data.Model.Handler.Generator
             ResetModule();
         }
 
+		public static string GetTypeName()
+		{
+			string typeName = "$" + index;
+			index++;
+			return typeName;
+		}
+
         public TypeBuilder DefineType(TypeAttributes attr, Type InheritsFrom, Type[] Interfaces)
         {
             return DefineType(attr, InheritsFrom, Interfaces, new CustomAttributeBuilder[] { });
@@ -37,9 +44,7 @@ namespace Leafing.Data.Model.Handler.Generator
 
         public TypeBuilder DefineType(TypeAttributes attr, Type InheritsFrom, Type[] Interfaces, CustomAttributeBuilder[] attributes)
         {
-            string TypeName = "$" + index;
-            index++;
-            return DefineType(TypeName, attr, InheritsFrom, Interfaces, attributes);
+			return DefineType(GetTypeName(), attr, InheritsFrom, Interfaces, attributes);
         }
 
         public TypeBuilder DefineType(string TypeName, TypeAttributes attr, Type InheritsFrom, Type[] Interfaces, CustomAttributeBuilder[] attributes)

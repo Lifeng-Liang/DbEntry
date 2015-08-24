@@ -32,10 +32,6 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
 		public LazyLoad<int?> MyInt { get; private set; }
         public bool? MyBool { get; set; }
-		public NullableTableLazyInt ()
-		{
-			MyInt = new LazyLoad<int?> (this, "MyInt");
-		}
     }
 
     [DbTable("NullTest")]
@@ -45,11 +41,6 @@ namespace Leafing.UnitTest.Data
 		public LazyLoad<string> Name { get; private set; }
         public int? MyInt { get; set; }
         public bool? MyBool { get; set; }
-
-		public NullableTableLazyString ()
-		{
-			Name = new LazyLoad<string> (this, "Name");
-		}
     }
 
     #endregion

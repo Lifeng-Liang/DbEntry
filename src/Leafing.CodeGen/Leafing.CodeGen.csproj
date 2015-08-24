@@ -91,6 +91,14 @@
       <Project>{A73147C3-73C4-4590-9EC4-250AC83F4EF5}</Project>
       <Name>Leafing.Web</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Leafing.Membership\Leafing.Membership.csproj">
+      <Project>{9BCF3FDB-F024-4C6F-9B05-055C1136B9A5}</Project>
+      <Name>Leafing.Membership</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Leafing.Extra\Leafing.Extra.csproj">
+      <Project>{D009E584-9511-4243-9D2D-CD74079FB425}</Project>
+      <Name>Leafing.Extra</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Readme.txt" />

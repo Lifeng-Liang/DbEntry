@@ -11,11 +11,6 @@ namespace Leafing.UnitTest.Data.Objects
         public string Name { get; set; }
 
         public HasOne<PersonalComputer> PC;
-
-        public Person()
-        {
-            PC = new HasOne<PersonalComputer>(this);
-        }
     }
 
     [DbTable("PCs")]
@@ -25,11 +20,6 @@ namespace Leafing.UnitTest.Data.Objects
 
         [DbColumn("Person_Id")]
         public BelongsTo<Person, long> Owner;
-
-        public PersonalComputer()
-        {
-            Owner = new BelongsTo<Person, long>(this);
-        }
     }
 
     [DbTable("People"), DbContext("SQLite")]
@@ -38,11 +28,6 @@ namespace Leafing.UnitTest.Data.Objects
         public string Name { get; set; }
 
         public HasOne<PersonalComputerSqlite> PC;
-
-        public PersonSqlite()
-        {
-            PC = new HasOne<PersonalComputerSqlite>(this);
-        }
     }
 
     [DbTable("PCs"), DbContext("SQLite")]
@@ -52,11 +37,6 @@ namespace Leafing.UnitTest.Data.Objects
 
         [DbColumn("Person_Id")]
         public BelongsTo<PersonSqlite, long> Owner;
-
-        public PersonalComputerSqlite()
-        {
-            Owner = new BelongsTo<PersonSqlite, long>(this);
-        }
     }
 
     [DbTable("People"), DbContext("SqlServerMock")]
@@ -65,11 +45,6 @@ namespace Leafing.UnitTest.Data.Objects
         public string Name { get; set; }
 
         public HasOne<PersonalComputerSql> PC;
-
-        public PersonSql()
-        {
-            PC = new HasOne<PersonalComputerSql>(this);
-        }
     }
 
     [DbTable("PCs"), DbContext("SqlServerMock")]
@@ -79,11 +54,6 @@ namespace Leafing.UnitTest.Data.Objects
 
         [DbColumn("Person_Id")]
         public BelongsTo<PersonSql, long> Owner;
-
-        public PersonalComputerSql()
-        {
-            Owner = new BelongsTo<PersonSql, long>(this);
-        }
     }
 
     // HasMany
@@ -98,7 +68,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public Book()
         {
-            CurCategory = new BelongsTo<Category, long>(this);
+            //CurCategory = new BelongsTo<Category, long>(this);
         }
     }
 
@@ -111,7 +81,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public Category()
         {
-            Books = new HasMany<Book>(this);
+            //Books = new HasMany<Book>(this);
         }
     }
 
@@ -125,7 +95,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public BookSqlite()
         {
-            CurCategory = new BelongsTo<CategorySqlite, long>(this);
+            //CurCategory = new BelongsTo<CategorySqlite, long>(this);
         }
     }
 
@@ -138,7 +108,7 @@ namespace Leafing.UnitTest.Data.Objects
 
         public CategorySqlite()
         {
-            Books = new HasMany<BookSqlite>(this);
+            //Books = new HasMany<BookSqlite>(this);
         }
     }
 
@@ -151,7 +121,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public Acategory ()
 		{
-			Books = new HasMany<Abook> (this);
+			Books = new HasMany<Abook> (this, null, "Category_Id");
 		}
     }
 
@@ -165,7 +135,7 @@ namespace Leafing.UnitTest.Data.Objects
 
 		public Abook ()
 		{
-			CurCategory = new BelongsTo<Acategory, long> (this);
+			CurCategory = new BelongsTo<Acategory, long> (this, "Category_Id");
 		}
     }
 
@@ -173,24 +143,16 @@ namespace Leafing.UnitTest.Data.Objects
     {
         public string Name { get; set; }
 
+		[OrderBy("Id")]
 		public HasAndBelongsToMany<Reader> Readers { get; private set; }
-
-		public Article ()
-		{
-			Readers = new HasAndBelongsToMany<Reader> (this);
-		}
     }
 
     public class Reader : DbObjectModel<Reader>
     {
         public string Name { get; set; }
 
+		[OrderBy("Id")]
 		public HasAndBelongsToMany<Article> Articles { get; private set; }
-
-		public Reader ()
-		{
-			Articles = new HasAndBelongsToMany<Article> (this);
-		}
     }
 
     [DbTable("Article"), DbContext("SQLite")]
@@ -199,11 +161,6 @@ namespace Leafing.UnitTest.Data.Objects
         public string Name { get; set; }
 
 		public HasAndBelongsToMany<ReaderSqlite> Readers { get; private set; }
-
-		public ArticleSqlite ()
-		{
-			Readers = new HasAndBelongsToMany<ReaderSqlite> (this);
-		}
     }
 
     [DbTable("Reader"), DbContext("SQLite")]
@@ -212,11 +169,6 @@ namespace Leafing.UnitTest.Data.Objects
         public string Name { get; set; }
 
 		public HasAndBelongsToMany<ArticleSqlite> Articles { get; private set; }
-
-		public ReaderSqlite ()
-		{
-			Articles = new HasAndBelongsToMany<ArticleSqlite> (this);
-		}
     }
 
     public class Article_Reader : IDbObject

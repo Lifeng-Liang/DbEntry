@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using Leafing.Data.Model.Member;
+using Leafing.Data.Model.Member.Adapter;
 
 namespace Leafing.Data.Model.Handler.Generator
 {
@@ -23,6 +24,18 @@ namespace Leafing.Data.Model.Handler.Generator
             il.DeclareLocal(t);
             return this;
         }
+
+		public ILBuilder Nop()
+		{
+			il.Emit(OpCodes.Nop);
+			return this;
+		}
+
+		public ILBuilder LoadToken(Type t)
+		{
+			il.Emit(OpCodes.Ldtoken, t);
+			return this;
+		}
 
         public ILBuilder LoadInt(int n)
         {

@@ -16,25 +16,6 @@ namespace Leafing.Data.Definition
 
         object IHasOne.LastValue { get; set; }
 
-		public HasOne (DbObjectSmartUpdate owner)
-			:base(owner, GetRelationName(owner))
-		{
-			this._order = new OrderBy("Id");
-		}
-
-		public HasOne (DbObjectSmartUpdate owner, OrderBy orderBy)
-			:base(owner, GetRelationName(owner))
-		{
-			this._order = orderBy;
-		}
-
-		private static string GetRelationName(DbObjectSmartUpdate owner)
-		{
-			var tCtx = ModelContext.GetInstance (typeof(T));
-			var bt = tCtx.Info.GetBelongsTo (owner.GetType ());
-			return bt.Name;
-		}
-
         public HasOne(DbObjectSmartUpdate owner, string orderByString, string relationName)
             : base(owner, relationName)
         {

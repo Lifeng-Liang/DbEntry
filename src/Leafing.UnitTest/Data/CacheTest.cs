@@ -23,11 +23,6 @@ namespace Leafing.UnitTest.Data
 
             [DbColumn("Person_Id")]
             public int TestColumn { get; set; }
-
-			public Lazyable ()
-			{
-				Content = new LazyLoad<string>(this, "Name");
-			}
         }
 
         [Cacheable, DbTable("PCs"), DbContext("SQLite")]
@@ -38,11 +33,6 @@ namespace Leafing.UnitTest.Data
 
             [DbColumn("Person_Id")]
             public int TestColumn { get; set; }
-
-			public LazyableSqlite ()
-			{
-				Content = new LazyLoad<string>(this, "Name");
-			}
         }
 
         [DbTable("DCS_USERS"), Cacheable]
@@ -56,11 +46,6 @@ namespace Leafing.UnitTest.Data
         public class OrganisationalUnit : DbObjectModel<OrganisationalUnit>
         {
 			public HasMany<JobRoleRelation> JobRoleRelations { get; private set; }
-
-			public OrganisationalUnit ()
-			{
-				JobRoleRelations = new HasMany<JobRoleRelation>(this, "Id", "REF_ORG_UNIT_Id");
-			}
         }
 
         [DbTable("HRM_EMPLOYEES"), Cacheable]
@@ -69,12 +54,6 @@ namespace Leafing.UnitTest.Data
 			public HasOne<EmployeeRoleRelation> Rel { get; set; }
 
 			public BelongsTo<Person, long> Person { get; set; }
-
-			public Employee ()
-			{
-				Rel = new HasOne<EmployeeRoleRelation>(this, "Id", "HRM_EMPLOYEES_Id");
-				Person = new BelongsTo<Person, long>(this, "DCS_PERSONS_Id");
-			}
         }
 
         [DbTable("DCS_PERSONS")]
@@ -84,11 +63,6 @@ namespace Leafing.UnitTest.Data
             public string LastName { get; set; }
 
 			public HasOne<Employee> emp { get; set; }
-
-			public Person ()
-			{
-				emp = new HasOne<Employee>(this, "Id", "DCS_PERSONS_Id");
-			}
         }
 
         [DbTable("REL_EMP_JOB_ROLE"), Cacheable]
@@ -106,12 +80,6 @@ namespace Leafing.UnitTest.Data
 			public BelongsTo<Employee, long> Employee { get; set; }
 
 			public BelongsTo<JobRole, long> jrr { get; set; }
-
-			public EmployeeRoleRelation ()
-			{
-				Employee = new BelongsTo<Employee, long>(this, "HRM_EMPLOYEES_Id");
-				jrr = new BelongsTo<JobRole, long>(this, "HRM_JOB_ROLES_Id");
-			}
         }
 
         [DbTable("REL_JOB_ROLE_ORG_UNIT"), Cacheable]
@@ -129,12 +97,6 @@ namespace Leafing.UnitTest.Data
 			public BelongsTo<OrganisationalUnit, long> OrganisationalUnit { get; set; }
 
 			public BelongsTo<JobRole, long> JobRole { get; set; }
-
-			public JobRoleRelation ()
-			{
-				OrganisationalUnit = new BelongsTo<OrganisationalUnit, long>(this, "REF_ORG_UNIT_Id");
-				JobRole = new BelongsTo<JobRole, long>(this, "HRM_JOB_ROLES_Id");
-			}
         }
 
         [DbTable("HRM_JOB_ROLES"), Cacheable]
@@ -155,12 +117,6 @@ namespace Leafing.UnitTest.Data
 			public HasMany<JobRoleRelation> JobRoleRelations { get; private set; }
 
 			public HasMany<EmployeeRoleRelation> EmployeeRoleRelations { get; private set; }
-
-			public JobRole ()
-			{
-				JobRoleRelations = new HasMany<JobRoleRelation>(this, "Id", "HRM_JOB_ROLES_Id");
-				EmployeeRoleRelations = new HasMany<EmployeeRoleRelation>(this, "Id", "HRM_JOB_ROLES_Id");
-			}
         }
 
         public enum JobRoleRelationType

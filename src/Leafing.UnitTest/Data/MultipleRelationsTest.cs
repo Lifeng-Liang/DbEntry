@@ -13,10 +13,6 @@ namespace Leafing.UnitTest.Data
         {
             public string Name { get; set; }
 			public HasMany<mrProject> Projects { get; private set; }
-			public mrUser ()
-			{
-				Projects = new HasMany<mrProject>(this);
-			}
         }
 
         public class mrProject : DbObjectModel<mrProject>
@@ -24,11 +20,6 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public BelongsTo<mrUser, long> Owner { get; private set; }
 			public HasMany<mrSubject> Subjects { get; private set; }
-			public mrProject ()
-			{
-				Owner = new BelongsTo<mrUser, long>(this);
-				Subjects = new HasMany<mrSubject>(this);
-			}
         }
 
         public class mrSubject : DbObjectModel<mrSubject>
@@ -36,11 +27,6 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public BelongsTo<mrProject, long> Owner { get; private set; }
 			public HasMany<mrAttribute> Attributes { get; private set; }
-			public mrSubject ()
-			{
-				Owner = new BelongsTo<mrProject, long>(this);
-				Attributes = new HasMany<mrAttribute>(this);
-			}
         }
 
         public class mrAttribute : DbObjectModel<mrAttribute>
@@ -48,21 +34,12 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public BelongsTo<mrSubject, long> Owner { get; private set; }
 			public HasOne<mrTitle> Title { get; private set; }
-			public mrAttribute ()
-			{
-				Owner = new BelongsTo<mrSubject, long>(this);
-				Title = new HasOne<mrTitle>(this);
-			}
         }
 
         public class mrTitle : DbObjectModel<mrTitle>
         {
             public string Name { get; set; }
 			public BelongsTo<mrAttribute, long> Owner { get; private set; }
-			public mrTitle ()
-			{
-				Owner = new BelongsTo<mrAttribute, long>(this);
-			}
         }
 
         #endregion
@@ -73,10 +50,6 @@ namespace Leafing.UnitTest.Data
         {
             public string Name { get; set; }
 			public HasAndBelongsToMany<mrCategory> Categories { get; private set; }
-			public mrBook ()
-			{
-				Categories = new HasAndBelongsToMany<mrCategory>(this);
-			}
         }
 
         public class mrCategory : DbObjectModel<mrCategory>
@@ -84,11 +57,6 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public HasAndBelongsToMany<mrBook> Books { get; private set; }
 			public HasOne<mrCateTitle> Title { get; set; }
-			public mrCategory ()
-			{
-				Books = new HasAndBelongsToMany<mrBook>(this);
-				Title = new HasOne<mrCateTitle>(this);
-			}
         }
 
         public class mrCateTitle : DbObjectModel<mrCateTitle>
@@ -96,21 +64,12 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public BelongsTo<mrCategory, long> Category { get; private set; }
 			public HasMany<mrCateTitleName> Names { get; private set; }
-			public mrCateTitle ()
-			{
-				Category = new BelongsTo<mrCategory, long>(this);
-				Names = new HasMany<mrCateTitleName>(this);
-			}
         }
 
         public class mrCateTitleName : DbObjectModel<mrCateTitleName>
         {
             public string Name { get; set; }
 			public BelongsTo<mrCateTitle, long> Owner { get; private set; }
-			public mrCateTitleName ()
-			{
-				Owner = new BelongsTo<mrCateTitle, long>(this);
-			}
         }
 
         #endregion
@@ -121,10 +80,6 @@ namespace Leafing.UnitTest.Data
         {
             public string Name { get; set; }
 			public HasMany<mrReaderAndArticle> xTable { get; private set; }
-			public mrReader ()
-			{
-				xTable = new HasMany<mrReaderAndArticle>(this);
-			}
         }
 
         public class mrReaderAndArticle : DbObjectModel<mrReaderAndArticle>
@@ -132,21 +87,12 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public BelongsTo<mrReader, long> Reader { get; private set; }
 			public BelongsTo<mrArticle, long> Article { get; private set; }
-			public mrReaderAndArticle ()
-			{
-				Reader = new BelongsTo<mrReader, long>(this);
-				Article = new BelongsTo<mrArticle, long>(this);
-			}
         }
 
         public class mrArticle : DbObjectModel<mrArticle>
         {
             public string Name { get; set; }
 			public HasMany<mrReaderAndArticle> xTable { get; private set; }
-			public mrArticle ()
-			{
-				xTable = new HasMany<mrReaderAndArticle>(this);
-			}
         }
 
         #endregion

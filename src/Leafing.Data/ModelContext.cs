@@ -46,7 +46,7 @@ namespace Leafing.Data
 
         private ModelContext(Type t)
         {
-            Info = new ObjectInfo(t);
+			Info = ObjectInfoFactory.Instance.GetInstance(t);
             Provider = DataProviderFactory.Instance.GetInstance(Info.ContextName);
             Composer = GetQueryComposer();
             if(LoadHandler)

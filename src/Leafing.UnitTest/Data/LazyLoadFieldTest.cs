@@ -9,11 +9,6 @@ namespace Leafing.UnitTest.Data
     {
         public string Name { get; set; }
         public LazyLoad<string> Profile;
-
-        public lzUser1()
-        {
-            Profile = new LazyLoad<string>(this, "Profile");
-        }
     }
 
     public class lzUser : DbObjectModel<lzUser>
@@ -22,11 +17,6 @@ namespace Leafing.UnitTest.Data
 
         [DbColumn("Profile")]
 		public LazyLoad<string> Profile {get;set;}
-
-        public lzUser()
-        {
-            Profile = new LazyLoad<string>(this, "Profile");
-        }
     }
 
     [DbContext("SQLite")]
@@ -35,11 +25,6 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
 
 		public LazyLoad<string> Profile { get; set; }
-
-		public lzUser2 ()
-		{
-			Profile = new LazyLoad<string> (this, "Profile");
-		}
     }
 
     public class lzpUser : DbObjectModel<lzpUser>
@@ -47,11 +32,6 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
 
 		public LazyLoad<string> Profile { get; set; }
-
-		public lzpUser ()
-		{
-			Profile = new LazyLoad<string> (this, "Profile");
-		}
     }
 
     [DbContext("SQLite")]
@@ -60,11 +40,6 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
 
 		public LazyLoad<string> Profile { get; set; }
-
-		public lzpUserSqlite ()
-		{
-			Profile = new LazyLoad<string> (this, "Profile");
-		}
     }
 
     [DbContext("SQLite")]
@@ -74,11 +49,6 @@ namespace Leafing.UnitTest.Data
 
         [AllowNull]
 		public LazyLoad<string> Profile { get; set; }
-
-		public lzpUserSqlite2 ()
-		{
-			Profile = new LazyLoad<string> (this, "Profile");
-		}
     }
 
     [DbContext("SQLite")]
@@ -88,11 +58,6 @@ namespace Leafing.UnitTest.Data
 
         [AllowNull]
 		public LazyLoad<int?> Age { get; set; }
-
-		public lzpUserSqlite3 ()
-		{
-			Age = new LazyLoad<int?> (this, "Age");
-		}
     }
 
     public class lzpUserSqlite4 : DbObjectModel<lzpUserSqlite4>
@@ -101,11 +66,6 @@ namespace Leafing.UnitTest.Data
 
         [AllowNull]
 		public LazyLoad<int?> Age { get; set; }
-
-		public lzpUserSqlite4 ()
-		{
-			Age = new LazyLoad<int?> (this, "Age");
-		}
     }
 
     [DbTable("User"), DbContext("SQLite")]
@@ -117,11 +77,6 @@ namespace Leafing.UnitTest.Data
         [StringColumn(IsUnicode=false, Regular=CommonRegular.EmailRegular)]
         [Index(ASC=true, IndexName="test", UNIQUE=true)]
 		public LazyLoad<string> Profile { get; set; }
-
-		public lzpUser1 ()
-		{
-			Profile = new LazyLoad<string> (this, "Profile");
-		}
     }
 
     [TestFixture]

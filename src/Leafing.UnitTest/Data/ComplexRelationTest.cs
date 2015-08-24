@@ -26,10 +26,6 @@ namespace Leafing.UnitTest.Data
         {
             public string Name { get; set; }
 			public HasOne<Cls2> Cls2 { get; private set; }
-			public Cls1 ()
-			{
-				Cls2 = new HasOne<Cls2>(this);
-			}
         }
 
         public class Cls2 : DbObjectModel<Cls2>
@@ -37,11 +33,6 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public BelongsTo<Cls1, long> Cls1 { get; private set; }
 			public HasMany<Cls3> Cls3List { get; private set; }
-			public Cls2 ()
-			{
-				Cls1 = new BelongsTo<Cls1, long>(this);
-				Cls3List = new HasMany<Cls3>(this);
-			}
         }
 
         public class Cls3 : DbObjectModel<Cls3>
@@ -49,11 +40,6 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public BelongsTo<Cls2, long> Cls2 { get; private set; }
 			public BelongsTo<Cls4, long> Cls4 { get; private set; }
-			public Cls3 ()
-			{
-				Cls2 = new BelongsTo<Cls2, long>(this);
-				Cls4 = new BelongsTo<Cls4, long>(this);
-			}
         }
 
         public class Cls4 : DbObjectModel<Cls4>
@@ -61,41 +47,24 @@ namespace Leafing.UnitTest.Data
             public string Name { get; set; }
 			public HasMany<Cls3> Cls3List { get; private set; }
 			public BelongsTo<Cls5, long> Cls5 { get; private set; }
-			public Cls4 ()
-			{
-				Cls3List = new HasMany<Cls3>(this);
-				Cls5 = new BelongsTo<Cls5, long>(this);
-			}
         }
 
         public class Cls5 : DbObjectModel<Cls5>
         {
             public string Name { get; set; }
 			public HasOne<Cls4> Cls4 { get; private set; }
-			public Cls5 ()
-			{
-				Cls4 = new HasOne<ComplexRelationTest.Cls4>(this);
-			}
         }
 
         public class OverSave : DbObjectModel<OverSave>
         {
             public string Name { get; set; }
 			public HasMany<OverSave2> Overs { get; private set; }
-			public OverSave ()
-			{
-				Overs = new HasMany<OverSave2>(this);
-			}
         }
 
         public class OverSave2 : DbObjectModel<OverSave2>
         {
             public string Name { get; set; }
 			public BelongsTo<OverSave, long> Over { get; private set; }
-			public OverSave2 ()
-			{
-				Over = new BelongsTo<OverSave, long>(this);
-			}
             protected override void OnInserting()
             {
                 Name += "01";
@@ -106,21 +75,12 @@ namespace Leafing.UnitTest.Data
         {
             public string Name { get; set; }
 			public HasMany<OverSave4> Overs { get; private set; }
-			public OverSave3 ()
-			{
-				Overs = new HasMany<OverSave4>(this);
-			}
         }
 
         public class OverSave4 : DbObjectModel<OverSave4>
         {
             public string Name { get; set; }
 			public BelongsTo<OverSave3, long> Over { get; private set; }
-
-			public OverSave4 ()
-			{
-				Over = new BelongsTo<OverSave3, long>(this);
-			}
 
             protected override void OnInserting()
             {

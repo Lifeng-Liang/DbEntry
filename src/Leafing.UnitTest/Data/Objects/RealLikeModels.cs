@@ -139,13 +139,6 @@ namespace Leafing.UnitTest.Data.Objects
 		public BelongsTo<Trade, long> Trade { get; private set; }
 
 		public BelongsTo<Product, long> Product { get; private set; }
-
-		public Order ()
-		{
-			Description = new LazyLoad<string> (this, "Description");
-			Trade = new BelongsTo<Trade, long> (this, "Trade_Id");
-			Product = new BelongsTo<Product, long> (this, "Product_Id");
-		}
     }
 
     public class Product : DbObjectModel<Product>
@@ -155,12 +148,6 @@ namespace Leafing.UnitTest.Data.Objects
 		public HasMany<Order> Orders { get; private set; }
 
 		public BelongsTo<Company, long> Company { get; private set; }
-
-		public Product ()
-		{
-			Orders = new HasMany<Order> (this, "Id", "Product_Id");
-			Company = new BelongsTo<Company, long> (this, "Company_Id");
-		}
     }
 
     public class Customer : DbObjectModel<Customer>
@@ -172,10 +159,5 @@ namespace Leafing.UnitTest.Data.Objects
         public string Mobile { get; set; }
 
 		public BelongsTo<Company, long> Company { get; set; }
-
-		public Customer ()
-		{
-			Company = new BelongsTo<Company, long> (this, "Company_Id");
-		}
     }
 }

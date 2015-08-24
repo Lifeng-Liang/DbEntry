@@ -47,7 +47,6 @@ namespace Leafing.UnitTest.Data
 
         public ctUser()
         {
-            info = new HasOne<ctInfo>(this);
         }
     }
 
@@ -60,7 +59,6 @@ namespace Leafing.UnitTest.Data
 
         public ctInfo()
         {
-            user = new BelongsTo<ctUser, long>(this);
         }
     }
 
@@ -72,7 +70,6 @@ namespace Leafing.UnitTest.Data
 
         public ctmUser()
         {
-            infos = new HasMany<ctmInfo>(this);
         }
     }
 
@@ -85,7 +82,6 @@ namespace Leafing.UnitTest.Data
 
         public ctmInfo()
         {
-            user = new BelongsTo<ctmUser, long>(this);
         }
         public ctmInfo(string msg) : this()
         {
@@ -99,11 +95,8 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
         [DbColumn("cmmArticle_id")]
         public HasAndBelongsToMany<cmmArticle> arts;
-        public cmmReader()
-        {
-            arts = new HasAndBelongsToMany<cmmArticle>(this);
-        }
-        public cmmReader(string name) : this() { this.Name = name; }
+        public cmmReader(string name) { this.Name = name; }
+		public cmmReader() {}
     }
 
     [DbTable("cmmArticle")]
@@ -112,11 +105,8 @@ namespace Leafing.UnitTest.Data
         public string Title { get; set; }
         [DbColumn("cmmReader_id")]
         public HasAndBelongsToMany<cmmReader> rads;
-        public cmmArticle()
-        {
-            rads = new HasAndBelongsToMany<cmmReader>(this);
-        }
-        public cmmArticle(string title) : this() { this.Title = title; }
+        public cmmArticle(string title) { this.Title = title; }
+		public cmmArticle() {}
     }
 
     public enum MyEnum

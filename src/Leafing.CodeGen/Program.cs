@@ -2,6 +2,13 @@ using System;
 using System.IO;
 using Leafing.Core;
 using System.Reflection;
+using Leafing.Data.Model;
+using Leafing.Data;
+using Leafing.Extra;
+using Leafing.Extra.Logging;
+using Leafing.Membership;
+using Leafing.Data.Common;
+using Leafing.Data.Model.Handler.Generator;
 
 namespace Leafing.CodeGen
 {
@@ -56,6 +63,12 @@ namespace Leafing.CodeGen
             {
                 throw new ArgsErrorException(2, "The file you input doesn't exist!");
             }
+
+			if (args.Length == 2 && args[0].ToLower() == "dll") {
+				GenerateAssembly(fileName);
+				Console.WriteLine("Assembly saved!");
+				return;
+			}
 
 			switch (args [0].ToLower ()) {
 			case "a":
@@ -155,6 +168,20 @@ namespace Leafing.CodeGen
             var g = new ModelsGenerator();
             Console.WriteLine(g.GenerateModelFromDatabase(tableName));
         }
+
+		private static void GenerateAssembly(string fileName)
+		{
+			ModelContext.GetInstance(typeof(LeafingEnum));
+			ModelContext.GetInstance(typeof(LeafingLog));
+			ModelContext.GetInstance(typeof(DbEntryMembershipUser));
+			ModelContext.GetInstance(typeof(DbEntryRole));
+			ModelContext.GetInstance(typeof(LeafingSetting));
+			Helper.EnumTypes(fileName, true, t => {
+				ModelContext.GetInstance(t);
+				return true;
+			});
+			MemoryAssembly.Instance.Save();
+		}
 
         private static void ShowHelp()
         {

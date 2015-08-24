@@ -22,6 +22,8 @@ namespace Leafing.Data.Model.Handler
 //            }
         }
 
+		public virtual void CtorInit(DbObjectSmartUpdate o) {}
+
         public abstract object CreateInstance();
 
         public object GetKeyValue(object o)

@@ -23,10 +23,6 @@ namespace Leafing.UnitTest.Data.Inner
     {
         public string Name { get; set; }
 		public HasOne<TableB> tableB { get; private set; }
-		public TableA ()
-		{
-			tableB = new HasOne<TableB> (this);
-		}
     }
 
     [Serializable]
@@ -38,11 +34,6 @@ namespace Leafing.UnitTest.Data.Inner
         [Index(UNIQUE = true, IndexName = "Url_TableAId", ASC = false)]
         [DbColumn("TableAId")]
 		public BelongsTo<TableA, long> TB { get; private set; }
-
-		public TableB ()
-		{
-			TB = new BelongsTo<TableA, long> (this);
-		}
     }
 
 	public class ClassSite : DbObjectModel<ClassSite> {}

@@ -8,18 +8,6 @@ namespace Leafing.Data.Definition
     {
         private TKey? _foreignKey;
 
-		public BelongsTo(DbObjectSmartUpdate owner)
-			: base(owner, GetRelationName(owner))
-		{
-		}
-
-		private static string GetRelationName(DbObjectSmartUpdate owner)
-		{
-			var oCtx = ModelContext.GetInstance (owner.GetType());
-			var bt = oCtx.Info.GetBelongsTo (typeof(T));
-			return bt.Name;
-		}
-
         public BelongsTo(DbObjectSmartUpdate owner, string relationName)
             : base(owner, relationName)
         {
