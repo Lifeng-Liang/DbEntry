@@ -29,7 +29,7 @@ namespace Leafing.UnitTest
             List.Clear();
         }
 
-        public void ProcessLog(SysLogType type, string name, string message, Exception exception)
+        public void ProcessLog(LogLevel type, string name, string message, Exception exception)
         {
             if (_running)
             {

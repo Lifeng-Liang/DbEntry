@@ -40,7 +40,7 @@ namespace Leafing.Core.Logging
 		    GetLogFileName();
         }
 
-        public virtual void ProcessLog(SysLogType type, string name, string message, Exception exception)
+        public virtual void ProcessLog(LogLevel type, string name, string message, Exception exception)
         {
             lock (_syncRoot)
             {
@@ -51,7 +51,7 @@ namespace Leafing.Core.Logging
             }
         }
 
-        protected virtual void WriteLog(StreamWriter sw, SysLogType type, string name, string message, Exception exception)
+        protected virtual void WriteLog(StreamWriter sw, LogLevel type, string name, string message, Exception exception)
         {
             sw.WriteLine("{0}|{1}|{2}|{3}|{4}", type, name, message, exception, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
         }

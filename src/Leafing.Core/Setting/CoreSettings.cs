@@ -1,4 +1,5 @@
 ﻿using Leafing.Core.Text;
+using Leafing.Core.Logging;
 
 namespace Leafing.Core.Setting
 {
@@ -7,6 +8,8 @@ namespace Leafing.Core.Setting
         public static readonly string NameMapper = "@Default";
 
         public static readonly string LogFileName = "{0}{1}.{2}.log";
+
+		public static readonly LogLevel LogLevel = LogLevel.All;
 
         public static readonly int DelayToStart = 30000;
 

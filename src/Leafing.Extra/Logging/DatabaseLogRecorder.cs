@@ -8,7 +8,7 @@ namespace Leafing.Extra.Logging
     [Implementation("Database")]
     public class DatabaseLogRecorder : ILogRecorder
     {
-        public void ProcessLog(SysLogType type, string name, string message, Exception exception)
+        public void ProcessLog(LogLevel type, string name, string message, Exception exception)
         {
             var li = new LeafingLog(type, name, message, exception);
             try

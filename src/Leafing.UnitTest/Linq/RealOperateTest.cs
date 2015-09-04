@@ -53,8 +53,10 @@ namespace Leafing.UnitTest.Linq
             public string Name;
         }
 
+		[DbTable("DateAndTime")]
         public class Tst : DbObjectModel<Tst>
         {
+			[DbColumn("dtValue")]
             public DateTime Dt { get; set; }
         }
 

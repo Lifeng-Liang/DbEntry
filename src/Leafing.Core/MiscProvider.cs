@@ -19,11 +19,7 @@ namespace Leafing.Core
 
         private static class TickProvider
         {
-            // ReSharper disable UnaccessedField.Local
-            // ReSharper disable NotAccessedField.Local
-            private static Timer _timer; // to avoid it to be collected by GC.
-            // ReSharper restore NotAccessedField.Local
-            // ReSharper restore UnaccessedField.Local
+			internal static Timer _timer;
 
             public static long Secends;
 

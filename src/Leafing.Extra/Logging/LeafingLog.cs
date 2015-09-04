@@ -7,7 +7,7 @@ namespace Leafing.Extra.Logging
 	[DisableSqlLog]
     public class LeafingLog : DbObjectModel<LeafingLog>
 	{
-        public SysLogType Type { get; set; }
+        public LogLevel Type { get; set; }
         public string Thread { get; set; }
         public string Name { get; set; }
         public string Message { get; set; }
@@ -16,7 +16,7 @@ namespace Leafing.Extra.Logging
 
         public LeafingLog() {}
 
-        public LeafingLog(SysLogType type, string name, string message, Exception exception)
+        public LeafingLog(LogLevel type, string name, string message, Exception exception)
 		{
 			this.Type = type;
 			this.Thread = GetThreadInfo();

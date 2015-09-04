@@ -44,7 +44,7 @@ namespace Leafing.Core.Logging
             }
         }
 
-        public override void ProcessLog(SysLogType type, string name, string message, Exception exception)
+        public override void ProcessLog(LogLevel type, string name, string message, Exception exception)
         {
             lock (_syncRoot)
             {

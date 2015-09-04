@@ -75,7 +75,6 @@
     <Compile Include="Logging\ILogRecorder.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LogRecorderProvider.cs" />
-    <Compile Include="Logging\SysLogType.cs" />
     <Compile Include="Logging\TextFileLogRecorder.cs" />
     <Compile Include="Logging\TextFileMessageLogRecorder.cs" />
     <Compile Include="MiscProvider.cs" />
@@ -123,6 +122,7 @@
     <Compile Include="TimingTask\TimingTaskController.cs" />
     <Compile Include="CoreException.cs" />
     <Compile Include="UtilVersion.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.snk" />

@@ -13,7 +13,7 @@ namespace Leafing.Core.Logging
             get { return _count; }
         }
 
-        public void ProcessLog(SysLogType type, string name, string message, Exception exception)
+        public void ProcessLog(LogLevel type, string name, string message, Exception exception)
         {
             Console.WriteLine(message);
             Console.WriteLine();

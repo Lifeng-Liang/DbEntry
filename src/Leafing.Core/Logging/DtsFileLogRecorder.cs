@@ -7,7 +7,7 @@ namespace Leafing.Core.Logging
     [Implementation("DtsFile")]
     public class DtsFileLogRecorder : TextFileLogRecorder
     {
-        protected override void WriteLog(StreamWriter sw, SysLogType type, string name, string message, Exception exception)
+        protected override void WriteLog(StreamWriter sw, LogLevel type, string name, string message, Exception exception)
         {
             sw.WriteLine("{0},{1},{2},{3},{4}", GetString4Dts(type),
                 GetString4Dts(name), GetString4Dts(message), GetString4Dts(exception),

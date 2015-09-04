@@ -57,13 +57,16 @@ namespace Leafing.Core.Logging
 
         #endregion
 
-        protected void Log(SysLogType type, string name, string message, Exception exception)
+        protected void Log(LogLevel level, string name, string message, Exception exception)
         {
-            if(LogRecorders != null)
+			if (level == LogLevel.All || level == LogLevel.Off) {
+				throw new CoreException("LogLevel can not be ALL or OFF for logging.");
+			}
+			if(LogRecorders != null && level <= CoreSettings.LogLevel)
             {
                 foreach (var recorder in LogRecorders)
                 {
-                    recorder.ProcessLog(type, name, message, exception);
+                    recorder.ProcessLog(level, name, message, exception);
                 }
             }
         }
@@ -77,7 +80,7 @@ namespace Leafing.Core.Logging
         {
             if (LogRecorders != null)
             {
-                Log(SysLogType.Debug, _name, callback().ToString(), null);
+                Log(LogLevel.Debug, _name, callback().ToString(), null);
             }
         }
 
@@ -90,7 +93,7 @@ namespace Leafing.Core.Logging
         {
             if (LogRecorders != null)
             {
-                Log(SysLogType.Trace, _name, callback().ToString(), null);
+                Log(LogLevel.Trace, _name, callback().ToString(), null);
             }
         }
 
@@ -103,7 +106,7 @@ namespace Leafing.Core.Logging
         {
             if (LogRecorders != null)
             {
-                Log(SysLogType.Info, _name, callback().ToString(), null);
+                Log(LogLevel.Info, _name, callback().ToString(), null);
             }
         }
 
@@ -131,7 +134,7 @@ namespace Leafing.Core.Logging
         {
             if (LogRecorders != null)
             {
-                Log(SysLogType.Warn, _name, callback().ToString(), ex);
+                Log(LogLevel.Warn, _name, callback().ToString(), ex);
             }
         }
 
@@ -154,7 +157,7 @@ namespace Leafing.Core.Logging
         {
             if (LogRecorders != null)
             {
-                Log(SysLogType.Error, _name, callback().ToString(), ex);
+                Log(LogLevel.Error, _name, callback().ToString(), ex);
             }
         }
 
@@ -177,7 +180,7 @@ namespace Leafing.Core.Logging
         {
             if (LogRecorders != null)
             {
-                Log(SysLogType.Fatal, _name, callback().ToString(), ex);
+                Log(LogLevel.Fatal, _name, callback().ToString(), ex);
             }
         }
     }
