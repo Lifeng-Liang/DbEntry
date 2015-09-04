@@ -418,6 +418,7 @@
     <Compile Include="Model\Handler\Generator\ILBuilder.cs" />
     <Compile Include="Model\Handler\Generator\ModelHandlerGenerator.cs" />
     <Compile Include="Model\Handler\Generator\MemberHandlerGenerator.cs" />
+    <Compile Include="Driver\ConnectionStringCoder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DbEntry.snk" />

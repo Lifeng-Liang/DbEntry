@@ -4,11 +4,13 @@ using Leafing.Core.Setting;
 using Leafing.Core.Text;
 using Leafing.Data.Common;
 using Leafing.Data.Dialect;
+using Leafing.Core.Ioc;
 
 namespace Leafing.Data.Driver
 {
     public class DbDriverFactory : FlyweightBase<string, DbDriver>
     {
+		private static ConnectionStringCoder coder = SimpleContainer.Get<ConnectionStringCoder>();
         public static readonly DbDriverFactory Instance = new DbDriverFactory();
 
         protected override DbDriver GetInst(string tk)
@@ -39,7 +41,8 @@ namespace Leafing.Data.Driver
                 ds = "Leafing.Data.Dialect." + ds.Substring(1) + ", Leafing.Data";
             }
             var d = (DbDialect)ClassHelper.CreateInstance(ds);
-            string cs = d.GetConnectionString(ss[1].Trim());
+			var scs = coder.Decode(ss[1].Trim());
+            string cs = d.GetConnectionString(scs);
             string pf = ConfigHelper.LeafingSettings.GetValue(prefix + "DbProviderFactory");
             string dcn = ConfigHelper.LeafingSettings.GetValue(prefix + "DbDriver");
             string act = ConfigHelper.LeafingSettings.GetValue(prefix + "AutoCreateTable");
