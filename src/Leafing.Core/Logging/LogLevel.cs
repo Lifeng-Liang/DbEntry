@@ -7,8 +7,8 @@
 		Error,
 		Warn,
 		Trace,
+		Debug,
 		Info,
-        Debug,
 		All,
     }
 }
