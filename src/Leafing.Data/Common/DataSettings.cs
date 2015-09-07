@@ -27,7 +27,9 @@ namespace Leafing.Data.Common
 
         public static readonly int DbTimeCheckMinutes       = 10;
 
-        public static readonly bool UsingForeignKey          = false;
+        public static readonly bool UsingForeignKey         = false;
+
+		public static readonly bool PartialUpdate			= true;
 
         static DataSettings()
         {
