@@ -419,8 +419,8 @@
     <Compile Include="Model\Handler\Generator\ModelHandlerGenerator.cs" />
     <Compile Include="Model\Handler\Generator\MemberHandlerGenerator.cs" />
     <Compile Include="Driver\ConnectionStringCoder.cs" />
-    <Compile Include="Model\Saver\PartialUpdater.cs" />
-    <Compile Include="Model\Saver\Updater.cs" />
+    <Compile Include="Model\Saver\UpdateHelper.cs" />
+    <Compile Include="Model\Saver\PartialUpdateHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DbEntry.snk" />

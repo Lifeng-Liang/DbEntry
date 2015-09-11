@@ -5,6 +5,8 @@
   </configSections>
 
   <Leafing.Settings>
+  	<add key="PartialUpdate" value="true" />
+
     <add key="@Leafing_Log" value="System_Log" />
     
     <add key="SqlLogRecorder" value="@ConsoleMessage | Leafing.UnitTest.SqlRecorder, Leafing.UnitTest" />

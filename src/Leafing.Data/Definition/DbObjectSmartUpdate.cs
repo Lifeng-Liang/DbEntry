@@ -11,19 +11,20 @@ namespace Leafing.Data.Definition
     [XmlRoot("DbObject")]
     public abstract class DbObjectSmartUpdate : DbObjectBase
     {
-        [Exclude]
+		[Exclude]
         internal abstract ModelContext Context { get; }
 
-		private Updater _updater = Updater.CreateUpdater();
+		[NonSerialized]
+		private UpdateHelper _updateHelper = UpdateHelper.CreateHelper();
 
 		internal protected void InitLoadedColumns()
 		{
-			_updater.InitLoadedColumns(this);
+			_updateHelper.InitLoadedColumns(this);
 		}
 
 		internal protected bool FindUpdateColumns(UpdateStatementBuilder builder)
 		{
-			return _updater.FindUpdateColumns(this, builder);
+			return _updateHelper.FindUpdateColumns(this, builder);
 		}
 
         public void Save()

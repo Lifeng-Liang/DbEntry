@@ -8,12 +8,11 @@ using Leafing.Data.Definition;
 
 namespace Leafing.Data
 {
-	[Serializable]
-	public class Updater
+	public class UpdateHelper
 	{
-		public static Updater CreateUpdater()
+		public static UpdateHelper CreateHelper()
 		{
-			return DataSettings.PartialUpdate ? new PartialUpdater() : new Updater();
+			return DataSettings.PartialUpdate ? new PartialUpdateHelper() : new UpdateHelper();
 		}
 
 		public virtual void InitLoadedColumns(DbObjectSmartUpdate model) {

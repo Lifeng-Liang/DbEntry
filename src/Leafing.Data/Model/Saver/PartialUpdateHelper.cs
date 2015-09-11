@@ -7,8 +7,7 @@ using Leafing.Data.Model.Member;
 
 namespace Leafing.Data
 {
-	[Serializable]
-	public class PartialUpdater : Updater
+	public class PartialUpdateHelper : UpdateHelper
 	{
 		private Dictionary<string, object> _LoadedColumns = new Dictionary<string, object>();
 

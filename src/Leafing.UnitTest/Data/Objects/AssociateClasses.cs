@@ -65,11 +65,6 @@ namespace Leafing.UnitTest.Data.Objects
 
         [DbColumn("Category_Id")]
         public BelongsTo<Category, long> CurCategory;
-
-        public Book()
-        {
-            //CurCategory = new BelongsTo<Category, long>(this);
-        }
     }
 
     [DbTable("Categories")]
@@ -78,11 +73,6 @@ namespace Leafing.UnitTest.Data.Objects
         public string Name { get; set; }
 
         public HasMany<Book> Books;
-
-        public Category()
-        {
-            //Books = new HasMany<Book>(this);
-        }
     }
 
     [DbTable("Books"), DbContext("SQLite")]
@@ -92,11 +82,6 @@ namespace Leafing.UnitTest.Data.Objects
 
         [DbColumn("Category_Id")]
         public BelongsTo<CategorySqlite, long> CurCategory;
-
-        public BookSqlite()
-        {
-            //CurCategory = new BelongsTo<CategorySqlite, long>(this);
-        }
     }
 
     [DbTable("Categories"), DbContext("SQLite")]
@@ -105,11 +90,6 @@ namespace Leafing.UnitTest.Data.Objects
         public string Name { get; set; }
 
         public HasMany<BookSqlite> Books;
-
-        public CategorySqlite()
-        {
-            //Books = new HasMany<BookSqlite>(this);
-        }
     }
 
     [DbTable("Categories")]
@@ -118,11 +98,6 @@ namespace Leafing.UnitTest.Data.Objects
         public string Name { get; set; }
 
 		public HasMany<Abook> Books { get; private set; }
-
-		public Acategory ()
-		{
-			Books = new HasMany<Abook> (this, null, "Category_Id");
-		}
     }
 
     [DbTable("Books")]
@@ -132,11 +107,6 @@ namespace Leafing.UnitTest.Data.Objects
 
         [DbColumn("Category_Id")]
 		public BelongsTo<Acategory, long> CurCategory { get; private set; }
-
-		public Abook ()
-		{
-			CurCategory = new BelongsTo<Acategory, long> (this, "Category_Id");
-		}
     }
 
     public class Article : DbObjectModel<Article>
