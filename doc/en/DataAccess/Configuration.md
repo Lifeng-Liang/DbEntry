@@ -190,29 +190,38 @@ PostgreSQL:[Download Link](http://pgfoundry.org/projects/npgsql)
 
 >*Attention:* The version of database provider is based on my installed version, if you installed a newer version of the provider, please change the version part. If it did not installed to the GAC, please do it by yourself.
 
-Auto Create Table:
+AutoScheme:
 ----------
 
-Another setting ``AutoCreateTable`` is set to tell DbEntry to create table if it doesn't exist. The default value is false.
+Another setting ``AutoScheme`` is set to tell DbEntry to fix the scheme before run sql on it. The default value is None. There are four value could be set to it :
+
+1. None
+2. CreateTable
+3. AddColumns
+4. RemoveColumns
+
+AddColumns also includes CreateTable feature, and RemoveColumns includes AddColumns and CreateTable.
 
 ````xml
 <Leafing.Settings>
-  <add key="AutoCreateTable" value="true" />
+  <add key="AutoScheme" value="CreateTable" />
   <add key="DataBase" value="@Access : @~Test.mdb" />
   <add key="Access2007.AutoCreateTable" value="true" />
   <add key="Access2007.DataBase" value="@Access : @~Test.mdb" />
 </Leafing.Settings>
 ````
 
-If it is activated, when some code want access database by using object model, DbEntry will try to create the table first if it doesn't exist.
+If it set to CreateTable, when some code want access database by using object model, DbEntry will try to create the table first if it doesn't exist.
 
-This feature only works when the table doesn't exist, it doesn't work for columns.
+If it set to AddColumns, when some code want access database by using object model, DbEntry will try to create the table if the table doesn't exist or add columns if the columns doesn't exist.
+
+If it set to RemoveColumns, it will remove columns too if there is(are) column(s) exist in database but doesn't exist in our code.
 
 This feature only works for ORM functions, execute SQL directly doesn't raise it.
 
 This feature will help us to implements application prototype faster, it should only used in development stage or test stage.
 
-When the application deployed to the working environment, change the value as false or delete this line in config file.
+When the application deployed to the working environment, change the value as None or delete this line in config file.
 
 >*Attention:* MySql and Firebird don't have Unicode type of string, so if you specify the string column as Unicode type in object model, the created column size maybe not be what we thought.
 
@@ -259,3 +268,25 @@ The following config file stored some databases connections infomation in it, an
   </Leafing.Settings>
 </configuration>
 ````
+
+Encrypt ConnectionString
+--------
+
+There's a way to encrypt the connection string of the databases.
+
+Add a class and make it inherits from Leafing.Data.Dialect.ConnectionStringCoder and override the function ``Decode`` like :
+
+````c#
+[Implementation(2)]
+public class MyCsCoder : ConnectionStringCoder
+{
+	public override string Decode(string source) {
+		return MyDecodeMethod(source);
+	}
+  ......
+}
+````
+
+We can define our own decode method in it.
+
+The parameter of the attribute Implementation should be a integer and should equels or more than 2. It will make sure it will be the loaded ConnectionStringCoder instance rather than the original one.

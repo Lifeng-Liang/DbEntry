@@ -1,11 +1,11 @@
 Relations
 ==========
 
-DbEntry supported 1:1, Many:1, 1:Many and Many:Many relations. And they named as HasOne, BelongsTo, HasMany and HasAndBelongsToMany just like they in RoR Active Record. I think it's more readable.
+DbEntry supported 1:1, Many:1, 1:Many and Many:Many relations. And they named as HasOne, BelongsTo, HasMany and HasAndBelongsToMany just like them in RoR Active Record. I think it's more readable.
 
-All of the relation objects use lazy loading. If we have a ``read`` operation in our code for relation object such as ``book.reader.Length``, it will cause read from database.  For HasMany and HasAndBelongsToMany, if we insert a new value into the relation list before it read from database, it will not read it again.
+All of the relation objects use lazy loading. If we have a ``read`` operation in our code for relation object such as ``book.reader.Length``, it will cause read from database.  For HasMany and HasAndBelongsToMany, if we insert a new value into the relation list before it read from database, it will not read from database.
 
-I recommended reading the unit tests to find out how to use the relation objects. The development of relations is based on TDD _(Test Driven Development)_ , so the unit tests have everything about relations.
+I recommended reading the unit tests to find out how to use the relation objects. The development of relations is based on TDD _(Test Driven Development)_ , so the unit tests have everything about relations, nothing more, nothing less.
 
 ````c#
 using System;
@@ -21,8 +21,13 @@ namespace Orm9
         [Length(50)]
         public string Name { get; set; }
 
-        [HasOne(OrderBy = "Id DESC")]
-        public PersonalComputer PC { get; set; }
+        [OrderBy("Id DESC")]
+        protected HasOne<PersonalComputer> _PC { get; set; }
+        
+        public PersonalComputer PC {
+            get { return _PC.Value; }
+            set { _PC.Value = value; }
+        }
     }
 
     [DbTable("PCs")]
@@ -31,8 +36,13 @@ namespace Orm9
         [Length(50)]
         public string Name { get; set; }
 
-        [BelongsTo, DbColumn("Person_Id")]
-        public Person Owner { get; set; }
+        [DbColumn("Person_Id")]
+        protected BelongsTo<Person> _Owner { get; set; }
+        
+        public Person Owner {
+            get { return _Owner.Value; }
+            set { _Owner.Value = value; }
+        }
     }
 
     [DbTable("Books")]
@@ -41,8 +51,13 @@ namespace Orm9
         [Length(50)]
         public string Name { get; set; }
 
-        [BelongsTo, DbColumn("Category_Id")]
-        public Category Category { get; set; }
+        [DbColumn("Category_Id")]
+        protected BelongsTo<Category> _Category { get; set; }
+        
+        public Category Category {
+            get { return _Category.Value; }
+            set { _Category.Value = value; }
+        }
     }
 
     [DbTable("Categories")]
@@ -51,24 +66,24 @@ namespace Orm9
         [Length(50)]
         public string Name { get; set; }
 
-        [HasMany(OrderBy = "Id")]
-        public IList<Book> Books { get; private set; }
+        [OrderBy("Id")]
+        public HasMany<Book> Books { get; private set; }
     }
 
     public class Article : DbObjectModel<Article>
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<Reader> Readers { get; private set; }
+        [OrderBy("Id")]
+        public HasAndBelongsToMany<Reader> Readers { get; private set; }
     }
 
     public class Reader : DbObjectModel<Reader>
     {
         public string Name { get; set; }
 
-        [HasAndBelongsToMany(OrderBy = "Id")]
-        public IList<Article> Articles { get; private set; }
+        [OrderBy("Id")]
+        public HasAndBelongsToMany<Article> Articles { get; private set; }
     }
 
     class Program

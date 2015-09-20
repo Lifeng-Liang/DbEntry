@@ -128,6 +128,33 @@ Assert.IsNotNull(item);
 Assert.AreEqual("2nd impl", item.Run());
 ````
 
+The parameter of Implementation could be integer and that will allow DbEntry load the instance of the class which set to the max value.
+
+````c#
+[DependenceEntry, Implementation(1)]
+public class IocSame
+{
+    public virtual string Run()
+    {
+        return "same";
+    }
+
+    [Injection("2nd")]
+    public ITest TestProperty { get; set; }
+}
+
+[Implementation(2)]
+public class IocSameSub : IocSame
+{
+    public override string Run()
+    {
+        return "sub class";
+    }
+}
+````
+
+The return value of SimpleContainer.Get<IocSame>() will be the instance of IocSameSub because 2 is the max value of parameter of Implementation for DependenceEntry IocSame.
+
 Configration
 ----------
 

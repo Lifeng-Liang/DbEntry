@@ -13,7 +13,11 @@ There are some pre-defined recorders.
 * ``DtsFileLogRecorder`` will output the information to a text file with dts format. So we can import it to database later.
 * ``DatabaseLogRecorder`` will output the information to a database table named ``Log``, it could be created by auto create table feature.
 
-In ``Logger``, there are some pre-defined loggers in it. Such as SQL, Default and System. 
+In ``Logger``, there are 3 pre-defined loggers in it. 
+
+1. SQL
+2. Default
+3. System
 
 The ORM part is using SQL logger to log composed SQLs. So we can define a log recorder to log all ORM composed sql to analyze.
 
@@ -72,3 +76,22 @@ Trace,Program.Main(string[] args),Default,test 1,
 Warn,Program.Main(string[] args),Default,test 2,
 Error,Program.Main(string[] args),System,test 3,
 ````
+
+There's a config LogLevel to filter what to output at last for logs. The default value of it is All.
+
+````xml
+<add key="LogLevel" value="Trace" />
+````
+
+And There're 8 level could be set:
+
+1. Off
+2. Fatal
+3. Error
+4. Warn
+5. Trace
+6. Debug
+7. Info
+8. All
+
+Every upper level includes lower levels. It means if we set log level to Error, Error or Fatal will be logged. And if we set log level to Info, all log messages will be logged. So the name All is just an alias of Info.

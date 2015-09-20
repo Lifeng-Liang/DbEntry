@@ -33,7 +33,7 @@ We just called the save function in standard way. But the ``Save`` function will
 Update [User] Set [Name]='jerry' Where [Id]=1
 ````
 
-So, only ``Name`` column will be updated.
+So, only ``Name`` column appears in the SQL and will be updated.
 
 If we change all the columns, it will update them all.
 
@@ -44,7 +44,7 @@ u.Age = 36;
 u.Save();
 ````
 
-The above ``Save`` function will generate the SQL such as:
+The above ``Save`` function will generate the SQL like:
 
 ````sql
 Update [User] Set [Name]='jerry',[Age]=36 Where [Id]=1
@@ -55,16 +55,21 @@ Update [User] Set [Name]='jerry',[Age]=36 Where [Id]=1
 How it works
 ----------
 
-There is a ``Dictionary<string, object>`` in the ``DbObjectSmartUpdate`` _(DbObjectModel inherits form it)_ named ``m_UpdateColumns``, the dictionary is used to store all updated column names.
+There is a ``Dictionary<string, object>`` in the ``PartialUpdateHelper``. And a ``PartialUpdateHelper`` in ``DbObjectSmartUpdate`` _(DbObjectModel inherits form it)_ if ``PartialUpdate`` set to true _(by default)_ in config file.
 
-And there is a function named ``m_InitUpdateColumns`` to initialize the dictionary. Before it executed, the feature will not be active.
+The dictionary named ``_LoadedColumns``, the dictionary is used to store all loaded columns. And it will be initialized by the loaded values just after the columns of DbObjectSmartUpdate loaded. 
 
-And there is a function named ``m_ColumnUpdated`` to set items to the dictionary. It should be called when the field updated.
-
-The MSBuild task of DbEntry will search all the classes which implements from IDbObject and change the constructor(s) to call  ``m_InitUpdateColumns`` by the end of them. And change the properties which is compiler generated in the classes to call ``m_ColumnUpdated`` in the ``Property set`` function if the value changed. So, when we change property of the object in constructor, it doesn't add anything to the dictionary, but when we change the property of the object out of the constructor, it will know which columns should be update.
-
-It doesn't call database actually if nothing changed when we call the ``Save`` function.
+It will check if the values changed before save. It will not call database actually if nothing changed when we call the ``Save`` function.
 
 >When we use an object which has a lot of columns, by partial update, we can just call ``Save`` function, and only the updated columns will be saved.
 
 >When we use relation objects, they may have the large children list, by partial update, we can just call ``Save`` function, and only the updated items will be saved.
+
+Disable this feature
+----------
+
+For some reason, we may want to disable this feature. To do it, add or modify the config item PartialUpdate to false in Leafing.Settings section.
+
+````xml
+<add key="PartialUpdate" value="false" />
+````

@@ -5,7 +5,7 @@
 ----------
 
 1. [The First Sight](GettingStarted/TheFirstSight.md)
-1. [Setup](GettingStarted/Setup.md)
+1. [Install](GettingStarted/Install.md)
 1. [First Application](GettingStarted/FirstApplication.md)
 1. [Basic CRUD](GettingStarted/BasicCRUD.md)
 1. [Transaction](GettingStarted/Transaction.md)
