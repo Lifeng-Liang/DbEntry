@@ -24,6 +24,7 @@ namespace Orm9
         [OrderBy("Id DESC")]
         protected HasOne<PersonalComputer> _PC { get; set; }
         
+        [Exclude]
         public PersonalComputer PC {
             get { return _PC.Value; }
             set { _PC.Value = value; }
@@ -39,6 +40,7 @@ namespace Orm9
         [DbColumn("Person_Id")]
         protected BelongsTo<Person> _Owner { get; set; }
         
+        [Exclude]
         public Person Owner {
             get { return _Owner.Value; }
             set { _Owner.Value = value; }
@@ -54,6 +56,7 @@ namespace Orm9
         [DbColumn("Category_Id")]
         protected BelongsTo<Category> _Category { get; set; }
         
+        [Exclude]
         public Category Category {
             get { return _Category.Value; }
             set { _Category.Value = value; }
