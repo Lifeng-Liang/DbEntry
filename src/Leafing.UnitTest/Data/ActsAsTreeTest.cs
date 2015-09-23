@@ -15,8 +15,8 @@ namespace Leafing.UnitTest.Data
 
 		public File()
 		{
-			Children = new HasMany<File>(this, "Id", "BelongsTo_Id");
-			Parent = new BelongsTo<File, long> (this, "BelongsTo_Id");
+			//Children = new HasMany<File>(this, "Id", "BelongsTo_Id");
+			//Parent = new BelongsTo<File, long> (this, "BelongsTo_Id");
 		}
     }
 

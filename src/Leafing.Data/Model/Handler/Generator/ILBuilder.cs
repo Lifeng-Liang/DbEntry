@@ -240,14 +240,14 @@ namespace Leafing.Data.Model.Handler.Generator
             if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 Type inType = t.GetGenericArguments()[0];
-                if (ProcessDateAndTime(inType, typeof(DateTime?)))
+				if (ProcessDateAndTime(inType, typeof(Date?), typeof(Time?)))
                 {
                     return this;
                 }
             }
             if (t.IsValueType)
             {
-                if (ProcessDateAndTime(t, typeof(DateTime)))
+				if (ProcessDateAndTime(t, typeof(Date), typeof(Time)))
                 {
                     return this;
                 }
@@ -276,17 +276,17 @@ namespace Leafing.Data.Model.Handler.Generator
             return this;
         }
 
-        private bool ProcessDateAndTime(Type inType, Type unboxType)
+		private bool ProcessDateAndTime(Type inType, Type unboxDateType, Type unboxTimeType)
         {
             if (inType == typeof(Date))
             {
-                il.Emit(OpCodes.Unbox_Any, unboxType);
+                il.Emit(OpCodes.Unbox_Any, unboxDateType);
                 il.Emit(OpCodes.Call, DateEx);
                 return true;
             }
             if (inType == typeof(Time))
             {
-                il.Emit(OpCodes.Unbox_Any, unboxType);
+                il.Emit(OpCodes.Unbox_Any, unboxTimeType);
                 il.Emit(OpCodes.Call, TimeEx);
                 return true;
             }
