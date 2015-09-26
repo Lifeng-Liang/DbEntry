@@ -12,12 +12,6 @@ namespace Leafing.UnitTest.Data
 
         [DbColumn("BelongsTo_Id")]
 		public BelongsTo<File, long> Parent { get; set; }
-
-		public File()
-		{
-			//Children = new HasMany<File>(this, "Id", "BelongsTo_Id");
-			//Parent = new BelongsTo<File, long> (this, "BelongsTo_Id");
-		}
     }
 
     [DbTable("File")]
@@ -104,7 +98,7 @@ namespace Leafing.UnitTest.Data
             TheFile f = TheFile.FindById(1);
             Assert.AreEqual("Root", f.Name);
 
-			Assert.IsNull(f.Parent.Value);
+			Assert.IsNull(f.Parent);
             Assert.AreEqual(5, f.Children.Count);
             Assert.AreEqual("Windows", f.Children[0].Name);
             Assert.AreEqual("Program Files", f.Children[1].Name);
@@ -113,7 +107,7 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual("Command.com", f.Children[4].Name);
 
             TheFile fw = f.Children[0];
-			Assert.AreEqual("Root", fw.Parent.Value.Name);
+			Assert.AreEqual("Root", fw.Parent.Name);
             Assert.AreEqual(3, fw.Children.Count);
             Assert.AreEqual("regedit.exe", fw.Children[0].Name);
             Assert.AreEqual("notepad.exe", fw.Children[1].Name);

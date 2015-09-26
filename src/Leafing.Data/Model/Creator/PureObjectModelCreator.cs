@@ -96,7 +96,14 @@ namespace Leafing.Data.Model.Creator
             {
                 return;
             }
-			if (member.MemberType == typeof(long) && value.GetType () == typeof(int)) {
+			var vt = value.GetType();
+			if (member.MemberType == typeof(long) && vt == typeof(int)) {
+				return;
+			}
+			if(member.MemberType == typeof(Date) && vt == typeof(DateTime)) {
+				return;
+			}
+			if (member.MemberType == typeof(Date?) && vt == typeof(DateTime?)) {
 				return;
 			}
             if (member.MemberType != value.GetType())

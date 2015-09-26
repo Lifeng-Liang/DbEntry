@@ -34,7 +34,8 @@ namespace Leafing.Data.Model.Member.Adapter
         public PropertyAdapter(PropertyInfo info)
 		{
 			this.Info = info;
-			if (info.GetGetMethod ().IsPublic) {
+			var method = info.GetGetMethod();
+			if (method != null && method.IsPublic) {
 				var t = MemberHandlerGenerator.Generate (info.DeclaringType, info);
 				Handler = (IMemberHandler)ClassHelper.CreateInstance (t);
 			} else {

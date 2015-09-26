@@ -228,7 +228,7 @@ namespace Leafing.UnitTest.Data
             StaticRecorder.ClearMessages();
             var f2 = new TreeInfo { Name = "f2" };
             var s2 = new TreeInfo { Name = "s2" };
-			s2.Parent.Value = f2;
+			s2.Parent = f2;
             s2.Save();
 
             n = StaticRecorder.Messages.Count<string>(p => p.StartsWith("INSERT INTO [R_OtherInfo_TreeInfo]"));

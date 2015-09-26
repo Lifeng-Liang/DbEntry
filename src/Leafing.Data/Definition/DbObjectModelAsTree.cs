@@ -6,16 +6,17 @@ namespace Leafing.Data.Definition
         where T : DbObjectModelAsTree<T, TKey>, new()
         where TKey : struct
     {
-        protected DbObjectModelAsTree()
-        {
-            Children = new HasMany<T>(this, "Id", "BelongsTo_Id");
-            Parent = new BelongsTo<T, TKey>(this, "BelongsTo_Id");
-        }
-
-		public HasMany<T> Children { get; private set; }
+		[OrderBy("Id")]
+		public HasMany<T> Children { get; internal protected set; }
 
 		[DbColumn("BelongsTo_Id")]
-		public BelongsTo<T, TKey> Parent { get; set; }
+		internal protected BelongsTo<T, TKey> MParent { get; set; }
+
+		[Exclude]
+		public T Parent {
+			get { return MParent.Value; }
+			set { MParent.Value = value; }
+		}
     }
 
     public abstract class DbObjectModelAsTree<T> : DbObjectModelAsTree<T, long>
