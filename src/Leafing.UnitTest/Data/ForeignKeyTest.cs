@@ -113,7 +113,7 @@ INSERT INTO [PCs] ([Name],[Person_Id]) VALUES ('should be failed', NULL);");
             Assert.AreEqual(0, c1.Count);
 
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
-			var c2 = Computer.Find(o => o.Owner.Value.Id == null, o => o.Id);
+			var c2 = Computer.Find(o => o.Owner.Value.Id.IsNull(), o => o.Id);
             // ReSharper restore ConditionIsAlwaysTrueOrFalse
             Assert.AreEqual(2, c2.Count);
             Assert.AreEqual("DELL", c2[0].Name);

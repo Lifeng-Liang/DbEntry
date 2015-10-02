@@ -546,7 +546,7 @@ namespace Leafing.UnitTest.Linq
         [Test]
         public void TestIsNull()
         {
-			Article.Find(p => p.Writer.Value.Id == null);
+			Article.Find(p => p.Writer.Value.Id.IsNull());
             AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [User_Id] IS NULL;
 <Text><60>()");
 
@@ -555,7 +555,7 @@ namespace Leafing.UnitTest.Linq
         [Test]
         public void TestIsNull1()
         {
-			Article.Find(p => p.Writer.Value.Id != null);
+			Article.Find(p => p.Writer.Value.Id.IsNotNull());
             AssertSql(@"SELECT [Id],[Title],[User_Id] AS [Writer] FROM [Article] WHERE [User_Id] IS NOT NULL;
 <Text><60>()");
 
