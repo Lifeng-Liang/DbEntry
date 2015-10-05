@@ -44,11 +44,17 @@ It implements by ``HasMany`` and ``BelongsTo`` in DbEntry. It's same as:
 ````c#
 public class File : DbObjectModel<File>
 {
-    [HasMany, OrderBy("Id")]
-    public IList<File> Children { get; set; }
+    [OrderBy("Id")]
+    public HasMany<File> Children { get; private set; }
 
-    [BelongsTo, DbColumn("BelongsTo_Id")]
-    public File Parent { get; set; }
+    [DbColumn("BelongsTo_Id")]
+    public BelongsTo<File> _Parent { get; private set; }
+
+    [Exclude]
+    public File Parent {
+    	get { return _Parent.Value; }
+    	set { _Parent.Value = value; }
+    }
 
     public string Name { get; set; }
 }

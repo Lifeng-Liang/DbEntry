@@ -57,7 +57,7 @@ public class User : DbObject
 
 In this way, it doesn't has extra functions in it, ``DbObject`` only provides an primary key column named "Id", so it means in this object it has two columns: ``Name`` and ``Id``, the ``Id`` column type is long, and it's aoto increments primary key of this table.
 
-It need to use ``DbEntry`` to operate it:
+And we need to use ``DbEntry`` to operate it:
 
 ````c#
 var u = new User();
@@ -77,7 +77,7 @@ public class User : IDbObject
 
 In this way, it only has one column named "Name", nothing else. This type of objects can operate like other objects inherits from ``DbObject``, only it don't has the primary key "Id", but you can define another primary key or multi-key for it, and this is the only way to define primary key by ourself in DbEntry.
 
-For example, if we want the ``Name`` column to be the primary key of this table, we just need change the object model as following:
+For example, if we want the ``Name`` column to be the primary key of this table, just change the object model as following:
 
 ````c#
 public class User : IDbObject
@@ -95,7 +95,7 @@ public class User : NamedDbObject
 }
 ````
 
-But in this case, the object does not have a system generated primary key, so the ``Save`` function could not work, we should use ``Insert`` or ``Update`` function by ourself.
+But in this case, the object does not have a system generated primary key, so the ``Save`` function do not work, we should use ``Insert`` or ``Update`` function by ourself.
 
 If we want to define the auto increments primary key as other name, we can difine it as following:
 
@@ -126,7 +126,7 @@ public class MKey : IDbObject
 }
 ````
 
-All the object we just shows, all using the default information by itself like class name, field name and property name, so we don't need to defind other information for it, but if we need, we can map it as another name:
+All the object we just show, all using the default information by itself like class name, field name and property name, so we don't need to defind other information for it, but if we need, we can map it as another name:
 
 ````c#
 [DbTable("User")]
@@ -137,7 +137,7 @@ public class MyUser : IDbObject
 }
 ````
 
-This class also defined to operate same table in database, but in C#, it has a different name. it could used for sometimes we need to change table or column name but do not want change the C# code name. Or it can use for some column name which is not a legal C# identity:
+This class also defined to operate same table in database, but in C#, it has a different name. it could used when we need to change table or column name but do not want change the C# code name. Or it can use for some column name which is not a legal C# identity:
 
 ````c#
 public class User : IDbObject
@@ -164,7 +164,7 @@ The ``Length`` attribute defined the max length of the string field, it will use
 
 If a string field is not defined by ``Length`` attribute, it means it has unlimited size, the mapped database type is "text" or "ntext" (in sql server).
 
-The ``AllowNull`` attribute defined the field which allows null value, in DbEntry, it also using for genernate create table sql and for validate function. In DbEntry, the field which is defined ``AllowNull`` attribute or ``Nullable`` type field will be deemed as allow null field. You don't need to define this attribute to ``Nuallable`` field, in fact, it's not allowed as well, so the ``AllowNull`` attribute only works for string field.
+The ``AllowNull`` attribute defines the field which allows null value, in DbEntry, it also use for genernate create table sql and for validate function. In DbEntry, the field which is defined ``AllowNull`` attribute or ``Nullable`` type field will be deemed as allow null field. You don't need to define this attribute to ``Nuallable`` field, ``AllowNull`` attribute only works for string field.
 
 ``StringColumnAttribute`` also works for create table and validate function. ``IsUnicode`` tells DbEntry if the column type is unicode, by default, this argument is true, and the ``Regular`` tell the validate function if it need check the field by using a regular expression. ``CommonRegular`` provides two common regulars: Email and Url.
 
@@ -218,7 +218,7 @@ public class JoinTable1 : IDbObject
 }
 ````
 
-Because we can join more than 2 tables, but we can not ensure the order of the attributes we get by using .net reflection, so it has an order argument to tell DbEntry the order of join syntax.
+Because we can join more than 2 tables, but we can not ensure the order of the attributes we get by use .net reflection, so it has an order argument to tell DbEntry the order of join syntax.
 
 The following code shows 3 tables join by using ``JoinOnAttribute``:
 
@@ -236,9 +236,9 @@ public class JoinTable2 : IDbObject
 }
 ````
 
-There are 4 attributes for relation objects -- ``HasOne``, ``HasMany``, ``BelongsTo``, ``HasAndBelongsToMany``. These attributes only works for the classes which inherits from DbObjectModel.
+There are 4 relation types -- ``HasOne``, ``HasMany``, ``BelongsTo``, ``HasAndBelongsToMany``. And they only work for the classes which inherits from DbObjectModel.
 
-For the model which defined these 4 attributes, also allowed ``DbColumn`` attribute, if there is no ``DbColumn`` attribute on it, it will use table name plus "_Id" as the column name. And for the property which defined ``HasOne HasMany HasAndBelongsToMany``, the ``OrderBy`` paramter could be used for define order by clause of relation SQL.
+For the model which defined these 4 types, also allowed ``DbColumn`` attribute, if there is no ``DbColumn`` attribute on it, it will use table name plus "_Id" as the column name. And for the property which defined ``HasOne HasMany HasAndBelongsToMany``, the ``OrderBy`` paramter could be used to define order-by clause of relation SQL.
 
 ````c#
 [DbTable("People")]
@@ -246,22 +246,22 @@ public class Person : DbObjectModel<Person>
 {
     public string Name { get; set; }
 
-    [HasOne(OrderBy = "Id DESC")]
-    public PersonalComputer PC { get; set; }
+    [OrderBy("Id DESC")]
+    public HasOne<PersonalComputer> PC { get; private set; }
 }
 
 public class PersonalComputer : DbObjectModel<PersonalComputer>
 {
     public string Name { get; set; }
 
-    [BelongsTo, DbColumn("Person_Id")]
-    public Person Owner { get; set; }
+    [DbColumn("Person_Id")]
+    public BelongsTo<Person> Owner { get; private set; }
 }
 ````
 
-More details about relation object will be discussed in [Relations].
+More details about relation object will be discussed in [Relations](Relations.md).
 
-The following object defined normal fileds, the type of those fields include string, enum, DateTime, bool and Nullable int, by this point, *it will be used for many samples of this tutorials*:
+The following object defined normal fileds, the type of those fields include string, enum, DateTime, bool and Nullable int. So *it will be used for many samples of this tutorials*:
 
 ````c#
 public enum UserRole
@@ -280,7 +280,7 @@ public class SampleData : DbObjectModel<SampleData>
     public int? NullInt { get; set; }
   
     public static SampleData New(string name, UserRole role,
-	DateTime joinDate, bool enabled, int? nullInt)
+	   DateTime joinDate, bool enabled, int? nullInt)
     {
         return new SampleData
         {
@@ -297,43 +297,4 @@ public class SampleData : DbObjectModel<SampleData>
 ComposedOf Field
 ----------
 
-In DbEntry 4.0 we can use ComposedOf attribute to define a interface as a field in the model class as well:
-
-````c#
-public interface ILocation
-{
-    string Phone { get; set; }
-
-    [AllowNull, Length(2, 50)]
-    string Address { get; set; }
-
-    [DbColumn("MyNumber")]
-    int Number { get; set; }
-
-    int? Wow { get; set; }
-}
-
-public class CoUser : DbObjectModel<CoUser>
-{
-    public string Name { get; set; }
-
-    [ComposedOf]
-    public ILocation Location { get; private set; }
-}
-````
-
-To use it just like:
-
-````c#
-var user = new CoUser { Name = "tom", Location = { Phone = "123456", Address = "test" } };
-user.Save();
-
-user = CoUser.FindById(user.Id);
-Assert.IsNotNull(user);
-Assert.AreEqual("tom", user.Name);
-Assert.AreEqual("123456", user.Location.Phone);
-Assert.AreEqual("test", user.Location.Address);
-
-var list = CoUser.Find(p => p.Location.Phone == "123456");
-Assert.AreEqual("test", list[0].Location.Address)
-````
+ComposedOf removed from DbEntry.Net in version 5.0.0 temporarily.

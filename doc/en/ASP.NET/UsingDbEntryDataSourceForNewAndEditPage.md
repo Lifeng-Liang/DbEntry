@@ -40,7 +40,7 @@ Change the Web.config to:
     <section name="Leafing.Settings" type="Leafing.Util.Setting.NameValueSectionHandler, Leafing.Util"/>
   </configSections>
   <Leafing.Settings>
-    <add key="AutoCreateTable" value="true" />
+    <add key="AutoScheme" value="CreateTable" />
     
     <add key="DataBase" value="@SQLite : @c:\ttt.db"/>
     <add key="DbProviderFactory" value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.47.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139"/>
@@ -147,10 +147,15 @@ Add a hyperlink "Back" to BookEdit.aspx:
 ````
 
 Run this web site, in default page
+
 Click new to navigate to BookEdit.aspx, ensure the title is "New Book" and input something and click Save.
+
 Click "Back" to navigate to Dafault.aspx to view the Book List
+
 Click "Edit" in GridView to navigate to BookEdit.aspx, ensure the title is "Book Edit".
+
 Change something and click Save button.
+
 Click "Back" to navigate to default.aspx to view the changes.
 
 How it works

@@ -50,7 +50,7 @@ The above ``Save`` function will generate the SQL like:
 Update [User] Set [Name]='jerry',[Age]=36 Where [Id]=1
 ````
 
->(In fact, the generated SQL is use parameter mode, the above SQL just for simpleness to show)
+>(In fact, the generated SQLs use parameter mode, the above SQL just for simpleness to show)
 
 How it works
 ----------

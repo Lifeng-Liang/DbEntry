@@ -6,6 +6,7 @@ DbEntry provides a simple log system.
 The log recorder could be defined in the configuration file.
 
 There are some pre-defined recorders.
+
 * ``DebugLogRecorder`` will output the information to debug window in Visual Studio.
 * ``ConsoleLogRecorder`` will output the information to console.
 * ``TextFileLogRecorder`` will output the information to a text file.
@@ -19,7 +20,7 @@ In ``Logger``, there are 3 pre-defined loggers in it.
 2. Default
 3. System
 
-The ORM part is using SQL logger to log composed SQLs. So we can define a log recorder to log all ORM composed sql to analyze.
+The ORM part is use SQL logger to log composed SQLs. So we can define a log recorder to log all ORM composed sql to analyze.
 
 The following shows how to use it:
 
@@ -53,7 +54,7 @@ Edit the ``Program.cs`` as following:
 
 ````c#
 using System;
-using Leafing.Util.Logging;
+using Leafing.Core.Logging;
 
 class Program
 {

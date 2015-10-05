@@ -7,6 +7,8 @@ All of the relation objects use lazy loading. If we have a ``read`` operation in
 
 I recommended reading the unit tests to find out how to use the relation objects. The development of relations is based on TDD _(Test Driven Development)_ , so the unit tests have everything about relations, nothing more, nothing less.
 
+The following code also shows how to add a Exclude property to handle the HasOne/BelongsTo property easily.
+
 ````c#
 using System;
 using System.Collections.Generic;
@@ -22,7 +24,7 @@ namespace Orm9
         public string Name { get; set; }
 
         [OrderBy("Id DESC")]
-        protected HasOne<PersonalComputer> _PC { get; set; }
+        public HasOne<PersonalComputer> _PC { get; set; }
         
         [Exclude]
         public PersonalComputer PC {
@@ -38,7 +40,7 @@ namespace Orm9
         public string Name { get; set; }
 
         [DbColumn("Person_Id")]
-        protected BelongsTo<Person> _Owner { get; set; }
+        public BelongsTo<Person> _Owner { get; set; }
         
         [Exclude]
         public Person Owner {
@@ -54,7 +56,7 @@ namespace Orm9
         public string Name { get; set; }
 
         [DbColumn("Category_Id")]
-        protected BelongsTo<Category> _Category { get; set; }
+        public BelongsTo<Category> _Category { get; set; }
         
         [Exclude]
         public Category Category {

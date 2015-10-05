@@ -1,7 +1,7 @@
 SQL Statement
 ==========
 
-Most time we just need to use [Query Syntax](QuerySyntax.md) in DbEntry. It supports anti SQL injection. And it's unrelated to the database, so we can use same syntax on different databases, and change database freely.
+Most time we just need to use [Query Syntax](QuerySyntax.md) in DbEntry. It is anti SQL injection. And it's unrelated to the database, so we can use same syntax on different databases, and change database freely.
 
 But sometimes the problem we have is more complex than that, in this case, we can use SQL directly.
 
@@ -77,7 +77,7 @@ Sql.SqlTimeOut = 3600;
 List<SampleData> ls = SampleData.FindBySql(Sql);
 ````
 
-The stored procedure's parameters could be get from database so we don't need to specify them, but the SQL parameter need us to specify the name at least:
+The stored procedure's parameters could be get from database so we don't need to specify them, but the SQL parameter(s) need us to specify the name at least:
 
 ````c#
 SqlStatement Sql = new SqlStatement(

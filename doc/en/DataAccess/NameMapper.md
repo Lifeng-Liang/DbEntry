@@ -20,3 +20,9 @@ There is another NameMapper will help us to map table name pluralize. It means i
 ````xml
 <add key="NameMapper" value="Leafing.Core.Text.InflectionNameMapper, Leafing.Core" />
 ````
+
+Also it has short style:
+
+````xml
+<add key="NameMapper" value="@Inflection" />
+````

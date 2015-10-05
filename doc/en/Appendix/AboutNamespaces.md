@@ -3,13 +3,12 @@ About Namespaces
 
 The Namespaces of DbEntry is organized by its functionality. It has a common prefix namespace ``Leafing``, it’s my homepage address by reversed.
 
-The ``util`` assembly has some utilities:
+The ``Core`` assembly has some utilities:
 
-* util has the common utilities.
-* Coding has coding transfer classes, specify for HexStringCoding.
+* Core has the common utilities.
 * Logging for log system, there is another part of it in the Data assembly to provide log to database.
 * Setting has setting loader.
-* Text has some common functions to use text.
+* Text has some common functions to use text and coding transfer classes, specify for HexStringCoding.
 * TimingTask has the timing task component.
 
 The ``Data`` assembly has the core database access component:
@@ -33,4 +32,3 @@ When we use SQL, we need ``Leafing.Data.SqlEntry``, maybe ``Leafing.Data`` too.
 If we want use some functions in Common, we need ``Leafing.Data.Common``.
 
 How to use the utilities is on your own. :)
-

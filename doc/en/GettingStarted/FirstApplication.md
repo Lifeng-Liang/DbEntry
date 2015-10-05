@@ -4,9 +4,9 @@ First Application
 The following steps shows how to create a basic database application using DbEntry.Net:
 ----------
 
-1\. Create a console application in Visual Studio 2010/2012/2013.
+1\. Create a console application in Visual Studio 2010/2012/2013/2015.
 
-2\. Create a *DbEntryClassLibrary 4.2* project and make the console application references it.
+2\. Create a console application.
 
 3\. Create a new Access mdb file named *test.mdb*, and store it to *c:\Test* (Make sure it exists). If you are using Access 2007, please save it as Access 2003 format.
 
@@ -23,7 +23,7 @@ The following steps shows how to create a basic database application using DbEnt
   </configSections>
  
   <Leafing.Settings>
-    <add key="AutoCreateTable" value="true" />
+    <add key="AutoScheme" value="CreateTable" />
     <add key="DataBase" value="@Access : @C:\Test\test.mdb" />
   </Leafing.Settings>
   <startup useLegacyV2RuntimeActivationPolicy="true">
@@ -32,7 +32,7 @@ The following steps shows how to create a basic database application using DbEnt
 </configuration>
 ````
 
-6\. Notice that there is a class file named *User.cs* in the folder Models in the class library. And the code will be:
+6\. Add a class file named *User.cs* to the project. And change the code to:
 
 ````c#
 using System;
@@ -41,12 +41,9 @@ using System.Linq;
 using System.Text;
 using Leafing.Data.Definition;
 
-namespace DbEntryClassLibrary1.Models
+public class User : DbObjectModel<User>
 {
-    public class User : DbObjectModel<User>
-    {
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }
 ````
 
@@ -55,8 +52,7 @@ namespace DbEntryClassLibrary1.Models
 ````c#
 using System;
 using Leafing.Data;
-using DbEntryClassLibrary1.Models;
- 
+
 class Program
 {
     static void Main(string[] args)

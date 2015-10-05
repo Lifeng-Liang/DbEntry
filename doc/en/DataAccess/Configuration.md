@@ -14,7 +14,7 @@ DbEntry mainly use ``App.config/Web.config`` to set the configure information of
 
 It is fixed, so we don't need to change it at all, just copy it to the ``App.config/Web.config``.
 
-And then, we need define the section ``Leafing.Settings``, it is the same format as ``appSettings``:
+And then, we need define the section ``Leafing.Settings``, it has the same format as ``appSettings``:
 
 ````xml
 <Leafing.Settings>
@@ -22,9 +22,9 @@ And then, we need define the section ``Leafing.Settings``, it is the same format
 </Leafing.Settings>
 ````
 
-The above defined the default context to using ``Access`` and the short connection string is ``~test.mdb``.
+The above defined the default context to use ``Access`` and the short connection string is ``~test.mdb``.
 
-The configure information also can store as a embedded resource xml in the assembly, it is the same format as it in ``App.config/Web.config``, if the setting information is not find in ``App.config/Web.config``, it will search for assemblies to get it, if all failed, it will raise an exception.
+The configure information also could store as a embedded resource xml in the assembly, it is the same format as it in ``App.config/Web.config``, if the setting information is not find in ``App.config/Web.config``, it will search for assemblies to get it, if all failed, it will raise an exception.
 
 The file name of this embedded resource file must have the postfix ".config.xml". For example:
 
@@ -81,7 +81,7 @@ Working with databases:
 
 The following is how to set database context in config file.
 
-``DataBase`` joins with two part, first is ``Dialect``, last is ``ConnectionString``, split with ":". If the first of char of ``Dialect`` is @, it's a short style, and means it is a inner ``Dialect``, ``ConnectionString`` for ``Access``, ``Excel``, ``SQLite``, if the first char is @, it's a short style, just put the file name after @.
+``DataBase`` joins with two part, first is ``Dialect``, last is ``ConnectionString``, split with ":". If the first char of ``Dialect`` is @, it's a short style, and means it is a inner ``Dialect``, ``ConnectionString`` for ``Access``, ``Excel``, ``SQLite``, if the first char is @, it's a short style, just put the file name after @.
 
 If there is ``{BaseDirectory``} or ``~`` in short style ``ConnectionString``, it will be replaced to current directory of this application (or web), so please ensure there is no ``{BaseDirectory``} or ``~`` in ``ConnectionString`` if you don't mean it.
 

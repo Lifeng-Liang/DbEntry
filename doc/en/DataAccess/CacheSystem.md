@@ -92,6 +92,8 @@ We can implement our cache provider by inherit from CacheProvider:
 
 ````c#
 using Leafing.Data.Caching;
+
+[Implementation(2)]
 public class MemcachedCacheProvider : CacheProvider
 {
     // implements the abstract functions

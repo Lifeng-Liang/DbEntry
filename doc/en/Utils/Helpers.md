@@ -31,7 +31,7 @@ CommonHelper.TryEnumerate(obj, delegate(subobj)
 Rand.NextDouble();
 ````
 
-|``RemotingHelper`` provide some functions to set the remoting application easy. The code of use it could be find in the samples of the released package. In recent version, this class moved to samples - orm - remoting - common.|
+>``RemotingHelper`` provide some functions to set the remoting application easy. The code of use it could be find in the samples of the released package. In recent version, this class moved to samples - orm - remoting - common.
 
 ``ResourceHelper`` provide some functions to get the embedded resource file easily.
 

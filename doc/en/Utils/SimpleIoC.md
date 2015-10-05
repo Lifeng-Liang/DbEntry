@@ -160,16 +160,14 @@ Configration
 
 There is a configration item to enable or disable IoC, the default value is true:
 
-````xml
-<add key="IOC.EnableAutoLoad" value="false" />
+````c#
+Leafing.Core.Ioc.SetSettings(false);
 ````
 
-And the assemblies which we defined the IoC objects should added to the assembly list:
+And the assemblies could be added to the assembly list:
 
-````xml
-<add key="IOC.SearchAssembly.1" value="Leafing.UnitTest" />
-<add key="IOC.SearchAssembly.2" value="Leafing.Util" />
+````c#
+Leafing.Core.Ioc.AddAssembly(myAssembly);
 ````
 
-It will search for the key start at 1 until can not find the next key.
-
+Make sure the above code at the very begining of our project.

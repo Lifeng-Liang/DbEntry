@@ -39,11 +39,11 @@ To use appSettings section is like the following:
 public static class MySetting
 {
     public static readonly bool UseText         = false;
-    public static readonly string DefaultText    = "";
+    public static readonly string DefaultText   = "";
 
     static MySetting()
     {
-        ConfigHelper.AppSettings.InitClass(typeof(MySetting));
+        typeof(MySetting).Initialize();
     }
 }
 ````

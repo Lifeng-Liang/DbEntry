@@ -1,4 +1,4 @@
-Mvc Getting Started
+Getting Started
 ==========
 
 DataProvider.dll
@@ -19,15 +19,15 @@ namespace DataProvider.Models
         Story,
     }
 
-    public abstract class Book : DbObjectModel<Book>
+    public class Book : DbObjectModel<Book>
     {
-        [Length(30)] public abstract string Name { get; set; }
-        public abstract DateTime BuyDate { get; set; }
-        public abstract float Price { get; set; }
-        public abstract BookCatagory Catagory { get; set; }
-        public abstract bool Read { get; set; }
-        [SpecialName] public abstract DateTime CreatedOn { get; set; }
-        [SpecialName] public abstract DateTime? UpdatedOn { get; set; }
+        [Length(30)] public string Name { get; set; }
+        public DateTime BuyDate { get; set; }
+        public float Price { get; set; }
+        public BookCatagory Catagory { get; set; }
+        public bool Read { get; set; }
+        [SpecialName] public DateTime CreatedOn { get; set; }
+        [SpecialName] public DateTime? UpdatedOn { get; set; }
     }
 }
 ````
@@ -60,7 +60,7 @@ Web.config:
   </configSections>
 
   <Leafing.Settings>
-    <add key="AutoCreateTable" value="true" />
+    <add key="AutoScheme" value="CreateTable" />
     <add key="DataBase" value="@Access : @~App_Data\test.mdb" />
   </Leafing.Settings>
 

@@ -20,7 +20,7 @@ The attributes not only works for validate, but also works for create table.
 The following code is a simple sample of object definition:
 
 ````c#
-class vtest : IDbObject
+public class vtest : IDbObject
 {
     [Length(5), StringColumn(IsUnicode=false)]
     public string Name;

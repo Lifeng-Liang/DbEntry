@@ -1,7 +1,7 @@
 DbEntryDataSource
 ==========
 
-By [Working with DataSource], we have a basic imaging of how to create a web application by using DbEntryDataSource. Now, let’s make a little more.
+By [Working with DataSource](WorkingWithDataSource.md), we have a basic image of how to create a web application by use DbEntryDataSource. Now, let’s make a little more.
 
 Change ``UserDataSource`` as following:
 
@@ -72,7 +72,7 @@ public class UserDataSource : DbEntryDataSource<User>
 }
 ````
 
-So we have all CRUD in our hands now, it even don’t need to operate database! Change it whatever you want!
+So we have all CRUD in our hands now, it even allows us do not operate database! Change it whatever you want!
 
 There is another function we can override:
 
@@ -83,5 +83,5 @@ protected override User CreateObject(IDictionary values)
 }
 ````
 
-The values are key value dictionary of the object, the values type are not match of the object fields type. So it's hard to use. But it’s the original data come from GridView. It's a bad news. And the good news is mostly we don’t need to override this function.
+The values are key value dictionary of the object, the values type are not match of the object fields type. So it's not very easy to use. But it’s the original data come from GridView. It's a bad news. And the good news is mostly we don’t need to override this function.
 

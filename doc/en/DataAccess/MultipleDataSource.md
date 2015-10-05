@@ -1,7 +1,7 @@
 Multiple Data Source
 ==========
 
-In DbEntry, ``DataProvider`` is the main interface to access execute SQL. And ORM layer will call it to access database. From v4.0, The model stuffs moved to a class called ModelContext, all the things about the model such as ObjectInfo, ModelOprator etc, are in this class now. 
+In DbEntry, ``DataProvider`` is the main interface to execute SQL. And ORM layer will call it to access database. From v4.0, The model stuffs moved to a class called ModelContext, all the things about the model such as ObjectInfo, ModelOprator etc, are in this class now. 
 
 If there is ``DefaultContext`` node in ``App.config/Web.config``, it will use this argument to get the default context, otherwise it will use the empty string as the argument to get it.
 
@@ -11,7 +11,7 @@ If there is ``DefaultContext`` node in ``App.config/Web.config``, it will use th
 </Leafing.Settings>
 ````
 
-And the following is the same meaning as above:
+And the following is same as above:
 
 ````xml
 <Leafing.Settings>

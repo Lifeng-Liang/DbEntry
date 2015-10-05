@@ -41,7 +41,7 @@ DbEntry.UsingTransaction(delegate
 });
 ````
 
-The above two transactions doesn't disturb each other. But it's not recommended to use.
+The above two transactions don't disturb each other. But it's not recommended to use.
 
 We can specify the isolation level in ``NewTransaction`` too.
 
@@ -110,9 +110,9 @@ In above code, the exception will caused at ``new trTest().Save`` line if we don
 
 Check the database, the ``t1, t2`` are not saved to ``test`` table yet. So we can say it works in DbEntry.
 
-Because it based on MSDTC, so the database instances must allow MSDTC to manage. It means not all supported databases by DbEntry can use this feture. More information about it, please visit [Microsoft](http://www.microsoft.com/) to find out.
+Because it based on MSDTC, so the database instances must allow MSDTC to manage. It means not all supported databases by DbEntry could use this feture. More information about it, please visit [Microsoft](http://www.microsoft.com/) to find out.
 
-Based on [an article on internet (Chinese version)](http://www.cnblogs.com/cn_wpf/archive/2007/08/06/844766.html), using ``TransactionScope`` need to install following hot-fixes first:
+Based on [an article on internet (Chinese version)](http://www.cnblogs.com/cn_wpf/archive/2007/08/06/844766.html), use ``TransactionScope`` needs to install the following hot-fixes first:
 
 | Number   | Link                                                                                         |
 | -------- | -------------------------------------------------------------------------------------------- |

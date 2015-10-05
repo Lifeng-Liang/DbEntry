@@ -38,7 +38,7 @@ public class TestTable : DbObjectModel<TestTable>
 }
 ````
 
-When we updata the record, the LockVersion will be checked and increased. If update statement can't find any matched record, an exception will be raised.
+When we update the record, the LockVersion will be checked and increased. An exception will be raised if update statement can't find any matched record.
 
 The name of LockVersion in our code can't change. But the mapped name could define as another name:
 

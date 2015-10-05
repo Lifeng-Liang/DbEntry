@@ -1,13 +1,13 @@
 Lazy Load Column
 ==========
 
-In DbEntry, we can define a column as lazy load just by define a attribute on it:
+In DbEntry, we can define a column as lazy load just by define a LazyLoad type:
 
 ````c#
 public class User : DbObjectModel<User>
 {
     public string Name { get; set; }
-    [LazyLoad] public string Profile { get; set; }
+    public LazyLoad<string> Profile { get; private set; }
 }
 ````
 
@@ -26,7 +26,7 @@ Select [Id],[Name] From [User] Where [Id]=1
 When we first use this column, it will read from database:
 
 ````c#
-Console.Write(o.Profile);
+Console.Write(o.Profile.Value);
 ````
 
 It will call SQL as:

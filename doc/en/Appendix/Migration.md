@@ -1,10 +1,16 @@
 Migration
 ==========
 
-Basic migration suggestion of v4.2 to recent check-in
-----------
+Basic migration suggestion of v5.0.0 to recent check-in
 
 * Nothing yet.
+
+Basic migration suggestion of v4.2 to v5.0.0
+----------
+
+* Remove ProcessorTask section from *.csproj by use a normal text editor.
+* Change relation models from attribute mode to generic mode. For detials please go to DataAccess/Relations.
+* Remove ComposedOf properties because v5.0.0 doesn't support it temporarily.
 
 Basic migration suggestion of v4.1 to v4.2
 ----------

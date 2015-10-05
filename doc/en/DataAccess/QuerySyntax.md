@@ -195,7 +195,7 @@ Such as title and content, if the user only input keyword in the title textbox, 
 
 In DbEntry, it's very easy.
 
-The following code shows use ConditionBuilder to do it by Linq style:
+The following code shows how to use ConditionBuilder to do it by Linq style:
 
 ````c#
 public List<News> Query(string Title, string Content)
@@ -288,7 +288,7 @@ var list = DbEntry
     .SelectDistinct();
 ````
 
-If all of above couldn't help you to solve your problem, your query is too complex. Please [Using SQL statement] to solve it.
+If all of above couldn't help you to solve your problem, your query is too complex. Please  use [SQL statement](SQLStatement.md) to solve it.
 
 QueryRequired
 ----------

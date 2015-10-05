@@ -9,7 +9,7 @@ public class BookController : ControllerBase
 }
 ````
 
-If we want DbEntry to build the default code and views of all CRUD operation, we can just inherits from the generic type ControllerBase<T>:
+If we want DbEntry to build the default code and views of all CRUD operation, we can just inherits from the generic type ``ControllerBase<T>``:
 
 ````c#
 public class BookController : ControllerBase<Book>

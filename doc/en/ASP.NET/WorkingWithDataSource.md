@@ -5,11 +5,11 @@ DbEntry.Net can work together with ASP.NET well. Not only DbEntryDataSource, but
 
 The following shows the basic usage of DbEntryDataSource.
 
-1\. Create a web site named ``WebPortal`` in VS 2010.
+1\. Create a web site named ``WebPortal`` in VS.
 
 2\. Add a library project named ``BizLayer`` to this solution.
 
-3\. Add a DbEntryLibrary project named ``Models`` to this solution.
+3\. Add a ClassLibrary project named ``Models`` to this solution.
 
 4\. Add a ``Web.config`` to web site and changed it as following:
 
@@ -21,8 +21,7 @@ The following shows the basic usage of DbEntryDataSource.
  </configSections>
  
  <Leafing.Settings>
-  <add key="AutoCreateTable" value="true"/>
-  <add key="ObjectHandlerType" value="Reflection" />
+  <add key="AutoScheme" value="CreateTable"/>
   <add key="DataBase" value="@Access : @~App_Data\test.mdb"/>
  </Leafing.Settings>
  
@@ -81,7 +80,7 @@ namespace BizLayer
 ````
 12\. Compile the solution.
 
-13\. If the Toolbox window doesn¡¯t show UserDataSource control, we need add it in code. First, add following code to default.aspx just under ``Page`` tag line:
+13\. If the Toolbox window doesn't show UserDataSource control, we need add it in code. First, add following code to default.aspx just under ``Page`` tag line:
 
 ````html
 <%@ Register Assembly="BizLayer" Namespace="BizLayer" TagPrefix="biz" %>
