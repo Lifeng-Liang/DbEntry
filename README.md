@@ -2,7 +2,7 @@
 DbEntry.Net (Leafing Framework)
 ==========
 
-DbEntry.Net (Leafing Framework) is a lightweight, high performance ORM compnent for .Net 4.0. It has clearly and easily programing interface. It based on ADO.NET, and supported C#, Visual Basic, ASP.NET etc. It also provide DbEntryDataSource for ASP.NET 2.0 and a Rails style MVC framework and a simple IoC framework.
+DbEntry.Net (Leafing Framework) is a lightweight, high performance ORM compnent for .Net 4.x. It has clearly and easily programing interface. It based on ADO.NET, and supported C#, Visual Basic, ASP.NET etc. It also provide DbEntryDataSource for ASP.NET 2.0 and a Rails style MVC framework and a simple IoC framework.
 
 The samples of the release package all TESTED on Sql Server 2005 Express, Sql Server 2008, MySql 5.0, SQLite 3, Access 2003, Firebird 2.1.0, PostgreSQL 8.3.3 and Oracle 10g express.
 Features:
