@@ -4,11 +4,18 @@ Install
 Install from Nuget
 ----------
 
-It's not working yet, but it will be like : 
+To install DbEntry.Net : 
  
 ````
 PM> Install-Package DbEntry.Net
 ````
+
+To install DbEntry.Net and DbEntry.Net Extra :
+
+````
+PM> Install-Package DbEntry.Net.Extra
+````
+
 
 Compile from source
 ----------

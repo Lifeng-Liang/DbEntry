@@ -3,7 +3,7 @@ Transaction
 
 After the basic operation, let's continue to learn how to use transaction.
 
-1\. First, create a new *c:\Test\test.mdb* file.
+1\. First, create a new *test.db* file.
 
 2\. Open *Program.cs* and change it as following:
 
@@ -53,7 +53,7 @@ class Program
 }
 ````
 
-3\. Run this application, it will shows:
+3\. Run this application, it will show:
 
 ````
 Insert tom :
@@ -70,7 +70,7 @@ Inserte rose and bill, but has exception :
 { Id = 3, Name = mike }
 ````
 
-4\. Open the *c:\Test\test.mdb* file, confirm the *User* table is following: 
+4\. Open the *test.db* file, confirm the *User* table is following: 
 
 | Id    | Name  |
 | ----- | ----- |

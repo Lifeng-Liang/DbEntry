@@ -2,15 +2,14 @@ First Application
 ==========
 
 The following steps shows how to create a basic database application using DbEntry.Net:
-----------
 
 1\. Create a console application in Visual Studio 2010/2012/2013/2015.
 
 2\. Create a console application.
 
-3\. Create a new Access mdb file named *test.mdb*, and store it to *c:\Test* (Make sure it exists). If you are using Access 2007, please save it as Access 2003 format.
+3\. In Nuget Package Manager Console, enter Install-Package DbEntry.Net.
 
-4\. Add the references of *Leafing.Data.dll* and *Leafing.Core.dll* to this application.
+4\. In Nuget Package Manager Console, enter Install-Package NSQLite.
 
 5\. Add an *App.config* to this application. Open it in Visual Studio, and change it as following:
 
@@ -21,24 +20,18 @@ The following steps shows how to create a basic database application using DbEnt
     <section name="Leafing.Settings"
       type="Leafing.Core.Setting.NameValueSectionHandler, Leafing.Core" />
   </configSections>
- 
+
   <Leafing.Settings>
     <add key="AutoScheme" value="CreateTable" />
-    <add key="DataBase" value="@Access : @C:\Test\test.mdb" />
+    <add key="DataBase" value="@NSQLite : @~test.db" />
+    <add key="DbProviderFactory" value="System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=3.7.7.1, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e"/>
   </Leafing.Settings>
-  <startup useLegacyV2RuntimeActivationPolicy="true">
-    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/>
-  </startup>
 </configuration>
 ````
 
 6\. Add a class file named *User.cs* to the project. And change the code to:
 
 ````c#
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Leafing.Data.Definition;
 
 public class User : DbObjectModel<User>
@@ -75,7 +68,7 @@ Saved object:
 { Id = 1, Name = tom }
 ````
 
-9\. Check *c:\Test\test.mdb* file, confirm the *User* table already created and it has one row data, check the data of this row, confirm the *Name* column is *tom*:
+9\. Use a SQLite manage software (SQLQuerier works here) to check *test.db* file, confirm the *User* table already created and it has one row data, check the data of this row, confirm the *Name* column is *tom*:
 
 | Id    | Name  |
 | ----- | ----- |
@@ -90,7 +83,7 @@ Saved object:
 { Id = 2, Name = tom }
 ````
 
-11\. Check the *c:\test.mdb* file, confirm the data of *User* table is following:
+11\. Check the *test.db* file, confirm the data of *User* table is following:
 
 | Id    | Name  |
 | ----- | ----- |

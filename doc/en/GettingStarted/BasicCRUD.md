@@ -10,7 +10,7 @@ In [First Application](FirstApplication.md), it shows how to insert a new object
 
 Now, let's continue this work to change this code to complete basic CRUD for database.
 
-1\. First, make sure the *c:\Test\test.mdb* has *User* table, and the table data is following:
+1\. First, make sure the *test.db* has *User* table, and the table data is following:
 
 | Id    | Name  |
 | ----- | ----- |
@@ -101,7 +101,7 @@ Read Object:
 After delete, the object doesn't find.
 ````
 
-8\. Open the *c:\Test\test.mdb* file, confirm the *User* table is following:
+8\. Open the *test.db* file, confirm the *User* table is following:
 
 | Id    | Name  |
 | ----- | ----- |
