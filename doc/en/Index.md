@@ -74,3 +74,4 @@
 1. [About Namespaces](Appendix/AboutNamespaces.md)
 1. [Tools](Appendix/Tools.md)
 1. [Migration](Appendix/Migration.md)
+1. [License](Appendix/License.md)
