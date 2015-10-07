@@ -85,5 +85,13 @@ namespace Leafing.Data.Dialect
                 ctx.Provider.ExecuteNonQuery(sql);
             }
         }
+
+		protected override string GetStringNameWithLength(string baseType, bool isUnicode, int length)
+		{
+			if (length > 255) {
+				return base.GetStringNameWithLength(baseType, isUnicode, 0);
+			}
+			return base.GetStringNameWithLength(baseType, isUnicode, length);
+		}
 	}
 }

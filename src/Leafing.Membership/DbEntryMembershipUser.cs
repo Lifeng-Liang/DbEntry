@@ -7,7 +7,7 @@ namespace Leafing.Membership
 {
     public class DbEntryMembershipUser : DbObjectModel<DbEntryMembershipUser>
     {
-        [Length(256), Index(UNIQUE = true),Description("用户名")]
+        [Length(255), Index(UNIQUE = true),Description("用户名")]
         public string UserName { get; set; }
 
         [Length(128)]
@@ -21,17 +21,17 @@ namespace Leafing.Membership
         [Description("密钥")]
         public string PasswordSalt { get; set; }
 
-        [Length(256)]
+        [Length(255)]
         [AllowNull]
         [Description("Email")]
         public string Email { get; set; }
 
-        [Length(256)]
+        [Length(255)]
         [AllowNull]
         [Description("LoweredEmail")]
         public string LoweredEmail { get; set; }
 
-        [Length(256)]
+        [Length(255)]
         [AllowNull]
         [Description("密码问题")]
         public string PasswordQuestion { get; set; }
