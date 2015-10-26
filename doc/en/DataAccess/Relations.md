@@ -40,7 +40,7 @@ namespace Orm9
         public string Name { get; set; }
 
         [DbColumn("Person_Id")]
-        public BelongsTo<Person> _Owner { get; set; }
+        public BelongsTo<Person, long> _Owner { get; set; }
         
         [Exclude]
         public Person Owner {
@@ -56,7 +56,7 @@ namespace Orm9
         public string Name { get; set; }
 
         [DbColumn("Category_Id")]
-        public BelongsTo<Category> _Category { get; set; }
+        public BelongsTo<Category, long> _Category { get; set; }
         
         [Exclude]
         public Category Category {
