@@ -40,15 +40,15 @@ namespace Leafing.UnitTest.Data
         public string Name { get; set; }
 
         [DbColumn("Article_Id")]
-		public BelongsTo<ArticleMore, long> Article { get; set; }
+		public BelongsTo<ArticleMore> Article { get; set; }
 
         [DbColumn("Reader_Id")]
-		public BelongsTo<ReaderMore, long> Reader { get; set; }
+		public BelongsTo<ReaderMore> Reader { get; set; }
 
 		public BelongsMore ()
 		{
-			Article = new BelongsTo<ArticleMore, long> (this, "Article_Id");
-			Reader = new BelongsTo<ReaderMore, long> (this, "Reader_Id");
+			Article = new BelongsTo<ArticleMore> (this, "Article_Id");
+			Reader = new BelongsTo<ReaderMore> (this, "Reader_Id");
 		}
     }
 

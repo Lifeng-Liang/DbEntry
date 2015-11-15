@@ -3,6 +3,15 @@ using Leafing.Data.Model.Member;
 
 namespace Leafing.Data.Definition
 {
+	[Serializable]
+	public class BelongsTo<T> : BelongsTo<T, long> where T : DbObjectModel<T, long>, new()
+	{
+		public BelongsTo(DbObjectSmartUpdate owner, string relationName)
+			:base(owner, relationName)
+		{
+		}
+	}
+
     [Serializable]
     public class BelongsTo<T, TKey> : LazyLoadOneBase<T>, IBelongsTo where T : DbObjectModel<T, TKey>, new() where TKey : struct
     {
