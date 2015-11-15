@@ -30,8 +30,7 @@ Edit the ``App.config`` as following:
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <configSections>
-    <section name="Leafing.Settings"
-        type="Leafing.Util.Setting.NameValueSectionHandler, Leafing.Util" />
+    <section name="Leafing.Settings" type="Leafing.Core.Setting.NameValueSectionHandler, Leafing.Core" />
   </configSections>
 
   <Leafing.Settings>

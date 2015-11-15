@@ -5,7 +5,7 @@ DbEntry.Net provide a simple IoC framework for dependence creation and dependenc
 
 The main goal of it is simple but useful. I don't want it to replace other high level IoC framework. Just wish it could handle 70% common scenarios.
 
-It is in Leafing.Util.IoC.
+It is in Leafing.Core.IoC.
 
 Define objects:
 

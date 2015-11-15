@@ -56,7 +56,7 @@ Web.config:
 <?xml version="1.0"?>
 <configuration>
   <configSections>
-    <section name="Leafing.Settings" type="Leafing.Util.Setting.NameValueSectionHandler, Leafing.Util" />
+    <section name="Leafing.Settings" type="Leafing.Core.Setting.NameValueSectionHandler, Leafing.Core" />
   </configSections>
 
   <Leafing.Settings>

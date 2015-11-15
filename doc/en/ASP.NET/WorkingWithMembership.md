@@ -10,7 +10,7 @@ Working with Membership
 <configuration>
   <configSections>
     <section name="Leafing.Settings"
-      type="Leafing.Util.Setting.NameValueSectionHandler, Leafing.Util" />
+      type="Leafing.Core.Setting.NameValueSectionHandler, Leafing.Core" />
   </configSections>
  
   <Leafing.Settings>
@@ -51,7 +51,7 @@ value="System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.66.0, C
 </configuration>
 ````
 
-2\. Add the references of "Leafing.Util", "Leafing.Data" and "Leafing.Web"
+2\. Add the references of "Leafing.Core", "Leafing.Data" and "Leafing.Web"
 
 3\. Create a new page named "MyLogin.aspx"
 
