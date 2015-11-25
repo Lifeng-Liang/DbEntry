@@ -14,12 +14,12 @@ public enum Category
     Class,
 }
 
-public abstract class Book : DbObjectModel<Book>
+public class Book : DbObjectModel<Book>
 {
-    [Length(10)] public abstract string Name { get; set; }
-    public abstract float Price { get; set; }
-    public abstract bool Read { get; set; }
-    public abstract Category Category { get; set; }
+    [Length(10)] public string Name { get; set; }
+    public float Price { get; set; }
+    public bool Read { get; set; }
+    public Category Category { get; set; }
 }
 
 public class BookDataSource : DbEntryDataSource<Book>
