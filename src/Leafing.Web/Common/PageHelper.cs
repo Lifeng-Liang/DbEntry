@@ -15,19 +15,13 @@ namespace Leafing.Web.Common
 {
     public static class PageHelper
     {
-        public static bool ValidateSave(Page p, IDbObject obj, NoticeLabel msg, string noticeText)
+		public static bool ValidateSave(Page p, ValidateHandler vh, IDbObject obj, NoticeLabelAdapter msg, string noticeText, string cssWarning, string cssNotice)
         {
-            var vh = new ValidateHandler();
-            return ValidateSave(p, vh, obj, msg, noticeText, "ErrInput");
+			return ValidateSave(p, vh, obj, msg, noticeText, cssWarning, cssNotice, () => DbEntry.Save(obj));
         }
 
-        public static bool ValidateSave(Page p, ValidateHandler vh, IDbObject obj, NoticeLabel msg, string noticeText, string cssErrInput)
-        {
-            return ValidateSave(p, vh, obj, msg, noticeText, cssErrInput, () => DbEntry.Save(obj));
-        }
-
-        public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabel msg, string noticeText,
-            string cssErrInput, Action callback)
+		public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabelAdapter msg, string noticeText,
+			string cssWarning, string cssNotice, Action callback)
         {
             var ctx = ModelContext.GetInstance(obj.GetType());
             EnumControls(p, ctx.Info, delegate(MemberHandler mh, WebControl c)
@@ -40,23 +34,25 @@ namespace Leafing.Web.Common
                 callback();
                 if (msg != null)
                 {
-                    msg.AddNotice(noticeText);
+					msg.AddMessage(noticeText);
+					msg.ShowWith(cssNotice);
                 }
             }
             else
             {
-                foreach (string str in vh.ErrorMessages.Keys)
+				foreach (string key in vh.ErrorMessages.Keys)
                 {
                     if (msg != null)
                     {
-                        msg.AddWarning(vh.ErrorMessages[str]);
+						msg.AddMessage(vh.ErrorMessages[key]);
                     }
-                    WebControl c = GetWebControl(p, ctx.Info, str);
+                    WebControl c = GetWebControl(p, ctx.Info, key);
                     if (c != null)
                     {
-                        c.CssClass = cssErrInput;
-                    }
+						c.CssClass = cssWarning;
+					}
                 }
+				msg.ShowWith(cssWarning);
             }
             return vh.IsValid;
         }

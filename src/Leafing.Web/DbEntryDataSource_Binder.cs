@@ -44,7 +44,7 @@ namespace Leafing.Web
         private Button _saveButton;
         private Button _deleteButton;
         private Label _contentTitle;
-        private NoticeLabel _noticeMessage;
+        private NoticeLabelAdapter _noticeMessage;
 
         private bool _lastOprationSucceed;
 
@@ -194,10 +194,8 @@ namespace Leafing.Web
 
         public void AddNotice(string msg)
         {
-            if (_noticeMessage != null)
-            {
-                _noticeMessage.AddNotice(msg);
-            }
+			_noticeMessage.AddMessage(msg);
+			_noticeMessage.ShowWith(CssNotice);
         }
 
         public void AddWarning(string msg)
@@ -211,9 +209,10 @@ namespace Leafing.Web
             {
                 if (c != null)
                 {
-                    c.CssClass = CssErrInput;
+					c.CssClass = CssWarning;
                 }
-                _noticeMessage.AddWarning(msg);
+				_noticeMessage.AddMessage(msg);
+				_noticeMessage.ShowWith(CssWarning);
             }
         }
 
@@ -251,7 +250,7 @@ namespace Leafing.Web
                                                      NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText,
                                                      SeparatorText);
 
-            return PageHelper.ValidateSave(Page, vh, obj, _noticeMessage, noticeText, CssErrInput,
+			return PageHelper.ValidateSave(Page, vh, obj, _noticeMessage, noticeText, CssWarning, CssNotice,
                 delegate
                    {
                        var ctx = ModelContext.GetInstance(obj.GetType());
@@ -275,7 +274,8 @@ namespace Leafing.Web
                 _saveButton = NamingContainer.FindControl(SaveButtonID) as Button;
                 _deleteButton = NamingContainer.FindControl(DeleteButtonID) as Button;
                 _contentTitle = NamingContainer.FindControl(ContentTitleID) as Label;
-                _noticeMessage = NamingContainer.FindControl(NoticeMessageID) as NoticeLabel;
+				var msgLabel = NamingContainer.FindControl(NoticeMessageID) as Label;
+				_noticeMessage = new NoticeLabelAdapter(msgLabel);
 
                 if (_saveButton != null)
                 {
@@ -586,20 +586,59 @@ namespace Leafing.Web
             set { ViewState["EditObjectText"] = value; }
         }
 
-        [Themeable(false), DefaultValue("ErrInput")]
-        public string CssErrInput
-        {
-            get
-            {
-                object o = ViewState["CssErrInput"];
-                if (o != null)
-                {
-                    return (string)o;
-                }
-                return "ErrInput";
-            }
-            set { ViewState["CssErrInput"] = value; }
-        }
+		[Themeable(false), DefaultValue("Warning")]
+		public string CssWarning
+		{
+			get
+			{
+				object o = ViewState["CssWarning"];
+				if (o != null)
+				{
+					return (string)o;
+				}
+				return "Warning";
+			}
+			set
+			{
+				ViewState["CssWarning"] = value;
+			}
+		}
+
+		[Themeable(false), DefaultValue("Notice")]
+		public string CssNotice
+		{
+			get
+			{
+				object o = ViewState["CssNotice"];
+				if (o != null)
+				{
+					return (string)o;
+				}
+				return "Notice";
+			}
+			set
+			{
+				ViewState["CssNotice"] = value;
+			}
+		}
+
+		[Themeable(false), DefaultValue("Tip")]
+		public string CssTip
+		{
+			get
+			{
+				object o = ViewState["CssTip"];
+				if (o != null)
+				{
+					return (string)o;
+				}
+				return "Tip";
+			}
+			set
+			{
+				ViewState["CssTip"] = value;
+			}
+		}
 
         [Themeable(false), DefaultValue("Field [{0}] parse error: {1}")]
         public string ParseErrorText

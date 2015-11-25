@@ -10,7 +10,7 @@ namespace Leafing.Web.Common
     {
         protected override bool FilterControl(Control control)
         {
-            return control is NoticeLabel;
+            return control is Label;
         }
     }
 }
