@@ -42,7 +42,7 @@ namespace Leafing.UnitTest.Data
     [DbTable("People")]
     public class SinglePerson2 : DbObjectModel<SinglePerson2>
     {
-        public string Name { get; set; }
+		public string Name;
     }
 
     [DbTable("People"), DbContext("SQLite")]

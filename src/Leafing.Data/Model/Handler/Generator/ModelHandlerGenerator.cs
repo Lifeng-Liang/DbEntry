@@ -147,18 +147,6 @@ namespace Leafing.Data.Model.Handler.Generator
 
 		private void CheckType(Type type)
 		{
-			if (type.IsSubclassOf(typeof(DbObjectSmartUpdate)))
-			{
-				foreach(var field in _info.SimpleMembers)
-				{
-					if(!field.MemberInfo.IsProperty)
-					{
-						throw new ModelException(
-							field.MemberInfo,
-							"The subclass of DbObjectModel can not has any fields, use property instead.");
-					}
-				}
-			}
 			if(_info.From.PartOf != null)
 			{
 				var oi = ObjectInfoFactory.Instance.GetInstance(_info.From.PartOf);
