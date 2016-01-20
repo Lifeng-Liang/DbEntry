@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Leafing.Data.Definition;
+using Leafing.Core.Text;
 
 namespace Leafing.UnitTest.Data.Objects
 {
     // HasOne
 
-    [DbTable("People")]
+	[DbTable("People")]
     public class Person : DbObjectModel<Person>
     {
         public string Name { get; set; }

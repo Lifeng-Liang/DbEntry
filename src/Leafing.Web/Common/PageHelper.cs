@@ -15,17 +15,17 @@ namespace Leafing.Web.Common
 {
     public static class PageHelper
     {
-		public static bool ValidateSave(Page p, ValidateHandler vh, IDbObject obj, NoticeLabelAdapter msg,
-			string noticeText, string cssCommon, string cssWarning, string cssNotice)
+		public static bool ValidateSave(this ModelContext ctx, Page p, ValidateHandler vh, IDbObject obj,
+			NoticeLabelAdapter msg, string noticeText, string cssCommon, string cssWarning, string cssNotice)
         {
-			return ValidateSave(p, vh, obj, msg, noticeText, cssCommon, cssWarning, cssNotice, 
+			return ValidateSave(ctx, p, vh, obj, msg, noticeText, cssCommon, cssWarning, cssNotice, 
 				() => DbEntry.Save(obj));
         }
 
-		public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabelAdapter msg,
-			string noticeText, string cssCommon, string cssWarning, string cssNotice, Action callback)
+		public static bool ValidateSave(this ModelContext ctx, Page p, ValidateHandler vh, object obj,
+			NoticeLabelAdapter msg, string noticeText, string cssCommon, string cssWarning, string cssNotice,
+			Action callback)
         {
-            var ctx = ModelContext.GetInstance(obj.GetType());
             EnumControls(p, ctx.Info, delegate(MemberHandler mh, WebControl c)
             {
 				c.CssClass = cssCommon;
@@ -89,15 +89,14 @@ namespace Leafing.Web.Common
             }
         }
 
-        public static T GetObject<T>(object key, Page p, string parseErrorText) where T : class, IDbObject
+		public static T GetObject<T>(this ModelContext ctx, object key, Page p, string parseErrorText) where T : class, IDbObject
         {
             var obj = DbEntry.GetObject<T>(key);
-            return (T)GetObject(obj, ModelContext.GetInstance(typeof(T)), p, parseErrorText);
+            return (T)GetObject(obj, ctx, p, parseErrorText);
         }
 
-        public static T GetObject<T>(Page p, string parseErrorText)
+		public static T GetObject<T>(this ModelContext ctx, Page p, string parseErrorText)
         {
-            var ctx = ModelContext.GetInstance(typeof(T));
             object obj = ctx.NewObject();
             return (T)GetObject(obj, ctx, p, parseErrorText);
         }
@@ -184,10 +183,8 @@ namespace Leafing.Web.Common
             throw new NotSupportedException();
         }
 
-        public static void SetObject(object obj, Page p)
+		public static void SetObject(this ModelContext ctx, object obj, Page p)
         {
-            Type t = obj.GetType();
-            var ctx = ModelContext.GetInstance(t);
             EnumControls(p, ctx.Info, delegate(MemberHandler h, WebControl c)
             {
                 object v = h.GetValue(obj);

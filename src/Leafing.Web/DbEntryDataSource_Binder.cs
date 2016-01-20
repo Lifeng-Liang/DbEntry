@@ -160,11 +160,10 @@ namespace Leafing.Web
             {
                 object oid = ViewState["Id"];
 
-                string tn = typeof(T).Name;
                 if (oid == null)
                 {
-                    var o = PageHelper.GetObject<T>(Page, ParseErrorText);
-                    if (ValidateSave(o, string.Format(ObjectCreatedText, tn)))
+					var o = Ctx.GetObject<T>(Page, ParseErrorText);
+					if (ValidateSave(o, string.Format(ObjectCreatedText, ModelShowName)))
                     {
                         _lastOprationSucceed = true;
                         return o;
@@ -172,9 +171,9 @@ namespace Leafing.Web
                 }
                 else // Edit
                 {
-                    var o = PageHelper.GetObject<T>(oid, Page, ParseErrorText);
+					var o = Ctx.GetObject<T>(oid, Page, ParseErrorText);
                     //Ctx.Info.KeyMembers[0].SetValue(o, oid);
-                    if (ValidateSave(o, string.Format(ObjectUpdatedText, tn)))
+					if (ValidateSave(o, string.Format(ObjectUpdatedText, ModelShowName)))
                     {
                         _lastOprationSucceed = true;
                         return o;
@@ -223,12 +222,11 @@ namespace Leafing.Web
             {
                 object oid = ViewState["Id"];
 
-                string tn = typeof(T).Name;
                 if (oid != null)
                 {
                     var o = DbEntry.GetObject<T>(oid);
                     ExecuteDelete(o);
-                    AddNotice(string.Format(ObjectDeletedText, tn));
+					AddNotice(string.Format(ObjectDeletedText, ModelShowName));
                     _lastOprationSucceed = true;
                 }
             }
@@ -249,12 +247,11 @@ namespace Leafing.Web
 			var vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
 				NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
 
-			return PageHelper.ValidateSave(Page, vh, obj, _noticeMessage, noticeText,
+			return Ctx.ValidateSave(Page, vh, obj, _noticeMessage, noticeText,
 				CssCommon, CssWarning, CssNotice,
                 delegate
                    {
-                       var ctx = ModelContext.GetInstance(obj.GetType());
-                       if (ctx.IsNewObject(obj))
+                       if (Ctx.IsNewObject(obj))
                        {
                            ExecuteInsert(obj);
                        }
@@ -302,7 +299,6 @@ namespace Leafing.Web
             _saveButton.Click += SaveButton_Click;
             if (!Page.IsPostBack)
             {
-                string tn = typeof(T).Name;
                 T o = GetRequestObject();
                 if (o == null)
                 {
@@ -311,14 +307,14 @@ namespace Leafing.Web
                         _deleteButton.Visible = false;
                     }
                     RaiseEvent(PageIsNew);
-                    SetContentTitle(NewObjectText, tn);
+					SetContentTitle(NewObjectText, ModelShowName);
                 }
                 else
                 {
                     RaiseEvent(ObjectLoading);
-                    PageHelper.SetObject(o, Page);
+					Ctx.SetObject(o, Page);
                     RaiseEvent(PageIsEdit);
-                    SetContentTitle(EditObjectText, tn);
+                    SetContentTitle(EditObjectText, ModelShowName);
                     RaiseEvent(ObjectLoaded, o);
                 }
             }
@@ -341,7 +337,7 @@ namespace Leafing.Web
             T o = GetRequestObject();
             if (o != null)
             {
-                PageHelper.SetObject(o, Page);
+				Ctx.SetObject(o, Page);
             }
         }
 
@@ -357,10 +353,9 @@ namespace Leafing.Web
                     throw new DataException("The record doesn't exist.");
                 }
                 ViewState["Id"] = id;
-                var ctx = ModelContext.GetInstance(typeof(T));
-                if(ctx.Info.LockVersion != null)
+                if(Ctx.Info.LockVersion != null)
                 {
-                    var lv = (int)ctx.Info.LockVersion.GetValue(o);
+                    var lv = (int)Ctx.Info.LockVersion.GetValue(o);
                     if (Page.IsPostBack)
                     {
                         if(lv != ObjectLockVersion)

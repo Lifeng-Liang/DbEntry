@@ -26,8 +26,9 @@ namespace Leafing.Web
             Condition &= c;
         }
 
-        private static readonly ModelContext Ctx = ModelContext.GetInstance(typeof(T));
+        protected static readonly ModelContext Ctx = ModelContext.GetInstance(typeof(T));
         protected static readonly string KeyName = Ctx.Info.KeyMembers[0].Name;
+		protected static readonly string ModelShowName = Ctx.Info.ShowString;
         public event EventHandler DataSourceChanged;
 
         protected void RaiseDataSourceChanged()

@@ -17,6 +17,7 @@ namespace Leafing.Data.Model
         public readonly bool AllowSqlLog;
         public readonly bool Cacheable;
         public readonly string ContextName;
+		public readonly string ShowString;
         public readonly List<string> QueryRequiredFields;
         public readonly Dictionary<Type, CrossTable> CrossTables = new Dictionary<Type, CrossTable>();
         public readonly string DeleteToTableName;
@@ -60,6 +61,7 @@ namespace Leafing.Data.Model
             this.SoftDeleteColumnName = this.GetSoftDeleteColumnName();
             this.DeleteToTableName = this.GetDeleteToTableName();
             this.ContextName = this.GetContextName();
+			this.ShowString = this.GetShowString();
             this.QueryRequiredFields = this.GetQueryRequiredFields();
             this.Cacheable = this.HandleType.HasAttribute<CacheableAttribute>(false);
             this.GetIndexes();
@@ -155,13 +157,23 @@ namespace Leafing.Data.Model
 
         private string GetContextName()
         {
-            var dbCtx = this.HandleType.GetAttribute<DbContextAttribute>(true);
-            if (dbCtx != null)
+			var attr = this.HandleType.GetAttribute<DbContextAttribute>(true);
+            if (attr != null)
             {
-                return dbCtx.ContextName;
+                return attr.ContextName;
             }
             return null;
         }
+
+		private string GetShowString()
+		{
+			var attr = this.HandleType.GetAttribute<ShowStringAttribute>(true);
+			if (attr != null)
+			{
+				return attr.ShowString;
+			}
+			return HandleType.Name;
+		}
 
         private static string GetCrossTableName(MemberHandler f, string unmappedMainTableName, string unmappedSlaveTableName)
         {
