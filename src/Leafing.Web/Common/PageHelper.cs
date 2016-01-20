@@ -15,18 +15,20 @@ namespace Leafing.Web.Common
 {
     public static class PageHelper
     {
-		public static bool ValidateSave(Page p, ValidateHandler vh, IDbObject obj, NoticeLabelAdapter msg, string noticeText, string cssWarning, string cssNotice)
+		public static bool ValidateSave(Page p, ValidateHandler vh, IDbObject obj, NoticeLabelAdapter msg,
+			string noticeText, string cssCommon, string cssWarning, string cssNotice)
         {
-			return ValidateSave(p, vh, obj, msg, noticeText, cssWarning, cssNotice, () => DbEntry.Save(obj));
+			return ValidateSave(p, vh, obj, msg, noticeText, cssCommon, cssWarning, cssNotice, 
+				() => DbEntry.Save(obj));
         }
 
-		public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabelAdapter msg, string noticeText,
-			string cssWarning, string cssNotice, Action callback)
+		public static bool ValidateSave(Page p, ValidateHandler vh, object obj, NoticeLabelAdapter msg,
+			string noticeText, string cssCommon, string cssWarning, string cssNotice, Action callback)
         {
             var ctx = ModelContext.GetInstance(obj.GetType());
             EnumControls(p, ctx.Info, delegate(MemberHandler mh, WebControl c)
             {
-                c.CssClass = "";
+				c.CssClass = cssCommon;
             });
             vh.ValidateObject(obj);
             if (vh.IsValid)

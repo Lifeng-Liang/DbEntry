@@ -246,11 +246,11 @@ namespace Leafing.Web
         {
             RaiseEvent(ValidateSaving, obj);
 
-            var vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
-                                                     NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText,
-                                                     SeparatorText);
+			var vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
+				NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
 
-			return PageHelper.ValidateSave(Page, vh, obj, _noticeMessage, noticeText, CssWarning, CssNotice,
+			return PageHelper.ValidateSave(Page, vh, obj, _noticeMessage, noticeText,
+				CssCommon, CssWarning, CssNotice,
                 delegate
                    {
                        var ctx = ModelContext.GetInstance(obj.GetType());
@@ -585,6 +585,24 @@ namespace Leafing.Web
             }
             set { ViewState["EditObjectText"] = value; }
         }
+
+		[Themeable(false), DefaultValue("Common")]
+		public string CssCommon
+		{
+			get
+			{
+				object o = ViewState["CssCommon"];
+				if (o != null)
+				{
+					return (string)o;
+				}
+				return "Common";
+			}
+			set
+			{
+				ViewState["CssCommon"] = value;
+			}
+		}
 
 		[Themeable(false), DefaultValue("Warning")]
 		public string CssWarning
