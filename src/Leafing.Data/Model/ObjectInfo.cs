@@ -401,17 +401,24 @@ namespace Leafing.Data.Model
                 if (member.Is.HasAndBelongsToMany)
                 {
                     var modelType = member.MemberType.GetGenericArguments()[0];
+					if (oi.KeyMembers[0].MemberType != GetIdType(modelType)) {
+						throw new DataException("HasAndBelongsToMany tables should have the same type of Id(s)");
+					}
                     var fromClause = GetObjectFromClause(modelType);
                     var mainOriginTableName = fromClause.MainModelName;
                     var name = GetCrossTableName(member, unmappedMainTableName, mainOriginTableName);
                     var fkMainOriginTableName = mainOriginTableName + "_Id";
                     var from = new FromClause(new[] { new JoinClause(name, fkMainOriginTableName, fromClause.MainTableName, "Id", CompareOpration.Equal, JoinMode.Inner) });
-                    var handleType = member.MemberType.GetGenericArguments()[0];
-                    oi.CrossTables[handleType] = new CrossTable(handleType, from, name,
+					oi.CrossTables[modelType] = new CrossTable(modelType, from, name,
                         oi.From.MainTableName, unmappedMainTableName + "_Id", fromClause.MainTableName, fkMainOriginTableName);
                 }
             }
         }
+
+		private static Type GetIdType(Type type)
+		{
+			return type.GetProperty("Id").PropertyType;
+		}
 
 		public override string ToString ()
 		{

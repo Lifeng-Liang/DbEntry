@@ -35,11 +35,31 @@ namespace Leafing.UnitTest.Data
 		}
     }
 
+	public class TableE : DbObjectModel<TableE>
+	{
+		public string Name { get; set; }
+		public HasAndBelongsToMany<TableF> TF { get; set; }
+	}
+
+	public class TableF : DbObjectModel<TableF, Guid>
+	{
+		public string Name { get; set; }
+		public HasAndBelongsToMany<TableE> TE { get; set; }
+	}
+
     #endregion
 
     [TestFixture]
     public class HasAndBelongsToManyAssociateTest : DataTestBase
     {
+		[Test, ExpectedException(typeof(TypeInitializationException))]
+		public void TestRelationTablesShouldHaveSameIdType()
+		{
+			var o = new TableE();
+			o.Name = "test";
+			o.Save();
+		}
+
         [Test]
         public void Test1()
         {
