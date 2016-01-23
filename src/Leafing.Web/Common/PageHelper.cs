@@ -16,19 +16,19 @@ namespace Leafing.Web.Common
     public static class PageHelper
     {
 		public static bool ValidateSave(this ModelContext ctx, Page p, ValidateHandler vh, IDbObject obj,
-			NoticeLabelAdapter msg, string noticeText, string cssCommon, string cssWarning, string cssNotice)
+			NoticeLabelAdapter msg, string noticeText, string cssWarning, string cssNotice)
         {
-			return ValidateSave(ctx, p, vh, obj, msg, noticeText, cssCommon, cssWarning, cssNotice, 
+			return ValidateSave(ctx, p, vh, obj, msg, noticeText, cssWarning, cssNotice, 
 				() => DbEntry.Save(obj));
         }
 
 		public static bool ValidateSave(this ModelContext ctx, Page p, ValidateHandler vh, object obj,
-			NoticeLabelAdapter msg, string noticeText, string cssCommon, string cssWarning, string cssNotice,
+			NoticeLabelAdapter msg, string noticeText, string cssWarning, string cssNotice,
 			Action callback)
         {
             EnumControls(p, ctx.Info, delegate(MemberHandler mh, WebControl c)
             {
-				c.CssClass = cssCommon;
+				c.CssClass = GetOriginCss(c.CssClass, cssWarning);
             });
             vh.ValidateObject(obj);
             if (vh.IsValid)
@@ -51,13 +51,30 @@ namespace Leafing.Web.Common
                     WebControl c = GetWebControl(p, ctx.Info, key);
                     if (c != null)
                     {
-						c.CssClass = cssWarning;
+						c.CssClass = GetCssBase(c.CssClass) + cssWarning;
 					}
                 }
 				msg.ShowWith(cssWarning);
             }
             return vh.IsValid;
         }
+
+		public static string GetCssBase(string originCss)
+		{
+			return originCss.IsNullOrEmpty() ? "" : originCss + " ";
+		}
+
+		public static string GetOriginCss(string css, string cssAdd)
+		{
+			if (css.IsNullOrEmpty() || css == cssAdd) {
+				return "";
+			}
+			var cssAdd1 = " " + cssAdd;
+			if (css.EndsWith(cssAdd1)) {
+				return css.Substring(0, css.Length - cssAdd1.Length);
+			}
+			return css;
+		}
 
         private static WebControl GetWebControl(Page p, ObjectInfo oi, string name)
         {

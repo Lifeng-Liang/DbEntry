@@ -9,13 +9,13 @@ namespace Leafing.Web.Common
     {
 		private Label _innerLabel;
         private List<string> _msgList;
+		private string cssBase;
 
 		public NoticeLabelAdapter (Label label)
 		{
 			_innerLabel = label;
-			_innerLabel.Load += (object sender, System.EventArgs e) => {
-				Reset();
-			};
+			Reset();
+			cssBase = PageHelper.GetCssBase(label.CssClass);
 		}
 
 		private void Reset()
@@ -34,7 +34,7 @@ namespace Leafing.Web.Common
 		{
 			if (_innerLabel != null) {
 				_innerLabel.Text = GenerateText();
-				_innerLabel.CssClass = cssClass;
+				_innerLabel.CssClass = cssBase + cssClass;
 				_innerLabel.Visible = true;
 			}
 		}

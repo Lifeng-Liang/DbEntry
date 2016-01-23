@@ -211,6 +211,7 @@
     <Compile Include="Web\TypeBinderTest.cs" />
     <Compile Include="Web\UrlBuilderTest.cs" />
     <Compile Include="Web\XmlBuilderTest.cs" />
+    <Compile Include="Web\PageHelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UnitTest.config.xml">

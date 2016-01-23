@@ -248,7 +248,7 @@ namespace Leafing.Web
 				NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
 
 			return Ctx.ValidateSave(Page, vh, obj, _noticeMessage, noticeText,
-				CssCommon, CssWarning, CssNotice,
+				CssWarning, CssNotice,
                 delegate
                    {
                        if (Ctx.IsNewObject(obj))
@@ -580,24 +580,6 @@ namespace Leafing.Web
             }
             set { ViewState["EditObjectText"] = value; }
         }
-
-		[Themeable(false), DefaultValue("Common")]
-		public string CssCommon
-		{
-			get
-			{
-				object o = ViewState["CssCommon"];
-				if (o != null)
-				{
-					return (string)o;
-				}
-				return "Common";
-			}
-			set
-			{
-				ViewState["CssCommon"] = value;
-			}
-		}
 
 		[Themeable(false), DefaultValue("Warning")]
 		public string CssWarning
