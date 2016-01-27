@@ -13,7 +13,7 @@ namespace Leafing.Extra.Logging
             var li = new LeafingLog(type, name, message, exception);
             try
             {
-                DbEntry.Save(li);
+				DbEntry.NewTransaction(() => DbEntry.Save(li));
             }
             catch (Exception ex)
             {

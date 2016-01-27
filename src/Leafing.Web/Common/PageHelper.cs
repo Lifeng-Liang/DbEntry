@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Leafing.Core;
-using Leafing.Data;
-using System.Collections.Generic;
 using Leafing.Core.Text;
+using Leafing.Data;
 using Leafing.Data.Definition;
 using Leafing.Data.Model;
 using Leafing.Data.Model.Member;
@@ -16,20 +16,15 @@ namespace Leafing.Web.Common
     public static class PageHelper
     {
 		public static bool ValidateSave(this ModelContext ctx, Page p, ValidateHandler vh, IDbObject obj,
-			NoticeLabelAdapter msg, string noticeText, string cssWarning, string cssNotice)
+			NoticeLabelAdapter msg, string noticeText, string cssInputWarning)
         {
-			return ValidateSave(ctx, p, vh, obj, msg, noticeText, cssWarning, cssNotice, 
-				() => DbEntry.Save(obj));
+			return ValidateSave(ctx, p, vh, obj, msg, noticeText, cssInputWarning, () => DbEntry.Save(obj));
         }
 
 		public static bool ValidateSave(this ModelContext ctx, Page p, ValidateHandler vh, object obj,
-			NoticeLabelAdapter msg, string noticeText, string cssWarning, string cssNotice,
-			Action callback)
+			NoticeLabelAdapter msg, string noticeText, string cssInputWarning, Action callback)
         {
-            EnumControls(p, ctx.Info, delegate(MemberHandler mh, WebControl c)
-            {
-				c.CssClass = GetOriginCss(c.CssClass, cssWarning);
-            });
+			ctx.ResetInputCss(p, cssInputWarning);
             vh.ValidateObject(obj);
             if (vh.IsValid)
             {
@@ -37,27 +32,33 @@ namespace Leafing.Web.Common
                 if (msg != null)
                 {
 					msg.AddMessage(noticeText);
-					msg.ShowWith(cssNotice);
+					msg.ShowNotice();
                 }
             }
             else
             {
-				foreach (string key in vh.ErrorMessages.Keys)
-                {
-                    if (msg != null)
-                    {
-						msg.AddMessage(vh.ErrorMessages[key]);
-                    }
-                    WebControl c = GetWebControl(p, ctx.Info, key);
-                    if (c != null)
-                    {
-						c.CssClass = GetCssBase(c.CssClass) + cssWarning;
-					}
-                }
-				msg.ShowWith(cssWarning);
+				vh.ErrorMessages.Keys
+					.Map(key => GetWebControl(p, ctx.Info, key))
+					.Filter(c => c != null)
+					.Each(c => SetCtrlClass(c, cssInputWarning));
+				if (msg != null) {
+					vh.ErrorMessages.Keys.Each(key => msg.AddMessage(vh.ErrorMessages[key]));
+					msg.ShowWarning();
+				}
             }
             return vh.IsValid;
         }
+
+		public static void ResetInputCss(this ModelContext ctx, Page p, string cssAdd)
+		{
+			EnumControls(p, ctx.Info, (mh, c) => c.CssClass = GetOriginCss(c.CssClass, cssAdd));
+		}
+
+		public static void SetCtrlClass(this WebControl c, string css)
+		{
+			var orig = GetOriginCss(c.CssClass, css);
+			c.CssClass = GetCssBase(orig) + css;
+		}
 
 		public static string GetCssBase(string originCss)
 		{
@@ -79,7 +80,7 @@ namespace Leafing.Web.Common
         private static WebControl GetWebControl(Page p, ObjectInfo oi, string name)
         {
             string cid = string.Format("{0}_{1}", oi.HandleType.Name, name);
-            var c = ClassHelper.GetValue(p, cid) as WebControl;
+			var c = p.FindControl(cid) as WebControl;
             return c;
         }
 
@@ -90,7 +91,7 @@ namespace Leafing.Web.Common
                 if (!h.Is.Key)
                 {
                     string cid = string.Format("{0}_{1}", oi.HandleType.Name, h.MemberInfo.Name);
-                    var c = ClassHelper.GetValue(p, cid) as WebControl;
+					var c = p.FindControl(cid) as WebControl;
                     if (c != null)
                     {
                         callback(h, c);
@@ -120,48 +121,32 @@ namespace Leafing.Web.Common
 
         private static object GetObject(object obj, ModelContext ctx, Page p, string parseErrorText)
         {
-            EnumControls(p, ctx.Info, delegate(MemberHandler h, WebControl c)
-            {
-                string v = GetValue(c);
-                if (h.MemberType.IsEnum)
-                {
-                    var n = (int)Enum.Parse(h.MemberType, v);
-                    h.SetValue(obj, n);
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(v))
-                    {
-                        if (h.Is.AllowNull)
-                        {
-                            h.SetValue(obj, null);
-                        }
-                        else
-                        {
-                            if (h.MemberType == typeof(string))
-                            {
-                                h.SetValue(obj, "");
-                            }
-                            else if(!h.Is.CreatedOn && !h.Is.SavedOn)
-                            {
-                                throw new WebControlException(c, string.Format(parseErrorText, h.ShowString, ""));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            object iv = ClassHelper.ChangeType(v, h.MemberType);
-                            h.SetValue(obj, iv);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new WebControlException(c, string.Format(parseErrorText, h.ShowString, ex.Message));
-                        }
-                    }
-                }
-            });
+			EnumControls(p, ctx.Info, (h, c) => {
+				string v = GetValue(c);
+				if (h.MemberType.IsEnum) {
+					var n = (int)Enum.Parse(h.MemberType, v);
+					h.SetValue(obj, n);
+				} else {
+					if (string.IsNullOrEmpty(v)) {
+						if (h.Is.AllowNull) {
+							h.SetValue(obj, null);
+						} else {
+							if (h.MemberType == typeof(string)) {
+								h.SetValue(obj, "");
+							} else if (!h.Is.CreatedOn && !h.Is.SavedOn) {
+								throw new WebControlException(c, string.Format(parseErrorText, h.ShowString, ""));
+							}
+						}
+					} else {
+						try {
+							object iv = ClassHelper.ChangeType(v, h.MemberType);
+							h.SetValue(obj, iv);
+						} catch (Exception ex) {
+							throw new WebControlException(c, string.Format(parseErrorText, h.ShowString, ": " + ex.Message));
+						}
+					}
+				}
+			});
             return obj;
         }
 
@@ -202,11 +187,10 @@ namespace Leafing.Web.Common
 
 		public static void SetObject(this ModelContext ctx, object obj, Page p)
         {
-            EnumControls(p, ctx.Info, delegate(MemberHandler h, WebControl c)
-            {
-                object v = h.GetValue(obj);
-                SetValue(c, v);
-            });
+			EnumControls(p, ctx.Info, (h, c) => {
+				object v = h.GetValue(obj);
+				SetValue(c, v);
+			});
         }
 
         private static void SetValue(WebControl c, object v)

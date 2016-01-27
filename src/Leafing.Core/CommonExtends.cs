@@ -9,6 +9,63 @@ using System.Text;
 
 public static class CommonExtends
 {
+	#region FP
+
+	public static IEnumerable<TR> Map<T, TR>(this IEnumerable<T> list, Func<T, TR> cb)
+	{
+		foreach (T item in list) {
+			yield return cb(item);
+		}
+	}
+
+	public static T Reduce<T>(this IEnumerable<T> list, Func<T,T,T> cb, T baseValue)
+	{
+		T prev = baseValue;
+		foreach (T next in list) {
+			prev = cb(prev, next);
+		}
+		return prev;
+	}
+
+	public static IEnumerable<T> Filter<T>(this IEnumerable<T> list, Func<T, bool> cb)
+	{
+		foreach(T item in list){
+			if (cb(item)) {
+				yield return item;
+			}
+		}
+	}
+
+	public static IEnumerable<T> Each<T>(this IEnumerable<T> list, Action<T> cb)
+	{
+		foreach (T item in list) {
+			cb(item);
+		}
+		return list;
+	}
+
+	public static bool Every<T>(this IEnumerable<T> list, Func<T, bool> cb)
+	{
+		foreach (T item in list) {
+			if (!cb(item)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static bool Some<T>(this IEnumerable<T> list, Func<T, bool> cb)
+	{
+		foreach (T item in list) {
+			if(cb(item)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	#endregion
+
     #region String
 
     public static bool IsIndentityName(this string s)

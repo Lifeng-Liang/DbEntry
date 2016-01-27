@@ -212,6 +212,7 @@
     <Compile Include="Web\UrlBuilderTest.cs" />
     <Compile Include="Web\XmlBuilderTest.cs" />
     <Compile Include="Web\PageHelperTest.cs" />
+    <Compile Include="util\timingTask\FpTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UnitTest.config.xml">

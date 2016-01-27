@@ -182,10 +182,12 @@ namespace Leafing.Web
             }
             catch (WebControlException ex)
             {
+				Ctx.ResetInputCss(Page, CssInputWarning);
                 AddWarning(ex.RelatedControl, ex.Message);
             }
             catch (Exception ex)
             {
+				Ctx.ResetInputCss(Page, CssInputWarning);
                 AddWarning(ex.Message);
             }
             return default(T);
@@ -194,7 +196,7 @@ namespace Leafing.Web
         public void AddNotice(string msg)
         {
 			_noticeMessage.AddMessage(msg);
-			_noticeMessage.ShowWith(CssNotice);
+			_noticeMessage.ShowNotice();
         }
 
         public void AddWarning(string msg)
@@ -208,10 +210,10 @@ namespace Leafing.Web
             {
                 if (c != null)
                 {
-					c.CssClass = CssWarning;
+					c.SetCtrlClass(CssInputWarning);
                 }
 				_noticeMessage.AddMessage(msg);
-				_noticeMessage.ShowWith(CssWarning);
+				_noticeMessage.ShowWarning();
             }
         }
 
@@ -247,8 +249,7 @@ namespace Leafing.Web
 			var vh = new ValidateHandler(EmptyAsNull, IncludeClassName, InvalidFieldText,
 				NotAllowNullText, NotMatchedText, LengthText, ShouldBeUniqueText, SeparatorText);
 
-			return Ctx.ValidateSave(Page, vh, obj, _noticeMessage, noticeText,
-				CssWarning, CssNotice,
+			return Ctx.ValidateSave(Page, vh, obj, _noticeMessage, noticeText, CssInputWarning,
                 delegate
                    {
                        if (Ctx.IsNewObject(obj))
@@ -272,7 +273,7 @@ namespace Leafing.Web
                 _deleteButton = NamingContainer.FindControl(DeleteButtonID) as Button;
                 _contentTitle = NamingContainer.FindControl(ContentTitleID) as Label;
 				var msgLabel = NamingContainer.FindControl(NoticeMessageID) as Label;
-				_noticeMessage = new NoticeLabelAdapter(msgLabel);
+				_noticeMessage = new NoticeLabelAdapter(msgLabel, CssNotice, CssWarning);
 
                 if (_saveButton != null)
                 {
@@ -599,6 +600,24 @@ namespace Leafing.Web
 			}
 		}
 
+		[Themeable(false), DefaultValue("Warning")]
+		public string CssInputWarning
+		{
+			get
+			{
+				object o = ViewState["CssInputWarning"];
+				if (o != null)
+				{
+					return (string)o;
+				}
+				return "Warning";
+			}
+			set
+			{
+				ViewState["CssInputWarning"] = value;
+			}
+		}
+
 		[Themeable(false), DefaultValue("Notice")]
 		public string CssNotice
 		{
@@ -635,7 +654,7 @@ namespace Leafing.Web
 			}
 		}
 
-        [Themeable(false), DefaultValue("Field [{0}] parse error: {1}")]
+        [Themeable(false), DefaultValue("Field [{0}] parse error{1}")]
         public string ParseErrorText
         {
             get

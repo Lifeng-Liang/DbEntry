@@ -1,11 +1,25 @@
 ﻿using System;
 using NUnit.Framework;
 using Leafing.Web.Common;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Leafing.Data.Definition;
+using Leafing.Data;
+using Leafing.Web;
+using Leafing.Core.Text;
 
 namespace Leafing.UnitTest.Web
 {
+	public class User : DbObjectModel<User>
+	{
+		[Length(6,8)]
+		public string Name;
+		[Index(UNIQUE = true), ShowString("TestField")]
+		public int Age;
+	}
+	
 	[TestFixture]
-	public class PageHelperTest
+	public class PageHelperTest : DataTestBase
 	{
 		[Test]
 		public void TestGetCssBase()
@@ -43,6 +57,74 @@ namespace Leafing.UnitTest.Web
 
 			s = PageHelper.GetOriginCss("test warn", "warn");
 			Assert.AreEqual("test", s);
+		}
+
+		[Test]
+		public void TestPage()
+		{
+			DbEntry.Create(typeof(User));
+			var page = new Page();
+			var name = new TextBox();
+			name.ID = "user_name";
+			name.Text = "tom";
+			name.CssClass = "test";
+			var age = new TextBox();
+			age.ID = "user_age";
+			age.Text = "18";
+			age.CssClass = "test";
+			var label = new Label();
+			label.CssClass = "msg";
+			page.Controls.Add(name);
+			page.Controls.Add(age);
+			page.Controls.Add(label);
+			var msg = new NoticeLabelAdapter(label, "notice", "warning");
+			var ctx = ModelContext.GetInstance(typeof(User));
+			var vh = new ValidateHandler();
+			var obj = ctx.GetObject<User>(page, "parse error");
+			ctx.ValidateSave(page, vh, obj, msg, "hello", "inWarning", () => obj.Save());
+			Assert.AreEqual("test inWarning", name.CssClass);
+			Assert.AreEqual("test", age.CssClass);
+			Assert.AreEqual("msg warning", label.CssClass);
+			Assert.AreEqual("<ul>\r\n<li>Invalid Field Name The length should be 6 to 8 but was 3.</li>\r\n</ul>\r\n", label.Text);
+
+			name.Text = "tom456789";
+			vh = new ValidateHandler();
+			obj = ctx.GetObject<User>(page, "parse error");
+			msg = new NoticeLabelAdapter(label, "notice", "warning");
+			ctx.ValidateSave(page, vh, obj, msg, "hello", "inWarning", () => obj.Save());
+			Assert.AreEqual("test inWarning", name.CssClass);
+			Assert.AreEqual("test", age.CssClass);
+			Assert.AreEqual("msg warning", label.CssClass);
+			Assert.AreEqual("<ul>\r\n<li>Invalid Field Name The length should be 6 to 8 but was 9.</li>\r\n</ul>\r\n", label.Text);
+
+			try {
+				name.Text = "tom4567";
+				age.Text = "";
+				vh = new ValidateHandler();
+				msg = new NoticeLabelAdapter(label, "notice", "warning");
+				obj = ctx.GetObject<User>(page, "Field [{0}] parse error{1}");
+				ctx.ValidateSave(page, vh, obj, msg, "hello", "inWarning", () => obj.Save());
+			} catch (WebControlException ex) {
+				ctx.ResetInputCss(page, "inWarning");
+				PageHelper.SetCtrlClass(ex.RelatedControl, "inWarning");
+				msg.AddMessage(ex.Message);
+				msg.ShowWarning();
+			}
+			Assert.AreEqual("test", name.CssClass);
+			Assert.AreEqual("test inWarning", age.CssClass);
+			Assert.AreEqual("msg warning", label.CssClass);
+			Assert.AreEqual("<ul>\r\n<li>Field [TestField] parse error</li>\r\n</ul>\r\n", label.Text);
+
+			name.Text = "tom4567";
+			age.Text = "20";
+			vh = new ValidateHandler();
+			obj = ctx.GetObject<User>(page, "parse error");
+			msg = new NoticeLabelAdapter(label, "notice", "warning");
+			ctx.ValidateSave(page, vh, obj, msg, "hello", "inWarning", () => obj.Save());
+			Assert.AreEqual("test", name.CssClass);
+			Assert.AreEqual("test", age.CssClass);
+			Assert.AreEqual("msg notice", label.CssClass);
+			Assert.AreEqual("<ul>\r\n<li>hello</li>\r\n</ul>\r\n", label.Text);
 		}
 	}
 }
