@@ -59,11 +59,28 @@ namespace Leafing.UnitTest.Web
 			Assert.AreEqual("test", s);
 		}
 
+		public class MyPage : Page
+		{
+			private TextBox User_Name;
+			private TextBox User_Age;
+
+			public MyPage(TextBox name, TextBox age)
+			{
+				User_Name = name;
+				User_Age = age;
+			}
+			protected override void OnInit(EventArgs e)
+			{
+				base.OnInit(e);
+				Controls.Add(User_Name);
+				Controls.Add(User_Age);
+			}
+		}
+
 		[Test]
 		public void TestPage()
 		{
 			DbEntry.Create(typeof(User));
-			var page = new Page();
 			var name = new TextBox();
 			name.ID = "user_name";
 			name.Text = "tom";
@@ -74,8 +91,7 @@ namespace Leafing.UnitTest.Web
 			age.CssClass = "test";
 			var label = new Label();
 			label.CssClass = "msg";
-			page.Controls.Add(name);
-			page.Controls.Add(age);
+			var page = new MyPage(name, age);
 			page.Controls.Add(label);
 			var msg = new NoticeLabelAdapter(label, "notice", "warning");
 			var ctx = ModelContext.GetInstance(typeof(User));

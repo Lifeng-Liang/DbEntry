@@ -13,30 +13,30 @@ using Leafing.Data.Model.Member;
 
 namespace Leafing.Web.Common
 {
-    public static class PageHelper
-    {
+	public static class PageHelper
+	{
 		public static bool ValidateSave(this ModelContext ctx, Page p, ValidateHandler vh, IDbObject obj,
 			NoticeLabelAdapter msg, string noticeText, string cssInputWarning)
-        {
+		{
 			return ValidateSave(ctx, p, vh, obj, msg, noticeText, cssInputWarning, () => DbEntry.Save(obj));
-        }
+		}
 
 		public static bool ValidateSave(this ModelContext ctx, Page p, ValidateHandler vh, object obj,
 			NoticeLabelAdapter msg, string noticeText, string cssInputWarning, Action callback)
-        {
+		{
 			ctx.ResetInputCss(p, cssInputWarning);
-            vh.ValidateObject(obj);
-            if (vh.IsValid)
-            {
-                callback();
-                if (msg != null)
-                {
+			vh.ValidateObject(obj);
+			if (vh.IsValid)
+			{
+				callback();
+				if (msg != null)
+				{
 					msg.AddMessage(noticeText);
 					msg.ShowNotice();
-                }
-            }
-            else
-            {
+				}
+			}
+			else
+			{
 				vh.ErrorMessages.Keys
 					.Map(key => GetWebControl(p, ctx.Info, key))
 					.Filter(c => c != null)
@@ -45,9 +45,9 @@ namespace Leafing.Web.Common
 					vh.ErrorMessages.Keys.Each(key => msg.AddMessage(vh.ErrorMessages[key]));
 					msg.ShowWarning();
 				}
-            }
-            return vh.IsValid;
-        }
+			}
+			return vh.IsValid;
+		}
 
 		public static void ResetInputCss(this ModelContext ctx, Page p, string cssAdd)
 		{
@@ -77,50 +77,47 @@ namespace Leafing.Web.Common
 			return css;
 		}
 
-        private static WebControl GetWebControl(Page p, ObjectInfo oi, string name)
-        {
-            string cid = string.Format("{0}_{1}", oi.HandleType.Name, name);
-			var c = p.FindControl(cid) as WebControl;
-            return c;
-        }
+		private static WebControl GetWebControl(Page p, ObjectInfo oi, string name)
+		{
+			string cid = string.Format("{0}_{1}", oi.HandleType.Name, name);
+			var c = ClassHelper.GetValue(p, cid) as WebControl;
+			return c;
+		}
 
-        private static void EnumControls(Page p, ObjectInfo oi, Action<MemberHandler, WebControl> callback)
-        {
-            foreach (MemberHandler h in oi.SimpleMembers)
-            {
-                if (!h.Is.Key)
-                {
-                    string cid = string.Format("{0}_{1}", oi.HandleType.Name, h.MemberInfo.Name);
-					var c = p.FindControl(cid) as WebControl;
-                    if (c != null)
-                    {
-                        callback(h, c);
-                    }
-                    else
-                    {
-                        if (!h.Is.AutoSavedValue && !h.Is.AllowNull)
-                        {
-                            throw new DataException(string.Format("Control {0} not find!", cid));
-                        }
-                    }
-                }
-            }
-        }
+		private static void EnumControls(Page p, ObjectInfo oi, Action<MemberHandler, WebControl> callback)
+		{
+			foreach (var h in oi.SimpleMembers.Filter(x => !x.Is.Key))
+			{
+				string cid = string.Format("{0}_{1}", oi.HandleType.Name, h.MemberInfo.Name);
+				var c = ClassHelper.GetValue(p, cid) as WebControl;
+				if (c != null)
+				{
+					callback(h, c);
+				}
+				else
+				{
+					if (!h.Is.AutoSavedValue && !h.Is.AllowNull)
+					{
+						throw new DataException(string.Format("Control {0} not find!", cid));
+					}
+				}
+			}
+		}
 
 		public static T GetObject<T>(this ModelContext ctx, object key, Page p, string parseErrorText) where T : class, IDbObject
-        {
-            var obj = DbEntry.GetObject<T>(key);
-            return (T)GetObject(obj, ctx, p, parseErrorText);
-        }
+		{
+			var obj = DbEntry.GetObject<T>(key);
+			return (T)GetObject(obj, ctx, p, parseErrorText);
+		}
 
 		public static T GetObject<T>(this ModelContext ctx, Page p, string parseErrorText)
-        {
-            object obj = ctx.NewObject();
-            return (T)GetObject(obj, ctx, p, parseErrorText);
-        }
+		{
+			object obj = ctx.NewObject();
+			return (T)GetObject(obj, ctx, p, parseErrorText);
+		}
 
-        private static object GetObject(object obj, ModelContext ctx, Page p, string parseErrorText)
-        {
+		private static object GetObject(object obj, ModelContext ctx, Page p, string parseErrorText)
+		{
 			EnumControls(p, ctx.Info, (h, c) => {
 				string v = GetValue(c);
 				if (h.MemberType.IsEnum) {
@@ -147,86 +144,86 @@ namespace Leafing.Web.Common
 					}
 				}
 			});
-            return obj;
-        }
+			return obj;
+		}
 
-        private static string GetValue(WebControl c)
-        {
-            if (c is TextBox)
-            {
-                return ((TextBox)c).Text;
-            }
-            if (c is CheckBox)
-            {
-                return ((CheckBox)c).Checked.ToString();
-            }
-            if (c is DropDownList)
-            {
-                return ((DropDownList)c).SelectedValue;
-            }
-            if(c is Label)
-            {
-                return ((Label) c).Text;
-            }
-            return GetPropertyInfo(c).GetValue(c, null).ToString();
-        }
+		private static string GetValue(WebControl c)
+		{
+			if (c is TextBox)
+			{
+				return ((TextBox)c).Text;
+			}
+			if (c is CheckBox)
+			{
+				return ((CheckBox)c).Checked.ToString();
+			}
+			if (c is DropDownList)
+			{
+				return ((DropDownList)c).SelectedValue;
+			}
+			if(c is Label)
+			{
+				return ((Label) c).Text;
+			}
+			return GetPropertyInfo(c).GetValue(c, null).ToString();
+		}
 
-        private static PropertyInfo GetPropertyInfo(object c)
-        {
-            var attr = c.GetType().GetAttribute<DefaultPropertyAttribute>(false);
-            if (attr != null)
-            {
-                var pi = c.GetType().GetProperty(attr.Name);
-                if (pi != null)
-                {
-                    return pi;
-                }
-            }
-            throw new NotSupportedException();
-        }
+		private static PropertyInfo GetPropertyInfo(object c)
+		{
+			var attr = c.GetType().GetAttribute<DefaultPropertyAttribute>(false);
+			if (attr != null)
+			{
+				var pi = c.GetType().GetProperty(attr.Name);
+				if (pi != null)
+				{
+					return pi;
+				}
+			}
+			throw new NotSupportedException();
+		}
 
 		public static void SetObject(this ModelContext ctx, object obj, Page p)
-        {
+		{
 			EnumControls(p, ctx.Info, (h, c) => {
 				object v = h.GetValue(obj);
 				SetValue(c, v);
 			});
-        }
+		}
 
-        private static void SetValue(WebControl c, object v)
-        {
-            if (c is TextBox)
-            {
-                ((TextBox)c).Text = (v ?? "").ToString();
-            }
-            else if (c is CheckBox)
-            {
-                ((CheckBox)c).Checked = (bool)v;
-            }
-            else if (c is DropDownList)
-            {
-                // Type t = v.GetType();
-                ((DropDownList)c).SelectedValue = v.ToString();
-            }
-            else if (c is Label)
-            {
-                ((Label)c).Text = (v ?? "").ToString();
-            }
-            else GetPropertyInfo(c).SetValue(c, v, null);
-        }
+		private static void SetValue(WebControl c, object v)
+		{
+			if (c is TextBox)
+			{
+				((TextBox)c).Text = (v ?? "").ToString();
+			}
+			else if (c is CheckBox)
+			{
+				((CheckBox)c).Checked = (bool)v;
+			}
+			else if (c is DropDownList)
+			{
+				// Type t = v.GetType();
+				((DropDownList)c).SelectedValue = v.ToString();
+			}
+			else if (c is Label)
+			{
+				((Label)c).Text = (v ?? "").ToString();
+			}
+			else GetPropertyInfo(c).SetValue(c, v, null);
+		}
 
-        public static ListItem[] GetItems(Type enumType)
-        {
-            if (!enumType.IsEnum) throw new ArgumentOutOfRangeException();
+		public static ListItem[] GetItems(Type enumType)
+		{
+			if (!enumType.IsEnum) throw new ArgumentOutOfRangeException();
 
-            var ret = new List<ListItem>();
-            foreach (string v in Enum.GetNames(enumType))
-            {
-                string n = StringHelper.EnumToString(enumType, v);
-                var li = new ListItem(n, v);
-                ret.Add(li);
-            }
-            return ret.ToArray();
-        }
-    }
+			var ret = new List<ListItem>();
+			foreach (string v in Enum.GetNames(enumType))
+			{
+				string n = StringHelper.EnumToString(enumType, v);
+				var li = new ListItem(n, v);
+				ret.Add(li);
+			}
+			return ret.ToArray();
+		}
+	}
 }
