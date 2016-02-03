@@ -28,6 +28,9 @@ namespace Leafing.UnitTest.util
 
 			var min = new []{ 4, 2, 5, 7, 8, 10, 3 }.Reduce((p, n) => p < n ? p : n, 20);
 			Assert.AreEqual(2, min);
+
+			var line = new []{ "1", "4", "7", "2" }.Reduce((p, n) => p + "-" + n, ">");
+			Assert.AreEqual(">-1-4-7-2", line);
 		}
 
 		[Test]

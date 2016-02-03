@@ -18,9 +18,9 @@ public static class CommonExtends
 		}
 	}
 
-	public static T Reduce<T>(this IEnumerable<T> list, Func<T,T,T> cb, T baseValue)
+	public static TR Reduce<T, TR>(this IEnumerable<T> list, Func<TR,T,TR> cb, TR baseValue)
 	{
-		T prev = baseValue;
+		TR prev = baseValue;
 		foreach (T next in list) {
 			prev = cb(prev, next);
 		}
