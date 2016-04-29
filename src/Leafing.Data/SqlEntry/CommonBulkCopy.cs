@@ -67,7 +67,7 @@ namespace Leafing.Data.SqlEntry
         {
             if(Scope<ConnectionContext>.Current != null)
             {
-                Scope<ConnectionContext>.Current.Close();
+				Scope<ConnectionContext>.Current.Dispose();
             }
         }
 

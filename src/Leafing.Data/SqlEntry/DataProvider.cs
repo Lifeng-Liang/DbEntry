@@ -452,22 +452,20 @@ namespace Leafing.Data.SqlEntry
 			DbStructInterface si = Dialect.GetDbStructInterface();
 			string userId = Dialect.GetUserId(Driver.ConnectionString);
 			DbEntry.UsingConnection (() => {
-				using(var c = (DbConnection)(Scope<ConnectionContext>.Current.GetConnection (this)))
+				var c = (DbConnection)(Scope<ConnectionContext>.Current.GetConnection (this));
+				var t = c.GetSchema(si.TablesTypeName, si.TablesParams);
+				foreach (DataRow dr in t.Rows)
 				{
-					var t = c.GetSchema(si.TablesTypeName, si.TablesParams);
-					foreach (DataRow dr in t.Rows)
+					if (si.FiltrateDatabaseName)
 					{
-						if (si.FiltrateDatabaseName)
-						{
-							if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
-						}
-						if (userId != null)
-						{
-							if (!dr["OWNER"].Equals(userId)) { continue; }
-						}
-						string s = dr[si.TableNameString].ToString();
-						ret.Add(s);
+						if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
 					}
+					if (userId != null)
+					{
+						if (!dr["OWNER"].Equals(userId)) { continue; }
+					}
+					string s = dr[si.TableNameString].ToString();
+					ret.Add(s);
 				}
 			});
 			return ret;

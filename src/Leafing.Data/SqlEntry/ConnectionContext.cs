@@ -136,14 +136,6 @@ namespace Leafing.Data.SqlEntry
             }
         }
 
-        public void Close()
-        {
-            if (_state != ConnectionContextState.NoConnection)
-            {
-                _connection.Close();
-            }
-        }
-
         public void Dispose()
         {
             if (_transaction != null)

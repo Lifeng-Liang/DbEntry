@@ -100,14 +100,7 @@ namespace Leafing.Data
             {
                 using (new Scope<ConnectionContext>(cc))
                 {
-                    try
-                    {
-                        callback();
-                    }
-                    finally
-                    {
-                        cc.Close();
-                    }
+					callback();
                 }
             }
         }
