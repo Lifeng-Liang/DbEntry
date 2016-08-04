@@ -30,18 +30,18 @@ namespace Leafing.Data.Dialect
             TypeNames[DataType.Time]    = "DATETIME";
             TypeNames[DataType.Boolean] = "BOOL";
 
-            TypeNames[DataType.Byte]    = "TINYINT";
-            TypeNames[DataType.SByte]   = "";
+            TypeNames[DataType.Byte]    = "TINYINT UNSIGNED";
+            TypeNames[DataType.SByte]   = "TINYINT";
             TypeNames[DataType.Decimal] = "DECIMAL";
             TypeNames[DataType.Double]  = "FLOAT";
             TypeNames[DataType.Single]  = "REAL";
 
             TypeNames[DataType.Int32]   = "INT";
-            TypeNames[DataType.UInt32]  = "INT";
+            TypeNames[DataType.UInt32]  = "INT UNSIGNED";
             TypeNames[DataType.Int64]   = "BIGINT";
-            TypeNames[DataType.UInt64]  = "BIGINT";
+            TypeNames[DataType.UInt64]  = "BIGINT UNSIGNED";
             TypeNames[DataType.Int16]   = "SMALLINT";
-            TypeNames[DataType.UInt16]  = "SMALLINT";
+            TypeNames[DataType.UInt16]  = "SMALLINT UNSIGNED";
 
             TypeNames[DataType.Guid]    = "UNIQUEIDENTIFIER";
             TypeNames[DataType.Binary]  = "BINARY";
