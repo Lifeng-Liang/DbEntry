@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
-using System.Collections.Generic;
 using Leafing.Data.Builder;
-using Leafing.Data.Builder.Clause;
-using Leafing.Data.Common;
 
 namespace Leafing.Data.Definition
 {
@@ -53,12 +50,12 @@ namespace Leafing.Data.Definition
         public void Delete()
         {
             RaiseDeleting();
+            Context.Operator.Delete(this);
         }
 
         internal void RaiseDeleting()
         {
             OnDeleting();
-            Context.Operator.Delete(this);
         }
 
         protected virtual void OnDeleting()

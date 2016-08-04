@@ -36,17 +36,14 @@ namespace Leafing.Data.Model.Saver
 
         public virtual void Update(IDbObject obj)
         {
-			Update (obj, null);
+			InnerUpdate (obj);
         }
 
-		protected void Update(IDbObject obj, Action callback)
+		protected void InnerUpdate(IDbObject obj)
 		{
 			var iwc = ModelContext.GetKeyWhereClause(obj);
 			SqlStatement updateStatement = Composer.GetUpdateStatement(obj, iwc);
 			if (updateStatement != null) {
-				if (callback != null) {
-					callback ();
-				}
 				if (Provider.ExecuteNonQuery(updateStatement) == 0)
 				{
 					throw new DataException("Record doesn't exist OR LockVersion doesn't match!");

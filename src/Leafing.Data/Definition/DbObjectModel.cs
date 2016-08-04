@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Leafing.Data.Builder;
 using Leafing.Data.Model.Linq;
 using Leafing.Data.Model.QuerySyntax;
 using Leafing.Data.SqlEntry;
 using Leafing.Data.SqlEntry.Dynamic;
-using System.Reflection;
-using Leafing.Core;
 
 namespace Leafing.Data.Definition
 {

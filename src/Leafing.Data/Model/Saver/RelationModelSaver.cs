@@ -67,10 +67,10 @@ namespace Leafing.Data.Model.Saver
 
         public override void Update(IDbObject obj)
         {
-            ProcessRelation(obj, () => InnerUpdate(obj));
+            ProcessRelation(obj, () => DoUpdate(obj));
         }
 
-        private void InnerUpdate(IDbObject obj)
+        private void DoUpdate(IDbObject obj)
         {
             SaveBelongsTo(obj);
             base.Update(obj);

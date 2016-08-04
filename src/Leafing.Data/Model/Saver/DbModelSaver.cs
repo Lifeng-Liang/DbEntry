@@ -24,7 +24,8 @@ namespace Leafing.Data.Model.Saver
         public override void Update(IDbObject obj)
         {
             var o = (DbObjectSmartUpdate)obj;
-			base.Update(o, o.RaiseUpdating);
+            o.RaiseUpdating();
+			base.InnerUpdate(o);
         }
     }
 }

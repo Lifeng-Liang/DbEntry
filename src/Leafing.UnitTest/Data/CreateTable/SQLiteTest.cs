@@ -421,7 +421,7 @@ CREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore2_Id] ON [R_ManyMore_ManyMore2] ([
         public void TestUnsigned()
         {
             DbEntry.Create(typeof(UnsignedTestTable));
-            Assert.AreEqual("CREATE TABLE [Unsigned_Test_Table] (\n\t[Name] NTEXT NOT NULL ,\n\t[Age] INT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
+            Assert.AreEqual("CREATE TABLE [Unsigned_Test_Table] (\n\t[Name] NTEXT NOT NULL ,\n\t[Age] INT UNSIGNED NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
