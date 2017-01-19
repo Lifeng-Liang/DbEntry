@@ -161,13 +161,13 @@ Configration
 There is a configration item to enable or disable IoC, the default value is true:
 
 ````c#
-Leafing.Core.Ioc.SetSettings(false);
+Leafing.Core.Ioc.IocConfig.SetSettings(false);
 ````
 
 And the assemblies could be added to the assembly list:
 
 ````c#
-Leafing.Core.Ioc.AddAssembly(myAssembly);
+Leafing.Core.Ioc.IocConfig.AddAssembly(myAssembly);
 ````
 
 Make sure the above code at the very begining of our project.
