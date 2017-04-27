@@ -370,7 +370,7 @@ namespace Leafing.Data.SqlEntry
 
         #region Shortcut
 
-        private static readonly Regex Reg = new Regex("'.*'|\\?", RegexOptions.Compiled);
+		private static readonly Regex Reg = new Regex("'(.|\r|\n)*'|\\?", RegexOptions.Compiled);
 
         public SqlStatement GetSqlStatement(string sqlStr, params object[] os)
         {
