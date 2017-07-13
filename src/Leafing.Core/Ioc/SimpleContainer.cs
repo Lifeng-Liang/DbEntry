@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Leafing.Core.Setting;
-using Leafing.Core.Logging;
 
 namespace Leafing.Core.Ioc
 {
@@ -68,8 +67,7 @@ namespace Leafing.Core.Ioc
 						try {
 							var assembly = Assembly.LoadFrom(fn);
 							assemblies.Add(assembly);
-						} catch (Exception ex) {
-							Logger.System.Warn(ex);
+						} catch (Exception) {
 						}
                     }
                 }
