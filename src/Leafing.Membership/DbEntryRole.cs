@@ -13,7 +13,7 @@ namespace Leafing.Membership
 
 		public DbEntryRole ()
 		{
-			Users = new HasAndBelongsToMany<DbEntryMembershipUser> (this, "Id", "User_Id");
+			Users = new HasAndBelongsToMany<DbEntryMembershipUser> (this, "Id", "Role_Id");
 		}
     }
 }
