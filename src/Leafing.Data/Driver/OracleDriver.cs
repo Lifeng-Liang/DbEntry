@@ -24,6 +24,10 @@ namespace Leafing.Data.Driver
                 result.Value = ((Guid)result.Value).ToString();
                 result.DbType = DbType.String;
             }
+            if (result.DbType == DbType.Boolean && result.Value != null) {
+                result.Value = (result.Value.ToString().ToLower() == "true") ? 1 : 0;
+                result.DbType = DbType.Int32;
+            }
             return result;
         }
     }
