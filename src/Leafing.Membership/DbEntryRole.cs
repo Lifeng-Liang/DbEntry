@@ -10,5 +10,10 @@ namespace Leafing.Membership
 
         [CrossTableName("DbEntryMembershipUser_Role")]
 		public HasAndBelongsToMany<DbEntryMembershipUser> Users { get; private set; }
+
+        public DbEntryRole ()
+        {
+            Users = new HasAndBelongsToMany<DbEntryMembershipUser> (this, "Id", "DbEntryRole_Id");
+        }
     }
 }
