@@ -94,11 +94,6 @@ namespace Leafing.Membership
         [CrossTableName("DbEntryMembershipUser_Role")]
 		public HasAndBelongsToMany<DbEntryRole> Roles { get; private set; }
 
-		public DbEntryMembershipUser ()
-		{
-			Roles = new HasAndBelongsToMany<DbEntryRole> (this, "Id", "User_Id");
-		}
-
         public MembershipUser ToMembershipUser()
         {
             return new MembershipUser("DbEntryMembershipProvider", UserName, Id, Email, PasswordQuestion, Comment, IsApproved, IsLockedOut, CreatedOn, LastLoginDate,
