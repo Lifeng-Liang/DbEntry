@@ -1,10 +1,8 @@
 ﻿using System;
 
-namespace Leafing.Data.Definition
-{
+namespace Leafing.Data.Definition {
     [Serializable]
-    public enum JoinMode
-    {
+    public enum JoinMode {
         Inner,
         Left,
         Right

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 
-namespace Leafing.Data.Definition
-{
-    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, IHasAndBelongsToManyRelations where T : class, IDbObject
-    {
+namespace Leafing.Data.Definition {
+    public class HasAndBelongsToMany<T> : LazyLoadListBase<T>, IHasAndBelongsToManyRelations where T : class, IDbObject {
         private readonly OrderBy _order;
 
         private readonly List<object> _savedNewRelations = new List<object>();
@@ -13,33 +11,25 @@ namespace Leafing.Data.Definition
         List<object> IHasAndBelongsToManyRelations.RemovedRelations { get { return _removedRelations; } }
 
         public HasAndBelongsToMany(DbObjectSmartUpdate owner, string orderByString, string foreignKeyName)
-            : base(owner, foreignKeyName)
-        {
+            : base(owner, foreignKeyName) {
             _order = OrderBy.Parse(orderByString);
         }
 
-        protected override void InnerWrite(object item, bool isLoad)
-        {
-            if (IsLoaded)
-            {
+        protected override void InnerWrite(object item, bool isLoad) {
+            if (IsLoaded) {
                 var ctx = ModelContext.GetInstance(item.GetType());
-                if (ctx.Info.HasOnePrimaryKey)
-                {
+                if (ctx.Info.HasOnePrimaryKey) {
                     object key = ctx.Handler.GetKeyValue(item);
-                    if (!key.Equals(ctx.Info.KeyMembers[0].UnsavedValue))
-                    {
+                    if (!key.Equals(ctx.Info.KeyMembers[0].UnsavedValue)) {
                         _savedNewRelations.Add(key);
                     }
-                }
-                else
-                {
+                } else {
                     throw new DataException("HasAndBelongsToMany relation need the class has one primary key.");
                 }
             }
         }
 
-        protected override IList<T> InnerLoad()
-        {
+        protected override IList<T> InnerLoad() {
             var ctx = Owner.Context;
             object key = ctx.Info.KeyMembers[0].GetValue(Owner);
             var il = new List<T>();
@@ -50,16 +40,12 @@ namespace Leafing.Data.Definition
             return il;
         }
 
-        protected override void OnRemoveItem(T item)
-        {
+        protected override void OnRemoveItem(T item) {
             var ctx = ModelContext.GetInstance(item.GetType());
             object key = ctx.Handler.GetKeyValue(item);
-            if (key == ctx.Info.KeyMembers[0].UnsavedValue)
-            {
+            if (key == ctx.Info.KeyMembers[0].UnsavedValue) {
                 _savedNewRelations.Remove(key);
-            }
-            else
-            {
+            } else {
                 _removedRelations.Add(key);
             }
         }

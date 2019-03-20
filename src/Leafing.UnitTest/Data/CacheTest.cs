@@ -8,66 +8,57 @@ using Leafing.UnitTest.Mocks;
 using Leafing.Core;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class CacheTest : DataTestBase
-    {
+    public class CacheTest : DataTestBase {
         #region models
 
         [Cacheable, DbTable("PCs")]
-        public class Lazyable : DbObjectModel<Lazyable>
-        {
+        public class Lazyable : DbObjectModel<Lazyable> {
             [DbColumn("Name")]
-			public LazyLoad<string> Content { get; set; }
+            public LazyLoad<string> Content { get; set; }
 
             [DbColumn("Person_Id")]
             public int TestColumn { get; set; }
         }
 
         [Cacheable, DbTable("PCs"), DbContext("SQLite")]
-        public class LazyableSqlite : DbObjectModel<LazyableSqlite>
-        {
+        public class LazyableSqlite : DbObjectModel<LazyableSqlite> {
             [DbColumn("Name")]
-			public LazyLoad<string> Content { get; set; }
+            public LazyLoad<string> Content { get; set; }
 
             [DbColumn("Person_Id")]
             public int TestColumn { get; set; }
         }
 
         [DbTable("DCS_USERS"), Cacheable]
-        public class User : DbObjectModel<User>
-        {
+        public class User : DbObjectModel<User> {
             [DbColumn("USER_NAME")]
             public string Name { get; set; }
         }
 
         [DbTable("REF_ORG_UNIT"), Cacheable]
-        public class OrganisationalUnit : DbObjectModel<OrganisationalUnit>
-        {
-			public HasMany<JobRoleRelation> JobRoleRelations { get; private set; }
+        public class OrganisationalUnit : DbObjectModel<OrganisationalUnit> {
+            public HasMany<JobRoleRelation> JobRoleRelations { get; private set; }
         }
 
         [DbTable("HRM_EMPLOYEES"), Cacheable]
-        public class Employee : DbObjectModel<Employee>
-        {
-			public HasOne<EmployeeRoleRelation> Rel { get; set; }
+        public class Employee : DbObjectModel<Employee> {
+            public HasOne<EmployeeRoleRelation> Rel { get; set; }
 
-			public BelongsTo<Person, long> Person { get; set; }
+            public BelongsTo<Person, long> Person { get; set; }
         }
 
         [DbTable("DCS_PERSONS")]
-        public class Person : DbObjectModel<Person>
-        {
+        public class Person : DbObjectModel<Person> {
             [DbColumn("NAME_LAST")]
             public string LastName { get; set; }
 
-			public HasOne<Employee> emp { get; set; }
+            public HasOne<Employee> emp { get; set; }
         }
 
         [DbTable("REL_EMP_JOB_ROLE"), Cacheable]
-        public class EmployeeRoleRelation : DbObjectModel<EmployeeRoleRelation>
-        {
+        public class EmployeeRoleRelation : DbObjectModel<EmployeeRoleRelation> {
             [DbColumn("UC")]
             public long CreatedBy { get; set; }
 
@@ -77,14 +68,13 @@ namespace Leafing.UnitTest.Data
             [DbColumn("START_DATE")]
             public DateTime? Start { get; set; }
 
-			public BelongsTo<Employee, long> Employee { get; set; }
+            public BelongsTo<Employee, long> Employee { get; set; }
 
-			public BelongsTo<JobRole, long> jrr { get; set; }
+            public BelongsTo<JobRole, long> jrr { get; set; }
         }
 
         [DbTable("REL_JOB_ROLE_ORG_UNIT"), Cacheable]
-        public class JobRoleRelation : DbObjectModel<JobRoleRelation>
-        {
+        public class JobRoleRelation : DbObjectModel<JobRoleRelation> {
             [DbColumn("UC")]
             public long CreatedBy { get; set; }
 
@@ -94,14 +84,13 @@ namespace Leafing.UnitTest.Data
             [DbColumn("RELATION_TYPE")]
             public JobRoleRelationType Type { get; set; }
 
-			public BelongsTo<OrganisationalUnit, long> OrganisationalUnit { get; set; }
+            public BelongsTo<OrganisationalUnit, long> OrganisationalUnit { get; set; }
 
-			public BelongsTo<JobRole, long> JobRole { get; set; }
+            public BelongsTo<JobRole, long> JobRole { get; set; }
         }
 
         [DbTable("HRM_JOB_ROLES"), Cacheable]
-        public class JobRole : DbObjectModel<JobRole>
-        {
+        public class JobRole : DbObjectModel<JobRole> {
             [DbColumn("UC")]
             public long CreatedBy { get; set; }
 
@@ -114,25 +103,23 @@ namespace Leafing.UnitTest.Data
             [DbColumn("DESCRIPTION")]
             public string Description { get; set; }
 
-			public HasMany<JobRoleRelation> JobRoleRelations { get; private set; }
+            public HasMany<JobRoleRelation> JobRoleRelations { get; private set; }
 
-			public HasMany<EmployeeRoleRelation> EmployeeRoleRelations { get; private set; }
+            public HasMany<EmployeeRoleRelation> EmployeeRoleRelations { get; private set; }
         }
 
-        public enum JobRoleRelationType
-        {
+        public enum JobRoleRelationType {
             Manager,
         }
 
         #endregion
 
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             MockMiscProvider.MockNow = (new DateTime(2007, 11, 4, 15, 23, 43));
             var c = ClassHelper.CreateInstance<StaticHashCacheProvider>();
 
-            var p = new SinglePerson {Id = 15, Name = "tom"};
+            var p = new SinglePerson { Id = 15, Name = "tom" };
 
             string key = KeyGenerator.Instance.GetKey(p.GetType(), p.Id);
             c[key] = ModelContext.CloneObject(p);
@@ -173,8 +160,7 @@ namespace Leafing.UnitTest.Data
         */
 
         [Test]
-        public void T0300HrmJobRoleRelation()
-        {
+        public void T0300HrmJobRoleRelation() {
             // get system user
             var u = User.FindOne(x => x.Name == "SYSTEM");
             Assert.IsNotNull(u);
@@ -188,23 +174,21 @@ namespace Leafing.UnitTest.Data
             Assert.IsNotNull(emp);
 
             // create employee job role relation
-            var rel1 = new EmployeeRoleRelation
-                           {
-                               CreatedBy = u.Id,
-                               Active = true,
-                               Start = DateTime.Now,
-                           };
-			rel1.Employee.Value = emp;
+            var rel1 = new EmployeeRoleRelation {
+                CreatedBy = u.Id,
+                Active = true,
+                Start = DateTime.Now,
+            };
+            rel1.Employee.Value = emp;
             rel1.Save();
 
             // create job role relation
-            var rel = new JobRoleRelation
-                          {
-                              CreatedBy = u.Id,
-                              Active = true,
-                              Type = JobRoleRelationType.Manager,
-                          };
-			rel.OrganisationalUnit.Value = ou;
+            var rel = new JobRoleRelation {
+                CreatedBy = u.Id,
+                Active = true,
+                Type = JobRoleRelationType.Manager,
+            };
+            rel.OrganisationalUnit.Value = ou;
             rel.Save();
 
             var jr = new JobRole { CreatedBy = u.Id, Code = "CEO", Name = "CEO", Description = "CEO" };
@@ -217,9 +201,9 @@ namespace Leafing.UnitTest.Data
             Assert.IsNotNull(ou);
 
             Assert.AreEqual(1, ou.JobRoleRelations.Count);
-			Assert.AreEqual("CEO", ou.JobRoleRelations[0].JobRole.Value.Code);
-			Assert.AreEqual(1, ou.JobRoleRelations[0].JobRole.Value.EmployeeRoleRelations.Count);
-			Assert.AreEqual("Mustermann", ou.JobRoleRelations[0].JobRole.Value.EmployeeRoleRelations[0].Employee.Value.Person.Value.LastName); // error
+            Assert.AreEqual("CEO", ou.JobRoleRelations[0].JobRole.Value.Code);
+            Assert.AreEqual(1, ou.JobRoleRelations[0].JobRole.Value.EmployeeRoleRelations.Count);
+            Assert.AreEqual("Mustermann", ou.JobRoleRelations[0].JobRole.Value.EmployeeRoleRelations[0].Employee.Value.Person.Value.LastName); // error
         }
 
         /*
@@ -322,23 +306,21 @@ namespace Leafing.UnitTest.Data
 
 
         [Test]
-        public void TestLazyLoadColumn()
-        {
+        public void TestLazyLoadColumn() {
             var o = Lazyable.FindById(1);
             Assert.AreEqual(2, o.TestColumn);
 
             var o1 = Lazyable.FindById(1);
             Assert.AreEqual(2, o1.TestColumn);
-			Assert.AreEqual("IBM", o1.Content.Value);
+            Assert.AreEqual("IBM", o1.Content.Value);
 
             var o2 = Lazyable.FindById(1);
             Assert.AreEqual(2, o2.TestColumn);
-			Assert.AreEqual("IBM", o2.Content.Value);
+            Assert.AreEqual("IBM", o2.Content.Value);
         }
 
         [Test]
-        public void TestLazyLoadColumn2()
-        {
+        public void TestLazyLoadColumn2() {
             DbEntry.GetObject<LazyableSqlite>(1);
 
             StaticRecorder.ClearMessages();
@@ -353,14 +335,14 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual(2, o2.TestColumn);
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));
-			Assert.AreEqual("IBM", o2.Content.Value);
+            Assert.AreEqual("IBM", o2.Content.Value);
 
             var o3 = DbEntry.GetObject<LazyableSqlite>(2);
             Assert.AreEqual(2, o3.TestColumn);
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Name", typeof(string), "IBM"));
-			Assert.AreEqual("IBM", o3.Content.Value);
-            
+            Assert.AreEqual("IBM", o3.Content.Value);
+
             Assert.AreEqual(3, StaticRecorder.Messages.Count);
         }
     }

@@ -1,42 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Leafing.Core.Ioc
-{
-    internal class ImplementsCreators
-    {
+namespace Leafing.Core.Ioc {
+    internal class ImplementsCreators {
         private ClassCreator _default;
-        private int _defaultIndex; 
+        private int _defaultIndex;
         private readonly List<ClassCreator> _all = new List<ClassCreator>();
 
-        public ImplementsCreators(ClassCreator creator)
-        {
+        public ImplementsCreators(ClassCreator creator) {
             Add(creator);
         }
 
-        public void Add(ClassCreator creator)
-        {
-            if(creator.Index > 0)
-            {
-                if (creator.Index > _defaultIndex)
-                {
+        public void Add(ClassCreator creator) {
+            if (creator.Index > 0) {
+                if (creator.Index > _defaultIndex) {
                     _default = creator;
                     _defaultIndex = creator.Index;
                 }
-                foreach (var cc in _all)
-                {
-                    if (cc.Index == creator.Index)
-                    {
+                foreach (var cc in _all) {
+                    if (cc.Index == creator.Index) {
                         throw new IocException("[{0}] and [{1}] have the same index {2}", creator.Type, cc.Type, cc.Index);
                     }
                 }
             }
-            if(!creator.Name.IsNullOrEmpty())
-            {
-                foreach (var cc in _all)
-                {
-                    if (cc.Name == creator.Name)
-                    {
+            if (!creator.Name.IsNullOrEmpty()) {
+                foreach (var cc in _all) {
+                    if (cc.Name == creator.Name) {
                         throw new IocException("[{0}] and [{1}] have the same name {2}", creator.Type, cc.Type, cc.Name);
                     }
                 }
@@ -44,21 +33,16 @@ namespace Leafing.Core.Ioc
             _all.Add(creator);
         }
 
-        public object Create()
-        {
+        public object Create() {
             return _default.Create();
         }
 
-        public object Create(int index)
-        {
-            if (index == 0 || index == _defaultIndex)
-            {
+        public object Create(int index) {
+            if (index == 0 || index == _defaultIndex) {
                 return _default.Create();
             }
-            foreach(var creator in _all)
-            {
-                if(creator.Index == index)
-                {
+            foreach (var creator in _all) {
+                if (creator.Index == index) {
                     return creator.Create();
                 }
             }
@@ -66,16 +50,12 @@ namespace Leafing.Core.Ioc
                 _default.Type, index);
         }
 
-        public object Create(string name)
-        {
-            if (name.IsNullOrEmpty())
-            {
+        public object Create(string name) {
+            if (name.IsNullOrEmpty()) {
                 throw new ArgumentNullException("name");
             }
-            foreach (var creator in _all)
-            {
-                if (creator.Name != null && creator.Name == name)
-                {
+            foreach (var creator in _all) {
+                if (creator.Name != null && creator.Name == name) {
                     return creator.Create();
                 }
             }

@@ -5,10 +5,8 @@ using Leafing.Data.Builder;
 using Leafing.Data.Common;
 using Leafing.Data.Definition;
 
-namespace Leafing.Data.Model.QuerySyntax
-{
-    public interface ISelectable<T> where T : class, IDbObject, new()
-    {
+namespace Leafing.Data.Model.QuerySyntax {
+    public interface ISelectable<T> where T : class, IDbObject, new() {
         List<T> Select();
         List<TResult> Select<TResult>(Expression<Func<T, TResult>> expr);
         List<T> SelectDistinct();
@@ -19,22 +17,19 @@ namespace Leafing.Data.Model.QuerySyntax
         List<TResult> SelectDistinctNoLazy<TResult>(Expression<Func<T, TResult>> expr);
     }
 
-    public interface IGetPagedSelector<T> where T : class, IDbObject, new()
-    {
+    public interface IGetPagedSelector<T> where T : class, IDbObject, new() {
         IPagedSelector<T> GetPagedSelector();
         IPagedSelector<T> GetDistinctPagedSelector();
         IPagedSelector<T> GetStaticPagedSelector();
         IPagedSelector<T> GetDistinctStaticPagedSelector();
     }
 
-    public interface IGroupByable
-    {
+    public interface IGroupByable {
         List<GroupByObject<T1>> GroupBy<T1>(string columnName);
         List<GroupBySumObject<T1, T2>> GroupBySum<T1, T2>(string groupbyColumnName, string sumColumnName);
     }
 
-    public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : class, IDbObject, new()
-    {
+    public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : class, IDbObject, new() {
         ISelectable<T> Range(long startIndex, long endIndex);
         ISelectable<T> Range(Range r);
         IGetPagedSelector<T> PageSize(int pageSize);
@@ -43,16 +38,14 @@ namespace Leafing.Data.Model.QuerySyntax
         IRangeable<T> ThenByDescending(Expression<Func<T, object>> expr);
     }
 
-    public interface IUpdatable<T> where T : class, IDbObject, new()
-    {
+    public interface IUpdatable<T> where T : class, IDbObject, new() {
         IUpdatable<T> Set(string key, object value);
         IUpdatable<T> Add(string key, decimal value);
         IUpdatable<T> Sub(string key, decimal value);
         int Update();
     }
 
-    public interface IAfterWhere<T> : ISelectable<T>, IGroupByable where T : class, IDbObject, new()
-    {
+    public interface IAfterWhere<T> : ISelectable<T>, IGroupByable where T : class, IDbObject, new() {
         IRangeable<T> OrderBy(string key);
         IRangeable<T> OrderBy(params ASC[] os);
         IRangeable<T> OrderBy(OrderBy order);
@@ -87,8 +80,7 @@ namespace Leafing.Data.Model.QuerySyntax
         SelectStatementBuilder GetDistinctStatement(string columnName);
     }
 
-    public interface IWhere<T> where T : class, IDbObject, new()
-    {
+    public interface IWhere<T> where T : class, IDbObject, new() {
         IAfterWhere<T> Where(Condition where);
         IAfterWhere<T> Where(ConditionBuilder<T> where);
         IAfterWhere<T> Where(Expression<Func<T, bool>> expr);

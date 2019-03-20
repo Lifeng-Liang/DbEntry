@@ -4,43 +4,35 @@ using System.Reflection.Emit;
 using Leafing.Data.Model.Member;
 using Leafing.Data.Model.Member.Adapter;
 
-namespace Leafing.Data.Model.Handler.Generator
-{
-    public class ILBuilder
-    {
+namespace Leafing.Data.Model.Handler.Generator {
+    public class ILBuilder {
         private static readonly Type[] EmptyTypes = new Type[] { };
         private static readonly MethodInfo DateEx = typeof(Date).GetMethod("op_Explicit", new[] { typeof(DateTime) });
         private static readonly MethodInfo TimeEx = typeof(Time).GetMethod("op_Explicit", new[] { typeof(DateTime) });
 
         public readonly ILGenerator il;
 
-        public ILBuilder(ILGenerator il)
-        {
+        public ILBuilder(ILGenerator il) {
             this.il = il;
         }
 
-        public ILBuilder DeclareLocal(Type t)
-        {
+        public ILBuilder DeclareLocal(Type t) {
             il.DeclareLocal(t);
             return this;
         }
 
-		public ILBuilder Nop()
-		{
-			il.Emit(OpCodes.Nop);
-			return this;
-		}
+        public ILBuilder Nop() {
+            il.Emit(OpCodes.Nop);
+            return this;
+        }
 
-		public ILBuilder LoadToken(Type t)
-		{
-			il.Emit(OpCodes.Ldtoken, t);
-			return this;
-		}
+        public ILBuilder LoadToken(Type t) {
+            il.Emit(OpCodes.Ldtoken, t);
+            return this;
+        }
 
-        public ILBuilder LoadInt(int n)
-        {
-            switch (n)
-            {
+        public ILBuilder LoadInt(int n) {
+            switch (n) {
                 case 0:
                     il.Emit(OpCodes.Ldc_I4_0);
                     break;
@@ -75,10 +67,8 @@ namespace Leafing.Data.Model.Handler.Generator
             return this;
         }
 
-        public ILBuilder LoadArg(int n)
-        {
-            switch (n)
-            {
+        public ILBuilder LoadArg(int n) {
+            switch (n) {
                 case 0:
                     il.Emit(OpCodes.Ldarg_0);
                     break;
@@ -98,33 +88,27 @@ namespace Leafing.Data.Model.Handler.Generator
             return this;
         }
 
-        public ILBuilder LoadArgShort(int min, int max)
-        {
-            for (int i = min; i <= max; i++)
-            {
+        public ILBuilder LoadArgShort(int min, int max) {
+            for (int i = min; i <= max; i++) {
                 il.Emit(OpCodes.Ldarg_S, i);
             }
             return this;
         }
 
-        public ILBuilder LoadField(FieldInfo fi)
-        {
+        public ILBuilder LoadField(FieldInfo fi) {
             il.Emit(OpCodes.Ldfld, fi);
             return this;
         }
 
-        public ILBuilder SetField(FieldInfo fi)
-        {
+        public ILBuilder SetField(FieldInfo fi) {
             il.Emit(OpCodes.Stfld, fi);
             return this;
         }
 
-        private static ConstructorInfo GetConstructor(Type sourceType)
-        {
+        private static ConstructorInfo GetConstructor(Type sourceType) {
             Type t = sourceType;
             ConstructorInfo ret;
-            while ((ret = t.GetConstructor(EmptyTypes)) == null)
-            {
+            while ((ret = t.GetConstructor(EmptyTypes)) == null) {
                 t = t.BaseType;
             }
             return ret;
@@ -142,21 +126,17 @@ namespace Leafing.Data.Model.Handler.Generator
         //    return ret;
         //}
 
-        public ILBuilder NewObj(ConstructorInfo ci)
-        {
+        public ILBuilder NewObj(ConstructorInfo ci) {
             il.Emit(OpCodes.Newobj, ci);
             return this;
         }
 
-        public ILBuilder NewObj(Type t)
-        {
+        public ILBuilder NewObj(Type t) {
             return NewObj(GetConstructor(t));
         }
 
-        public ILBuilder SetLoc(int n)
-        {
-            switch (n)
-            {
+        public ILBuilder SetLoc(int n) {
+            switch (n) {
                 case 0:
                     il.Emit(OpCodes.Stloc_0);
                     break;
@@ -176,10 +156,8 @@ namespace Leafing.Data.Model.Handler.Generator
             return this;
         }
 
-        public ILBuilder LoadLoc(int n)
-        {
-            switch (n)
-            {
+        public ILBuilder LoadLoc(int n) {
+            switch (n) {
                 case 0:
                     il.Emit(OpCodes.Ldloc_0);
                     break;
@@ -199,93 +177,70 @@ namespace Leafing.Data.Model.Handler.Generator
             return this;
         }
 
-        public ILBuilder CallVirtual(MethodInfo mi)
-        {
+        public ILBuilder CallVirtual(MethodInfo mi) {
             il.Emit(OpCodes.Callvirt, mi);
             return this;
         }
 
-        public ILBuilder Call(MethodInfo mi)
-        {
+        public ILBuilder Call(MethodInfo mi) {
             il.Emit(OpCodes.Call, mi);
             return this;
         }
 
-        public ILBuilder Call(ConstructorInfo ci)
-        {
+        public ILBuilder Call(ConstructorInfo ci) {
             il.Emit(OpCodes.Call, ci);
             return this;
         }
 
-        public ILBuilder Return()
-        {
+        public ILBuilder Return() {
             il.Emit(OpCodes.Ret);
             return this;
         }
 
-        public ILBuilder LoadString(string s)
-        {
+        public ILBuilder LoadString(string s) {
             il.Emit(OpCodes.Ldstr, s);
             return this;
         }
 
-        public ILBuilder LoadNull()
-        {
+        public ILBuilder LoadNull() {
             il.Emit(OpCodes.Ldnull);
             return this;
         }
 
-        public ILBuilder CastOrUnbox(Type t)
-        {
-            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
+        public ILBuilder CastOrUnbox(Type t) {
+            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>)) {
                 Type inType = t.GetGenericArguments()[0];
-				if (ProcessDateAndTime(inType, typeof(Date?), typeof(Time?)))
-                {
+                if (ProcessDateAndTime(inType, typeof(Date?), typeof(Time?))) {
                     return this;
                 }
             }
-            if (t.IsValueType)
-            {
-				if (ProcessDateAndTime(t, typeof(Date), typeof(Time)))
-                {
+            if (t.IsValueType) {
+                if (ProcessDateAndTime(t, typeof(Date), typeof(Time))) {
                     return this;
                 }
-                if (t == typeof(bool))
-                {
+                if (t == typeof(bool)) {
                     t = typeof(bool);
-                }
-                else if (t == typeof(uint))
-                {
+                } else if (t == typeof(uint)) {
                     t = typeof(int);
-                }
-                else if (t == typeof(ulong))
-                {
+                } else if (t == typeof(ulong)) {
                     t = typeof(long);
-                }
-                else if (t == typeof(ushort))
-                {
+                } else if (t == typeof(ushort)) {
                     t = typeof(short);
                 }
                 il.Emit(OpCodes.Unbox_Any, t);
-            }
-            else
-            {
+            } else {
                 il.Emit(OpCodes.Castclass, t);
             }
             return this;
         }
 
-		private bool ProcessDateAndTime(Type inType, Type unboxDateType, Type unboxTimeType)
-        {
-            if (inType == typeof(Date))
-            {
+        private bool ProcessDateAndTime(Type inType, Type unboxDateType, Type unboxTimeType) {
+            if (inType == typeof(Date)) {
                 il.Emit(OpCodes.Unbox_Any, unboxDateType);
                 il.Emit(OpCodes.Call, DateEx);
                 return true;
             }
-            if (inType == typeof(Time))
-            {
+            if (inType == typeof(Time)) {
                 il.Emit(OpCodes.Unbox_Any, unboxTimeType);
                 il.Emit(OpCodes.Call, TimeEx);
                 return true;
@@ -293,140 +248,113 @@ namespace Leafing.Data.Model.Handler.Generator
             return false;
         }
 
-        public ILBuilder Cast(Type t)
-        {
+        public ILBuilder Cast(Type t) {
             il.Emit(OpCodes.Castclass, t);
             return this;
         }
 
-        public ILBuilder Box(Type t)
-        {
-            if (t.IsValueType)
-            {
+        public ILBuilder Box(Type t) {
+            if (t.IsValueType) {
                 il.Emit(OpCodes.Box, t);
             }
             return this;
         }
 
-		public ILBuilder Unbox(Type t)
-		{
-			if (t.IsValueType)
-			{
-				il.Emit(OpCodes.Unbox_Any, t);
-			}
-			return this;
-		}
+        public ILBuilder Unbox(Type t) {
+            if (t.IsValueType) {
+                il.Emit(OpCodes.Unbox_Any, t);
+            }
+            return this;
+        }
 
-        public ILBuilder Ceq()
-        {
+        public ILBuilder Ceq() {
             il.Emit(OpCodes.Ceq);
             return this;
         }
 
-        public ILBuilder Br_S(Label label)
-        {
+        public ILBuilder Br_S(Label label) {
             il.Emit(OpCodes.Br_S, label);
             return this;
         }
 
-        public ILBuilder BrTrue_S(Label label)
-        {
+        public ILBuilder BrTrue_S(Label label) {
             il.Emit(OpCodes.Brtrue_S, label);
             return this;
         }
 
-        public ILBuilder BrFalse_S(Label label)
-        {
+        public ILBuilder BrFalse_S(Label label) {
             il.Emit(OpCodes.Brfalse_S, label);
             return this;
         }
 
-        public Label DefineLabel()
-        {
+        public Label DefineLabel() {
             return il.DefineLabel();
         }
 
-        public ILBuilder MarkLabel(Label label)
-        {
+        public ILBuilder MarkLabel(Label label) {
             il.MarkLabel(label);
             return this;
         }
 
-        public ILBuilder LoadLocala_S(int index)
-        {
+        public ILBuilder LoadLocala_S(int index) {
             il.Emit(OpCodes.Ldloca_S, index);
             return this;
         }
 
-        public ILBuilder Bne_Un_S(Label label)
-        {
+        public ILBuilder Bne_Un_S(Label label) {
             il.Emit(OpCodes.Bne_Un_S, label);
             return this;
         }
 
-        public ILBuilder Conv_R4()
-        {
+        public ILBuilder Conv_R4() {
             il.Emit(OpCodes.Conv_R4);
             return this;
         }
 
-        public ILBuilder Conv_R8()
-        {
+        public ILBuilder Conv_R8() {
             il.Emit(OpCodes.Conv_R8);
             return this;
         }
 
-        public ILBuilder ConvFloaty(Type type)
-        {
-            if(type == typeof(float))
-            {
+        public ILBuilder ConvFloaty(Type type) {
+            if (type == typeof(float)) {
                 il.Emit(OpCodes.Conv_R4);
-            }
-            else if(type == typeof(double))
-            {
+            } else if (type == typeof(double)) {
                 il.Emit(OpCodes.Conv_R8);
             }
             return this;
         }
 
-		public ILBuilder SetMember(MemberHandler mm)
-		{
-			if(mm.MemberInfo.IsProperty)
-			{
-				var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetSetMethod(true);
-				return CallVirtual(method);
-			}
-			return SetField((FieldInfo)mm.MemberInfo.GetMemberInfo());
-		}
+        public ILBuilder SetMember(MemberHandler mm) {
+            if (mm.MemberInfo.IsProperty) {
+                var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetSetMethod(true);
+                return CallVirtual(method);
+            }
+            return SetField((FieldInfo)mm.MemberInfo.GetMemberInfo());
+        }
 
-		public ILBuilder GetMember(MemberHandler mm)
-		{
-			if (mm.MemberInfo.IsProperty)
-			{
-				var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetGetMethod(true);
-				return CallVirtual(method);
-			}
-			return LoadField((FieldInfo)mm.MemberInfo.GetMemberInfo());
-		}
+        public ILBuilder GetMember(MemberHandler mm) {
+            if (mm.MemberInfo.IsProperty) {
+                var method = ((PropertyInfo)mm.MemberInfo.GetMemberInfo()).GetGetMethod(true);
+                return CallVirtual(method);
+            }
+            return LoadField((FieldInfo)mm.MemberInfo.GetMemberInfo());
+        }
 
-		public ILBuilder SetMember(TinyMember mm)
-		{
-			if(mm.IsProperty)
-			{
-				var method = mm.Property.GetSetMethod(true);
-				return CallVirtual(method);
-			}
-			return SetField(mm.Field);
-		}
+        public ILBuilder SetMember(TinyMember mm) {
+            if (mm.IsProperty) {
+                var method = mm.Property.GetSetMethod(true);
+                return CallVirtual(method);
+            }
+            return SetField(mm.Field);
+        }
 
-		public ILBuilder GetMember(TinyMember mm)
-		{
-			if (mm.IsProperty)
-			{
-				var method = (mm.Property).GetGetMethod(true);
-				return CallVirtual(method);
-			}
-			return LoadField((FieldInfo)mm.Field);
-		}
+        public ILBuilder GetMember(TinyMember mm) {
+            if (mm.IsProperty) {
+                var method = (mm.Property).GetGetMethod(true);
+                return CallVirtual(method);
+            }
+            return LoadField((FieldInfo)mm.Field);
+        }
     }
 }

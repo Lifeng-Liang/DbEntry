@@ -1,19 +1,16 @@
 ﻿using Leafing.Data.SqlEntry;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class SqlLogTest
-    {
+    public class SqlLogTest {
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             SqlRecorder.Start();
 
             var de = new DataProvider("SQLite");
 
-            var sql = new SqlStatement("test log") {NeedLog = false};
+            var sql = new SqlStatement("test log") { NeedLog = false };
             de.ExecuteNonQuery(sql);
 
             Assert.AreEqual(0, SqlRecorder.List.Count);

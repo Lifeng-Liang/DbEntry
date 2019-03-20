@@ -1,24 +1,19 @@
-﻿namespace Leafing.Core.TimingTask
-{
-	public class TimingTask
-	{
-	    public ITask Task { get; set; }
+﻿namespace Leafing.Core.TimingTask {
+    public class TimingTask {
+        public ITask Task { get; set; }
 
-	    public ITiming Timing { get; set; }
+        public ITiming Timing { get; set; }
 
-	    public TimingTask(ITask task, ITiming timing)
-		{
-			Task = task;
-			Timing = timing;
-		}
+        public TimingTask(ITask task, ITiming timing) {
+            Task = task;
+            Timing = timing;
+        }
 
-		public void RunIfTimingUp()
-		{
-			if ( Timing.TimesUp() )
-			{
-				Timing.Reset();
-				Task.Run();
-			}
-		}
-	}
+        public void RunIfTimingUp() {
+            if (Timing.TimesUp()) {
+                Timing.Reset();
+                Task.Run();
+            }
+        }
+    }
 }

@@ -1,14 +1,11 @@
 ﻿using Leafing.Data;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class ConditionBuilderTest : DataTestBase
-    {
+    public class ConditionBuilderTest : DataTestBase {
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             var builder = new ConditionBuilder<SinglePerson>();
             builder &= p => p.Id == 2;
             var condition = builder.ToCondition();
@@ -18,8 +15,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             var builder = new ConditionBuilder<SinglePerson>();
             builder &= p => p.Id == 1;
             builder |= p => p.Id == 3;
@@ -31,8 +27,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test3()
-        {
+        public void Test3() {
             var builder = new ConditionBuilder<SinglePerson>();
             builder &= p => p.Id == 1;
             builder |= p => p.Id == 3;
@@ -43,8 +38,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test4()
-        {
+        public void Test4() {
             var builder = new ConditionBuilder<SinglePerson2>(p => p.Id == 1);
             builder |= p => p.Id == 3;
             var list = SinglePerson2.Find(builder, p => p.Id);
@@ -54,8 +48,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test5()
-        {
+        public void Test5() {
             var builder = new ConditionBuilder<SinglePerson2>(p => p.Id == 1);
             builder |= p => p.Id == 3;
             var user = SinglePerson2.FindOne(builder, p => p.Id);

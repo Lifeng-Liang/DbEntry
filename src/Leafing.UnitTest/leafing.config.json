@@ -1,0 +1,86 @@
+﻿{
+  "AppSettings": {
+    "TestInt": "23",
+    "CompMode": "Release",
+    "MyClass": "Leafing.UnitTest.util.ConfigTestClass, Leafing.UnitTest",
+    "TestInt2": "10",
+    "TheString": "OK",
+    "TestBool": "true"
+  },
+  "Service": {
+    "DelayToStart": 30000,
+    "MinStartTicks": 180000
+  },
+  "Log": {
+    "Level": "All",
+    "FileName": "{0}{1}.{2}.log",
+    "Recorders": {
+      "Sql": [ "@ConsoleMessage", "Leafing.UnitTest.SqlRecorder, Leafing.UnitTest" ],
+      "Default": [],
+      "System": [ "@ConsoleMessage", "Leafing.UnitTest.DatabaseLogRecorder, Leafing.UnitTest" ],
+      "Unit": [ "@DtsFile", "@Console" ],
+      "Unit2": [ "@ConsoleMessage" ]
+    }
+  },
+  "Database": {
+    "Default": "Development",
+    "NameMapper": "@Underline",
+    "SqlTimeOut": 30,
+    "TimeConsumingSqlTimeOut": 60,
+    "MaxRecords": 0,
+    "UseParameter": true,
+    "Cache": {
+      "Enabled": true,
+      "KeepSecends": 300,
+      "AllSelectedItem": false,
+      "Size": 1000
+    },
+    "DbTimeCheckMinutes": 10,
+    "UseForeignKey": true,
+    "PartialUpdate": true,
+    "Context": {
+      "Default": {
+        "DataBase": "",
+        "ProviderFactory": "",
+        "Driver": "",
+        "AutoScheme": "CreateTable"
+      },
+      "Init": {
+        "DataBase": "@NSQLite : @{CurrentDirectory}../../UnitTest.db",
+        "ProviderFactory": "System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e",
+        "Driver": "",
+        "AutoScheme": "CreateTable"
+      },
+      "Development": {
+        "DataBase": "@NSQLite : @/Volumes/RamDisk/UnitTest.db",
+        "ProviderFactory": "System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e",
+        "Driver": "",
+        "AutoScheme": "CreateTable"
+      },
+      "Scheme": {
+        "DataBase": "@NSQLite : @/Volumes/RamDisk/UnitTest.db",
+        "ProviderFactory": "System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e",
+        "Driver": "",
+        "AutoScheme": "RemoveColumns"
+      },
+      "1": {
+        "DataBase": "@Access : @~test.mdb",
+        "ProviderFactory": "",
+        "Driver": "",
+        "AutoScheme": "None"
+      },
+      "SQLite": {
+        "DataBase": "@SQLite : Leafing.MockSql.Recorder.StaticRecorder, Leafing.MockSql",
+        "ProviderFactory": "Leafing.MockSql.RecorderFactory, Leafing.MockSql",
+        "Driver": "Leafing.Data.Driver.CommonDbDriver, Leafing.Data",
+        "AutoScheme": "CreateTable"
+      },
+      "Firebird": {
+        "DataBase": "@Firebird : Leafing.MockSql.Recorder.StaticRecorder, Leafing.MockSql",
+        "ProviderFactory": "Leafing.MockSql.RecorderFactory, Leafing.MockSql",
+        "Driver": "Leafing.Data.Driver.CommonDbDriver, Leafing.Data",
+        "AutoScheme": "CreateTable"
+      }
+    }
+  }
+}

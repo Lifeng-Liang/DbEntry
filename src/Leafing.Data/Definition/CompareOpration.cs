@@ -4,8 +4,7 @@ using Leafing.Core.Text;
 namespace Leafing.Data.Definition
 {
 	[Serializable]
-	public enum CompareOpration
-	{
+	public enum CompareOpration {
 		[ShowString(">")]		GreatThan,
 		[ShowString("<")]		LessThan,
 		[ShowString("=")]		Equal,

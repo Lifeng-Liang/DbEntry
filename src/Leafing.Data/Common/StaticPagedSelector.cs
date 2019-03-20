@@ -1,32 +1,25 @@
 ﻿using System.Collections.Generic;
 using Leafing.Data.Definition;
 
-namespace Leafing.Data.Common
-{
-    public class StaticPagedSelector<T> : PagedSelector<T> where T : class, IDbObject, new()
-    {
+namespace Leafing.Data.Common {
+    public class StaticPagedSelector<T> : PagedSelector<T> where T : class, IDbObject, new() {
         public StaticPagedSelector(Condition iwc, OrderBy oc, int pageSize)
-            : base(iwc, oc, pageSize)
-        {
+            : base(iwc, oc, pageSize) {
         }
 
         public StaticPagedSelector(Condition iwc, OrderBy oc, int pageSize, bool isDistinct)
-            : base(iwc, oc, pageSize, isDistinct)
-        {
+            : base(iwc, oc, pageSize, isDistinct) {
         }
 
-        public override List<T> GetCurrentPage(long pageIndex)
-        {
+        public override List<T> GetCurrentPage(long pageIndex) {
             long rc = GetResultCount();
             var firstPageSize = (int)(rc % _PageSize);
-            if (firstPageSize == 0)
-            {
+            if (firstPageSize == 0) {
                 firstPageSize = _PageSize;
             }
             var pages = (int)((rc - firstPageSize) / _PageSize);
             pageIndex = pages - pageIndex;
-            if (pageIndex <= 0)
-            {
+            if (pageIndex <= 0) {
                 return Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(1, firstPageSize).Select();
             }
             long startWith = firstPageSize + _PageSize * (pageIndex - 1);

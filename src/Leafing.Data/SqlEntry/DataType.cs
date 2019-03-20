@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Data;
 
-namespace Leafing.Data.SqlEntry
-{
+namespace Leafing.Data.SqlEntry {
 	[Serializable]
-	public enum DataType
-	{
+	public enum DataType {
 		String		= DbType.String,
 		DateTime	= DbType.DateTime,
         Date        = DbType.Date,

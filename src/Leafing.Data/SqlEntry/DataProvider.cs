@@ -5,111 +5,79 @@ using System.Text.RegularExpressions;
 using System.Data;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.SqlClient;
 using Leafing.Core;
 using Leafing.Core.Logging;
 using Leafing.Data.Dialect;
 using Leafing.Data.Driver;
 using Leafing.Data.Common;
+using Leafing.Core.Setting;
 
-namespace Leafing.Data.SqlEntry
-{
-	public partial class DataProvider
-	{
-		internal DbDriver InnerDriver;
+namespace Leafing.Data.SqlEntry {
+    public partial class DataProvider {
+        internal DbDriver InnerDriver;
 
         public readonly DbTimeProvider DbTime;
 
         public DataProvider(string prefix)
-            : this(DbDriverFactory.Instance.GetInstance(prefix))
-        {
+            : this(DbDriverFactory.Instance.GetInstance(prefix)) {
         }
 
-        public DataProvider(DbDriver driver)
-		{
+        public DataProvider(DbDriver driver) {
             InnerDriver = driver;
             DbTime = new DbTimeProvider(this);
         }
 
-		public DbDialect Dialect
-		{
-			get { return InnerDriver.Dialect; }
-		}
+        public DbDialect Dialect {
+            get { return InnerDriver.Dialect; }
+        }
 
-        public DbDriver Driver
-        {
+        public DbDriver Driver {
             get { return InnerDriver; }
         }
 
         #region utils
 
-        public List<DbColumnInfo> GetDbColumnInfoList(string tableName)
-        {
+        public List<DbColumnInfo> GetDbColumnInfoList(string tableName) {
             string sqlStr = "SELECT * FROM " + Dialect.QuoteForTableName(tableName) + " WHERE 1<>1";
             var sql = new SqlStatement(CommandType.Text, sqlStr);
             var ret = new List<DbColumnInfo>();
-            ExecuteDataReader(sql, CommandBehavior.KeyInfo | CommandBehavior.SchemaOnly, delegate(IDataReader dr)
-            {
+            ExecuteDataReader(sql, CommandBehavior.KeyInfo | CommandBehavior.SchemaOnly, delegate (IDataReader dr) {
                 DataTable dt = dr.GetSchemaTable();
-                foreach (DataRow row in dt.Rows)
-                {
+                foreach (DataRow row in dt.Rows) {
                     ret.Add(new DbColumnInfo(row));
                 }
             });
             return ret;
         }
 
-        public IDbBulkCopy GetDbBulkCopy(bool identityInsert)
-        {
-            if (!identityInsert && Driver is SqlServerDriver)
-            {
-                if (Scope<ConnectionContext>.Current != null)
-                {
-                    var c = (SqlConnection)Scope<ConnectionContext>.Current.GetConnection(this);
-                    return new SqlServerBulkCopy(c);
-                }
-                throw new DataException("It must have current connection.");
-            }
-            return new CommonBulkCopy(this, identityInsert);
-        }
-
-	    #endregion
+        #endregion
 
         #region Execute Sql
 
-        public DataSet ExecuteDataset(SqlStatement sql, Type returnType)
-		{
-			var ds = (DataSet)ClassHelper.CreateInstance(returnType);
-			ExecuteDataset(sql, ds);
-			return ds;
-		}
+        public DataSet ExecuteDataset(SqlStatement sql, Type returnType) {
+            var ds = (DataSet)ClassHelper.CreateInstance(returnType);
+            ExecuteDataset(sql, ds);
+            return ds;
+        }
 
-		public DataSet ExecuteDataset(SqlStatement sql)
-		{
-			var ds = new DataSet("Set");
-			ExecuteDataset(sql, ds);
-			return ds;
-		}
+        public DataSet ExecuteDataset(SqlStatement sql) {
+            var ds = new DataSet("Set");
+            ExecuteDataset(sql, ds);
+            return ds;
+        }
 
-		private void ExecuteDataset(SqlStatement sql, DataSet ds)
-		{
-            DbEntry.UsingConnection(delegate
-            {
-                using (IDbCommand e = GetDbCommand(sql))
-                {
+        private void ExecuteDataset(SqlStatement sql, DataSet ds) {
+            DbEntry.UsingConnection(delegate {
+                using (IDbCommand e = GetDbCommand(sql)) {
                     IDbDataAdapter d = InnerDriver.GetDbAdapter(e);
-                    if (Dialect.ExecuteEachLine)
-                    {
+                    if (Dialect.ExecuteEachLine) {
                         int i = 0;
-                        foreach (string s in Split(e.CommandText))
-                        {
+                        foreach (string s in Split(e.CommandText)) {
                             e.CommandText = s;
-                            ((DbDataAdapter)d).Fill(ds, 0, DataSettings.MaxRecords, "Table" + i);
+                            ((DbDataAdapter)d).Fill(ds, 0, ConfigReader.Config.Database.MaxRecords, "Table" + i);
                             i++;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         d.Fill(ds);
                     }
                     PopulateOutParams(sql, e);
@@ -117,23 +85,19 @@ namespace Leafing.Data.SqlEntry
             });
         }
 
-        public int UpdateDataset(SqlStatement selectSql, DataSet ds)
-        {
+        public int UpdateDataset(SqlStatement selectSql, DataSet ds) {
             return UpdateDataset(selectSql, ds, 1, UpdateRowSource.Both);
         }
 
-        public int UpdateDataset(SqlStatement selectSql, DataSet ds, int updateBatchSize)
-        {
+        public int UpdateDataset(SqlStatement selectSql, DataSet ds, int updateBatchSize) {
             var updateRowSource = updateBatchSize != 1 ? UpdateRowSource.None : UpdateRowSource.Both;
             return UpdateDataset(selectSql, ds, updateBatchSize, updateRowSource);
         }
 
-	    public int UpdateDataset(SqlStatement selectSql, DataSet ds, int updateBatchSize, UpdateRowSource updateRowSource)
-        {
+        public int UpdateDataset(SqlStatement selectSql, DataSet ds, int updateBatchSize, UpdateRowSource updateRowSource) {
             int ret = 0;
             DbEntry.UsingConnection(
-                () =>
-                {
+                () => {
                     var c = GetDbCommand(selectSql);
                     c.UpdatedRowSource = updateRowSource;
                     var d = (DbDataAdapter)InnerDriver.GetDbAdapter(c);
@@ -148,42 +112,32 @@ namespace Leafing.Data.SqlEntry
             return ret;
         }
 
-        public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds)
-		{
+        public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds) {
             return UpdateDataset(insertSql, updateSql, deleteSql, ds, 1, UpdateRowSource.Both, false);
         }
 
-        public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize)
-        {
+        public int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize) {
             var updateRowSource = updateBatchSize != 1 ? UpdateRowSource.None : UpdateRowSource.Both;
             return UpdateDataset(insertSql, updateSql, deleteSql, ds, updateBatchSize, updateRowSource, true);
         }
 
-        private int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize, UpdateRowSource updateRowSource, bool throwException)
-        {
+        private int UpdateDataset(SqlStatement insertSql, SqlStatement updateSql, SqlStatement deleteSql, DataSet ds, int updateBatchSize, UpdateRowSource updateRowSource, bool throwException) {
             int ret = 0;
-            DbEntry.UsingConnection(delegate
-            {
+            DbEntry.UsingConnection(delegate {
                 IDbDataAdapter d = InnerDriver.GetDbAdapter();
-                if(insertSql != null)
-                {
+                if (insertSql != null) {
                     d.InsertCommand = GetDbCommandForUpdate(insertSql, updateRowSource);
                 }
-                if(updateSql != null)
-                {
+                if (updateSql != null) {
                     d.UpdateCommand = GetDbCommandForUpdate(updateSql, updateRowSource);
                 }
-                if(deleteSql != null)
-                {
+                if (deleteSql != null) {
                     d.DeleteCommand = GetDbCommandForUpdate(deleteSql, updateRowSource);
                 }
                 var adapter = d as DbDataAdapter;
-                if (adapter != null)
-                {
+                if (adapter != null) {
                     adapter.UpdateBatchSize = updateBatchSize;
-                }
-                else if(throwException)
-                {
+                } else if (throwException) {
                     throw new DataException("The DbDataAdapter doesn't support UpdateBatchSize feature.");
                 }
                 ret = d.Update(ds);
@@ -192,22 +146,17 @@ namespace Leafing.Data.SqlEntry
             return ret;
         }
 
-        private IDbCommand GetDbCommandForUpdate(SqlStatement sql, UpdateRowSource updateRowSource)
-        {
+        private IDbCommand GetDbCommandForUpdate(SqlStatement sql, UpdateRowSource updateRowSource) {
             var c = GetDbCommand(sql);
             c.UpdatedRowSource = updateRowSource;
             return c;
         }
 
-        public object ExecuteScalar(SqlStatement sql)
-		{
+        public object ExecuteScalar(SqlStatement sql) {
             object obj = null;
-            DbEntry.UsingConnection(delegate
-            {
-                using (IDbCommand e = GetDbCommand(sql))
-                {
-                    if (Dialect.ExecuteEachLine)
-                    {
+            DbEntry.UsingConnection(delegate {
+                using (IDbCommand e = GetDbCommand(sql)) {
+                    if (Dialect.ExecuteEachLine) {
                         ExecuteBeforeLines(e);
                     }
                     obj = e.ExecuteScalar();
@@ -217,81 +166,69 @@ namespace Leafing.Data.SqlEntry
             return obj;
         }
 
-		public int ExecuteNonQuery(SqlStatement sql)
-		{
-			int i = 0;
-			DbEntry.UsingConnection (delegate {
-				using (IDbCommand e = GetDbCommand (sql)) {
-					ProcessLines (e, e1 => i += e1.ExecuteNonQuery ());
-					PopulateOutParams (sql, e);
-				}
-			});
-			return i;
-		}
+        public int ExecuteNonQuery(SqlStatement sql) {
+            int i = 0;
+            DbEntry.UsingConnection(delegate {
+                using (IDbCommand e = GetDbCommand(sql)) {
+                    ProcessLines(e, e1 => i += e1.ExecuteNonQuery());
+                    PopulateOutParams(sql, e);
+                }
+            });
+            return i;
+        }
 
-        public void ExecuteDataReader(SqlStatement sql, Action<IDataReader> callback)
-        {
+        public void ExecuteDataReader(SqlStatement sql, Action<IDataReader> callback) {
             ExecuteDataReader(sql, CommandBehavior.Default, callback);
         }
 
-        public void ExecuteDataReader(SqlStatement sql, CommandBehavior behavior, Action<IDataReader> callback)
-		{
-			DbEntry.UsingConnection (delegate {
-				using (IDbCommand e = GetDbCommand (sql)) {
-					ProcessLines (e, e1 => {
-						using (IDataReader r = e1.ExecuteReader (behavior)) {
-							PopulateOutParams (sql, e1);
-							callback (r);
-						}
-					});
-				}
-			});
-		}
-
-        // for oracle
-        internal void ExecuteDataReader(SqlStatement sql, Type returnType, Action<IDataReader> callback)
-		{
-			DbEntry.UsingConnection (delegate {
-				using (IDbCommand e = GetDbCommand (sql)) {
-					ProcessLines (e, e1 => {
-						using (IDataReader r = e1.ExecuteReader (CommandBehavior.Default)) {
-							PopulateOutParams (sql, e1);
-							using (IDataReader dr = Dialect.GetDataReader (r, returnType)) {
-								callback (dr);
-							}
-						}
-					});
-				}
-			});
-		}
-
-        public IDbCommand GetDbCommand(SqlStatement sql)
-        {
-            if(sql.NeedLog)
-            {
-                Logger.SQL.Trace(sql);
-            }
-			return GetConnectionContext().GetDbCommand(sql, this);
+        public void ExecuteDataReader(SqlStatement sql, CommandBehavior behavior, Action<IDataReader> callback) {
+            DbEntry.UsingConnection(delegate {
+                using (IDbCommand e = GetDbCommand(sql)) {
+                    ProcessLines(e, e1 => {
+                        using (IDataReader r = e1.ExecuteReader(behavior)) {
+                            PopulateOutParams(sql, e1);
+                            callback(r);
+                        }
+                    });
+                }
+            });
         }
 
-		public ConnectionContext GetConnectionContext()
-		{
-			if (Scope<ConnectionContext>.Current != null)
-			{
-				return Scope<ConnectionContext>.Current;
-			}
-			return new ConnectionContext();
-		}
+        // for oracle
+        internal void ExecuteDataReader(SqlStatement sql, Type returnType, Action<IDataReader> callback) {
+            DbEntry.UsingConnection(delegate {
+                using (IDbCommand e = GetDbCommand(sql)) {
+                    ProcessLines(e, e1 => {
+                        using (IDataReader r = e1.ExecuteReader(CommandBehavior.Default)) {
+                            PopulateOutParams(sql, e1);
+                            using (IDataReader dr = Dialect.GetDataReader(r, returnType)) {
+                                callback(dr);
+                            }
+                        }
+                    });
+                }
+            });
+        }
 
-        protected void PopulateOutParams(SqlStatement sql, IDbCommand e)
-        {
-            if (sql.Parameters.UserSetKey && (sql.SqlCommandType == CommandType.StoredProcedure))
-            {
-                for (int i = 0; i < sql.Parameters.Count; i++)
-                {
+        public IDbCommand GetDbCommand(SqlStatement sql) {
+            if (sql.NeedLog) {
+                Logger.SQL.Trace(sql);
+            }
+            return GetConnectionContext().GetDbCommand(sql, this);
+        }
+
+        public ConnectionContext GetConnectionContext() {
+            if (Scope<ConnectionContext>.Current != null) {
+                return Scope<ConnectionContext>.Current;
+            }
+            return new ConnectionContext();
+        }
+
+        protected void PopulateOutParams(SqlStatement sql, IDbCommand e) {
+            if (sql.Parameters.UserSetKey && (sql.SqlCommandType == CommandType.StoredProcedure)) {
+                for (int i = 0; i < sql.Parameters.Count; i++) {
                     DataParameter p = sql.Parameters[i];
-                    if (p.Direction != ParameterDirection.Input)
-                    {
+                    if (p.Direction != ParameterDirection.Input) {
                         p.Value = ((IDbDataParameter)e.Parameters[i]).Value;
                     }
                 }
@@ -302,26 +239,22 @@ namespace Leafing.Data.SqlEntry
 
         #region Lines plus
 
-		protected void ProcessLines(IDbCommand e, Action<IDbCommand> callback)
-		{
-			if (!Dialect.ExecuteEachLine) {
-				callback (e);
-				return;
-			}
-			List<string> al = Split(e.CommandText);
-			for (int i = 0; i < al.Count; i++)
-			{
-				e.CommandText = al[i];
-				callback(e);
-			}
-		}
+        protected void ProcessLines(IDbCommand e, Action<IDbCommand> callback) {
+            if (!Dialect.ExecuteEachLine) {
+                callback(e);
+                return;
+            }
+            List<string> al = Split(e.CommandText);
+            for (int i = 0; i < al.Count; i++) {
+                e.CommandText = al[i];
+                callback(e);
+            }
+        }
 
-        protected int ExecuteBeforeLines(IDbCommand e)
-        {
+        protected int ExecuteBeforeLines(IDbCommand e) {
             List<string> al = Split(e.CommandText);
             int ret = 0;
-            for (int i = 0; i < al.Count - 1; i++)
-            {
+            for (int i = 0; i < al.Count - 1; i++) {
                 e.CommandText = al[i];
                 ret += e.ExecuteNonQuery();
             }
@@ -329,37 +262,28 @@ namespace Leafing.Data.SqlEntry
             return ret;
         }
 
-        private List<string> Split(string cText)
-        {
+        private List<string> Split(string cText) {
             var ret = new List<string>();
-            using (var sr = new StreamReader(new MemoryStream(Encoding.Unicode.GetBytes(cText)), Encoding.Unicode))
-            {
+            using (var sr = new StreamReader(new MemoryStream(Encoding.Unicode.GetBytes(cText)), Encoding.Unicode)) {
                 var statement = new StringBuilder();
                 string s;
-                while ((s = sr.ReadLine()) != null)
-                {
+                while ((s = sr.ReadLine()) != null) {
                     s = s.Trim();
-                    if (s.Length > 0)
-                    {
+                    if (s.Length > 0) {
                         if (s.Length > 1 && s.Substring(0, 2) == "--") { continue; }
-                        if (s[s.Length - 1] == ';')
-                        {
+                        if (s[s.Length - 1] == ';') {
                             statement.Append(s.Substring(0, s.Length));
                             if (Dialect.NotSupportPostFix) { statement.Length--; }
-                            if (statement.Length != 0)
-                            {
+                            if (statement.Length != 0) {
                                 ret.Add(statement.ToString());
                             }
                             statement = new StringBuilder();
-                        }
-                        else
-                        {
+                        } else {
                             statement.Append(s);
                         }
                     }
                 }
-                if (statement.Length != 0)
-                {
+                if (statement.Length != 0) {
                     ret.Add(statement.ToString());
                 }
             }
@@ -370,22 +294,18 @@ namespace Leafing.Data.SqlEntry
 
         #region Shortcut
 
-		private static readonly Regex Reg = new Regex("'(.|\r|\n)*'|\\?", RegexOptions.Compiled);
+        private static readonly Regex Reg = new Regex("'(.|\r|\n)*'|\\?", RegexOptions.Compiled);
 
-        public SqlStatement GetSqlStatement(string sqlStr, params object[] os)
-        {
+        public SqlStatement GetSqlStatement(string sqlStr, params object[] os) {
             CommandType ct = SqlStatement.GetCommandType(sqlStr);
-            if (ct == CommandType.StoredProcedure)
-            {
+            if (ct == CommandType.StoredProcedure) {
                 return new SqlStatement(ct, sqlStr, os);
             }
             var dpc = new DataParameterCollection();
             int start = 0, n = 0;
             var sql = new StringBuilder();
-            foreach (Match m in Reg.Matches(sqlStr))
-            {
-                if (m.Length == 1)
-                {
+            foreach (Match m in Reg.Matches(sqlStr)) {
+                if (m.Length == 1) {
                     string pn = Dialect.QuoteParameter("p" + n);
                     sql.Append(sqlStr.Substring(start, m.Index - start));
                     sql.Append(pn);
@@ -395,80 +315,67 @@ namespace Leafing.Data.SqlEntry
                     n++;
                 }
             }
-            if (start < sqlStr.Length)
-            {
+            if (start < sqlStr.Length) {
                 sql.Append(sqlStr.Substring(start));
             }
             var ret = new SqlStatement(ct, sql.ToString(), dpc);
             return ret;
         }
 
-        public DataSet ExecuteDataset(string sqlCommandText, params object[] os)
-        {
+        public DataSet ExecuteDataset(string sqlCommandText, params object[] os) {
             return ExecuteDataset(GetSqlStatement(sqlCommandText, os));
         }
 
-        public object ExecuteScalar(string sqlCommandText, params object[] os)
-        {
+        public object ExecuteScalar(string sqlCommandText, params object[] os) {
             return ExecuteScalar(GetSqlStatement(sqlCommandText, os));
         }
 
-        public int ExecuteNonQuery(string sqlCommandText, params object[] os)
-        {
+        public int ExecuteNonQuery(string sqlCommandText, params object[] os) {
             return ExecuteNonQuery(GetSqlStatement(sqlCommandText, os));
         }
 
         #endregion
 
-        public DateTime GetDatabaseTime()
-        {
+        public DateTime GetDatabaseTime() {
             string sqlstr = "SELECT " + Dialect.DbNowString;
             DateTime dt = Convert.ToDateTime(ExecuteScalar(sqlstr));
             return dt;
         }
 
-		private List<string> _tableNames;
+        private List<string> _tableNames;
 
-		internal List<string> TableNames
-		{
-			get
-			{
-				if(_tableNames == null)
-				{
-					_tableNames = new List<string>();
-					var list = GetTableNames();
-					foreach (var name in list)
-					{
-						_tableNames.Add(name.ToLower());
-					}
-				}
-				return _tableNames;
-			}
-		}
+        internal List<string> TableNames {
+            get {
+                if (_tableNames == null) {
+                    _tableNames = new List<string>();
+                    var list = GetTableNames();
+                    foreach (var name in list) {
+                        _tableNames.Add(name.ToLower());
+                    }
+                }
+                return _tableNames;
+            }
+        }
 
-		public List<string> GetTableNames()
-		{
-			var ret = new List<string>();
-			DbStructInterface si = Dialect.GetDbStructInterface();
-			string userId = Dialect.GetUserId(Driver.ConnectionString);
-			DbEntry.UsingConnection (() => {
-				var c = (DbConnection)(Scope<ConnectionContext>.Current.GetConnection (this));
-				var t = c.GetSchema(si.TablesTypeName, si.TablesParams);
-				foreach (DataRow dr in t.Rows)
-				{
-					if (si.FiltrateDatabaseName)
-					{
-						if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
-					}
-					if (userId != null)
-					{
-						if (!dr["OWNER"].Equals(userId)) { continue; }
-					}
-					string s = dr[si.TableNameString].ToString();
-					ret.Add(s);
-				}
-			});
-			return ret;
-		}
-	}
+        public List<string> GetTableNames() {
+            var ret = new List<string>();
+            DbStructInterface si = Dialect.GetDbStructInterface();
+            string userId = Dialect.GetUserId(Driver.ConnectionString);
+            DbEntry.UsingConnection(() => {
+                var c = (DbConnection)(Scope<ConnectionContext>.Current.GetConnection(this));
+                var t = c.GetSchema(si.TablesTypeName, si.TablesParams);
+                foreach (DataRow dr in t.Rows) {
+                    if (si.FiltrateDatabaseName) {
+                        if (!dr["TABLE_SCHEMA"].Equals(c.Database)) { continue; }
+                    }
+                    if (userId != null) {
+                        if (!dr["OWNER"].Equals(userId)) { continue; }
+                    }
+                    string s = dr[si.TableNameString].ToString();
+                    ret.Add(s);
+                }
+            });
+            return ret;
+        }
+    }
 }

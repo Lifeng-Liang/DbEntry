@@ -4,12 +4,9 @@ using Leafing.Data.Builder.Clause;
 using Leafing.Data.Model;
 using Leafing.Data.SqlEntry;
 
-namespace Leafing.Data.Dialect
-{
-    public abstract class SequencedDialect : DbDialect
-    {
-        protected override object ExecuteInsertIntKey(InsertStatementBuilder sb, ObjectInfo info, DataProvider provider)
-        {
+namespace Leafing.Data.Dialect {
+    public abstract class SequencedDialect : DbDialect {
+        protected override object ExecuteInsertIntKey(InsertStatementBuilder sb, ObjectInfo info, DataProvider provider) {
             string seqStr = GetSelectSequenceSql(info.From.MainTableName);
             var seq = new SqlStatement(CommandType.Text, seqStr);
             object key = provider.ExecuteScalar(seq);

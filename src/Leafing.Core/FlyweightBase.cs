@@ -1,27 +1,20 @@
 ﻿using System.Collections.Generic;
 
-namespace Leafing.Core
-{
-    public abstract class FlyweightBase<TKey, TValue>
-    {
+namespace Leafing.Core {
+    public abstract class FlyweightBase<TKey, TValue> {
         protected Dictionary<TKey, TValue> Jar = new Dictionary<TKey, TValue>();
 
-        public TValue GetInstance(TKey t)
-        {
+        public TValue GetInstance(TKey t) {
             return GetInst(t);
         }
 
-        protected virtual TValue GetInst(TKey tk)
-        {
+        protected virtual TValue GetInst(TKey tk) {
             var t = CheckKey(tk);
-            if (Jar.ContainsKey(t))
-            {
+            if (Jar.ContainsKey(t)) {
                 return Jar[t];
             }
-            lock (Jar)
-            {
-                if (Jar.ContainsKey(t))
-                {
+            lock (Jar) {
+                if (Jar.ContainsKey(t)) {
                     return Jar[t];
                 }
                 var v = CreateInst(t);
@@ -30,8 +23,7 @@ namespace Leafing.Core
             }
         }
 
-        protected virtual TKey CheckKey(TKey t)
-        {
+        protected virtual TKey CheckKey(TKey t) {
             return t;
         }
 

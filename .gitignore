@@ -24,6 +24,7 @@
 /src/Leafing.UnitTest.VB/bin
 /src/Leafing.Web/obj
 /src/Leafing.Web/bin
+/src/.vs
 /*.suo
 /bin/*.exe
 /bin/*.dll

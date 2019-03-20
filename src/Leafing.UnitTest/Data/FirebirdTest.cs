@@ -4,11 +4,9 @@ using Leafing.MockSql.Recorder;
 using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [DbContext("Firebird")]
-    public class LeafingEnum2 : DbObject
-    {
+    public class LeafingEnum2 : DbObject {
         public int Type;
 
         [Length(1, 50)]
@@ -19,19 +17,16 @@ namespace Leafing.UnitTest.Data
 
 
     [TestFixture]
-    public class FirebirdTest
-    {
+    public class FirebirdTest {
         [SetUp]
-        public void SetUp()
-        {
+        public void SetUp() {
             StaticRecorder.ClearMessages();
         }
 
         [Test]
-        public void TestCreateAndInsert()
-        {
+        public void TestCreateAndInsert() {
             var ctx = ModelContext.GetInstance(typeof(PeopleModel2));
-            var o = new PeopleModel2 {Name = "tom"};
+            var o = new PeopleModel2 { Name = "tom" };
             ctx.Operator.Save(o);
 
             Assert.AreEqual(4, StaticRecorder.Messages.Count);
@@ -43,15 +38,13 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSelect()
-        {
+        public void TestSelect() {
             DbEntry.From<PeopleModel2>().Where(CK.K["Name"] == "tom" && CK.K["Age"] > 18).Select();
             Assert.AreEqual("SELECT \"ID\",\"NAME\" FROM \"PEOPLE\" WHERE (\"NAME\" = @Name_0) AND (\"AGE\" > @Age_1);<Text><60>(@Name_0=tom:String,@Age_1=18:Int32)", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void TestCreate()
-        {
+        public void TestCreate() {
             var ctx = ModelContext.GetInstance(typeof(LeafingEnum2));
             ctx.Operator.Create();
             const string exp = "CREATE TABLE \"LEAFING_ENUM2\" (" +
@@ -65,8 +58,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestDrop()
-        {
+        public void TestDrop() {
             var ctx = ModelContext.GetInstance(typeof(LeafingEnum2));
             ctx.Operator.DropTable();
             Assert.AreEqual("DROP TABLE \"LEAFING_ENUM2\"<Text><30>()", StaticRecorder.Messages[0]);

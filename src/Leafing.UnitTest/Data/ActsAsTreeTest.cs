@@ -1,35 +1,29 @@
-﻿using System.Collections.Generic;
-using Leafing.Data.Definition;
+﻿using Leafing.Data.Definition;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
-    public class File : DbObjectModel<File>
-    {
+namespace Leafing.UnitTest.Data {
+    public class File : DbObjectModel<File> {
         public string Name { get; set; }
 
-		public HasMany<File> Children { get; private set; }
+        public HasMany<File> Children { get; private set; }
 
         [DbColumn("BelongsTo_Id")]
-		public BelongsTo<File, long> Parent { get; set; }
+        public BelongsTo<File, long> Parent { get; set; }
     }
 
     [DbTable("File")]
-    public class TheFile : DbObjectModelAsTree<TheFile>
-    {
+    public class TheFile : DbObjectModelAsTree<TheFile> {
         public string Name { get; set; }
     }
 
     [TestFixture]
-    public class ActsAsTreeTest : DataTestBase
-    {
+    public class ActsAsTreeTest : DataTestBase {
         [Test]
-        public void TestRead()
-        {
+        public void TestRead() {
             File f = File.FindById(1);
             Assert.AreEqual("Root", f.Name);
 
-			Assert.IsNull(f.Parent.Value);
+            Assert.IsNull(f.Parent.Value);
             Assert.AreEqual(5, f.Children.Count);
             Assert.AreEqual("Windows", f.Children[0].Name);
             Assert.AreEqual("Program Files", f.Children[1].Name);
@@ -38,7 +32,7 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual("Command.com", f.Children[4].Name);
 
             File fw = f.Children[0];
-			Assert.AreEqual("Root", fw.Parent.Value.Name);
+            Assert.AreEqual("Root", fw.Parent.Value.Name);
             Assert.AreEqual(3, fw.Children.Count);
             Assert.AreEqual("regedit.exe", fw.Children[0].Name);
             Assert.AreEqual("notepad.exe", fw.Children[1].Name);
@@ -77,11 +71,10 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestWrite()
-        {
+        public void TestWrite() {
             File f = File.FindById(16);
             Assert.AreEqual(2, f.Children.Count);
-            var nf = new File {Name = "gbk.tbl"};
+            var nf = new File { Name = "gbk.tbl" };
             f.Children.Add(nf);
             f.Save();
 
@@ -93,12 +86,11 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestTheFileRead()
-        {
+        public void TestTheFileRead() {
             TheFile f = TheFile.FindById(1);
             Assert.AreEqual("Root", f.Name);
 
-			Assert.IsNull(f.Parent);
+            Assert.IsNull(f.Parent);
             Assert.AreEqual(5, f.Children.Count);
             Assert.AreEqual("Windows", f.Children[0].Name);
             Assert.AreEqual("Program Files", f.Children[1].Name);
@@ -107,7 +99,7 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual("Command.com", f.Children[4].Name);
 
             TheFile fw = f.Children[0];
-			Assert.AreEqual("Root", fw.Parent.Name);
+            Assert.AreEqual("Root", fw.Parent.Name);
             Assert.AreEqual(3, fw.Children.Count);
             Assert.AreEqual("regedit.exe", fw.Children[0].Name);
             Assert.AreEqual("notepad.exe", fw.Children[1].Name);
@@ -146,11 +138,10 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestTheFileWrite()
-        {
+        public void TestTheFileWrite() {
             TheFile f = TheFile.FindById(16);
             Assert.AreEqual(2, f.Children.Count);
-            var nf = new TheFile {Name = "gbk.tbl"};
+            var nf = new TheFile { Name = "gbk.tbl" };
             f.Children.Add(nf);
             f.Save();
 

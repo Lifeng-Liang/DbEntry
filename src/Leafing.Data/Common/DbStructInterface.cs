@@ -1,7 +1,5 @@
-﻿namespace Leafing.Data.Common
-{
-    public class DbStructInterface
-    {
+﻿namespace Leafing.Data.Common {
+    public class DbStructInterface {
         public bool FiltrateDatabaseName;
         public string TablesTypeName;
         public string[] TablesParams;
@@ -9,15 +7,13 @@
         public string[] ViewsParams;
         public string TableNameString;
 
-        public DbStructInterface(string tablesTypeName, string[] tablesGetter, string viewsTypeName, 
+        public DbStructInterface(string tablesTypeName, string[] tablesGetter, string viewsTypeName,
             string[] viewsGetter, string tableNameString)
-            : this(false, tablesTypeName, tablesGetter, viewsTypeName, viewsGetter, tableNameString)
-        {
+            : this(false, tablesTypeName, tablesGetter, viewsTypeName, viewsGetter, tableNameString) {
         }
 
         public DbStructInterface(bool filtrateDatabaseName, string tablesTypeName, string[] tablesGetter,
-            string viewsTypeName, string[] viewsGetter, string tableNameString)
-        {
+            string viewsTypeName, string[] viewsGetter, string tableNameString) {
             this.FiltrateDatabaseName = filtrateDatabaseName;
             this.TablesTypeName = tablesTypeName ?? "Tables";
             this.TablesParams = tablesGetter ?? new string[] { };

@@ -2,45 +2,38 @@
 using Leafing.Data.Definition;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
-	public class ILocation
-    {
-		public string Phone { get; set; }
+namespace Leafing.UnitTest.Data {
+    public class ILocation {
+        public string Phone { get; set; }
 
         [AllowNull, Length(2, 50)]
-		public string Address { get; set; }
+        public string Address { get; set; }
 
         [DbColumn("MyNumber")]
-		public int Number { get; set; }
+        public int Number { get; set; }
 
-		public int? Wow { get; set; }
+        public int? Wow { get; set; }
     }
 
-    public class IAddress
-    {
-		public string City { get; set; }
-		public string Street { get; set; }
+    public class IAddress {
+        public string City { get; set; }
+        public string Street { get; set; }
     }
 
-	[TestFixture, Ignore]
-    public class ComposedOfTest : DataTestBase
-    {
-        public class CoUser : DbObjectModel<CoUser>
-        {
+    [TestFixture, Ignore("temp")]
+    public class ComposedOfTest : DataTestBase {
+        public class CoUser : DbObjectModel<CoUser> {
             public string Name { get; set; }
 
             [ComposedOf]
             public ILocation Location { get; private set; }
 
-			public CoUser ()
-			{
-				Location = new ILocation();
-			}
+            public CoUser() {
+                Location = new ILocation();
+            }
         }
 
-        public class CoAddr : DbObjectModel<CoAddr>
-        {
+        public class CoAddr : DbObjectModel<CoAddr> {
             public string Name { get; set; }
 
             [ComposedOf]
@@ -49,16 +42,14 @@ namespace Leafing.UnitTest.Data
             [ComposedOf]
             public IAddress YourAddress { get; private set; }
 
-			public CoAddr ()
-			{
-				MyAddress = new IAddress();
-				YourAddress = new IAddress();
-			}
+            public CoAddr() {
+                MyAddress = new IAddress();
+                YourAddress = new IAddress();
+            }
         }
 
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             var user = new CoUser { Name = "tom", Location = { Phone = "123456", Address = "The east of queen street" } };
             user.Save();
 
@@ -70,8 +61,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             var user = new CoUser { Name = "tom", Location = { Phone = "123456", Address = "The east of queen street" } };
             user.Save();
 
@@ -84,8 +74,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestQuery()
-        {
+        public void TestQuery() {
             var user = new CoUser { Name = "tom", Location = { Phone = "123456", Address = "The east of queen street" } };
             user.Save();
 
@@ -94,8 +83,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test3()
-        {
+        public void Test3() {
             var type = typeof(CoUser);
             var addr = type.GetProperty("$Location$Address", ClassHelper.AllFlag);
             Assert.IsTrue(addr.HasAttribute<AllowNullAttribute>(false));
@@ -116,8 +104,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test4()
-        {
+        public void Test4() {
             var type = typeof(CoAddr);
 
             var city1 = type.GetProperty("$MyAddress$City", ClassHelper.AllFlag);

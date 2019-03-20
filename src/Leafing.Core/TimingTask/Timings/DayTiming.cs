@@ -1,13 +1,10 @@
-﻿namespace Leafing.Core.TimingTask.Timings
-{
-	public class DayTiming : DayOfRangeTimingBase
-	{
-		public DayTiming(TimeOfDayStructure timeOfDay)
-			: base(timeOfDay, 0) {}
+﻿namespace Leafing.Core.TimingTask.Timings {
+    public class DayTiming : DayOfRangeTimingBase {
+        public DayTiming(TimeOfDayStructure timeOfDay)
+            : base(timeOfDay, 0) { }
 
-		protected override bool IsDayOfRange()
-		{
-			return true;
-		}
-	}
+        protected override bool IsDayOfRange() {
+            return true;
+        }
+    }
 }

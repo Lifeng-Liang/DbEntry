@@ -2,12 +2,10 @@
 using System.Threading;
 using System.Diagnostics;
 
-namespace Leafing.Core
-{
+namespace Leafing.Core {
     // this class copied from MSDN :
     // http://www.microsoft.com/china/MSDN/library/netFramework/netframework/NETMattersSep.mspx?mfr=true
-    public sealed class Scope<T> : IDisposable where T : class
-    {
+    public sealed class Scope<T> : IDisposable where T : class {
         private bool _disposed;
         private readonly bool _ownsInstance;
         private readonly T _instance;
@@ -18,8 +16,7 @@ namespace Leafing.Core
 
         public Scope(T instance) : this(instance, true) { }
 
-        public Scope(T instance, bool ownsInstance)
-        {
+        public Scope(T instance, bool ownsInstance) {
             if (instance == null)
                 throw new ArgumentNullException("instance");
             _instance = instance;
@@ -30,23 +27,19 @@ namespace Leafing.Core
             _head = this;
         }
 
-        public static T Current
-        {
+        public static T Current {
             get { return _head != null ? _head._instance : null; }
         }
 
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
+        public void Dispose() {
+            if (!_disposed) {
                 _disposed = true;
 
                 Debug.Assert(this == _head, "Disposed out of order.");
                 _head = _parent;
                 Thread.EndThreadAffinity();
 
-                if (_ownsInstance)
-                {
+                if (_ownsInstance) {
                     var disposable = _instance as IDisposable;
                     if (disposable != null) disposable.Dispose();
                 }

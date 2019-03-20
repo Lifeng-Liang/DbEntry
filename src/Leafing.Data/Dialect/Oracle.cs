@@ -5,13 +5,11 @@ using Leafing.Data.Driver;
 using Leafing.Data.SqlEntry;
 using Leafing.Data.Builder;
 using Leafing.Data.Common;
+using Leafing.Core.Setting;
 
-namespace Leafing.Data.Dialect
-{
-    public class Oracle : SequencedDialect
-    {
-        public Oracle()
-        {
+namespace Leafing.Data.Dialect {
+    public class Oracle : SequencedDialect {
+        public Oracle() {
             TypeNames[DataType.String] = "VARCHAR2";
             TypeNames[DataType.DateTime] = "TIMESTAMP";
             TypeNames[DataType.Date] = "DATE";
@@ -34,129 +32,104 @@ namespace Leafing.Data.Dialect
             TypeNames[DataType.Guid] = "CHAR(36)";
         }
 
-        protected override string GetStringNameWithLength(string baseType, bool isUnicode, int length)
-        {
-            if (length == 0)
-            {
+        protected override string GetStringNameWithLength(string baseType, bool isUnicode, int length) {
+            if (length == 0) {
                 return isUnicode ? "NCLOB" : "CLOB";
             }
             return base.GetStringNameWithLength(baseType, isUnicode, length);
         }
 
-        protected override string GetBinaryNameWithLength(string baseType, int length)
-        {
-            if (length == 0)
-            {
+        protected override string GetBinaryNameWithLength(string baseType, int length) {
+            if (length == 0) {
                 return "BLOB";
             }
             return base.GetBinaryNameWithLength(baseType, length);
         }
 
-        public override string DbNowString
-        {
+        public override string DbNowString {
             get { return "SYSDATE"; }
         }
 
-        public override string GetUserId(string connectionString)
-        {
+        public override string GetUserId(string connectionString) {
             string[] ss = connectionString.Split(';');
-            foreach (string s in ss)
-            {
+            foreach (string s in ss) {
                 string[] ms = s.Split('=');
-                if (ms[0].Trim().ToLower() == "user id")
-                {
+                if (ms[0].Trim().ToLower() == "user id") {
                     return ms[1].Trim().ToUpper();
                 }
             }
             return null;
         }
 
-        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme)
-        {
+        public override DbDriver CreateDbDriver(string name, string connectionString, string dbProviderFactoryName, AutoScheme autoScheme) {
             return new OracleDriver(this, name, connectionString, dbProviderFactoryName, autoScheme);
         }
 
-        public override IDataReader GetDataReader(IDataReader dr, Type returnType)
-        {
+        public override IDataReader GetDataReader(IDataReader dr, Type returnType) {
             return new StupidDataReader(dr, returnType);
         }
 
-        public override bool NotSupportPostFix
-        {
+        public override bool NotSupportPostFix {
             get { return true; }
         }
 
-        public override string GetSelectSequenceSql(string tableName)
-        {
+        public override string GetSelectSequenceSql(string tableName) {
             return string.Format("SELECT {0}_SEQ.NEXTVAL FROM DUAL", tableName.ToUpper());
         }
 
-        public override bool NeedCommitCreateFirst
-        {
+        public override bool NeedCommitCreateFirst {
             get { return false; }
         }
 
-        public override bool SupportDirctionOfEachColumnInIndex
-        {
+        public override bool SupportDirctionOfEachColumnInIndex {
             get { return false; }
         }
 
-        public override string IdentityColumnString
-        {
+        public override string IdentityColumnString {
             get { return "NOT NULL"; }
         }
 
-        public override string GetCreateSequenceString(string tableName)
-        {
+        public override string GetCreateSequenceString(string tableName) {
             return string.Format("CREATE SEQUENCE {0}_SEQ INCREMENT BY 1;\n", tableName.ToUpper());
         }
 
-        protected override string QuoteSingle(string name)
-        {
+        protected override string QuoteSingle(string name) {
             return base.QuoteSingle(name.ToUpper());
         }
 
-        public override string NullString
-        {
+        public override string NullString {
             get { return ""; }
         }
 
-        public override bool ExecuteEachLine
-        {
+        public override bool ExecuteEachLine {
             get { return true; }
         }
 
-        public override void ExecuteDropSequence(DataProvider dp, string tableName)
-        {
+        public override void ExecuteDropSequence(DataProvider dp, string tableName) {
             string sql = string.Format("DROP SEQUENCE {0}_SEQ;\n", tableName.ToUpper());
             dp.ExecuteNonQuery(sql);
         }
 
-        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields)
-        {
+        public override SqlStatement GetPagedSelectSqlStatement(SelectStatementBuilder ssb, List<string> queryRequiredFields) {
             SqlStatement sql = ssb.GetNormalSelectSqlStatement(this, queryRequiredFields);
             sql.SqlCommandText = string.Format("SELECT * FROM ( SELECT ROW_.*, ROWNUM ROWNUM_ FROM ( {0} ) ROW_ WHERE ROWNUM <= {1} ) WHERE ROWNUM_ >= {2}",
                 sql.SqlCommandText, ssb.Range.EndIndex, ssb.Range.StartIndex);
             return sql;
         }
 
-        public override string QuoteParameter(string parameterName)
-        {
+        public override string QuoteParameter(string parameterName) {
             return ":" + parameterName;
         }
 
-        public override string GenIndexName(string n)
-        {
+        public override string GenIndexName(string n) {
             return GenIndexName(n, 30);
         }
 
-        public override void AddColumn(ModelContext ctx, string columnName, object o)
-        {
+        public override void AddColumn(ModelContext ctx, string columnName, object o) {
             InnerGetValue(ctx, columnName, o, true);
         }
 
-        public override string EmptyString
-        {
+        public override string EmptyString {
             get { return "' '"; }
         }
     }

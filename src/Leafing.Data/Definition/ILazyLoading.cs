@@ -1,7 +1,5 @@
-﻿namespace Leafing.Data.Definition
-{
-    public interface ILazyLoading
-    {
+﻿namespace Leafing.Data.Definition {
+    public interface ILazyLoading {
         object Read();
         void Write(object item, bool isLoad);
         void Load();

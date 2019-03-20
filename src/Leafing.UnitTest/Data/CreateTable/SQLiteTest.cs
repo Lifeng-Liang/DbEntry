@@ -7,25 +7,21 @@ using Leafing.MockSql.Recorder;
 using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data.CreateTable
-{
+namespace Leafing.UnitTest.Data.CreateTable {
     #region objects
 
-    public class CCC1 : DbObjectModel<CCC1>
-    {
-		public HasMany<IndexTestClass> Indeies { get; private set; }
+    public class CCC1 : DbObjectModel<CCC1> {
+        public HasMany<IndexTestClass> Indeies { get; private set; }
 
-		public CCC1 ()
-		{
-			Indeies = new HasMany<IndexTestClass> (this, "Id", "IndexTestClass_Id");
-		}
+        public CCC1() {
+            Indeies = new HasMany<IndexTestClass>(this, "Id", "IndexTestClass_Id");
+        }
     }
 
     [DbContext("SQLite")]
-    public class IndexTestClass : DbObjectModel<IndexTestClass>
-    {
+    public class IndexTestClass : DbObjectModel<IndexTestClass> {
         [DbColumn("CCCId"), Index(IndexName = "xxx1", UNIQUE = true), Index(IndexName = "ccc1", UNIQUE = true)]
-		public BelongsTo<CCC1, long> CCC { get; private set; }
+        public BelongsTo<CCC1, long> CCC { get; private set; }
 
         [Index(IndexName = "xxx1", UNIQUE = true)]
         public int QQQId { get; set; }
@@ -33,15 +29,13 @@ namespace Leafing.UnitTest.Data.CreateTable
         [Length(50), Index(IndexName = "ccc1", UNIQUE = true)]
         public string UUUs { get; set; }
 
-		public IndexTestClass ()
-		{
-			CCC = new BelongsTo<CCC1, long> (this, "CCC1_Id");
-		}
+        public IndexTestClass() {
+            CCC = new BelongsTo<CCC1, long>(this, "CCC1_Id");
+        }
     }
 
     [DbContext("SQLite")]
-    public class TableWithNonDbGenId : IDbObject
-    {
+    public class TableWithNonDbGenId : IDbObject {
         [DbKey(IsDbGenerate = false)]
         public int Id;
 
@@ -49,8 +43,7 @@ namespace Leafing.UnitTest.Data.CreateTable
     }
 
     [DbContext("SQLite")]
-    public class MyTest1 : IDbObject
-    {
+    public class MyTest1 : IDbObject {
         [DbKey]
         public long Id;
 
@@ -59,8 +52,7 @@ namespace Leafing.UnitTest.Data.CreateTable
     }
 
     [DbContext("SQLite")]
-    public class MyTest2 : IDbObject
-    {
+    public class MyTest2 : IDbObject {
         [DbKey]
         public long Id;
 
@@ -69,8 +61,7 @@ namespace Leafing.UnitTest.Data.CreateTable
     }
 
     [DbContext("SQLite")]
-    public class MyTest3 : IDbObject
-    {
+    public class MyTest3 : IDbObject {
         [DbKey]
         public long Id;
 
@@ -82,8 +73,7 @@ namespace Leafing.UnitTest.Data.CreateTable
     }
 
     [DbTable("MyTest"), DbContext("SQLite")]
-    public class MyTest8 : IDbObject
-    {
+    public class MyTest8 : IDbObject {
         [DbKey(IsDbGenerate = false)]
         public long Id;
 
@@ -94,15 +84,13 @@ namespace Leafing.UnitTest.Data.CreateTable
     }
 
     [DbContext("SQLite")]
-    public class UnsignedTestTable : IDbObject
-    {
+    public class UnsignedTestTable : IDbObject {
         public string Name;
         public uint Age;
     }
 
     [DbContext("SQLite")]
-    public class GuidMultiKey : IDbObject
-    {
+    public class GuidMultiKey : IDbObject {
         [DbKey(IsDbGenerate = false)]
         public Guid RoleId;
         [DbKey(IsDbGenerate = false)]
@@ -110,8 +98,7 @@ namespace Leafing.UnitTest.Data.CreateTable
     }
 
     [DbContext("SQLite")]
-    public class BinaryAndBLOB : IDbObject
-    {
+    public class BinaryAndBLOB : IDbObject {
         [Length(5, 5)]
         public byte[] password;
 
@@ -119,133 +106,114 @@ namespace Leafing.UnitTest.Data.CreateTable
     }
 
     [DbTable("Books"), DbContext("SQLite")]
-    public class crxBook : DbObjectModel<crxBook, int>
-    {
+    public class crxBook : DbObjectModel<crxBook, int> {
         [Length(20)]
         public string Name { get; set; }
 
         [CrossTableName(Name = "book_and_category")]
         public HasAndBelongsToMany<crxCategory> Categories;
 
-        public crxBook()
-        {
+        public crxBook() {
             Categories = new HasAndBelongsToMany<crxCategory>(this, "Id", "Books_Id");
         }
     }
 
     [DbTable("Categories"), DbContext("SQLite")]
-    public class crxCategory : DbObjectModel<crxCategory, int>
-    {
+    public class crxCategory : DbObjectModel<crxCategory, int> {
         [Length(20)]
         public string Name { get; set; }
 
         [CrossTableName(Name = "book_and_category")]
         public HasAndBelongsToMany<crxBook> Books;
 
-        public crxCategory()
-        {
+        public crxCategory() {
             Books = new HasAndBelongsToMany<crxBook>(this, "Id", "Categories_Id");
         }
     }
 
-    public class crxBook1 : DbObjectModel<crxBook1>
-    {
+    public class crxBook1 : DbObjectModel<crxBook1> {
         [Length(20)]
         public string Name { get; set; }
 
         [CrossTableName("book_and_category")]
-		public HasAndBelongsToMany<crxCategory1> Categories { get; private set; }
+        public HasAndBelongsToMany<crxCategory1> Categories { get; private set; }
 
-		public crxBook1 ()
-		{
-			Categories = new HasAndBelongsToMany<crxCategory1> (this, "Id", "crxCategory1_Id");
-		}
+        public crxBook1() {
+            Categories = new HasAndBelongsToMany<crxCategory1>(this, "Id", "crxCategory1_Id");
+        }
     }
 
-    public class crxCategory1 : DbObjectModel<crxCategory1>
-    {
+    public class crxCategory1 : DbObjectModel<crxCategory1> {
         [Length(20)]
         public string Name { get; set; }
 
         [CrossTableName("book_and_category")]
-		public HasAndBelongsToMany<crxBook1> Books { get; private set; }
+        public HasAndBelongsToMany<crxBook1> Books { get; private set; }
 
-		public crxCategory1 ()
-		{
-			Books = new HasAndBelongsToMany<crxBook1> (this, "Id", "crxCategory1_Id");
-		}
+        public crxCategory1() {
+            Books = new HasAndBelongsToMany<crxBook1>(this, "Id", "crxCategory1_Id");
+        }
     }
 
     [DbContext("SQLite")]
-    public class crxBook1Sqlite : DbObjectModel<crxBook1Sqlite>
-    {
+    public class crxBook1Sqlite : DbObjectModel<crxBook1Sqlite> {
         [Length(20)]
         public string Name { get; set; }
 
         [CrossTableName("book_and_category")]
-		public HasAndBelongsToMany<crxCategory1Sqlite> Categories { get; private set; }
+        public HasAndBelongsToMany<crxCategory1Sqlite> Categories { get; private set; }
 
-		public crxBook1Sqlite ()
-		{
-			Categories = new HasAndBelongsToMany<crxCategory1Sqlite> (this, "Id", "crxBook1Sqlite_Id");
-		}
+        public crxBook1Sqlite() {
+            Categories = new HasAndBelongsToMany<crxCategory1Sqlite>(this, "Id", "crxBook1Sqlite_Id");
+        }
     }
 
     [DbContext("SQLite")]
-    public class crxCategory1Sqlite : DbObjectModel<crxCategory1Sqlite>
-    {
+    public class crxCategory1Sqlite : DbObjectModel<crxCategory1Sqlite> {
         [Length(20)]
         public string Name { get; set; }
 
         [CrossTableName("book_and_category")]
-		public HasAndBelongsToMany<crxBook1Sqlite> Books { get; private set; }
+        public HasAndBelongsToMany<crxBook1Sqlite> Books { get; private set; }
 
-		public crxCategory1Sqlite ()
-		{
-			Books = new HasAndBelongsToMany<crxBook1Sqlite> (this, "Id", "crxBook1Sqlite_Id");
-		}
+        public crxCategory1Sqlite() {
+            Books = new HasAndBelongsToMany<crxBook1Sqlite>(this, "Id", "crxBook1Sqlite_Id");
+        }
     }
 
     [DbTable("tom:test_table"), DbContext("SQLite")]
-    public class compTableName : DbObjectModel<compTableName>
-    {
+    public class compTableName : DbObjectModel<compTableName> {
         public string Name { get; set; }
     }
 
     [DbContext("SQLite")]
-    public class ForTableName : DbObjectModel<ForTableName>
-    {
+    public class ForTableName : DbObjectModel<ForTableName> {
         public string Name { get; set; }
 
-		public BelongsTo<For_TableName2, long> Table2 { get; private set; }
+        public BelongsTo<For_TableName2, long> Table2 { get; private set; }
 
-		public ForTableName ()
-		{
-			Table2 = new BelongsTo<For_TableName2, long> (this, "For_TableName2_Id");
-		}
+        public ForTableName() {
+            Table2 = new BelongsTo<For_TableName2, long>(this, "For_TableName2_Id");
+        }
     }
 
-    public class For_TableName2 : DbObjectModel<For_TableName2>
-    {
+    public class For_TableName2 : DbObjectModel<For_TableName2> {
         public string Name { get; set; }
 
-		public HasMany<ForTableName> Tables { get; private set; }
+        public HasMany<ForTableName> Tables { get; private set; }
 
-		public For_TableName2 ()
-		{
-			Tables = new HasMany<ForTableName> (this, "Id", "For_TableName2_Id");
-		}
+        public For_TableName2() {
+            Tables = new HasMany<ForTableName>(this, "Id", "For_TableName2_Id");
+        }
     }
 
     [DbContext("SQLite")]
-    public class ForDefineContext : DbObjectModel<ForDefineContext>
-    {
+    public class ForDefineContext : DbObjectModel<ForDefineContext> {
         public string Name { get; set; }
     }
 
     [DbContext("SQLite")]
-    public class PrDecimal : DbObjectModel<PrDecimal>
-    {
+    public class PrDecimal : DbObjectModel<PrDecimal> {
         public decimal Price { get; set; }
 
         [Precision(10, 4)]
@@ -260,62 +228,53 @@ namespace Leafing.UnitTest.Data.CreateTable
     #endregion
 
     [TestFixture]
-    public class SqliteTest : SqlTestBase
-    {
+    public class SqliteTest : SqlTestBase {
         //private static readonly DbDriver Driver = DbDriverFactory.Instance.GetInstance("SQLite");
 
-        protected override void OnSetUp()
-        {
+        protected override void OnSetUp() {
             base.OnSetUp();
             //Driver.TableNames = null;
         }
 
         [Test]
-        public void TestGuidMultiKey()
-        {
+        public void TestGuidMultiKey() {
             DbEntry.Create(typeof(GuidMultiKey));
             Assert.AreEqual("CREATE TABLE [Guid_Multi_Key] (\n\t[RoleId] UNIQUEIDENTIFIER NOT NULL ,\n\t[UserId] UNIQUEIDENTIFIER NOT NULL ,\n\tPRIMARY KEY([RoleId], [UserId])\n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             DbEntry.Create(typeof(MyTest1));
             Assert.AreEqual("CREATE TABLE [My_Test1] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL \n);\nCREATE INDEX [IX_My_Test1_Name] ON [My_Test1] ([Name] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             DbEntry.Create(typeof(MyTest2));
             Assert.AreEqual("CREATE TABLE [My_Test2] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL \n);\nCREATE UNIQUE INDEX [IX_My_Test2_Name] ON [My_Test2] ([Name] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void Test3()
-        {
+        public void Test3() {
             DbEntry.Create(typeof(MyTest3));
             Assert.AreEqual("CREATE TABLE [My_Test3] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL ,\n\t[Age] INT NOT NULL \n);\nCREATE UNIQUE INDEX [IX_My_Test3_Name_Age] ON [My_Test3] ([Name] DESC, [Age] ASC);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void Test4()
-        {
+        public void Test4() {
 
             DbEntry.Create(typeof(PersonSqlite));
             Assert.AreEqual("CREATE TABLE [People] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void Test5()
-        {
+        public void Test5() {
             DbEntry.Create(typeof(CategorySqlite));
             Assert.AreEqual("CREATE TABLE [Categories] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void Test6()
-        {
+        public void Test6() {
             DbEntry.Create(typeof(PersonalComputerSqlite));
             AssertSql(
 @"CREATE TABLE [PCs] (
@@ -328,8 +287,7 @@ namespace Leafing.UnitTest.Data.CreateTable
         }
 
         [Test]
-        public void Test7()
-        {
+        public void Test7() {
             DbEntry.Create(typeof(BookSqlite));
             AssertSql(
 @"CREATE TABLE [Books] (
@@ -342,31 +300,27 @@ namespace Leafing.UnitTest.Data.CreateTable
         }
 
         [Test]
-        public void Test8()
-        {
+        public void Test8() {
             DbEntry.Create(typeof(MyTest8));
             Assert.AreEqual("CREATE TABLE [MyTest] (\n\t[Id] BIGINT NOT NULL ,\n\t[Name] NVARCHAR (50) NOT NULL ,\n\t[Age] INT NOT NULL ,\n\tPRIMARY KEY([Id], [Name])\n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void Test9()
-        {
+        public void Test9() {
             DbEntry.Create(typeof(ArticleSqlite));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("CREATE TABLE [Article] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL \n);\n<Text><30>()", StaticRecorder.Messages[0]);
         }
 
         [Test]
-        public void Test10()
-        {
+        public void Test10() {
             DbEntry.Create(typeof(ReaderSqlite));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("CREATE TABLE [Reader] (\n\t[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n\t[Name] NTEXT NOT NULL \n);\n<Text><30>()", StaticRecorder.Messages[0]);
         }
 
         [Test]
-        public void Test11()
-        {
+        public void Test11() {
             DbEntry.CreateCrossTable(typeof(ReaderSqlite), typeof(ArticleSqlite));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             AssertSql(0,
@@ -382,16 +336,14 @@ CREATE INDEX [IX_R_Article_Reader_Reader_Id] ON [R_Article_Reader] ([Reader_Id] 
         }
 
         [Test]
-        public void TestGuidKey()
-        {
+        public void TestGuidKey() {
             DbEntry.Create(typeof(GuidKeySqlite));
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("CREATE TABLE [Guid_Key_Sqlite] (\n\t[Id] UNIQUEIDENTIFIER NOT NULL  PRIMARY KEY,\n\t[Name] NTEXT NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void TestManyMore()
-        {
+        public void TestManyMore() {
             DbEntry.CreateCrossTable(typeof(ManyMoreSqlite), typeof(ManyMore1Sqlite));
             AssertSql(
 @"CREATE TABLE [R_ManyMore_ManyMore1] (
@@ -418,15 +370,13 @@ CREATE INDEX [IX_R_ManyMore_ManyMore2_ManyMore2_Id] ON [R_ManyMore_ManyMore2] ([
         }
 
         [Test]
-        public void TestUnsigned()
-        {
+        public void TestUnsigned() {
             DbEntry.Create(typeof(UnsignedTestTable));
             Assert.AreEqual("CREATE TABLE [Unsigned_Test_Table] (\n\t[Name] NTEXT NOT NULL ,\n\t[Age] INT UNSIGNED NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void TestCreateIndex()
-        {
+        public void TestCreateIndex() {
             DbEntry.Create(typeof(IndexTestClass));
             AssertSql(
 @"CREATE TABLE [Index_Test_Class] (
@@ -442,8 +392,7 @@ CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC
         }
 
         [Test]
-        public void TestBinaryAndBlob()
-        {
+        public void TestBinaryAndBlob() {
             DbEntry.Create(typeof(BinaryAndBLOB));
             AssertSql(
 @"CREATE TABLE [Binary_And_BLOB] (
@@ -454,25 +403,23 @@ CREATE UNIQUE INDEX [IX_Index_Test_Class_ccc1] ON [Index_Test_Class] ([UUUs] ASC
         }
 
         [Test]
-        public void TestValidationOfBinaryAndBlob()
-        {
-            var o = new BinaryAndBLOB {password = new byte[] {1}, image = new byte[] {}};
+        public void TestValidationOfBinaryAndBlob() {
+            var o = new BinaryAndBLOB { password = new byte[] { 1 }, image = new byte[] { } };
             var vh = new ValidateHandler();
             var isValid = vh.ValidateObject(o);
             Assert.IsFalse(isValid);
 
-            o.password = new byte[]{1,2,3,4,5, 6};
+            o.password = new byte[] { 1, 2, 3, 4, 5, 6 };
             isValid = vh.ValidateObject(o);
             Assert.IsFalse(isValid);
 
-            o.password = new byte[] {1, 2, 3, 4, 5};
+            o.password = new byte[] { 1, 2, 3, 4, 5 };
             isValid = vh.ValidateObject(o);
             Assert.IsTrue(isValid);
         }
 
         [Test]
-        public void TestDefineCrossTableName()
-        {
+        public void TestDefineCrossTableName() {
             DbEntry.Create(typeof(crxBook));
             AssertSql(
 @"CREATE TABLE [Books] (
@@ -495,8 +442,7 @@ CREATE INDEX [IX_R_book_and_category_Categories_Id] ON [R_book_and_category] ([C
         }
 
         [Test]
-        public void TestDefineCrossTableName2()
-        {
+        public void TestDefineCrossTableName2() {
             DbEntry.Create(typeof(crxBook1Sqlite));
             AssertSql(
 @"CREATE TABLE [crx_Book1Sqlite] (
@@ -519,8 +465,7 @@ CREATE INDEX [IX_R_book_and_category_crxCategory1Sqlite_Id] ON [R_book_and_categ
         }
 
         [Test]
-        public void TestTableName()
-        {
+        public void TestTableName() {
             DbEntry.Create(typeof(compTableName));
             AssertSql(
 @"CREATE TABLE [tom].[test_table] (
@@ -531,13 +476,12 @@ CREATE INDEX [IX_R_book_and_category_crxCategory1Sqlite_Id] ON [R_book_and_categ
         }
 
         [Test]
-        public void TestTableNameForCrud()
-        {
+        public void TestTableNameForCrud() {
             DbEntry.From<compTableName>().Where(p => p.Name == "tom").Select();
             AssertSql(@"SELECT [Id],[Name] FROM [tom].[test_table] WHERE [Name] = @Name_0;
 <Text><60>(@Name_0=tom:String)");
 
-            var c = new compTableName {Name = "tom"};
+            var c = new compTableName { Name = "tom" };
             DbEntry.Insert(c);
             AssertSql(@"INSERT INTO [tom].[test_table] ([Name]) VALUES (@Name_0);
 SELECT LAST_INSERT_ROWID();
@@ -555,8 +499,7 @@ SELECT LAST_INSERT_ROWID();
         }
 
         [Test]
-        public void TestTableWithNonDbGenId()
-        {
+        public void TestTableWithNonDbGenId() {
             DbEntry.Create(typeof(TableWithNonDbGenId));
             AssertSql(@"CREATE TABLE [Table_With_Non_Db_Gen_Id] (
     [Id] INT NOT NULL  PRIMARY KEY,
@@ -566,8 +509,7 @@ SELECT LAST_INSERT_ROWID();
         }
 
         [Test]
-        public void TestTableNameForBelongsToColumn()
-        {
+        public void TestTableNameForBelongsToColumn() {
             DbEntry.Create(typeof(ForTableName));
             AssertSql(
 @"CREATE TABLE [For_Table_Name] (
@@ -580,8 +522,7 @@ SELECT LAST_INSERT_ROWID();
         }
 
         [Test]
-        public void TestDefineContext()
-        {
+        public void TestDefineContext() {
             DbEntry.Create(typeof(ForDefineContext));
             AssertSql(@"CREATE TABLE [For_Define_Context] (
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,
@@ -591,8 +532,7 @@ SELECT LAST_INSERT_ROWID();
         }
 
         [Test]
-        public void TestDecimal()
-        {
+        public void TestDecimal() {
             DbEntry.Create(typeof(PrDecimal));
             AssertSql(@"CREATE TABLE [Pr_Decimal] (
     [Id] INTEGER PRIMARY KEY AUTOINCREMENT ,

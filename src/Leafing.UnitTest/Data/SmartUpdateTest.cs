@@ -5,81 +5,70 @@ using Leafing.Data.Definition;
 using Leafing.MockSql.Recorder;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     #region objects
 
     [DbContext("SQLite")]
-    public class sUser : DbObjectModel<sUser>
-    {
-		public string Name { get; set; }
-		public int Age { get; set; }
+    public class sUser : DbObjectModel<sUser> {
+        public string Name { get; set; }
+        public int Age { get; set; }
 
-		public sUser()
-        {
+        public sUser() {
         }
 
-		public sUser(long id, string name, int age)
-        {
-			this.Id = id;
+        public sUser(long id, string name, int age) {
+            this.Id = id;
             this.Name = name;
             this.Age = age;
-			this.InitLoadedColumns ();
+            this.InitLoadedColumns();
         }
     }
 
     [DbContext("SQLite")]
-    public class rUser : DbObjectModel<rUser>
-    {
-		public string Name { get; set; }
-		public int Age { get; set; }
+    public class rUser : DbObjectModel<rUser> {
+        public string Name { get; set; }
+        public int Age { get; set; }
 
         public HasMany<rArticle> Articles;
 
-        public rUser()
-        {
+        public rUser() {
             Articles = new HasMany<rArticle>(this, null, "Reader_Id");
         }
 
-        public rUser(long id, string name, int age)
-        {
-			this.Id = id;
+        public rUser(long id, string name, int age) {
+            this.Id = id;
             Articles = new HasMany<rArticle>(this, null, "Reader_Id");
             this.Name = name;
             this.Age = age;
-			this.InitLoadedColumns();
+            this.InitLoadedColumns();
         }
     }
 
     [DbContext("SQLite")]
-    public class rArticle : DbObjectModel<rArticle>
-    {
-		public string Name { get; set; }
+    public class rArticle : DbObjectModel<rArticle> {
+        public string Name { get; set; }
 
-		[DbColumn("thePrice")]
-		public int Price { get; set; }
+        [DbColumn("thePrice")]
+        public int Price { get; set; }
 
         [DbColumn("Reader_Id")]
         public BelongsTo<rUser, long> Reader;
 
-        public rArticle()
-        {
+        public rArticle() {
             Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
         }
 
-        public rArticle(long id, string name, int age)
-        {
-			this.Id = id;
+        public rArticle(long id, string name, int age) {
+            this.Id = id;
             Reader = new BelongsTo<rUser, long>(this, "Reader_Id");
             this.Name = name;
             this.Price = age;
-			this.InitLoadedColumns ();
+            this.InitLoadedColumns();
         }
     }
 
     [DbContext("SQLite")]
-    public class asUser : DbObjectModel<asUser>
-    {
+    public class asUser : DbObjectModel<asUser> {
         [DbColumn("theName")] public string Name { get; set; }
         public int Age { get; set; }
     }
@@ -87,12 +76,10 @@ namespace Leafing.UnitTest.Data
     #endregion
 
     [TestFixture]
-    public class SmartUpdateTest
-    {
+    public class SmartUpdateTest {
         #region init
 
-        public SmartUpdateTest()
-        {
+        public SmartUpdateTest() {
             // raise AutoCreateTable once.
             DbEntry.From<sUser>().Where(Condition.Empty).Select();
             DbEntry.From<rUser>().Where(Condition.Empty).Select();
@@ -101,15 +88,13 @@ namespace Leafing.UnitTest.Data
         }
 
         [SetUp]
-        public void SetUp()
-        {
+        public void SetUp() {
             StaticRecorder.ClearMessages();
         }
 
         #endregion
 
-        private asUser LoadAsUser(string name, int age)
-        {
+        private asUser LoadAsUser(string name, int age) {
             StaticRecorder.CurRow.Add(new RowInfo("Id", 1L));
             StaticRecorder.CurRow.Add(new RowInfo("theName", name));
             StaticRecorder.CurRow.Add(new RowInfo("Age", age));
@@ -119,8 +104,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestDropManyToManyMedi()
-        {
+        public void TestDropManyToManyMedi() {
             DbEntry.DropTable(typeof(Objects.DArticleSqlite), true);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
             Assert.AreEqual("DROP TABLE [Article]<Text><30>()", StaticRecorder.Messages[0]);
@@ -128,8 +112,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestDontUpdateIfNotSetValue()
-        {
+        public void TestDontUpdateIfNotSetValue() {
             var u = new sUser(1, "Tom", 18);
             DbEntry.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
@@ -137,20 +120,17 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestPartialUpdateThatSetValue()
-        {
-            var u = new sUser(1, "Ok", 18) {Name = "Tom"};
+        public void TestPartialUpdateThatSetValue() {
+            var u = new sUser(1, "Ok", 18) { Name = "Tom" };
             DbEntry.Save(u);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             Assert.AreEqual("UPDATE [s_User] SET [Name]=@Name_0  WHERE [Id] = @Id_1;\n<Text><30>(@Name_0=Tom:String,@Id_1=1:Int64)", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void TestPartialUpdateThatSetValueByTransaction()
-        {
-            DbEntry.NewTransaction(delegate
-            {
-                var u = new sUser(1, "Ok", 18) {Name = "Tom"};
+        public void TestPartialUpdateThatSetValueByTransaction() {
+            DbEntry.NewTransaction(delegate {
+                var u = new sUser(1, "Ok", 18) { Name = "Tom" };
                 DbEntry.Save(u);
             });
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
@@ -158,12 +138,10 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestPartialUpdateThatSetedValueByTransactionWithException()
-        {
+        public void TestPartialUpdateThatSetedValueByTransactionWithException() {
             Util.CatchAll(() =>
-                DbEntry.NewTransaction(delegate
-                {
-                    var u = new sUser(1, "Tom", 18) {Name = "Tom"};
+                DbEntry.NewTransaction(delegate {
+                    var u = new sUser(1, "Tom", 18) { Name = "Tom" };
                     DbEntry.Save(u);
                     throw new Exception(); // emulate exception
                 }));
@@ -172,12 +150,11 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSmartUpdateForComplexObject()
-        {
+        public void TestSmartUpdateForComplexObject() {
             // relationship objects, one not update, one insert, one partial update.
             var u = new rUser(1, "tom", 18);
-			u.Articles.Add(new rArticle(){Name = "sos", Price = 199});
-            var a = new rArticle(1, "haha", 299) {Price = 180};
+            u.Articles.Add(new rArticle() { Name = "sos", Price = 199 });
+            var a = new rArticle(1, "haha", 299) { Price = 180 };
             u.Articles.Add(a);
             DbEntry.Save(u);
             Assert.AreEqual(2, StaticRecorder.Messages.Count);
@@ -186,8 +163,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSmartUpdateForDynamicObject()
-        {
+        public void TestSmartUpdateForDynamicObject() {
             var u = LoadAsUser("Tom", 18);
             DbEntry.Save(u);
             Assert.AreEqual(0, StaticRecorder.Messages.Count);
@@ -195,8 +171,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSmartUpdateForDynamicObject2()
-        {
+        public void TestSmartUpdateForDynamicObject2() {
             var u = LoadAsUser("jerry", 18);
             u.Name = "Tom";
             DbEntry.Save(u);
@@ -205,8 +180,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSmartUpdateForDynamicObject3()
-        {
+        public void TestSmartUpdateForDynamicObject3() {
             var u = LoadAsUser("Tom", 18);
             u.Name = "Jerry";
             u.Age = 25;
@@ -216,13 +190,10 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSmartUpdateForDynamicObject4()
-        {
+        public void TestSmartUpdateForDynamicObject4() {
             var u = LoadAsUser("jerry", 18);
-            DbEntry.NewTransaction(delegate
-            {
-                DbEntry.NewTransaction(delegate
-                {
+            DbEntry.NewTransaction(delegate {
+                DbEntry.NewTransaction(delegate {
                     u.Name = "Tom";
                     DbEntry.Save(u);
                 });
@@ -232,8 +203,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestUpdateFieldAfterSave()
-        {
+        public void TestUpdateFieldAfterSave() {
             var u = LoadAsUser("Tom", 18);
             u.Name = "jerry";
             DbEntry.Save(u);
@@ -245,9 +215,8 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestUpdateFieldAfterInsert()
-        {
-            var u = new asUser {Name = "Tom", Age = 18};
+        public void TestUpdateFieldAfterInsert() {
+            var u = new asUser { Name = "Tom", Age = 18 };
             DbEntry.Save(u);
             u.Age = 25;
             DbEntry.Save(u);

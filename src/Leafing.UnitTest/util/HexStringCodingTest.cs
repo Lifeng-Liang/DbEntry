@@ -1,14 +1,11 @@
 ﻿using Leafing.Core.Text;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.util
-{
+namespace Leafing.UnitTest.util {
     [TestFixture]
-    public class CodingHexStringTest
-    {
+    public class CodingHexStringTest {
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             byte[] bs = HexStringCoding.Encode("01");
             Assert.AreEqual(1, bs.Length);
             Assert.AreEqual(1, bs[0]);
@@ -31,19 +28,17 @@ namespace Leafing.UnitTest.util
         }
 
         [Test]
-        public void Test2way()
-        {
-            byte[] bs = new byte[] {1, 2, 3, 4, 5, 15, 34, 135, 212, 4, 32, 67, 166};
+        public void Test2way() {
+            byte[] bs = new byte[] { 1, 2, 3, 4, 5, 15, 34, 135, 212, 4, 32, 67, 166 };
             string s = HexStringCoding.Decode(bs);
             byte[] bs1 = HexStringCoding.Encode(s);
             Assert.AreEqual(bs, bs1);
         }
 
         [Test]
-        public void Test3()
-        {
+        public void Test3() {
             const string s = "179C024222626F41622E1C9E57";
-            byte[] bs = new byte[] {23, 156, 2, 66, 34, 98, 111, 65, 98, 46, 28, 158, 87};
+            byte[] bs = new byte[] { 23, 156, 2, 66, 34, 98, 111, 65, 98, 46, 28, 158, 87 };
             byte[] bs1 = HexStringCoding.Encode(s);
             Assert.AreEqual(bs, bs1);
             string s1 = HexStringCoding.Decode(bs);

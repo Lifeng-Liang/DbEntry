@@ -1,33 +1,26 @@
 ﻿using System.Data.Common;
 
-namespace Leafing.MockSql
-{
-    public class RecorderFactory : DbProviderFactory
-    {
+namespace Leafing.MockSql {
+    public class RecorderFactory : DbProviderFactory {
         internal static readonly DbException NotImplemented = new MockDbException("The method or operation is not implemented.");
 
-        public override DbCommand CreateCommand()
-        {
+        public override DbCommand CreateCommand() {
             return new RecorderCommand();
         }
 
-        public override DbCommandBuilder CreateCommandBuilder()
-        {
+        public override DbCommandBuilder CreateCommandBuilder() {
             return new RecorderCommandBuilder();
         }
 
-        public override DbConnection CreateConnection()
-        {
+        public override DbConnection CreateConnection() {
             return new RecorderConnection();
         }
 
-        public override DbDataAdapter CreateDataAdapter()
-        {
+        public override DbDataAdapter CreateDataAdapter() {
             return new RecorderDataAdapter();
         }
 
-        public override DbParameter CreateParameter()
-        {
+        public override DbParameter CreateParameter() {
             return new RecorderParameter();
         }
     }

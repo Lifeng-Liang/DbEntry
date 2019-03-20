@@ -1,7 +1,5 @@
-﻿namespace Leafing.Data.Common
-{
-    public enum FieldType
-    {
+﻿namespace Leafing.Data.Common {
+    public enum FieldType {
         Normal,
         HasOne,
         HasMany,
@@ -10,8 +8,7 @@
         LazyLoad
     }
 
-    public enum ColumnFunction
-    {
+    public enum ColumnFunction {
         None,
         ToLower,
         ToUpper,

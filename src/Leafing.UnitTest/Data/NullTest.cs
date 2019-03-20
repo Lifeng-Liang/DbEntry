@@ -3,13 +3,11 @@ using Leafing.Data;
 using Leafing.Data.Definition;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     #region objects
 
     [DbTable("NullTest")]
-    public class NullableTable : DbObjectModel<NullableTable>
-    {
+    public class NullableTable : DbObjectModel<NullableTable> {
         [AllowNull]
         public string Name { get; set; }
         public int? MyInt { get; set; }
@@ -17,8 +15,7 @@ namespace Leafing.UnitTest.Data
     }
 
     [DbTable("NullTest")]
-    public class NullTable : DbObjectModel<NullTable>
-    {
+    public class NullTable : DbObjectModel<NullTable> {
         [AllowNull]
         public string Name { get; set; }
         public int MyInt { get; set; }
@@ -26,19 +23,17 @@ namespace Leafing.UnitTest.Data
     }
 
     [DbTable("NullTest")]
-    public class NullableTableLazyInt : DbObjectModel<NullableTableLazyInt>
-    {
+    public class NullableTableLazyInt : DbObjectModel<NullableTableLazyInt> {
         [AllowNull]
         public string Name { get; set; }
-		public LazyLoad<int?> MyInt { get; private set; }
+        public LazyLoad<int?> MyInt { get; private set; }
         public bool? MyBool { get; set; }
     }
 
     [DbTable("NullTest")]
-    public class NullableTableLazyString : DbObjectModel<NullableTableLazyString>
-    {
+    public class NullableTableLazyString : DbObjectModel<NullableTableLazyString> {
         [AllowNull]
-		public LazyLoad<string> Name { get; private set; }
+        public LazyLoad<string> Name { get; private set; }
         public int? MyInt { get; set; }
         public bool? MyBool { get; set; }
     }
@@ -46,11 +41,9 @@ namespace Leafing.UnitTest.Data
     #endregion
 
     [TestFixture]
-    public class NullTest : DataTestBase
-    {
+    public class NullTest : DataTestBase {
         [Test]
-        public void TestNullTableWithNonNullValue()
-        {
+        public void TestNullTableWithNonNullValue() {
             NullTable o = NullTable.FindById(4);
             Assert.IsNotNull(o);
             Assert.AreEqual(4, o.Id);
@@ -60,8 +53,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestNullString()
-        {
+        public void TestNullString() {
             NullTable o = NullTable.FindById(2);
             Assert.IsNotNull(o);
             Assert.AreEqual(2, o.Id);
@@ -71,8 +63,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             NullableTable o = NullableTable.FindById(1);
             Assert.IsNotNull(o);
             Assert.AreEqual(1, o.Id);
@@ -82,8 +73,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             NullableTable o = NullableTable.FindById(2);
             Assert.IsNotNull(o);
             Assert.AreEqual(2, o.Id);
@@ -93,8 +83,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test3()
-        {
+        public void Test3() {
             NullableTable o = NullableTable.FindById(3);
             Assert.IsNotNull(o);
             Assert.AreEqual(3, o.Id);
@@ -104,8 +93,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test4()
-        {
+        public void Test4() {
             NullableTable o = NullableTable.FindById(4);
             Assert.IsNotNull(o);
             Assert.AreEqual(4, o.Id);
@@ -115,8 +103,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test3WithSql()
-        {
+        public void Test3WithSql() {
             List<NullableTable> ls = DbEntry.ExecuteList<NullableTable>(
                 "select * from NullTest where Id = 3");
             Assert.AreEqual(1, ls.Count);
@@ -129,9 +116,8 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestCrud()
-        {
-            var o = new NullableTable {Name = null, MyInt = null, MyBool = null};
+        public void TestCrud() {
+            var o = new NullableTable { Name = null, MyInt = null, MyBool = null };
             o.Save();
 
             NullableTable o1 = NullableTable.FindById(o.Id);
@@ -174,31 +160,28 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestLazyInt()
-        {
+        public void TestLazyInt() {
             NullableTableLazyInt o = NullableTableLazyInt.FindById(1);
             Assert.IsNotNull(o);
             Assert.AreEqual(1, o.Id);
             Assert.AreEqual("tom", o.Name);
-			Assert.IsTrue(null == o.MyInt.Value);
-			Assert.IsTrue(true == o.MyBool.Value);
+            Assert.IsTrue(null == o.MyInt.Value);
+            Assert.IsTrue(true == o.MyBool.Value);
         }
 
         [Test]
-        public void TestLazyString()
-        {
+        public void TestLazyString() {
             NullableTableLazyString o = NullableTableLazyString.FindById(2);
             Assert.IsNotNull(o);
             Assert.AreEqual(2, o.Id);
-			Assert.AreEqual(null, o.Name.Value);
+            Assert.AreEqual(null, o.Name.Value);
             Assert.IsTrue(1 == o.MyInt);
             Assert.IsTrue(false == o.MyBool);
         }
 
         [Test]
-        public void TestEmptyString()
-        {
-            var o = new NullableTable {Name = ""};
+        public void TestEmptyString() {
+            var o = new NullableTable { Name = "" };
             o.Save();
 
             var o1 = NullableTable.FindById(o.Id);
@@ -207,16 +190,15 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual("", o1.Name);
         }
 
-		[Test]
-		public void TestObjectInfoForNullable()
-		{
-			var ctx = ModelContext.GetInstance (typeof(NullableTable));
-			foreach (var item in ctx.Info.Members) {
-				if (item.Name != "Id") {
-					Assert.IsTrue (item.Is.AllowNull, 
-						item.Name + " should allow null but was not.");
-				}
-			}
-		}
+        [Test]
+        public void TestObjectInfoForNullable() {
+            var ctx = ModelContext.GetInstance(typeof(NullableTable));
+            foreach (var item in ctx.Info.Members) {
+                if (item.Name != "Id") {
+                    Assert.IsTrue(item.Is.AllowNull,
+                        item.Name + " should allow null but was not.");
+                }
+            }
+        }
     }
 }

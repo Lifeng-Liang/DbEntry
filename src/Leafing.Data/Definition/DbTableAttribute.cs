@@ -1,20 +1,16 @@
 ﻿using System;
 
-namespace Leafing.Data.Definition
-{
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
-	public class DbTableAttribute : Attribute
-	{
+namespace Leafing.Data.Definition {
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class DbTableAttribute : Attribute {
         public string TableName;
-	    public Type PartOf;
+        public Type PartOf;
 
-		public DbTableAttribute(string tableName)
-		{
+        public DbTableAttribute(string tableName) {
             this.TableName = tableName;
-		}
+        }
 
-        public DbTableAttribute(Type partOf)
-        {
+        public DbTableAttribute(Type partOf) {
             this.PartOf = partOf;
         }
     }

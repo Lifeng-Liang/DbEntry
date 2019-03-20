@@ -3,63 +3,54 @@ using Leafing.Data;
 using Leafing.Data.Definition;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     #region objects
 
     [DbTable("ArticleMore")]
-    public class ArticleMore : DbObjectModel<ArticleMore>
-    {
+    public class ArticleMore : DbObjectModel<ArticleMore> {
         public string Name { get; set; }
 
-		public HasMany<BelongsMore> Bms { get; private set; }
+        public HasMany<BelongsMore> Bms { get; private set; }
 
-		public ArticleMore ()
-		{
-			Bms = new HasMany<BelongsMore> (this, "Id", "Article_Id");
-		}
+        public ArticleMore() {
+            Bms = new HasMany<BelongsMore>(this, "Id", "Article_Id");
+        }
     }
 
     [DbTable("ReaderMore")]
-    public class ReaderMore : DbObjectModel<ReaderMore>
-    {
+    public class ReaderMore : DbObjectModel<ReaderMore> {
         public string Name { get; set; }
 
-		public HasMany<BelongsMore> Bms { get; private set; }
+        public HasMany<BelongsMore> Bms { get; private set; }
 
-		public ReaderMore ()
-		{
-			Bms = new HasMany<BelongsMore> (this, "Id", "Reader_Id");
-		}
+        public ReaderMore() {
+            Bms = new HasMany<BelongsMore>(this, "Id", "Reader_Id");
+        }
     }
 
     [DbTable("BelongsMore")]
-    public class BelongsMore : DbObjectModel<BelongsMore>
-    {
+    public class BelongsMore : DbObjectModel<BelongsMore> {
         [Length(50)]
         public string Name { get; set; }
 
         [DbColumn("Article_Id")]
-		public BelongsTo<ArticleMore> Article { get; set; }
+        public BelongsTo<ArticleMore> Article { get; set; }
 
         [DbColumn("Reader_Id")]
-		public BelongsTo<ReaderMore> Reader { get; set; }
+        public BelongsTo<ReaderMore> Reader { get; set; }
 
-		public BelongsMore ()
-		{
-			Article = new BelongsTo<ArticleMore> (this, "Article_Id");
-			Reader = new BelongsTo<ReaderMore> (this, "Reader_Id");
-		}
+        public BelongsMore() {
+            Article = new BelongsTo<ArticleMore>(this, "Article_Id");
+            Reader = new BelongsTo<ReaderMore>(this, "Reader_Id");
+        }
     }
 
     #endregion
 
     [TestFixture]
-    public class BelongsMoreTest : DataTestBase
-    {
+    public class BelongsMoreTest : DataTestBase {
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             ArticleMore a = ArticleMore.FindById(1);
             Assert.IsNotNull(a);
             Assert.AreEqual("The lovely bones", a.Name);
@@ -78,8 +69,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             ReaderMore r = ReaderMore.FindById(1);
             Assert.IsNotNull(r);
             Assert.AreEqual("tom", r.Name);
@@ -97,11 +87,10 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test3()
-        {
+        public void Test3() {
             BelongsMore b = BelongsMore.FindById(1);
             Assert.IsNotNull(b);
-			Assert.AreEqual("The lovely bones", b.Article.Value.Name);
+            Assert.AreEqual("The lovely bones", b.Article.Value.Name);
             Assert.AreEqual("jerry", b.Reader.Value.Name);
 
             b = BelongsMore.FindById(3);
@@ -110,9 +99,8 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestInsert()
-        {
-            var r = new ReaderMore {Name = "test"};
+        public void TestInsert() {
+            var r = new ReaderMore { Name = "test" };
             r.Save();
 
             ReaderMore r1 = ReaderMore.FindById(r.Id);
@@ -121,10 +109,9 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestInsertRelations()
-        {
-            var r = new ReaderMore {Name = "test"};
-            var b = new BelongsMore {Name = "b"};
+        public void TestInsertRelations() {
+            var r = new ReaderMore { Name = "test" };
+            var b = new BelongsMore { Name = "b" };
             r.Bms.Add(b);
             r.Save();
 
@@ -134,15 +121,14 @@ namespace Leafing.UnitTest.Data
             Assert.AreEqual("b", r1.Bms[0].Name);
 
             Assert.AreEqual("test", r1.Bms[0].Reader.Value.Name);
-			Assert.IsNull(r1.Bms[0].Article.Value);
+            Assert.IsNull(r1.Bms[0].Article.Value);
         }
 
         [Test]
-        public void TestInsertRelations2()
-        {
-            var r = new ReaderMore {Name = "test"};
-            var a = new ArticleMore {Name = "art"};
-            var b = new BelongsMore {Name = "b"};
+        public void TestInsertRelations2() {
+            var r = new ReaderMore { Name = "test" };
+            var a = new ArticleMore { Name = "art" };
+            var b = new BelongsMore { Name = "b" };
             r.Bms.Add(b);
             a.Bms.Add(b);
             r.Save();
@@ -157,8 +143,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestUpdate()
-        {
+        public void TestUpdate() {
             ArticleMore a = ArticleMore.FindById(1);
             Assert.IsNotNull(a);
             Assert.AreEqual("The lovely bones", a.Name);
@@ -177,8 +162,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestUpdate2()
-        {
+        public void TestUpdate2() {
             ArticleMore a = ArticleMore.FindById(1);
             Assert.IsNotNull(a);
             Assert.AreEqual("The lovely bones", a.Name);
@@ -194,8 +178,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestUpdate3()
-        {
+        public void TestUpdate3() {
             ArticleMore a1 = ArticleMore.FindById(1);
             ArticleMore a2 = ArticleMore.FindById(2);
             a2.Bms.Add(a1.Bms[0]);
@@ -213,26 +196,23 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestDelete()
-        {
+        public void TestDelete() {
             ArticleMore.FindById(1).Delete();
 
             ReaderMore r = ReaderMore.FindById(2);
             Assert.AreEqual("f1", r.Bms[0].Name);
-			Assert.IsNull(r.Bms[0].Article.Value);
+            Assert.IsNull(r.Bms[0].Article.Value);
         }
 
         [Test]
-        public void TestDelete2()
-        {
+        public void TestDelete2() {
             ArticleMore.FindById(1).Delete();
             // it's don't need to be.
             // Assert.AreEqual(0, DbEntry.Provider.ExecuteScalar("select [Article_Id] from [BelongsMore] Where [Id] = 1"));
         }
 
         [Test]
-        public void TestDelete3()
-        {
+        public void TestDelete3() {
             ArticleMore a = ArticleMore.FindById(1);
             Assert.AreEqual("f1", a.Bms[0].Name);
             a.Delete();
@@ -244,13 +224,12 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestCreateTable()
-        {
+        public void TestCreateTable() {
             DbEntry.DropAndCreate(typeof(BelongsMore));
             ArticleMore a = ArticleMore.FindById(1);
             Assert.AreEqual(0, a.Bms.Count);
 
-            a.Bms.Add(new BelongsMore {Name = "mytest"});
+            a.Bms.Add(new BelongsMore { Name = "mytest" });
             a.Save();
 
             a = ArticleMore.FindById(1);

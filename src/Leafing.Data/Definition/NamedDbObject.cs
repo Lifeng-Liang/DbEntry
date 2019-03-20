@@ -1,10 +1,8 @@
 ﻿using System;
 
-namespace Leafing.Data.Definition
-{
+namespace Leafing.Data.Definition {
     [Serializable]
-    public abstract class NamedDbObject : IDbObject
-    {
+    public abstract class NamedDbObject : IDbObject {
         [DbKey(IsDbGenerate = false), Length(1, 255)]
         public string Name = "";
     }

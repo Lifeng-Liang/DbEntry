@@ -4,21 +4,17 @@ using Leafing.Data;
 using Leafing.Data.Definition;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [DbTable("Reader")]
-    public class MyReader : IDbObject
-    {
+    public class MyReader : IDbObject {
         public long Id;
         public string Name;
     }
 
     [TestFixture]
-    public class DbObjectListTest : DataTestBase
-    {
+    public class DbObjectListTest : DataTestBase {
         [Test]
-        public void TestToDataTable()
-        {
+        public void TestToDataTable() {
             DataTable dt = DbEntry.From<MyReader>().Where(Condition.Empty).OrderBy("Id").Select().ToDataTable();
             Assert.AreEqual("Reader", dt.TableName);
             Assert.AreEqual(3, dt.Rows.Count);
@@ -31,8 +27,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestToDataTable2()
-        {
+        public void TestToDataTable2() {
             DataTable dt = DbEntry.From<NullableTable>().Where(Condition.Empty).OrderBy("Id").Select().ToDataTable();
             Assert.AreEqual("NullTest", dt.TableName);
             Assert.AreEqual(4, dt.Rows.Count);

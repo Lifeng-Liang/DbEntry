@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using Leafing.Core.Setting;
 using Leafing.Data.Builder.Clause;
 using Leafing.Data.Dialect;
 using Leafing.Data.Model;
 using Leafing.Data.Model.Member;
 using Leafing.Data.SqlEntry;
 
-namespace Leafing.Data.Common
-{
-    public class AutoSchemeFixer
-    {
+namespace Leafing.Data.Common {
+    public class AutoSchemeFixer {
         protected static object LockRoot = new object();
 
-        public static AutoSchemeFixer CreateInstance(DataProvider provider, ObjectInfo info)
-        {
-            switch(provider.Driver.AutoScheme)
-            {
+        public static AutoSchemeFixer CreateInstance(DataProvider provider, ObjectInfo info) {
+            switch (provider.Driver.AutoScheme) {
                 case AutoScheme.None:
                     return new AutoSchemeFixer();
                 case AutoScheme.CreateTable:
@@ -31,67 +28,51 @@ namespace Leafing.Data.Common
 
         protected bool Processed = false;
 
-        protected AutoSchemeFixer()
-        {
+        protected AutoSchemeFixer() {
         }
 
-        public virtual void TryFix()
-        {
+        public virtual void TryFix() {
         }
 
-        public void SetAsProcessed()
-        {
+        public void SetAsProcessed() {
             Processed = true;
         }
     }
 
-    public class AutoSchemeFixerCreateTable : AutoSchemeFixer
-    {
+    public class AutoSchemeFixerCreateTable : AutoSchemeFixer {
         private readonly List<Type> _createTables;
         protected readonly DataProvider Provider;
 
-        public AutoSchemeFixerCreateTable(DataProvider provider, ObjectInfo info)
-        {
+        public AutoSchemeFixerCreateTable(DataProvider provider, ObjectInfo info) {
             this.Provider = provider;
             _createTables = GetCreateTables(info);
         }
 
-        private List<Type> GetCreateTables(ObjectInfo info)
-        {
-            if (info.From.PartOf != null)
-            {
+        private List<Type> GetCreateTables(ObjectInfo info) {
+            if (info.From.PartOf != null) {
                 return new List<Type> { info.From.PartOf };
             }
-            if (info.From.JoinClauseList != null)
-            {
+            if (info.From.JoinClauseList != null) {
                 var jar = new Dictionary<Type, int>();
-                foreach (JoinClause jc in info.From.JoinClauseList)
-                {
-                    if (jc.Type1 != null)
-                    {
+                foreach (JoinClause jc in info.From.JoinClauseList) {
+                    if (jc.Type1 != null) {
                         jar[jc.Type1] = 1;
                     }
-                    if (jc.Type2 != null)
-                    {
+                    if (jc.Type2 != null) {
                         jar[jc.Type2] = 1;
                     }
                 }
-                if (jar.Count > 0)
-                {
+                if (jar.Count > 0) {
                     return new List<Type>(jar.Keys);
                 }
             }
             return new List<Type> { info.HandleType };
         }
 
-        public override void TryFix()
-        {
-            lock (LockRoot)
-            {
-                if(!Processed)
-                {
-                    foreach (var type in _createTables)
-                    {
+        public override void TryFix() {
+            lock (LockRoot) {
+                if (!Processed) {
+                    foreach (var type in _createTables) {
                         var ctx = ModelContext.GetInstance(type);
                         InnerTryFix(ctx);
                         ctx.Operator.Fixer.SetAsProcessed();
@@ -100,86 +81,65 @@ namespace Leafing.Data.Common
             }
         }
 
-        protected virtual void InnerTryFix(ModelContext ctx)
-        {
+        protected virtual void InnerTryFix(ModelContext ctx) {
             string name = ctx.Info.From.MainTableName;
-            if (name != null)
-            {
-                if (!ctx.Provider.TableNames.Contains(name.ToLower()))
-                {
+            if (name != null) {
+                if (!ctx.Provider.TableNames.Contains(name.ToLower())) {
                     CreateTable(ctx);
-                }
-                else
-                {
+                } else {
                     FixColumns(ctx);
                 }
             }
         }
 
-        protected virtual void CreateTable(ModelContext ctx)
-        {
+        protected virtual void CreateTable(ModelContext ctx) {
             ctx.Operator.CreateTableAndRelations(ctx);
         }
 
-        protected virtual void FixColumns(ModelContext ctx)
-        {
+        protected virtual void FixColumns(ModelContext ctx) {
         }
     }
 
-    public class AutoSchemeFixerAddColumns : AutoSchemeFixerCreateTable
-    {
-        public AutoSchemeFixerAddColumns(DataProvider provider, ObjectInfo info) : base(provider, info)
-        {
+    public class AutoSchemeFixerAddColumns : AutoSchemeFixerCreateTable {
+        public AutoSchemeFixerAddColumns(DataProvider provider, ObjectInfo info) : base(provider, info) {
         }
 
-        protected override void FixColumns(ModelContext ctx)
-        {
+        protected override void FixColumns(ModelContext ctx) {
             string name = ctx.Info.From.MainTableName;
             var cs = ctx.Provider.GetDbColumnInfoList(name);
-            foreach(var member in ctx.Info.Members)
-            {
-                if(!member.Is.RelationField && !member.Name.StartsWith("$") 
-                    && !cs.Exists(p => p.ColumnName.ToUpper() == member.Name.ToUpper()))
-                {
+            foreach (var member in ctx.Info.Members) {
+                if (!member.Is.RelationField && !member.Name.StartsWith("$")
+                    && !cs.Exists(p => p.ColumnName.ToUpper() == member.Name.ToUpper())) {
                     ctx.AddColumn(member.Name, GetDefaultValue(member, ctx.Provider.Dialect));
                 }
             }
         }
 
-        private object GetDefaultValue(MemberHandler member, DbDialect dialect)
-        {
-            if(member.Is.AllowNull)
-            {
+        private object GetDefaultValue(MemberHandler member, DbDialect dialect) {
+            if (member.Is.AllowNull) {
                 return null;
             }
             var t = member.MemberType;
-            if(t == typeof(string) || t == typeof(byte[]))
-            {
+            if (t == typeof(string) || t == typeof(byte[])) {
                 return dialect.EmptyString;
             }
-            if(t == typeof(DateTime) || t == typeof(Date) || t == typeof(Time))
-            {
+            if (t == typeof(DateTime) || t == typeof(Date) || t == typeof(Time)) {
                 return dialect.QuoteDateTimeValue(dialect.DefaultDateTimeString());
             }
-            if(t == typeof(Guid))
-            {
+            if (t == typeof(Guid)) {
                 return "'" + Guid.NewGuid().ToString() + "'";
             }
             return 0;
         }
     }
 
-    public class AutoSchemeFixerRemoveColumns : AutoSchemeFixerAddColumns
-    {
-        public AutoSchemeFixerRemoveColumns(DataProvider provider, ObjectInfo info) : base(provider, info)
-        {
+    public class AutoSchemeFixerRemoveColumns : AutoSchemeFixerAddColumns {
+        public AutoSchemeFixerRemoveColumns(DataProvider provider, ObjectInfo info) : base(provider, info) {
         }
 
-        protected override void FixColumns(ModelContext ctx)
-        {
+        protected override void FixColumns(ModelContext ctx) {
             var sd = ctx.Info.SoftDeleteColumnName;
-            if(sd != null)
-            {
+            if (sd != null) {
                 sd = sd.ToUpper();
             }
             base.FixColumns(ctx);
@@ -187,18 +147,14 @@ namespace Leafing.Data.Common
             var cs = ctx.Provider.GetDbColumnInfoList(name);
             var list = new List<MemberHandler>(ctx.Info.Members);
             var rcs = new List<string>();
-            foreach(var c in cs)
-            {
-                if(!list.Exists(p => p.Name.ToUpper() == c.ColumnName.ToUpper()))
-                {
-                    if(c.ColumnName.ToUpper() != sd)
-                    {
+            foreach (var c in cs) {
+                if (!list.Exists(p => p.Name.ToUpper() == c.ColumnName.ToUpper())) {
+                    if (c.ColumnName.ToUpper() != sd) {
                         rcs.Add(c.ColumnName);
                     }
                 }
             }
-            if(rcs.Count > 0)
-            {
+            if (rcs.Count > 0) {
                 ctx.DropColumn(rcs.ToArray());
             }
         }

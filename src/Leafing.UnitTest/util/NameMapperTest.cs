@@ -1,50 +1,41 @@
 ﻿using Leafing.Core.Text;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.util
-{
+namespace Leafing.UnitTest.util {
     [TestFixture]
-    public class NameMapperTest
-    {
+    public class NameMapperTest {
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             Assert.AreEqual("TomCat", (new NameMapper()).MapName("TomCat"));
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             Assert.AreEqual("Tom_Cat", (new UnderlineNameMapper()).MapName("TomCat"));
         }
 
         [Test]
-        public void Test3()
-        {
+        public void Test3() {
             Assert.AreEqual("ETom_Cat", (new UnderlineNameMapper()).MapName("ETomCat"));
         }
 
         [Test]
-        public void Test4()
-        {
+        public void Test4() {
             Assert.AreEqual("e_Exception", (new UnderlineNameMapper()).MapName("eException"));
         }
 
         [Test]
-        public void Test5()
-        {
+        public void Test5() {
             Assert.AreEqual("Tom_DCat", (new UnderlineNameMapper()).MapName("TomDCat"));
         }
 
         [Test]
-        public void Test6()
-        {
+        public void Test6() {
             Assert.AreEqual("Tom_Cat", (new UnderlineNameMapper()).MapName("Tom_Cat"));
         }
 
         [Test]
-        public void Test7()
-        {
+        public void Test7() {
             Assert.AreEqual("test", (new UnderlineNameMapper()).MapName("test"));
         }
     }

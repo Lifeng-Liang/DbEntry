@@ -5,26 +5,22 @@ using Leafing.Data.Definition;
 using Leafing.MockSql.Recorder;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data.CreateTable
-{
+namespace Leafing.UnitTest.Data.CreateTable {
     [DbContext("Firebird")]
-    public class fbLongName : DbObjectModel<fbLongName>
-    {
+    public class fbLongName : DbObjectModel<fbLongName> {
         // use guid to gen index name and encode it into base32
         [Index]
         public string N123456789012345678901234567890 { get; set; }
     }
 
     [DbContext("Firebird")]
-    public class fbLongName2 : DbObjectModel<fbLongName2>
-    {
+    public class fbLongName2 : DbObjectModel<fbLongName2> {
         [Index]
         public string Name { get; set; }
     }
 
     [DbContext("Firebird")]
-    public class fbBlob : DbObjectModel<fbBlob>
-    {
+    public class fbBlob : DbObjectModel<fbBlob> {
         [Length(64)]
         public byte[] Blob1 { get; set; }
 
@@ -40,19 +36,16 @@ namespace Leafing.UnitTest.Data.CreateTable
     }
 
     [DbContext("Firebird")]
-    public class fbTime : DbObjectModel<fbTime>
-    {
+    public class fbTime : DbObjectModel<fbTime> {
         [Length(50)]
         public string Name { get; set; }
         public Time Time { get; set; }
     }
 
     [TestFixture]
-    public class FirebirdTest
-    {
+    public class FirebirdTest {
         [Test]
-        public void TestToAvoidMoreThan31CharsIndexName()
-        {
+        public void TestToAvoidMoreThan31CharsIndexName() {
             DbEntry.Create(typeof(fbLongName));
             string s = getIndexName();
             Debug.Assert(s != null);
@@ -60,8 +53,7 @@ namespace Leafing.UnitTest.Data.CreateTable
             Assert.AreEqual("IX_1QCVK84BPESSPIBHJ1ND74RDE7", s);
         }
 
-        private static string getIndexName()
-        {
+        private static string getIndexName() {
             string s = StaticRecorder.LastMessage.Substring(@"CREATE INDEX """.Length);
             int n = s.IndexOf("\"");
             s = s.Substring(0, n);
@@ -70,8 +62,7 @@ namespace Leafing.UnitTest.Data.CreateTable
         }
 
         [Test]
-        public void TestForNormalIndexName()
-        {
+        public void TestForNormalIndexName() {
             DbEntry.Create(typeof(fbLongName2));
             string s = getIndexName();
             Debug.Assert(s != null);
@@ -79,8 +70,7 @@ namespace Leafing.UnitTest.Data.CreateTable
         }
 
         [Test]
-        public void TestBlob()
-        {
+        public void TestBlob() {
             StaticRecorder.Messages.Clear();
             DbEntry.Create(typeof(fbBlob));
             Assert.AreEqual(@"CREATE TABLE ""FB_BLOB"" (
@@ -95,8 +85,7 @@ namespace Leafing.UnitTest.Data.CreateTable
         }
 
         [Test]
-        public void TestTime()
-        {
+        public void TestTime() {
             StaticRecorder.Messages.Clear();
             DbEntry.Create(typeof(fbTime));
             Assert.AreEqual(@"CREATE TABLE ""FB_TIME"" (

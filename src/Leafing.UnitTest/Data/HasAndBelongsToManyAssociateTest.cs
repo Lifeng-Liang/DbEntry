@@ -5,64 +5,56 @@ using Leafing.Data.Definition;
 using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     #region objects
 
     [Serializable]
-    public class TableC : DbObjectModel<TableC>
-    {
+    public class TableC : DbObjectModel<TableC> {
         public string Title { get; set; }
 
-		public HasAndBelongsToMany<TableD> TD { get; private set; }
+        public HasAndBelongsToMany<TableD> TD { get; private set; }
 
-		public TableC ()
-		{
-			TD = new HasAndBelongsToMany<TableD> (this, "Id", "TableC_Id");
-		}
+        public TableC() {
+            TD = new HasAndBelongsToMany<TableD>(this, "Id", "TableC_Id");
+        }
     }
 
     [Serializable]
-    public class TableD : DbObjectModel<TableD>
-    {
+    public class TableD : DbObjectModel<TableD> {
         public string Name { get; set; }
 
-		public HasAndBelongsToMany<TableC> TC { get; private set; }
+        public HasAndBelongsToMany<TableC> TC { get; private set; }
 
-		public TableD ()
-		{
-			TC = new HasAndBelongsToMany<TableC> (this, "Id", "TableD_Id");
-		}
+        public TableD() {
+            TC = new HasAndBelongsToMany<TableC>(this, "Id", "TableD_Id");
+        }
     }
 
-	public class TableE : DbObjectModel<TableE>
-	{
-		public string Name { get; set; }
-		public HasAndBelongsToMany<TableF> TF { get; set; }
-	}
+    public class TableE : DbObjectModel<TableE> {
+        public string Name { get; set; }
+        public HasAndBelongsToMany<TableF> TF { get; set; }
+    }
 
-	public class TableF : DbObjectModel<TableF, Guid>
-	{
-		public string Name { get; set; }
-		public HasAndBelongsToMany<TableE> TE { get; set; }
-	}
+    public class TableF : DbObjectModel<TableF, Guid> {
+        public string Name { get; set; }
+        public HasAndBelongsToMany<TableE> TE { get; set; }
+    }
 
     #endregion
 
     [TestFixture]
-    public class HasAndBelongsToManyAssociateTest : DataTestBase
-    {
-		[Test, ExpectedException(typeof(TypeInitializationException))]
-		public void TestRelationTablesShouldHaveSameIdType()
-		{
-			var o = new TableE();
-			o.Name = "test";
-			o.Save();
-		}
+    public class HasAndBelongsToManyAssociateTest : DataTestBase {
+        [Test]
+        public void TestRelationTablesShouldHaveSameIdType() {
+            Assert.Throws<TypeInitializationException>(() => {
+                var o = new TableE();
+                o.Name = "test";
+                o.Save();
+            });
+        }
 
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             // A.Select will load A, A.B will LazyLoading
             var a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
@@ -73,23 +65,21 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             // A.Select will load A, if A.B have been modified, then will not Loading B
             var a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
-            a.Readers.Add(new Reader {Name = "ruby"});
+            a.Readers.Add(new Reader { Name = "ruby" });
             Assert.AreEqual(1, a.Readers.Count);
             Assert.AreEqual("ruby", a.Readers[0].Name);
         }
 
         [Test]
-        public void Test3()
-        {
+        public void Test3() {
             // A.Save will load A, if there is new element in A.B, then insert B, insert A_B
             var a = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
-            a.Readers.Add(new Reader {Name = "ruby"});
+            a.Readers.Add(new Reader { Name = "ruby" });
             DbEntry.Save(a);
             var a1 = DbEntry.GetObject<Article>(1);
             Assert.IsNotNull(a);
@@ -98,8 +88,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test4()
-        {
+        public void Test4() {
             // A.Save will save A, if there is loaded element in A.B, then update B, it will not modify A_B
             var a = DbEntry.GetObject<Article>(3);
             Assert.IsNotNull(a);
@@ -116,8 +105,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test5()
-        {
+        public void Test5() {
             // A.Delete will delete A, and delete all the related items in A_B
             var a = DbEntry.GetObject<Article>(1);
             DbEntry.Delete(a);
@@ -130,11 +118,10 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test6()
-        {
+        public void Test6() {
             // if A doing Insert, A.Save will save A, if there is new element in A.B, then insert B, insert A_B
-            var a = new Article {Name = "Call from hell"};
-            a.Readers.Add(new Reader {Name = "ruby"});
+            var a = new Article { Name = "Call from hell" };
+            a.Readers.Add(new Reader { Name = "ruby" });
             DbEntry.Save(a);
             var a1 = DbEntry.GetObject<Article>(a.Id);
             Assert.IsNotNull(a);
@@ -144,8 +131,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test7()
-        {
+        public void Test7() {
             // A.Save, if A.B is a loaded item but insert into A this time, insert A_B
             var a = DbEntry.GetObject<Article>(3);
             Assert.IsNotNull(a);
@@ -168,8 +154,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test8()
-        {
+        public void Test8() {
             // A.Save, if A.B is a loaded item but insert into A this time, insert A_B
             var a = DbEntry.GetObject<Article>(3);
             var r = DbEntry.GetObject<Reader>(2);
@@ -184,8 +169,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test9()
-        {
+        public void Test9() {
             // A.Save, if A.B is loaded item and remove it from A, delete A_B
             var a = DbEntry.GetObject<Article>(1);
             Assert.AreEqual(3, a.Readers.Count);
@@ -213,8 +197,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test9_1()
-        {
+        public void Test9_1() {
             Reader r = Reader.FindById(1);
             Assert.AreEqual(2, r.Articles.Count);
             Assert.AreEqual("The lovely bones", r.Articles[0].Name);
@@ -235,16 +218,15 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test10()
-        {
+        public void Test10() {
             DbEntry.DropAndCreate(typeof(TableC));
             DbEntry.DropAndCreate(typeof(TableD));
             DbEntry.CreateCrossTable(typeof(TableC), typeof(TableD));
 
-            var t1 = new TableC {Title = "Article1"};
+            var t1 = new TableC { Title = "Article1" };
             t1.Save();
 
-            var t3 = new TableD {Name = "Tag1"};
+            var t3 = new TableD { Name = "Tag1" };
             t3.Save();
 
             var t2 = TableC.FindOne(p => p.Id == 1);
@@ -272,8 +254,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test, Ignore("for now")]
-        public void TestDelteWillRemoveRelation()
-        {
+        public void TestDelteWillRemoveRelation() {
             // B.Delete() will cut the relation of it from A
             var a = DbEntry.GetObject<Article>(1);
             Assert.AreEqual(3, a.Readers.Count);

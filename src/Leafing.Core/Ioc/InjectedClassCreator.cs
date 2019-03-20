@@ -2,33 +2,27 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Leafing.Core.Ioc
-{
-    internal class InjectedClassCreator : ClassCreator
-    {
+namespace Leafing.Core.Ioc {
+    internal class InjectedClassCreator : ClassCreator {
         public readonly ConstructorInfo Constructor;
         public readonly List<PropertyInjector> PropertyInjectors;
 
         public InjectedClassCreator(Type type, int index, string name, ConstructorInfo constructor, List<PropertyInjector> injectors)
-            : base(type, index, name)
-        {
+            : base(type, index, name) {
             this.Constructor = constructor;
             this.PropertyInjectors = injectors;
         }
 
-        public override object Create()
-        {
+        public override object Create() {
             var obj = CreateObject();
             InjectObject(obj);
             return obj;
         }
 
-        private object CreateObject()
-        {
+        private object CreateObject() {
             var ps = Constructor.GetParameters();
             var os = new object[ps.Length];
-            for (int i = 0; i < ps.Length; i++)
-            {
+            for (int i = 0; i < ps.Length; i++) {
                 var injection = ps[i].GetAttribute<InjectionAttribute>(false);
                 var op = SimpleContainer.Get(ps[i].ParameterType, injection.Index);
                 os[i] = op;
@@ -36,10 +30,8 @@ namespace Leafing.Core.Ioc
             return Constructor.Invoke(os);
         }
 
-        private void InjectObject(object obj)
-        {
-            foreach(var injector in PropertyInjectors)
-            {
+        private void InjectObject(object obj) {
+            foreach (var injector in PropertyInjectors) {
                 var op = SimpleContainer.Get(injector.Type, injector.Index);
                 injector.Property.SetValue(obj, op, null);
             }

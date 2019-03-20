@@ -1,37 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Leafing.Core.Text
-{
+namespace Leafing.Core.Text {
     // Translate from ActiveSupport of Ruby On Rails
-    public static class Inflector
-    {
+    public static class Inflector {
         private static readonly List<KeyValuePair<Regex, string>> Plurals;
         private static readonly List<KeyValuePair<Regex, string>> Singulars;
         private static readonly List<string> Uncountables;
 
-        static Inflector()
-        {
+        static Inflector() {
             Plurals = new List<KeyValuePair<Regex, string>>();
             Singulars = new List<KeyValuePair<Regex, string>>();
             Uncountables = new List<string>();
             Init();
         }
 
-        private static void Plural(string rule, string replacement)
-        {
+        private static void Plural(string rule, string replacement) {
             Plurals.Insert(0, new KeyValuePair<Regex, string>(
                 new Regex(rule, RegexOptions.IgnoreCase), replacement));
         }
 
-        private static void Singular(string rule, string replacement)
-        {
+        private static void Singular(string rule, string replacement) {
             Singulars.Insert(0, new KeyValuePair<Regex, string>(
                 new Regex(rule, RegexOptions.IgnoreCase), replacement));
         }
 
-        private static void Irregular(string singular, string plural)
-        {
+        private static void Irregular(string singular, string plural) {
             string s1 = singular[0].ToString();
             string s2 = singular.Substring(1);
             string p1 = plural[0].ToString();
@@ -40,19 +34,14 @@ namespace Leafing.Core.Text
             Singular("(" + p1 + ")" + p2 + "$", "$1" + s2);
         }
 
-        private static void Uncountable(params string[] words)
-        {
+        private static void Uncountable(params string[] words) {
             Uncountables.AddRange(words);
         }
 
-        public static string Pluralize(string word)
-        {
-            if (!Uncountables.Contains(word.ToLower()))
-            {
-                foreach (KeyValuePair<Regex, string> kv in Plurals)
-                {
-                    if (kv.Key.IsMatch(word))
-                    {
+        public static string Pluralize(string word) {
+            if (!Uncountables.Contains(word.ToLower())) {
+                foreach (KeyValuePair<Regex, string> kv in Plurals) {
+                    if (kv.Key.IsMatch(word)) {
                         return kv.Key.Replace(word, kv.Value);
                     }
                 }
@@ -60,14 +49,10 @@ namespace Leafing.Core.Text
             return word;
         }
 
-        public static string Singularize(string word)
-        {
-            if (!Uncountables.Contains(word.ToLower()))
-            {
-                foreach (KeyValuePair<Regex, string> kv in Singulars)
-                {
-                    if (kv.Key.IsMatch(word))
-                    {
+        public static string Singularize(string word) {
+            if (!Uncountables.Contains(word.ToLower())) {
+                foreach (KeyValuePair<Regex, string> kv in Singulars) {
+                    if (kv.Key.IsMatch(word)) {
                         return kv.Key.Replace(word, kv.Value);
                     }
                 }
@@ -75,15 +60,12 @@ namespace Leafing.Core.Text
             return word;
         }
 
-        public static string Camelize(string lowerCaseAndUnderscoredWord)
-        {
+        public static string Camelize(string lowerCaseAndUnderscoredWord) {
             return Camelize(lowerCaseAndUnderscoredWord, true);
         }
 
-        public static string Camelize(string lowerCaseAndUnderscoredWord, bool firstLetterInUppercase)
-        {
-            if (firstLetterInUppercase)
-            {
+        public static string Camelize(string lowerCaseAndUnderscoredWord, bool firstLetterInUppercase) {
+            if (firstLetterInUppercase) {
                 string s = lowerCaseAndUnderscoredWord;
                 s = new Regex(@"\/(.?)").Replace(s, match => "::" + match.Groups[1].Value.ToUpper());
                 s = new Regex(@"(^|_)(.)").Replace(s, match => match.Groups[2].Value.ToUpper());
@@ -92,71 +74,59 @@ namespace Leafing.Core.Text
             return lowerCaseAndUnderscoredWord[0] + Camelize(lowerCaseAndUnderscoredWord).Substring(1);
         }
 
-        public static string Titleize(string word)
-        {
+        public static string Titleize(string word) {
             string s = Humanize(Underscore(word));
             s = new Regex(@"\b([a-z])").Replace(s, match => StringHelper.Capitalize(match.Groups[1].Value));
             return s;
         }
 
-        public static string Underscore(string camelCasedWord)
-        {
+        public static string Underscore(string camelCasedWord) {
             string s = camelCasedWord;
             s = new Regex(@"::").Replace(s, @"/");
-            s = new Regex(@"([A-Z]+)([A-Z][a-z])").Replace(s,@"$1_$2");
+            s = new Regex(@"([A-Z]+)([A-Z][a-z])").Replace(s, @"$1_$2");
             s = new Regex(@"([a-z\d])([A-Z])").Replace(s, @"$1_$2");
             s = s.Replace('-', '_').ToLower();
             return s;
         }
 
-        public static string Dasherize(string underscoredWord)
-        {
+        public static string Dasherize(string underscoredWord) {
             return new Regex(@"_").Replace(underscoredWord, "-");
         }
 
-        public static string Humanize(string lowerCaseAndUnderscoredWord)
-        {
+        public static string Humanize(string lowerCaseAndUnderscoredWord) {
             string s = lowerCaseAndUnderscoredWord;
             s = new Regex(@"_id$").Replace(s, "");
             s = new Regex(@"_").Replace(s, " ");
             return StringHelper.Capitalize(s);
         }
 
-        public static string Demodulize(string classNameInModule)
-        {
+        public static string Demodulize(string classNameInModule) {
             return new Regex(@"^.*::").Replace(classNameInModule, "");
         }
 
-        public static string Tableize(string className)
-        {
+        public static string Tableize(string className) {
             return Pluralize(Underscore(className));
         }
 
-        public static string Classify(string tableName)
-        {
+        public static string Classify(string tableName) {
             string s = new Regex(@".*\.").Replace(tableName, "");
             return Camelize(Singularize(s));
         }
 
-        public static string ForeignKey(string className)
-        {
+        public static string ForeignKey(string className) {
             return ForeignKey(className, true);
         }
 
-        public static string ForeignKey(string className, bool separateClassNameAndIdWithUnderscore)
-        {
+        public static string ForeignKey(string className, bool separateClassNameAndIdWithUnderscore) {
             return Underscore(Demodulize(className)) + (separateClassNameAndIdWithUnderscore ? "_id" : "id");
         }
 
-        public static string Ordinalize(int number)
-        {
+        public static string Ordinalize(int number) {
             string n = number.ToString();
-            if (Util.NewList(11, 12, 13).Contains(number % 100))
-            {
+            if (Util.NewList(11, 12, 13).Contains(number % 100)) {
                 return n + "th";
             }
-            switch (number % 10)
-            {
+            switch (number % 10) {
                 case 1: return n + "st";
                 case 2: return n + "nd";
                 case 3: return n + "rd";
@@ -164,8 +134,7 @@ namespace Leafing.Core.Text
             }
         }
 
-        private static void Init()
-        {
+        private static void Init() {
             Plural(@"$", @"s");
             Plural(@"s$", @"s");
             Plural(@"(ax|test)is$", @"$1es");

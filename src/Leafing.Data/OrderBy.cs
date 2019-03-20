@@ -6,30 +6,23 @@ using Leafing.Data.Model;
 using Leafing.Data.Model.Member;
 using Leafing.Data.SqlEntry;
 
-namespace Leafing.Data
-{
-	[Serializable]
-	public class OrderBy : IClause
-	{
-		public readonly List<ASC> OrderItems;
+namespace Leafing.Data {
+    [Serializable]
+    public class OrderBy : IClause {
+        public readonly List<ASC> OrderItems;
 
-        public OrderBy(string orderName)
-        {
+        public OrderBy(string orderName) {
             OrderItems = new List<ASC>(ParseClause(orderName));
         }
 
-		public OrderBy(params ASC[] orderItems)
-		{
-			this.OrderItems = new List<ASC>(orderItems);
-		}
+        public OrderBy(params ASC[] orderItems) {
+            this.OrderItems = new List<ASC>(orderItems);
+        }
 
-        public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd)
-		{
-            if (OrderItems != null && OrderItems.Count > 0)
-            {
+        public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd) {
+            if (OrderItems != null && OrderItems.Count > 0) {
                 var sb = new StringBuilder(" ORDER BY ");
-                foreach (ASC oi in OrderItems)
-                {
+                foreach (ASC oi in OrderItems) {
                     sb.Append(oi.ToString(dd));
                     sb.Append(",");
                 }
@@ -37,69 +30,52 @@ namespace Leafing.Data
                 return sb.ToString();
             }
             return "";
-		}
+        }
 
-        public static OrderBy Parse(string orderByString)
-        {
-            if(string.IsNullOrEmpty(orderByString))
-            {
+        public static OrderBy Parse(string orderByString) {
+            if (string.IsNullOrEmpty(orderByString)) {
                 return null;
             }
             return new OrderBy(ParseClause(orderByString));
         }
 
-        public static OrderBy Parse(string orderByString, Type t)
-        {
-            if (string.IsNullOrEmpty(orderByString))
-            {
+        public static OrderBy Parse(string orderByString, Type t) {
+            if (string.IsNullOrEmpty(orderByString)) {
                 return null;
             }
             return new OrderBy(ParseClause(orderByString, t));
         }
 
-        private static ASC[] ParseClause(string orderByString)
-        {
+        private static ASC[] ParseClause(string orderByString) {
             string[] ss = orderByString.Split(',');
             var ret = new List<ASC>();
-            foreach (string s in ss)
-            {
-                if (s.ToLower().EndsWith(" desc"))
-                {
+            foreach (string s in ss) {
+                if (s.ToLower().EndsWith(" desc")) {
                     ret.Add(new DESC(s.Substring(0, s.Length - 5).Trim()));
-                }
-                else
-                {
+                } else {
                     ret.Add(new ASC(s.Trim()));
                 }
             }
             return ret.ToArray();
         }
 
-        private static ASC[] ParseClause(string orderByString, Type t)
-        {
+        private static ASC[] ParseClause(string orderByString, Type t) {
             var ctx = ModelContext.GetInstance(t);
             string[] ss = orderByString.Split(',');
             var ret = new List<ASC>();
-            foreach (string s in ss)
-            {
-                if (s.ToLower().EndsWith(" desc"))
-                {
+            foreach (string s in ss) {
+                if (s.ToLower().EndsWith(" desc")) {
                     ret.Add(new DESC(GetColumnName(ctx.Info, s.Substring(0, s.Length - 5).Trim())));
-                }
-                else
-                {
+                } else {
                     ret.Add(new ASC(GetColumnName(ctx.Info, s.Trim())));
                 }
             }
             return ret.ToArray();
         }
 
-        private static string GetColumnName(ObjectInfo oi, string name)
-        {
-            foreach(MemberHandler mh in oi.Members)
-            {
-                if(mh.MemberInfo.Name == name)
-                {
+        private static string GetColumnName(ObjectInfo oi, string name) {
+            foreach (MemberHandler mh in oi.Members) {
+                if (mh.MemberInfo.Name == name) {
                     return mh.Name;
                 }
             }

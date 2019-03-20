@@ -1,41 +1,33 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace Leafing.Data.Driver
-{
-    public class DbFactory
-    {
+namespace Leafing.Data.Driver {
+    public class DbFactory {
         private readonly DbProviderFactory _innerFactory;
 
         protected DbFactory() { }
 
-        public DbFactory(DbProviderFactory factory)
-        {
+        public DbFactory(DbProviderFactory factory) {
             _innerFactory = factory;
         }
 
-        public virtual IDbCommand CreateCommand()
-        {
+        public virtual IDbCommand CreateCommand() {
             return _innerFactory.CreateCommand();
         }
 
-        public virtual IDbConnection CreateConnection()
-        {
+        public virtual IDbConnection CreateConnection() {
             return _innerFactory.CreateConnection();
         }
 
-        public virtual IDbDataAdapter CreateDataAdapter()
-        {
+        public virtual IDbDataAdapter CreateDataAdapter() {
             return _innerFactory.CreateDataAdapter();
         }
 
-        public virtual IDbDataParameter CreateParameter()
-        {
+        public virtual IDbDataParameter CreateParameter() {
             return _innerFactory.CreateParameter();
         }
 
-        public virtual DbCommandBuilder CreateCommandBuilder()
-        {
+        public virtual DbCommandBuilder CreateCommandBuilder() {
             return _innerFactory.CreateCommandBuilder();
         }
     }

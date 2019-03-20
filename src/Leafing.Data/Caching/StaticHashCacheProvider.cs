@@ -1,44 +1,32 @@
 using System.Collections;
 using Leafing.Core.Ioc;
-using Leafing.Data.Common;
 using Leafing.Core;
+using Leafing.Core.Setting;
 
-namespace Leafing.Data.Caching
-{
+namespace Leafing.Data.Caching {
     [Implementation(1)]
-    public class StaticHashCacheProvider : CacheProvider
-    {
-        protected static Hashtable Pool = new Hashtable(DataSettings.CacheSize);
+    public class StaticHashCacheProvider : CacheProvider {
+        protected static Hashtable Pool = new Hashtable(ConfigReader.Config.Database.Cache.Size);
 
-        public override object this[string key]
-        {
-            get
-            {
+        public override object this[string key] {
+            get {
                 var tv = (TimeValue)Pool[key];
-                if (tv == null)
-                {
+                if (tv == null) {
                     return null;
                 }
-                if (Util.Now > tv.ExpiredOn)
-                {
+                if (Util.Now > tv.ExpiredOn) {
                     Remove(key);
                     return null;
                 }
                 return tv.Value;
             }
-            set
-            {
-                if (value == null)
-                {
+            set {
+                if (value == null) {
                     Remove(key);
-                }
-                else
-                {
+                } else {
                     TimeValue tv = TimeValue.CreateTimeValue(value);
-                    lock (Pool.SyncRoot)
-                    {
-                        if (Pool.Count > DataSettings.CacheSize)
-                        {
+                    lock (Pool.SyncRoot) {
+                        if (Pool.Count > ConfigReader.Config.Database.Cache.Size) {
                             Pool.Clear();
                         }
 
@@ -48,24 +36,19 @@ namespace Leafing.Data.Caching
             }
         }
 
-        public override void Remove(string key)
-        {
-            lock (Pool.SyncRoot)
-            {
+        public override void Remove(string key) {
+            lock (Pool.SyncRoot) {
                 Pool.Remove(key);
             }
         }
 
-        public override void Clear()
-        {
-            lock (Pool.SyncRoot)
-            {
+        public override void Clear() {
+            lock (Pool.SyncRoot) {
                 Pool.Clear();
             }
         }
 
-        public override int Count
-        {
+        public override int Count {
             get { return Pool.Count; }
         }
     }

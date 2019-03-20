@@ -2,31 +2,26 @@
 using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class PropertyClassTest : DataTestBase
-    {
+    public class PropertyClassTest : DataTestBase {
         [Test]
-        public void TestPropertyClassImpl()
-        {
+        public void TestPropertyClassImpl() {
             var o = DbEntry.GetObject<PropertyClassImpl>(1);
             Assert.IsNotNull(o);
             Assert.AreEqual("Tom", o.Name);
         }
 
         [Test]
-        public void TestPropertyClassBase()
-        {
+        public void TestPropertyClassBase() {
             var o = DbEntry.GetObject<PropertyClassBase>(1);
             Assert.IsNotNull(o);
             Assert.AreEqual("Tom", o.Name);
         }
 
         [Test]
-        public void TestPropertyClassBaseCrud()
-        {
-            var o = new PropertyClassBase {Name = "OK"};
+        public void TestPropertyClassBaseCrud() {
+            var o = new PropertyClassBase { Name = "OK" };
             // create
             DbEntry.Save(o);
             // read
@@ -42,8 +37,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestPropertyClassWithDbColumn()
-        {
+        public void TestPropertyClassWithDbColumn() {
             var o = new PropertyClassWithDbColumn { TheName = "OK" };
             // create
             DbEntry.Save(o);

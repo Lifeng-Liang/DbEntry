@@ -1,6 +1,4 @@
-﻿namespace Leafing.Data.Definition
-{
-    public interface IDbObject
-    {
+﻿namespace Leafing.Data.Definition {
+    public interface IDbObject {
     }
 }

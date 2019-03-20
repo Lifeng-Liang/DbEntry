@@ -2,14 +2,11 @@
 using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class HasOneAssociateTest : DataTestBase
-    {
+    public class HasOneAssociateTest : DataTestBase {
         [Test]
-        public void TestHasOne1()
-        {
+        public void TestHasOne1() {
             // A.Select will read B (LazyLoading*)
             var p = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(p);
@@ -21,8 +18,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne1_1()
-        {
+        public void TestHasOne1_1() {
             // A.Select will read B (LazyLoading*), and set B.a as a
             var p = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(p);
@@ -33,8 +29,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne2()
-        {
+        public void TestHasOne2() {
             // A owns 0 or 1 B, so b(b.Value) could be null;
             var Tom = DbEntry.GetObject<Person>(1);
             var Jerry = DbEntry.GetObject<Person>(2);
@@ -57,23 +52,21 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne3()
-        {
+        public void TestHasOne3() {
             // A.b = new B() will set B.a = A;
-            var p = new Person {Name = "NewPerson"};
-            var pc = new PersonalComputer {Name = "NewPC"};
+            var p = new Person { Name = "NewPerson" };
+            var pc = new PersonalComputer { Name = "NewPC" };
             p.PC.Value = pc;
             Assert.AreEqual(pc.Owner.Value, p);
         }
 
         [Test]
-        public void TestHasOne4_1()
-        {
+        public void TestHasOne4_1() {
             // A.Save will save B, if A is Update, then save B
             var p = DbEntry.GetObject<Person>(1);
             Assert.IsNotNull(p);
             Assert.IsNull(p.PC.Value);
-            p.PC.Value = new PersonalComputer {Name = "NewPC"};
+            p.PC.Value = new PersonalComputer { Name = "NewPC" };
             Assert.AreEqual(0, p.PC.Value.Id);
             DbEntry.Save(p);
             Assert.IsTrue(1 == p.Id);
@@ -86,8 +79,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne4_2()
-        {
+        public void TestHasOne4_2() {
             // A.Save will save B, if A is Insert, then save A first, and then set B.A_id, and save B
             var p = new Person();
             p.Name = "NewPerson";
@@ -105,8 +97,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne5()
-        {
+        public void TestHasOne5() {
             // A.Delete will delete itself, and set B.A_id to null *
             var p = Person.FindById(2);
             Assert.IsNotNull(p);
@@ -121,8 +112,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne6()
-        {
+        public void TestHasOne6() {
             // B has a foreign key  A_id
             // B.a = A will set the value of B.A_id
             // B.a = A will set A.a = b ????
@@ -135,10 +125,9 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne7()
-        {
+        public void TestHasOne7() {
             // B.Save will save itself
-            var p = new Person {Name = "NewPerson"};
+            var p = new Person { Name = "NewPerson" };
             var pc = new PersonalComputer();
             pc.Name = "NewPC";
             p.PC.Value = pc;
@@ -150,8 +139,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne8()
-        {
+        public void TestHasOne8() {
             // B.Delete will delete itself
             var p = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(p);
@@ -163,8 +151,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne10()
-        {
+        public void TestHasOne10() {
             // B.Select will read A (LazyLoading*)
             var pc = DbEntry.GetObject<PersonalComputer>(2);
             Assert.IsNotNull(pc);
@@ -173,8 +160,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne11()
-        {
+        public void TestHasOne11() {
             // B.Select will read A (LazyLoading*), and set A.b as B
             var pc = DbEntry.GetObject<PersonalComputer>(2);
             Assert.IsNotNull(pc);
@@ -185,10 +171,9 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne12()
-        {
+        public void TestHasOne12() {
             // A.Save will save B, if B(B.Value) is null, then don't save B (if there is data B in the database, it will still there)
-            var p = new Person {Name = "Ghost"};
+            var p = new Person { Name = "Ghost" };
             DbEntry.Save(p);
             var p1 = DbEntry.GetObject<Person>(p.Id);
             Assert.IsNotNull(p1);
@@ -198,8 +183,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne13()
-        {
+        public void TestHasOne13() {
             // For readed A, A.Save will save B, if B(B.Value) is null, then don't save B (if there is data B in the database, it will still there)
             var p = DbEntry.GetObject<Person>(1);
             Assert.IsNotNull(p);
@@ -213,8 +197,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestRemoveRelation()
-        {
+        public void TestRemoveRelation() {
             var jerry = DbEntry.GetObject<Person>(2);
             Assert.IsNotNull(jerry);
             Assert.AreEqual("Jerry", jerry.Name);
@@ -230,8 +213,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestRemoveRelation2()
-        {
+        public void TestRemoveRelation2() {
             var pc = DbEntry.GetObject<PersonalComputer>(1);
             Assert.IsNotNull(pc);
             Assert.IsNotNull(pc.Owner.Value);
@@ -245,8 +227,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test, Ignore("for now")]
-        public void TestHasOneCutTheRelationByDelete()
-        {
+        public void TestHasOneCutTheRelationByDelete() {
             // B.Delete() will cut the relation of it from A
             var p = Person.FindById(2);
             Assert.IsNotNull(p);

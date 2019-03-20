@@ -2,14 +2,11 @@
 using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class HasManyAssociateTest : DataTestBase
-    {
+    public class HasManyAssociateTest : DataTestBase {
         [Test]
-        public void TestHasMany1()
-        {
+        public void TestHasMany1() {
             // A.Select will read B (LazyLoading*)
             var c = DbEntry.GetObject<Category>(2);
             Assert.IsNotNull(c);
@@ -25,8 +22,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany1A()
-        {
+        public void TestHasMany1A() {
             // A.Select will read B (LazyLoading*), and set B.a as A
             var c = DbEntry.GetObject<Category>(2);
             Assert.IsNotNull(c);
@@ -37,8 +33,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany2()
-        {
+        public void TestHasMany2() {
             // A owns 0 or multiple B, so b(b.Value) could be null
             var tech = DbEntry.GetObject<Category>(1);
             var game = DbEntry.GetObject<Category>(2);
@@ -60,18 +55,16 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany3()
-        {
+        public void TestHasMany3() {
             // A.b = new B() will set B.a = A
-            var c = new Category {Name = "Sport"};
-            var b = new Book {Name = "Basketball"};
+            var c = new Category { Name = "Sport" };
+            var b = new Book { Name = "Basketball" };
             c.Books.Add(b);
             Assert.AreEqual(b.CurCategory.Value, c);
         }
 
         [Test]
-        public void TestHasMany4A()
-        {
+        public void TestHasMany4A() {
             // A.Save will save B, if is A Update, then save B
             var c = DbEntry.GetObject<Category>(1);
             Assert.IsNotNull(c);
@@ -90,10 +83,9 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany4B()
-        {
+        public void TestHasMany4B() {
             // A.Save will save B, if is A Insert, then save A first, then set B.A_id, and then save B
-            var c = new Category {Name = "Sport"};
+            var c = new Category { Name = "Sport" };
             c.Books.Add(new Book());
             c.Books[0].Name = "Basketball";
             DbEntry.Save(c);
@@ -109,8 +101,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany5()
-        {
+        public void TestHasMany5() {
             // A.Delete will delete itself, and set B.A_Id to null *
             var c = Category.FindById(2);
             Assert.IsNotNull(c);
@@ -130,23 +121,21 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany6()
-        {
+        public void TestHasMany6() {
             // B has a foreign key A_id
             // B.a = A will set value of B.A_id
             // B.a = A will set A.a = b ????
             var c = DbEntry.GetObject<Category>(3);
-            var b = new Book {Name = "Luoyang", CurCategory = {Value = c}};
+            var b = new Book { Name = "Luoyang", CurCategory = { Value = c } };
 
             Assert.AreEqual(b.CurCategory.ForeignKey, 3);
         }
 
         [Test]
-        public void TestHasMany7()
-        {
+        public void TestHasMany7() {
             // B.Save will save itself
-            var c = new Category {Name = "Sport"};
-            var b = new Book {Name = "Basketball"};
+            var c = new Category { Name = "Sport" };
+            var b = new Book { Name = "Basketball" };
             c.Books.Add(b);
 
             DbEntry.Save(b);
@@ -156,8 +145,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany8()
-        {
+        public void TestHasMany8() {
             // B.Delete will delete itself
             var c = DbEntry.GetObject<Category>(2);
             Assert.IsNotNull(c);
@@ -171,11 +159,10 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany9()
-        {
+        public void TestHasMany9() {
             // If not loading B, and insert a new item in B, then don't loading, when save it, only save which in the memory
             var c = DbEntry.GetObject<Category>(2);
-            var b = new Book {Name = "Next"};
+            var b = new Book { Name = "Next" };
             c.Books.Add(b);
             Assert.AreEqual(1, c.Books.Count);
             DbEntry.Save(c);
@@ -197,8 +184,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany10()
-        {
+        public void TestHasMany10() {
             // B.Select will read A (LazyLoading*)
             var c = DbEntry.GetObject<Book>(2);
             Assert.IsNotNull(c);
@@ -207,8 +193,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany11()
-        {
+        public void TestHasMany11() {
             // B.Select will read A (LazyLoading*), and B.a.b[x] == B
             var c = DbEntry.GetObject<Book>(2);
             Assert.IsNotNull(c);
@@ -221,10 +206,9 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany12()
-        {
+        public void TestHasMany12() {
             // A.Save will save B, if b(b.Value) is null, then don't save B
-            var c = new Category {Name = "Sport"};
+            var c = new Category { Name = "Sport" };
             DbEntry.Save(c);
             var c1 = DbEntry.GetObject<Category>(c.Id);
             Assert.IsNotNull(c1);
@@ -233,8 +217,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestRemoveAnItem()
-        {
+        public void TestRemoveAnItem() {
             var c = DbEntry.GetObject<Category>(3);
             Assert.AreEqual("Tour", c.Name);
             Assert.AreEqual(2, c.Books.Count);
@@ -251,8 +234,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestRemoveAnItem2()
-        {
+        public void TestRemoveAnItem2() {
             var b = DbEntry.GetObject<Book>(2);
             Assert.AreEqual("Beijing", b.Name);
             Assert.IsNotNull(b.CurCategory);
@@ -266,8 +248,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestListClear()
-        {
+        public void TestListClear() {
             var c = DbEntry.GetObject<Category>(3);
             Assert.AreEqual(2, c.Books.Count);
 
@@ -279,8 +260,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestListClear2()
-        {
+        public void TestListClear2() {
             var c = DbEntry.GetObject<Category>(3);
             c.Books.Clear();
             DbEntry.Save(c);
@@ -290,10 +270,9 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestListClear3()
-        {
+        public void TestListClear3() {
             var c = DbEntry.GetObject<Category>(3);
-            var b = new Book {Name = "test"};
+            var b = new Book { Name = "test" };
             c.Books.Add(b);
             c.Books.Clear();
             DbEntry.Save(c);
@@ -303,8 +282,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestRemoveSubItem()
-        {
+        public void TestRemoveSubItem() {
             var c = DbEntry.GetObject<Acategory>(2);
             Assert.AreEqual(3, c.Books.Count);
 
@@ -316,8 +294,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestReadAfterSave()
-        {
+        public void TestReadAfterSave() {
             var c = DbEntry.GetObject<Category>(2);
             Assert.IsNotNull(c);
             DbEntry.Save(c);
@@ -333,8 +310,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSaveFromBelongsTo()
-        {
+        public void TestSaveFromBelongsTo() {
             var c = new Category { Name = "test" };
             var b1 = new Book { Name = "123" };
             var b2 = new Book { Name = "456" };
@@ -354,8 +330,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSaveFromBelongsTo1()
-        {
+        public void TestSaveFromBelongsTo1() {
             var c = new Category { Name = "test" };
             var b1 = new Book { Name = "123" };
             var b2 = new Book { Name = "456" };
@@ -372,8 +347,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSaveFromBelongsTo2()
-        {
+        public void TestSaveFromBelongsTo2() {
             var c = new Category { Name = "test" };
             var b1 = new Book { Name = "123" };
             var b2 = new Book { Name = "456" };
@@ -393,8 +367,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test, Ignore("for now")]
-        public void TestHasManyCutTheRelationByDelete()
-        {
+        public void TestHasManyCutTheRelationByDelete() {
             // B.Delete() will cut the relation of it from A
             var c = Category.FindById(2);
             Assert.IsNotNull(c);

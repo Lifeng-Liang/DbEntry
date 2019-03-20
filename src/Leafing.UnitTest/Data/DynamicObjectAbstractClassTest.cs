@@ -1,14 +1,11 @@
 ﻿using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class DynamicObjectAbstractClassTest
-    {
+    public class DynamicObjectAbstractClassTest {
         [Test]
-        public void TestCreateAbstractClass()
-        {
+        public void TestCreateAbstractClass() {
             var c = new AbstractClass();
             Assert.IsNotNull(c);
             c.Name = "Tom";
@@ -16,8 +13,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestCreateInheritedAbstractClass()
-        {
+        public void TestCreateInheritedAbstractClass() {
             var c = new AbstractClassOfAge();
             Assert.IsNotNull(c);
             c.Name = "Tom";
@@ -27,8 +23,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestCreateInheritsedAbstractClassWithImplProperty()
-        {
+        public void TestCreateInheritsedAbstractClassWithImplProperty() {
             var c = new AbstractClassWithOneImplProperty();
             Assert.IsNotNull(c);
             c.Name = "Tom";

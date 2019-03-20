@@ -3,10 +3,8 @@ using System.Data;
 using System.Reflection;
 using Leafing.Core;
 
-namespace Leafing.Data.SqlEntry
-{
-    public class DbColumnInfo
-    {
+namespace Leafing.Data.SqlEntry {
+    public class DbColumnInfo {
         public string ColumnName;
         public int ColumnOrdinal;
         public int ColumnSize;
@@ -26,22 +24,17 @@ namespace Leafing.Data.SqlEntry
         public bool IsLong;
         public bool IsReadOnly;
 
-        public DbColumnInfo(DataRow dr)
-        {
+        public DbColumnInfo(DataRow dr) {
             Type t = typeof(DbColumnInfo);
             var fis = t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
-            foreach (FieldInfo fi in fis)
-            {
+            foreach (FieldInfo fi in fis) {
                 Util.CatchAll(
-                    delegate
-                    {
+                    delegate {
                         object o = dr[fi.Name];
-                        if (o == DBNull.Value)
-                        {
+                        if (o == DBNull.Value) {
                             o = null;
                         }
-                        if (o != null && fi.FieldType != typeof(Type) && o.GetType() != fi.FieldType)
-                        {
+                        if (o != null && fi.FieldType != typeof(Type) && o.GetType() != fi.FieldType) {
                             o = ClassHelper.ChangeType(o, fi.FieldType);
                         }
                         fi.SetValue(this, o);

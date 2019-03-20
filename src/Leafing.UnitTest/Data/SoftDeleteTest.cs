@@ -5,39 +5,33 @@ using Leafing.Data.Driver;
 using Leafing.MockSql.Recorder;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     #region objects
 
     [SoftDelete, DbTable("SoftDelete")]
-    public class SoftDelete : DbObjectModel<SoftDelete>
-    {
+    public class SoftDelete : DbObjectModel<SoftDelete> {
         public string Name { get; set; }
     }
 
     [SoftDelete, DbTable("SoftDelete"), DbContext("SQLite")]
-    public class SoftDeleteSqlite : DbObjectModel<SoftDeleteSqlite>
-    {
+    public class SoftDeleteSqlite : DbObjectModel<SoftDeleteSqlite> {
         public string Name { get; set; }
     }
 
     [SoftDelete]
-    public class SoftDeleteIndex : DbObjectModel<SoftDeleteIndex>
-    {
+    public class SoftDeleteIndex : DbObjectModel<SoftDeleteIndex> {
         [Index(UNIQUE = true)]
         public string Name { get; set; }
     }
 
     [DbTable("SoftDelete")]
-    public class SoftDeleteFull : DbObjectModel<SoftDeleteFull>
-    {
+    public class SoftDeleteFull : DbObjectModel<SoftDeleteFull> {
         public string Name { get; set; }
         public bool IsDeleted { get; set; }
     }
 
     [SoftDelete, DbTable("Tests")]
-    public class Test : DbObjectModel<Test>
-    {
+    public class Test : DbObjectModel<Test> {
         [Length(100), StringColumn(IsUnicode = false)]
         public string Nome { get; set; }
     }
@@ -45,12 +39,10 @@ namespace Leafing.UnitTest.Data
     #endregion
 
     [TestFixture]
-    public class SoftDeleteTest : DataTestBase
-    {
+    public class SoftDeleteTest : DataTestBase {
         [Test]
-        public void TestInsert()
-        {
-            var o = new SoftDelete {Name = "test"};
+        public void TestInsert() {
+            var o = new SoftDelete { Name = "test" };
             o.Save();
 
             SoftDeleteFull o1 = SoftDeleteFull.FindById(o.Id);
@@ -59,8 +51,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestRead()
-        {
+        public void TestRead() {
             List<SoftDelete> ls = SoftDelete.Find(Condition.Empty, new OrderBy("Id"));
             Assert.AreEqual(3, ls.Count);
             Assert.AreEqual("tom", ls[0].Name);
@@ -69,8 +60,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestUpdate()
-        {
+        public void TestUpdate() {
             SoftDelete o = SoftDelete.FindById(1);
             Assert.AreEqual("tom", o.Name);
 
@@ -82,8 +72,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestDelete()
-        {
+        public void TestDelete() {
             SoftDelete o = SoftDelete.FindById(1);
             o.Delete();
             o = SoftDelete.FindById(1);
@@ -96,15 +85,14 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestDelete2()
-        {
+        public void TestDelete2() {
             var n = SoftDelete.GetCount(Condition.Empty);
 
-            var o = new SoftDelete {Name = "aaa"};
+            var o = new SoftDelete { Name = "aaa" };
             o.Name = "bbb";
             o.Save();
 
-            var o2 = new SoftDelete {Name = "ccc"};
+            var o2 = new SoftDelete { Name = "ccc" };
             o2.Save();
 
             var m = SoftDelete.GetCount(Condition.Empty);
@@ -119,8 +107,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestRead1()
-        {
+        public void TestRead1() {
             SoftDelete o = SoftDelete.FindById(1);
             Assert.AreEqual("tom", o.Name);
             o = SoftDelete.FindById(4);
@@ -128,34 +115,30 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestCount()
-        {
+        public void TestCount() {
             long n = DbEntry.From<SoftDelete>().Where(Condition.Empty).GetCount();
             Assert.AreEqual(3, n);
         }
 
         [Test]
-        public void TestGroupBy()
-        {
+        public void TestGroupBy() {
             DbEntry.From<SoftDeleteSqlite>().Where(Condition.Empty).GroupBy<string>("tom");
             Assert.AreEqual("SELECT [tom],COUNT([tom]) AS it__count__ FROM [SoftDelete] WHERE [IsDeleted] = @IsDeleted_0 GROUP BY [tom];\n<Text><60>(@IsDeleted_0=False:Boolean)", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void TestCreateTable()
-        {
+        public void TestCreateTable() {
             DbEntry.Create(typeof(SoftDeleteSqlite));
             Assert.AreEqual("CREATE TABLE [SoftDelete] (\n	[Id] INTEGER PRIMARY KEY AUTOINCREMENT ,\n	[Name] NTEXT NOT NULL ,\n	[IsDeleted] BOOL NOT NULL \n);\n<Text><30>()", StaticRecorder.LastMessage);
         }
 
         [Test]
-        public void TestSoftDeleteOnlyWorksForTheRightOne()
-        {
+        public void TestSoftDeleteOnlyWorksForTheRightOne() {
             DbEntry.DropAndCreate(typeof(Test));
 
-            var t = new Test {Nome = "myName"};
+            var t = new Test { Nome = "myName" };
             t.Save();
-            t = new Test {Nome = "myName2"};
+            t = new Test { Nome = "myName2" };
             t.Save();
             t = Test.FindById(1);
             t.Delete();
@@ -169,20 +152,18 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestVerify()
-        {
-            var x = new SoftDeleteIndex {Name = "a"};
+        public void TestVerify() {
+            var x = new SoftDeleteIndex { Name = "a" };
             x.Save();
             x.Delete();
 
-            var y = new SoftDeleteIndex {Name = "a"};
+            var y = new SoftDeleteIndex { Name = "a" };
             bool b = y.Validate().IsValid;
             Assert.IsFalse(b);
         }
 
         [Test]
-        public void TestDeleteAll()
-        {
+        public void TestDeleteAll() {
             SoftDelete.DeleteBy(Condition.Empty);
             var o = SoftDelete.FindById(1);
             Assert.IsNull(o);

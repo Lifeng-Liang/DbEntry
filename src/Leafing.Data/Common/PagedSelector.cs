@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using Leafing.Data.Definition;
 
-namespace Leafing.Data.Common
-{
-    public class PagedSelector<T> : IPagedSelector<T> where T : class, IDbObject, new()
-    {
+namespace Leafing.Data.Common {
+    public class PagedSelector<T> : IPagedSelector<T> where T : class, IDbObject, new() {
         protected Condition iwc;
         protected OrderBy oc;
         internal int _PageSize;
@@ -15,12 +13,10 @@ namespace Leafing.Data.Common
         protected long PageCount = -1;
 
         public PagedSelector(Condition iwc, OrderBy oc, int pageSize)
-            : this(iwc, oc, pageSize, false)
-        {
+            : this(iwc, oc, pageSize, false) {
         }
 
-        public PagedSelector(Condition iwc, OrderBy oc, int pageSize, bool isDistinct)
-        {
+        public PagedSelector(Condition iwc, OrderBy oc, int pageSize, bool isDistinct) {
             this.iwc = iwc;
             this.oc = oc;
             this._PageSize = pageSize;
@@ -28,36 +24,29 @@ namespace Leafing.Data.Common
             this.IsDistinct = isDistinct;
         }
 
-        public int PageSize
-        {
+        public int PageSize {
             get { return _PageSize; }
         }
 
-        public long GetResultCount()
-        {
-            if (ResultCount < 0)
-            {
+        public long GetResultCount() {
+            if (ResultCount < 0) {
                 ResultCount = Entry.Operator.GetResultCount(iwc, IsDistinct);
             }
             return ResultCount;
         }
 
-        public long GetPageCount()
-        {
-            if (PageCount < 0)
-            {
-                PageCount = (long) Math.Floor((double) (GetResultCount() - 1)/_PageSize) + 1;
+        public long GetPageCount() {
+            if (PageCount < 0) {
+                PageCount = (long)Math.Floor((double)(GetResultCount() - 1) / _PageSize) + 1;
             }
             return PageCount;
         }
 
-        public virtual List<T> GetCurrentPage(long pageIndex)
-        {
+        public virtual List<T> GetCurrentPage(long pageIndex) {
             long startWith = _PageSize * pageIndex;
             long tn = startWith + _PageSize;
             var query = Entry.From<T>().Where(iwc).OrderBy(oc.OrderItems.ToArray()).Range(startWith + 1, tn);
-            if(IsDistinct)
-            {
+            if (IsDistinct) {
                 return query.SelectDistinct();
             }
             return query.Select();

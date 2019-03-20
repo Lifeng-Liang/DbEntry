@@ -2,11 +2,9 @@
 using System.Runtime.Serialization;
 using Leafing.Core;
 
-namespace Leafing.Data.Model.Linq
-{
+namespace Leafing.Data.Model.Linq {
     [Serializable]
-    public class LinqException : LeafingException
-    {
+    public class LinqException : LeafingException {
         public LinqException() { }
         public LinqException(string errorMessage) : base(errorMessage) { }
         public LinqException(string msgFormat, params object[] os) : base(String.Format(msgFormat, os)) { }

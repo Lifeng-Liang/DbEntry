@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Xml.Schema;
 
-namespace Leafing.Data.Common
-{
-    public static class XmlSchemaTypeParser
-    {
+namespace Leafing.Data.Common {
+    public static class XmlSchemaTypeParser {
         private static Dictionary<Type, XmlSchemaType> _jar;
 
-        static XmlSchemaTypeParser()
-        {
+        static XmlSchemaTypeParser() {
             _jar = new Dictionary<Type, XmlSchemaType>
                        {
                            {typeof(int), XmlSchemaType.GetBuiltInSimpleType(XmlTypeCode.Int)},
@@ -22,8 +19,7 @@ namespace Leafing.Data.Common
                        };
         }
 
-        public static XmlSchemaType GetSchemaType(Type type)
-        {
+        public static XmlSchemaType GetSchemaType(Type type) {
             return _jar[type];
         }
     }

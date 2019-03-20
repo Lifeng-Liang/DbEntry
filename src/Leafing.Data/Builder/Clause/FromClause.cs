@@ -3,53 +3,46 @@ using System.Collections.Specialized;
 using Leafing.Data.SqlEntry;
 using System.Text;
 
-namespace Leafing.Data.Builder.Clause
-{
-    public class FromClause : IClause
-    {
+namespace Leafing.Data.Builder.Clause {
+    public class FromClause : IClause {
         public readonly string MainTableName;
         public readonly string MainModelName;
         public readonly Type PartOf;
         public readonly JoinClause[] JoinClauseList;
         private readonly HybridDictionary _fromStrings = new HybridDictionary();
 
-        public FromClause(string tableName)
-        {
+        public FromClause(string tableName) {
             MainTableName = tableName;
             MainModelName = tableName;
         }
 
-        public FromClause(string modelName, string tableName)
-        {
+        public FromClause(string modelName, string tableName) {
             MainModelName = modelName;
             MainTableName = tableName;
         }
 
-        public FromClause(Type partOf)
-        {
+        public FromClause(Type partOf) {
             this.PartOf = partOf;
         }
 
-        public FromClause(params JoinClause[] joinClauseList)
-        {
+        public FromClause(params JoinClause[] joinClauseList) {
             this.JoinClauseList = joinClauseList;
         }
 
-		public override string ToString ()
-		{
-			if (MainTableName != null) {
-				return string.Format ("Table Name : [{0}]", MainTableName);
-			}
-			if (PartOf != null) {
-				return string.Format ("PartOf Type : [{0}]", PartOf.Name);
-			}
-			var sb = new StringBuilder ("Join Tables : ");
-			foreach (var j in JoinClauseList) {
-				sb.AppendFormat ("[{0}] - [{1}], ", j.Table1, j.Table2);
-			}
-			sb.Length -= 2;
-			return sb.ToString();
-		}
+        public override string ToString() {
+            if (MainTableName != null) {
+                return string.Format("Table Name : [{0}]", MainTableName);
+            }
+            if (PartOf != null) {
+                return string.Format("PartOf Type : [{0}]", PartOf.Name);
+            }
+            var sb = new StringBuilder("Join Tables : ");
+            foreach (var j in JoinClauseList) {
+                sb.AppendFormat("[{0}] - [{1}], ", j.Table1, j.Table2);
+            }
+            sb.Length -= 2;
+            return sb.ToString();
+        }
 
         //internal FromClause(params string[] linkColumnNames)
         //{
@@ -65,33 +58,25 @@ namespace Leafing.Data.Builder.Clause
         //    }
         //}
 
-        public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd)
-        {
-            if (MainTableName != null)
-            {
+        public string ToSqlText(DataParameterCollection dpc, Dialect.DbDialect dd) {
+            if (MainTableName != null) {
                 return dd.QuoteForTableName(MainTableName);
             }
 
-            if (_fromStrings.Contains(dd))
-            {
+            if (_fromStrings.Contains(dd)) {
                 return (string)_fromStrings[dd];
             }
 
             string ret;
 
-            if (PartOf != null)
-            {
+            if (PartOf != null) {
                 ret = dd.QuoteForLimitTableName(ModelContext.GetInstance(PartOf).Info.From.MainTableName);
-            }
-            else
-            {
+            } else {
                 var sd = new StringDictionary();
                 ret = dd.QuoteForTableName(JoinClauseList[0].Table1);
                 sd.Add(ret, "");
-                for (int i = 0; i < JoinClauseList.Length; i++)
-                {
-                    if (i != 0 && dd.NeedBracketForJoin)
-                    {
+                for (int i = 0; i < JoinClauseList.Length; i++) {
+                    if (i != 0 && dd.NeedBracketForJoin) {
                         ret = string.Format("({0})", ret);
                     }
                     string tn = dd.QuoteForTableName(JoinClauseList[i].Table2);
@@ -104,8 +89,7 @@ namespace Leafing.Data.Builder.Clause
                                         JoinClauseList[i].Mode);
                 }
             }
-            lock (_fromStrings.SyncRoot)
-            {
+            lock (_fromStrings.SyncRoot) {
                 _fromStrings[dd] = ret;
             }
             return ret;

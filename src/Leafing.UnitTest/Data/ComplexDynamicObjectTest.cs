@@ -1,14 +1,11 @@
 ﻿using Leafing.UnitTest.Data.Objects;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class ComplexDynamicObjectTest : DataTestBase
-    {
+    public class ComplexDynamicObjectTest : DataTestBase {
         [Test]
-        public void TestCross()
-        {
+        public void TestCross() {
             ImpPeople.FindById(1);
             SqlRecorder.Start();
 
@@ -25,8 +22,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestImpedHasOne()
-        {
+        public void TestImpedHasOne() {
             ImpPeople p = ImpPeople.FindById(1);
             Assert.AreEqual("Tom", p.Name);
             Assert.IsNull(p.pc);
@@ -41,33 +37,31 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasOne()
-        {
+        public void TestHasOne() {
             People p = People.FindById(1);
             Assert.AreEqual("Tom", p.Name);
-			Assert.IsNull(p.pc.Value);
+            Assert.IsNull(p.pc.Value);
 
             p = People.FindById(2);
             Assert.AreEqual("Jerry", p.Name);
-			Assert.AreEqual("IBM", p.pc.Value.Name);
+            Assert.AreEqual("IBM", p.pc.Value.Name);
 
             p = People.FindById(3);
             Assert.AreEqual("Mike", p.Name);
-			Assert.AreEqual("DELL", p.pc.Value.Name);
+            Assert.AreEqual("DELL", p.pc.Value.Name);
 
             p = People.FindById(3);
             p.Name = "me";
-			p.pc.Value.Name = "test";
+            p.pc.Value.Name = "test";
             p.Save();
 
             p = People.FindById(3);
             Assert.AreEqual("me", p.Name);
-			Assert.AreEqual("test", p.pc.Value.Name);
+            Assert.AreEqual("test", p.pc.Value.Name);
         }
 
         [Test]
-        public void TestImpedHasMany()
-        {
+        public void TestImpedHasMany() {
             ImpPeople1 p = ImpPeople1.FindById(1);
             Assert.AreEqual("Tom", p.Name);
             Assert.AreEqual(0, p.pcs.Count);
@@ -85,8 +79,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasMany()
-        {
+        public void TestHasMany() {
             People1 p = People1.FindById(1);
             Assert.AreEqual("Tom", p.Name);
             Assert.AreEqual(0, p.pcs.Count);
@@ -104,8 +97,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestHasAndBelongsToMany()
-        {
+        public void TestHasAndBelongsToMany() {
             DArticle a = DArticle.FindById(1);
             Assert.AreEqual("The lovely bones", a.Name);
             Assert.AreEqual(3, a.readers.Count);
@@ -126,8 +118,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestOrderByAttribute()
-        {
+        public void TestOrderByAttribute() {
             PeopleImp1 p1 = PeopleImp1.FindById(3);
             Assert.IsNotNull(p1);
             Assert.IsNotNull(p1.pc.Value);

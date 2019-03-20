@@ -1,14 +1,11 @@
 ﻿using System;
 
-namespace Leafing.Data.Definition
-{
+namespace Leafing.Data.Definition {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class DbContextAttribute : Attribute
-    {
+    public class DbContextAttribute : Attribute {
         public string ContextName;
 
-        public DbContextAttribute(string contextName)
-        {
+        public DbContextAttribute(string contextName) {
             this.ContextName = contextName;
         }
     }

@@ -1,13 +1,11 @@
 ﻿using System;
 
-namespace Leafing.Core.TimingTask
-{
-	public interface ITiming
-	{
-		bool TimesUp();
+namespace Leafing.Core.TimingTask {
+    public interface ITiming {
+        bool TimesUp();
 
-		TimeSpan TimeSpanFromNowOn();
+        TimeSpan TimeSpanFromNowOn();
 
-		void Reset();
-	}
+        void Reset();
+    }
 }

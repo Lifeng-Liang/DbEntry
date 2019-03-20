@@ -2,14 +2,11 @@
 using System.Collections.Specialized;
 using Leafing.Data.Common;
 
-namespace Leafing.Data.SqlEntry
-{
-	internal static class DataTypeParser
-	{
-		private static readonly HybridDictionary Types;
+namespace Leafing.Data.SqlEntry {
+    internal static class DataTypeParser {
+        private static readonly HybridDictionary Types;
 
-		static DataTypeParser()
-		{
+        static DataTypeParser() {
 			Types = new HybridDictionary();
             Types[typeof(string)]   = DataType.String;
             Types[typeof(DateTime)] = DataType.DateTime;
@@ -37,58 +34,46 @@ namespace Leafing.Data.SqlEntry
             Types[typeof(DBNull)]   = DataType.Single; // is that right?
         }
 
-		public static DataType Parse(object o)
-		{
-			return Parse(o.GetType());
-		}
+        public static DataType Parse(object o) {
+            return Parse(o.GetType());
+        }
 
-		public static DataType Parse(Type t)
-		{
-			if ( t.IsEnum )
-			{
-				t = typeof(Enum);
-			}
-			if ( Types.Contains(t) )
-			{
-				return (DataType)Types[t];
-			}
-            if ( NullableHelper.IsNullableType(t) )
-            {
+        public static DataType Parse(Type t) {
+            if (t.IsEnum) {
+                t = typeof(Enum);
+            }
+            if (Types.Contains(t)) {
+                return (DataType)Types[t];
+            }
+            if (NullableHelper.IsNullableType(t)) {
                 return NullableHelper.GetDataType(t);
             }
-			throw new ArgumentOutOfRangeException(t.ToString());
-		}
+            throw new ArgumentOutOfRangeException(t.ToString());
+        }
 
-		public static string ParseToString(object o, Dialect.DbDialect dd)
-		{
-            if (o == null)
-            {
+        public static string ParseToString(object o, Dialect.DbDialect dd) {
+            if (o == null) {
                 return "NULL";
             }
-			var ot = o.GetType();
-			if ( typeof(bool) == ot )
-			{
-				return Convert.ToInt32(o).ToString();
-			}
-		    if	( typeof(string) == ot )
-		    {
-		        string s = o.ToString();
-		        s = s.Replace("'", "''");
-		        return string.Format("N'{0}'", s);
-		    }
-		    if ( typeof(DateTime) == ot || typeof(Date) == ot || typeof(Time) == ot )
-		    {
-		        return dd.QuoteDateTimeValue(o.ToString());
-		    }
-		    if (ot.IsEnum)
-		    {
-		        return Convert.ToInt32(o).ToString();
-		    }
-		    if (typeof(byte[]) == ot)
-		    {
-		        throw new ApplicationException("Sql without Parameter can not support blob, please using Parameter mode.");
-		    }
+            var ot = o.GetType();
+            if (typeof(bool) == ot) {
+                return Convert.ToInt32(o).ToString();
+            }
+            if (typeof(string) == ot) {
+                string s = o.ToString();
+                s = s.Replace("'", "''");
+                return string.Format("N'{0}'", s);
+            }
+            if (typeof(DateTime) == ot || typeof(Date) == ot || typeof(Time) == ot) {
+                return dd.QuoteDateTimeValue(o.ToString());
+            }
+            if (ot.IsEnum) {
+                return Convert.ToInt32(o).ToString();
+            }
+            if (typeof(byte[]) == ot) {
+                throw new ApplicationException("Sql without Parameter can not support blob, please using Parameter mode.");
+            }
             return o.ToString();
         }
-	}
+    }
 }

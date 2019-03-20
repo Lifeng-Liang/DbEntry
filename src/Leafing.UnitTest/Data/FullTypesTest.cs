@@ -5,11 +5,9 @@ using Leafing.Data.Definition;
 using Leafing.MockSql.Recorder;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [DbContext("SQLite")]
-    public class FullType : DbObjectModel<FullType>
-    {
+    public class FullType : DbObjectModel<FullType> {
         public string c1 { get; set; }
         public int c2 { get; set; }
         public short c3 { get; set; }
@@ -25,8 +23,7 @@ namespace Leafing.UnitTest.Data
     }
 
     [DbContext("SQLite")]
-    public class FullType2 : DbObjectModel<FullType2>
-    {
+    public class FullType2 : DbObjectModel<FullType2> {
         public string c1 { get; set; }
         public int? c2 { get; set; }
         public short? c3 { get; set; }
@@ -42,48 +39,42 @@ namespace Leafing.UnitTest.Data
     }
 
     [TestFixture]
-    public class FullTypesTest
-    {
+    public class FullTypesTest {
         private static readonly Guid guid = Guid.NewGuid();
 
-        static FullTypesTest()
-        {
+        static FullTypesTest() {
             DbEntry.GetObject<FullType>(1);
             DbEntry.GetObject<FullType2>(1);
         }
 
         [SetUp]
-        public void SetUp()
-        {
-            var ft = new FullType
-                         {
-                             c1 = "tom",
-                             c2 = 2,
-                             c3 = 3,
-                             c4 = 4,
-                             c5 = true,
-                             c6 = new DateTime(2000, 1, 1),
-                             c7 = 7,
-                             c8 = (float) 8.1,
-                             c9 = 9.1,
-                             c10 = guid,
-                             c11 = 11,
-                             c15 = new byte[] {1, 2, 3, 4, 5}
-                         };
+        public void SetUp() {
+            var ft = new FullType {
+                c1 = "tom",
+                c2 = 2,
+                c3 = 3,
+                c4 = 4,
+                c5 = true,
+                c6 = new DateTime(2000, 1, 1),
+                c7 = 7,
+                c8 = (float)8.1,
+                c9 = 9.1,
+                c10 = guid,
+                c11 = 11,
+                c15 = new byte[] { 1, 2, 3, 4, 5 }
+            };
             // get infos.
             PropertyInfo[] pis = typeof(FullType).GetProperties();
             StaticRecorder.CurRow.Clear();
             StaticRecorder.CurRow.Add(new RowInfo("Id", typeof(long), 1L));
-            foreach (PropertyInfo pi in pis)
-            {
+            foreach (PropertyInfo pi in pis) {
                 object o = pi.GetValue(ft, null);
                 StaticRecorder.CurRow.Add(new RowInfo(pi.Name, pi.PropertyType, o));
             }
         }
 
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             var ls = DbEntry.From<FullType>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             var o = ls[0];
@@ -104,8 +95,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             var ls = DbEntry.From<FullType2>().Where(Condition.Empty).Select();
             Assert.AreEqual(1, ls.Count);
             var o = ls[0];
@@ -126,8 +116,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSameValueIsNotChange()
-        {
+        public void TestSameValueIsNotChange() {
             var ls = DbEntry.From<FullType>().Where(Condition.Empty).Select();
             StaticRecorder.ClearMessages();
             Assert.AreEqual(1, ls.Count);
@@ -148,8 +137,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestSameValueIsNotChange2()
-        {
+        public void TestSameValueIsNotChange2() {
             var ls = DbEntry.From<FullType2>().Where(Condition.Empty).Select();
             StaticRecorder.ClearMessages();
             Assert.AreEqual(1, ls.Count);

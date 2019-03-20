@@ -3,10 +3,8 @@ using Leafing.Data.Definition;
 using Leafing.MockSql.Recorder;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
-    public class Mkey : IDbObject
-    {
+namespace Leafing.UnitTest.Data {
+    public class Mkey : IDbObject {
         [DbKey(IsDbGenerate = false)]
         public string FirstName;
 
@@ -17,8 +15,7 @@ namespace Leafing.UnitTest.Data
     }
 
     [DbContext("SQLite")]
-    public class Mkey2 : IDbObject
-    {
+    public class Mkey2 : IDbObject {
         [DbKey(IsDbGenerate = false)]
         public string FirstName;
 
@@ -29,8 +26,7 @@ namespace Leafing.UnitTest.Data
     }
 
     [DbContext("Firebird")]
-    public class Mkey3 : IDbObject
-    {
+    public class Mkey3 : IDbObject {
         [DbKey(IsDbGenerate = false), Length(50)]
         public string Name;
 
@@ -41,11 +37,9 @@ namespace Leafing.UnitTest.Data
     }
 
     [TestFixture]
-    public class MKeyTest : DataTestBase
-    {
+    public class MKeyTest : DataTestBase {
         [Test]
-        public void TestForMkey()
-        {
+        public void TestForMkey() {
             DbEntry.Create(typeof(Mkey));
 
             var p1 = new Mkey { FirstName = "test", LastName = "next", Age = 11 };
@@ -62,8 +56,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestMkeyForUpdate()
-        {
+        public void TestMkeyForUpdate() {
             var p = new Mkey2 { FirstName = "test", LastName = "next", Age = 11 };
             DbEntry.Update(p);
             AssertSql(@"UPDATE [Mkey2] SET [Age]=@Age_0  WHERE ([FirstName] = @FirstName_1) AND ([LastName] = @LastName_2);
@@ -71,13 +64,12 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void TestForFirebird()
-        {
+        public void TestForFirebird() {
             // try create table first.
             DbEntry.From<Mkey3>().Where(Condition.Empty).GetCount();
             StaticRecorder.ClearMessages();
             // real test
-            var o = new Mkey3 {Name = "test", Age = 18, Gender = true};
+            var o = new Mkey3 { Name = "test", Age = 18, Gender = true };
             DbEntry.Insert(o);
             Assert.AreEqual(1, StaticRecorder.Messages.Count);
             AssertSql(@"INSERT INTO ""MKEY3"" (""NAME"",""AGE"",""GENDER"") VALUES (@Name_0,@Age_1,@Gender_2);<Text><30>(@Name_0=test:String,@Age_1=18:Int32,@Gender_2=True:Boolean)");

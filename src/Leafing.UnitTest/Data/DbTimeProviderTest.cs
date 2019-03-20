@@ -5,15 +5,12 @@ using Leafing.MockSql.Recorder;
 using Leafing.UnitTest.Mocks;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.Data
-{
+namespace Leafing.UnitTest.Data {
     [TestFixture]
-    public class DbTimeProviderTest
-    {
+    public class DbTimeProviderTest {
         [Test]
-        public void Test1()
-        {
-            MockMiscProvider.MockNow = new DateTime(2010, 12, 10, 10, 9 , 8);
+        public void Test1() {
+            MockMiscProvider.MockNow = new DateTime(2010, 12, 10, 10, 9, 8);
             var provider = new DbTimeProvider(new DataProvider("SQLite"));
 
             StaticRecorder.CurRow.Add(new RowInfo("now", new DateTime(2010, 12, 10, 9, 8, 7)));
@@ -28,8 +25,7 @@ namespace Leafing.UnitTest.Data
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             MockMiscProvider.MockNow = new DateTime(2010, 12, 10, 10, 9, 8);
             var provider = new DbTimeProvider(new DataProvider("SQLite"));
 

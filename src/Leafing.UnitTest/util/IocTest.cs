@@ -2,46 +2,36 @@
 using Leafing.Core.Ioc;
 using NUnit.Framework;
 
-namespace Leafing.UnitTest.util
-{
+namespace Leafing.UnitTest.util {
     [DependenceEntry]
-    public interface ITest
-    {
+    public interface ITest {
         string Run();
     }
 
     [Implementation(1, "test")]
-    public class TestImpl : ITest
-    {
-        public string Run()
-        {
+    public class TestImpl : ITest {
+        public string Run() {
             return "1st impl";
         }
     }
 
     [Implementation(2, "test2")]
-    public class NewTestImpl : ITest
-    {
-        public string Run()
-        {
+    public class NewTestImpl : ITest {
+        public string Run() {
             return "2nd impl";
         }
     }
 
     [Implementation("test3")]
-    public class NewNewTestImpl : ITest
-    {
-        public string Run()
-        {
+    public class NewNewTestImpl : ITest {
+        public string Run() {
             return "3rd impl";
         }
     }
 
     [DependenceEntry, Implementation(1)]
-    public class IocSame
-    {
-        public virtual string Run()
-        {
+    public class IocSame {
+        public virtual string Run() {
             return "same";
         }
 
@@ -50,44 +40,35 @@ namespace Leafing.UnitTest.util
     }
 
     [Implementation(3)]
-    public class IocSameSub : IocSame
-    {
-        public override string Run()
-        {
+    public class IocSameSub : IocSame {
+        public override string Run() {
             return "sub class";
         }
     }
 
-    public class IocSameReg : IocSame
-    {
-        public override string Run()
-        {
+    public class IocSameReg : IocSame {
+        public override string Run() {
             return "reg class";
         }
     }
 
     [DependenceEntry, Implementation(1)]
-    public class IocConstractor
-    {
+    public class IocConstractor {
         private readonly ITest _test;
 
-        public IocConstractor([Injection(2)]ITest test)
-        {
+        public IocConstractor([Injection(2)]ITest test) {
             this._test = test;
         }
 
-        public virtual string Run()
-        {
+        public virtual string Run() {
             return _test.Run();
         }
     }
 
     [TestFixture]
-    public class IocTest
-    {
+    public class IocTest {
         [Test]
-        public void Test1()
-        {
+        public void Test1() {
             var t = SimpleContainer.Get<ITest>();
             Assert.IsNotNull(t);
             Assert.IsTrue(t is NewTestImpl);
@@ -111,8 +92,7 @@ namespace Leafing.UnitTest.util
         }
 
         [Test]
-        public void Test2()
-        {
+        public void Test2() {
             SimpleContainer.Register(typeof(IocSame), typeof(IocSameReg), 4, null);
             var t = SimpleContainer.Get<IocSame>(4);
             Assert.IsNotNull(t);
@@ -121,23 +101,22 @@ namespace Leafing.UnitTest.util
             Assert.AreEqual("2nd impl", t.TestProperty.Run());
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
-        public void Test3()
-        {
-            SimpleContainer.Register(typeof(ITest), typeof(ITest), 7, null);
+        [Test]
+        public void Test3() {
+            Assert.Throws<ArgumentException>(() => {
+                SimpleContainer.Register(typeof(ITest), typeof(ITest), 7, null);
+            });
         }
 
         [Test]
-        public void Test4()
-        {
+        public void Test4() {
             var item = SimpleContainer.Get<IocConstractor>();
             Assert.IsNotNull(item);
             Assert.AreEqual("2nd impl", item.Run());
         }
 
         [Test]
-        public void TestName()
-        {
+        public void TestName() {
             var item = SimpleContainer.Get<ITest>("test");
             Assert.IsNotNull(item);
             Assert.AreEqual("1st impl", item.Run());

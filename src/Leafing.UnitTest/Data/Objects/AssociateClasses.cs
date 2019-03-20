@@ -2,21 +2,18 @@
 using Leafing.Data.Definition;
 using Leafing.Core.Text;
 
-namespace Leafing.UnitTest.Data.Objects
-{
+namespace Leafing.UnitTest.Data.Objects {
     // HasOne
 
-	[DbTable("People")]
-    public class Person : DbObjectModel<Person>
-    {
+    [DbTable("People")]
+    public class Person : DbObjectModel<Person> {
         public string Name { get; set; }
 
         public HasOne<PersonalComputer> PC;
     }
 
     [DbTable("PCs")]
-    public class PersonalComputer : DbObjectModel<PersonalComputer>
-    {
+    public class PersonalComputer : DbObjectModel<PersonalComputer> {
         public string Name { get; set; }
 
         [DbColumn("Person_Id")]
@@ -24,16 +21,14 @@ namespace Leafing.UnitTest.Data.Objects
     }
 
     [DbTable("People"), DbContext("SQLite")]
-    public class PersonSqlite : DbObjectModel<PersonSqlite>
-    {
+    public class PersonSqlite : DbObjectModel<PersonSqlite> {
         public string Name { get; set; }
 
         public HasOne<PersonalComputerSqlite> PC;
     }
 
     [DbTable("PCs"), DbContext("SQLite")]
-    public class PersonalComputerSqlite : DbObjectModel<PersonalComputerSqlite>
-    {
+    public class PersonalComputerSqlite : DbObjectModel<PersonalComputerSqlite> {
         public string Name { get; set; }
 
         [DbColumn("Person_Id")]
@@ -41,16 +36,14 @@ namespace Leafing.UnitTest.Data.Objects
     }
 
     [DbTable("People"), DbContext("SqlServerMock")]
-    public class PersonSql : DbObjectModel<PersonSql>
-    {
+    public class PersonSql : DbObjectModel<PersonSql> {
         public string Name { get; set; }
 
         public HasOne<PersonalComputerSql> PC;
     }
 
     [DbTable("PCs"), DbContext("SqlServerMock")]
-    public class PersonalComputerSql : DbObjectModel<PersonalComputerSql>
-    {
+    public class PersonalComputerSql : DbObjectModel<PersonalComputerSql> {
         public string Name { get; set; }
 
         [DbColumn("Person_Id")]
@@ -60,8 +53,7 @@ namespace Leafing.UnitTest.Data.Objects
     // HasMany
 
     [DbTable("Books")]
-    public class Book : DbObjectModel<Book>
-    {
+    public class Book : DbObjectModel<Book> {
         public string Name { get; set; }
 
         [DbColumn("Category_Id")]
@@ -69,16 +61,14 @@ namespace Leafing.UnitTest.Data.Objects
     }
 
     [DbTable("Categories")]
-    public class Category : DbObjectModel<Category>
-    {
+    public class Category : DbObjectModel<Category> {
         public string Name { get; set; }
 
         public HasMany<Book> Books;
     }
 
     [DbTable("Books"), DbContext("SQLite")]
-    public class BookSqlite : DbObjectModel<BookSqlite>
-    {
+    public class BookSqlite : DbObjectModel<BookSqlite> {
         public string Name { get; set; }
 
         [DbColumn("Category_Id")]
@@ -86,64 +76,56 @@ namespace Leafing.UnitTest.Data.Objects
     }
 
     [DbTable("Categories"), DbContext("SQLite")]
-    public class CategorySqlite : DbObjectModel<CategorySqlite>
-    {
+    public class CategorySqlite : DbObjectModel<CategorySqlite> {
         public string Name { get; set; }
 
         public HasMany<BookSqlite> Books;
     }
 
     [DbTable("Categories")]
-    public class Acategory : DbObjectModel<Acategory>
-    {
+    public class Acategory : DbObjectModel<Acategory> {
         public string Name { get; set; }
 
-		public HasMany<Abook> Books { get; private set; }
+        public HasMany<Abook> Books { get; private set; }
     }
 
     [DbTable("Books")]
-    public class Abook : DbObjectModel<Abook>
-    {
+    public class Abook : DbObjectModel<Abook> {
         public string Name { get; set; }
 
         [DbColumn("Category_Id")]
-		public BelongsTo<Acategory, long> CurCategory { get; private set; }
+        public BelongsTo<Acategory, long> CurCategory { get; private set; }
     }
 
-    public class Article : DbObjectModel<Article>
-    {
+    public class Article : DbObjectModel<Article> {
         public string Name { get; set; }
 
-		[OrderBy("Id")]
-		public HasAndBelongsToMany<Reader> Readers { get; private set; }
+        [OrderBy("Id")]
+        public HasAndBelongsToMany<Reader> Readers { get; private set; }
     }
 
-    public class Reader : DbObjectModel<Reader>
-    {
+    public class Reader : DbObjectModel<Reader> {
         public string Name { get; set; }
 
-		[OrderBy("Id")]
-		public HasAndBelongsToMany<Article> Articles { get; private set; }
+        [OrderBy("Id")]
+        public HasAndBelongsToMany<Article> Articles { get; private set; }
     }
 
     [DbTable("Article"), DbContext("SQLite")]
-    public class ArticleSqlite : DbObjectModel<ArticleSqlite>
-    {
+    public class ArticleSqlite : DbObjectModel<ArticleSqlite> {
         public string Name { get; set; }
 
-		public HasAndBelongsToMany<ReaderSqlite> Readers { get; private set; }
+        public HasAndBelongsToMany<ReaderSqlite> Readers { get; private set; }
     }
 
     [DbTable("Reader"), DbContext("SQLite")]
-    public class ReaderSqlite : DbObjectModel<ReaderSqlite>
-    {
+    public class ReaderSqlite : DbObjectModel<ReaderSqlite> {
         public string Name { get; set; }
 
-		public HasAndBelongsToMany<ArticleSqlite> Articles { get; private set; }
+        public HasAndBelongsToMany<ArticleSqlite> Articles { get; private set; }
     }
 
-    public class Article_Reader : IDbObject
-    {
+    public class Article_Reader : IDbObject {
         public long Article_Id;
         public long Reader_Id;
     }

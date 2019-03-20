@@ -1,21 +1,12 @@
 ﻿using System;
 
-namespace Leafing.Data.Definition
-{
+namespace Leafing.Data.Definition {
     [Serializable]
-    public abstract class DbObject : DbObjectBase
-	{
-		private long _id;
-
+    public abstract class DbObject : DbObjectBase {
         [DbKey]
-        public long Id
-		{
-			get { return _id; }
-            set { _id = value; }
-		}
+        public long Id { get; set; }
 
-        protected DbObject()
-        {
+        protected DbObject() {
         }
     }
 }

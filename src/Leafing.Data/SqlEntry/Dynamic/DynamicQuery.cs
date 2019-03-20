@@ -2,30 +2,22 @@ using System.Dynamic;
 using Leafing.Data.Definition;
 using Leafing.Core.Text;
 
-namespace Leafing.Data.SqlEntry.Dynamic
-{
-    public class DynamicQuery<T> : DynamicObject where T : class, IDbObject
-    {
-        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
-        {
+namespace Leafing.Data.SqlEntry.Dynamic {
+    public class DynamicQuery<T> : DynamicObject where T : class, IDbObject {
+        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result) {
             var ss = StringHelper.SplitByCase(binder.Name);
-            if (ss.Count % 2 == 0)
-            {
+            if (ss.Count % 2 == 0) {
                 throw new DataException("FindBy need Cola(AndColb) format.");
             }
-            if (((ss.Count + 1) >> 1) != args.Length)
-            {
+            if (((ss.Count + 1) >> 1) != args.Length) {
                 throw new DataException("The args count doesn't match method call " + binder.Name + "");
             }
             Condition c = null;
             int n = 0;
-            for (int i = 0; i < ss.Count; i += 2)
-            {
+            for (int i = 0; i < ss.Count; i += 2) {
                 c &= CK<T>.Field[ss[i]] == args[n++];
-                if (i + 1 < ss.Count)
-                {
-                    if (ss[i + 1] != "And")
-                    {
+                if (i + 1 < ss.Count) {
+                    if (ss[i + 1] != "And") {
                         throw new DataException("FindBy need Cola(AndColb) format.");
                     }
                 }

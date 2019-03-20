@@ -1,36 +1,29 @@
 ﻿using System;
 
-namespace Leafing.Core.Text
-{
-    public static class Base32StringCoding
-    {
+namespace Leafing.Core.Text {
+    public static class Base32StringCoding {
         private static readonly char[] Base32Table = "0123456789abcdefghijklmnopqrstuv".ToCharArray();
         private static readonly byte[] ReverseByteArray = new byte[128];
 
-        static Base32StringCoding()
-        {
+        static Base32StringCoding() {
             SetReverseHexChar('0', '9', 0);
             SetReverseHexChar('A', 'V', 10);
             SetReverseHexChar('a', 'v', 10);
         }
 
-        private static void SetReverseHexChar(char a, char b, int add)
-        {
-            for (int i = a; i <= b; i++)
-            {
+        private static void SetReverseHexChar(char a, char b, int add) {
+            for (int i = a; i <= b; i++) {
                 ReverseByteArray[i] = (byte)(i - a + add);
             }
         }
 
-        public static byte[] Encode(string src)
-        {
+        public static byte[] Encode(string src) {
             int n = src.Length;
             int rest = n % 8;
             int len = GetLength(n, rest);
             var ret = new byte[len];
             int j = 0;
-            switch (rest)
-            {
+            switch (rest) {
                 case 2:
                     ret[j++] = (byte)(ReverseByteArray[src[0]] << 5 | ReverseByteArray[src[1]]);
                     break;
@@ -57,8 +50,7 @@ namespace Leafing.Core.Text
                     ret[j++] = (byte)((i6 & 7) << 5 | ReverseByteArray[src[6]]);
                     break;
             }
-            for (int i = rest; i < n; i += 8)
-            {
+            for (int i = rest; i < n; i += 8) {
                 byte i2 = ReverseByteArray[src[i + 1]];
                 byte i4 = ReverseByteArray[src[i + 3]];
                 byte i5 = ReverseByteArray[src[i + 4]];
@@ -72,11 +64,9 @@ namespace Leafing.Core.Text
             return ret;
         }
 
-        private static int GetLength(int n, int rest)
-        {
+        private static int GetLength(int n, int rest) {
             int len = n / 8 * 5;
-            switch (rest)
-            {
+            switch (rest) {
                 case 0:
                     break;
                 case 2:
@@ -97,19 +87,15 @@ namespace Leafing.Core.Text
             return len;
         }
 
-        public static string Decode(byte[] src)
-        {
+        public static string Decode(byte[] src) {
             int n = src.Length;
             int rest = n % 5;
             var len = (int)Math.Round((double)n * 8 / 5 + 0.5);
             var ret = new string((char)0, len);
-            unsafe
-            {
-                fixed (char* p = ret, h = Base32Table)
-                {
+            unsafe {
+                fixed (char* p = ret, h = Base32Table) {
                     int j = 0;
-                    switch(rest)
-                    {
+                    switch (rest) {
                         case 1:
                             p[j++] = h[src[0] >> 5];
                             p[j++] = h[src[0] & 0x1f];
@@ -137,8 +123,7 @@ namespace Leafing.Core.Text
                             p[j++] = h[src[3] & 0x1f];
                             break;
                     }
-                    for (int i = rest; i < n; i += 5)
-                    {
+                    for (int i = rest; i < n; i += 5) {
                         p[j++] = h[src[i] >> 3];
                         p[j++] = h[(src[i] & 7) << 2 | src[i + 1] >> 6];
                         p[j++] = h[src[i + 1] >> 1 & 0x1f];
