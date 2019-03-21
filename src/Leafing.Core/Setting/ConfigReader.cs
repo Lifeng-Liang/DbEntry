@@ -5,7 +5,7 @@ using Leafing.Core.Text;
 
 namespace Leafing.Core.Setting {
     public static class ConfigReader {
-        public static readonly Configration Config;
+        public static readonly Configuration Config;
 
         static ConfigReader() {
             var content = ReadFile("leafing.config.json") ?? ReadResource("leafing.config.json");
@@ -30,17 +30,17 @@ namespace Leafing.Core.Setting {
             return result;
         }
 
-        private static Configration ParseConfigration(string s) {
+        private static Configuration ParseConfigration(string s) {
             using (var ms = new MemoryStream()) {
                 byte[] bs = Encoding.UTF8.GetBytes(s);
                 ms.Write(bs, 0, bs.Length);
                 ms.Flush();
                 ms.Position = 0;
-                var ser = new DataContractJsonSerializer(typeof(Configration), new DataContractJsonSerializerSettings() {
+                var ser = new DataContractJsonSerializer(typeof(Configuration), new DataContractJsonSerializerSettings() {
                     UseSimpleDictionaryFormat = true,
                     SerializeReadOnlyTypes = true,
                 });
-                var config = (Configration)ser.ReadObject(ms);
+                var config = (Configuration)ser.ReadObject(ms);
                 return config;
             }
         }

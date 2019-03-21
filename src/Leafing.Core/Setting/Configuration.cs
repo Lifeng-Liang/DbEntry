@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Leafing.Core.Setting {
     [DataContract]
-    public class Configration {
+    public class Configuration {
         [DataMember]
         public Dictionary<string, string> AppSettings = new Dictionary<string, string>();
 
