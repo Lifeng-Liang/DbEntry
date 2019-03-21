@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Version>6.0.0</Version>
+    <Copyright>Copyright © Lifeng Liang 2019</Copyright>
+    <Product>Leafing Framework</Product>
+    <Authors>Lifeng Liang</Authors>
+    <Company>Lifeng Liang</Company>
+    <PackageProjectUrl>http://github.com/Lifeng-Liang/DbEntry/</PackageProjectUrl>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>DbEntry.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>

@@ -113,8 +113,10 @@ Donate 捐款:
 
 *   [Details 细节](Donate.md)
 *   Donate ways 捐款方式:
-	*	支付宝: ![支付宝](doc/imgs/alipay.png)
-	*	微信: ![微信](doc/imgs/wechat.png)
+	*	支付宝: 
+		* ![支付宝](doc/imgs/alipay.png)
+	*	微信:
+		* ![微信](doc/imgs/wechat.png)
 	*	Paypal: lifeng.liang(at)gmail.com
 	*	Bitcoin: 16ypFeJGaqyQywu9ra1AQw6UaNWP4RoPBf
 
