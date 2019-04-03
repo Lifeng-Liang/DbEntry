@@ -3,5 +3,5 @@ mono: none
 dotnet: 2.1.502
 script:
  - dotnet build src
- - dotnet test src /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./doc/reports/unittest.xml" /p:Include=\"[Leafing.Core]*,[Leafing.Data]*\"
- - dotnet res/codecov/codecov.dll -f doc/reports/unittest.xml -t 9b6da3e3-0c43-46fb-be30-806bdecaf7a2
+ - dotnet test src /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../../res/unittest.xml" /p:Include=\"[Leafing.Core]*,[Leafing.Data]*\"
+ - dotnet res/codecov/codecov.dll -f res/unittest.xml -t 9b6da3e3-0c43-46fb-be30-806bdecaf7a2
