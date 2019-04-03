@@ -1,0 +1,13 @@
+image:
+ - Visual Studio 2017
+branches:
+ only:
+  - master
+before_build:
+  - cmd: dotnet --version
+build_script:
+ - dotnet build src
+test_script:
+ - cmd: dotnet test src /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../../res/unittest.xml" /p:Include=\"[Leafing.Core]*,[Leafing.Data]*\"
+ - cmd: dotnet res/codecov/codecov.dll -f res/unittest.xml -t 9b6da3e3-0c43-46fb-be30-806bdecaf7a2
+deploy: off
