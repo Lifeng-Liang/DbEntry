@@ -34,3 +34,4 @@
 
 *.suo
 /bin/*.nupkg
+/doc/reports
