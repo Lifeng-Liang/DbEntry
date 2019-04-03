@@ -2,7 +2,8 @@
 DbEntry.Net (Leafing Framework)
 ==========
 
-[travis-ci](https://travis-ci.org/Lifeng-Liang/DbEntry.svg?branch=master)
+[![Build Status](https://travis-ci.org/Lifeng-Liang/DbEntry.svg?branch=master)](https://travis-ci.org/Lifeng-Liang/DbEntry)
+[![codecov](https://codecov.io/gh/Lifeng-Liang/DbEntry/branch/master/graph/badge.svg)](https://codecov.io/gh/Lifeng-Liang/DbEntry)
 
 DbEntry.Net (Leafing Framework) is a lightweight, high performance ORM compnent for .Net Core 2.0. It has clearly and easily programing interface. It based on ADO.NET, and supported C#, Visual Basic, ASP.NET Core etc.
 
