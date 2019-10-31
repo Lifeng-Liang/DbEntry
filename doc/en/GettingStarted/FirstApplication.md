@@ -3,9 +3,9 @@ First Application
 
 The following steps shows how to create a basic database application using DbEntry.Net:
 
-1\. Create a console application in Visual Studio 2010/2012/2013/2015.
+1\. Create a console application in Visual Studio 2015/2017.
 
-2\. Create a console application.
+2\. Create a console application with .Net 4.6.1 or higher.
 
 3\. In Nuget Package Manager Console, enter Install-Package DbEntry.Net.
 
@@ -24,7 +24,7 @@ The following steps shows how to create a basic database application using DbEnt
   <Leafing.Settings>
     <add key="AutoScheme" value="CreateTable" />
     <add key="DataBase" value="@NSQLite : @~test.db" />
-    <add key="DbProviderFactory" value="System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=3.7.7.1, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e"/>
+    <add key="DbProviderFactory" value="System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e"/>
   </Leafing.Settings>
 </configuration>
 ````
