@@ -9,7 +9,9 @@ namespace Leafing.Core.Setting {
 
         static ConfigReader() {
             var content = ReadFile("leafing.config.json") ?? ReadResource("leafing.config.json");
-            Config = ParseConfigration(content);
+            Config = new Configuration();
+            var newConfig = ParseConfigration(content);
+            Config.Merge(newConfig);
         }
 
         private static string ReadFile(string fileName) {
@@ -32,7 +34,7 @@ namespace Leafing.Core.Setting {
 
         private static Configuration ParseConfigration(string s) {
             using (var ms = new MemoryStream()) {
-                byte[] bs = Encoding.UTF8.GetBytes(s);
+                var bs = Encoding.UTF8.GetBytes(s);
                 ms.Write(bs, 0, bs.Length);
                 ms.Flush();
                 ms.Position = 0;

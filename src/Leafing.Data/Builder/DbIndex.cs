@@ -1,4 +1,6 @@
-﻿namespace Leafing.Data.Builder {
+﻿using Leafing.Data.Common;
+
+namespace Leafing.Data.Builder {
     public class DbIndex {
         public string IndexName;
         public ASC[] Columns;

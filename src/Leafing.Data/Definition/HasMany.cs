@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Leafing.Data.Common;
 using Leafing.Data.Model.Member;
 
 namespace Leafing.Data.Definition {

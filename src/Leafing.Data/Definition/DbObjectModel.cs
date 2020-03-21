@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Leafing.Data.Common;
 using Leafing.Data.Model.Linq;
 using Leafing.Data.Model.QuerySyntax;
 using Leafing.Data.SqlEntry;
@@ -98,7 +99,7 @@ namespace Leafing.Data.Definition {
 
         public static List<T> FindRecent(int count) {
             string id = ModelContext.Info.KeyMembers[0].Name;
-            return ModelContext.From<T>().Where(Condition.Empty).OrderBy((DESC)id).Range(1, count).Select();
+            return ModelContext.From<T>().Where(Data.Condition.Empty).OrderBy((DESC)id).Range(1, count).Select();
         }
 
         public static long GetCount(Condition con) {
@@ -163,6 +164,13 @@ namespace Leafing.Data.Definition {
 
         public static int UpdateBy(ConditionBuilder<T> condition, object obj) {
             return ModelContext.Operator.UpdateBy(condition.ToCondition(), obj);
+        }
+
+        public static ConditionBuilder<T> ConditionBuilder(Expression<Func<T, bool>> expr = null) {
+            if(expr == null) {
+                return new ConditionBuilder<T>();
+            }
+            return new ConditionBuilder<T>(expr);
         }
 
         #region Linq methods

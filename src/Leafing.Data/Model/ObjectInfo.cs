@@ -6,6 +6,7 @@ using Leafing.Core;
 using Leafing.Core.Setting;
 using Leafing.Core.Text;
 using Leafing.Data.Builder.Clause;
+using Leafing.Data.Common;
 using Leafing.Data.Definition;
 using Leafing.Data.Model.Member;
 using Leafing.Data.Model.Member.Adapter;

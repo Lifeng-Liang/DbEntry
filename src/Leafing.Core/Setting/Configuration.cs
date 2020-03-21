@@ -15,6 +15,15 @@ namespace Leafing.Core.Setting {
 
         [DataMember]
         public DatabaseSetting Database = new DatabaseSetting();
+
+        public void Merge(Configuration setting) {
+            if(setting.AppSettings != null && setting.AppSettings.Count > 0) {
+                AppSettings = setting.AppSettings;
+            }
+            Service.Merge(setting.Service);
+            Log.Merge(setting.Log);
+            Database.Merge(setting.Database);
+        }
     }
 
     [DataContract]
@@ -24,6 +33,11 @@ namespace Leafing.Core.Setting {
 
         [DataMember]
         public int MinStartTicks = 180000;
+
+        public void Merge(ServiceSetting setting) {
+            if(setting.DelayToStart != DelayToStart) { DelayToStart = setting.DelayToStart; }
+            if(setting.MinStartTicks != MinStartTicks) { MinStartTicks = setting.MinStartTicks; }
+        }
     }
 
     [DataContract]
@@ -36,6 +50,14 @@ namespace Leafing.Core.Setting {
 
         [DataMember]
         public Dictionary<string, List<string>> Recorders = new Dictionary<string, List<string>>();
+
+        public void Merge(LogSetting setting) {
+            if(setting.Level != Level) { Level = setting.Level; }
+            if(setting.FileName != FileName) { FileName = setting.FileName; }
+            if(setting.Recorders != null && setting.Recorders.Count > 0) {
+                Recorders = setting.Recorders;
+            }
+        }
     }
 
     [DataContract]
@@ -72,6 +94,22 @@ namespace Leafing.Core.Setting {
 
         [DataMember]
         public Dictionary<string, DbConfig> Context;
+
+        public void Merge(DatabaseSetting setting) {
+            if (Default != setting.Default) { Default = setting.Default; }
+            if (NameMapper != setting.NameMapper) { NameMapper = setting.NameMapper; }
+            if (SqlTimeOut != setting.SqlTimeOut) { SqlTimeOut = setting.SqlTimeOut; }
+            if (TimeConsumingSqlTimeOut != setting.TimeConsumingSqlTimeOut) { TimeConsumingSqlTimeOut = setting.TimeConsumingSqlTimeOut; }
+            if (MaxRecords != setting.MaxRecords) { MaxRecords = setting.MaxRecords; }
+            if (UseParameter != setting.UseParameter) { UseParameter = setting.UseParameter; }
+            if (Cache != setting.Cache) { Cache = setting.Cache; }
+            if (DbTimeCheckMinutes != setting.DbTimeCheckMinutes) { DbTimeCheckMinutes = setting.DbTimeCheckMinutes; }
+            if (UseForeignKey != setting.UseForeignKey) { UseForeignKey = setting.UseForeignKey; }
+            if (PartialUpdate != setting.PartialUpdate) { PartialUpdate = setting.PartialUpdate; }
+            if(setting.Context != null && setting.Context.Count > 0) {
+                Context = setting.Context;
+            }
+        }
     }
 
     [DataContract]
@@ -87,6 +125,13 @@ namespace Leafing.Core.Setting {
 
         [DataMember]
         public bool AllSelectedItem = false;
+
+        public void Merge(CacheSetting setting) {
+            if (Enabled != setting.Enabled) { Enabled = setting.Enabled; }
+            if (Size != setting.Size) { Size = setting.Size; }
+            if (KeepSecends != setting.KeepSecends) { KeepSecends = setting.KeepSecends; }
+            if (AllSelectedItem != setting.AllSelectedItem) { AllSelectedItem = setting.AllSelectedItem; }
+        }
     }
 
     [DataContract]
@@ -102,6 +147,13 @@ namespace Leafing.Core.Setting {
 
         [DataMember]
         public string AutoScheme = "None";
+
+        public void Merge(DbConfig setting) {
+            if (DataBase != setting.DataBase) { DataBase = setting.DataBase; }
+            if (ProviderFactory != setting.ProviderFactory) { ProviderFactory = setting.ProviderFactory; }
+            if (Driver != setting.Driver) { Driver = setting.Driver; }
+            if (AutoScheme != setting.AutoScheme) { AutoScheme = setting.AutoScheme; }
+        }
     }
 
     [DataContract]

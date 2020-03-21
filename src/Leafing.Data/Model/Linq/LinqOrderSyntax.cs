@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Leafing.Data.Common;
 using Leafing.Data.Definition;
 
 namespace Leafing.Data.Model.Linq {

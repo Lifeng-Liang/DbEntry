@@ -22,5 +22,9 @@ namespace Leafing.Data.SqlEntry.Dynamic {
         public void SetMember(string name, object value) {
             _jar[name] = value == DBNull.Value ? null : value;
         }
+
+        public Dictionary<string, object> GetRawMap() {
+            return _jar;
+        }
     }
 }

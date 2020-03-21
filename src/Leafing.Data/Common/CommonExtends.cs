@@ -6,6 +6,7 @@ using Leafing.Data;
 using Leafing.Data.Builder;
 using Leafing.Data.Definition;
 using Leafing.Data.Model.Member;
+using Leafing.Data.SqlEntry;
 
 public static class CommonExtends {
     public static bool IsNull<T>(this T key) where T : struct {
@@ -32,6 +33,14 @@ public static class CommonExtends {
         throw new Exception("It's only for Linq");
     }
 
+    public static bool InStatement<T>(this T key, SqlStatement statement) where T : struct {
+        throw new Exception("It's only for Linq");
+    }
+
+    public static bool InStatement(this string key, SqlStatement statement) {
+        throw new Exception("It's only for Linq");
+    }
+
     public static bool NotIn<T>(this T key, params T[] values) where T : struct {
         throw new Exception("It's only for Linq");
     }
@@ -45,6 +54,14 @@ public static class CommonExtends {
     }
 
     public static bool NotInStatement(this string key, SelectStatementBuilder statement) {
+        throw new Exception("It's only for Linq");
+    }
+
+    public static bool NotInStatement<T>(this T key, SqlStatement statement) where T : struct {
+        throw new Exception("It's only for Linq");
+    }
+
+    public static bool NotInStatement(this string key, SqlStatement statement) {
         throw new Exception("It's only for Linq");
     }
 

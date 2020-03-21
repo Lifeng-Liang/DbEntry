@@ -290,3 +290,49 @@ public class MyCsCoder : ConnectionStringCoder
 We can define our own decode method in it.
 
 The parameter of the attribute Implementation should be a integer and should equels or more than 2. It will make sure it will be the loaded ConnectionStringCoder instance rather than the original one.
+
+For .Net Core, We need define a json config file named 'leafing.config.json' with all value set as following to store in the bin directory now :
+
+````json
+{
+  "AppSettings": {},
+  "Service": {
+    "DelayToStart": 30000,
+    "MinStartTicks": 180000
+  },
+  "Log": {
+    "Level": "Off",
+    "FileName": "{0}{1}.{2}.log",
+    "Recorders": {
+      "Sql": [],
+      "Default": [],
+      "System": []
+    }
+  },
+  "Database": {
+    "Default": "Default",
+    "NameMapper": "@Underline",
+    "SqlTimeOut": 30,
+    "TimeConsumingSqlTimeOut": 60,
+    "MaxRecords": 0,
+    "UseParameter": true,
+    "Cache": {
+      "Enabled": false,
+      "KeepSecends": 300,
+      "AllSelectedItem": false,
+      "Size": 1000
+    },
+    "DbTimeCheckMinutes": 10,
+    "UseForeignKey": true,
+    "PartialUpdate": true,
+    "Context": {
+      "Default": {
+        "DataBase": "@NSQLite : @data/main.db",
+        "ProviderFactory": "System.Data.SQLite.SQLiteClientFactory, System.Data.SQLite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c7316bd79fc5e65e",
+        "Driver": "",
+        "AutoScheme": "CreateTable"
+      }
+    }
+  }
+}
+````

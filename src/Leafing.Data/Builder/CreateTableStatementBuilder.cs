@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Leafing.Data.Dialect;
 using Leafing.Data.SqlEntry;
 using Leafing.Core.Setting;
+using Leafing.Data.Common;
 
 namespace Leafing.Data.Builder {
     public class CreateTableStatementBuilder : SqlStatementBuilder {

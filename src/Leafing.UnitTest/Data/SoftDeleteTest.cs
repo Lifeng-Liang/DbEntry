@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Leafing.Data;
 using Leafing.Data.Definition;
-using Leafing.Data.Driver;
 using Leafing.MockSql.Recorder;
 using NUnit.Framework;
 
@@ -52,7 +51,7 @@ namespace Leafing.UnitTest.Data {
 
         [Test]
         public void TestRead() {
-            List<SoftDelete> ls = SoftDelete.Find(Condition.Empty, new OrderBy("Id"));
+            List<SoftDelete> ls = SoftDelete.Find(Condition.Empty, Order.By("Id"));
             Assert.AreEqual(3, ls.Count);
             Assert.AreEqual("tom", ls[0].Name);
             Assert.AreEqual("jerry", ls[1].Name);

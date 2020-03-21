@@ -260,7 +260,7 @@ namespace Leafing.UnitTest.Data {
             Assert.AreEqual(MyEnum.Manager, u1.MyType);
             Assert.AreEqual(new DateTime(2000, 1, 1), u.MyDate);
 
-            List<EnumTest> ls = EnumTest.Find(CK.K["Id"] > 0, new OrderBy("Id"));
+            List<EnumTest> ls = EnumTest.Find(CK.K["Id"] > 0, Leafing.Data.Order.By("Id"));
             Assert.AreEqual(1, ls.Count);
             Assert.AreEqual("test", ls[0].Name);
         }
@@ -270,7 +270,7 @@ namespace Leafing.UnitTest.Data {
             new SampleData { Name = "angel", Role = UserRole.Worker, JoinDate = new DateTime(2004, 2, 27, 15, 10, 23), Enabled = true, NullInt = null }.Save();
             new SampleData { Name = "tom", Role = UserRole.Manager, JoinDate = new DateTime(2001, 3, 17, 7, 12, 4), Enabled = false, NullInt = null }.Save();
             new SampleData { Name = "jerry", Role = UserRole.Client, JoinDate = new DateTime(1999, 1, 31, 21, 22, 55), Enabled = true, NullInt = 10 }.Save();
-            List<SampleData> ls1 = SampleData.Find(CK.K["Id"] > 1, new OrderBy("Id"));
+            List<SampleData> ls1 = SampleData.Find(CK.K["Id"] > 1, Leafing.Data.Order.By("Id"));
             Assert.AreEqual(2, ls1.Count);
         }
 

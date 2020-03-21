@@ -194,7 +194,7 @@ namespace Leafing.UnitTest.Data {
             l = DbEntry
             .From<SinglePerson>()
             .Where(Condition.Empty)
-            .OrderBy((DESC)"Id")
+            .OrderBy("Id".Desc())
             .Range(3, 5)
             .Select();
 
@@ -215,7 +215,7 @@ namespace Leafing.UnitTest.Data {
             var l = DbEntry
                 .From<Book>()
                 .Where(Condition.Empty)
-                .OrderBy((DESC)DbEntry.CountColumn)
+                .OrderBy(DbEntry.CountColumn.Desc())
                 .GroupBy<long>("Category_Id");
 
             Assert.AreEqual(2, l[0].Column);
