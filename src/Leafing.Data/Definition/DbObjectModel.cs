@@ -150,12 +150,12 @@ namespace Leafing.Data.Definition {
             return ModelContext.From<T>().Where(con).GetSum(columnName);
         }
 
-        public static void DeleteBy(Condition condition) {
-            ModelContext.Operator.DeleteBy(condition);
+        public static int DeleteBy(Condition condition) {
+            return ModelContext.Operator.DeleteBy(condition);
         }
 
-        public static void DeleteBy(ConditionBuilder<T> condition) {
-            ModelContext.Operator.DeleteBy(condition.ToCondition());
+        public static int DeleteBy(ConditionBuilder<T> condition) {
+            return ModelContext.Operator.DeleteBy(condition.ToCondition());
         }
 
         public static int UpdateBy(Condition condition, object obj) {

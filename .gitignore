@@ -36,3 +36,4 @@
 /bin/*.nupkg
 /doc/reports
 /res/unittest.xml
+/src/Leafing.MockSql/*.user
