@@ -212,12 +212,12 @@ namespace Leafing.Data.Model {
             return new LimitedListInserter(il);
         }
 
-        public void FillCollection(IList list, Type returnType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy = false) {
+        public void FillCollection(IList list, Type returnType, FromClause from, Condition iwc, OrderBy oc, Common.Range lc, bool isDistinct, bool noLazy = false) {
             IProcessor ip = GetListProcessor(list);
             DataLoad(ip, returnType, from, iwc, oc, lc, isDistinct, noLazy);
         }
 
-        public void DataLoad(IProcessor ip, Type returnType, FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy) {
+        public void DataLoad(IProcessor ip, Type returnType, FromClause from, Condition iwc, OrderBy oc, Common.Range lc, bool isDistinct, bool noLazy) {
             Fixer.TryFix();
             SqlStatement sql = Composer.GetSelectStatement(from, iwc, oc, lc, isDistinct, noLazy, returnType);
             DataLoadDirect(ip, returnType, sql, true, noLazy);
@@ -274,10 +274,10 @@ namespace Leafing.Data.Model {
         }
 
         public object GetObject(Condition c, OrderBy ob) {
-            return GetObject(c, ob, (ob == null) ? null : new Range(1, 1));
+            return GetObject(c, ob, (ob == null) ? null : new Common.Range(1, 1));
         }
 
-        internal object GetObject(Condition c, OrderBy ob, Range r) {
+        internal object GetObject(Condition c, OrderBy ob, Common.Range r) {
             IList il = new ArrayList();
             FillCollection(il, Info.HandleType, null, c, ob, r, false);
             if (il.Count < 1) {

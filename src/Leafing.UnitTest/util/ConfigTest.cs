@@ -14,8 +14,7 @@ namespace Leafing.UnitTest.util {
 
         private readonly bool TestBool = false;
 
-        [SetUp]
-        public void SetUp() {
+        static ConfigTest1() {
             ConfigReader.Config.AppSettings.InitClass(ct);
         }
 

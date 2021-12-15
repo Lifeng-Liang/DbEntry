@@ -50,7 +50,7 @@ namespace Leafing.Data.Model.Composer {
             return base.GetResultCountStatement(iwc, isDistinct);
         }
 
-        public override SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType, string colName) {
+        public override SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Common.Range lc, bool isDistinct, bool noLazy, Type returnType, string colName) {
             return base.GetSelectStatementBuilder(from, iwc && _colExp, oc, lc, isDistinct, noLazy, returnType, colName);
         }
 

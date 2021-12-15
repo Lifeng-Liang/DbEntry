@@ -31,7 +31,7 @@ namespace Leafing.Data.Model.QuerySyntax {
 
     public interface IRangeable<T> : ISelectable<T>, IGroupByable where T : class, IDbObject, new() {
         ISelectable<T> Range(long startIndex, long endIndex);
-        ISelectable<T> Range(Range r);
+        ISelectable<T> Range(Common.Range r);
         IGetPagedSelector<T> PageSize(int pageSize);
 
         IRangeable<T> ThenBy(Expression<Func<T, object>> expr);

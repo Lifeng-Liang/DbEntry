@@ -116,11 +116,11 @@ namespace Leafing.Data.Model.Composer {
             return isv.ToSqlStatement(this.Context);
         }
 
-        public SqlStatement GetSelectStatement(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType) {
+        public SqlStatement GetSelectStatement(FromClause from, Condition iwc, OrderBy oc, Common.Range lc, bool isDistinct, bool noLazy, Type returnType) {
             return this.GetSelectStatementBuilder(from, iwc, oc, lc, isDistinct, noLazy, returnType, null).ToSqlStatement(this.Context);
         }
 
-        public virtual SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Range lc, bool isDistinct, bool noLazy, Type returnType, string colName) {
+        public virtual SelectStatementBuilder GetSelectStatementBuilder(FromClause from, Condition iwc, OrderBy oc, Common.Range lc, bool isDistinct, bool noLazy, Type returnType, string colName) {
             var sb = new SelectStatementBuilder(from ?? this.Context.Info.From, oc, lc) {
                 IsDistinct = isDistinct,
                 NoLazy = noLazy

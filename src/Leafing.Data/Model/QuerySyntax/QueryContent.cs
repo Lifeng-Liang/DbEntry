@@ -13,7 +13,7 @@ namespace Leafing.Data.Model.QuerySyntax {
         private readonly ModelContext _ctx;
         private Condition _where;
         private OrderBy _order;
-        private Range _range;
+        private Common.Range _range;
         private int _pageSize;
 
         private UpdateStatementBuilder _updater;
@@ -63,11 +63,11 @@ namespace Leafing.Data.Model.QuerySyntax {
         }
 
         public ISelectable<T> Range(long startIndex, long endIndex) {
-            _range = new Range(startIndex, endIndex);
+            _range = new Common.Range(startIndex, endIndex);
             return this;
         }
 
-        public ISelectable<T> Range(Range r) {
+        public ISelectable<T> Range(Common.Range r) {
             if (r != null) {
                 _range = r;
             }
