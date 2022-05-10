@@ -1,13 +1,12 @@
-image:
- - Visual Studio 2019
-branches:
- only:
-  - master
-before_build:
-  - cmd: dotnet --version
+version: 1.0.{build}
+image: Visual Studio 2019
+init:
+- cmd: dotnet --version
 build_script:
- - dotnet build src
+- cmd: dotnet build src
 test_script:
- - cmd: dotnet test src /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../../res/unittest.xml" /p:Include=\"[Leafing.Core]*,[Leafing.Data]*\"
- - cmd: dotnet res/codecov/codecov.dll -f res/unittest.xml -t 9b6da3e3-0c43-46fb-be30-806bdecaf7a2
+- cmd: >-
+    dotnet test src /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../../res/unittest.xml" /p:Include=\"[Leafing.Core]*,[Leafing.Data]*\"
+
+    dotnet res/codecov/codecov.dll -f res/unittest.xml -t 9b6da3e3-0c43-46fb-be30-806bdecaf7a2
 deploy: off

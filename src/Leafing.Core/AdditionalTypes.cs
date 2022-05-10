@@ -192,7 +192,7 @@
             return ((IConvertible)(_dt.Date)).ToInt64(provider);
         }
 
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         public sbyte ToSByte(IFormatProvider provider) {
             return ((IConvertible)(_dt.Date)).ToSByte(provider);
         }
@@ -209,17 +209,17 @@
             return ((IConvertible)(_dt.Date)).ToType(conversionType, provider);
         }
 
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         public ushort ToUInt16(IFormatProvider provider) {
             return ((IConvertible)(_dt.Date)).ToUInt16(provider);
         }
 
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         public uint ToUInt32(IFormatProvider provider) {
             return ((IConvertible)(_dt.Date)).ToUInt32(provider);
         }
 
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         public ulong ToUInt64(IFormatProvider provider) {
             return ((IConvertible)(_dt.Date)).ToUInt64(provider);
         }
@@ -466,7 +466,7 @@
             return o.ToInt64(provider);
         }
 
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         public sbyte ToSByte(IFormatProvider provider) {
             IConvertible o = GetConvertible();
             return o.ToSByte(provider);
@@ -487,19 +487,19 @@
             return o.ToType(conversionType, provider);
         }
 
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         public ushort ToUInt16(IFormatProvider provider) {
             IConvertible o = GetConvertible();
             return o.ToUInt16(provider);
         }
 
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         public uint ToUInt32(IFormatProvider provider) {
             IConvertible o = GetConvertible();
             return o.ToUInt32(provider);
         }
 
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         public ulong ToUInt64(IFormatProvider provider) {
             IConvertible o = GetConvertible();
             return o.ToUInt64(provider);
