@@ -19,8 +19,6 @@ namespace Leafing.Data.Model.Handler.Generator {
         public MemoryAssembly(string AssemblyName) {
             this.AssemblyName = AssemblyName;
             var an = new AssemblyName(AssemblyName);
-            byte[] snk = ResourceHelper.ReadAll(GetType(), "Model.Handler.Generator.dynamic.snk");
-            an.KeyPair = new StrongNameKeyPair(snk);
             InnerAssembly = AssemblyBuilder.DefineDynamicAssembly(
                 an, AssemblyBuilderAccess.Run);
             ResetModule();

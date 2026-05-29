@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Version>6.0.0</Version>
     <Copyright>Copyright © Lifeng Liang 2019</Copyright>
     <Product>Leafing Framework</Product>
